@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -15613,7 +15613,8 @@ Effects          :
 #1 (id=1021278)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1021279)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc386876
 Tooltip          : Critical strike chance increased by $s1%. Critical damage dealt increased by $s2%.
 
@@ -16168,7 +16169,7 @@ Effects          :
 #1 (id=1026894)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1026895)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc390231
 Tooltip          : Slowed by $s2%.
 

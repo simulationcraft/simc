@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -722,6 +722,14 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Living Flame (361509)
                    Family Flags: 22
+#12 (id=1046956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Fire Breath (357209), Full Belly (377087)
+                   Family Flags: 35
+#13 (id=1046957)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Fire Breath (357209), Full Belly (377087)
+                   Family Flags: 35
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -873,10 +881,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=891504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -945,18 +953,18 @@ Range            : 100 yards
 Duration         : 2 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2, #12, #13), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1)
 Triggered by     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=891597)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.13400 | PvP Coefficient: 0.70000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone Front (104)
@@ -973,7 +981,7 @@ Name             : Deep Breath (desc=Black) (id=357210) [Spell Family (224)]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
-Range            : 20 - 50 yards
+Range            : 15 - 50 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
@@ -1217,7 +1225,7 @@ Effects          :
 #1 (id=894882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -1321,7 +1329,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=232519)
-Range            : 20 - 50 yards
+Range            : 15 - 50 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
@@ -2432,7 +2440,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=914653)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.27600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.33120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc368847
 
 Name             : Eye of Infinity (id=369375) [Spell Family (224), Passive] 
@@ -3034,7 +3042,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982398)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
 Description      : Your damaging critical strikes deal ${$s1+200}% damage instead of the usual 200%.
@@ -3332,7 +3340,7 @@ Description      : Deep Breath stuns enemies for $372245d.
 
 Name             : Lay Waste (id=371034) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=4, col=4, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(15, 30)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -3348,7 +3356,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982687)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759)
                    Family Flags: 34
 Description      : Deep Breath's damage is increased by $s1%.
@@ -6117,7 +6125,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1020361)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Red spell deals $s1% more damage.
 
@@ -6140,7 +6148,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1020432)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
 
@@ -6908,7 +6916,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ..x..... .....
                  : No Redirection (35), No Reflection (39), No Threat (42), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1040015)  : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: essence | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: essence | Target: Self (1)
 Description      : $@spelldesc369375
 
 Name             : Titanic Wrath (id=397870) [Spell Family (224), Hidden] 
@@ -6952,7 +6960,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1043306)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
 

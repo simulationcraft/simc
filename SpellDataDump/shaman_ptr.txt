@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -473,7 +473,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6112 | Misc Value 2: 0xd4e | Target: Unknown(43)
 #2 (id=819687)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
-Description      : Summons a totem at your feet for $d.  Party members within $?s382201[${(1+$382201s3/100)*$s2}][$s2] yds have a $327942h% chance when they main-hand auto-attack to swing an extra time.
+Description      : Summons a totem at your feet for $d.  Party members within $?s382201[${(1+$382201s3/100)*$s2}][$s2] yds have a $327942h% chance when they auto-attack to swing an extra time.
 
 Name             : Flametongue Attack (id=10444) [Spell Family (11)] 
 Class            : Shaman
@@ -14890,7 +14890,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1012979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Mana Spring Totem (381930), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
+                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Mana Spring (381930), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
                    Family Flags: 29
 #2 (id=1014666)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1569 | Target: Self (1)
@@ -14903,39 +14903,39 @@ Effects          :
                    Affected Spells (Category): Cloudburst Totem (157153)
 Description      : Reduces the cooldown of your totems by ${$s1/-1000} sec.
 
-Name             : Mana Spring Totem (id=381930) [Spell Family (11)] 
+Name             : Mana Spring (id=381930) [Spell Family (11), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
 Resource         : 1.5% Base Mana (0) (id=265445)
 Spell Level      : 10
-GCD              : 1 seconds
-Duration         : 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ......x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Magic Heal, Magic Hostile Spell
 Affecting spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
 Family Flags     : 29
-Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Can Proc From Procs (122), No Caster Aura Icon (187), No Aura Log (202), Ignore Totem Requirements for Casting (293)
+                 : Passive (6), Can Proc From Procs (122), No Caster Aura Icon (187), No Aura Log (202)
 Effects          :
-#1 (id=1013069)  : Summon (28)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 193620 | Misc Value 2: 0x1535 | Target: Water Totem (42)
+#1 (id=1013069)  : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1035495)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Summons a totem at your feet for $d that restores $381931s1 mana to you and $s1 allies nearest to the totem within $?s382201[${$s2*(1+$382201s3/100)}][$s2] yards when you cast $?!s137041[Lava Burst][]$?s137039[ or Riptide][]$?s137041[Stormstrike][].
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1046928)  : Apply Aura (6) | Unknown(395)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26011 | Target: Self (1)
+Description      : Your $?!s137041[Lava Burst][]$?s137039[ or Riptide][]$?s137041[Stormstrike][] casts restore $381931s1 mana to you and $s1 allies nearest to you within $s2 yards.
 
-Allies can only benefit from one Mana Spring Totem at a time, prioritizing healers.
+Allies can only benefit from one Shaman's Mana Spring effect at a time, prioritizing healers.
 
-Name             : Mana Spring Totem (id=381931) [Spell Family (11)] 
+Name             : Mana Spring (id=381931) [Spell Family (11)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15565,7 +15565,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013456)  : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Greater Purge (378773), Mana Spring Totem (381930), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
+                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Greater Purge (378773), Mana Spring (381930), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
                    Family Flags: 29, 35, 59, 88, 109
 Description      : Cleanse Spirit, Wind Shear, Purge, and totem casts no longer cancel Ghost Wolf.
 
@@ -15595,7 +15595,7 @@ Effects          :
                    Affected Spells (Label): Healing Stream Totem (5394), Healing Stream (5672), Tremor Totem (8143), Cloudburst Totem (157153), Wind Rush Totem (192077), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Ancestral Protection (207498), Poison Cleansing Totem (383013), Poison Cleansing (383014)
 #3 (id=1013879)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 1660 (Label) | Target: Self (1)
-                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Static Charge (118905), Cloudburst (157503), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Liquid Magma Totem (192223), Liquid Magma (192231), Earthen Wall Totem (198838), Mana Spring Totem (381931), Poison Cleansing Totem (383013), Poison Cleansing (383015), Magma Eruption (383061), Magma Eruption (395349)
+                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Static Charge (118905), Cloudburst (157503), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Liquid Magma Totem (192223), Liquid Magma (192231), Earthen Wall Totem (198838), Mana Spring (381931), Poison Cleansing Totem (383013), Poison Cleansing (383015), Magma Eruption (383061), Magma Eruption (395349)
 Description      : Increases the radius of your totem effects by $s3%.
 
 Increases the duration of your Earthbind and Earthgrab Totems by ${$s1/1000} sec.

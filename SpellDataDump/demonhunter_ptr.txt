@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2374,7 +2374,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), No Aura Icon (60), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (187827), Metamorphosis (191427)
@@ -3637,7 +3637,7 @@ Name             : Painbringer (id=212988) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
-Duration         : 5 seconds
+Duration         : 6 seconds
 Labels           : 2406: Painbringer (207387 effect#1)
 Stacks           : 30 maximum
 Proc Chance      : 101%
@@ -7500,7 +7500,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Requires Main-Hand Weapon (106), Suppress Caster Procs (112), Always Hit (114), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=807359)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.62500 | Target: Enemy (6)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 14, 25, 37, 50, 127
 Description      : $@spelldesc258860
@@ -7671,7 +7671,7 @@ Effects          :
 #1 (id=807419)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=807420)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 130 | Scaled Value: 130 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #3 (id=807421)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=807422)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -10608,7 +10608,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982578)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10681,16 +10681,16 @@ Triggered by     : The Hunt (370966)
 Family Flags     : 16, 70, 87
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
+                 : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61480 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.81973 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -10738,7 +10738,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023596)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.83333 | Target: Self (1)
 Description      : Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.
 
 Name             : Ragefire (id=388107) [Spell Family (107), Passive] 
@@ -11283,7 +11283,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026145)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You take 10% reduced damage after Demon Spikes ends, fading by 1% per second.
+Description      : You take $391171s2% reduced damage after Demon Spikes ends, fading by 1% per second.
 
 Name             : Extended Spikes (id=389721) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=5, col=4, max_rank=2, req_points=8]
@@ -12462,6 +12462,29 @@ Effects          :
 Description      : $@spelldesc391165
 Tooltip          : $w1 Soul Fragments consumed. At $u, the damage of your next Soul Cleave is increased by $391172s1%.
 
+Name             : Calcified Spikes (id=391171) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
+                 : .......x .......x ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1028499)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=1028500)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc389720
+Tooltip          : Damage taken reduced by $w1%, fading over $d.
+
 Name             : Soul Furnace (id=391172) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
@@ -12627,7 +12650,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1028838)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Description      : $@spelldesc388110
 Tooltip          : Damage taken from $@auracaster increased by $s1%.

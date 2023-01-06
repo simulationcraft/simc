@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -4205,7 +4205,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.47250 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.59000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=334967)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Light (82326)
@@ -5003,7 +5003,7 @@ Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perf
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
-Affecting spells : Sanctified Wrath (53376 effect#1)
+Affecting spells : Sanctified Wrath (53376 effect#1), Divine Purpose (223819 effect#1)
 Family Flags     : 102
 Attributes       : ........ ........ x.x..... ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5230,8 +5230,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=334770)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Divine Storm (224239), Light of Dawn (225311), Final Verdict (336872), Execution Sentence (343527), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054)
-                   Family Flags: 31, 49, 52, 55, 77, 78, 82, 88, 111
+                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Templar's Verdict (85256), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Avenging Crusader (216331), Divine Storm (224239), Light of Dawn (225311), Final Verdict (336872), Execution Sentence (343527), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054)
+                   Family Flags: 31, 49, 52, 55, 77, 78, 82, 88, 102, 111
 #2 (id=739426)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Seraphim (152262), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054)
@@ -9229,7 +9229,6 @@ Name             : Hammer of Wrath (desc=Rank 2) (id=326730) [Spell Family (10),
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 58
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9414,8 +9413,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=819014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -14076,8 +14076,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018609)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1018610)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1018610)  : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 400745 | Target: Self (1)
 #3 (id=1018611)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After you spend $s3 Holy Power, your next Word of Glory echoes onto a nearby ally at $s1% effectiveness
@@ -14595,22 +14595,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Avenger's Shield increases the damage of your next Shield of the Righteous by $386652s1% for each target hit by Avenger's Shield, stacking up to $386652u times, and increases its radius by $386652s3 yds.
 
-Name             : Divine Resonance (id=386730) [Hidden] 
+Name             : Divine Resonance (id=386730) 
 Class            : Paladin
 School           : Arcane
 Spell Type       : None
 Range            : 30 yards
 Duration         : 15 seconds
 Triggered by     : Divine Resonance (386732)
-Attributes       : .......x ........ ........ ...x....   ........ ........ ........ ........ 
+Attributes       : ........ x....... ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Not In Spellbook Until Learned (269)
+                 : Do Not Log (8), Allow While Sitting (27), Not In Spellbook (143)
 Effects          :
 #1 (id=1021012)  : Apply Aura (6) | Periodic Trigger Spell (23): Divine Resonance every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 386731 | Target: Self (1)
@@ -16649,5 +16649,26 @@ Effects          :
 #1 (id=1036169)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc286229
+
+Name             : Afterimage (id=400745) 
+Class            : Paladin
+School           : Nature
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Afterimage (385414)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x..x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Buff (140), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Aura Always Shown (438)
+Effects          :
+#1 (id=1046046)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc385414
+Tooltip          : After spending $w1 more Holy Power, your next Word of Glory will echo onto a nearby ally at reduced effectiveness.
 
 

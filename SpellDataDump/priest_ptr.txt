@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -647,12 +647,11 @@ Description      : Consumes the enemy in Holy flames that cause $s1 Holy damage 
 Tooltip          : $w2 Holy damage every $t2 seconds.
 
 Name             : Vampiric Embrace (id=15286) [Spell Family (6)] 
-Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 25
-GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 100%
@@ -699,7 +698,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.28248 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32485 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -2237,7 +2236,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=66820)    : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.52800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60720 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=66821)    : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 #3 (id=323988)   : Dummy (3)
@@ -3530,11 +3529,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179715)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Power Word: Life (373481), Halo (390971), Divine Star (390981), Dark Reprimand (400187)
                    Family Flags: 126
 #2 (id=191076)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Power Word: Life (373481), Halo (390971), Divine Star (390981), Dark Reprimand (400187)
                    Family Flags: 126
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3724,7 +3723,7 @@ Effects          :
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
 #13 (id=1040381)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 52 | Scaled Value: 52 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
                    Family Flags: 13
 #14 (id=1040384)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4779,7 +4778,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Mind Blast, Mind Flay, and Mind Spike deal $s1% of their damage to all other targets afflicted by your Vampiric Touch within $199486A2 yards.
+Description      : Mind Blast, Mind Flay, Mind Spike, Mindgames, Void Bolt, and Void Torrent deal $s1% of their damage to all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Name             : Psychic Link (id=199486) 
 Class            : Priest
@@ -4847,7 +4846,14 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Vampiric Embrace (15286)
                    Family Flags: 2
-Description      : Reduces the cooldown of Vampiric Embrace by ${$m1/-1000} sec and increases its healing done by $s2%.
+#3 (id=1046048)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2453 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanguine Teachings (373218)
+Description      : $@spellicon373218 $@spellname373218
+Sanguine Teachings grants an additional $s3% Leech.
+
+$@spellicon15286 $@spellname15286
+Reduces the cooldown of Vampiric Embrace by ${$m1/-1000} sec, increases its healing done by $s2%.
 
 Name             : Power Leech (id=200010) 
 Class            : Priest
@@ -6481,7 +6487,7 @@ Attributes       : ........ ........ x....... ..x.....   ..x..... ......x. .....
                  : Not Shapeshifted (16), Aura Is Debuff (26), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=651860)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.61287 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=651861)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=754067)   : Trigger Spell (64): Void Torrent
@@ -9913,7 +9919,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Avatar (401150)
 #2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -9959,9 +9965,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=832086)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.77134 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.88704 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.64109 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.73726 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=832088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -11897,7 +11903,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=891148)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Avatar (401150)
 #2 (id=891149)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -13352,6 +13358,26 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While you have Shadow Word: Pain, Devouring Plague, and Vampiric Touch active on the same target, your Mind Blast deals $s1% more damage.
 
+
+Name             : Sanguine Teachings (id=373218) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Labels           : 2453: San'layn (199855 effect#3)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=998278)   : Apply Aura (6) | Modify Leech% (443)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases your Leech by $s1%.
 
 Name             : Malediction (id=373221) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=9, col=6, max_rank=2, req_points=20]
@@ -15589,7 +15615,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028213)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.
+Description      : Your $?a137033[Mind Blast, Mind Flay, and Mind Spike]?a137031[Smite and Holy Fire][Smite, Power Word: Solace, Mind Blast, and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.
 
 Name             : Make Amends (id=391079) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=3, col=2, max_rank=1, req_points=0]
@@ -16466,7 +16492,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1028897)  : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62146 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.71467 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1028898)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=1028899)  : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
