@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -16841,14 +16841,15 @@ Description      : $@spelldesc393649
 Tooltip          : Critical strike chance of $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot increased by $s1%.
 
 Name             : Bestial Barrage (id=394388) [Spell Family (9)] 
+Hotfixed         : Proc Flags 1 (16 -> 272)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
