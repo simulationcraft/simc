@@ -68,6 +68,7 @@ constexpr auto MAX_ARTIFACT_RELIC = 4;
 // relic's own item level
 constexpr auto RELIC_ILEVEL_BONUS_CURVE = 1718;
 
+constexpr auto POTION_COOLDOWN_CATEGORY    = 4;     /// "Item - Combat Cons. (Potion)" category (for shared CD)
 constexpr auto ITEM_TRINKET_BURST_CATEGORY = 1141;  /// Trinket On-Use effect default category (for shared CD)
 constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of gem slots in any specific item
 

@@ -1242,6 +1242,9 @@ std::string special_effect_t::cooldown_group_name() const
   unsigned cdgroup = cooldown_group();
   if ( cdgroup > 0 )
   {
+    if ( cdgroup == POTION_COOLDOWN_CATEGORY )
+      return "potion";
+
     return "item_cd_" + util::to_string( cdgroup );
   }
 
