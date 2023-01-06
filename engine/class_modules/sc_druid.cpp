@@ -1458,6 +1458,8 @@ struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
 
   void start( int stacks, double value, timespan_t duration ) override
   {
+    p()->buff.tigers_fury->expire();  // Mar 03 2016: Tiger's Fury ends when you enter bear form.
+
     swap_melee( p()->bear_melee_attack, p()->bear_weapon );
 
     base_t::start( stacks, value, duration );
