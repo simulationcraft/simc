@@ -8398,7 +8398,6 @@ double monk_t::composite_mastery() const
   m += buff.weapons_of_order->check_value();
 
   m += buff.training_of_niuzao->check_value();
-  sim->print_debug("ton: {}, mastery: {}",buff.training_of_niuzao->check_value(),m);
 
   return m;
 }
