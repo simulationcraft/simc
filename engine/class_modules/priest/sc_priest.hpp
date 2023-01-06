@@ -186,6 +186,7 @@ public:
     player_talent_t move_with_grace;
     player_talent_t power_infusion;
     player_talent_t vampiric_embrace;
+    player_talent_t sanguine_teachings;
     player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;

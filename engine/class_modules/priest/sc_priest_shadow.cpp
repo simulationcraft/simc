@@ -210,8 +210,11 @@ struct mind_sear_t final : public priest_spell_t
 struct mind_flay_base_t final : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
+  timespan_t manipulation_cdr;
 
-  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
+    : priest_spell_t( n, p, s ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     affected_by_shadow_weaving = true;
     may_crit                   = false;
@@ -255,6 +258,11 @@ struct mind_flay_base_t final : public priest_spell_t
     if ( priest().talents.shadow.psychic_link.enabled() )
     {
       priest().trigger_psychic_link( d->state );
+    }
+
+    if ( priest().talents.manipulation.enabled() && priest().is_ptr() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
   }
 
@@ -1278,6 +1286,11 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
     }
+
+    if ( result_is_hit( s->result ) && priest().is_ptr() )
+    {
+      priest().trigger_psychic_link( s );
+    }
   }
 };
 
@@ -1561,6 +1574,11 @@ struct void_torrent_t final : public priest_spell_t
     {
       priest().procs.void_torrent_ticks_no_mastery->occur();
     }
+
+    if ( priest().talents.shadow.psychic_link.enabled() && priest().is_ptr() )
+    {
+      priest().trigger_psychic_link( d->state );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -1610,7 +1628,10 @@ struct psychic_link_t final : public priest_spell_t
       _pl_mind_spike( new psychic_link_base_t( "psychic_link_mind_spike", p, p.talents.shadow.psychic_link ) ),
       _pl_mind_flay( new psychic_link_base_t( "psychic_link_mind_flay", p, p.talents.shadow.psychic_link ) ),
       _pl_mind_flay_insanity(
-          new psychic_link_base_t( "psychic_link_mind_flay_insanity", p, p.talents.shadow.psychic_link ) )
+          new psychic_link_base_t( "psychic_link_mind_flay_insanity", p, p.talents.shadow.psychic_link ) ),
+      _pl_mindgames( new psychic_link_base_t( "psychic_link_mindgames", p, p.talents.shadow.psychic_link ) ),
+      _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
+      _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -1621,6 +1642,9 @@ struct psychic_link_t final : public priest_spell_t
     add_child( _pl_mind_spike );
     add_child( _pl_mind_flay );
     add_child( _pl_mind_flay_insanity );
+    add_child( _pl_mindgames );
+    add_child( _pl_void_bolt );
+    add_child( _pl_void_torrent );
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
@@ -1641,6 +1665,18 @@ struct psychic_link_t final : public priest_spell_t
     {
       _pl_mind_flay_insanity->trigger( target, original_amount, action_name );
     }
+    else if ( action_name == "mindgames" && player->is_ptr() )
+    {
+      _pl_mindgames->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "void_bolt" && player->is_ptr() )
+    {
+      _pl_void_bolt->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "void_torrent" && player->is_ptr() )
+    {
+      _pl_void_torrent->trigger( target, original_amount, action_name );
+    }
     else
     {
       player->sim->print_debug( "{} tried to trigger psychic_link from unknown action {}.", priest(), action_name );
@@ -1652,6 +1688,9 @@ private:
   propagate_const<psychic_link_base_t*> _pl_mind_spike;
   propagate_const<psychic_link_base_t*> _pl_mind_flay;
   propagate_const<psychic_link_base_t*> _pl_mind_flay_insanity;
+  propagate_const<psychic_link_base_t*> _pl_mindgames;
+  propagate_const<psychic_link_base_t*> _pl_void_bolt;
+  propagate_const<psychic_link_base_t*> _pl_void_torrent;
 };
 
 // ==========================================================================
