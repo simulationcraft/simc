@@ -3785,22 +3785,26 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
       double evaluate() override
       {
-        if ( proxy_expr.size() <= action.target->actor_index )
-        {
+        // In the case of player-targeted non-hostile actions, target.x expressions are not typically relevant
+        // Assume in this case the intent is to use the player's target rather than the player for evaluation
+        // For things such as self-heals, self.x (e.g. self.health.pct) expressions should be used
+        player_t* target = ( action.target == action.player ) ? action.player->target : action.target;
 
-          std::generate_n(std::back_inserter(proxy_expr), action.target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
+        if ( proxy_expr.size() <= target->actor_index )
+        {
+          std::generate_n(std::back_inserter(proxy_expr), target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
         }
 
-        auto& expr = proxy_expr[ action.target->actor_index ];
+        auto& expr = proxy_expr[ target->actor_index ];
 
         if ( !expr )
         {
-          expr = action.target->create_action_expression( action, suffix_expr_str );
+          expr = target->create_action_expression( action, suffix_expr_str );
           if ( !expr )
           {
             throw std::invalid_argument(
                 fmt::format( "Cannot create dynamic target expression for target '{}' from '{}'.",
-                             action.target->name(), suffix_expr_str ) );
+                             target->name(), suffix_expr_str ) );
           }
         }
 
