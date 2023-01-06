@@ -4152,6 +4152,7 @@ struct purifying_brew_t : public monk_spell_t
 
     harmful         = false;
     cast_during_sck = true;
+    use_off_gcd     = true;
 
     cooldown->charges += (int)p.talent.brewmaster.improved_purifying_brew->effectN( 1 ).base_value();
 
@@ -4498,6 +4499,7 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 
     harmful               = false;
     trigger_faeline_stomp = true;
+    gcd_type              = gcd_haste_type::NONE;
   }
 
   void execute() override
@@ -4655,6 +4657,7 @@ struct bonedust_brew_t : public monk_spell_t
     cast_during_sck             = true;
     may_miss                    = false;
     may_parry                   = true;
+    gcd_type                    = gcd_haste_type::NONE;
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
@@ -7638,7 +7641,7 @@ void monk_t::create_buffs ()
 
     buff.training_of_niuzao = make_buff( this, "training_of_niuzao", find_spell( 383733 ) )
       ->set_trigger_spell( talent.brewmaster.training_of_niuzao )
-      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).percent() )
+      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value() )
       ->add_invalidate( CACHE_MASTERY );
 
     buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
@@ -9152,7 +9155,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
   {
     new_buff->trigger();
     if ( talent.brewmaster.training_of_niuzao.ok() )
-      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).percent(), -1, timespan_t::min() );
+      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value(), -1, timespan_t::min() );
   }
 }
 
