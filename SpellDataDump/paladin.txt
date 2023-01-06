@@ -2007,7 +2007,7 @@ Name             : Ancient Fury (id=86704) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Affecting spells : Judgment (197277 effect#1), Reckoning (343724 effect#2)
+Affecting spells : Judgment (197277 effect#1), Reckoning (343724 effect#2), Blessing of Dawn (385127 effect#4)
 Family Flags     : 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4971,7 +4971,7 @@ Range            : 5 yards
 Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2, #4), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 27, 65, 88
 Attributes       : ........ ........ x.x..... ........   ....x... .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13322,7 +13322,7 @@ Resource         : 3 Holy Power (9) (id=265475)
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Quickened Invocations (379391 effect#2), Radiant Decree (384052 effect#1), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Quickened Invocations (379391 effect#2), Radiant Decree (384052 effect#1), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effects: #1, #2, #4), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1)
 Family Flags     : 27, 65, 68, 111, 112
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13930,8 +13930,9 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1018266)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Execution Sentence (343527), Final Verdict (383328), Execution Sentence (387113), Execution Sentence (387200)
-                   Family Flags: 31, 44, 49, 52, 78, 82
+                   Affected Spells: Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Execution Sentence (343527), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200)
+                   Family Flags: 31, 44, 49, 52, 78, 82, 88, 112
+Hotfixed         : Affects Spells
 Description      : Damage and healing increased by $s1%$?s385129[, and Holy Power-spending abilities dealing $s4% additional increased damage and healing][] for $d.
 Tooltip          : Damage and healing increased by $w1%$?s385129[, and Holy Power-spending abilities dealing $w4% additional increased damage and healing.][.]
 
