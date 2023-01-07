@@ -210,11 +210,8 @@ struct mind_sear_t final : public priest_spell_t
 struct mind_flay_base_t final : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
-  timespan_t manipulation_cdr;
 
-  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
-    : priest_spell_t( n, p, s ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
     may_crit                   = false;
@@ -259,11 +256,6 @@ struct mind_flay_base_t final : public priest_spell_t
     {
       priest().trigger_psychic_link( d->state );
     }
-
-    if ( priest().talents.manipulation.enabled() && priest().is_ptr() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
   }
 
   void last_tick( dot_t* d ) override
@@ -282,10 +274,13 @@ struct mind_flay_base_t final : public priest_spell_t
 
 struct mind_flay_t final : public priest_spell_t
 {
+  timespan_t manipulation_cdr;
+
   mind_flay_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
       _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
-      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) )
+      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
 
@@ -294,6 +289,11 @@ struct mind_flay_t final : public priest_spell_t
 
   void execute() override
   {
+    if ( priest().talents.manipulation.enabled() && priest().is_ptr() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
     if ( priest().buffs.mind_flay_insanity->check() )
     {
       _insanity_spell->execute();
