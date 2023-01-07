@@ -2247,7 +2247,7 @@ void alltotem_of_the_master( special_effect_t& effect )
     timespan_t base_period = effect.driver()->internal_cooldown();
     timespan_t period =
         base_period + ( effect.player->sim->dragonflight_opts.alltotem_of_the_master_period +
-                        effect.player->rng().range( 0_s, 12_s ) / effect.player->sim->target_non_sleeping_list.size() );
+                        effect.player->rng().range( 0_s, 12_s ) / ( 1 + effect.player->sim->target_non_sleeping_list.size() ) );
     make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
     } );
   }
