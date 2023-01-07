@@ -4077,8 +4077,6 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     void execute() override
     {
-      demon_hunter_attack_t::execute();
-     
       if ( may_refund )
       {
         // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
@@ -4088,14 +4086,14 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
           p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
         }
 
-        // DFALPHA TOCHECK -- Timing here in logs is unclear as to if this benefits the crit% of the second hit
-        //                    Expire matches the timing of the energize in logs but prior to second impact
-        //                    Possible the energize and expire has to be moved before execute()
+        // 2023-01-07 -- Logs show the refund and Chaos Theory buff fade happens before damage is dealt
         if ( p()->talent.havoc.chaos_theory->ok() )
         {
           p()->buff.chaos_theory->expire();
         }
       }
+
+      demon_hunter_attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
