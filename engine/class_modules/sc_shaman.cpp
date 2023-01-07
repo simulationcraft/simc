@@ -9949,6 +9949,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "use_items" );
     def->add_action( "auto_attack" );
     def->add_action( "natures_swiftness" );
+    def->add_action( "invoke_external_buff,name=power_infusion,if=talent.ascendance.enabled&buff.ascendance.up|!talent.ascendance.enabled", "Link Power Infusion to Ascendance." );
 
     // Pick APL to run
     def->add_action(
