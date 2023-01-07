@@ -1199,8 +1199,7 @@ public:
 
   virtual action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }
-  virtual bool requires_data_collection() const
-  { return active_during_iteration; }
+  virtual bool requires_data_collection() const;
 
   rng::rng_t& rng();
   rng::rng_t& rng() const;
