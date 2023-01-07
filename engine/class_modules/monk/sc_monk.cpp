@@ -662,6 +662,8 @@ public:
 
     pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 
+    p()->sim->print_debug("gcpm: {}", pm);
+
     return pm;
   }
 
@@ -802,6 +804,8 @@ struct monk_spell_t : public monk_action_t<spell_t>
     // Brewmaster Tier Set
     if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
       pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+
+    p()->sim->print_debug("cpm: {}", pm);
 
     return pm;
   }
@@ -1142,6 +1146,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     // Serenity
     if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
       am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
+
+    if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+      am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
     return am;
   }
