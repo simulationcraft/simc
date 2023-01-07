@@ -1221,6 +1221,21 @@ void erupting_spear_fragment( special_effect_t& effect )
 
 void furious_ragefeather( special_effect_t& effect )
 {
+  struct soulseeker_arrow_repeat_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+
+    soulseeker_arrow_repeat_cb_t( const special_effect_t& e, buff_t* b ) : dbc_proc_callback_t( e.player, e ), buff( b )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      buff->expire();
+
+      dbc_proc_callback_t::execute( a, s );
+    }
+  };
+
   auto arrow = create_proc_action<generic_proc_t>( "soulseeker_arrow", effect, "soulseeker_arrow", 388755 );
   arrow->base_td = effect.driver()->effectN( 2 ).average( effect.item );
 
@@ -1230,6 +1245,8 @@ void furious_ragefeather( special_effect_t& effect )
 
   unsigned repeat_id = 389407;
 
+  auto buff = create_buff<buff_t>( effect.player, effect.player->find_spell( repeat_id ) );
+
   auto repeat = new special_effect_t( effect.player );
   repeat->type = SPECIAL_EFFECT_EQUIP;
   repeat->source = SPECIAL_EFFECT_SOURCE_ITEM;
@@ -1237,20 +1254,16 @@ void furious_ragefeather( special_effect_t& effect )
   repeat->execute_action = arrow;
   effect.player->special_effects.push_back( repeat );
 
-  auto cb = new dbc_proc_callback_t( effect.player, *repeat );
+  auto cb = new soulseeker_arrow_repeat_cb_t( *repeat, buff );
   cb->initialize();
   cb->deactivate();
 
-  auto buff = create_buff<buff_t>( effect.player, effect.player->find_spell( repeat_id ) )
-    ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        cb->activate();
-      else
-        cb->deactivate();
-    } );
-
-  effect.player->callbacks.register_callback_execute_function(
-      repeat_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->expire(); } );
+  buff->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+    if ( new_ )
+      cb->activate();
+    else
+      cb->deactivate();
+  } );
 
   auto p = effect.player;
   p->register_on_kill_callback( [ p, buff ]( player_t* t ) {
