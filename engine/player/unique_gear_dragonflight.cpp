@@ -2241,13 +2241,16 @@ void alltotem_of_the_master( special_effect_t& effect )
 
   action_t* action = create_proc_action<alltotem_buffs_t>( "alltotem_of_the_master", effect );
 
-  effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
+  if ( effect.player->role == ROLE_TANK )
+  {
+    effect.player->register_combat_begin( [ &effect, action ]( player_t* ) {
     timespan_t base_period = effect.driver()->internal_cooldown();
     timespan_t period =
         base_period + ( effect.player->sim->dragonflight_opts.alltotem_of_the_master_period +
                         effect.player->rng().range( 0_s, 12_s ) / effect.player->sim->target_non_sleeping_list.size() );
     make_repeating_event( effect.player->sim, period, [ action ]() { action->execute(); } );
-  } );
+    } );
+  }
 }
 
 void tome_of_unstable_power( special_effect_t& effect )
