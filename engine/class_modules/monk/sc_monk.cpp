@@ -1143,6 +1143,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
       am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
+    if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+      am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+
     return am;
   }
 
