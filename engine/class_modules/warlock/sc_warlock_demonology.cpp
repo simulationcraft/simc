@@ -602,14 +602,15 @@ struct demonic_strength_t : public demonology_spell_t
 
   void execute() override
   {
+    auto active_pet = p()->warlock_pet_list.active;
+
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
+      active_pet->buffs.demonic_strength->trigger();
 
-      auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->queue_ds_felstorm();
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
     }
   }
 };
@@ -667,6 +668,8 @@ struct power_siphon_t : public demonology_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+
+    target = player;
   }
 
   bool ready() override
@@ -826,16 +829,22 @@ struct soul_strike_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->soul_strike->execute_on_target( execute_state->target );
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->soul_strike->execute_on_target( execute_state->target );
     }
   }
 
   bool ready() override
   {
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
+    if ( active_pet->pet_type == PET_FELGUARD )
       return demonology_spell_t::ready();
 
     return false;
@@ -936,11 +945,11 @@ struct guillotine_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      p()->warlock_pet_list.active->buffs.fiendish_wrath->trigger();
+      active_pet->buffs.fiendish_wrath->trigger();
 
-      debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active )->felguard_guillotine->execute_on_target( execute_state->target );
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
     }
   }
 };
