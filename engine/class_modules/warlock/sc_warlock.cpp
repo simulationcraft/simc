@@ -645,6 +645,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+    target = player;
   }
 
   bool ready() override
@@ -750,6 +751,7 @@ struct inquisitors_gaze_t : public warlock_spell_t
     parse_options( options_str );
     
     harmful = false;
+    target = player;
 
     if ( !p->proc_actions.fel_bolt )
     {

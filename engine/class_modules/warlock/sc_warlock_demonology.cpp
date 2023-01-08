@@ -668,6 +668,8 @@ struct power_siphon_t : public demonology_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+
+    target = player;
   }
 
   bool ready() override
