@@ -8520,8 +8520,8 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
 
   const death_knight_td_t* td = find_target_data( target );
 
-  // Don't bother creating the event if n is 0 or the target has no wounds
-  if ( ! spec.festering_wound -> ok() || ! n || ! td || ! td -> debuff.festering_wound -> up() )
+  // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
+  if ( ! spec.festering_wound -> ok() || ! n || ! td || ! td -> debuff.festering_wound -> up() || target -> demise_event )
   {
     return;
   }
