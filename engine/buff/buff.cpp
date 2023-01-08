@@ -43,7 +43,8 @@ struct buff_expr_t : public expr_t
     if ( action )
     {
       // If the source action is self-targeted, use the player's target instead
-      target = ( a->target == a->player ) ? a->player->target : a->target;
+      // Only applicable if we are passing in a source action, not a static buff
+      target = ( action->target == action->player ) ? action->player->target : action->target;
     }
   }
 
