@@ -2381,7 +2381,7 @@ bool action_t::select_target()
 
   // Normal casting (no cycle_targets, cycle_players, target_number, or target_if specified). Check
   // that we can cast on the target
-  return target_ready( target );
+  return target ? target_ready( target ) : false;
 }
 
 bool action_t::action_ready()
