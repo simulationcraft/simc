@@ -2031,6 +2031,16 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name
       } );
     } );
   }
+  else if ( name_str == "igb_ratio" )
+  {
+    return make_fn_expr( "igb_ratio", [ this ]() {
+      auto igb_count = warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->buffs.imp_gang_boss->check();
+        } );
+
+      return igb_count / as<double>( buffs.wild_imps->stack() );
+      } );
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -2076,6 +2086,10 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return create_pet_expression( name_str );
   }
   else if ( name_str == "two_cast_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "igb_ratio" )
   {
     return create_pet_expression( name_str );
   }
