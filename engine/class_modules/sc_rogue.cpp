@@ -2466,19 +2466,6 @@ struct instant_poison_t : public rogue_poison_t
       rogue_poison_t( name, p, s, true, true )
     {
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = rogue_poison_t::composite_da_multiplier( state );
-
-      // 2020-10-18- Nightstalker appears to buff Instant Poison by the base 50% amount, despite being in no whitelists
-      if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-      {
-        m *= 1.0 + p()->spell.nightstalker_buff->effectN( 2 ).percent();
-      }
-
-      return m;
-    }
   };
 
   instant_poison_t( util::string_view name, rogue_t* p ) :
@@ -9422,10 +9409,16 @@ void rogue_t::create_buffs()
 
   // DFALPHA -- This still seems very messed up and still appears to have a 50% value in data
   //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
+  //            2023-01-07 -- Nightstalker still does nothing on live after December hotfixes
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
+  if ( bugs )
+  {
+    buffs.nightstalker->direct_mod.multiplier = 1.0;
+    buffs.nightstalker->periodic_mod.multiplier = 1.0;
+  }
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
