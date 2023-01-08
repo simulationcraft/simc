@@ -1149,23 +1149,34 @@ void irideus_fragment( special_effect_t& effect )
 }
 
 // TODO: Do properly and add both drivers
-// 383798 = Driver for you
-// 386578 = Driver for target
-// 383799 = Buff for Target (?)
-// 383803 = Buff for You (?)
+// 383798 = Driver for you + value
+// 383799 = Stat buff for both
+// 383803 = Unused buff
+// 386578 = Driver + on-use buff on target
+// 389581 = On-use buff on you
+// 398396 = On-use
 void emerald_coachs_whistle( special_effect_t& effect )
 {
-  auto buff_spell = effect.player->find_spell( 383803 );
-  auto buff = create_buff<stat_buff_t>( effect.player, buff_spell );
-  buff->set_stat( STAT_MASTERY_RATING, buff_spell->effectN( 1 ).average( effect.item ) );
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 383799 ) )
+    ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
 
-  effect.custom_buff  = buff;
+  effect.custom_buff = buff;
 
-  // Pretend we are our bonded partner for the sake of procs, and trigger it from that.
-  effect.proc_flags_  = effect.player->find_spell( 386578 )->proc_flags();
-  effect.proc_flags2_ = PF2_ALL_HIT;
+  // self driver procs off druid hostile abilities
+  if ( effect.player->type == player_e::DRUID )
+    effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  // Pretend we are our bonded partner for the sake of procs from partner
+  auto coached = new special_effect_t( effect.player );
+  coached->type = SPECIAL_EFFECT_EQUIP;
+  coached->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  coached->spell_id = 386578;
+  coached->custom_buff = buff;
+  effect.player->special_effects.push_back( coached );
+
+  new dbc_proc_callback_t( effect.player, *coached );
 }
 
 struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
@@ -3908,6 +3919,7 @@ void register_special_effects()
   register_special_effect( 383931, DISABLED_EFFECT );  // globe of jagged ice counter
   register_special_effect( 389843, DISABLED_EFFECT );  // ruby whelp shell (on-use)
   register_special_effect( 377465, DISABLED_EFFECT );  // Desperate Invocation (cdr proc)
+  register_special_effect( 398396, DISABLED_EFFECT );  // emerald coach's whistle on-use
 }
 
 void register_target_data_initializers( sim_t& sim )

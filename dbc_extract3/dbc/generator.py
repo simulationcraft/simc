@@ -1385,6 +1385,7 @@ class SpellDataGenerator(DataGenerator):
          393987, # Azureweave Vestments set bonus driver
          390529, 390579, 392038, # Raging Tempest set 4pc
          389820, 383813, 383812, 389816, 389839, 383814, 390234, # Ruby Whelp Shell
+         389581, # Emerald Coach's Whistle
         ),
 
         # Warrior:

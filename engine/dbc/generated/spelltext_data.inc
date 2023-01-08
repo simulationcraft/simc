@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.47213
-static const std::array<spelltext_data_t, 19202> __spelltext_data { {
+static const std::array<spelltext_data_t, 19203> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18180,6 +18180,7 @@ static const std::array<spelltext_data_t, 19202> __spelltext_data { {
   { 389577, "When a hit deals more than $m2% of your maximum health, reduce all damage you take by $s1% for $390239d.\r\n\r\nThis effect cannot occur more than once every $m3  seconds.", "When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.", 0 },
   { 389578, "Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds.", 0, 0 },
   { 389579, "When your healing spells heal an ally whose health is below $s3% maximum health, you gain an additional $s1% healing for the next $390105d.", 0, 0 },
+  { 389581, "$@spelldesc386578", "You are coaching a player. Your helpful spells and abilities have a chance to increase their Mastery as well as your own by $w1 for $383799d.", 0 },
   { 389590, "Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.", 0, 0 },
   { 389603, "Rampage has a $s1% chance to grant Recklessness for ${$s2/1000} sec.", 0, 0 },
   { 389609, "Using Demonic Circle: Teleport or your Demonic Gateway reduces all damage you take by $389614s1% for $389614d.", 0, 0 },
