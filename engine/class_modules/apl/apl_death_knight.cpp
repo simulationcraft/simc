@@ -382,7 +382,7 @@ void unholy( player_t* p )
 
   aoe->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(talent.festermight&buff.festermight.remains<3|!talent.festermight)&(death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets=8|!talent.bursting_sores&!talent.vile_contagion|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5|(cooldown.vile_contagion.remains|!talent.vile_contagion)&buff.dark_transformation.up&talent.infected_claws&(buff.empower_rune_weapon.up|buff.unholy_assault.up))|fight_remains<10", "AoE Action List" );
   aoe->add_action( "scourge_strike,if=talent.superstrain&talent.ebon_fever&talent.plaguebringer&buff.plaguebringer.remains<gcd" );
-  aoe->add_action( "epidemic,if=!talent.bursting_sores&!variable.pooling_runic_power&active_enemies>=6" );
+  aoe->add_action( "epidemic,if=(!talent.bursting_sores|rune<1|talent.bursting_sores&debuff.festering_wound.stack=0)&!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30)" );
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=!death_and_decay.ticking&debuff.festering_wound.stack<4&(cooldown.vile_contagion.remains<5|cooldown.apocalypse.ready&cooldown.any_dnd.remains)" );
   aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!death_and_decay.ticking&(cooldown.vile_contagion.remains>5|!talent.vile_contagion)" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=death_and_decay.ticking" );
