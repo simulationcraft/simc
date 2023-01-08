@@ -39,11 +39,15 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:primal_whetstone_3" : "main_hand:completely_safe_rockets_3";
-  std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
+  std::string survival_lvl70_temp_enchant = "main_hand:primal_whetstone_3" : "main_hand:completely_safe_rockets_3";
+  std::string survival_lvl60_temp_enchant = "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
 
-  return ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
-         ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
+  return ( p -> true_level >= 70 && p -> specialization() == HUNTER_BEAST_MASTERY ) ? "main_hand:completely_safe_rockets_3" :
+         ( p -> true_level >= 70 && p -> specialization() == HUNTER_MARKSMANSHIP ) ? "main_hand:completely_safe_rockets_3" :
+         ( p -> true_level >= 70 && p -> specialization() == HUNTER_SURVIVAL ) ? survival_lvl70_temp_enchant :
+         ( p -> true_level >= 60 && p -> specialization() == HUNTER_BEAST_MASTERY ) ? "main_hand:shadowcore_oil" :
+         ( p -> true_level >= 60 && p -> specialization() == HUNTER_MARKSMANSHIP ) ? "main_hand:shadowcore_oil" :
+         ( p -> true_level >= 60 && p -> specialization() == HUNTER_SURVIVAL ) ? survival_lvl60_temp_enchant :
          "disabled";
 }
 
