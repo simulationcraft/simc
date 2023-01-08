@@ -1995,7 +1995,7 @@ void action_t::assess_damage( result_amount_type type, action_state_t* state )
       }
     }
     else if ( state->target == sim->target ||
-              ( sim->merge_enemy_priority_dmg && state->target->is_enemy() && !state->target->is_pet() ) )
+              ( sim->merge_enemy_priority_dmg && state->target->is_boss() ) )
     {
       player->priority_iteration_dmg += state->result_amount;
     }
