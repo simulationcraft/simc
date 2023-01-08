@@ -34,19 +34,27 @@ struct buff_expr_t : public expr_t
   action_t* action;
   buff_t* static_buff;
   target_specific_t<buff_t> specific_buff;
+  player_t* target;
 
   buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b )
-    : expr_t( get_full_expression_name( n, bn ) ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false )
-  { }
+    : expr_t( get_full_expression_name( n, bn ) ), buff_name( bn ), action( a ),
+    static_buff( b ), specific_buff( false ), target( nullptr )
+  {
+    if ( action )
+    {
+      // If the source action is self-targeted, use the player's target instead
+      target = ( a->target == a->player ) ? a->player->target : a->target;
+    }
+  }
 
   virtual buff_t* create() const
   {
     assert( action && "Cannot create dynamic buff expressions without a action." );
 
-    action->player->get_target_data( action->target );
-    auto buff = buff_t::find( action->target, buff_name, action->player );
+    action->player->get_target_data( target );
+    auto buff = buff_t::find( target, buff_name, action->player );
     if ( !buff )
-      buff = buff_t::find( action->target, buff_name, action->target );  // Raid debuffs
+      buff = buff_t::find( target, buff_name, target );  // Raid debuffs
 
     if ( !buff )
     {
@@ -78,7 +86,7 @@ struct buff_expr_t : public expr_t
   {
     if ( static_buff )
       return static_buff;
-    buff_t*& buff = specific_buff[ action->target ];
+    buff_t*& buff = specific_buff[ target ];
     if ( !buff )
     {
       buff = create();
@@ -2658,7 +2666,7 @@ void buff_t::analyze()
     }
     else
     {
-      uptime_array.adjust( source->get_owner_or_self()->collected_data.fight_length );
+      uptime_array.adjust( player->get_owner_or_self()->collected_data.fight_length );
     }
   }
 }
