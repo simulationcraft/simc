@@ -3879,9 +3879,10 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 2022-11-28 -- Does not work correctly without Improved Garrote
+    // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
+    //               Additionally works every global of Improved Garrote regardless of Subterfuge
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) &&
+         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) || ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) ) &&
          ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
