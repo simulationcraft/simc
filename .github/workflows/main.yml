@@ -131,9 +131,8 @@ jobs:
             tests
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
-
   ubuntu-run:
-    name: ubuntu-clang-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
+    name: ubuntu-${{ github.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
 
