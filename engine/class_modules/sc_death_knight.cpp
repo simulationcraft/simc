@@ -7614,7 +7614,7 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   void execute() override
   {
-    if ( p()->spec.unholy_death_knight || p()->spec.frost_death_knight)
+    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY || p() -> specialization() == DEATH_KNIGHT_FROST )
     {
       double opt = p() -> options.ams_absorb_percent;
       damage = ( p()->resources.max[ RESOURCE_HEALTH ] * ( p() -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p() -> talent.antimagic_barrier -> effectN( 3 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) ) * opt;
@@ -7747,9 +7747,10 @@ struct antimagic_zone_t : public death_knight_spell_t
 
   void execute() override
   {
-    if ( p() -> talent.assimilation -> ok() && ( p()->spec.unholy_death_knight || p()->spec.frost_death_knight ) )
+    if ( p() -> talent.assimilation -> ok() && ( p() -> specialization() == DEATH_KNIGHT_UNHOLY || p() -> specialization() == DEATH_KNIGHT_FROST ) )
     {
       double opt = p() -> options.amz_absorb_percent;
+      // AMZ Absorbs a maximum of 1.5x player hp. This value is stored in a variable in the spell, not accessiable to the code. Hard coding for now.
       damage = p()->resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1.0 + p() -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) * opt;
     }
 
