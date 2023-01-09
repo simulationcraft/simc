@@ -1391,7 +1391,7 @@ void spiteful_storm( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_CAST;
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
-  auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket" , effect.player->find_spell(394864));
+  auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket", effect.player->find_spell( 394864 ) );
   gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
   gathering->set_name_reporting( "gathering_storm" );
 
@@ -1406,9 +1406,10 @@ void spiteful_storm( special_effect_t& effect )
     }
   } );
 
-  gathering->set_stack_change_callback( [ spite ]( buff_t*, int, int new_ ) {
+  int stack_increase = as<int>( effect.driver()->effectN( 3 ).base_value() );
+  gathering->set_stack_change_callback( [ spite, stack_increase ]( buff_t*, int, int new_ ) {
     if ( new_ )
-      spite->set_max_stack( as<int>( spite->default_value ) + new_ );
+      spite->set_max_stack( as<int>( spite->default_value ) + new_ * stack_increase );
     else
       spite->set_max_stack( as<int>( spite->default_value ) );
   } );
