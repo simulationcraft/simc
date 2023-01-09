@@ -1058,6 +1058,8 @@ public:
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
     bool split_obliterate_schools = true;
+    double ams_absorb_percent = 1.0;
+    double amz_absorb_percent = 1.0;
   } options;
 
   // Runes
@@ -7612,10 +7614,10 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   void execute() override
   {
-    // TODO add an option to let users adjust the amount absorbed
     if ( p()->spec.unholy_death_knight || p()->spec.frost_death_knight)
     {
-      damage = p()->resources.max[ RESOURCE_HEALTH ];
+      double opt = p() -> options.ams_absorb_percent;
+      damage = p()->resources.max[ RESOURCE_HEALTH ] * opt;
     }
 
     if ( damage > 0 )
@@ -7745,10 +7747,10 @@ struct antimagic_zone_t : public death_knight_spell_t
 
   void execute() override
   {
-    // TODO add an option to let users adjust the amount absorbed
-    if ( p()->spec.unholy_death_knight || p()->spec.frost_death_knight)
+    if ( p() -> talent.assimilation -> ok() && ( p()->spec.unholy_death_knight || p()->spec.frost_death_knight ) )
     {
-      damage = p() -> resources.max[ RESOURCE_HEALTH ] * 3;
+      double opt = p() -> options.amz_absorb_percent;
+      damage = p()->resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1.0 + p() -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) * opt;
     }
 
     if ( damage > 0 )
@@ -8299,6 +8301,8 @@ void death_knight_t::create_options()
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "split_obliterate_schools", options.split_obliterate_schools ) );
+  add_option( opt_float( "ams_absorb_percent", options.ams_absorb_percent ) );
+  add_option( opt_float( "amz_absorb_percent", options.amz_absorb_percent ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -10019,7 +10023,8 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
 
     if ( buffs.antimagic_zone -> up() )
     {
-      double damage_absorbed = debug_cast< antimagic_zone_buff_t* >( buffs.antimagic_zone ) -> absorb_damage( s -> result_amount );
+      // AMZ only absorbs 20% of incoming magic damage
+      double damage_absorbed = debug_cast< antimagic_zone_buff_t* >( buffs.antimagic_zone ) -> absorb_damage( s -> result_amount * 0.2 );
 
       s -> result_amount -= damage_absorbed;
       s -> result_absorbed -= damage_absorbed;
@@ -10029,10 +10034,15 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
       if ( antimagic_zone )
         antimagic_zone -> add_result( damage_absorbed, damage_absorbed, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
 
-      // Generates 1 RP for every 1% max hp absorbed
-      double rp_generated = damage_absorbed / resources.max[ RESOURCE_HEALTH ] * 100;
-
-      resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_zone, s -> action );
+      // Generates 1 RP for every 1% of the shield
+      if (talent.assimilation)
+      {
+        double absorb_pct = resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1 + talent.assimilation -> effectN( 1 ).percent() ) * ( 1 + cache.heal_versatility() );
+        // Assimilation can generate no more than 100 runic power 
+        double rp_generated = std::min( talent.assimilation -> effectN( 2 ).base_value() * 100, damage_absorbed / absorb_pct * 100);
+        
+        resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_zone, s -> action );
+      }
     }
   }
 }
