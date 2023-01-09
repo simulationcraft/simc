@@ -23,7 +23,7 @@ void add_callback( std::vector<action_callback_t*>& callbacks, action_callback_t
 }  // namespace
 
 void effect_callbacks_t::add_proc_callback(proc_types type,
-  unsigned flags,
+  uint64_t flags,
   action_callback_t* cb)
 {
   std::string s;
@@ -33,7 +33,7 @@ void effect_callbacks_t::add_proc_callback(proc_types type,
   // Setup the proc-on-X types for the proc
   for (proc_types2 pt = PROC2_TYPE_MIN; pt < PROC2_TYPE_MAX; pt++)
   {
-    if (!(flags & (1 << pt)))
+    if (!(flags & (UINT64_C(1) << pt)))
       continue;
 
     // Healing and ticking spells all require "an amount" on landing, so
@@ -211,7 +211,7 @@ void effect_callbacks_t::register_callback(uint64_t proc_flags,
   for (proc_types t = PROC1_TYPE_MIN; t < PROC1_TYPE_BLIZZARD_MAX; t++)
   {
     // If there's no proc-by-X, we don't need to add anything
-    if (!(proc_flags & (1 << t)))
+    if (!(proc_flags & (UINT64_C(1) << t)))
       continue;
 
     // Skip periodic procs, they are handled below as a special case

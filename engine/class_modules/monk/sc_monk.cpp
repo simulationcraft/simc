@@ -111,7 +111,7 @@ public:
     {
       auto trigger = player->talent.general.resonant_fists.spell();
 
-      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( UINT64_C( 1 ) << ab::proc_type() ) );
     }
 
     apply_buff_effects();
@@ -296,7 +296,7 @@ public:
     {
       auto trigger = p()->talent.general.resonant_fists.spell();
 
-      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( UINT64_C( 1 ) << ab::proc_type() ) );
     }
   }
 

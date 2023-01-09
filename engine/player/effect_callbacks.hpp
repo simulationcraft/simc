@@ -79,5 +79,5 @@ private:
   /// A vector of (driver-id, callback-execute-function) tuples
   std::vector<callback_execute_entry_t> execute_fn;
 
-  void add_proc_callback( proc_types type, unsigned flags, action_callback_t* cb );
+  void add_proc_callback( proc_types type, uint64_t flags, action_callback_t* cb );
 };
