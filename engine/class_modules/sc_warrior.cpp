@@ -8575,6 +8575,73 @@ void warrior_t::default_apl_dps_precombat()
 
 void warrior_t::apl_fury()
 {
+  auto _FURY_ON_USE = []( const item_t& item ) {
+    // Hardcode some trinkets as "stat" eventhough `is_stat_buff` says no
+    const static std::vector<std::string> stat_trinkets{ 
+        "irideus_fragment",
+        // It does damage at the end, but we can't optimize that damage so optimizer for stat
+        "bonemaws_big_toe"
+    };
+
+    // Method to check if str is in the vector above
+    auto is_stat_trinket = []( const std::string& str ) {
+      return std::find( stat_trinkets.begin(), stat_trinkets.end(), str ) != stat_trinkets.end();
+    };
+
+    const static std::unordered_map<std::string, std::string> trinkets{
+        // name_str -> APL
+        { "manic_grieftorch",
+          ",if=buff.recklessness.down&cooldown.recklessness.remains>20"
+          "&buff.avatar.down&(cooldown.avatar.remains>20"
+          "|!talent.avatar)|fight_remains<5" },
+        { "algethar_puzzle_box",
+          ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)|fight_remains<25" },
+        { "decoration_of_flame", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15" },
+        { "stormeaters_boon", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15" },
+        { "windscar_whetstone", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15" },
+
+        // Defaults:
+        { "ITEM_STAT_BUFF", ",if=buff.recklessness.remains>10" },
+        { "ITEM_DAMAGE_EFFECT", ",if=buff.recklessness.down&cooldown.recklessness.remains>20" },
+    };
+
+    std::string concat = "";
+    try
+    {
+      concat = trinkets.at( item.name_str );
+    }
+    catch ( ... )
+    {
+      int duration = 0;
+
+      for ( auto e : item.parsed.special_effects )
+      {
+        duration = (int)floor( e->duration().total_seconds() );
+
+        // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
+        // Unless defined in the map above these will be used on cooldown.
+        if ( e->type == SPECIAL_EFFECT_USE && e->cooldown() > timespan_t::from_seconds( 30 ) )
+        {
+          if ( e->is_stat_buff() || e->buff_type() == SPECIAL_EFFECT_BUFF_STAT || is_stat_trinket( item.name_str ) )
+          {
+            // This item grants a stat buff on use
+            concat = trinkets.at( "ITEM_STAT_BUFF" );
+
+            break;
+          }
+          else
+            // This item has a generic damage effect
+            concat = trinkets.at( "ITEM_DAMAGE_EFFECT" );
+        }
+      }
+
+      if ( concat.length() > 0 && duration > 0 )
+        concat = concat + "|fight_remains<" + std::to_string( duration );
+    }
+
+    return concat;
+  };
+
   std::vector<std::string> racial_actions = get_racial_actions();
 
   default_apl_dps_precombat();
@@ -8601,31 +8668,9 @@ void warrior_t::apl_fury()
 
   for ( const auto& item : items )
   {
-    if ( item.name_str == "algethar_puzzle_box" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
-    }
-    else if ( item.name_str == "irideus_fragment" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=buff.recklessness.up" );
-    }
-    else if ( item.name_str == "manic_grieftorch" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=buff.avatar.down" );
-    }
-    else if ( item.name_str == "gladiators_badge" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
-    }
-    else if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + item.name_str );
-    }
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item.slot != SLOT_WAIST &&
+         item.name_str != "ruby_whelp_shell" )
+      default_list->add_action( "use_item,name=" + item.name_str + _FURY_ON_USE( item ) );
   }
   default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
 

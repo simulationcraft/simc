@@ -38,7 +38,7 @@ actions+=/charge,if=time<=0.5|movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
-actions+=/use_item,name=manic_grieftorch,if=buff.avatar.down
+actions+=/use_item,name=manic_grieftorch,if=buff.recklessness.down&cooldown.recklessness.remains>20&buff.avatar.down&(cooldown.avatar.remains>20|!talent.avatar)|fight_remains<5
 actions+=/ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
