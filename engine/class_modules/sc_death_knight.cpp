@@ -7586,7 +7586,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value();
+    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value() / 1000;
 
     // Don't allow lower than AMS cd intervals
     if ( interval < min_interval )
@@ -7710,7 +7710,7 @@ struct antimagic_zone_t : public death_knight_spell_t
 
   antimagic_zone_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "antimagic_zone", p, p -> talent.antimagic_zone ),
-    min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
+    min_interval( 120 ), interval( 120 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
