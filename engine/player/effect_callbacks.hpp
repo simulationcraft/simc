@@ -6,14 +6,15 @@
 #pragma once
 
 #include "config.hpp"
-#include "dbc/data_enums.hh"
+
 #include "action/dbc_proc_callback.hpp"
+#include "dbc/data_enums.hh"
 
 #include <array>
-#include <string>
-#include <vector>
 #include <functional>
 #include <memory>
+#include <string>
+#include <vector>
 
 struct action_t;
 struct action_state_t;
@@ -27,7 +28,7 @@ struct effect_callbacks_t
   // New proc system
 
   // Callbacks (procs) stored in a vector
-  using proc_list_t = std::vector<action_callback_t *>;
+  using proc_list_t = std::vector<action_callback_t*>;
   // .. an array of callbacks, for each proc_type2 enum (procced by hit/crit, etc...)
   using proc_on_array_t = std::array<proc_list_t, PROC2_TYPE_MAX>;
   // .. an array of procced by arrays, for each proc_type enum (procced on aoe, heal, tick, etc...)
@@ -35,10 +36,9 @@ struct effect_callbacks_t
 
   proc_array_t procs;
 
-  effect_callbacks_t( sim_t* sim ) : sim( sim )
-  { }
+  effect_callbacks_t( sim_t* sim ) : sim( sim ) {}
 
-  bool has_callback( const std::function<bool(const action_callback_t*)> cmp ) const;
+  bool has_callback( const std::function<bool( const action_callback_t* )> cmp ) const;
 
   ~effect_callbacks_t();
 
@@ -46,7 +46,8 @@ struct effect_callbacks_t
 
   void register_callback( uint64_t proc_flags, uint64_t proc_flags2, action_callback_t* cb );
   /// Register a driver-specific custom trigger callback
-  void register_callback_trigger_function( unsigned driver_id, dbc_proc_callback_t::trigger_fn_type t, const dbc_proc_callback_t::trigger_fn_t& fn );
+  void register_callback_trigger_function( unsigned driver_id, dbc_proc_callback_t::trigger_fn_type t,
+                                           const dbc_proc_callback_t::trigger_fn_t& fn );
   /// Register a driver-specific custom execute callback
   void register_callback_execute_function( unsigned driver_id, const dbc_proc_callback_t::execute_fn_t& fn );
   /// Get a custom driver-specific trigger callback (if it has been registered)
@@ -71,7 +72,8 @@ struct effect_callbacks_t
   }
 
 private:
-  using callback_trigger_entry_t = std::tuple<unsigned, dbc_proc_callback_t::trigger_fn_type, std::unique_ptr<dbc_proc_callback_t::trigger_fn_t>>;
+  using callback_trigger_entry_t =
+      std::tuple<unsigned, dbc_proc_callback_t::trigger_fn_type, std::unique_ptr<dbc_proc_callback_t::trigger_fn_t>>;
   using callback_execute_entry_t = std::tuple<unsigned, std::unique_ptr<dbc_proc_callback_t::execute_fn_t>>;
 
   /// A vector of (driver-id, callback-trigger-function) tuples
