@@ -7617,7 +7617,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     if ( p()->spec.unholy_death_knight || p()->spec.frost_death_knight)
     {
       double opt = p() -> options.ams_absorb_percent;
-      damage = p()->resources.max[ RESOURCE_HEALTH ] * opt;
+      damage = ( p()->resources.max[ RESOURCE_HEALTH ] * ( p() -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p() -> talent.antimagic_barrier -> effectN( 3 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) ) * opt;
     }
 
     if ( damage > 0 )
