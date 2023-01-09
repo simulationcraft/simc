@@ -1789,9 +1789,17 @@ struct shadow_crash_dots_t final : public priest_spell_t
       rng().shuffle( tl.begin(), tl.end() );
 
       // sort targets without Vampiric Touch to the front
-      std::sort( tl.begin(), tl.end(), [ this ]( player_t* a, player_t* ) {
-        priest_td_t* td = priest().get_target_data( a );
-        return !td->dots.vampiric_touch->is_ticking();
+      std::sort( tl.begin(), tl.end(), [ this ]( player_t* l, player_t* r ) {
+        priest_td_t* tdl = priest().get_target_data( l );
+        priest_td_t* tdr = priest().get_target_data( r );
+
+        if ( !tdl->dots.vampiric_touch->is_ticking() &&
+             tdr->dots.vampiric_touch->is_ticking() )
+        {
+          return true;
+        }
+
+        return false;
       } );
 
       // resize to dot target cap
