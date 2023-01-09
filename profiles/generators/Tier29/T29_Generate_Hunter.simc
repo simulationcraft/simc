@@ -18,7 +18,7 @@ legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce
 feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
-trinket1=decoration_of_flame,id=194299,bonus_id=4800/4786/1498
+trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
 
@@ -45,7 +45,7 @@ legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce
 feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
-trinket1=decoration_of_flame,id=194299,bonus_id=4800/4786/1498
+trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
 
