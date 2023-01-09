@@ -8628,12 +8628,12 @@ void warrior_t::apl_fury()
     }
   }
   // Use same conditionals to line ravager up with recklessness 
-  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3&(raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<12+2)" );
+  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3&(raid_event.adds.in>15+2|raid_event.adds.in<2|fight_remains<12+2)" );
   // Line ravager up with avatar using conditions from below
-  default_list->add_action( "ravager,if=talent.avatar&cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|target.time_to_die<20+2)" );
+  default_list->add_action( "ravager,if=talent.avatar&cooldown.avatar.remains<3&!talent.titans_torment&(buff.recklessness.remains>4+2|raid_event.adds.in>15+2|raid_event.adds.in<2|fight_remains<20+2)" );
   default_list->add_action( "ravager,if=talent.avatar&cooldown.avatar.remains<3&talent.titans_torment&(raid_event.adds.in>15+2|raid_event.adds.in<2)" );
   // Case to handle if neither avatar nor recklessness are coming up soon
-  default_list->add_action( "ravager,if=(!talent.avatar|cooldown.avatar.remains>15)&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|target.time_to_die<12)" );
+  default_list->add_action( "ravager,if=(!talent.avatar|cooldown.avatar.remains>15)&cooldown.recklessness.remains>15&(raid_event.adds.in>15|raid_event.adds.in<2|fight_remains<12)" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8661,11 +8661,11 @@ void warrior_t::apl_fury()
     }
   }
 
-  default_list->add_action( "avatar,if=!talent.titans_torment&(buff.recklessness.remains>4|raid_event.adds.in>15|target.time_to_die<20)" );
+  default_list->add_action( "avatar,if=!talent.titans_torment&(buff.recklessness.remains>4|raid_event.adds.in>15|fight_remains<20)" );
 
-  default_list->add_action( "recklessness,if=raid_event.adds.in>15|target.time_to_die<12" );
+  default_list->add_action( "recklessness,if=raid_event.adds.in>15|fight_remains<12" );
 
-  // The OF from titans torment is too good aoe to use avatar before adds, so we don't do `target.time_to_die<20` here
+  // The OF from titans torment is too good aoe to use avatar before adds, so we don't do `fight_remains<20` here
   default_list->add_action( "avatar,if=talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(raid_event.adds.in>15)" );
   // Try to use spear when enraged+avatar+reck is up. If not up, only use if there's a while until they become available.
   default_list->add_action( "spear_of_bastion,if=buff.enrage.up&raid_event.adds.in>15&(!talent.avatar|buff.avatar.up|cooldown.avatar.remains>15)&(buff.recklessness.up|cooldown.recklessness.remains>15)" );
