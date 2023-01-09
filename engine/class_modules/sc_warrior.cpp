@@ -8596,9 +8596,9 @@ void warrior_t::apl_fury()
           "|!talent.avatar)|fight_remains<5" },
         { "algethar_puzzle_box",
           ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)|fight_remains<25" },
-        { "decoration_of_flame", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15" },
-        { "stormeaters_boon", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15" },
-        { "windscar_whetstone", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15" },
+        { "decoration_of_flame", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<31" },
+        { "stormeaters_boon", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<11" },
+        { "windscar_whetstone", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<7" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=buff.recklessness.remains>10" },
