@@ -1607,6 +1607,7 @@ struct psychic_link_base_t final : public priest_spell_t
     may_crit   = false;
     may_miss   = false;
     radius     = data().effectN( 1 ).radius_max();
+    school     = SCHOOL_SHADOW;
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
