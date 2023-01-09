@@ -69,16 +69,15 @@ jobs:
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
-
-      - name: Smoke Test
+          
+      - uses: actions/cache@v3
         if: ${{ github.ref_name == env.MAIN_BRANCH }}
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_PROFILE iterations=20
-              output=/dev/null html=/dev/null json2=/dev/null
-
-      - name: Spell Query
-        if: ${{ github.ref_name == env.MAIN_BRANCH }}
-        run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
-
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+          key: ubuntu-gcc-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
     name: ubuntu-clang-build
@@ -135,7 +134,7 @@ jobs:
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
 
-  ubuntu-clang-run:
+  ubuntu-run:
     if: ${{ github.ref_name == 'dragonflight' }}
     name: ubuntu-clang-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
@@ -145,6 +144,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
+        compiler: [clang, gcc]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -163,7 +163,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ github.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
         env:
