@@ -597,6 +597,11 @@ void projectile_propulsion_pinion( special_effect_t& effect )
   } );
 }
 
+void temporal_spellthread( special_effect_t& effect )
+{
+  effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver()->effectN( 1 ).percent();
+}
+
 }  // namespace enchants
 
 namespace items
@@ -3831,6 +3836,7 @@ void register_special_effects()
   register_special_effect( { 386156, 386157, 386158 }, enchants::high_intensity_thermal_scanner );
   register_special_effect( { 385765, 385886, 385892 }, enchants::gyroscopic_kaleidoscope );
   register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
+  register_special_effect( { 387302, 387303, 387306 }, enchants::temporal_spellthread );
 
 
   // Trinkets
