@@ -690,7 +690,7 @@ public:
     player_talent_t coldthirst;
     player_talent_t permafrost; // NYI
     player_talent_t improved_death_strike;
-    player_talent_t antimagic_barrier; // NYI
+    player_talent_t antimagic_barrier;
     player_talent_t march_of_darkness; // NYI
     player_talent_t sacrificial_pact;
     player_talent_t control_undead; // NYI
@@ -7587,6 +7587,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     parse_options( options_str );
 
     min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value() / 1000;
+    interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value() / 1000;
 
     // Don't allow lower than AMS cd intervals
     if ( interval < min_interval )
