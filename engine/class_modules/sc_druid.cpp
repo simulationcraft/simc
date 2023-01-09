@@ -10408,6 +10408,30 @@ void druid_t::init_special_effects()
     auto cb = new ashamanes_guidance_cb_t( this, *driver );
     cb->initialize();
   }
+
+  if ( unique_gear::find_special_effect( this, 388069 ) )
+  {
+    callbacks.register_callback_execute_function( 388069,
+      []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        if ( a->special )
+        {
+          switch ( a->data().id() )
+          {
+            case 190984:  // wrath
+            case 394111:  // sundered firmament
+            case 191034:  // starfall
+            case 78674:   // starsurge
+            case 274281:  // new moon
+            case 274282:  // half moon
+            case 274283:  // full moon
+              break;
+            default:
+              return;
+          }
+        }
+        cb->proc_action->execute_on_target( s->target );
+      } );
+  }
 }
 
 // druid_t::init_actions ====================================================
