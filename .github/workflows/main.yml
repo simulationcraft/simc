@@ -132,7 +132,7 @@ jobs:
           key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
-    name: ubuntu-${{ github.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
+    name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
 
@@ -159,7 +159,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-${{ github.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
         env:
