@@ -4,8 +4,7 @@
 
 struct player_t;
 
-namespace warlock_apl
-{
+namespace warlock_apl{
   std::string potion( const player_t* );
   std:: string flask( const player_t* );
   std::string food( const player_t* );
