@@ -39,10 +39,10 @@ void affliction( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -85,6 +85,23 @@ void affliction( player_t* p )
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
 
+  aoe->add_action( "call_action_list,name=ogcd" );
+  aoe->add_action( "call_action_list,name=items" );
+  aoe->add_action( "haunt" );
+  aoe->add_action( "vile_taint" );
+  aoe->add_action( "phantom_singularity" );
+  aoe->add_action( "soul_rot" );
+  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
+  aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
+  aoe->add_action( "summon_darkglare" );
+  aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
+  aoe->add_action( "malefic_rapture" );
+  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
+  aoe->add_action( "drain_soul,interrupt_global=1" );
+  aoe->add_action( "shadow_bolt" );
+
   cleave->add_action( "call_action_list,name=ogcd" );
   cleave->add_action( "call_action_list,name=items" );
   cleave->add_action( "malefic_rapture,if=soul_shard=5" );
@@ -114,29 +131,12 @@ void affliction( player_t* p )
   cleave->add_action( "drain_soul,interrupt_global=1" );
   cleave->add_action( "shadow_bolt" );
 
-  aoe->add_action( "call_action_list,name=ogcd" );
-  aoe->add_action( "call_action_list,name=items" );
-  aoe->add_action( "haunt" );
-  aoe->add_action( "vile_taint" );
-  aoe->add_action( "phantom_singularity" );
-  aoe->add_action( "soul_rot" );
-  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
-  aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
-  aoe->add_action( "summon_darkglare" );
-  aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
-  aoe->add_action( "malefic_rapture" );
-  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
-  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
-  aoe->add_action( "drain_soul,interrupt_global=1" );
-  aoe->add_action( "shadow_bolt" );
+  items->add_action( "use_items,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot|time_to_die<21" );
 
   ogcd->add_action( "potion,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
   ogcd->add_action( "berserking,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
   ogcd->add_action( "blood_fury,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
   ogcd->add_action( "fireblood,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-
-  items->add_action( "use_items,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot|time_to_die<21" );
 }
 //affliction_apl_end
 
@@ -145,9 +145,9 @@ void demonology( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -156,7 +156,6 @@ void demonology( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
-
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
   precombat->add_action( "power_siphon" );
   precombat->add_action( "demonbolt,if=!buff.power_siphon.up" );
