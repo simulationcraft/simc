@@ -454,8 +454,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Requires Main-Hand Weapon (106), No Aura Log (202), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=108857)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27027 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.3)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Self (1)
 #3 (id=281299)   : Dummy (3)
@@ -507,8 +507,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=108867)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84700 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84700 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.3)
 #2 (id=487715)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.77000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #3 (id=728117)   : Dummy (3)
@@ -782,7 +782,8 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=303680)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20750 | PvP Coefficient: 1.15000
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 #6 (id=480070)   : Dummy (3)
                    Base Value: 59 | Scaled Value: 59 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Pummels all targets in front of you, dealing ${5*$s5} Physical damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to all other enemies. Deals reduced damage beyond $s1 targets. Can be channeled while moving.
@@ -917,7 +918,8 @@ Effects          :
 #4 (id=138807)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #5 (id=140824)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
+Hotfixed         : Base Value (35 -> 45)
 Description      : You shrug off attacks, delaying a portion of Physical damage based on your Agility, instead taking it over $124273d. Affects magical attacks at $s5% effectiveness.$?s383714[
 
 $@spelldesc383714][]
@@ -3952,13 +3954,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615)
                    Family Flags: 48
+Hotfixed         : Base Value (0 -> 5)
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615)
                    Family Flags: 48
+Hotfixed         : Base Value (0 -> 5)
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 117 | Target: Self (1)
 #4 (id=191106)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
@@ -3983,21 +3987,25 @@ Effects          :
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 1.00000
+                   Base Value: 49 | Scaled Value: 49 | PvP Coefficient: 1.00000
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
+Hotfixed         : Base Value (38 -> 49)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
+Hotfixed         : Base Value (-15 -> -10)
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+                   Base Value: 130 | Scaled Value: 130 | PvP Coefficient: 1.00000
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
+Hotfixed         : Base Value (100 -> 130)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 136 | Scaled Value: 136 | PvP Coefficient: 1.00000
+                   Base Value: 148 | Scaled Value: 148 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
+Hotfixed         : Base Value (136 -> 148)
 #15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
@@ -4019,9 +4027,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2425 (Label) | Target: Self (1)
                    Affected Spells (Label): Teachings of the Monastery (116645)
 #22 (id=1041505)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -29 | Scaled Value: -29 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
+Hotfixed         : Base Value (-29 -> -25)
 #23 (id=1042524)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2430 (Label) | Target: Self (1)
                    Affected Spells (Label): Bonedust Brew (386276)
@@ -9983,14 +9992,14 @@ Description      : Niuzao's teachings allow you to shuffle during combat, increa
 Shuffle is granted by attacking enemies with your Keg Smash, Blackout Kick, and Spinning Crane Kick.
 
 Name             : Celestial Brew (id=322507) [Spell Family (53)] 
+Hotfixed         : Cooldown (60000 -> 45000), Required Level (27 -> 0)
 Talent Entry     : Brewmaster [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Spell Level      : 27
 GCD              : 1 seconds
 Duration         : 8 seconds
-Cooldown         : 60 seconds
+Cooldown         : 45 seconds
 Affecting spells : Light Brewing (325093 effect#2)
 Family Flags     : 53, 75
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -12637,11 +12646,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868060)   : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Bonedust Brew (325216), Bonedust Brew (325217), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727), Bonedust Brew (386276), Faeline Stomp (388201), Faeline Stomp (388207), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 82, 103
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=884941)   : Apply Aura (6) | Modify Crit Chance% from Caster's Pets (339)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc337334
 Tooltip          : Chance to be critically hit by the Monk increased by $w1%.
 
@@ -15687,7 +15698,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 70)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -16879,9 +16891,10 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031716)  : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Enemy (6)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727), Faeline Stomp (388201), Faeline Stomp (388207), Resonant Fists (391400), Glory of the Dawn (392959), Chi Explosion (393056), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 103
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc337334
 Tooltip          : Chance to be critically hit by the Monk increased by $w1%.
 

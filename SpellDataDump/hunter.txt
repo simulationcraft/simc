@@ -3027,15 +3027,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
+Hotfixed         : Base Value (10 -> 12)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
+Hotfixed         : Base Value (10 -> 12)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 12)
 #4 (id=191132)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -3047,7 +3050,8 @@ Effects          :
                    Affected Spells: Auto Shot (75)
                    Family Flags: 0
 #7 (id=260878)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 12)
 #8 (id=260879)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=260880)   : Apply Aura (6) | Dummy (4)
@@ -4149,7 +4153,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273765)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+Hotfixed         : AP Coefficient (0.28 -> 0.31)
 #2 (id=273766)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=739193)   : Dummy (3)
@@ -4867,7 +4872,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.93200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+Hotfixed         : AP Coefficient (0.847 -> 0.932)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -5290,7 +5296,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=314957)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.88000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.97000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : AP Coefficient (0.88 -> 0.97)
 #2 (id=740187)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=740188)   : Dummy (3)
@@ -7846,7 +7853,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=709120)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.495 -> 0.57)
 Description      : $@spelldesc259495
 
 Name             : Wildfire Bomb (id=265163) [Spell Family (9)] 
@@ -8633,7 +8641,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=718207)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.165 -> 0.19)
 Description      : $@spelldesc259495
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8760,7 +8769,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=719192)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.495 -> 0.57)
 Description      : $@spelldesc270323
 
 Name             : Pheromone Bomb (id=270332) [Spell Family (9)] 
@@ -8783,7 +8793,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=719195)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.165 -> 0.19)
 Description      : $@spelldesc270323
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8854,7 +8865,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=719203)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.495 -> 0.57)
 Description      : $@spelldesc270335
 
 Name             : Shrapnel Bomb (id=270339) [Spell Family (9)] 
@@ -8880,7 +8892,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=719204)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.165 -> 0.19)
 #2 (id=719205)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc270335
@@ -8909,7 +8922,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=719209)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06300 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.055 -> 0.063)
 Description      : $@spelldesc270335
 Tooltip          : Suffering $w1 Bleed damage every $t1 sec.
 
@@ -9031,7 +9045,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=721015)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.495 -> 0.57)
 Description      : $@spelldesc271045
 
 Name             : Volatile Bomb (id=271049) [Spell Family (9)] 
@@ -9053,7 +9068,8 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=721016)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.165 -> 0.19)
 Description      : $@spelldesc271045
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 

@@ -2371,7 +2371,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), No Aura Icon (60), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (187827), Metamorphosis (191427)
@@ -3634,7 +3635,7 @@ Name             : Painbringer (id=212988) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
-Duration         : 5 seconds
+Duration         : 6 seconds
 Labels           : 2406: Painbringer (207387 effect#1)
 Stacks           : 30 maximum
 Proc Chance      : 101%
@@ -7497,9 +7498,10 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), DoT Stacking Rule (103), Requires Main-Hand Weapon (106), Suppress Caster Procs (112), Always Hit (114), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=807359)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.62500 | Target: Enemy (6)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 14, 25, 37, 50, 127
+Hotfixed         : PvP Coefficient (1 -> 0.625)
 Description      : $@spelldesc258860
 Tooltip          : The Demon Hunter's Chaos Strike and Blade Dance inflict $s2% additional damage.
 
@@ -7668,7 +7670,8 @@ Effects          :
 #1 (id=807419)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=807420)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 130 | Scaled Value: 130 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : Base Value (100 -> 130)
 #3 (id=807421)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=807422)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -10668,6 +10671,7 @@ Effects          :
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
+Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
@@ -10679,17 +10683,17 @@ Triggered by     : The Hunt (370966)
 Family Flags     : 16, 70, 87
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..xx.. ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
+                 : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61480 | PvP Coefficient: 0.80000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.81973 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.6148 -> 0.819733)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -10737,7 +10741,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023596)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.83333 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.833333)
 Description      : Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.
 
 Name             : Ragefire (id=388107) [Spell Family (107), Passive] 
@@ -11266,6 +11271,7 @@ Effects          :
 Description      : Afflicting an enemy with a Sigil reduces the cooldown of your Sigils by $s1 sec. 
 
 Name             : Calcified Spikes (id=389720) [Spell Family (107), Passive] 
+Hotfixed         : Description
 Talent Entry     : Vengeance [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
@@ -11282,7 +11288,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026145)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You take 10% reduced damage after Demon Spikes ends, fading by 1% per second.
+Description      : You take $391171s2% reduced damage after Demon Spikes ends, fading by 1% per second.
 
 Name             : Extended Spikes (id=389721) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=5, col=4, max_rank=2, req_points=8]
@@ -12460,6 +12466,31 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc391165
 Tooltip          : $w1 Soul Fragments consumed. At $u, the damage of your next Soul Cleave is increased by $391172s1%.
+
+Name             : Calcified Spikes (id=391171) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Attributes       : ........ ........ ..x..... x..x....   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ......x. 
+                 : .......x .......x ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1028499)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : Base Value (-10 -> -12)
+#2 (id=1028500)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-10 -> -12)
+Description      : $@spelldesc389720
+Tooltip          : Damage taken reduced by $w1%, fading over $d.
 
 Name             : Soul Furnace (id=391172) [Spell Family (107)] 
 Class            : Demon Hunter

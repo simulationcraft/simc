@@ -12474,7 +12474,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012599)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Garrote deals $s1% increased damage and has no cooldown when used from Stealth and for $392401d after breaking Stealth.
 
 Name             : Vicious Venoms (id=381634) [Spell Family (8), Passive] 
@@ -13046,7 +13047,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1013160)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 2)
 Description      : Blade Flurry damage is increased by an additional $s1% per missing target below its maximum.
 
 Name             : Swift Slasher (id=381988) [Spell Family (8), Passive] 
@@ -14507,7 +14509,8 @@ Effects          :
 #1 (id=1030585)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1030586)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.6)
 #3 (id=1030587)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Garrote (703), Garrote (360830)

@@ -4824,13 +4824,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830)
                    Family Flags: 98
+Hotfixed         : Base Value (0 -> 3)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830)
                    Family Flags: 98
+Hotfixed         : Base Value (0 -> 3)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
@@ -4856,9 +4858,11 @@ Effects          :
 #9 (id=260770)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #10 (id=1032347)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 3)
 #11 (id=1032348)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 3)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid

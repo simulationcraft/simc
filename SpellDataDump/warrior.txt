@@ -14667,8 +14667,9 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66666 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1020126)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 2.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (2 -> 1.5)
 Description      : A defensive combat state that reduces all damage you take by $s1%, and all damage you deal by $s2%. 
 
 Lasts until canceled.
