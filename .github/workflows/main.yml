@@ -16,8 +16,8 @@ env:
   ccache-generation: 0 # bump if you need to "clean" ccache
 
 jobs:
-  ubuntu-gcc:
-    name: ubuntu-${{ matrix.cc }}-C++${{ matrix.cppVersion }}
+  ubuntu-gcc-build:
+    name: ubuntu-${{ matrix.cc }}-cpp${{ matrix.cppVersion }}-build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -28,10 +28,12 @@ jobs:
             cxx: g++-7
             packages: gcc-7 g++-7
             os: ubuntu-18.04
+            upload: false
           - cc: gcc-12
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
+            upload: true
         exclude:
           - cc: gcc-7
             cppVersion: 20   
@@ -70,6 +72,7 @@ jobs:
           ccache -s
           
       - uses: actions/cache@v3
+        if: ${{ matrix.upload }}
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -133,7 +136,7 @@ jobs:
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-build ]
+    needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
 
     strategy:
       fail-fast: false
