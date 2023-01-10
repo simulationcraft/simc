@@ -12,6 +12,9 @@ actions.precombat+=/haunt
 actions.precombat+=/unstable_affliction,if=!talent.soul_swap
 actions.precombat+=/shadow_bolt
 
+actions.variables=variable,name=cd_dots_up,op=set,value=(dot.phantom_singularity.ticking|!talent.phantom_singularity)&(dot.vile_taint.ticking|!talent.vile_taint)&(dot.soul_rot.ticking|!talent.soul_rot)|!talent.summon_darkglare&(dot.phantom_singularity.ticking|dot.vile_taint.ticking|dot.soul_rot.ticking)
+actions.variables+=/variable,name=cds_active,op=set,value=pet.darkglare.active|variable.cd_dots_up|fight_remains<=25|buff.power_infusion.up
+
 # Executed every time the actor is available.
 actions=call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|variable.cleave_apl
 actions+=/call_action_list,name=aoe,if=active_enemies>3
@@ -87,9 +90,12 @@ actions.cleave+=/corruption,target_if=refreshable
 actions.cleave+=/drain_soul,interrupt_global=1
 actions.cleave+=/shadow_bolt
 
-actions.items=use_items,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot|time_to_die<21
+actions.items=use_items,if=variable.cds_active
+actions.items+=/use_item,name=desperate_invokers_codex
+actions.items+=/use_item,name=conjured_chillglobe
 
-actions.ogcd=potion,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
-actions.ogcd+=/berserking,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
-actions.ogcd+=/blood_fury,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
-actions.ogcd+=/fireblood,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
+actions.ogcd=potion,if=variable.cds_active
+actions.ogcd+=/berserking,if=variable.cds_active
+actions.ogcd+=/blood_fury,if=variable.cds_active
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active
+actions.ogcd+=/fireblood,if=variable.cds_active
