@@ -1058,8 +1058,8 @@ public:
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
     bool split_obliterate_schools = true;
-    double ams_absorb_percent = 1.0;
-    double amz_absorb_percent = 1.0;
+    double ams_absorb_percent = 0;
+    double amz_absorb_percent = 0;
   } options;
 
   // Runes
