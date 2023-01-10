@@ -93,17 +93,17 @@ actions.aoe+=/lava_beam,if=buff.stormkeeper.up
 # Stormkeeper is strong and should be used.
 actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
 # Power of the Maelstrom is strong and should be used.
-actions.aoe+=/lava_beam,if=buff.power_of_the_maelstrom.up
+actions.aoe+=/lava_beam,if=buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time
 # Power of the Maelstrom is strong and should be used.
 actions.aoe+=/chain_lightning,if=buff.power_of_the_maelstrom.up
 # Against 6 targets or more Surge of Power should be used with Lava Beam rather than Lava Burst.
-actions.aoe+=/lava_beam,if=active_enemies>=6&buff.surge_of_power.up
+actions.aoe+=/lava_beam,if=active_enemies>=6&buff.surge_of_power.up&buff.ascendance.remains>cast_time
 # Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst.
 actions.aoe+=/chain_lightning,if=active_enemies>=6&buff.surge_of_power.up
 # Proc Deeply Rooted Elements against 3 targets.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled&buff.windspeakers_lava_resurgence.up
 # Consume Master of the Elements with Lava Beam.
-actions.aoe+=/lava_beam,if=buff.master_of_the_elements.up
+actions.aoe+=/lava_beam,if=buff.master_of_the_elements.up&buff.ascendance.remains>cast_time
 # Proc Master of the Elements against 3 targets.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled
 # Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient.
@@ -112,7 +112,7 @@ actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up
 actions.aoe+=/icefury,if=talent.electrified_shocks.enabled&active_enemies<5
 # Spread out your Frost Shock casts to empower as many Chain Lightnings as possible.
 actions.aoe+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5
-actions.aoe+=/lava_beam
+actions.aoe+=/lava_beam,if=buff.ascendance.remains>cast_time
 actions.aoe+=/chain_lightning
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
@@ -149,7 +149,7 @@ actions.single_target+=/lightning_bolt,if=buff.surge_of_power.up
 actions.single_target+=/icefury,if=talent.electrified_shocks.enabled
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up
-actions.single_target+=/lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up
+actions.single_target+=/lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time
 # Windspeaker's Lava Resurgence is strong. Don't sit on it.
 actions.single_target+=/lava_burst,if=buff.windspeakers_lava_resurgence.up
 # Lava Surge is neat. Utilize it.
@@ -179,6 +179,7 @@ actions.single_target+=/icefury
 actions.single_target+=/lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
 actions.single_target+=/frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled
+actions.single_target+=/frost_shock,if=buff.icefury.up&talent.flux_melting.enabled
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
 actions.single_target+=/lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled)
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2
