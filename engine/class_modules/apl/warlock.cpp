@@ -63,7 +63,6 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "malefic_rapture,if=soul_shard=5" );
   default_->add_action( "haunt" );
   default_->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   default_->add_action( "unstable_affliction,if=remains<5" );
@@ -75,10 +74,13 @@ void affliction( player_t* p )
   default_->add_action( "vile_taint" );
   default_->add_action( "soul_rot,if=variable.ps_up&variable.vt_up|!talent.summon_darkglare" );
   default_->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
+  default_->add_action( "malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)" );
+  default_->add_action( "malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3" );
   default_->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3" );
-  default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd" );
-  default_->add_action( "malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up" );
-  default_->add_action( "malefic_rapture,if=!talent.dread_touch&(dot.soul_rot.remains>cast_time|dot.phantom_singularity.remains>cast_time|dot.vile_taint.remains>cast_time|pet.darkglare.active)" );
+  default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.up&!debuff.dread_touch.up" );
+  default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
+  default_->add_action( "malefic_rapture,if=variable.cd_dots_up" );
+  default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.up&buff.nightfall.up" );
   default_->add_action( "drain_soul,if=buff.nightfall.react|talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<2)" );
   default_->add_action( "shadow_bolt,if=buff.nightfall.react|talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<2)" );
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
