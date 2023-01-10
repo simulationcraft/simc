@@ -210,7 +210,7 @@ void frost( player_t* p )
   default_->add_action( "invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)", "When using 'external_buffs.pool', will use this lines logic to determine when to use Power Infusion." );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "antimagic_shell,if=runic_power.deficit>40" );
-  default_->add_action( "antimagic_zone,if=runic_power.deficit>60&talent.assimilation&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa)" );
+  default_->add_action( "antimagic_zone,if=death_knight.amz_absorb_percent>0&runic_power.deficit>60&talent.assimilation&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa)" );
   default_->add_action( "howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!buff.pillar_of_frost.up|buff.pillar_of_frost.up&!buff.killing_machine.react))", "Maintain Frost Fever, Icy Talons and Unleashed Frenzy" );
   default_->add_action( "glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
   default_->add_action( "glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
