@@ -57,6 +57,8 @@ actions+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&co
 actions+=/invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)
 # Interrupt
 actions+=/mind_freeze,if=target.debuff.casting.react
+actions+=/antimagic_shell,if=runic_power.deficit>40
+actions+=/antimagic_zone,if=death_knight.amz_absorb_percent>0&runic_power.deficit>60&talent.assimilation&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa)
 # Maintain Frost Fever, Icy Talons and Unleashed Frenzy
 actions+=/howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!buff.pillar_of_frost.up|buff.pillar_of_frost.up&!buff.killing_machine.react))
 actions+=/glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
