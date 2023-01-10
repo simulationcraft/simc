@@ -134,7 +134,7 @@ waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/7936/8802/8
 legs=greaves_of_the_haunted_frostbrood,id=200409,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
 feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=523,ilevel=421,gem_id=192948,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant=devotion_of_haste_3
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
