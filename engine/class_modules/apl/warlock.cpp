@@ -71,10 +71,10 @@ void affliction( player_t* p )
   default_->add_action( "siphon_life,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
   default_->add_action( "soul_tap" );
-  default_->add_action( "phantom_singularity" );
+  default_->add_action( "phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|!talent.summon_darkglare" );
   default_->add_action( "vile_taint" );
-  default_->add_action( "soul_rot" );
-  default_->add_action( "summon_darkglare" );
+  default_->add_action( "soul_rot,if=variable.ps_up&variable.vt_up|!talent.summon_darkglare" );
+  default_->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
   default_->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3" );
   default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd" );
   default_->add_action( "malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up" );
@@ -87,8 +87,12 @@ void affliction( player_t* p )
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
 
-  variables->add_action( "variable,name=cd_dots_up,op=set,value=(dot.phantom_singularity.ticking|!talent.phantom_singularity)&(dot.vile_taint.ticking|!talent.vile_taint)&(dot.soul_rot.ticking|!talent.soul_rot)|!talent.summon_darkglare&(dot.phantom_singularity.ticking|dot.vile_taint.ticking|dot.soul_rot.ticking)" );
-  variables->add_action( "variable,name=cds_active,op=set,value=pet.darkglare.active|variable.cd_dots_up|fight_remains<=25|buff.power_infusion.up" );
+  variables->add_action( "variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity" );
+  variables->add_action( "variable,name=vt_up,op=set,value=dot.vile_taint.ticking|!talent.vile_taint" );
+  variables->add_action( "variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot" );
+  variables->add_action( "variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up" );
+  variables->add_action( "variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare" );
+  variables->add_action( "variable,name=cds_active,op=set,value=!variable.has_cds|(pet.darkglare.active|variable.cd_dots_up|buff.power_infusion.up)" );
 
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "call_action_list,name=items" );
