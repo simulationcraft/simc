@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-05/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-10/47213)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4568,30 +4568,30 @@ bonus_id={ 9041 }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
 bonus_id={ 9042 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
 bonus_id={ 9043 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
 bonus_id={ 9044 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
-bonus_id={ 9045 }, desc={ Heroic }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
+bonus_id={ 9045 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
 bonus_id={ 9046 }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
-bonus_id={ 9047 }, desc={ Heroic }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
+bonus_id={ 9047 }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9048 }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
-bonus_id={ 9049 }, desc={ Heroic }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
+bonus_id={ 9049 }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9050 }, quality={ epic }, ilevel={ 45 @plvl 1 - 218 @plvl 70 }
-bonus_id={ 9051 }, desc={ Heroic }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9051 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9052 }, quality={ epic }, ilevel={ 29 @plvl 1 - 202 @plvl 70 }
-bonus_id={ 9053 }, desc={ Heroic }, quality={ epic }, ilevel={ 31 @plvl 1 - 204 @plvl 70 }
+bonus_id={ 9053 }, quality={ epic }, ilevel={ 31 @plvl 1 - 204 @plvl 70 }
 bonus_id={ 9054 }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
-bonus_id={ 9055 }, desc={ Heroic }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
-bonus_id={ 9056 }, desc={ Raid Finder }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
+bonus_id={ 9055 }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
+bonus_id={ 9056 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
 bonus_id={ 9057 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
-bonus_id={ 9058 }, desc={ Heroic }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
-bonus_id={ 9059 }, desc={ Raid Finder }, quality={ epic }, ilevel={ 29 @plvl 1 - 202 @plvl 70 }
+bonus_id={ 9058 }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
+bonus_id={ 9059 }, quality={ epic }, ilevel={ 29 @plvl 1 - 202 @plvl 70 }
 bonus_id={ 9060 }, quality={ epic }, ilevel={ 31 @plvl 1 - 204 @plvl 70 }
-bonus_id={ 9062 }, desc={ Elite }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
-bonus_id={ 9063 }, desc={ Heroic }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
-bonus_id={ 9064 }, desc={ Heroic Elite }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
-bonus_id={ 9065 }, desc={ Raid Finder }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
+bonus_id={ 9062 }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
+bonus_id={ 9063 }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
+bonus_id={ 9064 }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
+bonus_id={ 9065 }, quality={ epic }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
 bonus_id={ 9066 }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
-bonus_id={ 9067 }, desc={ Thunderforged }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
-bonus_id={ 9068 }, desc={ Heroic }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
-bonus_id={ 9069 }, desc={ Heroic Thunderforged }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
+bonus_id={ 9067 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
+bonus_id={ 9068 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
+bonus_id={ 9069 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
 bonus_id={ 9070 }, desc={ Raid Finder }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
 bonus_id={ 9071 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
 bonus_id={ 9072 }, desc={ Heroic }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }

@@ -3685,6 +3685,14 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
         base_multiplier *= p -> talents.chimaera_shot -> effectN( 1 ).percent();
       }
     }
+
+    void impact( action_state_t* state ) override
+    {
+      hunter_ranged_attack_t::impact( state );
+
+      if ( state -> result == RESULT_CRIT )
+        p() -> buffs.find_the_mark -> trigger();
+    }
   };
 
   impact_t* nature;
