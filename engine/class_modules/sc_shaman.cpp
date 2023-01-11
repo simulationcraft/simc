@@ -9949,7 +9949,10 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "use_items" );
     def->add_action( "auto_attack" );
     def->add_action( "natures_swiftness" );
-    def->add_action( "invoke_external_buff,name=power_infusion,if=talent.ascendance.enabled&buff.ascendance.up|!talent.ascendance.enabled", "Link Power Infusion to Ascendance." );
+    def->add_action( "invoke_external_buff,name=power_infusion,if=talent.ascendance.enabled&buff.ascendance.up|!talent.ascendance.enabled",
+        "If you've selected <a href='https://www.wowhead.com/spell=114050/ascendance'>Ascendance</a> sync "
+        "<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with it. Otherwise use "
+        "<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> on Cooldown." );
 
     // Pick APL to run
     def->add_action(
