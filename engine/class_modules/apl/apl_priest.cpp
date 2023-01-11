@@ -51,7 +51,7 @@ void shadow( player_t* p )
   action_priority_list_t* filler = p->get_action_priority_list( "filler" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask", "Default consumables potion=elemental_potion_of_ultimate_power_3 flask=phial_of_tepid_versatility_3 food=fated_fortune_cookie augmentation=draconic_augment_rune temporary_enchant=main_hand:howling_rune_3" );
+  precombat->add_action( "flask", "Default consumables otion=elemental_potion_of_ultimate_power_ lask=phial_of_tepid_versatility_ ood=fated_fortune_cooki ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -87,7 +87,7 @@ void shadow( player_t* p )
   cds->add_action( "blood_fury,if=buff.power_infusion.up|fight_remains<=15" );
   cds->add_action( "ancestral_call,if=buff.power_infusion.up|fight_remains<=15" );
   cds->add_action( "power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)", "Sync Power Infusion with Voidform or Dark Ascension" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>." );
   cds->add_action( "void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|spell_targets.mind_sear>2&talent.inescapable_torment.rank<2)&(cooldown.mind_blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)", "Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast before casting" );
   cds->add_action( "dark_ascension,if=pet.fiend.active|!talent.mindbender&!cooldown.fiend.up|spell_targets.mind_sear>2&talent.inescapable_torment.rank<2", "Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets" );
   cds->add_action( "call_action_list,name=trinkets" );
