@@ -38,8 +38,8 @@ actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/mind_freeze,if=target.debuff.casting.react
-actions+=/antimagic_shell,if=runic_power.deficit>40&(pet.gargoyle.active|!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>cooldown.antimagic_shell.duration)
-actions+=/antimagic_zone,if=death_knight.amz_absorb_percent>0&runic_power.deficit>60&talent.assimilation&(pet.gargoyle.active|!talent.summon_gargoyle)
+actions+=/antimagic_shell,if=(!buff.commander_of_the_dead_window.up|buff.commander_of_the_dead_window.up&cooldown.apocalypse.remains>5)&runic_power.deficit>40&(pet.gargoyle.active|!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>cooldown.antimagic_shell.duration)
+actions+=/antimagic_zone,if=(!buff.commander_of_the_dead_window.up|buff.commander_of_the_dead_window.up&cooldown.apocalypse.remains>5)&death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(pet.gargoyle.active|!talent.summon_gargoyle)
 # Variables
 actions+=/variable,name=garg_setup,op=setif,value=1,value_else=0,condition=active_enemies>=3|cooldown.summon_gargoyle.remains>1&cooldown.apocalypse.remains>1|!talent.apocalypse&cooldown.summon_gargoyle.remains>1|!talent.summon_gargoyle
 actions+=/variable,name=apoc_timing,op=setif,value=10,value_else=2,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<=4
