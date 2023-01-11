@@ -39,10 +39,11 @@ void affliction( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -57,6 +58,7 @@ void affliction( player_t* p )
   precombat->add_action( "unstable_affliction,if=!talent.soul_swap" );
   precombat->add_action( "shadow_bolt" );
 
+  default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|variable.cleave_apl" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
@@ -84,6 +86,26 @@ void affliction( player_t* p )
   default_->add_action( "corruption,if=refreshable" );
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
+
+  variables->add_action( "variable,name=cd_dots_up,op=set,value=(dot.phantom_singularity.ticking|!talent.phantom_singularity)&(dot.vile_taint.ticking|!talent.vile_taint)&(dot.soul_rot.ticking|!talent.soul_rot)|!talent.summon_darkglare&(dot.phantom_singularity.ticking|dot.vile_taint.ticking|dot.soul_rot.ticking)" );
+  variables->add_action( "variable,name=cds_active,op=set,value=pet.darkglare.active|variable.cd_dots_up|fight_remains<=25|buff.power_infusion.up" );
+
+  aoe->add_action( "call_action_list,name=ogcd" );
+  aoe->add_action( "call_action_list,name=items" );
+  aoe->add_action( "haunt" );
+  aoe->add_action( "vile_taint" );
+  aoe->add_action( "phantom_singularity" );
+  aoe->add_action( "soul_rot" );
+  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
+  aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
+  aoe->add_action( "summon_darkglare" );
+  aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
+  aoe->add_action( "malefic_rapture" );
+  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
+  aoe->add_action( "drain_soul,interrupt_global=1" );
+  aoe->add_action( "shadow_bolt" );
 
   cleave->add_action( "call_action_list,name=ogcd" );
   cleave->add_action( "call_action_list,name=items" );
@@ -114,29 +136,15 @@ void affliction( player_t* p )
   cleave->add_action( "drain_soul,interrupt_global=1" );
   cleave->add_action( "shadow_bolt" );
 
-  aoe->add_action( "call_action_list,name=ogcd" );
-  aoe->add_action( "call_action_list,name=items" );
-  aoe->add_action( "haunt" );
-  aoe->add_action( "vile_taint" );
-  aoe->add_action( "phantom_singularity" );
-  aoe->add_action( "soul_rot" );
-  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
-  aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
-  aoe->add_action( "summon_darkglare" );
-  aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
-  aoe->add_action( "malefic_rapture" );
-  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
-  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
-  aoe->add_action( "drain_soul,interrupt_global=1" );
-  aoe->add_action( "shadow_bolt" );
+  items->add_action( "use_items,if=variable.cds_active" );
+  items->add_action( "use_item,name=desperate_invokers_codex" );
+  items->add_action( "use_item,name=conjured_chillglobe" );
 
-  ogcd->add_action( "potion,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-  ogcd->add_action( "berserking,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-  ogcd->add_action( "blood_fury,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-  ogcd->add_action( "fireblood,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-
-  items->add_action( "use_items,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot|time_to_die<21" );
+  ogcd->add_action( "potion,if=variable.cds_active" );
+  ogcd->add_action( "berserking,if=variable.cds_active" );
+  ogcd->add_action( "blood_fury,if=variable.cds_active" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active" );
+  ogcd->add_action( "fireblood,if=variable.cds_active" );
 }
 //affliction_apl_end
 
