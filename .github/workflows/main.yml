@@ -135,7 +135,7 @@ jobs:
 
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
 
     strategy:
@@ -153,6 +153,10 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
+          - compiler: clang
+            os: ubuntu-20.04
+          - compiler: gcc
+            os: ubuntu-22.04
 
     steps:
       - uses: actions/cache@v3
