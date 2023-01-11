@@ -21,7 +21,7 @@ temporary_enchant=main_hand:howling_rune_3
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-# Default consumables potion=elemental_potion_of_ultimate_power_3 flask=phial_of_tepid_versatility_3 food=fated_fortune_cookie augmentation=draconic_augment_rune temporary_enchant=main_hand:howling_rune_3
+# Default consumables otion=elemental_potion_of_ultimate_power_ lask=phial_of_tepid_versatility_ ood=fated_fortune_cooki ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
@@ -83,6 +83,7 @@ actions.cds+=/blood_fury,if=buff.power_infusion.up|fight_remains<=15
 actions.cds+=/ancestral_call,if=buff.power_infusion.up|fight_remains<=15
 # Sync Power Infusion with Voidform or Dark Ascension
 actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>.
 actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up
 # Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast before casting
 actions.cds+=/void_eruption,if=!cooldown.fiend.up&(pet.fiend.active|!talent.mindbender|spell_targets.mind_sear>2&talent.inescapable_torment.rank<2)&(cooldown.mind_blast.charges=0|time>15|buff.shadowy_insight.up&cooldown.mind_blast.charges=buff.shadowy_insight.stack)
