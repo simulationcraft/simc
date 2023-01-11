@@ -167,11 +167,6 @@ jobs:
             tests
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
-      - name: Install deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libstdc++6
-
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
