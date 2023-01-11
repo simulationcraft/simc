@@ -9982,14 +9982,12 @@ std::string druid_t::default_flask() const
   {
     switch ( specialization() )
     {
-      case DRUID_FERAL:
-        return "iced_phial_of_corrupting_rage_3";
       case DRUID_BALANCE:
-        return "phial_of_elemental_chaos_3";
+      case DRUID_GUARDIAN:
       case DRUID_RESTORATION:
         return "phial_of_elemental_chaos_3";
-      case DRUID_GUARDIAN:
-        return "phial_of_elemental_chaos_3";
+      case DRUID_FERAL:
+        return "iced_phial_of_corrupting_rage_3";
       default:
         return "disabled";
     }
@@ -10002,25 +10000,17 @@ std::string druid_t::default_flask() const
 
 std::string druid_t::default_potion() const
 {
+  if ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
+
   switch ( specialization() )
   {
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
-      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
-      else if ( true_level >= 60 ) return "spectral_intellect";
-      else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
-      SC_FALLTHROUGH;
+      return true_level >= 60 ? "spectral_intellect" : "superior_battle_potion_of_intellect";
     case DRUID_FERAL:
-      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
-      else if ( true_level >= 60 ) return "spectral_agility";
-      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
-      SC_FALLTHROUGH;
     case DRUID_GUARDIAN:
-      if      ( true_level >= 60 ) return "phantom_fire";
-      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
-      SC_FALLTHROUGH;
-    default:
-      return "disabled";
+      return true_level >= 60 ? "spectral_agility" : "superior_battle_potion_of_agility";
+    default: return "disabled";
   }
 }
 
@@ -10049,11 +10039,12 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
+    case DRUID_RESTORATION:
       return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
-    case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
-    case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
     case DRUID_FERAL:
       return true_level >= 70 ? "main_hand:buzzing_rune_3" : "main_hand:shaded_sharpening_stone";
+    case DRUID_GUARDIAN:
+      return true_level >= 70 ? "primal_weightstone_3" : "main_hand:shadowcore_oil";
     default: return "disabled";
   }
 }
