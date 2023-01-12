@@ -33,6 +33,7 @@ actions=auto_attack
 actions+=/variable,name=death_strike_dump_amount,value=65
 actions+=/variable,name=bone_shield_refresh_value,value=4,op=setif,condition=!talent.deaths_caress.enabled|talent.consumption.enabled|talent.blooddrinker.enabled,value_else=5
 actions+=/mind_freeze,if=target.debuff.casting.react
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49028/dancing-rune-weapon'>Dancing Rune Weapon</a> is up, or on cooldown if <a href='https://www.wowhead.com/spell=49028/dancing-rune-weapon'>Dancing Rune Weapon</a> is not talented
 actions+=/invoke_external_buff,name=power_infusion,if=buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/call_action_list,name=trinkets
