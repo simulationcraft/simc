@@ -12,7 +12,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_elemental_chaos_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=primal_weightstone_3
+temporary_enchant=main_hand:primal_weightstone_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -52,7 +52,7 @@ actions.bear+=/barkskin,if=buff.bear_form.up
 actions.bear+=/convoke_the_spirits
 actions.bear+=/berserk_bear
 actions.bear+=/incarnation
-actions.bear+=/rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60|buff.incarnation_guardian_of_ursoc.up
+actions.bear+=/rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60|buff.incarnation_guardian_of_ursoc.up|(talent.convoke_the_spirits.enabled)
 actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
 actions.bear+=/maul,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6
 actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&!cooldown.pause_action.remains|rage>90
@@ -112,6 +112,7 @@ main_hand=crux_of_blind_faith,id=201995,bonus_id=6652/8783/8784/7936/7937/6808/4
 # gear_ilvl=421.40
 # gear_agility=4955
 # gear_stamina=13224
+# gear_attack_power=135
 # gear_crit_rating=3761
 # gear_haste_rating=2710
 # gear_mastery_rating=2879
