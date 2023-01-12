@@ -348,6 +348,11 @@ struct blessed_hammer_tick_t : public paladin_spell_t
       1,
       s -> attack_power * p() -> talents.blessed_hammer -> effectN( 1 ).percent()
     );
+
+    if ( p()->talents.aspiration_of_divinity->ok() )
+    {
+      p()->buffs.aspiration_of_divinity->trigger();
+    }
   }
 };
 
@@ -406,12 +411,6 @@ struct blessed_hammer_t : public paladin_spell_t
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
-    }
-
-    // Trigger Aspiration of Divinity on cast, not on hit
-    if ( p()->talents.aspiration_of_divinity->ok() )
-    {
-      p()->buffs.aspiration_of_divinity->trigger();
     }
   }
 };
@@ -527,15 +526,18 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     cooldown->charges = 2;
     cooldown->hasted  = true;
   }
-
-  void execute() override
+  
+  void impact( action_state_t* s )
   {
-    paladin_melee_attack_t::execute();
-
     if ( p()->talents.aspiration_of_divinity->ok() )
     {
       p()->buffs.aspiration_of_divinity->trigger();
     }
+  }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
 
     // Special things that happen when HotR connects
     if ( result_is_hit( execute_state -> result ) )
