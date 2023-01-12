@@ -613,6 +613,14 @@ namespace monk_apl
     def->add_action( "call_action_list,name=fallthru" );
 
     // Storm, Earth and Fire Cooldowns
+
+    for ( const auto& item : p->items )
+    {
+      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
+    }
+
+
     cd_sef->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Storm, Earth and Fire Cooldowns" );
     cd_sef->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active", 
                         "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
@@ -632,14 +640,6 @@ namespace monk_apl
     }
     else
       cd_sef->add_action( "touch_of_death,cycle_targets=1,if=combo_strike" );
-
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
-    }
-
 
     if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
       cd_sef->add_action( "touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
@@ -671,6 +671,13 @@ namespace monk_apl
     }
 
     // Serenity Cooldowns
+    
+    for ( const auto& item : p->items )
+    {
+      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
+    }
+
     cd_serenity->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Serenity Cooldowns" );
     cd_serenity->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active", 
                              "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
@@ -708,12 +715,6 @@ namespace monk_apl
         cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
       else if ( racial_action != "arcane_torrent" )
         cd_serenity->add_action( racial_action );
-    }
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
     }
 
     // AoE priority
