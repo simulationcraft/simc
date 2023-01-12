@@ -88,6 +88,7 @@ actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remai
 
 # Storm, Earth and Fire Cooldowns
 actions.cd_sef=summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active.
 actions.cd_sef+=/invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active
 actions.cd_sef+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25
 actions.cd_sef+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3
@@ -108,6 +109,7 @@ actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
 
 # Serenity Cooldowns
 actions.cd_serenity=summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active.
 actions.cd_serenity+=/invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25

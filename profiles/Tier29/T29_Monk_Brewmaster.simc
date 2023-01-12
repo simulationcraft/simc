@@ -73,6 +73,7 @@ actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=talent.purifying_brew.
 actions.cooldowns_improved_niuzao_cta+=/purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)
 actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=talent.purifying_brew.enabled&cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains
 actions.cooldowns_improved_niuzao_cta+=/weapons_of_order,if=talent.weapons_of_order.enabled&time-action.purifying_brew.last_used<=5
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> has 20 seconds or less left on the buff.
 actions.cooldowns_improved_niuzao_cta+=/invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
 actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains&buff.weapons_of_order.remains<=30-17
 actions.cooldowns_improved_niuzao_cta+=/invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=30-17&action.purifying_brew.last_used>action.weapons_of_order.last_used+10+2*0.05
@@ -84,6 +85,7 @@ actions.cooldowns_improved_niuzao_woo+=/variable,name=pb_in_window,op=set,value=
 actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)
 actions.cooldowns_improved_niuzao_woo+=/purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)
 actions.cooldowns_improved_niuzao_woo+=/weapons_of_order,if=talent.weapons_of_order.enabled
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> has 20 seconds or less left on the buff.
 actions.cooldowns_improved_niuzao_woo+=/invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
 actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains
 actions.cooldowns_improved_niuzao_woo+=/invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&time-action.purifying_brew.last_used<=5
@@ -91,6 +93,7 @@ actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=talent.purifying_brew.
 
 # Name: Niuzao + Weapons of Order / Niuzao + Call to Arms
 actions.cooldowns_niuzao_woo=weapons_of_order,if=talent.weapons_of_order.enabled
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> has 20 seconds or less left on the buff.
 actions.cooldowns_niuzao_woo+=/invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
 actions.cooldowns_niuzao_woo+=/invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=16&talent.weapons_of_order.enabled
 actions.cooldowns_niuzao_woo+=/invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&!talent.weapons_of_order.enabled
