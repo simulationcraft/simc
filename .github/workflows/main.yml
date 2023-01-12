@@ -203,7 +203,8 @@ jobs:
             Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
-        - compiler: clang++-12
+        include:
+          - compiler: clang++-12
             os: ubuntu-20.04
 
     steps:
