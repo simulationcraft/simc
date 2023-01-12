@@ -28,12 +28,10 @@ jobs:
             cxx: g++-7
             packages: gcc-7 g++-7
             os: ubuntu-18.04
-            upload: false
           - cc: gcc-12
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
-            upload: true
         exclude:
           - cc: gcc-7
             cppVersion: 20   
@@ -72,26 +70,31 @@ jobs:
           ccache -s
           
       - uses: actions/cache@v3
-        if: ${{ matrix.upload }}
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-gcc-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
     name: ubuntu-clang-build
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         cppVersion: [17, 20]
+        cc: [clang++-12, clang++-14]
+        include:
+          - cc: clang++-12
+            os: ubuntu-20.04
+          - cc: clang++-14
+            os: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
-        env: { ccache-prefix: 'ubuntu-clang-12-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -107,7 +110,7 @@ jobs:
           UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=clang++-12 -DCMAKE_C_COMPILER=clang-12
+              -DCMAKE_CXX_COMPILER=${{ matrix.cc }}
               -DCMAKE_CXX_FLAGS="-Og -ffile-prefix-map=${{ runner.workspace }}/=/
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
@@ -131,7 +134,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
@@ -142,7 +145,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang, gcc]
+        compiler: [clang++-12, clang++-14, gcc-7, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -153,9 +156,11 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
-          - compiler: clang
+          - compiler: clang++-12
             os: ubuntu-20.04
-          - compiler: gcc
+          - compiler: clang++-14
+            os: ubuntu-22.04
+          - compiler: gcc-12
             os: ubuntu-22.04
 
     steps:
@@ -174,7 +179,7 @@ jobs:
 
   simc-tests:
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
 
     strategy:
@@ -182,6 +187,7 @@ jobs:
       matrix:
         cppVersion: [17]
         tier: [ Tier29 ]
+        compiler: [clang++-12]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -197,6 +203,8 @@ jobs:
             Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
+        - compiler: clang++-12
+            os: ubuntu-20.04
 
     steps:
       - uses: actions/cache@v3
@@ -205,7 +213,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
