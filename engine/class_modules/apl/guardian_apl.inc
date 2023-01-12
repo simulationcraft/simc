@@ -27,7 +27,7 @@ bear->add_action( "barkskin,if=buff.bear_form.up" );
 bear->add_action( "convoke_the_spirits" );
 bear->add_action( "berserk_bear" );
 bear->add_action( "incarnation" );
-bear->add_action( "rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60|buff.incarnation_guardian_of_ursoc.up" );
+bear->add_action( "rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60|buff.incarnation_guardian_of_ursoc.up|(talent.convoke_the_spirits.enabled)" );
 bear->add_action( "berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)" );
 bear->add_action( "maul,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6" );
 bear->add_action( "ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&!cooldown.pause_action.remains|rage>90" );

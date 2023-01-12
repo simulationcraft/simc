@@ -44,8 +44,8 @@ struct special_effect_t
   special_effect_e type;
   special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
-  unsigned proc_flags_; /* Proc-by */
-  unsigned proc_flags2_; /* Proc-on (hit/damage/...) */
+  uint64_t proc_flags_; /* Proc-by */
+  uint64_t proc_flags2_; /* Proc-on (hit/damage/...) */
   stat_e stat;
   school_e school;
   int max_stacks;
@@ -153,8 +153,8 @@ public:
   spell_t* initialize_resource_action() const;
 
   /* Accessors for driver specific features of the proc; some are also used for on-use effects */
-  unsigned proc_flags() const;
-  unsigned proc_flags2() const;
+  uint64_t proc_flags() const;
+  uint64_t proc_flags2() const;
   double ppm() const;
   double rppm() const;
   unsigned rppm_scale() const;

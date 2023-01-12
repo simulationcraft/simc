@@ -35,31 +35,36 @@ actions.precombat+=/unstable_affliction,if=!talent.soul_swap
 actions.precombat+=/shadow_bolt
 
 # Executed every time the actor is available.
-actions=call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|variable.cleave_apl
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|variable.cleave_apl
 actions+=/call_action_list,name=aoe,if=active_enemies>3
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
-actions+=/malefic_rapture,if=soul_shard=5
-actions+=/haunt
 actions+=/soul_swap,if=dot.unstable_affliction.remains<5
 actions+=/unstable_affliction,if=remains<5
 actions+=/agony,if=remains<5
-actions+=/siphon_life,if=remains<5
 actions+=/corruption,if=remains<5
-actions+=/soul_tap
-actions+=/phantom_singularity
+actions+=/siphon_life,if=remains<5
+actions+=/haunt
+actions+=/drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions+=/shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions+=/phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|!talent.summon_darkglare
 actions+=/vile_taint
-actions+=/soul_rot
-actions+=/summon_darkglare
+actions+=/soul_rot,if=variable.ps_up&variable.vt_up|!talent.summon_darkglare
+actions+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
+actions+=/malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)
+actions+=/malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3
 actions+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3
-actions+=/malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd
-actions+=/malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up
-actions+=/malefic_rapture,if=!talent.dread_touch&(dot.soul_rot.remains>cast_time|dot.phantom_singularity.remains>cast_time|dot.vile_taint.remains>cast_time|pet.darkglare.active)
-actions+=/drain_soul,if=buff.nightfall.react|talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<2)
-actions+=/shadow_bolt,if=buff.nightfall.react|talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<2)
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
+actions+=/malefic_rapture,if=variable.cd_dots_up
+actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
 actions+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4
+actions+=/drain_soul,if=buff.nightfall.react
+actions+=/shadow_bolt,if=buff.nightfall.react
 actions+=/agony,if=refreshable
 actions+=/corruption,if=refreshable
+actions+=/soul_tap
 actions+=/drain_soul,interrupt=1
 actions+=/shadow_bolt
 
@@ -109,12 +114,22 @@ actions.cleave+=/corruption,target_if=refreshable
 actions.cleave+=/drain_soul,interrupt_global=1
 actions.cleave+=/shadow_bolt
 
-actions.items=use_items,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot|time_to_die<21
+actions.items=use_items,if=variable.cds_active
+actions.items+=/use_item,name=desperate_invokers_codex
+actions.items+=/use_item,name=conjured_chillglobe
 
-actions.ogcd=potion,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
-actions.ogcd+=/berserking,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
-actions.ogcd+=/blood_fury,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
-actions.ogcd+=/fireblood,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot
+actions.ogcd=potion,if=variable.cds_active
+actions.ogcd+=/berserking,if=variable.cds_active
+actions.ogcd+=/blood_fury,if=variable.cds_active
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active
+actions.ogcd+=/fireblood,if=variable.cds_active
+
+actions.variables=variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity
+actions.variables+=/variable,name=vt_up,op=set,value=dot.vile_taint.ticking|!talent.vile_taint
+actions.variables+=/variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot
+actions.variables+=/variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up
+actions.variables+=/variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare
+actions.variables+=/variable,name=cds_active,op=set,value=!variable.has_cds|(pet.darkglare.active|variable.cd_dots_up|buff.power_infusion.react)
 
 head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192988
 neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948

@@ -39,10 +39,11 @@ void affliction( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -57,33 +58,62 @@ void affliction( player_t* p )
   precombat->add_action( "unstable_affliction,if=!talent.soul_swap" );
   precombat->add_action( "shadow_bolt" );
 
+  default_->add_action( "call_action_list,name=variables" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|variable.cleave_apl" );
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "malefic_rapture,if=soul_shard=5" );
-  default_->add_action( "haunt" );
   default_->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
-  default_->add_action( "siphon_life,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
-  default_->add_action( "soul_tap" );
-  default_->add_action( "phantom_singularity" );
+  default_->add_action( "siphon_life,if=remains<5" );
+  default_->add_action( "haunt" );
+  default_->add_action( "drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
+  default_->add_action( "shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
+  default_->add_action( "phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|!talent.summon_darkglare" );
   default_->add_action( "vile_taint" );
-  default_->add_action( "soul_rot" );
-  default_->add_action( "summon_darkglare" );
+  default_->add_action( "soul_rot,if=variable.ps_up&variable.vt_up|!talent.summon_darkglare" );
+  default_->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
+  default_->add_action( "malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)" );
+  default_->add_action( "malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3" );
   default_->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3" );
-  default_->add_action( "malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd" );
-  default_->add_action( "malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up" );
-  default_->add_action( "malefic_rapture,if=!talent.dread_touch&(dot.soul_rot.remains>cast_time|dot.phantom_singularity.remains>cast_time|dot.vile_taint.remains>cast_time|pet.darkglare.active)" );
-  default_->add_action( "drain_soul,if=buff.nightfall.react|talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<2)" );
-  default_->add_action( "shadow_bolt,if=buff.nightfall.react|talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<2)" );
+  default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react" );
+  default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
+  default_->add_action( "malefic_rapture,if=variable.cd_dots_up" );
+  default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
+  default_->add_action( "drain_soul,if=buff.nightfall.react" );
+  default_->add_action( "shadow_bolt,if=buff.nightfall.react" );
   default_->add_action( "agony,if=refreshable" );
   default_->add_action( "corruption,if=refreshable" );
+  default_->add_action( "soul_tap" );
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
+
+  variables->add_action( "variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity" );
+  variables->add_action( "variable,name=vt_up,op=set,value=dot.vile_taint.ticking|!talent.vile_taint" );
+  variables->add_action( "variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot" );
+  variables->add_action( "variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up" );
+  variables->add_action( "variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare" );
+  variables->add_action( "variable,name=cds_active,op=set,value=!variable.has_cds|(pet.darkglare.active|variable.cd_dots_up|buff.power_infusion.react)" );
+
+  aoe->add_action( "call_action_list,name=ogcd" );
+  aoe->add_action( "call_action_list,name=items" );
+  aoe->add_action( "haunt" );
+  aoe->add_action( "vile_taint" );
+  aoe->add_action( "phantom_singularity" );
+  aoe->add_action( "soul_rot" );
+  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
+  aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
+  aoe->add_action( "summon_darkglare" );
+  aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
+  aoe->add_action( "malefic_rapture" );
+  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
+  aoe->add_action( "drain_soul,interrupt_global=1" );
+  aoe->add_action( "shadow_bolt" );
 
   cleave->add_action( "call_action_list,name=ogcd" );
   cleave->add_action( "call_action_list,name=items" );
@@ -114,29 +144,15 @@ void affliction( player_t* p )
   cleave->add_action( "drain_soul,interrupt_global=1" );
   cleave->add_action( "shadow_bolt" );
 
-  aoe->add_action( "call_action_list,name=ogcd" );
-  aoe->add_action( "call_action_list,name=items" );
-  aoe->add_action( "haunt" );
-  aoe->add_action( "vile_taint" );
-  aoe->add_action( "phantom_singularity" );
-  aoe->add_action( "soul_rot" );
-  aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
-  aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
-  aoe->add_action( "summon_darkglare" );
-  aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
-  aoe->add_action( "malefic_rapture" );
-  aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
-  aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
-  aoe->add_action( "drain_soul,interrupt_global=1" );
-  aoe->add_action( "shadow_bolt" );
+  items->add_action( "use_items,if=variable.cds_active" );
+  items->add_action( "use_item,name=desperate_invokers_codex" );
+  items->add_action( "use_item,name=conjured_chillglobe" );
 
-  ogcd->add_action( "potion,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-  ogcd->add_action( "berserking,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-  ogcd->add_action( "blood_fury,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-  ogcd->add_action( "fireblood,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot" );
-
-  items->add_action( "use_items,if=pet.darkglare.active|dot.soul_rot.ticking|!talent.summon_darkglare&!talent.soul_rot|time_to_die<21" );
+  ogcd->add_action( "potion,if=variable.cds_active" );
+  ogcd->add_action( "berserking,if=variable.cds_active" );
+  ogcd->add_action( "blood_fury,if=variable.cds_active" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active" );
+  ogcd->add_action( "fireblood,if=variable.cds_active" );
 }
 //affliction_apl_end
 

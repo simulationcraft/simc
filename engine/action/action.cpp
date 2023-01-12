@@ -1790,9 +1790,34 @@ void action_t::execute()
 
     // Proc generic abilities on execute.
     proc_types pt;
+    proc_types2 pt2;
     if ( execute_state && callbacks && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
     {
-      proc_types2 pt2;
+      // "On spell cast", only performed for foreground actions
+      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+
+      // "On an execute result"
+      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+
+      // "On interrupt cast result"
+      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+      {
+        if ( execute_state->target->debuffs.casting->check() )
+          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+    }
+
+    // Special handling for "Cast Successful" procs
+    // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
+    if ( execute_state && callbacks )
+    {
+      pt = PROC1_CAST_SUCCESSFUL;
 
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
@@ -1970,7 +1995,7 @@ void action_t::assess_damage( result_amount_type type, action_state_t* state )
       }
     }
     else if ( state->target == sim->target ||
-              ( sim->merge_enemy_priority_dmg && state->target->is_enemy() && !state->target->is_pet() ) )
+              ( sim->merge_enemy_priority_dmg && state->target->is_boss() ) )
     {
       player->priority_iteration_dmg += state->result_amount;
     }
@@ -2356,7 +2381,7 @@ bool action_t::select_target()
 
   // Normal casting (no cycle_targets, cycle_players, target_number, or target_if specified). Check
   // that we can cast on the target
-  return target_ready( target );
+  return target ? target_ready( target ) : false;
 }
 
 bool action_t::action_ready()
@@ -3760,22 +3785,26 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
       double evaluate() override
       {
-        if ( proxy_expr.size() <= action.target->actor_index )
-        {
+        // In the case of player-targeted non-hostile actions, target.x expressions are not typically relevant
+        // Assume in this case the intent is to use the player's target rather than the player for evaluation
+        // For things such as self-heals, self.x (e.g. self.health.pct) expressions should be used
+        player_t* target = ( action.target == action.player ) ? action.player->target : action.target;
 
-          std::generate_n(std::back_inserter(proxy_expr), action.target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
+        if ( proxy_expr.size() <= target->actor_index )
+        {
+          std::generate_n(std::back_inserter(proxy_expr), target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
         }
 
-        auto& expr = proxy_expr[ action.target->actor_index ];
+        auto& expr = proxy_expr[ target->actor_index ];
 
         if ( !expr )
         {
-          expr = action.target->create_action_expression( action, suffix_expr_str );
+          expr = target->create_action_expression( action, suffix_expr_str );
           if ( !expr )
           {
             throw std::invalid_argument(
                 fmt::format( "Cannot create dynamic target expression for target '{}' from '{}'.",
-                             action.target->name(), suffix_expr_str ) );
+                             target->name(), suffix_expr_str ) );
           }
         }
 
@@ -3932,7 +3961,7 @@ double action_t::ppm_proc_chance( double PPM ) const
 timespan_t action_t::tick_time( const action_state_t* state ) const
 {
   timespan_t t = base_tick_time;
-  if ( channeled || hasted_ticks )
+  if ( hasted_ticks )
   {
     t *= state->haste;
   }

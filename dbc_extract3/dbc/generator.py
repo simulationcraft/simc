@@ -1385,6 +1385,7 @@ class SpellDataGenerator(DataGenerator):
          393987, # Azureweave Vestments set bonus driver
          390529, 390579, 392038, # Raging Tempest set 4pc
          389820, 383813, 383812, 389816, 389839, 383814, 390234, # Ruby Whelp Shell
+         389581, # Emerald Coach's Whistle
         ),
 
         # Warrior:
@@ -2144,6 +2145,8 @@ class SpellDataGenerator(DataGenerator):
           ( 207760, 2 ), # Burning Alive spread radius
           ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
+          ( 336640, 2 ), # Charred Flesh
+          ( 203981, 2 ), # Soul Fragments
        ),
 
        # Evoker:
@@ -3114,10 +3117,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(duration_entry, ('duration_1', 19))
 
             aura_opt_entry = spell.child('SpellAuraOptions')
-            fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags_1', 'internal_cooldown')
+            fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges')
+            fields.append('%d' % (aura_opt_entry.proc_flags_1 | aura_opt_entry.proc_flags_2 << 32))
+            fields += aura_opt_entry.field('internal_cooldown')
             hotfix.add(aura_opt_entry,
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
-                    ('proc_flags_1', 23), ('internal_cooldown', 24))
+                    ('proc_flags_1', 23), ('proc_flags_2', 52), ('internal_cooldown', 24))
 
             ppm_entry = aura_opt_entry.ref('id_ppm')
             fields += ppm_entry.field('ppm')

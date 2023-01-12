@@ -708,6 +708,13 @@ bool parse_fight_style( sim_t*             sim,
     throw std::invalid_argument( fmt::format( "Invalid fight style {}", value ) );
   }
 
+  // Disable optimal raid setting for Dungeon-style sim types
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    sim->optimal_raid = 0;
+    sim->use_optimal_buffs_and_debuffs( 0 );
+  }
+
   return true;
 }
 
@@ -2254,18 +2261,10 @@ void sim_t::init_fight_style()
     
     case FIGHT_STYLE_DUNGEON_SLICE:
       //Based on the Hero Dungeon setup
+      desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
-      //Disables all raidbuffs, except those provided by scrolls or the character itself.
-      optimal_raid = 0;
-      overrides.arcane_intellect = 1;
-      overrides.battle_shout = 1;
-      overrides.mark_of_the_wild = 0;
-      overrides.power_word_fortitude = 1;
-      overrides.bloodlust = 1;
-      overrides.windfury_totem = 0;
 
       shadowlands_opts.enable_rune_words = false;
-
       ignore_invulnerable_targets = true;
 
       raid_events_str +=
@@ -2277,11 +2276,13 @@ void sim_t::init_fight_style()
     
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
+      range::for_each( target_list, []( player_t* t ) {
+        t -> base.sleeping = true;
+      });
       desired_targets = 1;
       fixed_time = false;
-      ignore_invulnerable_targets = true;
-      shadowlands_opts.enable_rune_words = false;
-      overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
+      // Bloodlust is handled by an option on each pull raid event.
+      overrides.bloodlust = 0;
       break;
     
     case FIGHT_STYLE_CLEAVE_ADD:
@@ -3485,6 +3486,7 @@ void sim_t::create_options()
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
+  add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
@@ -3563,7 +3565,6 @@ void sim_t::create_options()
   add_option( opt_string( "reference_player", reference_player_str ) );
   add_option( opt_string( "raid_events", raid_events_str ) );
   add_option( opt_append( "raid_events+", raid_events_str ) );
-  add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_string( "main_target", main_target_str ) );
   add_option( opt_float( "enemy_death_pct", enemy_death_pct ) );
   add_option( opt_int( "target_level", target_level ) );

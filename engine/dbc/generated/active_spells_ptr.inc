@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.5.47186
-static const std::array<active_class_spell_t, 266> __ptr_active_spells_data { {
+// Active class spells, wow build 10.0.5.47481
+static const std::array<active_class_spell_t, 267> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -77,6 +77,7 @@ static const std::array<active_class_spell_t, 266> __ptr_active_spells_data { {
   {  4,    0,   1804,      0, "Pick Lock"                          },
   {  4,    0,   1833,      0, "Cheap Shot"                         },
   {  4,    0,   1856,      0, "Vanish"                             },
+  {  4,    0,   1966,      0, "Feint"                              },
   {  4,    0,   2983,      0, "Sprint"                             },
   {  4,    0,   3408,      0, "Crippling Poison"                   },
   {  4,    0,   8676,      0, "Ambush"                             },
@@ -268,7 +269,7 @@ static const std::array<active_class_spell_t, 266> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.5.47186
+// Pet active spells, wow build 10.0.5.47481
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

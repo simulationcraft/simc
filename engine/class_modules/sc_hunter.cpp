@@ -685,10 +685,11 @@ public:
   } state;
 
   struct options_t {
-    std::string summon_pet_str = "turtle";
+    std::string summon_pet_str = "duck";
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
     bool separate_wfi_stats = false;
+    int dire_pack_start = 0;
   } options;
 
   hunter_t( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) :
@@ -1481,7 +1482,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buffs.bestial_wrath =
       make_buff( this, "bestial_wrath", find_spell( 186254 ) )
-        -> set_default_value( find_spell( 186254 ) -> effectN( 1 ).percent() )
+        -> set_default_value_from_effect( 1 )
         -> set_cooldown( 0_ms )
         -> set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
           if ( cur == 0 )
@@ -1522,7 +1523,9 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     
     m *= 1 + o() -> talents.beast_master -> effectN( 1 ).percent();
 
-    m *= 1 + buffs.bestial_wrath -> check_value();
+    if ( buffs.bestial_wrath -> has_common_school( school ) )
+      m *= 1 + buffs.bestial_wrath -> check_value();
+
     m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
     m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
     
@@ -1547,7 +1550,8 @@ struct hunter_main_pet_base_t : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_critical_damage_multiplier( s );
 
-    m *= 1 + buffs.piercing_fangs -> check_value();
+    if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
+      m *= 1 + buffs.piercing_fangs -> check_value();
 
     return m;
   }
@@ -1741,7 +1745,7 @@ double hunter_main_pet_base_t::composite_player_target_multiplier( player_t* tar
   if ( auto main_pet = o() -> pets.main ) // theoretically should always be there /shrug
   {
     const hunter_main_pet_td_t* td = main_pet -> find_target_data( target );
-    if ( td && td -> dots.bloodshed -> is_ticking() )
+    if ( td && td -> dots.bloodshed -> is_ticking() && spells.bloodshed -> effectN( 2 ).has_common_school( school ) )
       m *= 1 + spells.bloodshed -> effectN( 2 ).percent();
   }
 
@@ -3681,6 +3685,14 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
         base_multiplier *= p -> talents.chimaera_shot -> effectN( 1 ).percent();
       }
     }
+
+    void impact( action_state_t* state ) override
+    {
+      hunter_ranged_attack_t::impact( state );
+
+      if ( state -> result == RESULT_CRIT )
+        p() -> buffs.find_the_mark -> trigger();
+    }
   };
 
   impact_t* nature;
@@ -5065,6 +5077,8 @@ struct summon_pet_t: public hunter_spell_t
     ignore_false_positive = true;
 
     opt_disabled = util::str_compare_ci( p -> options.summon_pet_str, "disabled" );
+
+    target = player;
   }
 
   void init_finished() override
@@ -7137,6 +7151,11 @@ void hunter_t::reset()
   // Active
   pets.main = nullptr;
   state = {};
+
+  if ( options.dire_pack_start > 0 )
+    state.dire_pack_counter = options.dire_pack_start;
+  else
+    state.dire_pack_counter = rng().range( as<int>( talents.dire_pack -> effectN( 1 ).base_value() ) );
 }
 
 // hunter_t::merge ==========================================================
@@ -7242,9 +7261,14 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 {
   double m = player_t::composite_player_critical_damage_multiplier( s );
 
-  m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
-  m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
-  m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
+  if ( talents.sharpshooter -> effectN( 1 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
+
+  if ( talents.sharp_edges -> effectN( 1 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
+
+  if ( buffs.unerring_vision -> data().effectN( 2 ).has_common_school( s -> action -> school ) )
+    m *= 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
   return m;
 }
@@ -7438,6 +7462,7 @@ void hunter_t::create_options()
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
   add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
+  add_option( opt_int( "hunter.dire_pack_start", options.dire_pack_start, 0, 4 ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -7455,6 +7480,7 @@ std::string hunter_t::create_profile( save_e stype )
   print_option( &options_t::summon_pet_str, "summon_pet" );
   print_option( &options_t::pet_attack_speed, "hunter.pet_attack_speed" );
   print_option( &options_t::pet_basic_attack_delay, "hunter.pet_basic_attack_delay" );
+  print_option( &options_t::dire_pack_start, "hunter.dire_pack_start" );
 
   return profile_str;
 }

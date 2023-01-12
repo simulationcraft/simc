@@ -111,7 +111,7 @@ public:
     {
       auto trigger = player->talent.general.resonant_fists.spell();
 
-      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( UINT64_C( 1 ) << ab::proc_type() ) );
     }
 
     apply_buff_effects();
@@ -296,7 +296,7 @@ public:
     {
       auto trigger = p()->talent.general.resonant_fists.spell();
 
-      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+      trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( UINT64_C( 1 ) << ab::proc_type() ) );
     }
   }
 
@@ -502,8 +502,7 @@ public:
 
     if ( current_resource() == RESOURCE_CHI )
     {
-      // Dance of Chi-Ji talent triggers from spending chi
-      if ( current_resource() == RESOURCE_CHI )
+        // Dance of Chi-Ji talent triggers from spending chi
         p()->buff.dance_of_chiji->trigger();
 
         if ( ab::cost() > 0 )
@@ -638,7 +637,7 @@ public:
 
     trigger_exploding_keg_proc( s );
 
-    p()->trigger_empowered_tiger_lightning( s, true, true );
+    p()->trigger_empowered_tiger_lightning( s, true );
 
     if ( p()->bugs && get_td( s->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( s );
@@ -1143,6 +1142,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     // Serenity
     if ( p()->buff.serenity->check() && base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
       am *= 1 + p()->talent.windwalker.serenity->effectN( 2 ).percent();
+
+    if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
+      am *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
 
     return am;
   }
@@ -2438,10 +2440,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
 
-    // 2022-05-27 Patch 9.2.5 added an -11% effect that is to offset an increased to the single target damage
-    // while trying to keep AoE damage the same.
     if ( target != p()->target )
-      m *= ( p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent() + p()->spec.windwalker_monk->effectN( 18 ).percent() );
+      m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
 
     return m;
   }
@@ -3063,7 +3063,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     return 0;
   }
 
-  bool target_ready( player_t* target_) override
+  bool target_ready( player_t* target ) override
   {
     // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
     if ( target->true_level > p()->true_level && p()->talent.general.improved_touch_of_death->ok() &&
@@ -3705,6 +3705,7 @@ struct breath_of_fire_t : public monk_spell_t
   breath_of_fire_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ),
       dragonfire( new dragonfire_brew_t( p ) ),
+      no_bof_hit( false ),
       blackout_combo( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ));
@@ -4154,6 +4155,7 @@ struct purifying_brew_t : public monk_spell_t
 
     harmful         = false;
     cast_during_sck = true;
+    use_off_gcd     = true;
 
     cooldown->charges += (int)p.talent.brewmaster.improved_purifying_brew->effectN( 1 ).base_value();
 
@@ -4500,6 +4502,7 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 
     harmful               = false;
     trigger_faeline_stomp = true;
+    gcd_type              = gcd_haste_type::NONE;
   }
 
   void execute() override
@@ -4657,6 +4660,7 @@ struct bonedust_brew_t : public monk_spell_t
     cast_during_sck             = true;
     may_miss                    = false;
     may_parry                   = true;
+    gcd_type                    = gcd_haste_type::NONE;
 
     if ( p.talent.windwalker.dust_in_the_wind->ok() )
       radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
@@ -6930,10 +6934,10 @@ void monk_t::init_spells()
     return find_talent_spell( talent_tree::CLASS, name );
   };
 
-  auto _CTID = [this]( int id ) {
+/* auto _CTID = [ this ]( int id ) {
     return find_talent_spell( talent_tree::CLASS, id );
   };
-
+*/
   auto _ST = [ this ]( util::string_view name ) {
     return find_talent_spell( talent_tree::SPECIALIZATION, name );
   };
@@ -7640,7 +7644,7 @@ void monk_t::create_buffs ()
 
     buff.training_of_niuzao = make_buff( this, "training_of_niuzao", find_spell( 383733 ) )
       ->set_trigger_spell( talent.brewmaster.training_of_niuzao )
-      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).percent() )
+      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value() )
       ->add_invalidate( CACHE_MASTERY );
 
     buff.weapons_of_order = make_buff( this, "weapons_of_order", find_spell( 310454 ) )
@@ -9154,7 +9158,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
   {
     new_buff->trigger();
     if ( talent.brewmaster.training_of_niuzao.ok() )
-      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).percent(), -1, timespan_t::min() );
+      buff.training_of_niuzao->trigger( 1, niuzao * talent.brewmaster.training_of_niuzao->effectN( 1 ).base_value(), -1, timespan_t::min() );
   }
 }
 
@@ -9218,7 +9222,7 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
   return amount;
 }
 
-void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen, bool trigger_call_to_arms )
+void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen )
 {
   if ( specialization() != MONK_WINDWALKER )
     return;

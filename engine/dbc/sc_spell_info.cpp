@@ -77,7 +77,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 20, "Max stacks" },
   { 21, "Proc Chance" },
   { 22, "Proc Stacks" },
-  { 23, "Proc Flags" },
+  { 23, "Proc Flags 1" },
   { 24, "Internal Cooldown" },
   { 25, "RPPM" },
   { 30, "Cast Time" },
@@ -93,7 +93,8 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 48, "Max Targets" },
   { 49, "Required Level" },
   { 50, "Travel Delay" },
-  { 51, "Min Travel Time" }
+  { 51, "Min Travel Time" },
+  { 52, "Proc Flags 2" },
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
@@ -211,36 +212,45 @@ std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifie
 }
 
 struct proc_map_entry_t {
-  int flag;
+  uint64_t flag;
   util::string_view proc;
 };
-static constexpr std::array<proc_map_entry_t, 26> _proc_flag_map { {
-  { PF_KILLED,               "Killed"                      },
-  { PF_KILLING_BLOW,         "Killing Blow"                },
-  { PF_MELEE,                "White Melee"                 },
-  { PF_MELEE_TAKEN,          "White Melee Taken"           },
-  { PF_MELEE_ABILITY,        "Yellow Melee"                },
-  { PF_MELEE_ABILITY_TAKEN,  "Yellow Melee Taken"          },
-  { PF_RANGED,               "White Ranged"                },
-  { PF_RANGED_TAKEN,         "White Ranged Taken"          },
-  { PF_RANGED_ABILITY,       "Yellow Ranged"               },
-  { PF_RANGED_ABILITY_TAKEN, "Yellow Ranged Taken"         },
-  { PF_NONE_HEAL,            "Generic Heal"                },
-  { PF_NONE_HEAL_TAKEN,      "Generic Heal Taken"          },
-  { PF_NONE_SPELL,           "Generic Hostile Spell"       },
-  { PF_NONE_SPELL_TAKEN,     "Generic Hostile Spell Taken" },
-  { PF_MAGIC_HEAL,           "Magic Heal"                  },
-  { PF_MAGIC_HEAL_TAKEN,     "Magic Heal Taken"            },
-  { PF_MAGIC_SPELL,          "Magic Hostile Spell"         },
-  { PF_MAGIC_SPELL_TAKEN,    "Magic Hostile Spell Taken"   },
-  { PF_PERIODIC,             "Periodic"                    },
-  { PF_PERIODIC_TAKEN,       "Periodic Taken"              },
-  { PF_ANY_DAMAGE_TAKEN,     "Any Damage Taken"            },
-  { PF_TRAP_TRIGGERED,       "Trap Triggered"              },
-  { PF_JUMP,                 "Proc on jump"                },
-  { PF_MAINHAND,             "Melee Main-Hand"             },
-  { PF_OFFHAND,              "Melee Off-Hand"              },
-  { PF_DEATH,                "Death"                       },
+static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
+  { PF_KILLED,                 "Killed"                      },
+  { PF_KILLING_BLOW,           "Killing Blow"                },
+  { PF_MELEE,                  "White Melee"                 },
+  { PF_MELEE_TAKEN,            "White Melee Taken"           },
+  { PF_MELEE_ABILITY,          "Yellow Melee"                },
+  { PF_MELEE_ABILITY_TAKEN,    "Yellow Melee Taken"          },
+  { PF_RANGED,                 "White Ranged"                },
+  { PF_RANGED_TAKEN,           "White Ranged Taken"          },
+  { PF_RANGED_ABILITY,         "Yellow Ranged"               },
+  { PF_RANGED_ABILITY_TAKEN,   "Yellow Ranged Taken"         },
+  { PF_NONE_HEAL,              "Generic Heal"                },
+  { PF_NONE_HEAL_TAKEN,        "Generic Heal Taken"          },
+  { PF_NONE_SPELL,             "Generic Hostile Spell"       },
+  { PF_NONE_SPELL_TAKEN,       "Generic Hostile Spell Taken" },
+  { PF_MAGIC_HEAL,             "Magic Heal"                  },
+  { PF_MAGIC_HEAL_TAKEN,       "Magic Heal Taken"            },
+  { PF_MAGIC_SPELL,            "Magic Hostile Spell"         },
+  { PF_MAGIC_SPELL_TAKEN,      "Magic Hostile Spell Taken"   },
+  { PF_PERIODIC,               "Periodic"                    },
+  { PF_PERIODIC_TAKEN,         "Periodic Taken"              },
+  { PF_ANY_DAMAGE_TAKEN,       "Any Damage Taken"            },
+  { PF_HELPFUL_PERIODIC,       "Helpful Periodic"            },
+  { PF_JUMP,                   "Proc on jump"                },
+  { PF_MAINHAND,               "Melee Main-Hand"             },
+  { PF_OFFHAND,                "Melee Off-Hand"              },
+  { PF_DEATH,                  "Death"                       },
+  { PF_CLONE_SPELL,            "Proc Clone Spell"            },
+  { PF_ENTER_COMBAT,           "Enter Combat"                },
+  { PF_ENCOUNTER_START,        "Encounter Start"             },
+  { PF_CAST_ENDED,             "Cast Ended"                  },
+  { PF_LOOTED,                 "Looted"                      },
+  { PF_HELPFUL_PERIODIC_TAKEN, "Helpful Periodic Taken"      },
+  { PF_TARGET_DIES,            "Target Dies"                 },
+  { PF_KNOCKBACK,              "Knockback"                   },
+  { PF_CAST_SUCCESSFUL,        "Cast Successful"             },
 } };
 
 struct class_map_entry_t {
@@ -915,7 +925,9 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 164, "Cancel Aura"              },
   { 174, "Apply Aura Pet"           },
   { 179, "Create Area Trigger"      },
+  { 188, "Summon Multiple Hunter Pets" },
   { 202, "Apply Player/Pet Aura"    },
+  { 260, "Summon Stabled Pet"       },
   { 290, "Reduce Remaining Cooldown"},
 } );
 
@@ -1126,7 +1138,9 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 468, "Trigger Spell Based on Health%"               },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
+  { 493, "Hunter Animal Companion"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
+  { 531, "Modify Guardian Damage Done%"                 },
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -2286,15 +2300,18 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> proc_flags() > 0 )
   {
     s << "Proc Flags       : ";
-    for ( unsigned flag = 0; flag < 32; flag++ )
+    for ( unsigned flag = 0; flag < 64; flag++ )
     {
-      if ( spell -> proc_flags() & ( 1 << flag ) )
+      if ( spell -> proc_flags() & ( static_cast<uint64_t>( 1 ) << flag ) )
         s << "x";
       else
         s << ".";
 
       if ( ( flag + 1 ) % 8 == 0 )
         s << " ";
+
+      if ( ( flag + 1 ) % 32 == 0 )
+        s << "  ";
     }
     s << std::endl;
     s << "                 : ";

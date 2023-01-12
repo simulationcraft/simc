@@ -881,6 +881,9 @@
 4279827, DBFilesClient\DisplaySeason.db2
 4281307, DBFilesClient\ContentRestrictionRuleSet.db2
 4281309, DBFilesClient\LabelXContentRestrictRuleSet.db2
+4281310, DBFilesClient\PerksVendorCategory.db2
+4281311, DBFilesClient\PerksVendorItem.db2
+4281312, DBFilesClient\PerksVendorItemUIInfo.db2
 4328468, DBFilesClient\GlobalColor.db2
 4335720, DBFilesClient\GossipNPCOptionDisplayInfo.db2
 4337196, DBFilesClient\ItemConversion.db2
@@ -918,6 +921,10 @@
 4505494, DBFilesClient\ProfessionTraitXEffect.db2
 4507381, DBFilesClient\SpellEmpower.db2
 4508544, DBFilesClient\Profession.db2
+4519766, DBFilesClient\PerksActivity.db2
+4519767, DBFilesClient\PerksActivityThreshold.db2
+4519768, DBFilesClient\PerksActivityThresholdGroup.db2
+4519781, DBFilesClient\PerksActivityXInterval.db2
 4521365, DBFilesClient\MythicPlusSeasonTrackedMap.db2
 4524216, DBFilesClient\TraitCurrency.db2
 4524218, DBFilesClient\TraitTreeXTraitCurrency.db2
@@ -962,6 +969,8 @@
 4680120, DBFilesClient\WorldShadow.db2
 4682325, DBFilesClient\GlideEventBlendTimes.db2
 4688652, DBFilesClient\CraftingOrderHouse.db2
+4694317, DBFilesClient\PerksActivityTag.db2
+4694318, DBFilesClient\PerksActivityXTag.db2
 4699082, DBFilesClient\PvpRating.db2
 4724136, DBFilesClient\ChrCustomizationVisReq.db2
 4737221, DBFilesClient\UiWeeklyReward.db2
@@ -969,3 +978,4 @@
 4861207, DBFilesClient\UIGenericWidgetDisplay.db2
 4868299, DBFilesClient\ProfessionXRating.db2
 4871072, DBFilesClient\SpellEmpowerStage.db2
+4872513, DBFilesClient\PerksVendorItemXInterval.db2

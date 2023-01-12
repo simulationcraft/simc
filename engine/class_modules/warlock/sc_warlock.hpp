@@ -1067,6 +1067,8 @@ private:
     {
       p()->pet_name_list.push_back( pet_name );
     }
+
+    target = player;
   }
 
 public:

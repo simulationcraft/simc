@@ -1458,8 +1458,6 @@ struct bear_form_buff_t : public druid_buff_t, public swap_melee_t
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    p()->buff.tigers_fury->expire();  // Mar 03 2016: Tiger's Fury ends when you enter bear form.
-
     swap_melee( p()->bear_melee_attack, p()->bear_weapon );
 
     base_t::start( stacks, value, duration );
@@ -2447,6 +2445,11 @@ public:
       p_time( timespan_t::from_seconds( p->talent.primordial_arcanic_pulsar->effectN( 2 ).base_value() ) ),
       p_cap( p->talent.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
   {}
+
+  bool bugged_weaver()
+  {
+    return p()->bugs && p_buff->current_value + base_cost() >= p_cap;
+  }
 
   void consume_resource() override
   {
@@ -4522,12 +4525,12 @@ struct mangle_t : public bear_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( is_free_proc() )
-      return;
-
     if ( swiping && p()->buff.gore->check() && s->result_amount > 0 && s->chain_target == 0 &&
          !swiping->target_list().empty() )
     {
+      // 2pc expires gore even on free_procs
+      p()->buff.gore->expire();
+
       swiping->snapshot_and_execute( s, false, [ this, s ]( action_state_t* new_ ) {
         swiping->set_amount( new_, s->result_amount );
       } );
@@ -4537,8 +4540,8 @@ struct mangle_t : public bear_attack_t
   void execute() override
   {
     // this is proc'd before the cast and thus benefits the cast
-    if ( p()->buff.overpowering_aura->trigger() )
-      healing->execute();
+    if ( p()->buff.gore->check() )
+      p()->buff.overpowering_aura->trigger();
 
     bear_attack_t::execute();
 
@@ -4546,7 +4549,12 @@ struct mangle_t : public bear_attack_t
       return;
 
     if ( !is_free_proc() )
+    {
       p()->buff.gore->expire();
+
+      if ( healing )
+        healing->execute();
+    }
 
     p()->buff.gory_fur->trigger();
     p()->buff.guardian_of_elune->trigger();
@@ -7215,8 +7223,13 @@ struct starfall_t : public astral_power_spender_t
 
     if ( !is_free() && p()->buff.starweavers_warp->up() )
     {
+      auto bug = bugged_weaver();
+
       p()->active.starfall_starweaver->execute_on_target( target );
-      p()->buff.starweavers_warp->expire();
+
+      if ( !bug )
+        p()->buff.starweavers_warp->expire();
+
       return;
     }
 
@@ -7425,8 +7438,13 @@ struct starsurge_t : public astral_power_spender_t
 
     if ( !is_free() && p()->buff.starweavers_weft->up() )
     {
+      auto bug = bugged_weaver();
+
       p()->active.starsurge_starweaver->execute_on_target( target );
-      p()->buff.starweavers_weft->expire();
+
+      if ( !bug )
+        p()->buff.starweavers_weft->expire();
+
       return;
     }
 
@@ -9682,7 +9700,7 @@ void druid_t::create_buffs()
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
 
   buff.overpowering_aura = make_buff( this, "overpowering_aura", find_spell( 395944 ) )
-    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B4 ) )
+    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B2 ) )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
@@ -9964,14 +9982,12 @@ std::string druid_t::default_flask() const
   {
     switch ( specialization() )
     {
-      case DRUID_FERAL:
-        return "iced_phial_of_corrupting_rage_3";
       case DRUID_BALANCE:
-        return "phial_of_elemental_chaos_3";
+      case DRUID_GUARDIAN:
       case DRUID_RESTORATION:
         return "phial_of_elemental_chaos_3";
-      case DRUID_GUARDIAN:
-        return "phial_of_elemental_chaos_3";
+      case DRUID_FERAL:
+        return "iced_phial_of_corrupting_rage_3";
       default:
         return "disabled";
     }
@@ -9984,25 +10000,17 @@ std::string druid_t::default_flask() const
 
 std::string druid_t::default_potion() const
 {
+  if ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
+
   switch ( specialization() )
   {
     case DRUID_BALANCE:
     case DRUID_RESTORATION:
-      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
-      else if ( true_level >= 60 ) return "spectral_intellect";
-      else if ( true_level >= 40 ) return "superior_battle_potion_of_intellect";
-      SC_FALLTHROUGH;
+      return true_level >= 60 ? "spectral_intellect" : "superior_battle_potion_of_intellect";
     case DRUID_FERAL:
-      if      ( true_level >= 70 ) return "elemental_potion_of_ultimate_power_3";
-      else if ( true_level >= 60 ) return "spectral_agility";
-      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
-      SC_FALLTHROUGH;
     case DRUID_GUARDIAN:
-      if      ( true_level >= 60 ) return "phantom_fire";
-      else if ( true_level >= 40 ) return "superior_battle_potion_of_agility";
-      SC_FALLTHROUGH;
-    default:
-      return "disabled";
+      return true_level >= 60 ? "spectral_agility" : "superior_battle_potion_of_agility";
+    default: return "disabled";
   }
 }
 
@@ -10031,11 +10039,12 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
+    case DRUID_RESTORATION:
       return true_level >= 70 ? "main_hand:howling_rune_3" : "main_hand:shadowcore_oil";
-    case DRUID_RESTORATION: return "main_hand:shadowcore_oil";
-    case DRUID_GUARDIAN: return "main_hand:shadowcore_oil";
     case DRUID_FERAL:
       return true_level >= 70 ? "main_hand:buzzing_rune_3" : "main_hand:shaded_sharpening_stone";
+    case DRUID_GUARDIAN:
+      return true_level >= 70 ? "main_hand:primal_weightstone_3" : "main_hand:shadowcore_oil";
     default: return "disabled";
   }
 }
@@ -10389,6 +10398,30 @@ void druid_t::init_special_effects()
 
     auto cb = new ashamanes_guidance_cb_t( this, *driver );
     cb->initialize();
+  }
+
+  if ( unique_gear::find_special_effect( this, 388069 ) )
+  {
+    callbacks.register_callback_execute_function( 388069,
+      []( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        if ( a->special )
+        {
+          switch ( a->data().id() )
+          {
+            case 190984:  // wrath
+            case 394111:  // sundered firmament
+            case 191034:  // starfall
+            case 78674:   // starsurge
+            case 274281:  // new moon
+            case 274282:  // half moon
+            case 274283:  // full moon
+              break;
+            default:
+              return;
+          }
+        }
+        cb->proc_action->execute_on_target( s->target );
+      } );
   }
 }
 
@@ -11440,8 +11473,7 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + talent.thick_hide->effectN( 1 ).percent();
 
-  if ( sets->has_set_bonus( DRUID_GUARDIAN, T29, B2 ) )
-    s->result_amount *= 1.0 + buff.overpowering_aura->check_value();
+  s->result_amount *= 1.0 + buff.overpowering_aura->check_value();
 
   if ( talent.protective_growth.ok() )
     s->result_amount *= 1.0 + buff.protective_growth->value();

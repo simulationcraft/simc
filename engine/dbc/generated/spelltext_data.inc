@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.47213
-static const std::array<spelltext_data_t, 19201> __spelltext_data { {
+static const std::array<spelltext_data_t, 19204> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -6757,6 +6757,7 @@ static const std::array<spelltext_data_t, 19201> __spelltext_data { {
   { 203965, "Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.", 0, 0 },
   { 203974, "When you deal direct damage with Thrash, you gain a charge of Earthwarden, reducing the damage of the next auto attack you take by $s1%. Earthwarden may have up to $203975u charges.", 0, 0 },
   { 203975, "$@spelldesc203974", "Damage of the next autoattack you take will be reduced by $203974s1~%.", 0 },
+  { 203981, "Consuming a nearby Soul Fragment heals you.", "Soul Fragments are nearby.", 0 },
   { 204018, "Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.\r\n\r\nCannot be used on a target with Forbearance. Causes Forbearance for $25771d.\r\n\r\nShares a cooldown with Blessing of Protection.", "Immune to magical damage and harmful effects.", 0 },
   { 204019, "Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies and reducing the next damage they deal to you by $<shield>.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   { 204021, "Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage$?s320962[ and ${$207771s3*$207744d} Fire damage over $207744d][]. The enemy's damage done to you is reduced by $s1% for $207744d.", "Dealing $s1% less damage to the branding Demon Hunter.", 0 },
@@ -18179,6 +18180,7 @@ static const std::array<spelltext_data_t, 19201> __spelltext_data { {
   { 389577, "When a hit deals more than $m2% of your maximum health, reduce all damage you take by $s1% for $390239d.\r\n\r\nThis effect cannot occur more than once every $m3  seconds.", "When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.", 0 },
   { 389578, "Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds.", 0, 0 },
   { 389579, "When your healing spells heal an ally whose health is below $s3% maximum health, you gain an additional $s1% healing for the next $390105d.", 0, 0 },
+  { 389581, "$@spelldesc386578", "You are coaching a player. Your helpful spells and abilities have a chance to increase their Mastery as well as your own by $w1 for $383799d.", 0 },
   { 389590, "Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.", 0, 0 },
   { 389603, "Rampage has a $s1% chance to grant Recklessness for ${$s2/1000} sec.", 0, 0 },
   { 389609, "Using Demonic Circle: Teleport or your Demonic Gateway reduces all damage you take by $389614s1% for $389614d.", 0, 0 },
@@ -18211,7 +18213,7 @@ static const std::array<spelltext_data_t, 19201> __spelltext_data { {
   { 389714, "$@spelldesc389713", "Able to teleport back to where last Blinked from.", 0 },
   { 389715, "Increases the radius of your Sigils by $s1 yards.", 0, 0 },
   { 389718, "Afflicting an enemy with a Sigil reduces the cooldown of your Sigils by $s1 sec. ", 0, 0 },
-  { 389720, "You take 10% reduced damage after Demon Spikes ends, fading by 1% per second.", 0, 0 },
+  { 389720, "You take $391171s2% reduced damage after Demon Spikes ends, fading by 1% per second.", 0, 0 },
   { 389721, "Increases the duration of Demon Spikes by ${$s1/1000} sec.", 0, 0 },
   { 389724, "Reduce the cooldown of Infernal Strike by ${$s1/-1000} sec.", 0, 0 },
   { 389729, "While Demon Spikes is active, melee attacks against you cause the attacker to take $391159s1 Physical damage. Generates high threat.", 0, 0 },
@@ -18484,6 +18486,7 @@ static const std::array<spelltext_data_t, 19201> __spelltext_data { {
   { 391161, "Heal restores up to $s1% additional health, based on your missing mana.", 0, 0 },
   { 391165, "Every $391166u Soul Fragments you consume increases the damage of your next Soul Cleave or Spirit Bomb by $391172s1%.", 0, 0 },
   { 391166, "$@spelldesc391165", "$w1 Soul Fragments consumed. At $u, the damage of your next Soul Cleave is increased by $391172s1%.", 0 },
+  { 391171, "$@spelldesc389720", "Damage taken reduced by $w1%, fading over $d.", 0 },
   { 391172, "$@spelldesc391165", "The damage of your next Soul Cleave or Spirit Bomb is increased by $w1%.", 0 },
   { 391174, "Each combo point spent reduces the cooldown of $?s102543[Incarnation: Avatar of Ashamane][Berserk] by ${$s1*0.1}.1 sec.", 0, 0 },
   { 391178, "Fel Devastation heals you for up to $s1% more, based on your missing health.", 0, 0 },
@@ -19204,8 +19207,9 @@ static const std::array<spelltext_data_t, 19201> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.2.47213
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
   {  360194,  0, "Carve a deathmark into an enemy, dealing $o1 Bleed damage over $d. While marked your Garrote, Rupture, and Lethal poisons applied to the target are duplicated, dealing ${100+$394331s1}% of normal damage.", "Carve a deathmark into an enemy, dealing $o1 Bleed damage over $d. While marked your Garrote, Rupture, and Lethal poisons applied to the target are duplicated, dealing $?a134735[${100+$394331s1+$394331s3}%][${100+$394331s1}%] of normal damage." },
+  {  389720,  0, "You take 10% reduced damage after Demon Spikes ends, fading by 1% per second.", "You take $391171s2% reduced damage after Demon Spikes ends, fading by 1% per second." },
 } };
 
 // Spell description variables, wow build 10.0.2.47213

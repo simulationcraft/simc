@@ -2022,17 +2022,6 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-  {
-    special_effect_t effect( this );
-
-    unique_gear::initialize_special_effect( effect, 368240 );
-    if ( !effect.custom_init_object.empty() )
-    {
-      special_effects.push_back( new special_effect_t( effect ) );
-    }
-  }
-
   // Initialize generic azerite powers. Note that this occurs later in the process than the class
   // module spell initialization (init_spells()), which is where the core presumes that each class
   // module gets the state their azerite powers (through the invocation of find_azerite_spells).
@@ -5548,7 +5537,7 @@ void player_t::datacollection_begin()
   // Check whether the actor was arisen at least once during the _previous_ iteration
   // Note that this check is dependant on sim_t::combat_begin() having
   // sim_t::datacollection_begin() call before the player_t::combat_begin() calls.
-  if ( !active_during_iteration )
+  if ( !requires_data_collection() )
     return;
 
   sim->print_debug( "Data collection begins for {} (id={})", *this, index );
@@ -12632,8 +12621,15 @@ void player_t::analyze( sim_t& s )
 
   if ( quiet )
     return;
+
   if ( collected_data.fight_length.mean() == 0 )
-    return;
+  {
+    auto it = range::find_if( pet_list, []( pet_t* pet ) {
+      return pet->collected_data.fight_length.mean() > 0; } );
+
+    if ( it == pet_list.end() )
+      return;
+  }
 
   range::for_each( sample_data_list, []( sample_data_helper_t* sd ) { sd->analyze(); } );
 
@@ -12828,6 +12824,20 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       else
         return { SCALE_METRIC_DPS, q->collected_data.dps };
   }
+}
+
+bool player_t::requires_data_collection() const
+{
+  if ( active_during_iteration )
+    return true;
+  
+  for ( const auto* pet : pet_list )
+  {
+    if ( pet->requires_data_collection() )
+      return true;
+  }
+
+  return false;
 }
 
 /**

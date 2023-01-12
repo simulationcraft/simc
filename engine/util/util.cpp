@@ -714,6 +714,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_TURTLE:              return "turtle";
     case PET_WARP_STALKER:        return "warp_stalker";
     case PET_WORM:                return "worm";
+    case PET_DUCK:                return "duck";
     //case PET_RIVERBEAST:          return "riverbeast";
     case PET_BAT:                 return "bat";
     case PET_BIRD_OF_PREY:        return "bird_of_prey";
@@ -1403,6 +1404,7 @@ const char* util::proc_type_string( proc_types type )
     case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
     case PROC1_PERIODIC_HEAL:        return "TickHeal";
     case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
+    case PROC1_CAST_SUCCESSFUL:      return "CastSuccessful";
     default:                         return "Unknown";
   }
 }

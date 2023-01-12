@@ -637,9 +637,17 @@ struct mindgames_t final : public priest_spell_t
       child_mindgames_damage_reversal->execute();
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW && priest().shadow_weaving_active_dots( target, id ) != 3 )
+    if ( priest().specialization() == PRIEST_SHADOW )
     {
-      priest().procs.mindgames_casts_no_mastery->occur();
+      if ( priest().shadow_weaving_active_dots( target, id ) != 3 )
+      {
+        priest().procs.mindgames_casts_no_mastery->occur();
+      }
+
+      if ( result_is_hit( s->result ) && priest().is_ptr() )
+      {
+        priest().trigger_psychic_link( s );
+      }
     }
   }
 };
@@ -1951,6 +1959,7 @@ void priest_t::init_spells()
   talents.move_with_grace    = CT( "Move With Grace" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
+  talents.sanguine_teachings = CT( "Sanguine Teachings" );  // NYI
   talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
   talents.inspiration                = CT( "Inspiration" );           // NYI
@@ -1958,7 +1967,7 @@ void priest_t::init_spells()
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
-  talents.sanlayn                    = CT( "San'layn" );
+  talents.sanlayn                    = CT( "San'layn" );  // TODO: Support working with Sanguine Teachings
   talents.apathy                     = CT( "Apathy" );
   // Row 7
   talents.unwavering_will = CT( "Unwavering Will" );
@@ -2225,6 +2234,9 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   add_option( opt_bool( "priest.power_infusion_fiend", options.power_infusion_fiend ) );
+  add_option( opt_bool( "priest.screams_bug", options.priest_screams_bug ) );
+  add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
+  add_option( opt_bool( "priest.as_insanity_bug", options.as_insanity_bug ) );
 }
 
 std::string priest_t::create_profile( save_e type )

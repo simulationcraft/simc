@@ -6,6 +6,8 @@ role=spell
 position=ranged_back
 talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSIIBh0kWIJAA
 
+flask=phial_of_static_empowerment_3
+
 # TODO: use prof items?
 # TODO: use bonus_ids instead
 head=organized_pontificators_mask,id=193703,ilevel=372

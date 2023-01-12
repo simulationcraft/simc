@@ -5524,27 +5524,6 @@ void consumables::darkmoon_faire_food( special_effect_t& effect )
 }
 
 // Pepper Breath (generic) ==================================================
-
-struct pepper_breath_damage_t : public proc_spell_t
-{
-  pepper_breath_damage_t( const special_effect_t& effect, unsigned spell_id ) :
-    proc_spell_t( "pepper_breath_damage", effect.player, effect.player -> find_spell( spell_id ) )
-  {
-    background = true;
-    callbacks = false;
-    travel_speed = 17.5; // Spelldata says 1.75, but from in-game testing it's definitely closer to 17.5
-  }
-
-  void init() override
-  {
-    spell_t::init();
-    snapshot_flags = update_flags = 0;
-    snapshot_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
-    update_flags |= STATE_TGT_MUL_TA | STATE_TGT_MUL_DA;
-  }
-};
-
-
 struct pepper_breath_driver_t : public proc_spell_t
 {
   size_t balls_min, balls_max;
@@ -5563,16 +5542,7 @@ struct pepper_breath_driver_t : public proc_spell_t
     dot_behavior = DOT_EXTEND;
     travel_speed = 0;
 
-    tick_action = effect.player -> find_action( "pepper_breath_damage" );
-    if ( ! tick_action )
-    {
-      tick_action = effect.player -> create_proc_action( "pepper_breath_damage", effect );
-    }
-
-    if ( ! tick_action )
-    {
-      tick_action = new pepper_breath_damage_t( effect, trigger_id );
-    }
+    tick_action = create_proc_action<generic_proc_t>( "pepper_breath_damage", effect, "pepper_breath_damage", trigger_id );
   }
   void init() override
   {

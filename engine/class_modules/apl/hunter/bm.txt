@@ -15,7 +15,8 @@ actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=st,if=active_enemies<2|!talent.beast_cleave&active_enemies<3
 actions+=/call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&active_enemies>1
 
-actions.cds=berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16
+actions.cds=/invoke_external_buff,name=power_infusion,if=cooldown.bestial_wrath.ready
+actions.cds+=/berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16
 actions.cds+=/blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16
 actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<10

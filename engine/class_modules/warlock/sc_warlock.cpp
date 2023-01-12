@@ -645,6 +645,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+    target = player;
   }
 
   bool ready() override
@@ -750,6 +751,7 @@ struct inquisitors_gaze_t : public warlock_spell_t
     parse_options( options_str );
     
     harmful = false;
+    target = player;
 
     if ( !p->proc_actions.fel_bolt )
     {
@@ -2029,6 +2031,16 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name
       } );
     } );
   }
+  else if ( name_str == "igb_ratio" )
+  {
+    return make_fn_expr( "igb_ratio", [ this ]() {
+      auto igb_count = warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->buffs.imp_gang_boss->check();
+        } );
+
+      return igb_count / as<double>( buffs.wild_imps->stack() );
+      } );
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -2074,6 +2086,10 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return create_pet_expression( name_str );
   }
   else if ( name_str == "two_cast_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "igb_ratio" )
   {
     return create_pet_expression( name_str );
   }
@@ -2186,6 +2202,11 @@ struct warlock_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Warlock", "2023-01-08", "Manually set secondary Malefic Rapture level requirement", 324540 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 11.0 )
+      .verification_value( 43.0 );
   }
 
   bool valid() const override
