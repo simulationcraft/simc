@@ -10044,7 +10044,7 @@ std::string druid_t::default_temporary_enchant() const
     case DRUID_FERAL:
       return true_level >= 70 ? "main_hand:buzzing_rune_3" : "main_hand:shaded_sharpening_stone";
     case DRUID_GUARDIAN:
-      return true_level >= 70 ? "primal_weightstone_3" : "main_hand:shadowcore_oil";
+      return true_level >= 70 ? "main_hand:primal_weightstone_3" : "main_hand:shadowcore_oil";
     default: return "disabled";
   }
 }
