@@ -164,6 +164,9 @@ jobs:
             os: ubuntu-22.04
           - compiler: gcc-7
             os: ubuntu-18.04
+        exclude:
+          - compiler: gcc-7
+            cppVersion: 20
 
     steps:
       - uses: actions/cache@v3
