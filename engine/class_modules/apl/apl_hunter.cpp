@@ -228,6 +228,102 @@ void marksmanship( player_t* p )
 }
 //marksmanship_apl_end
 
+//marksmanship_ptr_apl_start
+void marksmanship_ptr( player_t* p )
+{
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* cds = p->get_action_priority_list( "cds" );
+  action_priority_list_t* st = p->get_action_priority_list( "st" );
+  action_priority_list_t* trickshots = p->get_action_priority_list( "trickshots" );
+  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
+
+  precombat->add_action( "flask" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "food" );
+  precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
+  precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "double_tap,precast_time=10" );
+  precombat->add_action( "salvo,precast_time=10" );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
+  precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
+  precombat->add_action( "wailing_arrow,if=active_enemies>2|!talent.steady_focus" );
+  precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
+
+  default_->add_action( "auto_shot" );
+  default_->add_action( "variable,name=trueshot_ready,value=cooldown.trueshot.ready&(!raid_event.adds.exists&(!talent.bullseye|fight_remains>cooldown.trueshot.duration_guess+buff.trueshot.duration%2|buff.bullseye.stack=buff.bullseye.max_stack)&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>30|trinket.1.cooldown.ready)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>30|trinket.2.cooldown.ready)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|active_enemies>1|fight_remains<25)", "Determine if it is a good time to use Trueshot. Raid event optimization takes priority so usage is saved for multiple targets as long as it won't delay over half its duration. Otherwise allow for small delays to line up buff effect trinkets, and when using Bullseye, delay the last usage of the fight for max stacks." );
+  default_->add_action( "call_action_list,name=cds" );
+  default_->add_action( "call_action_list,name=trinkets" );
+  default_->add_action( "call_action_list,name=st,if=active_enemies<3|!talent.trick_shots" );
+  default_->add_action( "call_action_list,name=trickshots,if=active_enemies>2" );
+
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12" );
+  cds->add_action( "berserking,if=buff.trueshot.up|fight_remains<13" );
+  cds->add_action( "blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
+  cds->add_action( "ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16" );
+  cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
+  cds->add_action( "lights_judgment,if=buff.trueshot.down" );
+  cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26" );
+  cds->add_action( "salvo" );
+
+  st->add_action( "steady_shot,if=talent.steady_focus&(steady_focus_count&buff.steady_focus.remains<5|buff.steady_focus.down&!buff.trueshot.up)" );
+  st->add_action( "kill_shot" );
+  st->add_action( "steel_trap,if=buff.trueshot.down" );
+  st->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down" );
+  st->add_action( "explosive_shot" );
+  st->add_action( "double_tap,if=(cooldown.rapid_fire.remains<gcd|!talent.streamline)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))", "Save Double Tap for Rapid Fire if at least Streamline is taken." );
+  st->add_action( "stampede" );
+  st->add_action( "death_chakram" );
+  st->add_action( "wailing_arrow,if=active_enemies>1" );
+  st->add_action( "volley" );
+  st->add_action( "rapid_fire,if=talent.surging_shots|buff.double_tap.up&talent.streamline", "With at least Streamline, Double Tap Rapid Fire." );
+  st->add_action( "trueshot,if=variable.trueshot_ready" );
+  st->add_action( "multishot,if=buff.bombardment.up&buff.trick_shots.down&active_enemies>1|talent.salvo&buff.salvo.down&!talent.volley", "Trigger Trick Shots from Bombardment if it isn't already up, or trigger Salvo if Volley isn't being used to trigger it." );
+  st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&((buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2))|buff.trick_shots.remains>execute_time&active_enemies>1)", "For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. On one target don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise, and on two targets don't overwrite Precise Shots if you have Chimaera Shot, but ignore those general rules if we can cleave it." );
+  st->add_action( "aimed_shot,target_if=max:debuff.latent_poison.stack,if=(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2))|buff.trick_shots.remains>execute_time&active_enemies>1", "For no Serpentstalker's Trickery, target the highest Latent Poison stack. Same general rules as the previous line." );
+  st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time*2", "Refresh Steady Focus if it would run out while refreshing it." );
+  st->add_action( "rapid_fire" );
+  st->add_action( "wailing_arrow,if=buff.trueshot.down" );
+  st->add_action( "kill_command,if=buff.trueshot.down" );
+  st->add_action( "chimaera_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
+  st->add_action( "arcane_shot,if=buff.precise_shots.up|focus>cost+action.aimed_shot.cost" );
+  st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
+  st->add_action( "steady_shot" );
+
+  trickshots->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
+  trickshots->add_action( "kill_shot,if=buff.razor_fragments.up" );
+  trickshots->add_action( "double_tap,if=cooldown.rapid_fire.remains<gcd|!talent.streamline" );
+  trickshots->add_action( "explosive_shot" );
+  trickshots->add_action( "death_chakram" );
+  trickshots->add_action( "stampede" );
+  trickshots->add_action( "wailing_arrow" );
+  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.hydras_bite&!talent.serpentstalkers_trickery" );
+  trickshots->add_action( "barrage,if=active_enemies>7" );
+  trickshots->add_action( "volley" );
+  trickshots->add_action( "trueshot" );
+  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time&(talent.surging_shots|buff.double_tap.up&talent.streamline)" );
+  trickshots->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))", "For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Generally only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise." );
+  trickshots->add_action( "aimed_shot,target_if=max:debuff.latent_poison.stack,if=(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))", "For no Serpentstalker's Trickery, target the highest Latent Poison stack. Same general rules as the previous line." );
+  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>=execute_time" );
+  trickshots->add_action( "chimaera_shot,if=buff.trick_shots.up&buff.precise_shots.up&focus>cost+action.aimed_shot.cost&active_enemies<4" );
+  trickshots->add_action( "multishot,if=buff.trick_shots.down|(buff.precise_shots.up|buff.bulletstorm.stack=10)&focus>cost+action.aimed_shot.cost" );
+  trickshots->add_action( "serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&talent.poison_injection&!talent.serpentstalkers_trickery", "Only use baseline Serpent Sting as a filler in cleave if it's the only source of applying Latent Poison." );
+  trickshots->add_action( "steel_trap,if=buff.trueshot.down" );
+  trickshots->add_action( "kill_shot,if=focus>cost+action.aimed_shot.cost" );
+  trickshots->add_action( "multishot,if=focus>cost+action.aimed_shot.cost" );
+  trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
+  trickshots->add_action( "steady_shot" );
+
+  trinkets->add_action( "variable,name=sync_ready,value=variable.trueshot_ready", "Signals that cooldowns are active or ready to activate that is desirable to sync a buff effect with." );
+  trinkets->add_action( "variable,name=sync_active,value=buff.trueshot.up", "Signals that the cooldowns that are desirable to sync a buff with are active." );
+  trinkets->add_action( "variable,name=sync_remains,value=cooldown.trueshot.remains", "The amount of time until the cooldowns will be ready that are desirable to sync a buff effect with." );
+  trinkets->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
+  trinkets->add_action( "variable,name=trinket_2_stronger,value=!trinket.1.has_cooldown|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.1.cooldown.duration<trinket.2.cooldown.duration|trinket.1.cast_time<trinket.2.cast_time|trinket.1.cast_time=trinket.2.cast_time&trinket.1.cooldown.duration=trinket.2.cooldown.duration)|!trinket.2.has_use_buff&(!trinket.1.has_use_buff&(trinket.1.cooldown.duration<trinket.2.cooldown.duration|trinket.1.cast_time<trinket.2.cast_time|trinket.1.cast_time=trinket.2.cast_time&trinket.1.cooldown.duration=trinket.2.cooldown.duration))" );
+  trinkets->add_action( "use_items,slots=trinket1,if=trinket.1.has_use_buff&(variable.sync_ready&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|!variable.sync_ready&(variable.trinket_1_stronger&(variable.sync_remains>trinket.1.cooldown.duration%2|trinket.2.has_use_buff&trinket.2.cooldown.remains>variable.sync_remains-15&trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_2_stronger&(trinket.2.cooldown.remains&(trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.2.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.1.cooldown.duration%2|trinket.1.cooldown.duration<fight_remains&(variable.sync_remains+trinket.1.cooldown.duration>fight_remains)))|trinket.2.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.2.cooldown.duration%2)))|!trinket.1.has_use_buff&(trinket.1.cast_time=0|!variable.sync_active)&((!trinket.2.has_use_buff&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|trinket.2.has_use_buff&(variable.sync_remains>20|trinket.2.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_1_stronger|trinket.2.cooldown.remains)", "Uses buff effect trinkets with cooldowns and is willing to delay usage up to half the trinket cooldown if it won't lose a usage in the fight. Fills in downtime with weaker buff effects if they won't also be saved for later cooldowns (happens if it won't delay over half the trinket cooldown and a stronger trinket won't be up in time) or damage effects if they won't inferfere with any buff effect usage. Intended to be slot-agnostic so that any order of the same trinket pair should result in the same usage." );
+  trinkets->add_action( "use_items,slots=trinket2,if=trinket.2.has_use_buff&(variable.sync_ready&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_ready&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%2)))|!trinket.2.has_use_buff&(trinket.2.cast_time=0|!variable.sync_active)&((!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(variable.sync_remains>20|trinket.1.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains)" );
+}
+//marksmanship_ptr_apl_end
+
 //survival_apl_start
 void survival( player_t* p )
 {

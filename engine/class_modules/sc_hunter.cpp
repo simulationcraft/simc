@@ -519,6 +519,7 @@ public:
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t bombardment;
     spell_data_ptr_t volley;
+    spell_data_ptr_t tactical_reload;
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t serpentstalkers_trickery;
 
@@ -897,6 +898,7 @@ public:
     ab::apply_affecting_aura( p -> talents.target_practice );
     ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
+    ab::apply_affecting_aura( p -> talents.tactical_reload );
 
     // Beast Mastery Tree Passives
     ab::apply_affecting_aura( p -> talents.killer_command );
@@ -3288,10 +3290,6 @@ struct master_marksman_t : residual_bleed_base_t
   { }
 };
 
-// ==========================================================================
-// Covenant Abilities
-// ==========================================================================
-
 namespace death_chakram
 {
 /**
@@ -4316,13 +4314,17 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> buffs.bombardment -> expire();
 
-    if ( explosive && !p() -> buffs.salvo -> check() )
+    if ( explosive && ( p() -> is_ptr() && p() -> buffs.salvo -> check() || !p() -> is_ptr() && !p()->buffs.salvo->check() ) )
     {
       std::vector<player_t*>& tl = target_list();
       size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
       for ( size_t t = 0; t < targets; t++ )
         explosive -> execute_on_target( tl[ t ] );
-      p() -> buffs.salvo -> trigger();
+
+      if ( p() -> is_ptr() )
+        p() -> buffs.salvo -> expire();
+      else
+        p() -> buffs.salvo -> trigger();
     }
 
     p() -> buffs.focusing_aim -> expire();
@@ -5716,13 +5718,17 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::execute();
 
-      if ( explosive && !p() -> buffs.salvo -> check() )
+      if ( explosive && ( p() -> is_ptr() && p() -> buffs.salvo -> check() || !p() -> is_ptr() && !p()->buffs.salvo->check() ) )
       {
         std::vector<player_t*>& tl = target_list();
         size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
         for ( size_t t = 0; t < targets; t++ )
           explosive -> execute_on_target( tl[ t ] );
-        p() -> buffs.salvo -> trigger();
+        
+        if ( p() -> is_ptr() )
+          p() -> buffs.salvo -> expire();
+        else
+          p() -> buffs.salvo -> trigger();
       }
     }
   };
@@ -5757,6 +5763,31 @@ struct volley_t : public hunter_spell_t
       );
 
     p() -> player_t::reset_auto_attacks( data().duration(), player -> procs.reset_aa_channel );
+  }
+};
+
+struct salvo_t: public hunter_spell_t
+{
+  timespan_t precast_time = 0_ms;
+
+  salvo_t( hunter_t* p, util::string_view options_str ):
+    hunter_spell_t( "salvo", p, p -> talents.salvo )
+  {
+    add_option( opt_timespan( "precast_time", precast_time ) );
+    parse_options( options_str );
+
+    harmful = false;
+
+    precast_time = clamp( precast_time, 0_ms, data().duration() );
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    trigger_buff( p() -> buffs.salvo, precast_time );
+
+    adjust_precast_cooldown( precast_time );
   }
 };
 
@@ -6269,6 +6300,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
+  if ( name == "salvo" && is_ptr()     ) return new                  salvo_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
@@ -6425,6 +6457,7 @@ void hunter_t::init_spells()
     talents.trick_shots                       = find_talent_spell( talent_tree::SPECIALIZATION, "Trick Shots", HUNTER_MARKSMANSHIP );
     talents.bombardment                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardment", HUNTER_MARKSMANSHIP );
     talents.volley                            = find_talent_spell( talent_tree::SPECIALIZATION, "Volley", HUNTER_MARKSMANSHIP );
+    talents.tactical_reload                   = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Reload", HUNTER_MARKSMANSHIP );
     talents.steady_focus                      = find_talent_spell( talent_tree::SPECIALIZATION, "Steady Focus", HUNTER_MARKSMANSHIP );
     talents.serpentstalkers_trickery          = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentstalker's Trickery", HUNTER_MARKSMANSHIP );
 
@@ -6750,8 +6783,8 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
-  buffs.salvo = 
-    make_buff( this, "salvo", find_spell( 388909 ) );
+  buffs.salvo =
+    make_buff( this, "salvo", find_spell( is_ptr() ? 400456 : 388909 ) );
 
   // Beast Mastery Tree
 
@@ -7055,13 +7088,16 @@ void hunter_t::init_action_list()
     switch ( specialization() )
     {
     case HUNTER_BEAST_MASTERY:
-        hunter_apl::beast_mastery( this );
+      hunter_apl::beast_mastery( this );
       break;
     case HUNTER_MARKSMANSHIP:
+      if ( is_ptr() )
+        hunter_apl::marksmanship_ptr( this );
+      else
         hunter_apl::marksmanship( this );
       break;
     case HUNTER_SURVIVAL:
-        hunter_apl::survival( this );
+      hunter_apl::survival( this );
       break;
     default:
       get_action_priority_list( "default" ) -> add_action( "arcane_shot" );
