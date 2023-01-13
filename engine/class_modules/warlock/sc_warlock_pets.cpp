@@ -2210,9 +2210,6 @@ struct eye_beam_t : public warlock_pet_spell_t
       grim_reach->base_dd_min = grim_reach->base_dd_max = raw_damage * p()->o()->talents.grim_reach->effectN( 1 ).percent();
       for ( player_t* target : sim->target_non_sleeping_list )
       {
-        if ( target == s->target )
-          continue;
-
         if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
         {
           grim_reach->execute_on_target( target );
