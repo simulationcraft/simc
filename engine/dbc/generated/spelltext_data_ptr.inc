@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.5.47481
-static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.5.47621
+static const std::array<spelltext_data_t, 19260> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16930,7 +16930,7 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 382043, "$@spelldesc382042", "Haste increased by $w1%.", 0 },
   { 382045, "Every $s1 casts of Riptide also applies Riptide to another friendly target near your Riptide target.", 0, 0 },
   { 382046, "Reduces the cooldown of Primordial Wave by ${$s1/-1000} sec.", 0, 0 },
-  { 382058, "Stomp the ground, commanding flames to radiate outward from your position, dealing [medium] Fire damage to enemies struck and granting you a [medium] shield for $d. After a delay, the flames return, dealing the same damage and refreshing the shield.\r\n\r\nDamage and absorption are increased for each enemy struck, up to 5 enemies.", "Absorb up to $w1 incoming damage.", 0 },
+  { 382058, "$@spelldesc377449", "Absorb up to $w1 incoming damage.", 0 },
   { 382078, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Versatility increased by $w1. Taking damage as well as dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Critical Strike or Haste if any nearby allies are Marked by Frost or Fire.", 0 },
   { 382079, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Haste if any nearby allies are Marked by Earth or Fire.", 0 },
   { 382080, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1. Dealing harmful spells and abilities has a chance to grant you an additional ${$w1/2} Versatility or Critical Strike if any nearby allies are Marked by Frost or Fire.", 0 },
@@ -16939,7 +16939,7 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 382083, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Haste increased by $w1.", 0 },
   { 382086, "Icefury causes your Frost Shocks to damage up to $s1 additional enemies and targets hit take $382089s1% increased Nature damage from your spells for $382089d. Chain Lightning prefers targets with this effect.", 0, 0 },
   { 382089, "$@spelldesc382086", "Damage taken from Nature spells increased by $w1%.", 0 },
-  { 382090, "Accept the storm, becoming a Primal Air Elemental and immobilizing yourself for X seconds.\r\n\r\nWhile in this form, your melee attacks and abilities gain range and have a very high chance to summon Windbursts at your target's location, dealing [low] nature damage around them. ", 0, 0 },
+  { 382090, "$@spelldesc377453", 0, 0 },
   { 382094, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", "Attack power increased by $w1.", 0 },
   { 382095, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", "Your next melee ability will emit a shockwave in front of you, dealing $377454w2  bonus Nature damage.", 0 },
   { 382096, "Your attacks slowly build Concussive Force, granting [low] attack power per stack. \r\n\r\nAt X stacks, your next 3 melee abilities emit a shockwave in front of you, dealing bonus Nature damage to all enemies in a line. Shockwaves deal more damage to enemies at high health.", 0, 0 },
@@ -17320,6 +17320,7 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 383980, "Consuming Arcane Charges increases your Haste by 2% for 12 seconds, stacks up to 5 times.", 0, 0 },
   { 383994, "After using Breath of Fire, you breathe fire $s1 additional times, each dealing $387621s1 Fire damage.\r\n\r\nBreath of Fire damage increased by up to $s2% based on your level of Stagger.", 0, 0 },
   { 383997, "$@spelldesc383980", "Haste increased by $w1%.", 0 },
+  { 384004, "$@spelldesc382139", 0, 0 },
   { 384027, "$@spelldesc384028", 0, 0 },
   { 384028, "After casting Divine Toll, you instantly cast $?c2[Avenger's Shield]?c1[Holy Shock][Judgment] every $384029t1 sec for $384029s2 sec.", 0, 0 },
   { 384029, "$@spelldesc384028", "Casting $?c2[Avenger's Shield]?c1[Holy Shock][Judgement] every $t1 sec for $s2 sec.", 0 },
@@ -18181,6 +18182,7 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 389577, "When a hit deals more than $m2% of your maximum health, reduce all damage you take by $s1% for $390239d.\r\n\r\nThis effect cannot occur more than once every $m3  seconds.", "When a hit deals more than 20% of your maximum health, reduce all damage you take by $w1% for $390239d.", 0 },
   { 389578, "Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds.", 0, 0 },
   { 389579, "When your healing spells heal an ally whose health is below $s3% maximum health, you gain an additional $s1% healing for the next $390105d.", 0, 0 },
+  { 389581, "$@spelldesc386578", "You are coaching a player. Your helpful spells and abilities have a chance to increase their Mastery as well as your own by $w1 for $383799d.", 0 },
   { 389590, "Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.", 0, 0 },
   { 389603, "Rampage and Onslaught have a $s1% chance to grant Recklessness for ${$s2/1000} sec.", 0, 0 },
   { 389609, "Using Demonic Circle: Teleport or your Demonic Gateway reduces all damage you take by $389614s1% for $389614d.", 0, 0 },
@@ -19025,7 +19027,7 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 394412, "$@spellaura393632", "Wrath and Starfire damage increased by $w1%.", 0 },
   { 394414, "$@spelldesc393633", "Starsurge and Starfall cost no Astral Power and deal $s2% increased damage.", 0 },
   { 394452, "Dealing Fire damage has a chance to ignite your enemies, burning them for an additional $s1 damage every $s2 seconds.\r\n\r\n", 0, 0 },
-  { 394453, "\r\n\r\n", "Burning for 6 sec.", 0 },
+  { 394453, "$@spelldesc394452", "Burning for 6 sec.", 0 },
   { 394455, "Dealing Fire damage has a chance to invigorate you, absorbing $s1 damage for $s2 seconds.\r\n", 0, 0 },
   { 394457, "$@spelldesc377462\r\n", "Your Versatility is increased by $w1 and you are healed for $w2 per second.", 0 },
   { 394460, "Swear your oath to the Primalists to become Marked by Frost, increasing your Critical Strike by [medium amount]. \r\n\r\nFighting alongside allies who are Marked by Earth or Fire has a chance to grant you half of their Mark's stats for $s1 seconds.", "Critical Strike and Haste increased by $w1.", 0 },
@@ -19202,7 +19204,7 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 397708, "Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.", 0, 0 },
   { 397767, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
   { 397870, "Essence Burst increases the damage of affected spells by ${$s1}.1%.", 0, 0 },
-  { 398118, "Warmed, removing the effects of $@spellname396050\r\nAny attempt to apply $@spellicon396050$@spellname396050 will instead remove one stack of $@spellname398118.\r\n\r\n\r\n$@spellicon396050$@spellname396050:\r\n$@spellaura396050.", "Warmed, removing the effects of $@spellicon396050$@spellname396050.\r\n\r\nAny attempt to apply $@spellicon396050$@spellname396050 will instead remove one stack of $@spellname398118.", 0 },
+  { 398118, "Warmed, removing the effects of $@spellname396050\r\nAny attempt to apply $@spellicon396050$@spellname396050 will instead remove one stack of $@spellname398118.\r\n\r\n\r\n$@spellicon396050$@spellname396050:\r\n$@spellaura396050.", "Warmed, removing the effects of $@spellicon396050 $@spellname396050.\r\n\r\nAny attempt to apply $@spellicon396050 $@spellname396050 will instead remove one stack of $@spellname398118.", 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
   { 398856, "$@spelldesc198067", 0, 0 },
   { 398857, "$@spelldesc370", 0, 0 },
@@ -19260,11 +19262,11 @@ static const std::array<spelltext_data_t, 19258> __ptr_spelltext_data { {
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47481
+// spelltext hotfix entries, wow build 10.0.5.47621
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.5.47481
+// Spell description variables, wow build 10.0.5.47621
 static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19638,7 +19640,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47481
+// spelldesc_vars hotfix entries, wow build 10.0.5.47621
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
