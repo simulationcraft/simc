@@ -1793,8 +1793,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
         priest_td_t* tdl = priest().get_target_data( l );
         priest_td_t* tdr = priest().get_target_data( r );
 
-        if ( !tdl->dots.vampiric_touch->is_ticking() &&
-             tdr->dots.vampiric_touch->is_ticking() )
+        if ( !tdl->dots.vampiric_touch->is_ticking() && tdr->dots.vampiric_touch->is_ticking() )
         {
           return true;
         }
@@ -2073,7 +2072,7 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
 
     // BUG: Ancient Madness consumes twice as much crit with Voidform
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1030
-    if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() )
+    if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() && !priest().is_ptr() )
     {
       set_default_value( 0.02 );                                     // 2%
       set_max_stack( as<int>( data().effectN( 3 ).base_value() ) );  // 5/10;
