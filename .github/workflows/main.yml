@@ -192,7 +192,7 @@ jobs:
       matrix:
         cppVersion: [17]
         tier: [ Tier29 ]
-        compiler: [clang++-12]
+        compiler: [clang++-14]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -209,8 +209,8 @@ jobs:
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
         include:
-          - compiler: clang++-12
-            os: ubuntu-20.04
+          - compiler: clang++-14
+            os: ubuntu-22.04
 
     steps:
       - uses: actions/cache@v3
