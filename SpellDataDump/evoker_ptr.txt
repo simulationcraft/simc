@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-06/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1469,13 +1469,13 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Family Flags     : 116
 Attributes       : ........ ........ x....... ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ....x... ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), No Res Timer (100), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), No Res Timer (100), Not In Arena or Rated Battleground (144), Not in Battleground (284), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=898874)   : Unknown(172)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(119)
@@ -3240,17 +3240,20 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
+                 : Generic Heal, Magic Heal, Helpful Periodic
 Affecting spells : Hover (358267 effect#5), Dreamwalker (377082 effect#1)
 Family Flags     : 2, 47
 Attributes       : ........ ........ x.x..... x.......   .....xx. ........ ..x..... .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... .x...x.. .x...... ........ 
+                 : ........ ........ ........ ........   ...x.... .x...x.. .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ......x. ........   ......x. ........ ........ ..x..... 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ..x..... ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), Is Self Channelled (38), Prevents Anim (50), Name in Channel Bar (61), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), No Client Fail While Stunned, Fleeing, Confused (244), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), Is Self Channelled (38), Prevents Anim (50), Name in Channel Bar (61), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Charmed (261), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow While Stunned By Horror Mechanic (342), Unbreakable Channel (358), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=982563)   : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3262,9 +3265,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 #5 (id=982569)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-#6 (id=982612)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=982612)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 20.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=983192)   : Apply Aura (6) | Root (26)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=1047555)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Commune with the Emerald Dream, restoring $s6% health and $s1% mana every $t1 sec for $d. Overhealing is transferred to a nearby injured ally.
 
@@ -3655,7 +3660,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=996739)   : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0.5 | Scaled Value: 1800 (coefficient=0.012) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Self (1)
+                   Base Value: 0.5 | Scaled Value: 1800 (coefficient=0.012) | PvP Coefficient: 0.75000 | Misc Value: mana | Target: Self (1)
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
@@ -3902,7 +3907,7 @@ Effects          :
 #1 (id=999377)   : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 25294 | Target: Unknown(47)
 #2 (id=1044076)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Send forward a vortex of temporal energy, absorbing $<shield> damage on you and any allies in its path. Absorption is reduced beyond $s2 targets.
 Variables        : $shield=${$SP*1.75*(1+$@versadmg)}
 
