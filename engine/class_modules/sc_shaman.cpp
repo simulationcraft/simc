@@ -4478,6 +4478,18 @@ struct lava_beam_overload_t : public chained_overload_base_t
     affected_by_master_of_the_elements = true;
   }
 
+  int n_targets() const override
+  {
+    int t = chained_overload_base_t::n_targets();
+
+    if ( p()->buff.surge_of_power->up() )
+    {
+      t += p()->talent.surge_of_power->effectN( 4 ).base_value();
+    }
+
+    return t;
+  }
+
   void impact( action_state_t* state ) override
   {
     chained_overload_base_t::impact( state );
@@ -4759,6 +4771,28 @@ struct lava_beam_t : public chained_base_t
 
     return shaman_spell_t::ready();
   }
+
+  int n_targets() const override
+  {
+    int t = chained_base_t::n_targets();
+
+    if ( p()->buff.surge_of_power->up() )
+    {
+      t += p()->talent.surge_of_power->effectN( 4 ).base_value();
+    }
+
+    return t;
+  }
+
+
+  void execute() override
+  {
+    chained_base_t::execute();
+
+    p()->buff.surge_of_power->decrement();
+  }
+
+
 
   void impact( action_state_t* state ) override
   {
