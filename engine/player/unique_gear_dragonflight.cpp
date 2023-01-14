@@ -2081,6 +2081,14 @@ void manic_grieftorch( special_effect_t& effect )
       tick_action = create_proc_action<manic_grieftorch_missile_t>( "manic_grieftorch_missile", e );
     }
 
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      event_t::cancel( player->readying );
+      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+    }
+
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
@@ -2288,17 +2296,20 @@ void tome_of_unstable_power( special_effect_t& effect )
 // 383781 Driver and Buff
 void algethar_puzzle_box( special_effect_t& effect )
 {
-  struct solved_the_puzzle_t : public proc_spell_t
+  struct puzzle_box_channel_t : public proc_spell_t
   {
     buff_t* buff;
     action_t* use_action;  // if this exists, then we're prechanneling via the APL
 
-    solved_the_puzzle_t( const special_effect_t& e, buff_t* b )
-      : proc_spell_t( "solved_the_puzzle", e.player, e.driver(), e.item ), buff( b ), use_action( nullptr )
+    puzzle_box_channel_t( const special_effect_t& e, buff_t* solved ) :
+      proc_spell_t( "algethar_puzzle_box_channel", e.player, e.driver(), e.item)
     {
-      background   = true;
-      effect       = &e;
+      channeled = hasted_ticks = true;
       harmful = false;
+      dot_duration = base_tick_time = base_execute_time;
+      base_execute_time = 0_s;
+      buff = solved;
+      effect = &e;
 
       for ( auto a : player->action_list )
       {
@@ -2310,6 +2321,40 @@ void algethar_puzzle_box( special_effect_t& effect )
           break;
         }
       }
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( !player->in_combat )  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_buff();
+        }
+      }
+      else
+      {
+        event_t::cancel( player->readying );
+        player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+      }
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      cooldown->adjust( d->duration() );
+
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+      cdgrp->adjust( d->duration() );
+
+      proc_spell_t::last_tick(d);
+      buff->trigger();
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
     }
 
     void precombat_buff()
@@ -2340,26 +2385,26 @@ void algethar_puzzle_box( special_effect_t& effect )
         if ( it == apl.end() )
         {
           sim->print_debug(
-              "WARNING: Precombat /use_item for Algethar Puzzle Box exists but not found in precombat APL!" );
+            "WARNING: Precombat /use_item for Algethar Puzzle Box exists but not found in precombat APL!" );
           return;
         }
 
         cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
 
-        // add cast time or gcd for any following precombat action
+                               // add cast time or gcd for any following precombat action
         std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
           if ( a->action_ready() )
           {
             timespan_t delta =
-                std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+              std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
             sim->print_debug( "PRECOMBAT: Algethar Puzzle Box precast timing pushed by {} for {}", delta,
-                              a->name() );
+              a->name() );
             time += delta;
 
             return a->harmful;  // stop processing after first valid harmful spell
           }
           return false;
-        } );
+          } );
       }
       else if ( time < 2_s )  // If APL variable can't set to less than cast time
       {
@@ -2378,8 +2423,8 @@ void algethar_puzzle_box( special_effect_t& effect )
       auto cdgrp_dur = std::max( 0_ms, effect->cooldown_group_duration() + cast - time );
 
       sim->print_debug(
-          "PRECOMBAT: Algethar Puzzle Box started {}s before combat via {}, {}s in-combat buff",
-          time, use_action ? "APL" : "DRAGONFLIGHT_OPT", actual );
+        "PRECOMBAT: Algethar Puzzle Box started {}s before combat via {}, {}s in-combat buff",
+        time, use_action ? "APL" : "DRAGONFLIGHT_OPT", actual );
 
       buff->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
 
@@ -2392,7 +2437,7 @@ void algethar_puzzle_box( special_effect_t& effect )
             use_action->cooldown->adjust( cast - time );
 
           cdgrp->adjust( cast - time );
-        } );
+          } );
       }
       else  // via bfa. option override, start cooldowns. we are in-combat.
       {
@@ -2405,19 +2450,6 @@ void algethar_puzzle_box( special_effect_t& effect )
           cdgrp->start( cdgrp_dur );
       }
     }
-
-    void execute() override
-    {
-      proc_spell_t::execute();
-
-      if ( !player->in_combat )  // if precombat...
-      {
-        if ( use_action )  // ...and use_item exists in the precombat apl
-        {
-          precombat_buff();
-        }
-      }
-    }
   };
 
   auto buff_spell = effect.player->find_spell( 383781 );
@@ -2425,9 +2457,9 @@ void algethar_puzzle_box( special_effect_t& effect )
     ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
 
-  auto action           = new solved_the_puzzle_t( effect, buff );
-  action->use_off_gcd   = true;
+  auto action = new puzzle_box_channel_t( effect, buff );
   effect.execute_action = action;
+  effect.disable_buff();
 }
 
 // Frenzying Signoll Flare
