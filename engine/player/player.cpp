@@ -9074,8 +9074,6 @@ struct use_item_t : public action_t
 
       // Create an action
       action = e->create_action();
-      if ( action )
-        use_off_gcd = action->use_off_gcd;
 
       stats = player->get_stats( name_str, this );
 
@@ -9172,11 +9170,6 @@ struct use_item_t : public action_t
     }
 
     if ( action && ( !action->ready() || !action->cooldown->up() ) )
-    {
-      return false;
-    }
-
-    if ( action && player->gcd_ready > sim->current_time() && !action->use_off_gcd )
     {
       return false;
     }
@@ -9315,15 +9308,6 @@ struct use_items_t : public action_t
   void init() override
   {
     create_use_subactions();
-
-    for ( const auto action : use_actions )
-    {
-      if ( action->use_off_gcd )
-      {
-        use_off_gcd = true;
-        break;
-      }
-    }
 
     // No use_item sub-actions created here, so this action does not need to execute ever. The
     // parent init() call below will filter it out from the "foreground action list".
@@ -9507,9 +9491,7 @@ struct use_items_t : public action_t
                                item.full_name().c_str(), item.slot_name() );
       }
 
-      auto use_item = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
-      use_item->init();
-      use_actions.push_back( use_item );
+      use_actions.push_back( new use_item_t( player, std::string( "slot=" ) + item.slot_name() ) );
 
       auto action = use_actions.back();
       // The use_item action is not triggered by the actor (through the APL), so background it
