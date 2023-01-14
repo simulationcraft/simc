@@ -62,7 +62,7 @@ level=70
 race=dwarf
 role=spell
 position=ranged_back
-talents=BAEAAAAAAAAAAAAAAAAAAAAAAIESolIhkUAJtEiIiEBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
+talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJBolIIJFQSLhIiIJBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
 
 head=,id=200318,bonus_id=523,gem_id=192961,ilevel=424
 neck=,id=193001,gem_id=192988/192961/192961,crafted_stats=32/49,ilevel=418
