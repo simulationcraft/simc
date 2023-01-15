@@ -36,6 +36,7 @@ actions.precombat+=/shadow_bolt
 # Executed every time the actor is available.
 actions=call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&(time-variable.next_tyrant)<=(variable.tyrant_prep_start+2)&cooldown.summon_demonic_tyrant.up
 actions+=/call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.remains_expected<=variable.tyrant_prep_start
+actions+=/invoke_external_buff,name=power_infusion,if=!talent.nether_portal&!talent.summon_demonic_tyrant|time_to_die<25
 actions+=/implosion,if=time_to_die<2*gcd
 actions+=/nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2|time_to_die<30
 actions+=/hand_of_guldan,if=buff.nether_portal.up
@@ -49,7 +50,9 @@ actions+=/guillotine,if=cooldown.demonic_strength.remains
 actions+=/demonic_strength
 actions+=/bilescourge_bombers,if=!pet.demonic_tyrant.active
 actions+=/shadow_bolt,if=soul_shard<5&talent.fel_covenant&buff.fel_covenant.remains<5
-actions+=/implosion,if=active_enemies>2&buff.wild_imps.stack>=6
+actions+=/implosion,if=two_cast_imps>0&buff.tyrant.down&active_enemies>1+(talent.sacrificed_souls.enabled)
+actions+=/implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables
+actions+=/implosion,if=active_enemies=1&last_cast_imps>0&buff.tyrant.down&talent.imp_gang_boss.enabled&!talent.sacrificed_souls
 actions+=/soul_strike,if=soul_shard<5&active_enemies>1
 actions+=/summon_soulkeeper,if=active_enemies>1&buff.tormented_soul.stack=10
 actions+=/demonbolt,if=buff.demonic_core.up&soul_shard<4
@@ -68,6 +71,7 @@ actions.ogcd+=/blood_fury
 actions.ogcd+=/fireblood
 
 actions.tyrant=variable,name=next_tyrant,op=set,value=time+14+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time
+actions.tyrant+=/invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|(buff.dreadstalkers.up&variable.next_tyrant-time<=6&!talent.nether_portal)
 actions.tyrant+=/shadow_bolt,if=time<2&soul_shard<5
 actions.tyrant+=/nether_portal
 actions.tyrant+=/grimoire_felguard
