@@ -14017,7 +14017,7 @@ void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
   {
     event_t::cancel( main_hand_attack->execute_event );
     main_hand_attack->schedule_execute();
-    if ( delay > timespan_t::zero() )
+    if ( delay > timespan_t::zero() && main_hand_attack->execute_event )
     {
       main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
     }
@@ -14027,7 +14027,7 @@ void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
   {
     event_t::cancel( off_hand_attack->execute_event );
     off_hand_attack->schedule_execute();
-    if ( delay > timespan_t::zero() )
+    if ( delay > timespan_t::zero() && off_hand_attack->execute_event )
     {
       off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
     }
