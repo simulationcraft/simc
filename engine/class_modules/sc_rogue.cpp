@@ -2172,6 +2172,11 @@ public:
 
       if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       {
+        if ( p()->buffs.shadow_techniques->check() )
+        {
+          p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism on CP generators
+        }
+
         if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
         {
           trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
