@@ -9,6 +9,7 @@ action_priority_list_t* owlweaving = get_action_priority_list( "owlweaving" );
 action_priority_list_t* bloodtalons = get_action_priority_list( "bloodtalons" );
 action_priority_list_t* def = get_action_priority_list( "default" );
 
+precombat->add_action( "use_item,name=algethar_puzzle_box" );
 precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
 
