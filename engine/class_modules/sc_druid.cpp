@@ -11235,32 +11235,20 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 {
   auto splits = util::string_split<std::string_view>( name_str, "." );
 
-  if ( util::str_compare_ci( splits[ 0 ], "druid" ) && splits.size() > 1 )
+  if ( util::str_compare_ci( splits[ 0 ], "druid" ) && splits.size() == 2 )
   {
-    if ( util::str_compare_ci( splits[ 1 ], "catweave_bear" ) && splits.size() == 2 )
-      return make_fn_expr( "catweave_bear", [ this ]() {
-        return options.catweave_bear;
-      } );
-    if ( util::str_compare_ci( splits[ 1 ], "owlweave_bear" ) && splits.size() == 2 )
-      return make_fn_expr( "owlweave_bear", [ this ]() {
-        return options.owlweave_bear;
-      } );
-    if ( util::str_compare_ci( splits[ 1 ], "owlweave_cat" ) && splits.size() == 2 )
-      return make_fn_expr( "owlweave_cat", [ this ]() {
-        return options.owlweave_cat;
-      } );
-    if ( util::str_compare_ci( splits[ 1 ], "no_cds" ) && splits.size() == 2 )
-      return make_fn_expr( "no_cds", [ this ]() {
-        return options.no_cds;
-      } );
-    if ( util::str_compare_ci( splits[ 1 ], "time_spend_healing" ) && splits.size() == 2 )
-      return make_fn_expr( "time_spend_healing", [ this ]() {
-        return options.time_spend_healing;
-      } );
-    if ( util::str_compare_ci( splits[1], "delay_berserking" ) && splits.size() == 2 )
-      return make_fn_expr( "delay_berserking", [this]() {
-      return options.delay_berserking;
-    } );
+    if ( util::str_compare_ci( splits[ 1 ], "catweave_bear" ) )
+      return expr_t::create_constant( "catweave_bear", options.catweave_bear );
+    if ( util::str_compare_ci( splits[ 1 ], "owlweave_bear" ) )
+      return expr_t::create_constant( "owlweave_bear", options.owlweave_bear );
+    if ( util::str_compare_ci( splits[ 1 ], "owlweave_cat" ) )
+      return expr_t::create_constant( "owlweave_cat", options.owlweave_cat );
+    if ( util::str_compare_ci( splits[ 1 ], "no_cds" ) )
+      return expr_t::create_constant( "no_cds", options.no_cds );
+    if ( util::str_compare_ci( splits[ 1 ], "time_spend_healing" ) )
+      return expr_t::create_constant( "time_spend_healing", options.time_spend_healing );
+    if ( util::str_compare_ci( splits[ 1 ], "delay_berserking" ) )
+      return expr_t::create_constant( "delay_berserking", options.delay_berserking );
   }
 
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
