@@ -109,6 +109,9 @@ struct evoker_t : public player_t
     bool use_clipping       = true;
     // Should chained Disintegrates( those with 5 ticks ) be chained after the 3rd tick in Dragonrage
     bool use_early_chaining = true;
+    double scarlet_overheal = 0.4;
+    double ancient_flame_chance = 0.9;
+    double heal_eb_chance = 0.9;
   } option;
 
   // Action pointers
@@ -593,7 +596,7 @@ public:
       // stored += s->result_amount * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
       stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
       // TODO: confirm if this always matches living flame SP coeff
-      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
+      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap * ( 1 - p()->option.scarlet_overheal ));
     }
   }
 
@@ -1469,7 +1472,8 @@ struct living_flame_t : public evoker_spell_t
     {
       base_t::execute();
 
-      p()->buff.ancient_flame->trigger();
+      if ( rng().roll( p()->option.ancient_flame_chance ) )
+        p()->buff.ancient_flame->trigger();
     }
   };
 
@@ -1514,13 +1518,25 @@ struct living_flame_t : public evoker_spell_t
 
     damage->execute_on_target( target );
 
+    int total_hits = damage->num_targets_hit;
+
     p()->buff.ancient_flame->expire();
+    if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
+    {
+      p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
+      heal->execute_on_target( p() );
+      for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
+      {
+        if ( rng().roll( p()->option.heal_eb_chance ) )
+          total_hits += 1;
+      }
+    }
     p()->buff.leaping_flames->expire();
     p()->buff.scarlet_adaptation->expire();
 
     if ( p()->talent.ruby_essence_burst.ok() )
     {
-      for ( int i = 0; i < damage->num_targets_hit; i++ )
+      for ( int i = 0; i < total_hits; i++ )
       {
         if ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
         {
@@ -2221,6 +2237,9 @@ void evoker_t::create_options()
 
   add_option( opt_bool( "evoker.use_clipping", option.use_clipping ) );
   add_option( opt_bool( "evoker.use_early_chaining", option.use_early_chaining ) );
+  add_option( opt_float( "evoker.scarlet_overheal", option.scarlet_overheal, 0.0, 1.0 ) );
+  add_option( opt_float( "evoker.ancient_flame_chance", option.ancient_flame_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "evoker.heal_eb_chance", option.heal_eb_chance, 0.0, 1.0 ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
