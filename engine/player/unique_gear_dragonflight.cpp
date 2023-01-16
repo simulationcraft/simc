@@ -2979,33 +2979,80 @@ void ruby_whelp_shell(special_effect_t& effect)
     stat_buff_t* haste;
     stat_buff_t* crit;
 
+    double weights[ 6 ] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+    double weight_sum   = 0.0;
+
     ruby_whelp_assist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
     {
-      shot = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
-      shot -> base_dd_min = shot -> base_dd_max = e.driver() -> effectN( 1 ).average( e.item );
+      shot              = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
+      shot->base_dd_min = shot->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
 
       nova = create_proc_action<generic_aoe_proc_t>( "lobbing_fire_nova", e, "lobbing_fire_nova", 390234, true );
-      nova -> base_dd_min = nova -> base_dd_max = e.driver() -> effectN( 2 ).average( e.item );
+      nova->base_dd_min = nova->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
 
-      haste = create_buff<stat_buff_t>( e.player, e.player -> find_spell( 389820 ) );
-      haste -> set_stat( STAT_HASTE_RATING, e.driver() -> effectN( 6 ).average( e.item ) );
+      haste = create_buff<stat_buff_t>( e.player, e.player->find_spell( 389820 ) );
+      haste->set_stat( STAT_HASTE_RATING, e.driver()->effectN( 6 ).average( e.item ) );
 
-      crit = create_buff<stat_buff_t>( e.player, e.player -> find_spell( 383813 ) );
-      crit -> set_stat( STAT_CRIT_RATING, e.driver() -> effectN( 5 ).average( e.item ) );
+      crit = create_buff<stat_buff_t>( e.player, e.player->find_spell( 383813 ) );
+      crit->set_stat( STAT_CRIT_RATING, e.driver()->effectN( 5 ).average( e.item ) );
+
+      auto splits =
+          util::string_split<std::string_view>( effect.player->sim->dragonflight_opts.whelp_training_weights, "/" );
+
+      for ( auto training : splits )
+      {
+        auto s = util::string_split<util::string_view>( training, ":" );
+        // Mandatory format training:weight
+        if ( s.size() != 2 )
+          throw std::invalid_argument( "Invalid string for dragonflight.whelp_training_weights" );
+
+        if ( util::str_compare_ci( s[ 0 ], "fire_shot" ) )
+          weights[ 0 ] += util::to_double( s[ 1 ] );
+        else if ( util::str_compare_ci( s[ 0 ], "lobbing_fire_nova" ) )
+          weights[ 1 ] += util::to_double( s[ 1 ] );
+        else if ( util::str_compare_ci( s[ 0 ], "curing_whiff" ) )
+          weights[ 2 ] += util::to_double( s[ 1 ] );
+        else if ( util::str_compare_ci( s[ 0 ], "mending_breath" ) )
+          weights[ 3 ] += util::to_double( s[ 1 ] );
+        else if ( util::str_compare_ci( s[ 0 ], "sleepy_ruby_warmth" ) )
+          weights[ 4 ] += util::to_double( s[ 1 ] );
+        else if ( util::str_compare_ci( s[ 0 ], "under_red_wings" ) )
+          weights[ 5 ] += util::to_double( s[ 1 ] );
+        else
+          throw std::invalid_argument( "Invalid string for dragonflight.whelp_training_weights." );
+      }
+
+      for ( double d : weights )
+      {
+        weight_sum += d;
+      }
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
-      int choice = rng().range(0, 6);
+      int choice = 0;
+
+      if ( weight_sum > 0 )
+      {
+        auto dice_roll = rng().range( 0, weight_sum );
+        for ( ; choice < 6; choice++ )
+        {
+          if ( dice_roll < weights[ choice ] )
+            break;
+          dice_roll -= weights[ choice ];
+        }
+      }
+      else
+        choice = rng().range( 0, 6 );
+
       if ( choice == 0 )
-        shot -> execute_on_target( s -> target );
+        shot->execute_on_target( s->target );
       else if ( choice == 1 )
-        nova -> execute_on_target( s -> target );
-      else if ( choice == 2 )
-        haste -> trigger();
-      else if ( choice == 3 )
-        crit -> trigger();
-      // skip 2 heal possibilities
+        nova->execute_on_target( s->target );
+      else if ( choice == 4 )
+        crit->trigger();
+      else if ( choice == 5 )
+        haste->trigger();
     }
   };
 
