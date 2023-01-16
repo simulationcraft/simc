@@ -3282,7 +3282,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return make_ref_expr( name_str, expected_iteration_time );
 
   if ( util::str_compare_ci( name_str, "fight_remains" ) )
-    return make_fn_expr( name_str, [ this ] { return expected_iteration_time - event_mgr.current_time; } );
+    return make_fn_expr( name_str, [ this ] {
+      return expected_iteration_time - event_mgr.current_time;
+    } );
 
   if ( util::str_compare_ci( name_str, "interpolated_fight_remains" ) )
     return make_fn_expr( name_str, [ this ] {
@@ -3314,15 +3316,14 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return make_ref_expr( name_str, active_allies );
 
   // Get the number of actors in the simulation that do not have execute abilities
-  if (name_str == "nonexecute_actors_pct")
+  if ( name_str == "nonexecute_actors_pct" )
   {
     struct nonexecute_actors_pct_expr : public expr_t
     {
       double nonexecute_actors_pct;  // Cached value, created on expression
                                      // creation
 
-      nonexecute_actors_pct_expr( const sim_t* sim )
-        : expr_t( "nonexecute_actors_pct" )
+      nonexecute_actors_pct_expr( const sim_t* sim ) : expr_t( "nonexecute_actors_pct" )
       {
         double execute    = 0.0;
         double nonexecute = 0.0;
@@ -3358,28 +3359,40 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "fight_style" ) )
+  {
+    return expr_t::create_constant(
+        name_str, util::str_compare_ci( util::fight_style_string( fight_style ), splits[ 1 ] ) );
+  }
+
   if ( splits.size() == 3 )
   {
     if ( splits[ 0 ] == "aura" )
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
-      if ( ! buff ) return nullptr;
+      if ( !buff )
+        return nullptr;
+
       return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
     }
   }
+
   if ( splits.size() >= 3 && splits[ 0 ] == "actors" )
   {
     player_t* actor = sim_t::find_player( splits[ 1 ] );
-    if ( ! target ) return nullptr;
-    auto rest = std::string(splits[ 2 ]);
+    if ( !target )
+      return nullptr;
+
+    auto rest = std::string( splits[ 2 ] );
     for ( size_t i = 3; i < splits.size(); ++i )
       rest += fmt::format( ".{}", splits[ i ] );
-    return actor -> create_expression( rest );
+
+    return actor->create_expression( rest );
   }
 
   if ( splits.size() == 1 && splits[ 0 ] == "target" )
   {
-    return make_ref_expr( name_str, target -> actor_index );
+    return make_ref_expr( name_str, target->actor_index );
   }
 
   // conditionals that handle upcoming raid events
@@ -3394,7 +3407,10 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true, &is_constant );
 
     if ( is_constant )
-      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, false, &is_constant ) );
+    {
+      return expr_t::create_constant(
+          name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, false, &is_constant ) );
+    }
 
     struct raid_event_expr_t : public expr_t
     {
@@ -3402,15 +3418,14 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
       std::string type;
       std::string filter;
 
-      raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter ) :
-        expr_t( fmt::format("raid_event_{}_{}", type, filter) ), s( s ), type( type ), filter( filter )
+      raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter )
+        : expr_t( fmt::format( "raid_event_{}_{}", type, filter ) ), s( s ), type( type ), filter( filter )
       {}
 
       double evaluate() override
       {
         return raid_event_t::evaluate_raid_event_expression( s, type, filter, false, nullptr );
       }
-
     };
 
     return std::make_unique<raid_event_expr_t>( this, type_or_name, filter );
@@ -3420,8 +3435,8 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   // If so, return their actor index
   if ( splits.size() == 1 )
     for ( size_t i = 0; i < actor_list.size(); i++ )
-      if ( name_str == actor_list[ i ] -> name_str )
-        return make_ref_expr( name_str, actor_list[ i ] -> actor_index );
+      if ( name_str == actor_list[ i ]->name_str )
+        return make_ref_expr( name_str, actor_list[ i ]->actor_index );
 
   return nullptr;
 }
