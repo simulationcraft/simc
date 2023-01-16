@@ -364,6 +364,7 @@ struct shadowform_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target  = player;
   }
 
   void execute() override
@@ -1968,6 +1969,7 @@ struct shadowform_t final : public priest_buff_t<buff_t>
   shadowform_t( priest_t& p ) : base_t( p, "shadowform", p.specs.shadowform )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 };
 
