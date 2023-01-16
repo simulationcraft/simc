@@ -2102,6 +2102,7 @@ class SpellDataGenerator(DataGenerator):
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 279555, 3 ), # Layered Mane buff
           ( 395942, 3 ), # 2t29 Mangle AoE
+          ( 400360, 3 ), # Moonless Night
           # Restoration
         ),
         # Demon Hunter:
