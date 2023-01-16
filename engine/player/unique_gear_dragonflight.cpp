@@ -3071,6 +3071,140 @@ void desperate_invokers_codex( special_effect_t& effect )
   } );
 }
 
+
+// Iceblood Deathsnare
+// 377455 is the instant damage on the main target 
+// 382130 is the debuff applied to the main target
+// 394618 is applied to secondary targets
+// 382131 is the damage proc that goes on all targets with either 382130 or 394618
+// 382132 has the damage
+
+void iceblood_deathsnare( special_effect_t& effect )
+{
+  struct iceblood_deathsnare_damage_proc_t : public generic_proc_t
+  {
+    iceblood_deathsnare_damage_proc_t( const special_effect_t& e )
+      : generic_proc_t( e, "iceblood_deathsnare_proc", 382131 )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 382132 )->effectN( 2 ).average( e.item );
+      aoe                       = -1;
+      reduced_aoe_targets       = 5;
+    }
+
+    double composite_aoe_multiplier( const action_state_t* state ) const override
+    {
+      double am = generic_proc_t::composite_aoe_multiplier( state );
+
+      // Uses a unique damage scaling formula (data here:
+      // https://docs.google.com/spreadsheets/d/1FzIE9ZYrGaCQ2vvf_QJon4aa5Z2PAzMTBMs8czMbY6o/edit#gid=0)
+      // This is equivalent to (10/9)^(1-n)*n and an additional standard sqrt dr after 5 targets.
+      am *= std::pow( 10.0 / 9.0 , 1.0 - state->n_targets ) * state->n_targets;
+
+      return am;
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      target_cache.is_valid = false;
+
+      auto& tl = proc_spell_t::target_list();
+
+      tl.erase( std::remove_if(
+                    tl.begin(), tl.end(),
+                    [ this ]( player_t* t ) { return !player->get_target_data( t )->debuff.crystalline_web->up(); } ),
+                tl.end() );
+
+      return tl;
+    }
+  };
+
+
+
+  struct iceblood_deathsnare_t : public generic_proc_t
+  {
+    iceblood_deathsnare_t( const special_effect_t& e ) : generic_proc_t( e, "iceblood_deathsnare", e.driver() )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 382132 )->effectN( 1 ).average( e.item );
+      aoe                       = -1;
+      base_aoe_multiplier       = 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      player->get_target_data( s->target )->debuff.crystalline_web->trigger();
+    }
+  };
+
+  // Create proc action for the debuff
+  create_proc_action<iceblood_deathsnare_damage_proc_t>( "iceblood_deathsnare_proc", effect );
+
+  effect.execute_action = create_proc_action<iceblood_deathsnare_t>( "iceblood_deathsnare", effect );
+}
+
+struct iceblood_deathsnare_cb_t : public dbc_proc_callback_t
+{
+  action_t* damage;
+
+  iceblood_deathsnare_cb_t( const special_effect_t& e, action_t* damage )
+    : dbc_proc_callback_t( e.player, e ), damage( damage )
+  {
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( effect.player->find_target_data( s->target )->debuff.crystalline_web->up() )
+      damage->execute_on_target( s->target );
+  }
+};
+
+struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
+{
+  iceblood_deathsnare_initializer_t() : item_targetdata_initializer_t( 377455 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.crystalline_web = make_buff( *td, "crystalline_web" );
+      return;
+    }
+
+    assert( !td->debuff.crystalline_web );
+    auto web          = new special_effect_t( td->source );
+    web->name_str     = "iceblood_deathsnare_proc_trigger";
+    web->type         = SPECIAL_EFFECT_EQUIP;
+    web->source       = SPECIAL_EFFECT_SOURCE_ITEM;
+    web->proc_chance_ = 1.0;
+    web->proc_flags_  = PF_ALL_DAMAGE;
+    web->proc_flags2_ = PF2_ALL_HIT;
+    web->cooldown_    = 1.5_s;
+    td->source->special_effects.push_back( web );
+
+    auto damage = td->source->find_action( "iceblood_deathsnare_proc" );
+
+    // callback to proc damage
+    auto damage_cb = new iceblood_deathsnare_cb_t( *web, damage );
+    damage_cb->initialize();
+    damage_cb->deactivate();
+
+    td->debuff.crystalline_web =
+        make_buff( *td, "crystalline_web", td->source->find_spell( spell_id )->effectN( 3 ).trigger() )
+            ->set_cooldown(0_ms)
+            ->set_stack_change_callback( [ damage_cb ]( buff_t*, int, int new_ ) {
+              if ( new_ == 1 )
+                damage_cb->activate();
+              else
+                damage_cb->deactivate();
+            } );
+
+    td->debuff.crystalline_web->reset();
+  }
+};
+
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -3923,6 +4057,7 @@ void register_special_effects()
   register_special_effect( 391612, items::static_charged_scale );
   register_special_effect( 383812, items::ruby_whelp_shell );
   register_special_effect( 377464, items::desperate_invokers_codex, true );
+  register_special_effect( 377455, items::iceblood_deathsnare );
   
 
   // Weapons
@@ -3972,6 +4107,7 @@ void register_special_effects()
   register_special_effect( 389843, DISABLED_EFFECT );  // ruby whelp shell (on-use)
   register_special_effect( 377465, DISABLED_EFFECT );  // Desperate Invocation (cdr proc)
   register_special_effect( 398396, DISABLED_EFFECT );  // emerald coach's whistle on-use
+  register_special_effect( 382132, DISABLED_EFFECT );  // Iceblood Deathsnare damage data
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -3980,6 +4116,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
   sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
+  sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );  
 }
 
 void register_hotfixes()
