@@ -2086,7 +2086,7 @@ void manic_grieftorch( special_effect_t& effect )
       proc_spell_t::execute();
 
       event_t::cancel( player->readying );
-      player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+      player->delay_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
     void last_tick( dot_t* d ) override
@@ -2336,7 +2336,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       {
         proc_spell_t::execute();
         event_t::cancel( player->readying );
-        player->reset_auto_attacks( composite_dot_duration( execute_state ) );
+        player->delay_auto_attacks( composite_dot_duration( execute_state ) );
       }
     }
 
