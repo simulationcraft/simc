@@ -3301,6 +3301,11 @@ struct brutal_slash_t : public cat_attack_t
       bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
   }
 
+  resource_e current_resource() const override
+  {
+    return p()->buff.cat_form->check() ? RESOURCE_ENERGY : RESOURCE_NONE;
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
     auto ea = cat_attack_t::composite_energize_amount( s );
