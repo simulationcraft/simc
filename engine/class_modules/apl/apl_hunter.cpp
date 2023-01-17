@@ -357,6 +357,7 @@ void survival( player_t* p )
   cds->add_action( "berserking,if=buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault|time_to_die<13" );
   cds->add_action( "muzzle" );
   cds->add_action( "potion,if=target.time_to_die<30|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=gcd.remains>gcd.max-0.1" );
   cds->add_action( "use_items" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
