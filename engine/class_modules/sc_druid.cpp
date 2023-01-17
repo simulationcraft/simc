@@ -901,6 +901,7 @@ public:
     const spell_data_t* adaptive_swarm_heal;
 
     // Balance
+    const spell_data_t* astral_communion;
     const spell_data_t* balance;
     const spell_data_t* astral_power;
     const spell_data_t* celestial_alignment;
@@ -6056,7 +6057,7 @@ struct adaptive_swarm_t : public druid_spell_t
 struct astral_communion_t : public druid_spell_t
 {
   astral_communion_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "astral_communion", p, maybe_ptr( p->dbc->ptr ) ? p->find_spell( 202359 ) : p->talent.astral_communion, opt )
+    : druid_spell_t( "astral_communion", p, maybe_ptr( p->dbc->ptr ) ? p->spec.astral_communion : p->talent.astral_communion, opt )
   {
     harmful = false;
   }
@@ -9383,6 +9384,7 @@ void druid_t::init_spells()
 
   // Balance Abilities
   spec.balance                  = find_specialization_spell( "Balance Druid" );
+  spec.astral_communion         = check( talent.astral_communion, 202359 );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
   spec.celestial_alignment      = talent.celestial_alignment.find_override_spell();
   spec.eclipse_lunar            = check( talent.eclipse, 48518 );
