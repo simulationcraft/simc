@@ -1556,7 +1556,7 @@ void voidmenders_shadowgem( special_effect_t& effect )
   
 
   // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
-  if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER )
+  if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
   {
     stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
     stacking_driver->proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE;
