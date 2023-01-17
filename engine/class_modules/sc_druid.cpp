@@ -10041,32 +10041,44 @@ void druid_t::create_actions()
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
   {
-    auto ss = get_secondary_action_n<starsurge_t>( "starsurge_cosmos", talent.starsurge, "" );
-    ss->name_str_reporting = "touch_the_cosmos";
-    ss->s_data_reporting = &buff.touch_the_cosmos->data();
-    ss->set_free_cast( free_spell_e::COSMOS );
-    active.starsurge_cosmos = ss;
+    if ( talent.starsurge.ok() )
+    {
+      auto ss = get_secondary_action_n<starsurge_t>( "starsurge_cosmos", talent.starsurge, "" );
+      ss->name_str_reporting = "touch_the_cosmos";
+      ss->s_data_reporting = &buff.touch_the_cosmos->data();
+      ss->set_free_cast( free_spell_e::COSMOS );
+      active.starsurge_cosmos = ss;
+    }
 
-    auto sf = get_secondary_action_n<starfall_t>( "starfall_cosmos", talent.starfall, "" );
-    sf->name_str_reporting = "touch_the_cosmos";
-    sf->s_data_reporting = &buff.touch_the_cosmos->data();
-    sf->set_free_cast( free_spell_e::COSMOS );
-    active.starfall_cosmos = sf;
+    if ( talent.starfall.ok() )
+    {
+      auto sf = get_secondary_action_n<starfall_t>( "starfall_cosmos", talent.starfall, "" );
+      sf->name_str_reporting = "touch_the_cosmos";
+      sf->s_data_reporting = &buff.touch_the_cosmos->data();
+      sf->set_free_cast( free_spell_e::COSMOS );
+      active.starfall_cosmos = sf;
+    }
   }
 
   if ( talent.starweaver.ok() )
   {
-    auto ss = get_secondary_action_n<starsurge_t>( "starsurge_starweaver", talent.starsurge, "" );
-    ss->name_str_reporting = "starweavers_weft";
-    ss->s_data_reporting = &buff.starweavers_weft->data();
-    ss->set_free_cast( free_spell_e::STARWEAVER );
-    active.starsurge_starweaver = ss;
+    if ( talent.starsurge.ok() )
+    {
+      auto ss = get_secondary_action_n<starsurge_t>( "starsurge_starweaver", talent.starsurge, "" );
+      ss->name_str_reporting = "starweavers_weft";
+      ss->s_data_reporting = &buff.starweavers_weft->data();
+      ss->set_free_cast( free_spell_e::STARWEAVER );
+      active.starsurge_starweaver = ss;
+    }
 
-    auto sf = get_secondary_action_n<starfall_t>( "starfall_starweaver", talent.starfall, "" );
-    sf->name_str_reporting = "starweavers_warp";
-    sf->s_data_reporting = &buff.starweavers_warp->data();
-    sf->set_free_cast( free_spell_e::STARWEAVER );
-    active.starfall_starweaver = sf;
+    if ( talent.starfall.ok() )
+    {
+      auto sf = get_secondary_action_n<starfall_t>( "starfall_starweaver", talent.starfall, "" );
+      sf->name_str_reporting = "starweavers_warp";
+      sf->s_data_reporting = &buff.starweavers_warp->data();
+      sf->set_free_cast( free_spell_e::STARWEAVER );
+      active.starfall_starweaver = sf;
+    }
   }
 
   if ( talent.sundered_firmament.ok() )
