@@ -6881,7 +6881,8 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
         return expr_t::create_constant( name_str, false );
 
       return make_fn_expr( name_str, [ &action, actual_pct, execute ]
-      { return execute ? action.target->health_percentage() < actual_pct : action.target->health_percentage() > actual_pct; } );
+      { return execute ? action.get_expression_target()->health_percentage() < actual_pct :
+                         action.get_expression_target()->health_percentage() > actual_pct; } );
     }
 
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
@@ -6890,7 +6891,7 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
         return expr_t::create_constant( name_str, execute ? std::numeric_limits<double>::max() : 0.0 );
 
       return make_fn_expr( name_str, [ &action, actual_pct ]
-      { return action.target->time_to_percent( actual_pct ).total_seconds(); } );
+      { return action.get_expression_target()->time_to_percent( actual_pct ).total_seconds(); } );
     }
 
     throw std::invalid_argument( fmt::format( "Unknown {} operation '{}'", splits[ 0 ], splits[ 1 ] ) );

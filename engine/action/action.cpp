@@ -3788,7 +3788,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         // In the case of player-targeted non-hostile actions, target.x expressions are not typically relevant
         // Assume in this case the intent is to use the player's target rather than the player for evaluation
         // For things such as self-heals, self.x (e.g. self.health.pct) expressions should be used
-        player_t* target = ( action.target == action.player ) ? action.player->target : action.target;
+        player_t* target = action.get_expression_target();
 
         if ( proxy_expr.size() <= target->actor_index )
         {
@@ -4682,6 +4682,13 @@ void action_t::set_target( player_t* new_target )
   }
 
   target = new_target;
+}
+
+// Returns the target to use in expressions for an action
+// Default behavior is for player-targeted abilities to return the player's target
+player_t* action_t::get_expression_target()
+{
+  return ( target == player ) ? player->target : target;
 }
 
 void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* gain )

@@ -1029,6 +1029,8 @@ public:
 
   virtual void set_target( player_t* target );
 
+  virtual player_t* get_expression_target();
+
   virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
 
   // ================

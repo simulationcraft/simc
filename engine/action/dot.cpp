@@ -375,9 +375,7 @@ struct dot_expr_t : public expr_t
     if ( !dynamic )
       return static_dot;
 
-    // If the source action is self-targeted, use the player's target instead
-    player_t* dot_target = ( source_action->target == source_action->player ) ?
-      source_action->player->target : source_action->target;
+    player_t* dot_target = source_action->get_expression_target();
 
     action->player->get_target_data( dot_target );
 

@@ -45,10 +45,7 @@ struct buff_expr_t : public expr_t
   {
     assert( action && "Cannot create dynamic buff expressions without a action." );
 
-    // If the source action is self-targeted, use the player's target instead
-    // Only applicable if we are passing in a source action, not a static buff
-    player_t* target = ( action->target == action->player ) ? action->player->target : action->target;
-
+    player_t* target = action->get_expression_target();
     action->player->get_target_data( target );
     auto buff = buff_t::find( target, buff_name, action->player );
     if ( !buff )
@@ -85,8 +82,7 @@ struct buff_expr_t : public expr_t
     if ( static_buff )
       return static_buff;
 
-    // If the source action is self-targeted, use the player's target instead
-    player_t* target = ( action->target == action->player ) ? action->player->target : action->target;
+    player_t* target = action->get_expression_target();
     buff_t*& buff = specific_buff[ target ];
     if ( !buff )
     {

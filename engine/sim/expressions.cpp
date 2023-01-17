@@ -1441,7 +1441,7 @@ double target_wrapper_expr_t::evaluate()
 
 player_t* target_wrapper_expr_t::target() const
 {
-  return action.target;
+  return action.get_expression_target();
 }
 
 #ifdef UNIT_TEST
