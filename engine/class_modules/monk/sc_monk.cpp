@@ -6388,10 +6388,10 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
   {
-    base_t::decrement( stacks, value );
-    
     if ( p().buff.kicks_of_flowing_momentum->up() )    
       p().buff.fists_of_flowing_momentum->trigger();
+      
+    base_t::decrement( stacks, value );  
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
