@@ -483,6 +483,7 @@ public:
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
+    proc_t* munched_lotf;
   } proc;
 
   // Class Specializations
@@ -805,7 +806,7 @@ public:
   void trigger_swirling_maelstrom();
 
   // Legendary
-  void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
+  void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
   void trigger_elemental_equilibrium( const action_state_t* state );
   void trigger_deeply_rooted_elements( const action_state_t* state );
 
@@ -1858,7 +1859,7 @@ public:
         this->p()->buff.hailstorm->trigger( stacks );
       }
 
-      this->p()->trigger_legacy_of_the_frost_witch( stacks );
+      this->p()->trigger_legacy_of_the_frost_witch( this->execute_state, stacks );
 
       if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
            this->p()->rng().roll(
@@ -9074,7 +9075,8 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
+void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* state,
+                                                  unsigned consumed_stacks )
 {
   if ( !talent.legacy_of_the_frost_witch.ok() )
   {
@@ -9089,7 +9091,22 @@ void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
   {
     lotfw_counter -= threshold;
     buff.legacy_of_the_frost_witch->trigger();
-    cooldown.strike->reset( false );
+    if ( state->action->harmful )
+    {
+      auto s = shaman_spell_t::cast_state( state );
+      if ( bugs && s->exec_type == execute_type::THORIMS_INVOCATION )
+      {
+        proc.munched_lotf->occur();
+      }
+      else
+      {
+        cooldown.strike->reset( false );
+      }
+    }
+    else
+    {
+      cooldown.strike->reset( false );
+    }
   }
 }
 
@@ -9748,6 +9765,8 @@ void shaman_t::init_procs()
   {
     proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
   }
+
+  proc.munched_lotf = get_proc( "Legacy of the Frost Witch: Bugged Trigger" );
 }
 
 // shaman_t::init_uptimes ====================================================
