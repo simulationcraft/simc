@@ -4338,8 +4338,6 @@ struct xuen_spell_t : public monk_spell_t
 
     cast_during_sck = true;
     harmful         = false;
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd         = timespan_t::from_millis( 750 );
     gcd_type        = gcd_haste_type::NONE;
   }
 
