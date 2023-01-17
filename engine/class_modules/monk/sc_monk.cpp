@@ -4339,8 +4339,8 @@ struct xuen_spell_t : public monk_spell_t
     cast_during_sck = true;
     harmful         = false;
     // Forcing the minimum GCD to 750 milliseconds
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
+    min_gcd         = timespan_t::from_millis( 750 );
+    gcd_type        = gcd_haste_type::NONE;
   }
 
   void execute() override
@@ -6389,7 +6389,9 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
   {
     base_t::decrement( stacks, value );
-    p().buff.fists_of_flowing_momentum->trigger();
+    
+    if ( p().buff.kicks_of_flowing_momentum->up() )    
+      p().buff.fists_of_flowing_momentum->trigger();
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
