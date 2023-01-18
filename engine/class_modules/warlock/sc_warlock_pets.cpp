@@ -2205,7 +2205,7 @@ struct eye_beam_t : public warlock_pet_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto raw_damage = s->result_total;
+    auto raw_damage = s->result_amount;
 
     warlock_pet_spell_t::impact( s );
 
