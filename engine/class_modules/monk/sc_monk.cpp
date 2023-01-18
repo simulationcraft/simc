@@ -986,12 +986,9 @@ struct storm_earth_and_fire_t : public monk_spell_t
     : monk_spell_t( "storm_earth_and_fire", p, p->talent.windwalker.storm_earth_and_fire )
   {
     parse_options( options_str );
-
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_type  = gcd_haste_type::ATTACK_HASTE;
-
+    
     cast_during_sck = true;
+    trigger_gcd     = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
   }
 
@@ -1098,7 +1095,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     // These abilities are able to be used during Spinning Crane Kick
     if ( cast_during_sck )
-      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
+      use_while_casting = usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
 
     return monk_action_t::ready();
   }
@@ -3571,11 +3568,10 @@ struct serenity_t : public monk_spell_t
     : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
   {
     parse_options( options_str );
+    
     harmful         = false;
     cast_during_sck = true;
-    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
+    trigger_gcd     = timespan_t::zero();
   }
 
   void execute() override
