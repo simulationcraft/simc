@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -726,12 +726,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
-Hotfixed         : NEW EFFECT
 #13 (id=1046957)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
-Hotfixed         : NEW EFFECT
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -863,7 +861,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=891202)   : Apply Aura (6) | Periodic Damage (3): spellfrost every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87400 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.76 -> 0.874)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 
@@ -1229,7 +1226,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (3.4 -> 3.74)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -1461,7 +1457,6 @@ Effects          :
 Description      : Fly to an ally and heal them for $361195s1.
 
 Name             : Mass Return (desc=Bronze) (id=361178) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Preservation Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -2198,7 +2193,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), No Aura Icon (60), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=912785)   : Apply Raid Aura (65) | Trigger Spell Based on Health% (468)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 368435 | Radius: 25 yards | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 368435 | Radius: 40 yards | Target: Self (1)
 #2 (id=997898)   : Dummy (3)
                    Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000
 Description      : When you or an ally fall below $s1% health, a version of yourself enters your timeline and heals them for $361195s1. Your alternate self continues healing for $368415d before returning to their timeline.
@@ -2446,7 +2441,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=914653)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.33120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.276 -> 0.3312)
 Description      : $@spelldesc368847
 
 Name             : Eye of Infinity (id=369375) [Spell Family (224), Passive] 
@@ -3051,7 +3045,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
-Hotfixed         : Base Value (20 -> 30)
 Description      : Your damaging critical strikes deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Iridescence (id=370867) [Spell Family (224), Passive] 
@@ -3366,7 +3359,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759)
                    Family Flags: 34
-Hotfixed         : Base Value (10 -> 15)
 Description      : Deep Breath's damage is increased by $s1%.
 
 Name             : Honed Aggression (id=371038) [Spell Family (224), Passive] 
@@ -3664,7 +3656,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=996739)   : Energize Power (30) | Scaling Class: -2
                    Base Value: 0.5 | Scaled Value: 1800 (coefficient=0.012) | PvP Coefficient: 0.75000 | Misc Value: mana | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
@@ -6135,7 +6126,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020361)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc370867
 Tooltip          : Your next Red spell deals $s1% more damage.
 
@@ -6159,7 +6149,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020432)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
 
@@ -6928,7 +6917,6 @@ Attributes       : ........ ........ ........ ........   ...x...x ..x..... .....
 Effects          :
 #1 (id=1040015)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: essence | Target: Self (1)
-Hotfixed         : Base Value (1 -> 2)
 Description      : $@spelldesc369375
 
 Name             : Titanic Wrath (id=397870) [Spell Family (224), Hidden] 
@@ -6973,7 +6961,6 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1043306)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -528,7 +528,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1837)     : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57750 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
@@ -1535,7 +1534,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | PvP Coefficient: 0.90000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1.
 
 May be active on $?s338831[two targets][one target] at a time.$?a392256[
@@ -1564,7 +1562,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ..x..... .....
 Effects          :
 #1 (id=23653)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.38000 | PvP Coefficient: 0.90000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc33763
 
 Name             : Cyclone (id=33786) [Spell Family (7)] 
@@ -1975,7 +1972,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Moonfire (164812), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
                    Family Flags: 2, 23, 55, 63, 89, 92, 105, 116
-Hotfixed         : Affects Spells
 Description      : $@spelldesc79577
 Tooltip          : Arcane spells deal $w1% additional damage$?<$w5>0>[, area effect damage increased $w5%,][] and Starfire's critical strike chance is increased by $w2%.
 
@@ -2682,7 +2678,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.14367 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -2869,7 +2864,6 @@ Effects          :
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Fungal Growth (id=81281) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -4827,12 +4821,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830)
                    Family Flags: 98
-Hotfixed         : Base Value (0 -> 3)
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830)
                    Family Flags: 98
-Hotfixed         : Base Value (0 -> 3)
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
@@ -4859,10 +4851,8 @@ Hotfixed         : Base Value (0 -> 3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #10 (id=1032347)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 3)
 #11 (id=1032348)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (0 -> 3)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
@@ -4882,12 +4872,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
-Hotfixed         : Base Value (0 -> 5)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
-Hotfixed         : Base Value (0 -> 5)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)
@@ -6219,7 +6207,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=284976)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65025 | PvP Coefficient: 1.20000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
@@ -17624,7 +17611,6 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1030097)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.84375 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (0.675 -> 0.84375)
 Description      : $@spelldesc392124
 
 Name             : Invigorate (id=392160) [Spell Family (7)] 
@@ -18367,7 +18353,6 @@ Description      : For each combo point spent, finishing moves increase your Rip
 
 
 Name             : Druid Guardian Class Set 2pc (id=393637) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
