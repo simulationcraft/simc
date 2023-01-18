@@ -307,6 +307,7 @@ struct evoker_t : public player_t
   void init_base_stats() override;
   // void init_resources( bool ) override;
   // void init_benefits() override;
+  role_e primary_role() const override;
   void init_gains() override;
   void init_procs() override;
   // void init_rng() override;
@@ -1967,6 +1968,28 @@ void evoker_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+role_e evoker_t::primary_role() const
+{
+  switch ( player_t::primary_role() )
+  {
+    case ROLE_HEAL:
+      return ROLE_HEAL;
+    case ROLE_DPS:
+    case ROLE_SPELL:
+      return ROLE_SPELL;
+    case ROLE_ATTACK:
+      return ROLE_SPELL;
+    default:
+      if ( specialization() == EVOKER_PRESERVATION )
+      {
+        return ROLE_HEAL;
+      }
+      break;
+  }
+
+  return ROLE_SPELL;
 }
 
 void evoker_t::init_gains()
