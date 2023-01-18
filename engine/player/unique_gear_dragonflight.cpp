@@ -3071,7 +3071,6 @@ void ruby_whelp_shell( special_effect_t& effect )
     std::vector<ruby_whelp_type_e> untrained_procs;
     int untrained_levels;
 
-    buff_t* temp_buff;
     action_t* shot;
     action_t* nova;
     stat_buff_t* haste;
