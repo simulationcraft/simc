@@ -1556,6 +1556,8 @@ void voidmenders_shadowgem( special_effect_t& effect )
 
 
   // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
+  // Shadow and Druid have global whitelists due to nearly every* rotational spell triggering the trinket.
+  // Evoker and Warlock both have whitelists inside of their class module in init_spell_effects
   if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
   {
     stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
