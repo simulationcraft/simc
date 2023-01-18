@@ -8576,70 +8576,61 @@ void warrior_t::default_apl_dps_precombat()
 void warrior_t::apl_fury()
 {
   auto _FURY_ON_USE = []( const item_t& item ) {
-    // Hardcode some trinkets as "stat" eventhough `is_stat_buff` says no
-    const static std::vector<std::string> stat_trinkets{ 
-        "irideus_fragment",
-        // It does damage at the end, but we can't optimize that damage so optimizer for stat
-        "bonemaws_big_toe"
+    const static std::vector<std::pair<std::vector<std::string>, std::string>> trinkets = {
+        // list of trinket name_str -> condition
+        { { "ruby_whelp_shell" }, "false" },
+        { { "manic_grieftorch" },
+          "buff.recklessness.down&cooldown.recklessness.remains>20&buff.avatar.down&"
+          "(cooldown.avatar.remains>20|!talent.avatar)|"
+          "fight_remains<duration" },
+        { { "algethar_puzzle_box" },
+          "cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)|"
+          "fight_remains<duration" },
+        // Trinkets that benefit from multiple targets should not be used before adds spawn
+        { { "decoration_of_flame", "stormeaters_boon" },
+          "buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<duration" },
+
+        { { "GENERIC_STAT_BUFF", "irideus_fragment", "bonemaws_big_toe" },
+          "buff.recklessness.remains>10|fight_remains<duration" },
+        { { "GENERIC_DAMAGE_EFFECT" },
+          "buff.recklessness.down&cooldown.recklessness.remains>20|fight_remains<duration" },
+        // No condition -> use on cd
+        { { "GENERIC_SHORT_COOLDOWN" }, "" } };
+
+    auto check_trinket = []( const std::string& name_str ) -> std::string {
+      for ( const auto& row : trinkets )
+      {
+        const auto& trinket_names = std::get<0>( row );
+        const auto& condition     = std::get<1>( row );
+
+        if ( std::find( trinket_names.begin(), trinket_names.end(), name_str ) != trinket_names.end() )
+        {
+          return condition;
+        }
+      }
+      throw std::invalid_argument( fmt::format( "Unknown trinket '{}'", name_str ) );
+      return "";
     };
 
-    // Method to check if str is in the vector above
-    auto is_stat_trinket = []( const std::string& str ) {
-      return std::find( stat_trinkets.begin(), stat_trinkets.end(), str ) != stat_trinkets.end();
-    };
-
-    const static std::unordered_map<std::string, std::string> trinkets{
-        // name_str -> APL
-        { "manic_grieftorch",
-          ",if=buff.recklessness.down&cooldown.recklessness.remains>20"
-          "&buff.avatar.down&(cooldown.avatar.remains>20"
-          "|!talent.avatar)|fight_remains<5" },
-        { "algethar_puzzle_box",
-          ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)|fight_remains<25" },
-        { "decoration_of_flame", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<31" },
-        { "stormeaters_boon", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<11" },
-        { "windscar_whetstone", ",if=buff.recklessness.down&cooldown.recklessness.remains>20&raid_event.adds.in>15|fight_remains<7" },
-
-        // Defaults:
-        { "ITEM_STAT_BUFF", ",if=buff.recklessness.remains>10" },
-        { "ITEM_DAMAGE_EFFECT", ",if=buff.recklessness.down&cooldown.recklessness.remains>20" },
-    };
-
-    std::string concat = "";
     try
     {
-      concat = trinkets.at( item.name_str );
+      return check_trinket( item.name_str );
     }
     catch ( ... )
     {
-      int duration = 0;
-
-      for ( auto e : item.parsed.special_effects )
-      {
-        duration = (int)floor( e->duration().total_seconds() );
-
-        // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
-        // Unless defined in the map above these will be used on cooldown.
-        if ( e->type == SPECIAL_EFFECT_USE && e->cooldown() > timespan_t::from_seconds( 30 ) )
-        {
-          if ( e->is_stat_buff() || e->buff_type() == SPECIAL_EFFECT_BUFF_STAT || is_stat_trinket( item.name_str ) )
-          {
-            // This item grants a stat buff on use
-            concat = trinkets.at( "ITEM_STAT_BUFF" );
-
-            break;
-          }
-          else
-            // This item has a generic damage effect
-            concat = trinkets.at( "ITEM_DAMAGE_EFFECT" );
-        }
-      }
-
-      if ( concat.length() > 0 && duration > 0 )
-        concat = concat + "|fight_remains<" + std::to_string( duration );
     }
 
-    return concat;
+    for ( auto e : item.parsed.special_effects )
+    {
+      if ( e->cooldown() <= timespan_t::from_seconds( 30 ) )
+        return check_trinket( "GENERIC_SHORT_COOLDOWN" );
+      else if ( e->is_stat_buff() || e->buff_type() == SPECIAL_EFFECT_BUFF_STAT )
+        // This item grants a stat buff on use
+        return check_trinket( "GENERIC_STAT_BUFF" );
+    }
+
+    // This item has a generic damage effect
+    return check_trinket( "GENERIC_DAMAGE_EFFECT" );
   };
 
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -8668,9 +8659,17 @@ void warrior_t::apl_fury()
 
   for ( const auto& item : items )
   {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item.slot != SLOT_WAIST &&
-         item.name_str != "ruby_whelp_shell" )
-      default_list->add_action( "use_item,name=" + item.name_str + _FURY_ON_USE( item ) );
+    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) && item.slot != SLOT_WAIST)
+    {
+      auto condition = _FURY_ON_USE( item );
+
+      if ( condition == "false" )
+      {
+        break;
+      }
+
+      default_list->add_action( "use_item,name=" + item.name_str + ",if=" + condition );
+    }
   }
   default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
 
