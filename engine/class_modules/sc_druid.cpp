@@ -912,6 +912,7 @@ public:
     const spell_data_t* incarnation_moonkin;
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* waning_twilight;
+    const spell_data_t* starfall;
 
     // Feral
     const spell_data_t* feral;
@@ -7372,7 +7373,7 @@ struct starfall_t : public astral_power_spender_t
   timespan_t dot_ext;
   timespan_t max_ext;
 
-  starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
+  starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->spec.starfall, opt ) {}
 
   starfall_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : base_t( n, p, s, opt ),
@@ -7395,14 +7396,14 @@ struct starfall_t : public astral_power_spender_t
 
   void execute() override
   {
-    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() )
+    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starfall_cosmos )
     {
       p()->active.starfall_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
       return;
     }
 
-    if ( !is_free() && p()->buff.starweavers_warp->up() )
+    if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
     {
       auto bug = bugged_weaver();
 
@@ -7617,14 +7618,14 @@ struct starsurge_t : public astral_power_spender_t
 
   void execute() override
   {
-    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() )
+    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starsurge_cosmos )
     {
       p()->active.starsurge_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
       return;
     }
 
-    if ( !is_free() && p()->buff.starweavers_weft->up() )
+    if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
     {
       auto bug = bugged_weaver();
 
@@ -9394,6 +9395,7 @@ void druid_t::init_spells()
   spec.incarnation_moonkin      = check( talent.incarnation_moonkin, 102560 );
   spec.shooting_stars_dmg       = check( talent.shooting_stars, 202497 );  // shooting stars damage
   spec.waning_twilight          = check( talent.waning_twilight, 393957 );
+  spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
   spec.feral                    = find_specialization_spell( "Feral Druid" );
