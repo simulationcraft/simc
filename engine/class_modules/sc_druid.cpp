@@ -3542,9 +3542,6 @@ struct ferocious_bite_t : public cat_finisher_t
 
     if ( p->talent.relentless_predator.ok() )
       max_excess_energy *= 1.0 + p->talent.relentless_predator->effectN( 2 ).percent();
-
-    if ( p->bugs && p->talent.relentless_predator.ok() )
-      max_excess_energy *= 1.0 + p->talent.relentless_predator->effectN( 2 ).percent();
   }
 
   double maximum_energy() const
