@@ -1791,7 +1791,25 @@ void warlock_t::init_special_effects()
                                                       }
                                                       return true;
                                                     } );
-    
+    }
+    else
+    {
+      // Whitelist
+      callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                                    []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+                                                      if ( a->special && a->type == ACTION_SPELL )
+                                                      {
+                                                        switch ( a->data().id() )
+                                                        {
+                                                          case 48181:   // Haunt
+                                                          case 205180:  // Summon Darkglare
+                                                            break;
+                                                          default:
+                                                            return false;
+                                                        }
+                                                      }
+                                                      return true;
+                                                    } );
     }
   }
 }
