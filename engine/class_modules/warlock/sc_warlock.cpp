@@ -1754,25 +1754,31 @@ void warlock_t::init_special_effects()
   {
     if ( specialization() == WARLOCK_DESTRUCTION )
     {
-      // Blacklist
+      // Whitelist
       callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
                                                     []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
                                                       if ( a->special && a->type == ACTION_SPELL )
                                                       {
                                                         switch ( a->data().id() )
                                                         {
-                                                          case 348:     // Immolate
-                                                          case 17962:   // Conflagrate
-                                                          case 152108:  // Cataclysm
-                                                          case 1122:    // Summon Infernal
-                                                          case 17877:   // Shadowburn
-                                                          case 6353:    // Soulfire
-                                                            break;
-                                                          default:
+                                                          case 116858:  // Chaos bolt
+                                                          case 29722:   // Incinerate
+                                                          case 196447:  // Channel Demonfire
+                                                          case 5740:    // Rain of Fire
+                                                          case 387976:  // Dimensional Rift
+                                                          case 48018:   // Demonic Circle
+                                                          case 48020:   // Demonic Circle: Teleport
+                                                          case 333889:  // Fel Domination
+                                                          case 385899:  // Soulburn
+                                                          case 328774:  // Amplify Curse
+                                                          case 108416:  // Dark Pact
+                                                          case 104773:  // Unending Resolve
+                                                          case 386344:  // Inquisitor's Gaze (Summon)
                                                             return true;
+                                                          default:
+                                                            return false;
                                                         }
                                                       }
-                                                      return false;
                                                     } );
     }
     else if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -1796,12 +1802,11 @@ void warlock_t::init_special_effects()
                                                           case 108416:  // Dark Pact
                                                           case 104773:  // Unending Resolve
                                                           case 386344:  // Inquisitor's Gaze (Summon)
-                                                            break;
+                                                            return true;
                                                           default:
                                                             return false;
                                                         }
                                                       }
-                                                      return true;
                                                     } );
     }
     else
@@ -1823,12 +1828,11 @@ void warlock_t::init_special_effects()
                                                           case 108416:  // Dark Pact
                                                           case 104773:  // Unending Resolve
                                                           case 386344:  // Inquisitor's Gaze (Summon)
-                                                            break;
+                                                            return true;
                                                           default:
                                                             return false;
                                                         }
                                                       }
-                                                      return true;
                                                     } );
     }
   }
