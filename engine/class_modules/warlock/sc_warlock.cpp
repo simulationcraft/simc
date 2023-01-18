@@ -1748,6 +1748,52 @@ void warlock_t::init_special_effects()
 
     cb->initialize();
   }
+
+  // Voidmender's Shadowgem Exclusions.
+  if ( unique_gear::find_special_effect( this, 397399 ) )
+  {
+    if ( specialization() == WARLOCK_DESTRUCTION )
+    {
+      // Blacklist
+      callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                                    []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+                                                      if ( a->special && a->type == ACTION_SPELL )
+                                                      {
+                                                        switch ( a->data().id() )
+                                                        {
+                                                          case 348:    // Immolate
+                                                          case 17962:  // Conflagrate
+                                                            break;
+                                                          default:
+                                                            return true;
+                                                        }
+                                                      }
+                                                      return false;
+                                                    } );
+    }
+    else if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
+      // Whitelist
+      callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+                                                    []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+                                                      if ( a->special && a->type == ACTION_SPELL )
+                                                      {
+                                                        switch ( a->data().id() )
+                                                        {
+                                                          case 267171:  // Demonic Strength
+                                                          case 265187:  // Summon Demonic Tyrant
+                                                          case 264130:  // Power Siphon
+                                                          case 196277:  // Implosion
+                                                            break;
+                                                          default:
+                                                            return false;
+                                                        }
+                                                      }
+                                                      return true;
+                                                    } );
+    
+    }
+  }
 }
 
 void warlock_t::combat_begin()
