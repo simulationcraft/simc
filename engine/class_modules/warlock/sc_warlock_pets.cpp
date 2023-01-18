@@ -2207,7 +2207,7 @@ struct eye_beam_t : public warlock_pet_spell_t
   {
     warlock_pet_spell_t::impact( s );
 
-    auto raw_damage = s->result_amount;
+    auto raw_damage = s->result_total;
 
     if ( p()->o()->talents.grim_reach->ok() )
     {
