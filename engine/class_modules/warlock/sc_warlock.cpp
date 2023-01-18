@@ -1761,8 +1761,12 @@ void warlock_t::init_special_effects()
                                                       {
                                                         switch ( a->data().id() )
                                                         {
-                                                          case 348:    // Immolate
-                                                          case 17962:  // Conflagrate
+                                                          case 348:     // Immolate
+                                                          case 17962:   // Conflagrate
+                                                          case 152108:  // Cataclysm
+                                                          case 1122:    // Summon Infernal
+                                                          case 17877:   // Shadowburn
+                                                          case 6353:    // Soulfire
                                                             break;
                                                           default:
                                                             return true;
@@ -1784,6 +1788,10 @@ void warlock_t::init_special_effects()
                                                           case 265187:  // Summon Demonic Tyrant
                                                           case 264130:  // Power Siphon
                                                           case 196277:  // Implosion
+                                                          case 48018:   // Demonic Circle
+                                                          case 48020:   // Demonic Circle: Teleport
+                                                          case 333889:  // Fel Domination
+                                                          case 385899:  // Soulburn
                                                             break;
                                                           default:
                                                             return false;
@@ -1803,6 +1811,10 @@ void warlock_t::init_special_effects()
                                                         {
                                                           case 48181:   // Haunt
                                                           case 205180:  // Summon Darkglare
+                                                          case 48018:   // Demonic Circle
+                                                          case 48020:   // Demonic Circle: Teleport
+                                                          case 333889:  // Fel Domination
+                                                          case 385899:  // Soulburn
                                                             break;
                                                           default:
                                                             return false;
