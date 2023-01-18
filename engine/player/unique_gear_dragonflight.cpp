@@ -1553,7 +1553,7 @@ void voidmenders_shadowgem( special_effect_t& effect )
   stacking_driver->cooldown_category_ = 0;
   stacking_driver->custom_buff        = stacking_buff;
 
-  
+
 
   // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
   if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
@@ -1834,7 +1834,7 @@ void rumbling_ruby( special_effect_t& effect )
     {
        double d = proc_spell_t::composite_da_multiplier( s );
 
-       // 10-28-22 In game testing suggests the damage scaling is 
+       // 10-28-22 In game testing suggests the damage scaling is
        // 50% increase above 90% enemy hp
        // 25% above 75% enemy hp
        // 10% above 50% enemy hp
@@ -1866,7 +1866,7 @@ void rumbling_ruby( special_effect_t& effect )
   ruby_buff -> set_stack_change_callback( [ proc_object, power_buff ]( buff_t* b, int, int new_ )
   {
     if ( new_ == 0 )
-    { 
+    {
       b->expire();
       power_buff->expire();
       proc_object->deactivate();
@@ -1877,7 +1877,7 @@ void rumbling_ruby( special_effect_t& effect )
     }
   } );
 
-  power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int ) 
+  power_buff -> set_stack_change_callback( [ ruby_buff ]( buff_t* b, int, int )
   {
     if ( b->at_max_stacks() )
     {
@@ -1935,11 +1935,11 @@ void storm_eaters_boon( special_effect_t& effect )
   };
   action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) 
+  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ )
   {
     boon_action->execute();
   } );
-  main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_) 
+  main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_)
   {
     if( new_ == 0 )
     {
@@ -2027,7 +2027,7 @@ void decoration_of_flame( special_effect_t& effect )
 // 382256 AoE Radius
 // 382257 ???
 // 395703 ???
-// 396434 ??? 
+// 396434 ???
 void manic_grieftorch( special_effect_t& effect )
 {
     struct manic_grieftorch_damage_t : public proc_spell_t
@@ -2039,7 +2039,7 @@ void manic_grieftorch( special_effect_t& effect )
       base_dd_min = base_dd_max = e.player->find_spell( 394954 )->effectN( 1 ).average( e.item );
     }
   };
-  
+
   struct manic_grieftorch_missile_t : public proc_spell_t
   {
     manic_grieftorch_missile_t(const special_effect_t& e) :
@@ -2185,14 +2185,14 @@ void alltotem_of_the_master( special_effect_t& effect )
     std::vector<buff_t*> buffs;
     buff_t* first;
 
-    alltotem_buffs_t( const special_effect_t& e ) : 
+    alltotem_buffs_t( const special_effect_t& e ) :
       proc_spell_t( "alltotem_of_the_master", e.player, e.player -> find_spell( 377457 ), e.item )
     {
 
       earth_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_earth", e.player->find_spell(377458))
           ->add_stat(STAT_BONUS_ARMOR, e.driver()->effectN(5).average(e.item));
       auto earth_damage = create_proc_action<alltotem_earth_damage_t>( "elemental_stance_earth", e );
-      earth_buff->set_stack_change_callback( [ earth_damage ](buff_t*, int, int new_) 
+      earth_buff->set_stack_change_callback( [ earth_damage ](buff_t*, int, int new_)
       {
         if( new_ == 1 )
         {
@@ -2203,21 +2203,21 @@ void alltotem_of_the_master( special_effect_t& effect )
           ->set_period(e.player->find_spell( 377459 )->effectN(3).period());
       auto fire_damage = create_proc_action<alltotem_fire_damage_t>( "elemental_stance_fire", e );
       auto fire_dot = create_proc_action<alltotem_fire_dot_damage_t>( "elemental_stance_fire_dot", e );
-      fire_buff->set_stack_change_callback( [ fire_damage ](buff_t*, int, int new_) 
+      fire_buff->set_stack_change_callback( [ fire_damage ](buff_t*, int, int new_)
       {
         if( new_ == 1 )
         {
           fire_damage->execute();
         }
       } );
-      fire_buff->set_tick_callback( [ fire_dot ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) 
+      fire_buff->set_tick_callback( [ fire_dot ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ )
       {
         fire_dot->execute();
       } );
       air_buff = make_buff<stat_buff_t>(e.player, "elemental_stance_air", e.player->find_spell(377461))
            ->add_stat(STAT_HASTE_RATING, e.driver()->effectN(5).average(e.item));
       auto air_damage = create_proc_action<alltotem_air_damage_t>( "elemental_stance_air", e );
-      air_buff->set_stack_change_callback( [ air_damage ](buff_t*, int, int new_) 
+      air_buff->set_stack_change_callback( [ air_damage ](buff_t*, int, int new_)
       {
         if( new_ == 1 )
         {
@@ -2227,7 +2227,7 @@ void alltotem_of_the_master( special_effect_t& effect )
       ice_buff = make_buff(e.player, "elemental_stance_ice", e.player->find_spell(382133));
       ice_buff->set_default_value(e.driver()->effectN(2).average(e.item));
       auto ice_damage = create_proc_action<alltotem_ice_damage_t>( "elemental_stance_ice", e );
-      ice_buff->set_stack_change_callback( [ ice_damage ](buff_t*, int, int new_) 
+      ice_buff->set_stack_change_callback( [ ice_damage ](buff_t*, int, int new_)
       {
         if( new_ == 1 )
         {
@@ -2516,7 +2516,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
       // reference them. Store these in pointers to reduce the size of the events that use them.
       siki_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
       double amount = e.driver()->effectN( 1 ).average( e.item );
-      
+
       ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
       for ( auto stat : ratings )
@@ -2541,7 +2541,7 @@ void frenzying_signoll_flare(special_effect_t& effect)
       proc_spell_t::execute();
 
       auto selected_effect = player->sim->rng().range( 3 );
-      
+
       if( selected_effect == 0 )
       {
         smorfs->execute();
@@ -2732,7 +2732,7 @@ void blazebinders_hoof(special_effect_t& effect)
   auto cb = new dbc_proc_callback_t( effect.player, *bound_by_fire_and_blaze );
   cb -> deactivate();
 
-  buff->set_stack_change_callback( [ cb ](buff_t*, int, int new_) 
+  buff->set_stack_change_callback( [ cb ](buff_t*, int, int new_)
   {
     if( !new_ )
     {
@@ -2790,7 +2790,7 @@ void spinerippers_fang( special_effect_t& effect )
 {
   auto action = create_proc_action<generic_proc_t>( "rip_spine", effect, "rip_spine",
                                                     effect.driver()->effectN( 1 ).trigger() );
-  
+
   double damage = effect.driver()->effectN( 1 ).average( effect.item );
   if ( effect.player->position() == POSITION_BACK ||
        effect.player->position() == POSITION_RANGED_BACK )
@@ -2969,22 +2969,129 @@ void static_charged_scale(special_effect_t& effect)
 // 390234 aoe damage
 // 389820 haste buff
 // 383813 crit buff
-// TODO what does the use effect actually do in game?
-void ruby_whelp_shell(special_effect_t& effect)
+// Proc selection seems to follow the following distribution from data collected so far.
+// - 1/8 for each training level to trigger the trained proc. If a
+//   training level is not spent, the proc is random from all six.
+// - 1/8 probability to trigger a random proc from a context-aware list
+//   of possible procs. The exact conditions for dynamically populating
+//   this list are currently unknown. By default, simc will consider all
+//   procs to be part of this list.
+// - 1/8 probability to trigger a random untrained proc. What happens in
+//   the case where all procs have been trained to level 1 has not been
+//   tested in game, but simc will randomly select any proc in that case.
+void ruby_whelp_shell( special_effect_t& effect )
 {
+  enum ruby_whelp_type_e
+  {
+    FIRE_SHOT,
+    LOBBING_FIRE_NOVA,
+    CURING_WHIFF,
+    MENDING_BREATH,
+    SLEEPY_RUBY_WARMTH,
+    UNDER_RED_WINGS,
+    RUBY_WHELP_TYPE_MAX,
+    RUBY_WHELP_TYPE_NONE = -1
+  };
+
+  auto string_to_whelp_type = [] ( std::string_view whelp_string )
+  {
+    if ( util::str_compare_ci( whelp_string, "fire_shot" ) )
+      return FIRE_SHOT;
+    if ( util::str_compare_ci( whelp_string, "lobbing_fire_nova" ) )
+      return LOBBING_FIRE_NOVA;
+    if ( util::str_compare_ci( whelp_string, "curing_whiff" ) )
+      return CURING_WHIFF;
+    if ( util::str_compare_ci( whelp_string, "mending_breath" ) )
+      return MENDING_BREATH;
+    if ( util::str_compare_ci( whelp_string, "sleepy_ruby_warmth" ) )
+      return SLEEPY_RUBY_WARMTH;
+    if ( util::str_compare_ci( whelp_string, "under_red_wings" ) )
+      return UNDER_RED_WINGS;
+    return RUBY_WHELP_TYPE_NONE;
+  };
+
+  std::vector<int> training_levels( static_cast<size_t>( RUBY_WHELP_TYPE_MAX ), 0 );
+  std::vector<ruby_whelp_type_e> context_aware_procs;
+  std::vector<std::string_view> splits;
+
+  std::string_view training_str = effect.player->sim->dragonflight_opts.ruby_whelp_shell_training;
+  if ( !effect.player->dragonflight_opts.ruby_whelp_shell_training.empty() )
+  {
+    training_str = effect.player->dragonflight_opts.ruby_whelp_shell_training;
+  }
+
+  std::string_view context_str = effect.player->sim->dragonflight_opts.ruby_whelp_shell_context;
+  if ( !effect.player->dragonflight_opts.ruby_whelp_shell_context.empty() )
+  {
+    context_str = effect.player->dragonflight_opts.ruby_whelp_shell_context;
+  }
+
+  // Setup training levels based on the option.
+  splits = util::string_split<std::string_view>( training_str, "/" );
+  int total_levels = 0;
+  for ( auto s : splits )
+  {
+    auto pair = util::string_split<std::string_view>( s, ":" );
+    if ( pair.size() != 2 )
+      throw std::invalid_argument( "Invalid string for dragonflight.ruby_whelp_shell_training." );
+
+    ruby_whelp_type_e whelp_type = string_to_whelp_type( pair[ 0 ] );
+    if ( whelp_type == RUBY_WHELP_TYPE_NONE )
+      throw std::invalid_argument( "Invalid training type for dragonflight.ruby_whelp_shell_training." );
+
+    int level = util::to_int( pair[ 1 ] );
+    if ( level < 0 || level > 6 )
+      throw std::invalid_argument( "Invalid training level for dragonflight.ruby_whelp_shell_training." );
+
+    total_levels += level;
+    if ( total_levels > 6 )
+      throw std::invalid_argument( "More than 6 training levels cannot be applied with dragonflight.ruby_whelp_shell_training." );
+
+    training_levels[ static_cast<size_t>( whelp_type ) ] = level;
+  }
+
+  // Setup context aware procs based on the option.
+  splits = util::string_split<std::string_view>( context_str, "/" );
+  for ( auto s : splits )
+  {
+    ruby_whelp_type_e whelp_type = string_to_whelp_type( s );
+    if ( whelp_type == RUBY_WHELP_TYPE_NONE )
+      throw std::invalid_argument( "Invalid proc type for dragonflight.ruby_whelp_shell_context." );
+
+    if ( range::find( context_aware_procs, whelp_type ) != context_aware_procs.end() )
+      throw std::invalid_argument( "Duplicate proc type found for dragonflight.ruby_whelp_shell_context." );
+
+    context_aware_procs.push_back( whelp_type );
+  }
+
   struct ruby_whelp_assist_cb_t : public dbc_proc_callback_t
   {
+    std::vector<int> training_levels;
+    std::vector<ruby_whelp_type_e> context_aware_procs;
+    std::vector<ruby_whelp_type_e> untrained_procs;
+    int untrained_levels;
+
+    buff_t* temp_buff;
     action_t* shot;
     action_t* nova;
     stat_buff_t* haste;
     stat_buff_t* crit;
 
-    double weights[ 6 ] = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-    double weight_sum   = 0.0;
-
-    ruby_whelp_assist_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    ruby_whelp_assist_cb_t( const special_effect_t& e, std::vector<int> t, std::vector<ruby_whelp_type_e> c ) :
+      dbc_proc_callback_t( e.player, e ), training_levels( t ), context_aware_procs( c )
     {
-      shot              = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
+      ruby_whelp_type_e whelp_type = RUBY_WHELP_TYPE_NONE;
+      untrained_levels = 6;
+      for ( auto level : training_levels )
+      {
+        whelp_type++;
+        if ( level == 0 )
+          untrained_procs.push_back( whelp_type );
+        else
+          untrained_levels -= level;
+      }
+
+      shot = create_proc_action<generic_proc_t>( "fire_shot", e, "fire_shot", 389839 );
       shot->base_dd_min = shot->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
 
       nova = create_proc_action<generic_aoe_proc_t>( "lobbing_fire_nova", e, "lobbing_fire_nova", 390234, true );
@@ -2995,68 +3102,94 @@ void ruby_whelp_shell(special_effect_t& effect)
 
       crit = create_buff<stat_buff_t>( e.player, e.player->find_spell( 383813 ) );
       crit->set_stat( STAT_CRIT_RATING, e.driver()->effectN( 5 ).average( e.item ) );
+    }
 
-      auto splits =
-          util::string_split<std::string_view>( effect.player->sim->dragonflight_opts.whelp_training_weights, "/" );
-
-      for ( auto training : splits )
+    void trigger_whelp_proc( ruby_whelp_type_e whelp_type, action_state_t* s )
+    {
+      switch ( whelp_type )
       {
-        auto s = util::string_split<util::string_view>( training, ":" );
-        // Mandatory format training:weight
-        if ( s.size() != 2 )
-          throw std::invalid_argument( "Invalid string for dragonflight.whelp_training_weights" );
-
-        if ( util::str_compare_ci( s[ 0 ], "fire_shot" ) )
-          weights[ 0 ] += util::to_double( s[ 1 ] );
-        else if ( util::str_compare_ci( s[ 0 ], "lobbing_fire_nova" ) )
-          weights[ 1 ] += util::to_double( s[ 1 ] );
-        else if ( util::str_compare_ci( s[ 0 ], "curing_whiff" ) )
-          weights[ 2 ] += util::to_double( s[ 1 ] );
-        else if ( util::str_compare_ci( s[ 0 ], "mending_breath" ) )
-          weights[ 3 ] += util::to_double( s[ 1 ] );
-        else if ( util::str_compare_ci( s[ 0 ], "sleepy_ruby_warmth" ) )
-          weights[ 4 ] += util::to_double( s[ 1 ] );
-        else if ( util::str_compare_ci( s[ 0 ], "under_red_wings" ) )
-          weights[ 5 ] += util::to_double( s[ 1 ] );
-        else
-          throw std::invalid_argument( "Invalid string for dragonflight.whelp_training_weights." );
+        case FIRE_SHOT:
+          shot->execute_on_target( s->target );
+          break;
+        case LOBBING_FIRE_NOVA:
+          nova->execute_on_target( s->target );
+          break;
+        case SLEEPY_RUBY_WARMTH:
+          crit->trigger();
+          break;
+        case UNDER_RED_WINGS:
+          haste->trigger();
+          break;
+        default:
+          // skip 2 heal possibilities
+          break;
       }
+    }
 
-      for ( double d : weights )
+    void trigger_random_whelp_proc( action_state_t* s )
+    {
+      int choice = rng().range( static_cast<int>( RUBY_WHELP_TYPE_MAX ) );
+      trigger_whelp_proc( static_cast<ruby_whelp_type_e>( choice ), s );
+    }
+
+    void trigger_random_whelp_proc( std::vector<ruby_whelp_type_e>& whelp_types, action_state_t* s )
+    {
+      if ( whelp_types.empty() )
       {
-        weight_sum += d;
+        // If no types are available, fallback to fully random.
+        trigger_random_whelp_proc( s );
+      }
+      else
+      {
+        size_t choice = rng().range( whelp_types.size() );
+        trigger_whelp_proc( whelp_types[ choice ], s );
       }
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
-      int choice = 0;
+      double r = rng().real();
 
-      if ( weight_sum > 0 )
+      // Helper function for checking if each chance is
+      // successful using the random number generated above.
+      auto whelp_roll = [ &r ] ( double chance )
       {
-        auto dice_roll = rng().range( 0, weight_sum );
-        for ( ; choice < 6; choice++ )
+        r -= chance;
+        return r < 0.0;
+      };
+
+      // Try the trained levels.
+      ruby_whelp_type_e whelp_type = RUBY_WHELP_TYPE_NONE;
+      for ( auto level : training_levels )
+      {
+        whelp_type++;
+        if ( whelp_roll( level / 8.0 ) )
         {
-          if ( dice_roll < weights[ choice ] )
-            break;
-          dice_roll -= weights[ choice ];
+          trigger_whelp_proc( whelp_type, s );
+          return;
         }
       }
-      else
-        choice = rng().range( 0, 6 );
 
-      if ( choice == 0 )
-        shot->execute_on_target( s->target );
-      else if ( choice == 1 )
-        nova->execute_on_target( s->target );
-      else if ( choice == 4 )
-        crit->trigger();
-      else if ( choice == 5 )
-        haste->trigger();
+      // Try the untrained levels.
+      if ( whelp_roll( untrained_levels / 8.0 ) )
+      {
+        trigger_random_whelp_proc( s );
+        return;
+      }
+
+      // Try the context-aware procs.
+      if ( whelp_roll( 1.0 / 8.0 ) )
+      {
+        trigger_random_whelp_proc( context_aware_procs, s );
+        return;
+      }
+
+      // If nothing else succeeded, trigger a random untrained proc.
+      trigger_random_whelp_proc( untrained_procs, s );
     }
   };
 
-  new ruby_whelp_assist_cb_t( effect );
+  new ruby_whelp_assist_cb_t( effect, training_levels, context_aware_procs );
 }
 
 // Desperate Invoker's Codex
@@ -3065,7 +3198,7 @@ void desperate_invokers_codex( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "hatred" } ) )
     return;
-  
+
   auto hatred =
       create_buff<buff_t>( effect.player, effect.player->find_spell( 382419 ) )->set_default_value_from_effect( 1, 1 );
 
@@ -3122,7 +3255,7 @@ void desperate_invokers_codex( special_effect_t& effect )
 
 
 // Iceblood Deathsnare
-// 377455 is the instant damage on the main target 
+// 377455 is the instant damage on the main target
 // 382130 is the debuff applied to the main target
 // 394618 is applied to secondary targets
 // 382131 is the damage proc that goes on all targets with either 382130 or 394618
@@ -3320,7 +3453,7 @@ void forgestorm( special_effect_t& effect )
   {
     auto buff_spell = effect.trigger();
     buff = create_buff<buff_t>( effect.player, buff_spell );
-    
+
     auto forgestorm_damage = new special_effect_t( effect.player );
     forgestorm_damage->name_str = "forgestorm_ignited_damage";
     forgestorm_damage->item = effect.item;
@@ -3332,11 +3465,11 @@ void forgestorm( special_effect_t& effect )
     forgestorm_damage->execute_action->base_dd_min = forgestorm_damage->execute_action->base_dd_max
       = effect.player->find_spell( 381698 )->effectN( 1 ).average( effect.item );
     effect.player -> special_effects.push_back( forgestorm_damage );
-    
+
     auto damage = new dbc_proc_callback_t( effect.player, *forgestorm_damage );
     damage->initialize();
     damage->deactivate();
- 
+
     buff->set_stack_change_callback( [damage]( buff_t*, int, int new_ )
     {
       if ( new_ )
@@ -3702,7 +3835,7 @@ void potent_venom( special_effect_t& effect )
       loss = STAT_NONE;
     }
   };
-  
+
   auto buff = create_buff<potent_venom_t>(effect.player, effect.driver()->effectN(3).trigger(), effect);
   buff->set_stack_change_callback( [effect, buff, gain, loss] ( buff_t*, int, int new_ )
     {
@@ -3762,8 +3895,8 @@ void allied_wristguards_of_companionship( special_effect_t& effect )
 
 // Allied Chestplate of Generosity
 // 378134 Driver
-// 378139 Buff 
-// TODO: Potentially model allies recieving the buff as well? 
+// 378139 Buff
+// TODO: Potentially model allies recieving the buff as well?
 void allied_chestplate_of_generosity(special_effect_t& effect)
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger() );
@@ -4107,7 +4240,7 @@ void register_special_effects()
   register_special_effect( 383812, items::ruby_whelp_shell );
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
-  
+
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
@@ -4133,7 +4266,7 @@ void register_special_effects()
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
-  
+
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
@@ -4165,7 +4298,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
   sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
-  sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );  
+  sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
 }
 
 void register_hotfixes()

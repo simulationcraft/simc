@@ -3915,7 +3915,9 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.hood_of_surging_time_chance", dragonflight_opts.hood_of_surging_time_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.hood_of_surging_time_period", dragonflight_opts.hood_of_surging_time_period, 1_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.hood_of_surging_time_stacks", dragonflight_opts.hood_of_surging_time_stacks, 0, 5 ) );
-  add_option( opt_string( "dragonflight.whelp_training_weights", dragonflight_opts.whelp_training_weights ) );
+  add_option( opt_deprecated( "dragonflight.whelp_training_weights", "dragonflight.ruby_whelp_shell_training" ) );
+  add_option( opt_string( "dragonflight.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
+  add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
 }
 
 // sim_t::parse_option ======================================================
