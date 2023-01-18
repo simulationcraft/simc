@@ -1792,6 +1792,10 @@ void warlock_t::init_special_effects()
                                                           case 48020:   // Demonic Circle: Teleport
                                                           case 333889:  // Fel Domination
                                                           case 385899:  // Soulburn
+                                                          case 328774:  // Amplify Curse
+                                                          case 108416:  // Dark Pact
+                                                          case 104773:  // Unending Resolve
+                                                          case 386344:  // Inquisitor's Gaze (Summon)
                                                             break;
                                                           default:
                                                             return false;
@@ -1815,6 +1819,10 @@ void warlock_t::init_special_effects()
                                                           case 48020:   // Demonic Circle: Teleport
                                                           case 333889:  // Fel Domination
                                                           case 385899:  // Soulburn
+                                                          case 328774:  // Amplify Curse
+                                                          case 108416:  // Dark Pact
+                                                          case 104773:  // Unending Resolve
+                                                          case 386344:  // Inquisitor's Gaze (Summon)
                                                             break;
                                                           default:
                                                             return false;
