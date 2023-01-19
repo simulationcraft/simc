@@ -1647,10 +1647,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
 
+    // T29 Set Bonus
     if ( p()->buff.kicks_of_flowing_momentum->up() ) {
         p()->buff.kicks_of_flowing_momentum->decrement();
-
-        p()->buff.fists_of_flowing_momentum->trigger();
     }
   }
 };
