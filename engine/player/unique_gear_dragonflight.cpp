@@ -1536,7 +1536,8 @@ void timebreaching_talon( special_effect_t& effect )
 
 void voidmenders_shadowgem( special_effect_t& effect )
 {
-  auto stacking_buff = create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem_stacks", effect.player->find_spell( 397399 ) );
+  auto stacking_buff =
+      create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem_stacks", effect.player->find_spell( 397399 ) );
   stacking_buff->set_cooldown( 0_ms );
   stacking_buff->set_chance( 1.0 );
   stacking_buff->set_max_stack( 20 );
@@ -1546,23 +1547,25 @@ void voidmenders_shadowgem( special_effect_t& effect )
   stacking_driver->name_str           = "voidmenders_shadowgem_stacks";
   stacking_driver->type               = SPECIAL_EFFECT_EQUIP;
   stacking_driver->source             = SPECIAL_EFFECT_SOURCE_ITEM;
-  stacking_driver->proc_flags_        = effect.driver()->proc_flags();
-  stacking_driver->proc_flags2_       = PF2_CAST_HEAL;
+  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
+  if ( !maybe_ptr( effect.player->dbc->ptr ) )
+  {
+    stacking_driver->proc_flags_        = effect.driver()->proc_flags();
+    stacking_driver->proc_flags2_       = PF2_CAST_HEAL;
+
+    // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
+    // Shadow and Druid have global whitelists due to nearly every* rotational spell triggering the trinket.
+    // Evoker and Warlock both have whitelists inside of their class module in init_special_effects
+    if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
+    {
+      stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
+      stacking_driver->proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE;
+    }
+  }
   stacking_driver->spell_id           = effect.driver()->id();
   stacking_driver->cooldown_          = 0_ms;
   stacking_driver->cooldown_category_ = 0;
   stacking_driver->custom_buff        = stacking_buff;
-
-
-
-  // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
-  // Shadow and Druid have global whitelists due to nearly every* rotational spell triggering the trinket.
-  // Evoker and Warlock both have whitelists inside of their class module in init_special_effects
-  if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
-  {
-    stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
-    stacking_driver->proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE;
-  }
 
   effect.player->special_effects.push_back( stacking_driver );
 

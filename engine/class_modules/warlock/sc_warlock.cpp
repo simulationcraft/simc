@@ -1750,7 +1750,8 @@ void warlock_t::init_special_effects()
   }
 
   // Voidmender's Shadowgem Exclusions.
-  if ( unique_gear::find_special_effect( this, 397399 ) )
+  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
+  if ( !maybe_ptr( dbc->ptr ) && unique_gear::find_special_effect( this, 397399 ) )
   {
     if ( specialization() == WARLOCK_DESTRUCTION )
     {

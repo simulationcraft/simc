@@ -2112,7 +2112,8 @@ void evoker_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  if ( unique_gear::find_special_effect( this, 397399 ) )
+  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
+  if ( !maybe_ptr( dbc->ptr ) && unique_gear::find_special_effect( this, 397399 ) )
   {
     callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
     [ ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
