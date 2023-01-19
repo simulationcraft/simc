@@ -6512,6 +6512,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     sample_datas( sample_data_t() ),
     active_actions(),
     passive_actions(),
+    squirm_timer( 0 ),
     spiritual_focus_count( 0 ),
     shuffle_count_secs( 0 ),
     gift_of_the_ox_proc_chance(),
@@ -7929,6 +7930,7 @@ void monk_t::reset()
 {
   base_t::reset();
 
+  squirm_timer          = 0;
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
   stagger_tick_damage.clear();
@@ -8752,15 +8754,17 @@ void monk_t::combat_begin()
   // Periodic 1 YD movement to simulate combat movement
   make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
 
+    squirm_timer += 1;
+    
     // Do not interrupt a cast
     if ( ( executing && !executing->usable_moving() )
       || ( queueing && !queueing->usable_moving() )
       || ( channeling && !channeling->usable_moving() ) )
     {
-      if ( user_options.squirm_frequency > 0 )
-      {
-        if ( rng().roll( 1 / user_options.squirm_frequency ) )
-          movement.melee_squirm->trigger();
+      if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
+      {       
+        movement.melee_squirm->trigger();
+        squirm_timer = 0;
       }
     }
 
