@@ -1041,7 +1041,11 @@ struct demonic_synergy_callback_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* ) override
   {
-    if ( owner->warlock_pet_list.active )
+    if ( owner->buffs.grimoire_of_sacrifice->check() )
+    {
+      owner->buffs.demonic_synergy->trigger();
+    }
+    else if ( owner->warlock_pet_list.active )
     {
       owner->warlock_pet_list.active->buffs.demonic_synergy->trigger();
     }
