@@ -10204,7 +10204,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Bloodlust", "line_cd=600" );
 
   // In-combat potion
-  def->add_action( "potion,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|active_enemies>1|fight_remains<30" );
+  def->add_action( "potion,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.doom_winds.enabled&buff.doom_winds.up)|(!talent.doom_winds.enabled&!talent.ascendance.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.doom_winds.enabled&!talent.ascendance.enabled&!talent.feral_spirit.enabled)|active_enemies>1|fight_remains<30" );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
