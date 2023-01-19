@@ -986,12 +986,9 @@ struct storm_earth_and_fire_t : public monk_spell_t
     : monk_spell_t( "storm_earth_and_fire", p, p->talent.windwalker.storm_earth_and_fire )
   {
     parse_options( options_str );
-
-    // Forcing the minimum GCD to 750 milliseconds
-    min_gcd   = timespan_t::from_millis( 750 );
-    gcd_type  = gcd_haste_type::ATTACK_HASTE;
-
+    
     cast_during_sck = true;
+    trigger_gcd     = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
   }
 
@@ -1098,7 +1095,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     // These abilities are able to be used during Spinning Crane Kick
     if ( cast_during_sck )
-      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
+      use_while_casting = usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
 
     return monk_action_t::ready();
   }
@@ -1650,10 +1647,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
 
+    // T29 Set Bonus
     if ( p()->buff.kicks_of_flowing_momentum->up() ) {
         p()->buff.kicks_of_flowing_momentum->decrement();
-
-        p()->buff.fists_of_flowing_momentum->trigger();
     }
   }
 };
@@ -3571,11 +3567,10 @@ struct serenity_t : public monk_spell_t
     : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
   {
     parse_options( options_str );
+    
     harmful         = false;
     cast_during_sck = true;
-    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
-    min_gcd  = timespan_t::from_millis( 750 );
-    gcd_type = gcd_haste_type::SPELL_HASTE;
+    trigger_gcd     = timespan_t::zero();
   }
 
   void execute() override
@@ -6517,6 +6512,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     sample_datas( sample_data_t() ),
     active_actions(),
     passive_actions(),
+    squirm_timer( 0 ),
     spiritual_focus_count( 0 ),
     shuffle_count_secs( 0 ),
     gift_of_the_ox_proc_chance(),
@@ -7934,6 +7930,7 @@ void monk_t::reset()
 {
   base_t::reset();
 
+  squirm_timer          = 0;
   spiritual_focus_count = 0;
   combo_strike_actions.clear();
   stagger_tick_damage.clear();
@@ -8757,15 +8754,17 @@ void monk_t::combat_begin()
   // Periodic 1 YD movement to simulate combat movement
   make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
 
+    squirm_timer += 1;
+    
     // Do not interrupt a cast
     if ( ( executing && !executing->usable_moving() )
       || ( queueing && !queueing->usable_moving() )
       || ( channeling && !channeling->usable_moving() ) )
     {
-      if ( user_options.squirm_frequency > 0 )
-      {
-        if ( rng().roll( 1 / user_options.squirm_frequency ) )
-          movement.melee_squirm->trigger();
+      if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
+      {       
+        movement.melee_squirm->trigger();
+        squirm_timer = 0;
       }
     }
 
