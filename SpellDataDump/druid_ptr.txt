@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -19929,6 +19929,25 @@ Effects          :
                    Affected Spells: Primal Wrath (285381)
                    Family Flags: 93
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
+
+Name             : Moonless Night (id=400360) [Spell Family (7)] 
+Class            : Druid
+School           : Arcane
+Spell Type       : Magic
+Range            : 50000 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ..x..... 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Can Proc From Procs (122), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321)
+Effects          :
+#1 (id=1045299)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc400278
 
 Name             : Forest's Flow (id=400531) [Spell Family (7), Passive] 
 Talent Entry     : Restoration [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
