@@ -2628,7 +2628,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       val += ( byte >> bit & 0b1 ) << std::min( i, sizeof( byte ) * 8 - 1 );
       if ( bit == byte_size - 1 )
       {
-        byte = base64_char.find( talents_str[ head / byte_size ] );
+        if ( ( head / byte_size ) >= talents_str.size() )
+          byte = 0;
+        else
+          byte = base64_char.find( talents_str[ head / byte_size ] );
       }
     }
     return val;
