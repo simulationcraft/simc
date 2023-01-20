@@ -3584,10 +3584,19 @@ void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->set_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
-  buff->set_max_stack( 2 );
 
-  // TODO: implement losing buff when hp < 90%
-  effect.player->register_combat_begin( [ buff ]( player_t* ) { buff->trigger(); } );
+  if ( buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
+  {
+    buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+      buff->trigger();
+      make_repeating_event( *p->sim, p->sim->dragonflight_opts.blue_silken_lining_update_interval, [ buff, p ] {
+        if ( p->rng().roll( p->sim->dragonflight_opts.blue_silken_lining_uptime ) )
+          buff->trigger();
+        else
+          buff->expire();
+      } );
+    } );
+  }
 }
 
 void breath_of_neltharion( special_effect_t& effect )

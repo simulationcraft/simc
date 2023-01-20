@@ -501,6 +501,10 @@ struct sim_t : private sc_thread_t
     std::string ruby_whelp_shell_training = "";
     // A list of context-aware procs for Ruby Whelp Shell
     std::string ruby_whelp_shell_context = "";
+    // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
+    double blue_silken_lining_uptime = 0.7;
+    // Interval between checking blue_silken_lining_uptime
+    timespan_t blue_silken_lining_update_interval = 5_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs
