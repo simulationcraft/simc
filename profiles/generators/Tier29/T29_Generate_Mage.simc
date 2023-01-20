@@ -70,12 +70,12 @@ shoulders=,id=193526,ilevel=418
 back=,id=193763,ilevel=421
 chest=,id=200315,enchant=waking_stats_3,ilevel=421
 wrists=,id=134222,gem_id=192961,ilevel=421
-hands=,id=200317,ilevel=421
+hands=,id=200317,ilevel=424
 waist=,id=195515,gem_id=192961,ilevel=421
 legs=,id=200319,enchant=temporal_spellthread_3,ilevel=421
 feet=,id=195532,ilevel=424
 finger1=,id=133638,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=421
-finger2=,id=195526,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=430
+finger2=,id=195526,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=431
 trinket1=,id=194301,ilevel=421
 trinket2=,id=193677,ilevel=421
 main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
