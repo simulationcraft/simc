@@ -180,6 +180,7 @@ public:
     const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
     const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
     const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
+    const spell_data_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
     player_talent_t soulburn;
 
     // Specializations
@@ -437,6 +438,7 @@ public:
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
     action_t* fel_bolt; // Inquistor's Eye spell #1
     action_t* fel_blast; // Inquisitor's Eye spell #2
+    action_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
   } proc_actions;
 
   struct tier_sets_t
@@ -567,6 +569,7 @@ public:
     proc_t* soul_conduit;
     proc_t* demonic_inspiration;
     proc_t* wrathful_minion;
+    proc_t* inquisitors_gaze; // Random proc as of 10.0.5
 
     // Affliction
     proc_t* nightfall;
@@ -1052,6 +1055,21 @@ struct demonic_synergy_callback_t : public dbc_proc_callback_t
     {
       owner->warlock_pet_list.active->buffs.demonic_synergy->trigger();
     }
+  }
+};
+
+struct inquisitors_gaze_callback_t : public dbc_proc_callback_t
+{
+  warlock_t* w;
+
+  inquisitors_gaze_callback_t( warlock_t* p, special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), w( p )
+  { }
+
+  void execute( action_t*, action_state_t* ) override
+  {
+    w->buffs.inquisitors_gaze->trigger();
+    w->procs.inquisitors_gaze->occur();
   }
 };
 
