@@ -525,7 +525,7 @@
     "fields": [
       { "data_type": "i", "field": "f4"},
       { "data_type": "i", "field": "id_display_info"},
-      { "data_type": "i", "field": "id_icon"},
+      { "data_type": "i", "field": "id_icon", "ref": "ManifestInterfaceData" },
       { "data_type": "i", "field": "f3"},
       { "data_type": "i", "field": "f5" }
     ]
@@ -722,6 +722,7 @@
     ]
   },
   "ItemSpecOverride": {
+    "parent": "Item",
     "fields": [
       { "data_type": "H", "field": "id_spec", "ref": "ChrSpecialization" }
     ]
@@ -944,7 +945,7 @@
     "fields": [
       { "data_type": "S", "field": "description" },
       { "data_type": "i", "field": "id_modified_crafting_category" },
-      { "data_type": "i", "field": "id_tree" },
+      { "data_type": "i", "field": "id_tree", "ref": "ItemBonusTreeNode" },
       { "data_type": "i", "field": "flags" },
       { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "item_context_offset" }
