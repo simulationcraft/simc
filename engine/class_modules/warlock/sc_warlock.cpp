@@ -673,10 +673,24 @@ struct summon_soulkeeper_t : public warlock_spell_t
 {
   struct soul_combustion_t : public warlock_spell_t
   {
+    int tormented_souls;
+
     soul_combustion_t( warlock_t* p ) : warlock_spell_t( "Soul Combustion", p, p->talents.soul_combustion )
     {
       background = dual = true;
       aoe = -1;
+      reduced_aoe_targets = p->min_version_check( VERSION_10_0_5 ) ? 8.0 : 0.0; // Presumably hardcoded, mentioned in tooltip
+
+      tormented_souls = 1;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= tormented_souls;
+
+      return m;
     }
   };
 
@@ -696,7 +710,7 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
   bool usable_moving() const override
   {
-    return true; // Last checked 2022-11-27
+    return true; // Last checked 2023-01-19
   }
 
   bool ready() override
@@ -713,13 +727,25 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
     warlock_spell_t::execute();
 
+    timespan_t dur = 0_ms;
+
+    if ( p()->min_version_check( VERSION_10_0_5 ) )
+    {
+      dur = p()->talents.summon_soulkeeper_aoe->duration() - 2_s + 1_s; // Hardcoded -2 according to tooltip, but is doing 9 ticks as of 2023-01-19
+      debug_cast<soul_combustion_t*>( p()->proc_actions.soul_combustion )->tormented_souls = p()->buffs.tormented_soul->stack();
+    }
+    else
+    {
+      dur = 1_s + 1_s * p()->buffs.tormented_soul->stack();
+    }
+
     make_event<ground_aoe_event_t>( *sim, p(),
                                 ground_aoe_params_t()
                                     .target( execute_state->target )
                                     .x( execute_state->target->x_position )
                                     .y( execute_state->target->y_position )
                                     .pulse_time( base_tick_time )
-                                    .duration( 1_s + 1_s * p()->buffs.tormented_soul->stack() )
+                                    .duration( dur )
                                     .start_time( sim->current_time() )
                                     .action( p()->proc_actions.soul_combustion ) );
 
@@ -746,7 +772,7 @@ struct inquisitors_gaze_t : public warlock_spell_t
   };
 
   inquisitors_gaze_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "Inquisitor's Gaze", p, p->talents.inquisitors_gaze )
+    : warlock_spell_t( "Inquisitor's Gaze", p, p->min_version_check( VERSION_10_0_5 ) ? spell_data_t::nil() : p->talents.inquisitors_gaze )
   {
     parse_options( options_str );
     
@@ -771,6 +797,23 @@ struct inquisitors_gaze_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p()->buffs.inquisitors_gaze->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p()->min_version_check( VERSION_10_0_5 ) )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
+};
+
+struct fel_barrage_t : public warlock_spell_t
+{
+  fel_barrage_t( warlock_t* p ) : warlock_spell_t( "Fel Barrage", p, p->talents.fel_barrage )
+  {
+    background = dual = true;
   }
 };
 
@@ -1382,6 +1425,10 @@ void warlock_t::create_actions()
     if ( talents.pandemic_invocation->ok() )
       proc_actions.pandemic_invocation_proc = new warlock::actions::pandemic_invocation_t( this );
   }
+
+  if ( talents.inquisitors_gaze->ok() && min_version_check( VERSION_10_0_5 ) )
+    proc_actions.fel_barrage = new warlock::actions::fel_barrage_t( this );
+
   player_t::create_actions();
 }
 
@@ -1452,21 +1499,32 @@ void warlock_t::create_buffs()
                                            buffs.tormented_soul->increment();
                                          } );
 
-  buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
-                               ->set_period( 3_s )
-                               ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                               ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                   if ( buffs.inquisitors_gaze_buildup->at_max_stacks() )
-                                   {
-                                     proc_actions.fel_blast->execute_on_target( target );
-                                     buffs.inquisitors_gaze_buildup->expire();
-                                   }
-                                   else
-                                   {
-                                     proc_actions.fel_bolt->execute_on_target( target );
-                                     buffs.inquisitors_gaze_buildup->increment();
-                                   }
-                                 }  );
+  buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff );
+
+  if ( min_version_check( VERSION_10_0_5 ) )
+  {
+    buffs.inquisitors_gaze->set_period( 1_s )
+                          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                            proc_actions.fel_barrage->execute_on_target( target );
+                          } );
+  }
+  else
+  {
+    buffs.inquisitors_gaze->set_period( 3_s )
+                          ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                            if ( buffs.inquisitors_gaze_buildup->at_max_stacks() )
+                            {
+                              proc_actions.fel_blast->execute_on_target( target );
+                              buffs.inquisitors_gaze_buildup->expire();
+                            }
+                            else
+                            {
+                              proc_actions.fel_bolt->execute_on_target( target );
+                              buffs.inquisitors_gaze_buildup->increment();
+                            }
+                          } );
+  }
 
   buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
                                        ->set_max_stack( 3 );
@@ -1578,8 +1636,11 @@ void warlock_t::init_spells()
   talents.inquisitors_gaze_buff = find_spell( 388068 );
   talents.fel_bolt = find_spell( 388070 );
   talents.fel_blast = find_spell( 389277 );
+  talents.fel_barrage = find_spell( 388070 ); // Fel Bolt spell was renamed to this in 10.0.5
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
+
+  version_10_0_5_data = find_spell( 399668 ); // For 10.0.5 version checking, new Focused Malignancy talent data
 }
 
 void warlock_t::init_rng()
@@ -1633,6 +1694,7 @@ void warlock_t::init_procs()
   procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
   procs.demonic_inspiration = get_proc( "demonic_inspiration" );
   procs.wrathful_minion = get_proc( "wrathful_minion" );
+  procs.inquisitors_gaze = get_proc( "inquisitors_gaze" );
 }
 
 void warlock_t::init_base_stats()
@@ -1745,6 +1807,18 @@ void warlock_t::init_special_effects()
     special_effects.push_back( syn_effect );
 
     auto cb = new warlock::actions::demonic_synergy_callback_t( this, *syn_effect );
+
+    cb->initialize();
+  }
+
+  if ( talents.inquisitors_gaze->ok() && min_version_check( VERSION_10_0_5 ) )
+  {
+    auto const gaze_effect = new special_effect_t( this );
+    gaze_effect->name_str = "inquisitors_gaze_effect";
+    gaze_effect->spell_id = talents.inquisitors_gaze->id();
+    special_effects.push_back( gaze_effect );
+
+    auto cb = new warlock::actions::inquisitors_gaze_callback_t( this, *gaze_effect );
 
     cb->initialize();
   }
@@ -2021,6 +2095,9 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_0_5:
+      return !( version_10_0_5_data == spell_data_t::not_found() );
+    case VERSION_10_0_0:
     case VERSION_ANY:
       return true;
   }
