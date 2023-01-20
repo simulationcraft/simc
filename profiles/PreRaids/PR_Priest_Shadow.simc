@@ -39,12 +39,13 @@ actions.precombat+=/vampiric_touch,if=!talent.damnation.enabled&!talent.shadow_c
 # Executed every time the actor is available.
 actions=variable,name=dp_cutoff,op=set,value=!talent.mind_sear|(spell_targets.mind_sear<=variable.mind_sear_cutoff&(!buff.mind_devourer.up|spell_targets.mind_sear=1))
 actions+=/variable,name=holding_crash,op=set,value=raid_event.adds.in<20
-actions+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15
 actions+=/run_action_list,name=aoe,if=spell_targets.mind_sear>2|spell_targets.vampiric_touch>3
 actions+=/run_action_list,name=main
 
 actions.aoe=call_action_list,name=aoe_variables
+actions.aoe+=/vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&!variable.manual_vts_applied
 actions.aoe+=/shadow_crash,if=!variable.holding_crash
+actions.aoe+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|spell_targets.mind_sear>2)
 actions.aoe+=/dark_void,if=raid_event.adds.in>10
 actions.aoe+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight)&(fight_remains<30|time_to_die>15)
 # actions.aoe+=/run_action_list,name=aoe_pl_ire,if=talent.psychic_link.rank=2&talent.insidious_ire.rank=2  Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff. Only use when facing 3-7 targets.
@@ -53,7 +54,7 @@ actions.aoe+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cas
 actions.aoe+=/void_bolt,if=insanity<=85
 # Use Mind Sear on 3+ targets and either you have at least 75 insanity, 4pc buff is inactive, or 2pc buff is at 3 stacks, or mind devourer is up on 2+ targets. If Mind Devourer is up do not cancel mind sear.
 actions.aoe+=/mind_sear,target_if=max:spell_targets.mind_sear,if=buff.mind_devourer.up&spell_targets.mind_sear>1|spell_targets.mind_sear>variable.mind_sear_cutoff&(insanity>=75|((!set_bonus.tier29_4pc&!set_bonus.tier29_2pc)|!buff.dark_reveries.up)|(!set_bonus.tier29_2pc|buff.gathering_shadows.stack=3))&!variable.pool_for_cds,early_chain_if=ticks>=2&!buff.mind_devourer_ms_active.up,interrupt_immediate=1,interrupt_if=ticks>=2&!buff.mind_devourer_ms_active.up
-actions.aoe+=/call_action_list,name=pl_torrent,if=ptr=1&talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=3&(!variable.holding_crash|raid_event.adds.count%(active_dot.vampiric_touch+raid_event.adds.count)<1.5)&((insanity>=50|dot.devouring_plague.ticking)&!buff.mind_devourer.up|buff.voidform.up)
+actions.aoe+=/call_action_list,name=pl_torrent,if=ptr=1&talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=3&(!variable.holding_crash|raid_event.adds.count%(active_dot.vampiric_touch+raid_event.adds.count)<1.5)&((insanity>=50|dot.devouring_plague.ticking|buff.dark_reveries.up)|buff.voidform.up)
 actions.aoe+=/devouring_plague,if=(refreshable&!variable.pool_for_cds|insanity>75&(!buff.mind_flay_insanity.up&talent.mind_flay_insanity|!talent.psychic_link))&variable.dp_cutoff
 actions.aoe+=/vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains&!action.shadow_crash.in_flight|variable.holding_crash)
 actions.aoe+=/shadow_word_pain,if=refreshable&target.time_to_die>=18&!talent.misery.enabled
@@ -67,12 +68,13 @@ actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.rem
 actions.aoe+=/call_action_list,name=filler
 
 
-actions.aoe_variables=variable,name=max_vts,op=set,default=8,value=spell_targets.vampiric_touch
+actions.aoe_variables=variable,name=max_vts,op=set,default=12,value=spell_targets.vampiric_touch>?12
 actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=0,default=1
 actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18
 # Todo Revamp to fix undesired behaviour with unstacked fights
 actions.aoe_variables+=/variable,name=vts_applied,op=set,value=(active_dot.vampiric_touch+8*action.shadow_crash.in_flight)>=variable.max_vts|!variable.is_vt_possible
 actions.aoe_variables+=/variable,name=holding_crash,op=set,value=(variable.max_vts-active_dot.vampiric_touch)<4|raid_event.adds.in<10&raid_event.adds.count>(variable.max_vts-active_dot.vampiric_touch),if=variable.holding_crash
+actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+8*!variable.holding_crash)>=variable.max_vts|!variable.is_vt_possible
 actions.aoe_variables+=/variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up
 
 # Todo Check VE/DA enter conditions based on dots
@@ -116,6 +118,7 @@ actions.filler+=/shadow_word_death
 actions.filler+=/shadow_word_pain,target_if=min:remains
 
 actions.main=call_action_list,name=main_variables
+actions.main+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|spell_targets.mind_sear>2)
 actions.main+=/mindbender,if=(variable.dots_up|action.shadow_crash.in_flight)&(fight_remains<30|time_to_die>15)
 # High priority Mind Blast action when using Inescapable Torment
 actions.main+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7
@@ -131,11 +134,11 @@ actions.main+=/shadow_word_death,target_if=(target.health.pct<20&spell_targets.m
 actions.main+=/mind_blast,if=variable.dots_up&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)
 # TODO: Dont use if add events are coming soon when talented into PL
 actions.main+=/mindgames,if=spell_targets.mind_sear<5&variable.all_dots_up
-actions.main+=/shadow_crash,if=raid_event.adds.in>10
+actions.main+=/shadow_crash,if=!variable.holding_crash
 actions.main+=/dark_void,if=raid_event.adds.in>20
 actions.main+=/devouring_plague,if=buff.voidform.up&variable.dots_up&variable.dp_cutoff
 # TODO: Dont use if add events are coming soon when talented into PL
-actions.main+=/void_torrent,if=insanity<=35,target_if=variable.all_dots_up
+actions.main+=/void_torrent,if=insanity<=35&!variable.holding_crash,target_if=variable.all_dots_up
 actions.main+=/call_action_list,name=filler
 
 actions.main_variables=variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
@@ -144,10 +147,10 @@ actions.main_variables+=/variable,name=pool_for_cds,op=set,value=(cooldown.void_
 
 actions.pl_torrent=void_bolt
 actions.pl_torrent+=/vampiric_touch,if=remains<=6&cooldown.void_torrent.remains<gcd*2
-actions.pl_torrent+=/devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd&!buff.voidform.up
-actions.pl_torrent+=/mind_sear,if=buff.voidform.up&insanity>=50
+actions.pl_torrent+=/devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2&!buff.voidform.up&(spell_targets.mind_sear<=4|!talent.surge_of_darkness&cooldown.mind_blast.full_recharge_time>=3)&!buff.mind_devourer.up
+actions.pl_torrent+=/mind_sear,if=!variable.dp_cutoff|buff.mind_devourer.up
 actions.pl_torrent+=/mind_blast,if=!talent.mindgames|cooldown.mindgames.remains>=3&!prev_gcd.1.mind_blast
-actions.pl_torrent+=/void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking&dot.devouring_plague.ticking|buff.voidform.up
+actions.pl_torrent+=/void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up
 actions.pl_torrent+=/mindgames,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking&dot.devouring_plague.ticking|buff.voidform.up
 
 actions.trinkets=use_item,name=voidmenders_shadowgem,if=buff.power_infusion.up|fight_remains<20

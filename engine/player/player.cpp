@@ -2628,7 +2628,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       val += ( byte >> bit & 0b1 ) << std::min( i, sizeof( byte ) * 8 - 1 );
       if ( bit == byte_size - 1 )
       {
-        byte = base64_char.find( talents_str[ head / byte_size ] );
+        if ( ( head / byte_size ) >= talents_str.size() )
+          byte = 0;
+        else
+          byte = base64_char.find( talents_str[ head / byte_size ] );
       }
     }
     return val;
@@ -11979,6 +11982,16 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
     }
+
+    if ( !dragonflight_opts.ruby_whelp_shell_training.empty() )
+    {
+      profile_str += "dragonflight.player.ruby_whelp_shell_training=" + dragonflight_opts.ruby_whelp_shell_training + term;
+    }
+
+    if ( !dragonflight_opts.ruby_whelp_shell_context.empty() )
+    {
+      profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12225,6 +12238,8 @@ void player_t::copy_from( player_t* source )
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
   player_traits     = source->player_traits;
+  shadowlands_opts  = source->shadowlands_opts;
+  dragonflight_opts = source->dragonflight_opts;
 
   if ( azerite )
   {
@@ -12564,6 +12579,8 @@ void player_t::create_options()
 
   // Dragonflight options
   add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
+  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
+  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
 
   // Obsolete options
 

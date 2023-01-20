@@ -901,6 +901,7 @@ public:
     const spell_data_t* adaptive_swarm_heal;
 
     // Balance
+    const spell_data_t* astral_communion;
     const spell_data_t* balance;
     const spell_data_t* astral_power;
     const spell_data_t* celestial_alignment;
@@ -911,6 +912,7 @@ public:
     const spell_data_t* incarnation_moonkin;
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* waning_twilight;
+    const spell_data_t* starfall;
 
     // Feral
     const spell_data_t* feral;
@@ -3540,9 +3542,6 @@ struct ferocious_bite_t : public cat_finisher_t
 
     if ( p->talent.relentless_predator.ok() )
       max_excess_energy *= 1.0 + p->talent.relentless_predator->effectN( 2 ).percent();
-
-    if ( p->bugs && p->talent.relentless_predator.ok() )
-      max_excess_energy *= 1.0 + p->talent.relentless_predator->effectN( 2 ).percent();
   }
 
   double maximum_energy() const
@@ -6056,7 +6055,7 @@ struct adaptive_swarm_t : public druid_spell_t
 struct astral_communion_t : public druid_spell_t
 {
   astral_communion_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "astral_communion", p, maybe_ptr( p->dbc->ptr ) ? p->find_spell( 202359 ) : p->talent.astral_communion, opt )
+    : druid_spell_t( "astral_communion", p, maybe_ptr( p->dbc->ptr ) ? p->spec.astral_communion : p->talent.astral_communion, opt )
   {
     harmful = false;
   }
@@ -7371,7 +7370,7 @@ struct starfall_t : public astral_power_spender_t
   timespan_t dot_ext;
   timespan_t max_ext;
 
-  starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
+  starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->spec.starfall, opt ) {}
 
   starfall_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : base_t( n, p, s, opt ),
@@ -7394,14 +7393,14 @@ struct starfall_t : public astral_power_spender_t
 
   void execute() override
   {
-    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() )
+    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starfall_cosmos )
     {
       p()->active.starfall_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
       return;
     }
 
-    if ( !is_free() && p()->buff.starweavers_warp->up() )
+    if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
     {
       auto bug = bugged_weaver();
 
@@ -7616,14 +7615,14 @@ struct starsurge_t : public astral_power_spender_t
 
   void execute() override
   {
-    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() )
+    if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starsurge_cosmos )
     {
       p()->active.starsurge_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
       return;
     }
 
-    if ( !is_free() && p()->buff.starweavers_weft->up() )
+    if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
     {
       auto bug = bugged_weaver();
 
@@ -9383,6 +9382,7 @@ void druid_t::init_spells()
 
   // Balance Abilities
   spec.balance                  = find_specialization_spell( "Balance Druid" );
+  spec.astral_communion         = check( talent.astral_communion, 202359 );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
   spec.celestial_alignment      = talent.celestial_alignment.find_override_spell();
   spec.eclipse_lunar            = check( talent.eclipse, 48518 );
@@ -9392,6 +9392,7 @@ void druid_t::init_spells()
   spec.incarnation_moonkin      = check( talent.incarnation_moonkin, 102560 );
   spec.shooting_stars_dmg       = check( talent.shooting_stars, 202497 );  // shooting stars damage
   spec.waning_twilight          = check( talent.waning_twilight, 393957 );
+  spec.starfall                 = check( talent.starfall, 191034 );
 
   // Feral Abilities
   spec.feral                    = find_specialization_spell( "Feral Druid" );
@@ -10041,32 +10042,44 @@ void druid_t::create_actions()
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
   {
-    auto ss = get_secondary_action_n<starsurge_t>( "starsurge_cosmos", talent.starsurge, "" );
-    ss->name_str_reporting = "touch_the_cosmos";
-    ss->s_data_reporting = &buff.touch_the_cosmos->data();
-    ss->set_free_cast( free_spell_e::COSMOS );
-    active.starsurge_cosmos = ss;
+    if ( talent.starsurge.ok() )
+    {
+      auto ss = get_secondary_action_n<starsurge_t>( "starsurge_cosmos", talent.starsurge, "" );
+      ss->name_str_reporting = "touch_the_cosmos";
+      ss->s_data_reporting = &buff.touch_the_cosmos->data();
+      ss->set_free_cast( free_spell_e::COSMOS );
+      active.starsurge_cosmos = ss;
+    }
 
-    auto sf = get_secondary_action_n<starfall_t>( "starfall_cosmos", talent.starfall, "" );
-    sf->name_str_reporting = "touch_the_cosmos";
-    sf->s_data_reporting = &buff.touch_the_cosmos->data();
-    sf->set_free_cast( free_spell_e::COSMOS );
-    active.starfall_cosmos = sf;
+    if ( talent.starfall.ok() )
+    {
+      auto sf = get_secondary_action_n<starfall_t>( "starfall_cosmos", talent.starfall, "" );
+      sf->name_str_reporting = "touch_the_cosmos";
+      sf->s_data_reporting = &buff.touch_the_cosmos->data();
+      sf->set_free_cast( free_spell_e::COSMOS );
+      active.starfall_cosmos = sf;
+    }
   }
 
   if ( talent.starweaver.ok() )
   {
-    auto ss = get_secondary_action_n<starsurge_t>( "starsurge_starweaver", talent.starsurge, "" );
-    ss->name_str_reporting = "starweavers_weft";
-    ss->s_data_reporting = &buff.starweavers_weft->data();
-    ss->set_free_cast( free_spell_e::STARWEAVER );
-    active.starsurge_starweaver = ss;
+    if ( talent.starsurge.ok() )
+    {
+      auto ss = get_secondary_action_n<starsurge_t>( "starsurge_starweaver", talent.starsurge, "" );
+      ss->name_str_reporting = "starweavers_weft";
+      ss->s_data_reporting = &buff.starweavers_weft->data();
+      ss->set_free_cast( free_spell_e::STARWEAVER );
+      active.starsurge_starweaver = ss;
+    }
 
-    auto sf = get_secondary_action_n<starfall_t>( "starfall_starweaver", talent.starfall, "" );
-    sf->name_str_reporting = "starweavers_warp";
-    sf->s_data_reporting = &buff.starweavers_warp->data();
-    sf->set_free_cast( free_spell_e::STARWEAVER );
-    active.starfall_starweaver = sf;
+    if ( talent.starfall.ok() )
+    {
+      auto sf = get_secondary_action_n<starfall_t>( "starfall_starweaver", talent.starfall, "" );
+      sf->name_str_reporting = "starweavers_warp";
+      sf->s_data_reporting = &buff.starweavers_warp->data();
+      sf->set_free_cast( free_spell_e::STARWEAVER );
+      active.starfall_starweaver = sf;
+    }
   }
 
   if ( talent.sundered_firmament.ok() )

@@ -497,8 +497,14 @@ struct sim_t : private sc_thread_t
     timespan_t hood_of_surging_time_period = 5_s;
     // Hood of Surging Time stacks to grant when the period is set
     unsigned int hood_of_surging_time_stacks = 1;
-    // Weighting for the whelp. It get's normalized and converted into chance.
-    std::string whelp_training_weights = "fire_shot:1/lobbing_fire_nova:1/curing_whiff:1/mending_breath:1/sleepy_ruby_warmth:1/under_red_wings:1";
+    // Ruby Whelp Shell training levels
+    std::string ruby_whelp_shell_training = "";
+    // A list of context-aware procs for Ruby Whelp Shell
+    std::string ruby_whelp_shell_context = "";
+    // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
+    double blue_silken_lining_uptime = 0.7;
+    // Interval between checking blue_silken_lining_uptime
+    timespan_t blue_silken_lining_update_interval = 5_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

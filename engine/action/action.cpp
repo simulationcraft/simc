@@ -1552,7 +1552,7 @@ int action_t::num_targets() const
 size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 {
   tl.clear();
-  if ( !target->is_sleeping() )
+  if ( !target->is_sleeping() && target->is_enemy() )
     tl.push_back( target );
 
   for ( auto* t : sim->target_non_sleeping_list )

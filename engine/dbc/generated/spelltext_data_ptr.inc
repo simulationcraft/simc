@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.5.47621
-static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.5.47660
+static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -2052,7 +2052,6 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   {  61684, "Increases your pet's movement speed by $s1% for $d.", "Increases movement speed by $s1%.", "Basic Ability" },
   {  61777, "A Gargoyle flies into the area and bombards the target with Shadow damage.", "Runic Power is being fed to the Gargoyle.", 0 },
   {  61778, "Increases attack power by $s1 for $d.", "Increases attack power by $s1.", 0 },
-  {  61815, "Shake your Spring Flowers to place rabbit ears on yourself or someone else.", "Shhh! Did you hear that? Don't move!", 0 },
   {  61882, "Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and has a $?s381743[${$77478s2+$381743S1)}.1][$77478s2]% chance to knock the enemy down.", 0, 0 },
   {  61999, "Pours dark energy into a dead target, reuniting spirit and body to allow the target to reenter battle with $s2% health and at least $s1% mana.", 0, 0 },
   {  62071, "$@spelldesc52610", "Damage increased $s1% while in Cat Form.\r\nEnergy regeneration increased by $s3%.", 0 },
@@ -19194,7 +19193,7 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   { 397118, 0, "Attack speed increased by $w1%. Attacking another target will reset this bonus.", 0 },
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
   { 397364, "@spelldesc384318", "Bleeding for $w1 damage every $t1 sec.", 0 },
-  { 397399, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Critical Strike increased by $w1.", 0 },
+  { 397399, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing as well as damage-dealing spells and abilities have a high chance to empower the gem, increasing its effect.", "Critical Strike increased by $w1.", 0 },
   { 397400, "Feast upon the toe, increasing your Critical Strike by $s1 for $d and causing you to exude a fetid breath, dealing ${$397401s1*$d/$t2} Shadow damage split between enemies in front of you.", "Critical Strike increased by $w1. Exuding a fetid breath.", 0 },
   { 397401, "$@spelldesc397400", 0, 0 },
   { 397405, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%. Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage.\r\nThis can occur once every 1.5 sec.", 0 },
@@ -19264,11 +19263,12 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47621
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.5.47660
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  397399,  0, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing as well as damage-dealing spells and abilities have a high chance to empower the gem, increasing its effect." },
 } };
 
-// Spell description variables, wow build 10.0.5.47621
+// Spell description variables, wow build 10.0.5.47660
 static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19642,7 +19642,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47621
+// spelldesc_vars hotfix entries, wow build 10.0.5.47660
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

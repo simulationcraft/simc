@@ -2158,6 +2158,10 @@ struct eye_beam_t : public warlock_pet_spell_t
       background = dual = true;
 
       base_dd_min = base_dd_max = 0.0;
+
+      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_PERSISTENT;
+      update_flags   |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET;
+
     }
   };
   
@@ -2201,9 +2205,9 @@ struct eye_beam_t : public warlock_pet_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto raw_damage = s->result_raw;
-
     warlock_pet_spell_t::impact( s );
+
+    auto raw_damage = s->result_total;
 
     if ( p()->o()->talents.grim_reach->ok() )
     {

@@ -3213,7 +3213,7 @@ struct death_knight_action_t : public Base
     Base::execute();
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
-    if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() )
+    if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() && p() -> in_combat)
       p() -> active_spells.blood_draw -> execute();
   }
 

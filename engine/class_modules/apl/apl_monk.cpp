@@ -72,7 +72,7 @@ namespace monk_apl
         break;
       case MONK_WINDWALKER:
         if ( p->true_level > 60 )
-          return "phial_of_static_empowerment_3";
+          return "phial_of_tepid_versatility_3";
         else if ( p->true_level > 50 )
           return "spectral_flask_of_power";
         else if ( p->true_level > 45 )
@@ -602,6 +602,9 @@ namespace monk_apl
     // Use Chi Burst to reset Faeline Stomp
     def->add_action( "chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)", "Use Chi Burst to reset Faeline Stomp" );
 
+    // Special Trinkets
+    def->add_action( "use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)", "Special Trinkets" );
+    
     // Use Cooldowns
     def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity", "Cooldowns" );
     def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
@@ -618,6 +621,13 @@ namespace monk_apl
                         "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3" );
+
+    for ( const auto& item : p->items )
+    {
+      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
+    }
+
     cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
     cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10" );
     cd_sef->add_action(
@@ -632,14 +642,6 @@ namespace monk_apl
     }
     else
       cd_sef->add_action( "touch_of_death,cycle_targets=1,if=combo_strike" );
-
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
-    }
-
 
     if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
       cd_sef->add_action( "touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
@@ -677,6 +679,12 @@ namespace monk_apl
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25" );
 
+    for ( const auto& item : p->items )
+    {
+      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
+    }
+
     cd_serenity->add_action(
       "bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10" );
 
@@ -708,12 +716,6 @@ namespace monk_apl
         cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
       else if ( racial_action != "arcane_torrent" )
         cd_serenity->add_action( racial_action );
-    }
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
     }
 
     // AoE priority

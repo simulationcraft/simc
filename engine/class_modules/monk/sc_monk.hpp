@@ -175,6 +175,7 @@ public:
   } passive_actions;
 
   std::vector<action_t*> combo_strike_actions;
+  double squirm_timer;
   double spiritual_focus_count;
   double shuffle_count_secs;
 
