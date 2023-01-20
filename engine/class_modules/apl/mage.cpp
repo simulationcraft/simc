@@ -429,6 +429,8 @@ void frost( player_t* p )
   cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)" );
   cds->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.icy_veins.remains>10" );
   cds->add_action( "use_items" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
+  cds->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
   cds->add_action( "lights_judgment" );
