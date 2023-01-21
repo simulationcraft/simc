@@ -3563,7 +3563,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         double evaluate_spell() const
         {
           auto original_target = spell->target;
-          spell->target = original_spell.target;
+          spell->target = original_spell.get_expression_target();
           spell->target_cache.is_valid = false;
           auto n_targets = spell->target_list().size();
           spell->target = original_target;
