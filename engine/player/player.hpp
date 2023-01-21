@@ -1219,6 +1219,7 @@ public:
   virtual void cancel_auto_attacks();
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero(), proc_t* proc = nullptr );
   virtual void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
+  virtual void delay_ranged_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );
 

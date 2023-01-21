@@ -2317,6 +2317,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       base_execute_time = 0_s;
       buff = solved;
       effect = &e;
+      interrupt_auto_attack = false;
 
       for ( auto a : player->action_list )
       {
@@ -2343,7 +2344,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       {
         proc_spell_t::execute();
         event_t::cancel( player->readying );
-        player->delay_auto_attacks( composite_dot_duration( execute_state ) );
+        player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
       }
     }
 
@@ -2360,7 +2361,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       buff->trigger();
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready();
     }
 
     void precombat_buff()
