@@ -4009,8 +4009,6 @@ struct death_sweep_t : public blade_dance_base_t
 
   void execute() override
   {
-    blade_dance_base_t::execute();
-
     assert( p()->buff.metamorphosis->check() );
 
     // If Metamorphosis has less than 1s remaining, it gets extended so the whole Death Sweep happens during Meta.
@@ -4018,6 +4016,8 @@ struct death_sweep_t : public blade_dance_base_t
     {
       p()->buff.metamorphosis->extend_duration( p(), 1_s - p()->buff.metamorphosis->remains() );
     }
+
+    blade_dance_base_t::execute();
   }
 
   bool ready() override
