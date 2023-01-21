@@ -1027,6 +1027,7 @@ public:
   void        combat_begin() override;
   timespan_t  available() const override;
   action_t*   create_action( util::string_view name, util::string_view options ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t& action, std::string_view name_str ) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   std::unique_ptr<expr_t> create_resource_expression( util::string_view name ) override;
   void        regen( timespan_t periodicity ) override;
@@ -8089,6 +8090,59 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
 
 // rogue_t::create_expression ===============================================
 
+std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std::string_view name_str )
+{
+  auto split = util::string_split<util::string_view>( name_str, "." );
+
+  if ( util::str_compare_ci( name_str, "poisoned" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->is_lethal_poisoned();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "poison_remains" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->lethal_poison_remains();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "bleeds" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->dots.garrote->is_ticking() +
+        tdata->dots.internal_bleeding->is_ticking() +
+        tdata->dots.rupture->is_ticking() +
+        tdata->dots.crimson_tempest->is_ticking() +
+        tdata->dots.mutilated_flesh->is_ticking() +
+        tdata->dots.serrated_bone_spike->is_ticking();
+    } );
+  }
+  // exsanguinated.(garrote|internal_bleeding|rupture|crimson_tempest)
+  else if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "exsanguinated" ) &&
+            ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
+              util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
+              util::str_compare_ci( split[ 1 ], "rupture" ) ||
+              util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ||
+              util::str_compare_ci( split[ 1 ], "serrated_bone_spike" ) ) )
+  {
+    action_t* dot_action = find_action( split[ 1 ] );
+    if ( !dot_action )
+    {
+      return expr_t::create_constant( "exsanguinated_expr", 0 );
+    }
+
+    return make_fn_expr( name_str, [ &action, dot_action ]() {
+      dot_t* d = dot_action->get_dot( action.get_expression_target() );
+      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
+    } );
+  }
+
+  return player_t::create_action_expression( action, name_str );
+}
+
 std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 {
   auto split = util::string_split<util::string_view>( name_str, "." );
@@ -8150,32 +8204,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return gcd_remains + nominal_duration;
       }
       return buffs.improved_garrote->remains();
-    } );
-  }
-  else if ( util::str_compare_ci( name_str, "poisoned" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = get_target_data( target );
-      return tdata->is_lethal_poisoned();
-    } );
-  }
-  else if ( util::str_compare_ci( name_str, "poison_remains" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = get_target_data( target );
-      return tdata->lethal_poison_remains();
-    } );
-  }
-  else if ( util::str_compare_ci( name_str, "bleeds" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = get_target_data( target );
-      return tdata->dots.garrote->is_ticking() +
-        tdata->dots.internal_bleeding->is_ticking() +
-        tdata->dots.rupture->is_ticking() +
-        tdata->dots.crimson_tempest->is_ticking() +
-        tdata->dots.mutilated_flesh->is_ticking() +
-        tdata->dots.serrated_bone_spike->is_ticking();
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
@@ -8326,25 +8354,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return stealthed();
       } );
     }
-  }
-  // exsanguinated.(garrote|internal_bleeding|rupture|crimson_tempest)
-  else if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "exsanguinated" ) &&
-    ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
-      util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
-      util::str_compare_ci( split[ 1 ], "rupture" ) ||
-      util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ||
-      util::str_compare_ci( split[ 1 ], "serrated_bone_spike" ) ) )
-  {
-    action_t* action = find_action( split[ 1 ] );
-    if ( !action )
-    {
-      return expr_t::create_constant( "exsanguinated_expr", 0 );
-    }
-
-    return make_fn_expr( name_str, [ action ]() {
-      dot_t* d = action->get_dot( action->target );
-      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
-    } );
   }
   // rtb_list.<buffs>
   else if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "rtb_list" ) && ! split[ 1 ].empty() )
