@@ -4052,12 +4052,8 @@ void azureweave_vestments( special_effect_t& effect )
   }
   else
   {
-    auto buff = buff_t::find( effect.player, effect.name() );
-    if ( !buff )
-    {
-      buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 388061 ) )
-                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
-    }
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 388061 ) )
+                ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
     auto driver         = unique_gear::find_special_effect( effect.player, set_driver_id );
     driver->custom_buff = buff;
   }
@@ -4078,12 +4074,8 @@ void woven_chronocloth( special_effect_t& effect )
   }
   else
   {
-    auto haste_buff = buff_t::find( effect.player, "unleashed_time" );
-    if ( !haste_buff )
-    {
-      haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387142 ) )
+    auto haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387142 ) )
                        ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
-    }
 
     auto buff = buff_t::find( effect.player, effect.name() );
     if ( !buff )
