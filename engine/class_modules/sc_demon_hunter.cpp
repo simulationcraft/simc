@@ -2199,7 +2199,6 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       if ( p()->talent.havoc.isolated_prey->ok() )
       {
-        // DFALPHA TOCHECK -- What happens when a target dies mid-channel?
         if ( targets_in_range_list( target_list() ).size() == 1 )
         {
           m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
@@ -3552,6 +3551,10 @@ struct the_hunt_t : public demon_hunter_spell_t
 
   timespan_t travel_time() const override
   { return 100_ms; }
+
+  // Bypass the normal demon_hunter_spell_t out of range and movement ready checks
+  bool ready() override
+  { return spell_t::ready(); }
 };
 
 }  // end namespace spells
