@@ -483,9 +483,6 @@ struct haunt_t : public affliction_spell_t
     {
       td( s->target )->debuffs_haunt->trigger();
 
-      if ( p()->talents.haunted_soul->ok() )
-        p()->buffs.haunted_soul->trigger();
-
       if ( p()->talents.shadow_embrace->ok() )
         td( s->target )->debuffs_shadow_embrace->trigger();
     }
@@ -774,8 +771,8 @@ struct soul_swap_exhale_t : public affliction_spell_t
     {
       td( s->target )->debuffs_haunt->expire();
 
-      p()->soul_swap_state.haunt.action->execute_on_target( s->target );
-      td( s->target )->debuffs_haunt->extend_duration( p(), p()->soul_swap_state.haunt.duration - td( s->target )->debuffs_haunt->remains() );
+      // Need to handle Haunt trigger manually instead of via action
+      td( s->target )->debuffs_haunt->trigger( p()->soul_swap_state.haunt.duration );
     }
 
     p()->buffs.soul_swap->expire();
@@ -847,6 +844,19 @@ void warlock_t::create_buffs_affliction()
 
   buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
                            ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
+
+  buffs.active_haunts = make_buff( this, "active_haunts" )
+                            ->set_max_stack( 20 )
+                            ->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
+                              {
+                                if ( talents.haunted_soul->ok() )
+                                {
+                                  if ( cur == 0 )
+                                    buffs.haunted_soul->expire();
+                                  else if ( cur > 0 && prev == 0 )
+                                    buffs.haunted_soul->trigger();
+                                }
+                              } );
 
   buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )

@@ -509,6 +509,7 @@ public:
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> malefic_affliction;
     propagate_const<buff_t*> haunted_soul;
+    propagate_const<buff_t*> active_haunts; // Dummy buff used for tracking Haunts in multi-target to properly handle Haunted Soul
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
     propagate_const<buff_t*> cruel_inspiration; // T29 2pc
