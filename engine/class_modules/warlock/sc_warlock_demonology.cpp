@@ -579,9 +579,12 @@ struct demonic_strength_t : public demonology_spell_t
     : demonology_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
   {
     parse_options( options_str );
+    
+    internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
   // If you have Guillotine or regular Felstorm active, attempting to activate Demonic Strength will fail
+  // TOCHECK: New cooldown handling should render these redundant
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -611,6 +614,12 @@ struct demonic_strength_t : public demonology_spell_t
       active_pet->buffs.demonic_strength->trigger();
 
       debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
+
+      // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+      if ( p()->min_version_check( VERSION_10_0_5 ) )
+      {
+        internal_cooldown->start( 5_s );
+      }
     }
   }
 };
@@ -909,9 +918,12 @@ struct guillotine_t : public demonology_spell_t
   {
     parse_options( options_str );
     may_crit = false;
+
+    internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
   // Guillotine takes priority over any other actions except Demonic Strength Felstorm
+  // TOCHECK: New cooldown handling should render these redundant
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -950,6 +962,12 @@ struct guillotine_t : public demonology_spell_t
       active_pet->buffs.fiendish_wrath->trigger();
 
       debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
+
+      // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+      if ( p()->min_version_check( VERSION_10_0_5 ) )
+      {
+        internal_cooldown->start( 8_s );
+      }
     }
   }
 };

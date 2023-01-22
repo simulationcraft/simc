@@ -486,6 +486,9 @@ public:
     propagate_const<cooldown_t*> soul_rot;
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
+    propagate_const<cooldown_t*> demonic_strength;
+    propagate_const<cooldown_t*> guillotine;
+    propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine
   } cooldowns;
 
   // Buffs

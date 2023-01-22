@@ -647,6 +647,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
 
     dynamic_tick_action = true;
     tick_action = new felstorm_tick_t( p, p->find_spell( 89753 ));
+
+    internal_cooldown = p->o()->get_cooldown( "felstorm_icd" );
   }
 
   felstorm_t( warlock_pet_t* p, util::string_view options_str, bool main_pet, const std::string n = "Felstorm" )
@@ -666,6 +668,18 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s->action->tick_time( s ) * 5.0;
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+    // TOCHECK: As of 2023-01-22, GFG Felstorm is also triggering this inadvertently
+    if ( p()->o()->min_version_check( VERSION_10_0_5 ) )
+    {
+      internal_cooldown->start( 5_s );
+    }
   }
 };
 
