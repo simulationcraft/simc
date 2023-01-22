@@ -773,9 +773,6 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       // Need to handle Haunt trigger manually instead of via action
       td( s->target )->debuffs_haunt->trigger( p()->soul_swap_state.haunt.duration );
-
-      //p()->soul_swap_state.haunt.action->execute_on_target( s->target );
-      //td( s->target )->debuffs_haunt->extend_duration( p(), p()->soul_swap_state.haunt.duration - td( s->target )->debuffs_haunt->remains() );
     }
 
     p()->buffs.soul_swap->expire();
