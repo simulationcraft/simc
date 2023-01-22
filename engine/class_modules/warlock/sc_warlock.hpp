@@ -233,6 +233,7 @@ public:
     const spell_data_t* soul_flame_proc; // The actual spell damage data
     // Grimoire of Sacrifice (shared with Destruction)
     
+    player_talent_t focused_malignancy; // Increaed Malefic Rapture damage to target with Unstable Affliction
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
 

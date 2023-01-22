@@ -264,6 +264,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
         m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
+        if ( p()->talents.focused_malignancy->ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
+          m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
+
         return m;
       }
 
@@ -731,6 +734,8 @@ void warlock_t::init_spells_affliction()
 
   talents.soul_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Flame" ); // Should be ID 199471
   talents.soul_flame_proc = find_spell( 199581 ); // AoE damage data
+
+  talents.focused_malignancy = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Malignancy" ); // Should be ID 399668
 
   talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
