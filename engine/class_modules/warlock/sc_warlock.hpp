@@ -222,7 +222,9 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t soul_tap; // Sacrifice Soul Leech for Soul Shard. TODO: Add controls to limit usage
+    player_talent_t soul_tap; // REMOVED in 10.0.5!
+    player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
+    const spell_data_t* pandemic_invocation_proc; // Damage data
     player_talent_t inevitable_demise; // The talent version of the ability
     const spell_data_t* inevitable_demise_buff; // The buff version referenced by the talent tooltip
     player_talent_t soul_swap; // Spend Soul Shard to apply core dots (Corruption, Agony, UA)
@@ -231,8 +233,6 @@ public:
     const spell_data_t* soul_flame_proc; // The actual spell damage data
     // Grimoire of Sacrifice (shared with Destruction)
     
-    player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
-    const spell_data_t* pandemic_invocation_proc; // Damage data
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
 

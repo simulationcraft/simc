@@ -720,6 +720,9 @@ void warlock_t::init_spells_affliction()
 
   talents.soul_tap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Tap" ); // Should be ID 387073
 
+  talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
+  talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
+
   talents.inevitable_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
   talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
 
@@ -728,9 +731,6 @@ void warlock_t::init_spells_affliction()
 
   talents.soul_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Flame" ); // Should be ID 199471
   talents.soul_flame_proc = find_spell( 199581 ); // AoE damage data
-
-  talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
-  talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
 
   talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
