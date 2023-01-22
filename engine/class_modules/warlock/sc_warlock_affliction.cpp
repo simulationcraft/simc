@@ -917,7 +917,7 @@ void warlock_t::init_spells_affliction()
   talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
 
   talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
-  talents.soul_swap_ua = min_version_check( VERSION_10_0_5 ) ? spell_data_t::nil() : find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
+  talents.soul_swap_ua = find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
   talents.soul_swap_buff = find_spell( 86211 ); // Buff data
   talents.soul_swap_exhale = find_spell( 86213 ); // Replacement action while buff active
 
