@@ -85,6 +85,24 @@ struct warlock_t : public player_t
 public:
   player_t* havoc_target;
   player_t* ua_target; // Used for handling Unstable Affliction target swaps
+  player_t* ss_source; // Needed to track where Soul Swap copies from
+  struct ss_full_state_t
+  {
+    struct ss_action_state_t
+    {
+      action_t* action;
+      bool action_copied;
+      timespan_t duration;
+      int stacks;
+    };
+
+    ss_action_state_t corruption;
+    ss_action_state_t agony;
+    ss_action_state_t unstable_affliction;
+    ss_action_state_t siphon_life;
+    ss_action_state_t haunt;
+    // Seed of Corruption is also copied, NYI
+  } soul_swap_state;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
@@ -222,17 +240,20 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t soul_tap; // Sacrifice Soul Leech for Soul Shard. TODO: Add controls to limit usage
+    player_talent_t soul_tap; // REMOVED in 10.0.5!
+    player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
+    const spell_data_t* pandemic_invocation_proc; // Damage data
     player_talent_t inevitable_demise; // The talent version of the ability
     const spell_data_t* inevitable_demise_buff; // The buff version referenced by the talent tooltip
     player_talent_t soul_swap; // Spend Soul Shard to apply core dots (Corruption, Agony, UA)
     const spell_data_t* soul_swap_ua; // Separate copy of Unstable Affliction data, since UA is applied even without the talent
+    const spell_data_t* soul_swap_buff; // Buff indicating Soul Swap is holding a copy of data
+    const spell_data_t* soul_swap_exhale; // Second action that replaces Soul Swap while holding a copy, applies the copies to target
     player_talent_t soul_flame; // AoE damage on kills
     const spell_data_t* soul_flame_proc; // The actual spell damage data
     // Grimoire of Sacrifice (shared with Destruction)
     
-    player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
-    const spell_data_t* pandemic_invocation_proc; // Damage data
+    player_talent_t focused_malignancy; // Increaed Malefic Rapture damage to target with Unstable Affliction
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
 
@@ -482,6 +503,7 @@ public:
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> soul_swap; // Buff for when Soul Swap currently is holding copies
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
     propagate_const<buff_t*> tormented_crescendo;
@@ -635,6 +657,7 @@ public:
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   bool crescendo_check( warlock_t* p ); 
   void create_actions() override;
+  void create_soul_swap_actions();
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
