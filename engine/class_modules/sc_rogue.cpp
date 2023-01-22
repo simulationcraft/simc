@@ -5479,11 +5479,15 @@ struct stealth_t : public rogue_spell_t
     if ( !p()->in_combat )
       return true;
 
-    // HAX: Allow restealth for DungeonSlice against non-"boss" targets because Shadowmeld drops combat against trash.
-    if ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
+    // Allow restealth for Dungeon sims against non-boss targets as Shadowmeld drops combat against trash.
+    if ( ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p()->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ) &&
+         p()->player_t::buffs.shadowmeld->check() && !target->is_boss() )
       return true;
 
     if ( !p()->restealth_allowed )
+      return false;
+
+    if ( !p()->sim->target_non_sleeping_list.empty() )
       return false;
 
     return rogue_spell_t::ready();
