@@ -280,6 +280,7 @@ void destruction( player_t* p )
   default_->add_action( "chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft" );
   default_->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
   default_->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
+  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
   default_->add_action( "incinerate" );
 
   aoe->add_action( "call_action_list,name=ogcd" );
