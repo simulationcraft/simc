@@ -315,8 +315,8 @@ void destruction( player_t* p )
   cleave->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
   cleave->add_action( "cataclysm" );
   cleave->add_action( "channel_demonfire,if=talent.raging_demonfire" );
-  cleave->add_action( "soul_fire,if=soul_shard<=4&!variable.pool_soul_shards" );
-  cleave->add_action( "immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains>remains)" );
+  cleave->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)&!variable.pool_soul_shards" );
+  cleave->add_action( "immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains+(!talent.mayhem*action.soul_fire.cast_time)>dot.immolate.remains)" );
   cleave->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&(!cooldown.summon_infernal.up|!talent.summon_infernal)" );
   cleave->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
   cleave->add_action( "summon_infernal" );
@@ -337,7 +337,7 @@ void destruction( player_t* p )
   cleave->add_action( "incinerate" );
 
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
-  havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<3" );
+  havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<2.5" );
   havoc->add_action( "channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2&active_enemies>2" );
   havoc->add_action( "immolate,cycle_targets=1,if=dot.immolate.refreshable&dot.immolate.remains<havoc_remains&soul_shard<4.5&(debuff.havoc.down|!dot.immolate.ticking)" );
   havoc->add_action( "chaos_bolt,if=talent.cry_havoc&!talent.inferno&cast_time<havoc_remains" );
