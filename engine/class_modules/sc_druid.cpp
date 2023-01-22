@@ -4682,12 +4682,6 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( p()->buff.tooth_and_claw->up() )
-    {
-      td( s->target )->debuff.tooth_and_claw->trigger();
-      p()->buff.tooth_and_claw->decrement();
-    }
-
     p()->buff.ursocs_fury->trigger( 1, s->result_amount * ( 1.0 + ursocs_fury_mul ) );
   }
 
@@ -4705,8 +4699,25 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
       return;
 
     p()->buff.vicious_cycle_maul->expire();
-    // PTR does not trigger vicious_cycle_mangle
-    // p()->buff.vicious_cycle_mangle->tirgger();
+    // PTR raze triggers vicious cycle once per target hit
+    p()->buff.vicious_cycle_mangle->trigger( num_targets_hit );
+
+    // PTR raze consumes consumes & debuffs one stack of tooth and claw per target hit, random targets
+    if ( p()->buff.tooth_and_claw->check() )
+    {
+      auto tl = target_list();
+      if ( tl.size() > 1 )
+        rng().shuffle( tl.begin(), tl.end() );
+
+      for ( auto t : tl )
+      {
+        td( t )->debuff.tooth_and_claw->trigger();
+        p()->buff.tooth_and_claw->decrement();
+
+        if ( !p()->buff.tooth_and_claw->check() )
+          break;
+      }
+    }
   }
 };
 
