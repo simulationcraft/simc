@@ -962,9 +962,16 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
-                      ->set_stack_change_callback( [ &p ]( buff_t*, int, int cur ) {
-                          if ( cur == 0 )
-                            p.buffs.haunted_soul->expire();
+                      ->set_cooldown( 0_ms )
+                      ->set_stack_change_callback( [ &p ]( buff_t*, int prev, int cur ) {
+                          if ( cur < prev )
+                          {
+                            p.buffs.active_haunts->decrement();
+                          }
+                          else if ( cur > prev )
+                          {
+                            p.buffs.active_haunts->increment();
+                          }
                         } );
 
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
@@ -1143,6 +1150,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     ua_target( nullptr ),
+    ss_source( nullptr ),
+    soul_swap_state(),
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
@@ -1424,6 +1433,9 @@ void warlock_t::create_actions()
 
     if ( talents.pandemic_invocation->ok() )
       proc_actions.pandemic_invocation_proc = new warlock::actions::pandemic_invocation_t( this );
+
+    if ( talents.soul_swap->ok() )
+      create_soul_swap_actions();
   }
 
   if ( talents.inquisitors_gaze->ok() && min_version_check( VERSION_10_0_5 ) )
@@ -2060,6 +2072,10 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet == source )
       continue;
 
+    // Pit Lord is not affected by The Expendables
+    if ( lock_pet->pet_type == PET_PIT_LORD )
+      continue;
+
     lock_pet->buffs.the_expendables->increment();
   }
 }
@@ -2107,7 +2123,7 @@ bool warlock_t::min_version_check( version_check_e version ) const
 
 action_t* warlock_t::pass_corruption_action( warlock_t* p )
 {
-  return debug_cast<action_t*>( new actions::corruption_t( p, "", false ) );
+  return debug_cast<action_t*>( new actions::corruption_t( p, "", p->min_version_check( VERSION_10_0_5 ) ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )

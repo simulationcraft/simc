@@ -2317,6 +2317,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       base_execute_time = 0_s;
       buff = solved;
       effect = &e;
+      interrupt_auto_attack = false;
 
       for ( auto a : player->action_list )
       {
@@ -2343,7 +2344,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       {
         proc_spell_t::execute();
         event_t::cancel( player->readying );
-        player->delay_auto_attacks( composite_dot_duration( execute_state ) );
+        player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
       }
     }
 
@@ -2360,7 +2361,7 @@ void algethar_puzzle_box( special_effect_t& effect )
       buff->trigger();
 
       if ( was_channeling && !player->readying )
-        player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
+        player->schedule_ready();
     }
 
     void precombat_buff()
@@ -3583,7 +3584,8 @@ void assembly_scholars_loop( special_effect_t& effect )
 void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
-  buff->set_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   if ( buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
   {
@@ -4051,12 +4053,8 @@ void azureweave_vestments( special_effect_t& effect )
   }
   else
   {
-    auto buff = buff_t::find( effect.player, effect.name() );
-    if ( !buff )
-    {
-      buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 388061 ) )
-                 ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
-    }
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 388061 ) )
+                ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
     auto driver         = unique_gear::find_special_effect( effect.player, set_driver_id );
     driver->custom_buff = buff;
   }
@@ -4077,12 +4075,8 @@ void woven_chronocloth( special_effect_t& effect )
   }
   else
   {
-    auto haste_buff = buff_t::find( effect.player, "unleashed_time" );
-    if ( !haste_buff )
-    {
-      haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387142 ) )
+    auto haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387142 ) )
                        ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
-    }
 
     auto buff = buff_t::find( effect.player, effect.name() );
     if ( !buff )

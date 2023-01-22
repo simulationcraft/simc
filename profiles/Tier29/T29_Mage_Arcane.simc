@@ -29,6 +29,8 @@ actions.precombat+=/arcane_familiar
 actions.precombat+=/conjure_mana_gem
 actions.precombat+=/variable,name=aoe_target_count,default=-1,op=set,if=variable.aoe_target_count=-1,value=3
 actions.precombat+=/variable,name=conserve_mana,op=set,value=0
+actions.precombat+=/variable,name=opener,op=set,value=1
+actions.precombat+=/variable,name=opener_min_mana,op=set,value=225000-(25000*!talent.arcane_harmony)
 actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
@@ -58,6 +60,7 @@ actions+=/variable,name=spark_phase,op=set,value=1,if=buff.arcane_charge.stack>=
 actions+=/variable,name=spark_phase,op=set,value=0,if=variable.spark_phase&debuff.radiant_spark_vulnerability.down&dot.radiant_spark.remains<5&cooldown.radiant_spark.remains
 actions+=/variable,name=rop_phase,op=set,value=1,if=talent.rune_of_power&!talent.radiant_spark&buff.arcane_charge.stack>=3&cooldown.rune_of_power.ready&active_enemies<variable.aoe_target_count
 actions+=/variable,name=rop_phase,op=set,value=0,if=debuff.touch_of_the_magi.up|!talent.rune_of_power
+actions+=/variable,name=opener,op=set,if=debuff.touch_of_the_magi.up&variable.opener,value=0
 actions+=/cancel_action,if=action.evocation.channeling&mana.pct>=95&!talent.siphon_storm
 actions+=/evocation,if=buff.rune_of_power.down&buff.arcane_surge.down&debuff.touch_of_the_magi.down&((mana.pct<10&cooldown.touch_of_the_magi.remains<25)|cooldown.touch_of_the_magi.remains<20)
 actions+=/conjure_mana_gem,if=buff.rune_of_power.down&debuff.touch_of_the_magi.down&buff.arcane_surge.down&cooldown.arcane_surge.remains<fight_remains&!mana_gem_charges
@@ -88,9 +91,9 @@ actions.aoe_spark_phase+=/arcane_explosion,if=buff.arcane_charge.stack>=3&prev_g
 actions.aoe_spark_phase+=/arcane_orb,if=buff.arcane_charge.stack<3,line_cd=15
 actions.aoe_spark_phase+=/nether_tempest,if=talent.arcane_echo,line_cd=15
 actions.aoe_spark_phase+=/arcane_surge
-actions.aoe_spark_phase+=/wait,sec=0.04,if=cooldown.arcane_surge.remains>75&prev_gcd.1.arcane_blast&!talent.presence_of_mind,line_cd=15
-actions.aoe_spark_phase+=/wait,sec=0.04,if=prev_gcd.1.arcane_surge,line_cd=15
-actions.aoe_spark_phase+=/wait,sec=0.04,if=cooldown.arcane_surge.remains<75&debuff.radiant_spark_vulnerability.stack=3&!talent.presence_of_mind,line_cd=15
+actions.aoe_spark_phase+=/wait,sec=0.05,if=cooldown.arcane_surge.remains>75&prev_gcd.1.arcane_blast&!talent.presence_of_mind,line_cd=15
+actions.aoe_spark_phase+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15
+actions.aoe_spark_phase+=/wait,sec=0.05,if=cooldown.arcane_surge.remains<75&debuff.radiant_spark_vulnerability.stack=3&!talent.presence_of_mind,line_cd=15
 actions.aoe_spark_phase+=/arcane_barrage,if=cooldown.arcane_surge.remains<75&debuff.radiant_spark_vulnerability.stack=4
 actions.aoe_spark_phase+=/arcane_barrage,if=(debuff.radiant_spark_vulnerability.stack=2&cooldown.arcane_surge.remains>75)|(debuff.radiant_spark_vulnerability.stack=1&cooldown.arcane_surge.remains<75)
 actions.aoe_spark_phase+=/touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage
@@ -134,16 +137,20 @@ actions.rotation+=/arcane_missiles,if=buff.clearcasting.react&buff.nether_precis
 actions.rotation+=/arcane_blast
 actions.rotation+=/arcane_barrage
 
-actions.spark_phase=arcane_missiles,if=talent.arcane_harmony&buff.arcane_harmony.stack<15&(buff.bloodlust.up|buff.clearcasting.react&cooldown.radiant_spark.remains<5)&cooldown.arcane_surge.remains<30&(buff.rune_of_power.up|!talent.rune_of_power),chain=1
+actions.spark_phase=nether_tempest,if=!ticking&variable.opener&buff.bloodlust.up,line_cd=15
 actions.spark_phase+=/rune_of_power
+actions.spark_phase+=/arcane_blast,if=variable.opener&buff.bloodlust.up&mana>=variable.opener_min_mana&buff.rune_of_power.remains>gcd.max*4
+actions.spark_phase+=/arcane_missiles,if=variable.opener&buff.bloodlust.up&buff.clearcasting.react&buff.clearcasting.stack>=2&cooldown.radiant_spark.remains<5&buff.nether_precision.down,chain=1
+actions.spark_phase+=/arcane_missiles,if=talent.arcane_harmony&buff.arcane_harmony.stack<15&((variable.opener&buff.bloodlust.up)|buff.clearcasting.react&cooldown.radiant_spark.remains<5)&cooldown.arcane_surge.remains<30,chain=1
 actions.spark_phase+=/radiant_spark
 actions.spark_phase+=/use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*3)
-actions.spark_phase+=/arcane_surge,if=prev_gcd.4.radiant_spark
-actions.spark_phase+=/nether_tempest,if=prev_gcd.5.radiant_spark
+actions.spark_phase+=/nether_tempest,if=(prev_gcd.4.radiant_spark&cooldown.arcane_surge.remains<=execute_time)|prev_gcd.5.radiant_spark,line_cd=15
+actions.spark_phase+=/arcane_surge,if=(!talent.nether_tempest&prev_gcd.4.radiant_spark)|prev_gcd.1.nether_tempest
 actions.spark_phase+=/meteor,if=(talent.nether_tempest&prev_gcd.6.radiant_spark)|(!talent.nether_tempest&prev_gcd.5.radiant_spark)
-actions.spark_phase+=/arcane_blast,if=spell_haste>0.49&buff.bloodlust.up&(talent.nether_tempest&prev_gcd.6.radiant_spark|!talent.nether_tempest&prev_gcd.5.radiant_spark)
+actions.spark_phase+=/arcane_blast,if=cast_time>=gcd&execute_time<debuff.radiant_spark_vulnerability.remains&(!talent.arcane_bombardment|target.health.pct>=35)&(talent.nether_tempest&prev_gcd.6.radiant_spark|!talent.nether_tempest&prev_gcd.5.radiant_spark)
+actions.spark_phase+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15
 actions.spark_phase+=/arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=4
-actions.spark_phase+=/touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage
+actions.spark_phase+=/touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.2|gcd.remains<=0.2)
 actions.spark_phase+=/arcane_blast
 actions.spark_phase+=/arcane_barrage
 

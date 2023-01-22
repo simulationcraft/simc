@@ -1609,6 +1609,7 @@ public:
       {
         cd_time_reduction /= p()->talents.fury.anger_management->effectN( 3 ).base_value();
         p()->cooldown.recklessness->adjust( timespan_t::from_seconds( cd_time_reduction ) );
+        p()->cooldown.ravager->adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
 
       else if ( p()->specialization() == WARRIOR_ARMS )
@@ -2938,10 +2939,12 @@ struct bloodbath_t : public warrior_attack_t
 
 struct onslaught_t : public warrior_attack_t
 {
+  double unbridled_chance;
   const spell_data_t* damage_spell;
   int aoe_targets;
   onslaught_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "onslaught", p, p->talents.fury.onslaught ),
+      unbridled_chance( p->talents.fury.unbridled_ferocity->effectN( 1 ).base_value() / 100.0 ),
       damage_spell( p->find_spell( 396718U ) ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 2 ).base_value() ) )
   {
@@ -2967,6 +2970,12 @@ struct onslaught_t : public warrior_attack_t
     {
       p()->enrage();
       p()->buff.slaughtering_strikes_rb->trigger( p()->talents.fury.tenderize->effectN( 2 ).base_value() );
+    }
+
+    if ( p()->talents.fury.unbridled_ferocity.ok() && rng().roll( unbridled_chance ) )
+    {
+      const timespan_t trigger_duration = p()->talents.fury.unbridled_ferocity->effectN( 2 ).time_value();
+      p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
 
     warrior_attack_t::execute();

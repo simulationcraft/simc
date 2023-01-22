@@ -3,10 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
 #include "action/action_callback.hpp"
-#include "sc_enums.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -32,6 +30,13 @@ using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
 struct shaman_t;
+
+enum class mw_proc_state
+{
+  DEFAULT,
+  ENABLED,
+  DISABLED
+};
 
 enum wolf_type_e
 {
@@ -265,6 +270,9 @@ public:
   std::vector<std::pair<timespan_t, dot_t*>> active_flame_shock;
   /// Maximum number of active flame shocks
   unsigned max_active_flame_shock;
+
+  /// Maelstrom Weapon blocklist, allowlist; (spell_id, { override_state, proc tracking object })
+  std::vector<std::pair<mw_proc_state, proc_t*>> mw_proc_state_list;
 
   // Cached actions
   struct actions_t
@@ -740,11 +748,6 @@ public:
       talent(),
       spell()
   {
-    /*
-    range::fill( pet.spirit_wolves, nullptr );
-    range::fill( pet.elemental_wolves, nullptr );
-    */
-
     // Cooldowns
     cooldown.ascendance         = get_cooldown( "ascendance" );
     cooldown.crash_lightning    = get_cooldown( "crash_lightning" );
@@ -779,7 +782,7 @@ public:
       resource_regeneration = regen_type::DYNAMIC;
   }
 
-  ~shaman_t() override;
+  ~shaman_t() override = default;
 
   // Misc
   bool is_elemental_pet_active() const;
@@ -788,6 +791,59 @@ public:
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
 
+  std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t* action, mw_proc_state state )
+  {
+    if ( as<unsigned>( action->internal_id ) >= mw_proc_state_list.size() )
+    {
+      mw_proc_state_list.resize( action->internal_id + 1U,
+                                 { mw_proc_state::DEFAULT, nullptr } );
+    }
+
+    // Use explicit mw_proc_state::DEFAULT set as initialization in shaman_t::action_init_finished
+    if ( state == mw_proc_state::DEFAULT )
+    {
+      return mw_proc_state_list[ action->internal_id ];
+    }
+
+    mw_proc_state_list[ action->internal_id ].first = state;
+    if ( state == mw_proc_state::ENABLED &&
+         !mw_proc_state_list[ action->internal_id ].second )
+    {
+      mw_proc_state_list[ action->internal_id ].second = get_proc(
+          fmt::format( "Maelstrom Weapon: {}",
+                      action->data().id()
+                      ? action->data().name_cstr()
+                      : action->name_str ) );
+    }
+
+    return mw_proc_state_list[ action->internal_id ];
+  }
+
+  std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t& action, mw_proc_state state )
+  { return set_mw_proc_state( &( action ), state ); }
+
+  mw_proc_state get_mw_proc_state( action_t* action ) const
+  {
+    assert( as<unsigned>( action->internal_id ) < mw_proc_state_list.size() &&
+            "No Maelstrom Weapon proc-state found" );
+
+    return mw_proc_state_list[ action->internal_id ].first;
+  }
+
+  mw_proc_state get_mw_proc_state( action_t& action ) const
+  { return get_mw_proc_state( &( action ) ); }
+
+  proc_t* get_mw_proc_state_counter( action_t* action ) const
+  {
+    assert( as<unsigned>( action->internal_id ) < mw_proc_state_list.size() &&
+            "No Maelstrom Weapon proc-state found" );
+
+    return mw_proc_state_list[ action->internal_id ].second;
+  }
+
+  proc_t* get_mw_proc_state_counter( action_t& action ) const
+  { return get_mw_proc_state_counter( &( action ) ); }
+
   // trackers, big code blocks that shall not be doublicated
   void track_magma_chamber();
   void track_t29_2pc_ele();
@@ -795,7 +851,6 @@ public:
   // triggers
   void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
   void trigger_windfury_weapon( const action_state_t* );
-  void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_hot_hand( const action_state_t* state );
@@ -826,6 +881,8 @@ public:
   void init_uptimes() override;
   void init_assessors() override;
   std::string create_profile( save_e ) override;
+  void create_special_effects() override;
+  void action_init_finished( action_t& action ) override;
 
   // APL releated methods
   void init_action_list() override;
@@ -912,9 +969,6 @@ public:
     return &( entries.back()->second );
   }
 };
-
-shaman_t::~shaman_t()
-{ }
 
 // ==========================================================================
 // Shaman Custom Buff Declaration
@@ -1583,7 +1637,6 @@ private:
 public:
   bool may_proc_windfury;
   bool may_proc_flametongue;
-  bool may_proc_maelstrom_weapon;
   bool may_proc_stormbringer;
   bool may_proc_lightning_shield;
   bool may_proc_hot_hand;
@@ -1595,7 +1648,6 @@ public:
     : base_t( token, p, s ),
       may_proc_windfury( p->talent.windfury_weapon.ok() ),
       may_proc_flametongue( true ),
-      may_proc_maelstrom_weapon( true ),
       may_proc_stormbringer( p->spec.stormbringer->ok() ),
       may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
@@ -1634,11 +1686,6 @@ public:
       may_proc_hot_hand = ab::weapon != nullptr && !special;
     }
 
-    if ( may_proc_maelstrom_weapon )
-    {
-      may_proc_maelstrom_weapon = ab::weapon != nullptr;
-    }
-
     may_proc_lightning_shield = ab::weapon != nullptr;
 
   }
@@ -1658,11 +1705,6 @@ public:
     if ( may_proc_stormbringer )
     {
       proc_sb = player->get_proc( std::string( "Stormbringer: " ) + full_name() );
-    }
-
-    if ( may_proc_maelstrom_weapon )
-    {
-      proc_mw = player->get_proc( std::string( "Maelstrom Weapon: " ) + full_name() );
     }
 
     if ( may_proc_windfury )
@@ -1691,7 +1733,6 @@ public:
     if ( !result_is_hit( state->result ) )
       return;
 
-    p()->trigger_maelstrom_weapon( state );
     p()->trigger_windfury_weapon( state );
     p()->trigger_flametongue_weapon( state );
     p()->trigger_hot_hand( state );
@@ -2949,8 +2990,10 @@ struct stormblast_t : public shaman_attack_t
 
     snapshot_flags = update_flags = STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-    may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = may_proc_hot_hand = false;
+    may_proc_windfury = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_ability_procs = false;
+
+    p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
   }
 };
 
@@ -3392,6 +3435,7 @@ struct melee_t : public shaman_attack_t
   melee_t( util::string_view name, const spell_data_t* s, shaman_t* player, weapon_t* w, int sw, double stv )
     : shaman_attack_t( name, player, s ), sync_weapons( sw ), first( true ), swing_timer_variance( stv )
   {
+    id                                  = w->slot == SLOT_MAIN_HAND ? 1U : 2U;
     background = repeating = may_glance = true;
     allow_class_ability_procs           = true;
     not_a_proc                          = true;
@@ -3499,8 +3543,6 @@ struct auto_attack_t : public shaman_attack_t
       }
 
       p()->off_hand_attack = p()->melee_oh;
-
-      p()->off_hand_attack->id = 1;
     }
 
     trigger_gcd = timespan_t::zero();
@@ -3809,7 +3851,8 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
-    may_proc_maelstrom_weapon = false;
+
+    p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -6268,7 +6311,16 @@ struct feral_lunge_t : public shaman_spell_t
     feral_lunge_attack_t( shaman_t* p ) : shaman_attack_t( "feral_lunge_attack", p, p->find_spell( 215802 ) )
     {
       background = true;
-      callbacks = may_proc_windfury = may_proc_flametongue = may_proc_maelstrom_weapon = false;
+      callbacks = false;
+    }
+
+    void init() override
+    {
+      shaman_attack_t::init();
+
+      may_proc_windfury = may_proc_flametongue = false;
+
+      p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
     }
   };
 
@@ -6279,11 +6331,6 @@ struct feral_lunge_t : public shaman_spell_t
     unshift_ghost_wolf = false;
 
     impact_action = new feral_lunge_attack_t( player );
-  }
-
-  void init() override
-  {
-    shaman_spell_t::init();
   }
 
   bool ready() override
@@ -8490,7 +8537,103 @@ void shaman_t::copy_from( player_t* source )
   options.rotation = p->options.rotation;
 }
 
-// shaman_t::init_spells ====================================================
+// shaman_t::create_special_effects ========================================
+
+struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
+{
+  shaman_t* shaman;
+
+  maelstrom_weapon_cb_t( const special_effect_t& effect ) :
+    dbc_proc_callback_t( effect.player, effect ), shaman( debug_cast<shaman_t*>( effect.player ) )
+  { }
+
+  // Fully override trigger + execute behavior of the proc
+  void trigger( action_t* /* a */, action_state_t* state ) override
+  {
+    auto override_state = shaman->get_mw_proc_state( state->action );
+    assert( override_state != mw_proc_state::DEFAULT );
+
+    if ( override_state == mw_proc_state::DISABLED )
+    {
+      return;
+    }
+
+    if ( shaman->buff.ghost_wolf->check() )
+    {
+      return;
+    }
+
+    double proc_chance = shaman->talent.maelstrom_weapon->proc_chance();
+    proc_chance += shaman->buff.witch_doctors_ancestry->stack_value();
+
+    auto triggered = rng().roll( proc_chance );
+
+    if ( listener->sim->debug )
+    {
+      listener->sim->print_debug( "{} attempts to proc {} on {}: {:d}", listener->name(),
+          effect, state->action->name(), triggered );
+    }
+
+    if ( triggered )
+    {
+      shaman->buff.maelstrom_weapon->increment();
+      auto proc = shaman->get_mw_proc_state_counter( state->action );
+      if ( proc != nullptr )
+      {
+        proc->occur();
+      }
+    }
+  }
+};
+
+void shaman_t::create_special_effects()
+{
+  player_t::create_special_effects();
+
+  if ( talent.maelstrom_weapon.ok() )
+  {
+    auto mw_effect = new special_effect_t( this );
+    mw_effect->spell_id = talent.maelstrom_weapon->id();
+    mw_effect->proc_flags2_ = PF2_ALL_HIT;
+
+    special_effects.push_back( mw_effect );
+
+    new maelstrom_weapon_cb_t( *mw_effect );
+  }
+}
+
+// shaman_t::action_init_finished ==========================================
+
+void shaman_t::action_init_finished( action_t& action )
+{
+  // Always initialize Maelstrom Weapon proc state for the action
+  set_mw_proc_state( action, mw_proc_state::DEFAULT );
+
+  // Enable Maelstrom Weapon proccing for selected abilities, if they
+  // fulfill the basic conditions for the proc
+  if ( talent.maelstrom_weapon.ok() && action.callbacks &&
+       get_mw_proc_state( action ) == mw_proc_state::DEFAULT && (
+         // Auto-attacks (shaman-module convention to set mh to action id 1, oh to id 2)
+         ( action.id == 1 || action.id == 2 ) ||
+         // Actions with spell data associated
+         ( action.data().id() != 0 &&
+           !action.data().flags( spell_attribute::SX_DISABLE_PLAYER_PROCS ) &&
+           action.data().dmg_class() == 2U )
+       ) )
+  {
+    set_mw_proc_state( action, mw_proc_state::ENABLED );
+  }
+
+  // Explicitly disable any action from proccing Maelstrom Weapon that does not have
+  // it set enabled (above), or had its state adjusted to enabled or disabled during
+  // action initialization.
+  if ( get_mw_proc_state( action ) == mw_proc_state::DEFAULT )
+  {
+    set_mw_proc_state( action, mw_proc_state::DISABLED );
+  }
+}
+
+// shaman_t::init_spells ===================================================
 
 void shaman_t::init_spells()
 {
@@ -9312,34 +9455,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
-{
-  if ( !talent.maelstrom_weapon.ok() )
-  {
-    return;
-  }
-
-  assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr &&
-          "Maelstrom Weapon called on invalid action type" );
-  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
-  if ( !attack->may_proc_maelstrom_weapon )
-    return;
-
-  if ( buff.ghost_wolf->check() )
-  {
-    return;
-  }
-
-  double proc_chance = talent.maelstrom_weapon->proc_chance();
-  proc_chance += buff.witch_doctors_ancestry->stack_value();
-
-  if ( rng().roll( proc_chance ) )
-  {
-    buff.maelstrom_weapon->increment();
-    attack->proc_mw->occur();
-  }
-}
-
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr &&
@@ -10016,6 +10131,8 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( "fire_elemental", "Keep your cooldowns rolling." );
     aoe->add_action( "storm_elemental", "Keep your cooldowns rolling." );
     aoe->add_action( "stormkeeper,if=!buff.stormkeeper.up", "Keep your cooldowns rolling." );
+    aoe->add_action( "totemic_recall,if=cooldown.liquid_magma_totem.remains>45", "Reset LMT CD as early as possible." );
+    aoe->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
     aoe->add_action(
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&buff.surge_of_power.up&!"
         "buff.splintered_elements.up",
@@ -10030,18 +10147,25 @@ void shaman_t::init_action_list_elemental()
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled",
         "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
         "keep that logic here)." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)",
-                     "Spread Flame Shock using Surge of Power." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled",
-                     "Spread Flame Shock against low target counts if Master of the Elements was selected." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled",
-                     "Spread Flame Shock to gamble on Deeply Rooted Element procs." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
+                     "Spread Flame Shock using Surge of Power up to 6." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
+                     "Spread Flame Shock against low target counts if Master of the Elements was selected up to 6." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
+                     "Spread Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
+    
+    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
+                     "Refresh Flame Shock using Surge of Power up to 6." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
+                     "Refresh Flame Shock against low target counts if Master of the Elements was selected up to 6." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
+                     "Refresh Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
+    
     aoe->add_action( "ascendance",
                      "JUST DO IT! "
                      "https://i.kym-cdn.com/entries/icons/mobile/000/018/147/"
                      "Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___"
                      "Turner)_0-4_screenshot.jpg" );
-    aoe->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
         "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
@@ -10344,7 +10468,6 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( "bag_of_tricks" );
 
   def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
-  def->add_action( "fae_transfusion,if=covenant.night_fae" );
   def->add_action( "primordial_wave" );
   def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<3" );
   def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>2" );

@@ -61,6 +61,8 @@ actions.cds+=/potion,if=prev_off_gcd.icy_veins|fight_remains<60
 actions.cds+=/icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)
 actions.cds+=/rune_of_power,if=buff.rune_of_power.down&cooldown.icy_veins.remains>10
 actions.cds+=/use_items
+actions.cds+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
+actions.cds+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/lights_judgment

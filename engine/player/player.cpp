@@ -14080,6 +14080,27 @@ void player_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
 }
 
 /**
+* Delay ranged swing timer
+*/
+void player_t::delay_ranged_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  if ( delay == timespan_t::zero() )
+    return;
+
+  bool delayed = false;
+
+  if ( main_hand_attack && main_hand_attack->execute_event && dynamic_cast<ranged_attack_t*>(main_hand_attack) )
+  {
+    sim->print_debug( "Delaying ranged auto attack swing timer by {} to {}", delay, main_hand_attack->execute_event->remains() + delay );
+    main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
+    delayed = true;
+  }
+
+  if ( proc && delayed )
+    proc->occur();
+}
+
+/**
  * Poor man's targeting support. Acquire_target is triggered by various events (see retarget_event_e) in the core.
  * Context contains the triggering entity (if relevant). Figures out a target out of all non-sleeping targets.
  * Skip "invulnerable" ones for now, anything else is fair game.

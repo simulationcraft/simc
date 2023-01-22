@@ -279,13 +279,15 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "berserking,if=buff.combustion.up" );
   combustion_cooldowns->add_action( "fireblood" );
   combustion_cooldowns->add_action( "ancestral_call" );
-  combustion_cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up" );
+  combustion_cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
+  combustion_cooldowns->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
   combustion_cooldowns->add_action( "time_warp,if=talent.temporal_warp&buff.exhaustion.up" );
   combustion_cooldowns->add_action( "use_item,effect_name=gladiators_badge" );
   combustion_cooldowns->add_action( "use_item,name=irideus_fragment" );
   combustion_cooldowns->add_action( "use_item,name=spoils_of_neltharus" );
   combustion_cooldowns->add_action( "use_item,name=tome_of_unstable_power" );
   combustion_cooldowns->add_action( "use_item,name=timebreaching_talon" );
+  combustion_cooldowns->add_action( "use_item,name=voidmenders_shadowgem" );
   combustion_cooldowns->add_action( "use_item,name=horn_of_valor" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
@@ -320,6 +322,7 @@ void fire( player_t* p )
   combustion_phase->add_action( "rune_of_power,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>execute_time+action.pyroblast.cast_time&buff.rune_of_power.remains<action.pyroblast.cast_time" );
   combustion_phase->add_action( "pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time&buff.sun_kings_blessing_ready.expiration_delay_remains=0" );
   combustion_phase->add_action( "pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&buff.combustion.remains>cast_time&active_enemies<variable.combustion_flamestrike&(!talent.feel_the_burn|buff.feel_the_burn.remains>execute_time|buff.heating_up.react+hot_streak_spells_in_flight<2)", "Pyroclasm procs should be used in Combustion at higher priority than Phoenix Flames and Scorch." );
+  combustion_phase->add_action( "fireball,if=buff.combustion.remains>cast_time&buff.flame_accelerant.react" );
   combustion_phase->add_action( "phoenix_flames,if=!talent.alexstraszas_fury&buff.combustion.up&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2&(!talent.from_the_ashes|variable.extended_combustion_remains<10)", "Use Phoenix Flames and Scorch in Combustion to help generate Hot Streaks when Fire Blasts are not available or need to be conserved." );
   combustion_phase->add_action( "scorch,if=buff.combustion.remains>cast_time" );
   combustion_phase->add_action( "living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1", "If there isn't enough time left in Combustion for a Phoenix Flames or Scorch to hit inside of Combustion, use something else." );
@@ -353,7 +356,7 @@ void fire( player_t* p )
   rop_phase->add_action( "dragons_breath,if=active_enemies>2" );
   rop_phase->add_action( "arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana" );
   rop_phase->add_action( "flamestrike,if=active_enemies>=variable.hard_cast_flamestrike", "With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball." );
-  rop_phase->add_action( "pyroblast,if=talent.tempered_flames" );
+  rop_phase->add_action( "pyroblast,if=talent.tempered_flames&!buff.flame_accelerant.react" );
   rop_phase->add_action( "fireball" );
 
   standard_rotation->add_action( "flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.hyperthermia.react)" );
@@ -372,7 +375,7 @@ void fire( player_t* p )
   standard_rotation->add_action( "scorch,if=searing_touch.active" );
   standard_rotation->add_action( "arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana" );
   standard_rotation->add_action( "flamestrike,if=active_enemies>=variable.hard_cast_flamestrike", "With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball." );
-  standard_rotation->add_action( "pyroblast,if=talent.tempered_flames" );
+  standard_rotation->add_action( "pyroblast,if=talent.tempered_flames&!buff.flame_accelerant.react" );
   standard_rotation->add_action( "fireball" );
 }
 //fire_apl_end
@@ -426,6 +429,8 @@ void frost( player_t* p )
   cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)" );
   cds->add_action( "rune_of_power,if=buff.rune_of_power.down&cooldown.icy_veins.remains>10" );
   cds->add_action( "use_items" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
+  cds->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking" );
   cds->add_action( "lights_judgment" );
