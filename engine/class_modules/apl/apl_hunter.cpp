@@ -71,7 +71,7 @@ void beast_mastery( player_t* p )
   default_->add_action( "call_action_list,name=st,if=active_enemies<2|!talent.beast_cleave&active_enemies<3" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&active_enemies>1" );
 
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=cooldown.bestial_wrath.ready", "Call for Power Infusion when Bestial Wrath is ready." );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30", "Call for Power Infusion when Bestial Wrath is ready." );
   cds->add_action( "berserking,if=!talent.bestial_wrath|buff.bestial_wrath.up|fight_remains<16" );
   cds->add_action( "blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16" );
   cds->add_action( "ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up&(buff.bloodlust.up|target.health.pct<20))|fight_remains<16" );
