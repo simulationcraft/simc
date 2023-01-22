@@ -2211,7 +2211,7 @@ void evoker_t::create_buffs()
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
-  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
+  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_trigger_spell( talent.iridescence )
