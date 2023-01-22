@@ -2065,6 +2065,10 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet == source )
       continue;
 
+    // Pit Lord is not affected by The Expendables
+    if ( lock_pet->pet_type == PET_PIT_LORD )
+      continue;
+
     lock_pet->buffs.the_expendables->increment();
   }
 }
