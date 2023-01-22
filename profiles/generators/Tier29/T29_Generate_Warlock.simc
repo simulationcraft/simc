@@ -58,7 +58,7 @@ spec=destruction
 race=orc
 role=spell
 position=ranged_back
-talents=BsQAAAAAAAAAAAAAAAAAAAAAAgcASSkIBSTLCSLJJkWgDkokkIQSrgEAAAAAAAAAAAAhkUSC
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAgcASSkIBSTLCSLJJkWgDkokkkEk0KNJBAAAAAAAAAAAQAlkA
 
 head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
