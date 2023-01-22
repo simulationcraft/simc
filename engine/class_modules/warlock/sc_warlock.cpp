@@ -1143,6 +1143,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     ua_target( nullptr ),
+    ss_source( nullptr ),
+    soul_swap_state(),
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
@@ -1424,6 +1426,9 @@ void warlock_t::create_actions()
 
     if ( talents.pandemic_invocation->ok() )
       proc_actions.pandemic_invocation_proc = new warlock::actions::pandemic_invocation_t( this );
+
+    if ( talents.soul_swap->ok() )
+      create_soul_swap_actions();
   }
 
   if ( talents.inquisitors_gaze->ok() && min_version_check( VERSION_10_0_5 ) )
@@ -2107,7 +2112,7 @@ bool warlock_t::min_version_check( version_check_e version ) const
 
 action_t* warlock_t::pass_corruption_action( warlock_t* p )
 {
-  return debug_cast<action_t*>( new actions::corruption_t( p, "", false ) );
+  return debug_cast<action_t*>( new actions::corruption_t( p, "", p->min_version_check( VERSION_10_0_5 ) ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
