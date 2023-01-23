@@ -48,6 +48,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_dread_touch;
+  propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
 
   // Destro
   propagate_const<dot_t*> dots_immolate;

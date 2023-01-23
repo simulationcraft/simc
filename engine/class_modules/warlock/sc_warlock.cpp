@@ -328,10 +328,12 @@ struct seed_of_corruption_t : public warlock_spell_t
   struct seed_of_corruption_aoe_t : public warlock_spell_t
   {
     corruption_t* corruption;
+    bool cruel_epiphany;
 
     seed_of_corruption_aoe_t( warlock_t* p )
       : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corruption( new corruption_t( p, "", true ) )
+        corruption( new corruption_t( p, "", true ) ),
+        cruel_epiphany( false )
     {
       aoe = -1;
       background = dual = true;
@@ -376,7 +378,7 @@ struct seed_of_corruption_t : public warlock_spell_t
         m *= 1.0 + p()->cache.mastery_value();
       }
 
-      if ( p()->buffs.cruel_epiphany->check() )
+      if ( p()->buffs.cruel_epiphany->check() && cruel_epiphany )
         m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
       return m;
@@ -384,10 +386,12 @@ struct seed_of_corruption_t : public warlock_spell_t
   };
 
   seed_of_corruption_aoe_t* explosion;
+  seed_of_corruption_aoe_t* epiphany_explosion;
 
   seed_of_corruption_t( warlock_t* p, util::string_view options_str )
     : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
-      explosion( new seed_of_corruption_aoe_t( p ) )
+      explosion( new seed_of_corruption_aoe_t( p ) ),
+      epiphany_explosion( new seed_of_corruption_aoe_t( p ) )
   {
     parse_options( options_str );
     may_crit = false;
@@ -396,6 +400,9 @@ struct seed_of_corruption_t : public warlock_spell_t
     hasted_ticks = false;
 
     add_child( explosion );
+
+    epiphany_explosion->cruel_epiphany = true;
+    add_child( epiphany_explosion );
 
     if ( p->talents.sow_the_seeds->ok() )
       aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
@@ -448,6 +455,9 @@ struct seed_of_corruption_t : public warlock_spell_t
     }
 
     warlock_spell_t::impact( s );
+
+    if ( s->chain_target == 0 && p()->buffs.cruel_epiphany->check() )
+      td( s->target )->debuffs_cruel_epiphany->trigger();
   }
 
   // If Seed of Corruption is refreshed on a target, it will extend the duration
@@ -463,8 +473,18 @@ struct seed_of_corruption_t : public warlock_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    explosion->set_target( d->target );
-    explosion->schedule_execute();
+    if ( td( d->target )->debuffs_cruel_epiphany->check() )
+    {
+      epiphany_explosion->set_target( d->target );
+      epiphany_explosion->schedule_execute();
+    }
+    else
+    {
+      explosion->set_target( d->target );
+      explosion->schedule_execute();
+    }
+
+    td( d->target )->debuffs_cruel_epiphany->expire();
 
     warlock_spell_t::last_tick( d );
   }
@@ -979,6 +999,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
                             ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
+
+  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
