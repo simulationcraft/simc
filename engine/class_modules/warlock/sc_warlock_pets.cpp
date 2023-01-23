@@ -194,7 +194,17 @@ double warlock_pet_t::composite_player_target_multiplier( player_t* target, scho
     // TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
     // If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
     if ( td->debuffs_from_the_shadows->check() )
-      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+    {
+      // 2023-01-22 From the Shadows appears to ignore the Demonic Servitude multiplier, renormalizing it here
+      if ( pet_type == PET_DEMONIC_TYRANT )
+      {
+        m *= ( 1.0 + td->debuffs_from_the_shadows->check_value() + buffs.demonic_servitude->check_value() ) / ( 1.0 + buffs.demonic_servitude->check_value() );
+      }
+      else
+      {
+        m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+      }    
+    }
   }
 
   return m;
