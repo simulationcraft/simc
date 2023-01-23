@@ -18,8 +18,8 @@ legs=crystal_scholars_britches,id=200319,bonus_id=4800/4786/1498,enchant=tempora
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
 finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192919,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
-trinket1=timebreaching_talon,id=193791,bonus_id=7977/6652/8816/1594/8767
-trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+trinket1=voidmenders_shadowgem,id=110007,ilevel=421
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
 
