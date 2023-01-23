@@ -5056,6 +5056,7 @@ struct ravager_t : public warrior_attack_t
     ignore_false_positive   = true;
     hasted_ticks            = true;
     callbacks               = false;
+    internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
 
