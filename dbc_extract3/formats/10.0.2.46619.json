@@ -604,6 +604,7 @@
     ]
   },
   "ItemConversionEntry": {
+    "parent": "ItemConversion",
     "fields": [
       { "data_type": "i", "field": "id_item" }
     ]
@@ -1178,7 +1179,7 @@
       { "data_type": "i", "field": "unk_14" },
       { "data_type": "B", "field": "reward_skill_points" },
       { "data_type": "H", "field": "index" },
-      { "data_type": "H", "field": "id_filter" },
+      { "data_type": "H", "field": "id_filter", "ref": "TradeSkillCategory" },
       { "data_type": "H", "field": "unk_15" }
     ]
   },
