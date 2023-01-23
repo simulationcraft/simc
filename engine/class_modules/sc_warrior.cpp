@@ -285,6 +285,7 @@ public:
     gain_t* shield_charge;
     gain_t* shield_slam;
     gain_t* spear_of_bastion;
+    gain_t* strength_of_arms;
     gain_t* whirlwind;
     gain_t* booming_voice;
     gain_t* thunder_clap;
@@ -362,7 +363,7 @@ public:
     // Arms Spells
     const spell_data_t* arms_warrior;
     const spell_data_t* seasoned_soldier;
-
+    //const spell_data_t* sweeping_strikes;
     const spell_data_t* deep_wounds_ARMS;
 
     // Fury Spells
@@ -524,6 +525,11 @@ public:
       player_talent_t hurricane;
       player_talent_t merciless_bonegrinder;
       player_talent_t juggernaut;
+
+      player_talent_t improved_slam;
+      player_talent_t improved_sweeping_strikes;
+      player_talent_t strength_of_arms;
+      player_talent_t spiteful_serenity;
 
     } arms;
 
@@ -1113,9 +1119,12 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.impale );
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
     ab::apply_affecting_aura( p()->talents.arms.improved_mortal_strike );
+    ab::apply_affecting_aura( p()->talents.arms.improved_slam );
+    ab::apply_affecting_aura( p()->talents.arms.improved_sweeping_strikes );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
     ab::apply_affecting_aura( p()->talents.arms.storm_of_swords );
+    ab::apply_affecting_aura( p()->talents.arms.strength_of_arms ); // rage generation in spell
     ab::apply_affecting_aura( p()->talents.arms.valor_in_victory );
     ab::apply_affecting_aura( p()->talents.fury.bloodborne );
     ab::apply_affecting_aura( p()->talents.fury.critical_thinking );
@@ -1302,7 +1311,8 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent();
+      //dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent() + p()->talents.arms.spiteful_serenity->effectN( 1 ).percent;
+      dm *= 1.0 + p()->buff.avatar->check_value();
     }
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
@@ -1359,7 +1369,7 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      double percent_increase = p()->buff.avatar->data().effectN( 9 ).percent();
+      double percent_increase = p()->buff.avatar->check_value();
 
       tm *= 1.0 + percent_increase;
     }
@@ -4381,16 +4391,18 @@ struct skullsplitter_t : public warrior_attack_t
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
+
+    warrior_td_t* td = p()->get_target_data( target );
+    trigger_tide_of_blood( td->dots_deep_wounds );
+
     if ( p()->talents.arms.tide_of_blood->ok() )
     {
-      warrior_td_t* td = p()->get_target_data( target );
       trigger_tide_of_blood( td->dots_rend );
-      trigger_tide_of_blood( td->dots_deep_wounds );
     }
   }
 };
 
-// Sweeping Strikes ===================================================================
+// Sweeping Strikes Talent ===================================================================
 
 struct sweeping_strikes_t : public warrior_spell_t
 {
@@ -4597,17 +4609,24 @@ struct dreadnaught_t : warrior_attack_t
     aoe = -1;
     reduced_aoe_targets = 5.0;
     background  = true;
+
+    if ( p->talents.arms.battlelord->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.arms.battlelord->effectN( 1 ).percent();
+    }
   }
 };
 struct overpower_t : public warrior_attack_t
 {
   double battlelord_chance;
+  double rage_from_strength_of_arms;
   warrior_attack_t* seismic_wave;
   warrior_attack_t* dreadnaught;
 
   overpower_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "overpower", p, p->talents.arms.overpower ),
       battlelord_chance( p->talents.arms.battlelord->proc_chance() ),
+      rage_from_strength_of_arms( p->find_spell( 400806 )->effectN( 1 ).base_value() / 10.0 ),
       seismic_wave( nullptr ),
       dreadnaught( nullptr )
   {
@@ -4679,6 +4698,11 @@ struct overpower_t : public warrior_attack_t
     p()->buff.martial_prowess->trigger();
     }
     p()->buff.striking_the_anvil->expire();
+
+    if ( p()->talents.arms.strength_of_arms->ok() && target->health_percentage() < 35 )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_strength_of_arms, p()->gain.strength_of_arms );
+    }
 
   }
 
@@ -7006,8 +7030,17 @@ struct torment_avatar_t : public warrior_spell_t
     }
     if ( p()->talents.warrior.blademasters_torment->ok() )
     {
-      const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
-      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+      if ( p()->talents.arms.spiteful_serenity->ok() )
+      {
+        const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value()
+                                            + timespan_t::from_millis( 4000 ); // Spiteful doubles duration from 4->8s, not in data
+        p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+      }
+      else
+      {
+        const timespan_t trigger_duration = p()->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
+        p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
+      }
     }
   }
 };
@@ -7865,6 +7898,7 @@ void warrior_t::init_spells()
   mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
   spec.arms_warrior             = find_specialization_spell( "Arms Warrior" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
+  //spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.executioners_precision_debuff = find_spell( 386633 );
@@ -8022,6 +8056,11 @@ void warrior_t::init_spells()
   talents.arms.hurricane                           = find_talent_spell( talent_tree::SPECIALIZATION, "Hurricane", WARRIOR_ARMS );
   talents.arms.merciless_bonegrinder               = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Bonegrinder" );
   talents.arms.juggernaut                          = find_talent_spell( talent_tree::SPECIALIZATION, "Juggernaut", WARRIOR_ARMS );
+
+  talents.arms.improved_slam                       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Slam", WARRIOR_ARMS );
+  talents.arms.improved_sweeping_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sweeping Strikes", WARRIOR_ARMS );
+  talents.arms.strength_of_arms                    = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Arms", WARRIOR_ARMS );
+  talents.arms.spiteful_serenity                   = find_talent_spell( talent_tree::SPECIALIZATION, "Spiteful Serenity", WARRIOR_ARMS );
 
   // Fury Talents
   talents.fury.bloodthirst          = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodthirst" );
@@ -9133,9 +9172,11 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_thunderous_roar = target->get_dot( "thunderous_roar", &p );
 
   debuffs_colossus_smash = make_buff( *this , "colossus_smash" )
-                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
-                               ->set_duration( p.spell.colossus_smash_debuff->duration() + 
-                                               p.talents.arms.blunt_instruments->effectN( 2 ).time_value() )
+                               ->set_default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent()
+                                                    * ( 1.0 + p.talents.arms.spiteful_serenity->effectN( 7 ).percent() ) )
+                               ->set_duration( p.spell.colossus_smash_debuff->duration()
+                                               + p.talents.arms.spiteful_serenity->effectN( 8 ).time_value()
+                                               + p.talents.arms.blunt_instruments->effectN( 2 ).time_value() )
                                ->set_cooldown( timespan_t::zero() );
 
   debuffs_concussive_blows = make_buff( *this , "concussive_blows" )
@@ -9212,6 +9253,9 @@ void warrior_t::create_buffs()
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
   buff.avatar = make_buff( this, "avatar", find_spell( 107574 ) )
+      ->set_default_value( talents.warrior.avatar->effectN( 1 ).percent() 
+                           * ( 1.0 + talents.arms.spiteful_serenity->effectN( 1 ).percent() ) )
+      ->set_duration( talents.warrior.avatar->duration() + talents.arms.spiteful_serenity->effectN( 4 ).time_value() )
       ->set_chance(1)
       ->set_cooldown( timespan_t::zero() );
 
@@ -9354,7 +9398,8 @@ void warrior_t::create_buffs()
 
   const spell_data_t* test_of_might_tracker = talents.arms.test_of_might.spell()->effectN( 1 ).trigger()->effectN( 1 ).trigger();
   buff.test_of_might_tracker = new test_of_might_t( *this, "test_of_might_tracker", test_of_might_tracker );
-  buff.test_of_might_tracker->set_duration( spell.colossus_smash_debuff->duration() + talents.arms.blunt_instruments->effectN( 2 ).time_value() );
+  buff.test_of_might_tracker->set_duration( spell.colossus_smash_debuff->duration() + talents.arms.spiteful_serenity->effectN( 8 ).time_value() 
+                                            + talents.arms.blunt_instruments->effectN( 2 ).time_value() );
   buff.test_of_might = make_buff( this, "test_of_might", find_spell( 385013 ) )
                               ->set_default_value( talents.arms.test_of_might->effectN( 1 ).percent() )
                               ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
@@ -9568,6 +9613,7 @@ void warrior_t::init_gains()
   gain.shield_charge                    = get_gain( "shield_charge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
   gain.spear_of_bastion                 = get_gain( "spear_of_bastion" );
+  gain.strength_of_arms                 = get_gain( "strength_of_arms" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.whirlwind                        = get_gain( "whirlwind" );
