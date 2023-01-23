@@ -87,6 +87,10 @@ void warlock_pet_t::create_buffs()
 
   buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
                               ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+
+  // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
+  // and there are a LOT of Wild Imps.
+  player_t::buffs.movement->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
