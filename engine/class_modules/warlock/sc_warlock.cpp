@@ -1564,9 +1564,7 @@ void warlock_t::create_buffs()
   buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
                                        ->set_max_stack( 3 );
 
-  buffs.pet_movement = make_buff( this, "pet_movement" )
-                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                           ->set_max_stack( 100 );
+  buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
 
   // Affliction buffs
   create_buffs_affliction();
