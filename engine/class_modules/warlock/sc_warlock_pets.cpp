@@ -89,7 +89,7 @@ void warlock_pet_t::create_buffs()
                               ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
-  // and there are a LOT of Wild Imps.
+  // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
   player_t::buffs.movement->quiet = true;
   player_t::buffs.movement->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
                             {
@@ -102,6 +102,14 @@ void warlock_pet_t::create_buffs()
                                 o()->buffs.pet_movement->decrement();
                               }
                             } );
+
+  // These buffs are needed for operational purposes but serve little to no reporting purpose
+  buffs.demonic_strength->quiet = true;
+  buffs.grimoire_of_service->quiet = true;
+  buffs.annihilan_training->quiet = true;
+  buffs.antoran_armaments->quiet = true;
+  buffs.infernal_command->quiet = true;
+  buffs.embers->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
