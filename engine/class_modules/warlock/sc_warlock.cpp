@@ -1533,6 +1533,7 @@ void warlock_t::create_buffs()
                                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                            buffs.tormented_soul->increment();
                                          } );
+  buffs.tormented_soul_generator->quiet = true;
 
   buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff );
 

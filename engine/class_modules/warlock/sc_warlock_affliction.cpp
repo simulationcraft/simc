@@ -816,6 +816,7 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 void warlock_t::create_buffs_affliction()
 {
   buffs.drain_life = make_buff( this, "drain_life" );
+  buffs.drain_life->quiet = true;
 
   buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
@@ -857,6 +858,7 @@ void warlock_t::create_buffs_affliction()
                                     buffs.haunted_soul->trigger();
                                 }
                               } );
+  buffs.active_haunts->quiet = true;
 
   buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
