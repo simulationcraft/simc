@@ -578,6 +578,12 @@
       { "data_type": "i", "field": "unk_1" }
     ]
   },
+  "ItemBonusListLevelDelta": {
+    "fields": [
+      { "data_type": "h", "field": "item_level_delta" },
+      { "data_type": "i", "field": "id" }
+    ]
+  },
   "ItemBonusTreeNode": {
     "fields": [
       { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
