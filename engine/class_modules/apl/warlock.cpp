@@ -12,7 +12,11 @@ namespace warlock_apl{
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 70 ) return "phial_of_static_empowerment_3";
+    if ( p->true_level >= 70 )
+    {
+      return ( p->specialization() == WARLOCK_DEMONOLOGY ) ? "phial_of_tepid_versatility_3"
+                                                           : "phial_of_elemental_chaos_3";
+    }
     return ( p->true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
   }
 
