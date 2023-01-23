@@ -91,6 +91,17 @@ void warlock_pet_t::create_buffs()
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps.
   player_t::buffs.movement->quiet = true;
+  player_t::buffs.movement->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
+                            {
+                              if ( cur > prev )
+                              {
+                                o()->buffs.pet_movement->increment();
+                              }
+                              else if ( cur < prev )
+                              {
+                                o()->buffs.pet_movement->decrement();
+                              }
+                            } );
 }
 
 void warlock_pet_t::init_base_stats()
