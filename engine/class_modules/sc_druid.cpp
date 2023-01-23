@@ -7532,8 +7532,13 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
   {
     double cam = base_t::composite_aoe_multiplier( s );
 
-    if ( s->chain_target && p()->buff.eclipse_lunar->check() )
-      cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + aoe_mod_mult );
+    if ( s->chain_target )
+    {
+      if ( p()->buff.eclipse_lunar->check() )
+        cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + aoe_mod_mult );
+      else
+        cam *= aoe_base;
+    }
 
     return cam;
   }
