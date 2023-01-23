@@ -1533,6 +1533,7 @@ void warlock_t::create_buffs()
                                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
                                            buffs.tormented_soul->increment();
                                          } );
+  buffs.tormented_soul_generator->quiet = true;
 
   buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff );
 
@@ -1563,6 +1564,8 @@ void warlock_t::create_buffs()
 
   buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
                                        ->set_max_stack( 3 );
+
+  buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
 
   // Affliction buffs
   create_buffs_affliction();
