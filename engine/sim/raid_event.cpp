@@ -490,7 +490,7 @@ struct pull_event_t final : raid_event_t
       auto enemy_splits = util::string_split<util::string_view>( enemies_str, "|" );
       if ( enemy_splits.empty() )
       {
-        throw std::invalid_argument( fmt::format( "{} at least one enmy is required.", *this ) );
+        throw std::invalid_argument( fmt::format( "{} at least one enemy is required.", *this ) );
       }
       else
       {
