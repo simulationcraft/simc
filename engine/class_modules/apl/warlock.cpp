@@ -83,7 +83,6 @@ void affliction( player_t* p )
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
   default_->add_action( "shadow_bolt,if=buff.nightfall.react" );
-  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   default_->add_action( "agony,if=refreshable" );
   default_->add_action( "corruption,if=refreshable" );
   default_->add_action( "drain_soul,interrupt=1" );
@@ -136,7 +135,6 @@ void affliction( player_t* p )
   cleave->add_action( "shadow_bolt,if=buff.nightfall.react" );
   cleave->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
   cleave->add_action( "drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>10" );
-  cleave->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   cleave->add_action( "agony,target_if=refreshable" );
   cleave->add_action( "corruption,target_if=refreshable" );
   cleave->add_action( "drain_soul,interrupt_global=1" );
@@ -276,7 +274,6 @@ void destruction( player_t* p )
   default_->add_action( "chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft" );
   default_->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
   default_->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
-  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   default_->add_action( "incinerate" );
 
   aoe->add_action( "call_action_list,name=ogcd" );
@@ -331,7 +328,6 @@ void destruction( player_t* p )
   cleave->add_action( "chaos_bolt,if=!variable.pool_soul_shards&(talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft)" );
   cleave->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
   cleave->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
-  cleave->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   cleave->add_action( "incinerate" );
 
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
