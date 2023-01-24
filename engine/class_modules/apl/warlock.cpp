@@ -52,7 +52,6 @@ void affliction( player_t* p )
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>3" );
   precombat->add_action( "haunt" );
   precombat->add_action( "unstable_affliction,if=!talent.soul_swap" );
@@ -63,7 +62,6 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
@@ -85,9 +83,9 @@ void affliction( player_t* p )
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
   default_->add_action( "shadow_bolt,if=buff.nightfall.react" );
+  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   default_->add_action( "agony,if=refreshable" );
   default_->add_action( "corruption,if=refreshable" );
-  default_->add_action( "soul_tap" );
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
 
@@ -110,7 +108,7 @@ void affliction( player_t* p )
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   aoe->add_action( "malefic_rapture" );
   aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
   aoe->add_action( "drain_soul,interrupt_global=1" );
   aoe->add_action( "shadow_bolt" );
@@ -139,6 +137,7 @@ void affliction( player_t* p )
   cleave->add_action( "shadow_bolt,if=buff.nightfall.react" );
   cleave->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
   cleave->add_action( "drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>10" );
+  cleave->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   cleave->add_action( "agony,target_if=refreshable" );
   cleave->add_action( "corruption,target_if=refreshable" );
   cleave->add_action( "drain_soul,interrupt_global=1" );
@@ -170,7 +169,6 @@ void demonology( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
 
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
@@ -251,7 +249,6 @@ void destruction( player_t* p )
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "soul_fire" );
   precombat->add_action( "cataclysm" );
   precombat->add_action( "incinerate" );
@@ -281,7 +278,7 @@ void destruction( player_t* p )
   default_->add_action( "chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft" );
   default_->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
   default_->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
-  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   default_->add_action( "incinerate" );
 
   aoe->add_action( "call_action_list,name=ogcd" );
@@ -295,7 +292,7 @@ void destruction( player_t* p )
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire" );
   aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=6" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
   aoe->add_action( "rain_of_fire" );
@@ -336,6 +333,7 @@ void destruction( player_t* p )
   cleave->add_action( "chaos_bolt,if=!variable.pool_soul_shards&(talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft)" );
   cleave->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
   cleave->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
+  cleave->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   cleave->add_action( "incinerate" );
 
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
