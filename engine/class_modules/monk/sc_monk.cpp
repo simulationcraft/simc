@@ -1630,6 +1630,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
         p()->buff.thunder_focus_tea->decrement();
     }
+
+    if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
+        p()->buff.gift_of_the_ox->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -1973,6 +1976,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     }
 
     p()->buff.transfer_the_power->trigger();
+
+    if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
+        p()->buff.gift_of_the_ox->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -7900,6 +7906,9 @@ void monk_t::init_rng()
   player_t::init_rng();
   if ( shared.bountiful_brew && shared.bountiful_brew->ok() )
     rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
+
+  if ( talent.brewmaster.spirit_of_the_ox->ok() )
+    rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
 }
 
 // monk_t::init_special_effects ===========================================

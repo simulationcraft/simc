@@ -900,6 +900,7 @@ public:
   struct rppms_t
   {
     real_ppm_t* bountiful_brew;
+    real_ppm_t* spirit_of_the_ox;
   } rppm;
 
   struct pets_t
