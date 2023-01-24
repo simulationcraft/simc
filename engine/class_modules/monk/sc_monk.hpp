@@ -849,6 +849,7 @@ public:
     const spell_data_t* shaohaos_might;
     const spell_data_t* shuffle;
     const spell_data_t* special_delivery;
+    const spell_data_t* stagger;
     const spell_data_t* stagger_self_damage;
     const spell_data_t* heavy_stagger;
     const spell_data_t* stomp;

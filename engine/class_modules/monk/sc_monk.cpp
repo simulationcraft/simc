@@ -986,7 +986,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     : monk_spell_t( "storm_earth_and_fire", p, p->talent.windwalker.storm_earth_and_fire )
   {
     parse_options( options_str );
-    
+
     cast_during_sck = true;
     trigger_gcd     = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
@@ -3567,7 +3567,7 @@ struct serenity_t : public monk_spell_t
     : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
   {
     parse_options( options_str );
-    
+
     harmful         = false;
     cast_during_sck = true;
     trigger_gcd     = timespan_t::zero();
@@ -6334,7 +6334,8 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 
     // set_duration(stagger_duration);
     set_duration( timespan_t::zero() );
-    set_trigger_spell( p.talent.brewmaster.stagger );
+    // set_trigger_spell( p.talent.brewmaster.stagger );
+    set_trigger_spell( p.passives.stagger );
     if ( p.talent.brewmaster.high_tolerance->ok() )
     {
       add_invalidate( CACHE_HASTE );
@@ -6381,10 +6382,10 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
   {
-    if ( p().buff.kicks_of_flowing_momentum->up() )    
+    if ( p().buff.kicks_of_flowing_momentum->up() )
       p().buff.fists_of_flowing_momentum->trigger();
-      
-    base_t::decrement( stacks, value );  
+
+    base_t::decrement( stacks, value );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -7009,7 +7010,8 @@ void monk_t::init_spells()
   // Row 1
   talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
   // Row 2
-  talent.brewmaster.stagger                             = _ST( "Stagger" );
+  // talent.brewmaster.stagger                             = _ST( "Stagger" );
+  // talent.brewmaster.stagger                             = _CT( "Stagger" );
   // Row 3
   talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
   talent.brewmaster.shuffle                             = _ST( "Shuffle" );
@@ -7286,6 +7288,7 @@ void monk_t::init_spells()
   passives.keg_smash_buff                               = find_spell( 196720 );
   passives.shaohaos_might                               = find_spell( 337570 );
   passives.special_delivery                             = find_spell( 196733 );
+  passives.stagger                                      = find_spell( 115069 );
   passives.stagger_self_damage                          = find_spell( 124255 );
   passives.heavy_stagger                                = find_spell( 124273 );
   passives.stomp                                        = find_spell( 227291 );
@@ -7651,11 +7654,14 @@ void monk_t::create_buffs ()
       ->add_invalidate( CACHE_MASTERY );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) )
-        ->set_trigger_spell( talent.brewmaster.stagger );
+        // ->set_trigger_spell( talent.brewmaster.stagger );
+        ->set_trigger_spell( passives.stagger );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) )
-        ->set_trigger_spell( talent.brewmaster.stagger );
+        // ->set_trigger_spell( talent.brewmaster.stagger );
+        ->set_trigger_spell( passives.stagger );
     buff.heavy_stagger = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger )
-        ->set_trigger_spell( talent.brewmaster.stagger );
+        // ->set_trigger_spell( talent.brewmaster.stagger );
+        ->set_trigger_spell( passives.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
   // Mistweaver
@@ -8166,8 +8172,8 @@ bool monk_t::has_stagger()
 
 double monk_t::partial_clear_stagger_pct( double clear_percent )
 {
-  if ( !talent.brewmaster.stagger->ok() )
-    return 0;
+  // if ( !talent.brewmaster.stagger->ok() )
+  //   return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
 }
@@ -8176,8 +8182,8 @@ double monk_t::partial_clear_stagger_pct( double clear_percent )
 
 double monk_t::partial_clear_stagger_amount( double clear_amount )
 {
-  if ( !talent.brewmaster.stagger->ok() )
-    return 0;
+  // if ( !talent.brewmaster.stagger->ok() )
+  //   return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
 }
@@ -8755,14 +8761,14 @@ void monk_t::combat_begin()
   make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
 
     squirm_timer += 1;
-    
+
     // Do not interrupt a cast
     if ( ( executing && !executing->usable_moving() )
       || ( queueing && !queueing->usable_moving() )
       || ( channeling && !channeling->usable_moving() ) )
     {
       if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
-      {       
+      {
         movement.melee_squirm->trigger();
         squirm_timer = 0;
       }
@@ -8924,9 +8930,11 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
       if ( school == SCHOOL_PHYSICAL )
         stagger_dmg += s->result_amount * stagger_pct( s->target->level() );
 
-      else if ( talent.brewmaster.stagger->ok() && school != SCHOOL_PHYSICAL )
+      // else if ( talent.brewmaster.stagger->ok() && school != SCHOOL_PHYSICAL )
+      else if ( school != SCHOOL_PHYSICAL )
       {
-        double stagger_magic = stagger_pct( s->target->level() ) * talent.brewmaster.stagger->effectN( 5 ).percent();
+        // double stagger_magic = stagger_pct( s->target->level() ) * talent.brewmaster.stagger->effectN( 5 ).percent();
+        double stagger_magic = stagger_pct( s->target->level() ) * passives.stagger->effectN( 5 ).percent();
 
         stagger_dmg += s->result_amount * stagger_magic;
       }
@@ -8939,7 +8947,8 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
     {
       // Blizzard is putting a cap on how much damage can go into stagger
       double amount_remains = active_actions.stagger_self_damage->amount_remaining();
-      double cap            = max_health() * talent.brewmaster.stagger->effectN( 4 ).percent();
+      // double cap            = max_health() * talent.brewmaster.stagger->effectN( 4 ).percent();
+      double cap            = max_health() * passives.stagger->effectN( 4 ).percent();
       if ( amount_remains + stagger_dmg >= cap )
       {
         double diff = ( amount_remains + stagger_dmg ) - cap;
@@ -9059,7 +9068,8 @@ double monk_t::stagger_base_value()
 
   if ( specialization() == MONK_BREWMASTER )  // no stagger when not in Brewmaster Specialization
   {
-    stagger_base = agility() * talent.brewmaster.stagger->effectN( 1 ).percent();
+    // stagger_base = agility() * talent.brewmaster.stagger->effectN( 1 ).percent();
+    stagger_base = agility() * passives.stagger->effectN( 1 ).percent();
 
     if ( talent.brewmaster.high_tolerance->ok() )
       stagger_base *= 1 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
