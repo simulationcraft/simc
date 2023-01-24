@@ -1119,7 +1119,6 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
     ab::apply_affecting_aura( p()->talents.arms.improved_mortal_strike );
     ab::apply_affecting_aura( p()->talents.arms.improved_slam );
-    ab::apply_affecting_aura( p()->talents.arms.improved_sweeping_strikes );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
     ab::apply_affecting_aura( p()->talents.arms.storm_of_swords );
@@ -9360,7 +9359,7 @@ void warrior_t::create_buffs()
     -> set_cooldown( 0_ms ); // handled by the ability
 
   buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
-    ->set_duration(spec.sweeping_strikes->duration() )
+    ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
     ->set_cooldown(timespan_t::zero());
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
