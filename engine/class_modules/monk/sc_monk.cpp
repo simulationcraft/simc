@@ -6334,7 +6334,6 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 
     // set_duration(stagger_duration);
     set_duration( timespan_t::zero() );
-    // set_trigger_spell( p.talent.brewmaster.stagger );
     set_trigger_spell( p.passives.stagger );
     if ( p.talent.brewmaster.high_tolerance->ok() )
     {
@@ -7010,22 +7009,21 @@ void monk_t::init_spells()
   // Row 1
   talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
   // Row 2
-  // talent.brewmaster.stagger                             = _ST( "Stagger" );
-  // talent.brewmaster.stagger                             = _CT( "Stagger" );
-  // Row 3
   talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
   talent.brewmaster.shuffle                             = _ST( "Shuffle" );
+  // Row 3
+  talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
+  talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
+  talent.brewmaster.spirit_of_the_ox                    = _ST( "Spirit of the Ox ");
+  talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
   // Row 4
   talent.brewmaster.hit_scheme                          = _ST( "Hit Scheme" );
-  talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
   talent.brewmaster.healing_elixir                      = _ST( "Healing Elixir" );
-  talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
   talent.brewmaster.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
   talent.brewmaster.special_delivery                    = _ST( "Special Delivery" );
   // Row 5
   talent.brewmaster.celestial_flames                    = _ST( "Celestial Flames" );
   talent.brewmaster.celestial_brew                      = _ST( "Celestial Brew" );
-  talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
   talent.brewmaster.graceful_exit                       = _ST( "Graceful Exit" );
   talent.brewmaster.zen_meditation                      = _ST( "Zen Meditation" );
   talent.brewmaster.clash                               = _ST( "Clash" );
@@ -7286,7 +7284,6 @@ void monk_t::init_spells()
   passives.gift_of_the_ox_heal                          = find_spell( 124507 );
   passives.shuffle                                      = find_spell( 215479 );
   passives.keg_smash_buff                               = find_spell( 196720 );
-  passives.shaohaos_might                               = find_spell( 337570 );
   passives.special_delivery                             = find_spell( 196733 );
   passives.stagger                                      = find_spell( 115069 );
   passives.stagger_self_damage                          = find_spell( 124255 );
@@ -7654,13 +7651,10 @@ void monk_t::create_buffs ()
       ->add_invalidate( CACHE_MASTERY );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) )
-        // ->set_trigger_spell( talent.brewmaster.stagger );
         ->set_trigger_spell( passives.stagger );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) )
-        // ->set_trigger_spell( talent.brewmaster.stagger );
         ->set_trigger_spell( passives.stagger );
     buff.heavy_stagger = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger )
-        // ->set_trigger_spell( talent.brewmaster.stagger );
         ->set_trigger_spell( passives.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
@@ -8172,8 +8166,6 @@ bool monk_t::has_stagger()
 
 double monk_t::partial_clear_stagger_pct( double clear_percent )
 {
-  // if ( !talent.brewmaster.stagger->ok() )
-  //   return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
 }
@@ -8182,8 +8174,6 @@ double monk_t::partial_clear_stagger_pct( double clear_percent )
 
 double monk_t::partial_clear_stagger_amount( double clear_amount )
 {
-  // if ( !talent.brewmaster.stagger->ok() )
-  //   return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
 }
@@ -8930,10 +8920,8 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
       if ( school == SCHOOL_PHYSICAL )
         stagger_dmg += s->result_amount * stagger_pct( s->target->level() );
 
-      // else if ( talent.brewmaster.stagger->ok() && school != SCHOOL_PHYSICAL )
       else if ( school != SCHOOL_PHYSICAL )
       {
-        // double stagger_magic = stagger_pct( s->target->level() ) * talent.brewmaster.stagger->effectN( 5 ).percent();
         double stagger_magic = stagger_pct( s->target->level() ) * passives.stagger->effectN( 5 ).percent();
 
         stagger_dmg += s->result_amount * stagger_magic;
@@ -8947,7 +8935,6 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
     {
       // Blizzard is putting a cap on how much damage can go into stagger
       double amount_remains = active_actions.stagger_self_damage->amount_remaining();
-      // double cap            = max_health() * talent.brewmaster.stagger->effectN( 4 ).percent();
       double cap            = max_health() * passives.stagger->effectN( 4 ).percent();
       if ( amount_remains + stagger_dmg >= cap )
       {
@@ -9068,7 +9055,6 @@ double monk_t::stagger_base_value()
 
   if ( specialization() == MONK_BREWMASTER )  // no stagger when not in Brewmaster Specialization
   {
-    // stagger_base = agility() * talent.brewmaster.stagger->effectN( 1 ).percent();
     stagger_base = agility() * passives.stagger->effectN( 1 ).percent();
 
     if ( talent.brewmaster.high_tolerance->ok() )
@@ -9482,7 +9468,7 @@ public:
                   ( quick_sip / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
                   ( staggering_strikes / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", tranquil_spirit,
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Tranquil Spirit: {} / {:.2f}%</p>\n", tranquil_spirit,
                   ( tranquil_spirit / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
                   ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );
