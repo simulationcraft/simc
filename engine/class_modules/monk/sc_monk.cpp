@@ -3128,7 +3128,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     monk_melee_attack_t::impact( s );
 
-    p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
+    if ( p()->spec.stagger->ok() )
+        p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
   }
 };
 
@@ -8934,7 +8935,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
       if ( school == SCHOOL_PHYSICAL )
         stagger_dmg += s->result_amount * stagger_pct( s->target->level() );
 
-      else if ( school != SCHOOL_PHYSICAL )
+      else if ( spec.stagger->ok() && school != SCHOOL_PHYSICAL )
       {
         double stagger_magic = stagger_pct( s->target->level() ) * spec.stagger->effectN( 5 ).percent();
 
