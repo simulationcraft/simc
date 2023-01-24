@@ -117,7 +117,6 @@ void affliction( player_t* p )
   cleave->add_action( "call_action_list,name=items" );
   cleave->add_action( "malefic_rapture,if=soul_shard=5" );
   cleave->add_action( "haunt" );
-  cleave->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   cleave->add_action( "unstable_affliction,if=remains<5" );
   cleave->add_action( "agony,if=remains<5" );
   cleave->add_action( "agony,target_if=!(target=self.target)&remains<5" );
