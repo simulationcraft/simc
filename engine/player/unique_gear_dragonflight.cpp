@@ -1925,10 +1925,11 @@ void storm_eaters_boon( special_effect_t& effect )
   };
   action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ )
-  {
-    boon_action->execute();
-  } );
+  main_buff->set_tick_callback(
+      [ boon_action, effect ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+        boon_action->execute();
+        effect.player->get_cooldown( effect.cooldown_group_name() )->start( effect.cooldown_group_duration() );
+      } );
   main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_)
   {
     if( new_ == 0 )
