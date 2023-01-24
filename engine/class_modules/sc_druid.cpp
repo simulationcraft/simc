@@ -11845,7 +11845,8 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
     ->set_cooldown( 0_ms )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
+    ->apply_affecting_aura( source.talent.circle_of_life_and_death );
 
   debuff.tooth_and_claw = make_buff( *this, "tooth_and_claw_debuff",
     source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() )
