@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.5.47777
-static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16840,6 +16840,7 @@ static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
+  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -19328,7 +19329,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {   53343, "$coeff=${0.01127}\r\n" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$chance=$?a279830[${$s1+$279830s1}][${$s1}]" },
   {   79096, "$cdr=${$s1/10}" },
@@ -19496,7 +19497,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -19645,6 +19646,8 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.5.47777
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelldesc_vars_hotfix_data { {
+  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
 } };
 

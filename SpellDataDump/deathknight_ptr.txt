@@ -1164,9 +1164,11 @@ Effects          :
 #1 (id=42113)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46426 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=42114)    : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.75 -> 1)
 #3 (id=287354)   : Dummy (3)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.75 -> 1)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focuses dark power into a strike$?s137006[ with both weapons, that deals a total of ${$s1+$66188s1}][ that deals $s1] Physical damage and heals you for ${$s2}.2% of all damage taken in the last $s4 sec, minimum ${$s3}.1% of maximum health.
@@ -3586,9 +3588,10 @@ Effects          :
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
 #13 (id=1026048)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
+Hotfixed         : Base Value (32 -> 45)
 #14 (id=1026052)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -19.9 | Scaled Value: -19.9 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
@@ -3603,13 +3606,15 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2389 (Label) | Target: Self (1)
                    Affected Spells (Label): Elemental Blast: Critical Strike (118522), Elemental Blast: Haste (173183), Elemental Blast: Mastery (173184)
 #18 (id=1040490)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 37.5 | Scaled Value: 37.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
+Hotfixed         : Base Value (37.5 -> 51)
 #19 (id=1040491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 37.5 | Scaled Value: 37.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
+Hotfixed         : Base Value (37.5 -> 51)
 #20 (id=1040492)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
@@ -4061,7 +4066,8 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.30000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1.3 -> 1)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -11378,7 +11384,8 @@ Effects          :
 #1 (id=818066)   : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6242 | Misc Value 2: 0xb
 #2 (id=818067)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.40000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : Engrave your weapon with a rune that deflects $326864s2% of all spell damage and taking magic damage has a chance to create a shield that absorbs magic damage equal to $s2% of your maximum health. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d. 
 
 Modifying your rune requires a Runeforge in Ebon Hold.
@@ -11431,10 +11438,12 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Cannot Be Stolen (134), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818082)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.40000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 #2 (id=890165)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.40000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc326864
 
 Tooltip          : Absorbs $w1 magic damage.
@@ -11461,7 +11470,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=818084)   : Apply Aura (6) | Modify Spell Speed% (65)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.40000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc326864
 
 Tooltip          : Casting speed reduced by $w1%.
@@ -16278,8 +16288,9 @@ Effects          :
 #1 (id=1030741)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=1030864)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66700 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : $@spelldesc392487
 Tooltip          : Movement Speed slowed by $w1% and damage dealt to $@auracaster reduced by $w2%.
 
