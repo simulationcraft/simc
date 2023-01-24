@@ -179,7 +179,6 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.remains_expected<=variable.tyrant_prep_start" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=!talent.nether_portal&!talent.summon_demonic_tyrant|time_to_die<25" );
   default_->add_action( "implosion,if=time_to_die<2*gcd" );
-  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack>3&time_to_die<10" );
   default_->add_action( "nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2|time_to_die<30" );
   default_->add_action( "hand_of_guldan,if=buff.nether_portal.up" );
   default_->add_action( "call_action_list,name=items" );
@@ -196,7 +195,7 @@ void demonology( player_t* p )
   default_->add_action( "implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables" );
   default_->add_action( "implosion,if=active_enemies=1&last_cast_imps>0&buff.tyrant.down&talent.imp_gang_boss.enabled&!talent.sacrificed_souls" );
   default_->add_action( "soul_strike,if=soul_shard<5&active_enemies>1" );
-  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1" );
   default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4" );
   default_->add_action( "power_siphon,if=buff.demonic_core.stack<1&(buff.dreadstalkers.remains>3|buff.dreadstalkers.down)" );
   default_->add_action( "hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)" );
