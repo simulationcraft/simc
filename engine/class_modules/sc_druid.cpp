@@ -657,7 +657,6 @@ public:
     player_talent_t starsurge;
     player_talent_t sunfire;
     player_talent_t swiftmend;
-    player_talent_t swipe;  // removed in PTR
     player_talent_t thick_hide;
     player_talent_t thrash;
     player_talent_t tiger_dash;
@@ -801,7 +800,6 @@ public:
     player_talent_t thorns_of_iron;
     player_talent_t tooth_and_claw;
     player_talent_t twin_moonfire;
-    player_talent_t ursine_adept;  // removed in PTR
     player_talent_t ursocs_endurance;
     player_talent_t ursocs_fury;
     player_talent_t vicious_cycle;
@@ -2089,8 +2087,8 @@ public:
     if ( !form_mask || ( form_mask & p()->get_form() ) == p()->get_form() )
       return true;
 
-    if ( ( maybe_ptr( p()->dbc->ptr ) ? p()->spec.ursine_adept->ok() : p()->talent.ursine_adept.ok() ) &&
-      p()->buff.bear_form->check() && ab::data().affected_by( p()->buff.bear_form->data().effectN( 2 ) ) )
+    if ( p()->spec.ursine_adept->ok() && p()->buff.bear_form->check() &&
+         ab::data().affected_by( p()->buff.bear_form->data().effectN( 2 ) ) )
     {
       return true;
     }
@@ -4095,7 +4093,7 @@ struct swipe_cat_t : public cat_attack_t
   double berserk_swipe_cp;
 
   swipe_cat_t( druid_t* p, std::string_view opt )
-    : cat_attack_t( "swipe_cat", p, p->apply_override( maybe_ptr( p->dbc->ptr ) ? p->spec.swipe : p->talent.swipe, p->spec.cat_form_override ), opt ),
+    : cat_attack_t( "swipe_cat", p, p->apply_override( p->spec.swipe, p->spec.cat_form_override ), opt ),
       berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
   {
     aoe = -1;
@@ -4726,11 +4724,11 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
 struct swipe_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
 {
   swipe_bear_t( druid_t* p, std::string_view opt )
-    : base_t( "swipe_bear", p, p->apply_override( maybe_ptr( p->dbc->ptr ) ? p->spec.swipe : p->talent.swipe, p->spec.bear_form_override ), opt )
+    : base_t( "swipe_bear", p, p->apply_override( p->spec.swipe, p->spec.bear_form_override ), opt )
   {
     aoe = -1;
     // target hit data stored in cat swipe
-    reduced_aoe_targets = p->apply_override( maybe_ptr( p->dbc->ptr ) ? p->spec.swipe : p->talent.swipe, p->spec.cat_form_override )->effectN( 4 ).base_value();
+    reduced_aoe_targets = p->apply_override( p->spec.swipe, p->spec.cat_form_override )->effectN( 4 ).base_value();
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "swipe";
@@ -6067,7 +6065,7 @@ struct adaptive_swarm_t : public druid_spell_t
 struct astral_communion_t : public druid_spell_t
 {
   astral_communion_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "astral_communion", p, maybe_ptr( p->dbc->ptr ) ? p->spec.astral_communion : p->talent.astral_communion, opt )
+    : druid_spell_t( "astral_communion", p, p->spec.astral_communion, opt )
   {
     harmful = false;
   }
@@ -6980,7 +6978,7 @@ struct swipe_proxy_t : public druid_spell_t
   action_t* swipe_bear;
 
   swipe_proxy_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "swipe", p, maybe_ptr( p->dbc->ptr ) ? p->spec.swipe : p->talent.swipe, opt ),
+    : druid_spell_t( "swipe", p, p->spec.swipe, opt ),
       swipe_cat( new cat_attacks::swipe_cat_t( p, opt ) ),
       swipe_bear( new bear_attacks::swipe_bear_t( p, opt ) )
   {}
@@ -7471,9 +7469,7 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
 
     aoe_base = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
     aoe_mod_mult = p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent();
-
-    if ( maybe_ptr( sim->dbc->ptr ) )
-      aoe_mod_flat = p->spec.eclipse_lunar->effectN( 2 ).percent() + p->talent.umbral_intensity->effectN( 1 ).percent();
+    aoe_mod_flat = p->spec.eclipse_lunar->effectN( 2 ).percent() + p->talent.umbral_intensity->effectN( 1 ).percent();
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -9165,7 +9161,6 @@ void druid_t::init_spells()
   talent.starsurge                      = CT( "Starsurge" );
   talent.sunfire                        = CT( "Sunfire" );
   talent.swiftmend                      = CT( "Swiftmend" );
-  talent.swipe                          = CT( "Swipe" );
   talent.thick_hide                     = CT( "Thick Hide" );
   talent.thrash                         = CT( "Thrash" );
   talent.tireless_pursuit               = CT( "Tireless Pursuit" );
@@ -9312,7 +9307,6 @@ void druid_t::init_spells()
   talent.thorns_of_iron                 = ST( "Thorns of Iron" );
   talent.tooth_and_claw                 = ST( "Tooth and Claw" );
   talent.twin_moonfire                  = ST( "Twin Moonfire" );
-  talent.ursine_adept                   = ST( "Ursine Adept" );
   talent.ursocs_guidance                = ST( "Ursoc's Guidance" );
   talent.ursocs_endurance               = ST( "Ursoc's Endurance" );
   talent.vicious_cycle                  = ST( "Vicious Cycle" );
@@ -9458,10 +9452,7 @@ void druid_t::init_base_stats()
   // Resources
   resources.base[ RESOURCE_RAGE ]         = 100;
   resources.base[ RESOURCE_COMBO_POINT ]  = 5;
-  resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
-  if ( maybe_ptr( dbc->ptr ) )
-    resources.base[ RESOURCE_ASTRAL_POWER ] += talent.astral_communion->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
-
+  resources.base[ RESOURCE_ASTRAL_POWER ] = 100 + talent.astral_communion->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER );
   resources.base[ RESOURCE_ENERGY ]       = 100 + talent.tireless_energy->effectN( 1 ).base_value();
 
   // only activate other resources if you have the affinity and affinity_resources = true
@@ -9579,7 +9570,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->apply_affecting_aura( talent.reinforced_fur )
-    ->apply_affecting_aura( maybe_ptr( dbc->ptr ) ? spec.ursine_adept : talent.ursine_adept )
+    ->apply_affecting_aura( spec.ursine_adept )
     ->apply_affecting_aura( talent.ursocs_endurance )
     ->add_invalidate( CACHE_AGILITY )
     ->add_invalidate( CACHE_ARMOR );
@@ -11728,8 +11719,8 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
   if ( talent.protective_growth.ok() )
     s->result_amount *= 1.0 + buff.protective_growth->value();
 
-  if ( ( maybe_ptr( dbc->ptr ) ? spec.ursine_adept->ok() : talent.ursine_adept.ok() ) && buff.bear_form->check() )
-    s->result_amount *= 1.0 + ( maybe_ptr( dbc->ptr ) ? spec.ursine_adept : talent.ursine_adept )->effectN( 2 ).percent();
+  if ( spec.ursine_adept->ok() && buff.bear_form->check() )
+    s->result_amount *= 1.0 + spec.ursine_adept->effectN( 2 ).percent();
 
   if ( talent.pulverize.ok() )
     s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.pulverize->check_value();
