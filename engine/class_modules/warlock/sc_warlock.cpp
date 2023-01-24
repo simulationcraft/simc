@@ -1892,6 +1892,7 @@ void warlock_t::init_special_effects()
                                                             return false;
                                                         }
                                                       }
+                                                      return false;
                                                     } );
     }
     else if ( specialization() == WARLOCK_DEMONOLOGY )
@@ -1920,6 +1921,7 @@ void warlock_t::init_special_effects()
                                                             return false;
                                                         }
                                                       }
+                                                      return false;
                                                     } );
     }
     else
@@ -1946,6 +1948,7 @@ void warlock_t::init_special_effects()
                                                             return false;
                                                         }
                                                       }
+                                                      return false;
                                                     } );
     }
   }
