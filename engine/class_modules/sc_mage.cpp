@@ -6881,8 +6881,10 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
         return expr_t::create_constant( name_str, false );
 
       return make_fn_expr( name_str, [ &action, actual_pct, execute ]
-      { return execute ? action.get_expression_target()->health_percentage() < actual_pct :
-                         action.get_expression_target()->health_percentage() > actual_pct; } );
+      {
+        double pct = action.get_expression_target()->health_percentage();
+        return execute ? pct < actual_pct : pct > actual_pct;
+      } );
     }
 
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
