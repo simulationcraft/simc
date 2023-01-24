@@ -363,7 +363,7 @@ public:
     // Arms Spells
     const spell_data_t* arms_warrior;
     const spell_data_t* seasoned_soldier;
-    //const spell_data_t* sweeping_strikes;
+    const spell_data_t* sweeping_strikes;
     const spell_data_t* deep_wounds_ARMS;
 
     // Fury Spells
@@ -494,7 +494,6 @@ public:
       player_talent_t exhilarating_blows;
       player_talent_t anger_management;
       player_talent_t massacre;
-      player_talent_t sweeping_strikes;
       player_talent_t cleave;
 
       player_talent_t tide_of_blood;
@@ -1159,7 +1158,7 @@ public:
     affected_by.juggernaut               = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.juggernaut_prot          = ab::data().affected_by( p()->talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
-    affected_by.sweeping_strikes         = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
+    affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
@@ -1207,7 +1206,7 @@ public:
   {
     if ( affected_by.sweeping_strikes && p()->buff.sweeping_strikes->check() )
     {
-      return static_cast<int>( 1 + p()->talents.arms.sweeping_strikes->effectN( 1 ).base_value() );
+      return static_cast<int>( 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value() );
     }
 
     return ab::n_targets();
@@ -1317,7 +1316,7 @@ public:
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
-      dm *= p()->talents.arms.sweeping_strikes->effectN( 2 ).percent();
+      dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
     if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_an->up() )
@@ -4402,12 +4401,12 @@ struct skullsplitter_t : public warrior_attack_t
   }
 };
 
-// Sweeping Strikes Talent ===================================================================
+// Sweeping Strikes ===================================================================
 
 struct sweeping_strikes_t : public warrior_spell_t
 {
   sweeping_strikes_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "sweeping_strikes", p, p->talents.arms.sweeping_strikes )
+    : warrior_spell_t( "sweeping_strikes", p, p->spec.sweeping_strikes )
   {
     parse_options( options_str );
     callbacks = false;
@@ -7899,7 +7898,7 @@ void warrior_t::init_spells()
   mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
   spec.arms_warrior             = find_specialization_spell( "Arms Warrior" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
-  //spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
+  spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.executioners_precision_debuff = find_spell( 386633 );
@@ -8026,7 +8025,6 @@ void warrior_t::init_spells()
   talents.arms.exhilarating_blows                  = find_talent_spell( talent_tree::SPECIALIZATION, "Exhilarating Blows" );
   talents.arms.anger_management                    = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
   talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
-  talents.arms.sweeping_strikes                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Strikes" );
   talents.arms.cleave                              = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
 
   talents.arms.tide_of_blood                       = find_talent_spell( talent_tree::SPECIALIZATION, "Tide of Blood" );
@@ -9361,8 +9359,8 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", talents.arms.sweeping_strikes)
-    ->set_duration(talents.arms.sweeping_strikes->duration() )
+  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
+    ->set_duration(spec.sweeping_strikes->duration() )
     ->set_cooldown(timespan_t::zero());
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
