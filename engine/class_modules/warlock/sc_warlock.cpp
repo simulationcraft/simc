@@ -526,7 +526,7 @@ struct shadow_bolt_t : public warlock_spell_t
       p()->buffs.demonic_calling->trigger();
 
     if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->increment();
+      p()->buffs.fel_covenant->trigger();
 
     if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
     {
@@ -861,7 +861,7 @@ struct soulburn_t : public warlock_spell_t
           p()->procs.portal_summon->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
 
           if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
           {
@@ -869,7 +869,7 @@ struct soulburn_t : public warlock_spell_t
             p()->procs.nerzhuls_volition->occur();
 
             if ( p()->talents.guldans_ambition->ok() )
-              p()->buffs.nether_portal_total->increment();
+              p()->buffs.nether_portal_total->trigger();
           }
         }
       }
@@ -990,7 +990,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                           }
                           else if ( cur > prev )
                           {
-                            p.buffs.active_haunts->increment();
+                            p.buffs.active_haunts->trigger();
                           }
                         } );
 
@@ -1531,7 +1531,7 @@ void warlock_t::create_buffs()
                                        ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
                                        ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                           buffs.tormented_soul->increment();
+                                           buffs.tormented_soul->trigger();
                                          } );
   buffs.tormented_soul_generator->quiet = true;
 
@@ -1557,7 +1557,7 @@ void warlock_t::create_buffs()
                             else
                             {
                               proc_actions.fel_bolt->execute_on_target( target );
-                              buffs.inquisitors_gaze_buildup->increment();
+                              buffs.inquisitors_gaze_buildup->trigger();
                             }
                           } );
   }
@@ -2102,7 +2102,7 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet->pet_type == PET_PIT_LORD )
       continue;
 
-    lock_pet->buffs.the_expendables->increment();
+    lock_pet->buffs.the_expendables->trigger();
   }
 }
 
