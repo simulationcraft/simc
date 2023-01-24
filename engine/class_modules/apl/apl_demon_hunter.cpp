@@ -108,6 +108,7 @@ void havoc( player_t* p )
   default_->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
   default_->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up" );
   default_->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
+  default_->add_action( "fel_rush,if=talent.isolated_prey&active_enemies=1&fury.deficit>=35" );
   default_->add_action( "felblade,if=fury.deficit>=40" );
   default_->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   default_->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
