@@ -15484,13 +15484,14 @@ Effects          :
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
+Hotfixed         : Proc Flags 1 (0 -> 16), Proc Flags 2 (4 -> 0)
 Talent Entry     : Guardian [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15533,6 +15534,7 @@ Description      : $@spelldesc371999
 Tooltip          : Your next Maul deals $w1% increased damage.
 
 Name             : Vicious Cycle (id=372019) [Spell Family (7)] 
+Hotfixed         : Proc Flags 1 (0 -> 16), Proc Flags 2 (4 -> 0)
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -15540,8 +15542,8 @@ Spell Level      : 60
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15749,7 +15751,8 @@ Description      : Increases the damage and radius of Thrash by $s1%.
 
 Name             : Reinvigoration (id=372945) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Guardian [tree=spec, row=5, col=1, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(-15, -30)]
+                 : Effect#2 [op=set, values=(-15, -30)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -18217,7 +18220,7 @@ Description      : $@spelldesc393381
 
 Name             : Flashing Claws (id=393427) [Spell Family (7), Passive] 
 Talent Entry     : Guardian [tree=spec, row=8, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-15, -30)]
+                 : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(-15, -30)]
 Class            : Druid
 School           : Physical
