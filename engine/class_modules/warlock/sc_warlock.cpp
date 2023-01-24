@@ -578,7 +578,7 @@ struct shadow_bolt_t : public warlock_spell_t
     double m = warlock_spell_t::composite_target_multiplier( t );
 
     if ( p()->talents.withering_bolt->ok() )
-      m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
+      m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
