@@ -7085,7 +7085,7 @@ void hunter_t::init_action_list()
       hunter_apl::beast_mastery( this );
       break;
     case HUNTER_MARKSMANSHIP:
-      hunter_apl::marksmanship_ptr( this );
+      hunter_apl::marksmanship( this );
       break;
     case HUNTER_SURVIVAL:
       hunter_apl::survival( this );
