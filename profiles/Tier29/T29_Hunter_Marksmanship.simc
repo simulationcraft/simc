@@ -27,6 +27,7 @@ actions.precombat+=/food
 actions.precombat+=/summon_pet,if=!talent.lone_wolf
 actions.precombat+=/snapshot_stats
 actions.precombat+=/double_tap,precast_time=10
+actions.precombat+=/salvo,precast_time=10
 actions.precombat+=/use_item,name=algethar_puzzle_box
 # Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
 actions.precombat+=/aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)
@@ -51,6 +52,7 @@ actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fi
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26
+actions.cds+=/salvo
 
 actions.st=steady_shot,if=talent.steady_focus&(steady_focus_count&buff.steady_focus.remains<5|buff.steady_focus.down&!buff.trueshot.up)
 actions.st+=/kill_shot

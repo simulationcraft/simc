@@ -4134,7 +4134,7 @@ struct killing_spree_t : public rogue_attack_t
     player_t* tick_target = d->target;
     if ( p()->buffs.blade_flurry->check() )
     {
-      auto candidate_targets = targets_in_range_list( target_list() );
+      auto& candidate_targets = targets_in_range_list( target_list() );
       tick_target = candidate_targets[ rng().range( candidate_targets.size() ) ];
     }
 
@@ -4183,7 +4183,7 @@ struct pistol_shot_t : public rogue_attack_t
       }
     }
 
-    if ( p()->is_ptr() && secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
     {
       energize_amount -= p()->talent.outlaw.fan_the_hammer->effectN( 3 ).base_value();
     }
@@ -5787,10 +5787,7 @@ struct sepsis_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    if ( p()->is_ptr() )
-    {
-      p()->buffs.sepsis->trigger();
-    }
+    p()->buffs.sepsis->trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -10112,9 +10109,8 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
     return true;
 
   // Sepsis gives all the benefits of Improved Garrote including CDR on PTR, even without the buff
-  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) &&
-       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() ||
-         ( is_ptr() && buffs.sepsis->check() ) ) )
+  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) && talent.assassination.improved_garrote->ok() &&
+       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() || buffs.sepsis->check() ) )
     return true;
 
   return false;

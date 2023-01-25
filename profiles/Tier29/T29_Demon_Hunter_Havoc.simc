@@ -61,6 +61,7 @@ actions+=/throw_glaive,if=talent.soulrend&(active_enemies>desired_targets|raid_e
 actions+=/annihilation,if=!variable.pooling_for_blade_dance
 actions+=/throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up
 actions+=/immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)
+actions+=/fel_rush,if=talent.isolated_prey&active_enemies=1&fury.deficit>=35
 actions+=/felblade,if=fury.deficit>=40
 actions+=/sigil_of_flame,if=active_enemies>desired_targets
 actions+=/chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam

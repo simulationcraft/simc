@@ -6,7 +6,7 @@ race=dwarf
 role=tank
 position=front
 professions=blacksmithing=100/jewelcrafting=100
-talents=BkEAAAAAAAAAAAAAAAAAAAAAAIECAAAAIJJSSCSLpkkkWDRgQRAlkEAikkQLkkAEOQIAAAAAAAQEAAKlCA
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
