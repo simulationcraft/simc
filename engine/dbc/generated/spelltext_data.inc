@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.5.47799
-static const std::array<spelltext_data_t, 19261> __spelltext_data { {
+static const std::array<spelltext_data_t, 19263> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19231,6 +19231,8 @@ static const std::array<spelltext_data_t, 19261> __spelltext_data { {
   { 400158, "Increases $?s202028[Brutal Slash][Swipe] damage by $s1%.", 0, 0 },
   { 400169, "Launches a volley of darkness at the target, causing $<penancedamage> Shadow damage to an enemy or $<penancehealing> healing to an ally over $373129d. Castable while moving.", 0, 0 },
   { 400187, "$@spelldesc400169", 0, 0 },
+  { 400202, "$@spelldesc378986", 0, 0 },
+  { 400204, "$@spelldesc378986", 0, 0 },
   { 400205, "Slam has $s2% increased critical strike chance and deals $s1% increased critical strike damage.", 0, 0 },
   { 400222, "When you cast Ironfur, also deal Physical damage equal to $s1% of your armor, split among enemies within $r yards. ", 0, 0 },
   { 400223, "$@spelldesc400222", 0, 0 },
