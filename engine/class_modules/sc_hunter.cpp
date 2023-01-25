@@ -4314,17 +4314,14 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> buffs.bombardment -> expire();
 
-    if ( explosive && ( p() -> is_ptr() && p() -> buffs.salvo -> check() || !p() -> is_ptr() && !p()->buffs.salvo->check() ) )
+    if ( explosive && p() -> buffs.salvo -> check() )
     {
       std::vector<player_t*>& tl = target_list();
       size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
       for ( size_t t = 0; t < targets; t++ )
         explosive -> execute_on_target( tl[ t ] );
 
-      if ( p() -> is_ptr() )
-        p() -> buffs.salvo -> expire();
-      else
-        p() -> buffs.salvo -> trigger();
+      p() -> buffs.salvo -> expire();
     }
 
     p() -> buffs.focusing_aim -> expire();
@@ -5718,17 +5715,14 @@ struct volley_t : public hunter_spell_t
     {
       hunter_ranged_attack_t::execute();
 
-      if ( explosive && ( p() -> is_ptr() && p() -> buffs.salvo -> check() || !p() -> is_ptr() && !p()->buffs.salvo->check() ) )
+      if ( explosive && p() -> buffs.salvo -> check() )
       {
         std::vector<player_t*>& tl = target_list();
         size_t targets = std::min<size_t>( tl.size(), explosive -> targets );
         for ( size_t t = 0; t < targets; t++ )
           explosive -> execute_on_target( tl[ t ] );
         
-        if ( p() -> is_ptr() )
-          p() -> buffs.salvo -> expire();
-        else
-          p() -> buffs.salvo -> trigger();
+        p() -> buffs.salvo -> expire();
       }
     }
   };
@@ -6300,7 +6294,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
   if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
-  if ( name == "salvo" && is_ptr()     ) return new                  salvo_t( this, options_str );
+  if ( name == "salvo"                 ) return new                  salvo_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
   if ( name == "spearhead"             ) return new              spearhead_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
@@ -6451,7 +6445,7 @@ void hunter_t::init_spells()
     talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
     talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
     talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
-    talents.dead_eye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Dead Eye", HUNTER_MARKSMANSHIP );
+    talents.dead_eye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Deadeye", HUNTER_MARKSMANSHIP );
     talents.bursting_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bursting Shot", HUNTER_MARKSMANSHIP );
 
     talents.trick_shots                       = find_talent_spell( talent_tree::SPECIALIZATION, "Trick Shots", HUNTER_MARKSMANSHIP );
@@ -6784,7 +6778,7 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.salvo =
-    make_buff( this, "salvo", find_spell( is_ptr() ? 400456 : 388909 ) );
+    make_buff( this, "salvo", find_spell( 400456 ) );
 
   // Beast Mastery Tree
 
@@ -7091,10 +7085,7 @@ void hunter_t::init_action_list()
       hunter_apl::beast_mastery( this );
       break;
     case HUNTER_MARKSMANSHIP:
-      if ( is_ptr() )
-        hunter_apl::marksmanship_ptr( this );
-      else
-        hunter_apl::marksmanship( this );
+      hunter_apl::marksmanship_ptr( this );
       break;
     case HUNTER_SURVIVAL:
       hunter_apl::survival( this );
