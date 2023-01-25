@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 10.0.2.47631
-static const std::array<item_enchantment_data_t, 4579> __spell_item_ench_data { {
+// Item enchantment data, wow build 10.0.5.47799
+static const std::array<item_enchantment_data_t, 4580> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4579,5 +4579,6 @@ static const std::array<item_enchantment_data_t, 4579> __spell_item_ench_data { 
   { 6696,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2096,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-Icon-Quality-Tier1-Small:20:20|a" },
   { 6697,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2537,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-Icon-Quality-Tier2-Small:20:20|a" },
   { 6698,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2978,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-Icon-Quality-Tier3-Small:20:20|a" },
+  { 6721,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 400122, "10.0.5 - Generic - Storm - Weapon Enchant - High - SK" },
 } };
 
