@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631, git build dragonflight b623410ba6)
+SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -623,6 +623,7 @@ Replaces         : Metamorphosis (id=191427)
 Class            : Vengeance Demon Hunter
 School           : Chaos
 Spell Type       : None
+Spell Level      : 20
 Duration         : 15 seconds
 Cooldown         : 240 seconds
 Category         : 1251
@@ -641,6 +642,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : x....... ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Prevent Jumping During Precast (448)
 Effects          :
+#1 (id=273949)   : Apply Aura (6) | Change Model (56)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #2 (id=273950)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)

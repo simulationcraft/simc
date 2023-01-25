@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631, git build dragonflight b623410ba6)
+SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -103,7 +103,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Cooldown         : 6 seconds
 Labels           : 2353: Indiscriminate Carnage (385754 effect#1), Indiscriminate Carnage (385754 effect#2)
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1)
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Sepsis (375939 effect#2), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1)
 Family Flags     : 8, 54
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ....x... ........   ........ ..x..... ........ ........ 
@@ -471,7 +471,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 2350: Replicating Shadows (382506 effect#2), Indiscriminate Carnage (385747 effect#1), Indiscriminate Carnage (385747 effect#2)
 Mechanic         : Bleed
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effect#1), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effect#1), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3)
 Family Flags     : 20, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -505,12 +505,11 @@ Description      : Finishing move that tears open the target, dealing Bleed dama
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Feint (id=1966) [Spell Family (8)] 
-Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Resource         : 35 Energy (3) (id=148)
-Spell Level      : 34
+Spell Level      : 12
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 15 seconds
@@ -816,7 +815,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Balance of All Things (394049 effect#1), Gathering Starstuff (394412 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Balance of All Things (394049 effect#1), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -959,17 +958,17 @@ GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 1 (25 seconds cooldown)
 Category         : 2086: Lightweight Shiv (394983 effect#1)
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #3, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Tiny Toxic Blade (340078 effects: #1, #2), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Tiny Toxic Blade (381800 effects: #1, #2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Shadow Blades (121471 effect#3), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #3, #4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Symbols of Death (227151 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Tiny Toxic Blade (340078 effects: #1, #2), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Tiny Toxic Blade (381800 effects: #1, #2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2), Arterial Precision (400783 effects: #2, #3)
 Family Flags     : 29, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ....x... ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ x....... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Off-Hand Weapon (120), Do Not Chain To Crowd-Controlled Targets (200), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=2076)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -979,9 +978,13 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=872827)   : Dispel (38)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Enemy (6)
-Description      : Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?s319032[
+Description      : Attack with your $?s319032[poisoned blades][off-hand], dealing $sw1 Physical damage, dispelling all enrage effects and applying a concentrated form of your $?a3408[Crippling Poison, reducing movement speed by $115196s1% for $115196d.]?a5761[Numbing Poison, reducing casting speed by $359078s1% for $359078d.][]$?(!a3408&!a5761)[active Non-Lethal poison.][]$?(a319032&a400783)[
 
-Your Nature damage done against the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]
+Your Nature and Bleed ]?a319032[
+
+Your Nature ]?a400783[
+
+Your Bleed ][]$?(a400783|a319032)[damage done to the target is increased by $319504s1% for $319504d.][]$?a354124[ The target's healing received is reduced by $354124S1% for $319504d.][]
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 
@@ -1596,7 +1599,8 @@ Description      : Provides a moment of magic immunity, instantly removing all h
 Tooltip          : Resisting all harmful spells.
 
 Name             : Cheat Death (id=31230) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
+                 : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1883,7 +1887,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 120 seconds
 Affecting spells : Nightstalker (130493 effect#1), Cold Blood (382245 effect#1)
 Family Flags     : 55
-Attributes       : ....x... ........ x....... .....x..   ........ .xx..... ........ ..x..... 
+Attributes       : ....x... ........ x....... .....x.x   ........ .xx..... ........ ..x..... 
                  : ........ ........ ........ ....x...   x....... ..x..... xx...... ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1891,7 +1895,7 @@ Attributes       : ....x... ........ x....... .....x..   ........ .xx..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Not an Action (92), PvP Enabling (96), Requires Main-Hand Weapon (106), Suppress Caster Procs (112), Suppress Target Procs (113), Extra Initial Period (169), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
+                 : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Require All Targets (58), Not an Action (92), PvP Enabling (96), Requires Main-Hand Weapon (106), Suppress Caster Procs (112), Suppress Target Procs (113), Extra Initial Period (169), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=44062)    : Apply Aura (6) | Periodic Dummy (226): every 0.4 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -1903,7 +1907,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=819851)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
-Description      : Teleport to an enemy within 10 yards, attacking with both weapons for a total of $<dmg> Physical damage over $d.
+#6 (id=1046151)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : Teleport to an enemy within 10 yards, attacking with both weapons for a total of $<dmg> Physical damage and taking $s6% reduced damage over $d.
 
 While Blade Flurry is active, also hits up to $s5 nearby enemies for $s2% damage.
 Tooltip          : Attacking an enemy every $t1 sec.
@@ -2308,7 +2315,7 @@ Effects          :
 Description      : Increases the damage done by your finishing moves by ${$76808m1}.1%.
 
 Name             : Elusiveness (id=79008) [Spell Family (8), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -2945,7 +2952,7 @@ Spell Level      : 25
 GCD              : 1 seconds
 Duration         : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #4, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #4, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Septic Wounds (394845 effect#1)
 Family Flags     : 54, 81
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3430,7 +3437,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
 Mechanic         : Bleed
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#5), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Secret Stratagem (394320 effect#5), Devious Stratagem (394321 effect#5), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#5), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Secret Stratagem (394320 effect#5), Devious Stratagem (394321 effect#5), Septic Wounds (394845 effect#1)
 Family Flags     : 54, 95
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -9028,7 +9035,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 8 seconds
 Requires weapon  : Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Well-Placed Steel (341537 effect#1), Deathly Shadows (350964 effects: #1, #2), Hemotoxin (354124 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Well-Placed Steel (341537 effect#1), Deathly Shadows (350964 effects: #1, #2), Hemotoxin (354124 effect#1), Arterial Precision (400783 effect#1)
 Family Flags     : 54, 91
 Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9046,8 +9053,12 @@ Effects          :
                    Family Flags: 16, 28, 29, 35, 36, 68, 85, 86, 97, 118, 119
 #2 (id=886415)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+#3 (id=1046107)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Internal Bleeding (154953), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Serrated Bone Spike (385424), Rupture (394031), Serrated Bone Spike (394036), Deathmark (394331)
+                   Family Flags: 8, 20, 59, 81, 95, 115, 126
 Description      : $@spelldesc245388
-Tooltip          : $w1% increased Nature damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
+Tooltip          : $w1% increased Nature $?a400783[and Bleed ][]damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
 Name             : Blade Flurry (id=319606) [Spell Family (8)] 
 Class            : Rogue
@@ -9330,7 +9341,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
 Triggered by     : Serrated Bone Spike (328547)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -9357,7 +9368,7 @@ Range            : 100 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9505,7 +9516,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapo
 Charges          : 3 (30 seconds cooldown)
 Category         : 1889: Deathspike (354731 effect#1)
 Labels           : 976
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ....x... ........ 
@@ -11490,7 +11501,7 @@ Duration         : 16 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Mechanic         : Bleed
-Affecting spells : Acrobatic Strikes (196924 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Acrobatic Strikes (196924 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1)
 Family Flags     : 59
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11518,7 +11529,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
 Mechanic         : Bleed
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effect#1), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effect#1), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3)
 Family Flags     : 20, 54
 Attributes       : ....x... ........ x.x..... ........   .....x.. .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -11546,7 +11557,7 @@ Duration         : 18 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Labels           : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1)
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Stealth (115191 effects: #5, #6), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Sepsis (375939 effect#2), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Septic Wounds (394845 effect#1)
 Family Flags     : 8, 54
 Attributes       : ....x... ........ x.x..x.. ........   .....x.. .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
@@ -11978,7 +11989,7 @@ Class            : Rogue
 School           : Nature
 Spell Type       : None
 Spell Level      : 48
-Duration         : 5 seconds
+Duration         : 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x...x. ........ ........   ........ ........ ........ ........   
@@ -11997,6 +12008,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cheap Shot (1833), Sap (6770), Ambush (8676), Shadowstrike (185438), Shadowstrike (345121), Ambush (385794), Ambush (385897)
                    Family Flags: 7, 9, 10, 31, 104
+#2 (id=1046142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Garrote (703), Garrote (360830)
+                   Family Flags: 8
 Description      : $@spelldesc375936
 Tooltip          : Allows $328305s6 use of any Stealth ability.
 
@@ -12650,7 +12665,7 @@ Effects          :
 Description      : Mutilate deals an additional $s1% Bleed damage over ${$381672d+2} sec.
 
 Name             : Dashing Scoundrel (id=381797) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=9, col=2, max_rank=3, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10, 15)]
 Class            : Rogue
 School           : Physical
@@ -12739,7 +12754,7 @@ Effects          :
 Description      : Shiv deals $s1% increased damage and no longer costs Energy.
 
 Name             : Dragon-Tempered Blades (id=381801) [Spell Family (8), Passive] 
-Talent Entry     : Assassination [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12892,9 +12907,11 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Opportunity (195627)
                    Family Flags: 108
+#3 (id=1046162)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When Sinister Strike strikes an additional time, gain $m1 additional $Lstack:stacks; of Opportunity. Max ${$s2+1} stacks.
 
-Half-cost uses of Pistol Shot consume $m1 additional $Lstack:stacks; of Opportunity to fire $m1 additional $Lshot:shots;.
+Half-cost uses of Pistol Shot consume $m1 additional $Lstack:stacks; of Opportunity to fire $m1 additional $Lshot:shots;. Additional shots generate $m3 fewer combo $Lpoint:points;.
 
 Name             : Combat Stamina (id=381877) [Spell Family (8), Passive] 
 Talent Entry     : Outlaw [tree=spec, row=3, col=2, max_rank=1, req_points=0]
@@ -12912,7 +12929,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012995)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Stamina increased by $s1%.
 
 Name             : Deft Maneuvers (id=381878) [Spell Family (8), Passive] 
@@ -13509,7 +13526,7 @@ Description      : Shadowstrike increases the damage of your next $?s200758[Gloo
 
 Name             : Invigorating Shadowdust (id=382523) [Spell Family (8), Passive] 
 Talent Entry     : Subtlety [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(15, 30)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13524,8 +13541,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013908)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Vanish reduces the remaining cooldown of your other Rogue abilities by $s1 sec.
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Vanish reduces the remaining cooldown of your other Rogue abilities by ${$s1}.1 sec.
 
 Name             : Lingering Shadow (id=382524) [Spell Family (8), Passive] 
 Talent Entry     : Subtlety [tree=spec, row=9, col=2, max_rank=2, req_points=20]
@@ -13792,7 +13809,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 #7 (id=1018602)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
-Description      : Infect the target's blood, dealing $o1 Nature damage over $d. If the target survives its full duration, they suffer an additional $394026s1 damage and you gain $s6 use of any Stealth ability for $375939d.
+Description      : Infect the target's blood, dealing $o1 Nature damage over $d and gaining $s6 use of any Stealth ability. If the target survives its full duration, they suffer an additional $394026s1 damage and you gain $s6 additional use of any Stealth ability for $375939d.
 
 Cooldown reduced by $s3 sec if Sepsis does not last its full duration.
 
@@ -13813,7 +13830,7 @@ Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 3 (30 seconds cooldown)
 Category         : 1889: Deathspike (354731 effect#1)
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ....x... ........ 
@@ -13901,7 +13918,7 @@ Damaging finishing moves that consume the same number of combo points as your An
 
 
 Name             : Kingsbane (id=385627) [Spell Family (8)] 
-Talent Entry     : Assassination [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Talent Entry     : Assassination [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Rogue
 School           : Nature
 Spell Type       : Melee
@@ -14779,7 +14796,7 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effect#1), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effects: #1, #5), Elaborate Planning (193641 effects: #1, #2), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Tight Spender (381621 effect#1), Bloody Mess (381626 effect#1), Dark Brew (382504 effect#1), Replicating Shadows (382506 effect#3), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #5), Devious Stratagem (394321 effects: #1, #5), Septic Wounds (394845 effect#1), Masterful Finish (395003 effects: #1, #3)
 Family Flags     : 20, 54
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ .x...... 
@@ -14803,7 +14820,7 @@ Spell Level      : 48
 Range            : 100 yards
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2), Shadow Dance (185313 effects: #4, #5), Broadside (193356 effects: #4, #5), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effects: #1, #2), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Deathspike (354731 effect#2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Septic Wounds (394845 effect#1)
 Triggered by     : Serrated Bone Spike (385424)
 Family Flags     : 54, 115
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -15206,7 +15223,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : 16 seconds
-Affecting spells : Acrobatic Strikes (196924 effect#1), Septic Wounds (394845 effect#1)
+Affecting spells : Acrobatic Strikes (196924 effect#1), Shiv (319504 effect#3), Septic Wounds (394845 effect#1)
 Triggered by     : Deathmark (360194)
 Family Flags     : 59
 Attributes       : .......x x....... x....... .....x.x   .....x.. ..x..... ........ ........ 
@@ -15588,5 +15605,55 @@ Effects          :
 #1 (id=1035888)  : Energize Power (30)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : $@spelldesc395422
+
+Name             : Arterial Precision (id=400783) [Spell Family (8), Passive] 
+Talent Entry     : Assassination [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Proc cooldown on a per target basis (330), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1046108)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Shiv (319504)
+                   Family Flags: 91
+#2 (id=1046109)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Affected Spells: Shiv (5938)
+                   Family Flags: 29
+#3 (id=1046110)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Target Range (35)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 35 | Target: Self (1)
+                   Affected Spells: Shiv (5938)
+                   Family Flags: 29
+Description      : Shiv strikes ${$s2-1} additional nearby enemies and increases your Bleed damage done to affected targets by $s1% for $319504d.
+
+Name             : Unbreakable Stride (id=400804) [Spell Family (8), Passive] 
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 4
+Family Flags     : 106
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1046145)  : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+Description      : Reduces the duration of movement slowing effects $s1%.
 
 

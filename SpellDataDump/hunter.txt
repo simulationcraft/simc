@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631, git build dragonflight b623410ba6)
+SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -635,7 +635,7 @@ GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
-Category         : 1715: Marksmanship Hunter (137016 effect#9), Trueshot (288613 effect#3)
+Category         : 1715: Marksmanship Hunter (137016 effect#9), Trueshot (288613 effect#3), Tactical Reload (400472 effect#2)
 Azerite Power Id : 97
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Hunter's Knowledge (378766 effect#1), Focused Aim (378767 effect#1), Lunge (378934 effect#2), Eagletalon's True Focus (389450 effect#1)
 Triggered by     : Lock and Load (194594)
@@ -2881,7 +2881,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Master Handler (389654), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Master Handler (389654), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -4436,7 +4436,7 @@ Effects          :
 Description      : Activating Bestial Wrath grants $s1 $Lcharge:charges; of Barbed Shot.
 
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=7, col=4, max_rank=2, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(4, 8)]
 Class            : Hunter
 School           : Physical
@@ -4900,7 +4900,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 203413 | Target: Self (1)
 Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*9} Physical damage over $d. Critical strike chance increased by $s3% against any target below $s4% health. Deals reduced damage beyond $s5 targets.
 
-Kill Command cooldown resets reduce the cooldown of Fury of the Eagle by ${$m2/1000}.1 sec$?s385718[ and the cooldown of Wildfire Bomb and Flanking Strike by ${$m1/1000}.1 sec][].
+Kill Command cooldown resets reduce the cooldown of Fury of the Eagle by ${$m2/1000}.1 sec$?s385718[ and Fury of the Eagle critical strikes reduce the cooldown of Wildfire Bomb and Flanking Strike by ${$m1/1000}.1 sec][].
 
 Name             : Bullseye (id=204089) [Spell Family (9), Passive] 
 Talent Entry     : Marksmanship [tree=spec, row=8, col=4, max_rank=2, req_points=20]
@@ -5799,7 +5799,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Trick Shots (257622 effect#2), Streamline (260367 effects: #1, #2), Double Tap (260402 effects: #1, #3), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Trick Shots (257622 effect#2), Streamline (260367 effects: #1, #2), Double Tap (260402 effects: #1, #3), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1), Tactical Reload (400472 effect#1)
 Family Flags     : 1, 118, 121
 Attributes       : .x...... ........ x....... ........   ..x...x. .x...... ........ .....x.. 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -6743,7 +6743,6 @@ Description      : $@spelldesc260393
 Tooltip          : Your next Aimed Shot will have $s1% increased critical strike chance, or your next Rapid Fire will deal a critical strike with each shot.
 
 Name             : Double Tap (id=260402) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6797,7 +6796,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485543)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1025016)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $s2 Focus spent reduces the cooldown of Trueshot by ${$m1/1000}.1 sec.
@@ -8094,7 +8093,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273277 | Target: Self (1)
 #2 (id=740947)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities.
+Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities and both of your pets deal $s2% reduced damage.
 
 Name             : Chakrams (id=267605) [Spell Family (9)] 
 Class            : Hunter
@@ -13721,8 +13720,8 @@ Cooldown         : 90 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged
-Affecting spells : Deadly Duo (378962 effect#2)
-Family Flags     : 94
+Affecting spells : Hunter (137014 effect#3), Deadly Duo (378962 effect#2)
+Family Flags     : 1, 94
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15265,25 +15264,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $388998s1% increased damage, and shred up to $388998s2 targets near your Kill Shot target for $388998s3% of the damage dealt by Kill Shot over $385638d.
 
-Name             : Salvo (id=384791) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=10, col=1, max_rank=1, req_points=20]
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
-Effects          :
-#1 (id=1017648)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Multi-Shot and Volley now also apply Explosive Shot to up to $s1 $Ltarget:targets; hit. This can only occur once every $388909d.
-
 Name             : Hunter's Avoidance (id=384799) [Spell Family (9), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Hunter
@@ -15693,7 +15673,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1031629)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(27)
-Description      : Increase the maximum health of you and your pet by $s1% for $d.
+Description      : Increase the maximum health of you and your pet by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Lone Survivor (id=388039) [Spell Family (9), Passive] 
@@ -15814,26 +15794,6 @@ Effects          :
 #3 (id=1024857)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While the Sentinel Owl is active, your party gains $393777s1% Leech.
-
-Name             : Salvo (id=388909) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Duration         : 45 seconds
-Attributes       : ........ ........ ........ ..x..x.x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
-Effects          :
-#1 (id=1024884)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc384791
-Tooltip          : Unable to benefit from Salvo.
 
 Name             : Razor Fragments (id=388998) [Spell Family (9)] 
 Class            : Hunter
@@ -16338,7 +16298,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1029946)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 392058 | Target: Enemy (6)
-Description      : Fire an enchanted arrow, dealing $392058s1 Shadow damage to your target and an additional $392058s2 Shadow damage to all enemies within $392058A2 yds of your target. Non-Player targets struck by a Wailing Arrow are silenced for $392061d.$?s389865[
+Description      : Fire an enchanted arrow, dealing $392058s1 Shadow damage to your target and an additional $392058s2 Shadow damage to all enemies within $392058A2 yds of your target. Non-Player targets struck by a Wailing Arrow have their spellcasting interrupted and are silenced for $392061d.$?s389865[
 
 Wailing Arrow resets the cooldown of Rapid Fire and generates $389865s2 $Lcharge:charges; of Aimed Shot.][]$?s389866[
 
@@ -16424,7 +16384,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1031630)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increase the maximum health of you and your pet by $s1% for $d.
+Description      : Increase the maximum health of you and your pet by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Entrapment (id=393344) [Spell Family (9), Passive] 
@@ -16898,5 +16858,51 @@ Effects          :
 Description      : $@spelldesc378962
 Tooltip          : Damage of your next Kill Command increased by $s1%.
 Kill Command cooldown reset chance increased by $s2%.
+
+Name             : Salvo (id=400456) [Spell Family (9)] 
+Talent Entry     : Marksmanship [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Cooldown         : 45 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1045506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your next Multi-Shot or Volley now also applies Explosive Shot to up to $s1 $Ltarget:targets; hit. 
+Tooltip          : Your next Multi-Shot or Volley now also applies Explosive Shot to up to $s1 $Ltarget:targets; hit.
+
+Name             : Tactical Reload (id=400472) [Spell Family (9), Passive] 
+Talent Entry     : Marksmanship [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=1045535)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Rapid Fire (257044)
+                   Family Flags: 118
+#2 (id=1045536)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1715 | Target: Self (1)
+                   Affected Spells (Category): Aimed Shot (19434)
+Description      : Aimed Shot and Rapid Fire cooldown reduced by $s1%.
 
 
