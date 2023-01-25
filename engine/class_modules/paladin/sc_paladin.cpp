@@ -3237,14 +3237,7 @@ double paladin_t::composite_mastery_value() const
 
   if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
   {
-    if ( bugs )
-    {
-      m += talents.seal_of_might->effectN( 2 ).percent();
-    }
-    else
-    {
-      m += talents.seal_of_might->effectN( 1 ).percent();
-    }
+    m += talents.seal_of_might->effectN( 1 ).percent();
   }
 
   return m;
