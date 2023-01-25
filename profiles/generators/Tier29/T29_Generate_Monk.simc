@@ -27,7 +27,7 @@ off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant_id
 
 save=T29_Monk_Brewmaster.simc
 
-monk="T29_Monk_Windwalker_SER"
+monk="T29_Monk_Windwalker"
 spec=windwalker
 level=70
 race=orc
@@ -52,7 +52,7 @@ trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
 main_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 
-save=T29_Monk_Windwalker_SER.simc
+save=T29_Monk_Windwalker.simc
 
 monk="T29_Monk_Windwalker_SEF"
 spec=windwalker
