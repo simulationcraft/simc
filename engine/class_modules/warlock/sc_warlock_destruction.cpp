@@ -448,6 +448,15 @@ struct incinerate_fnb_t : public destruction_spell_t
 
     return m;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    // 2023-01-24 Fire and Brimstone crits are apparently still yielding fragments (unaffected by Diabolic Embers)
+    if ( s->result == RESULT_CRIT )
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
+  }
 };
 
 struct incinerate_t : public destruction_spell_t
@@ -1495,6 +1504,7 @@ void warlock_t::init_gains_destruction()
   gains.immolate = get_gain( "immolate" );
   gains.immolate_crits = get_gain( "immolate_crits" );
   gains.incinerate_crits = get_gain( "incinerate_crits" );
+  gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
   gains.infernal = get_gain( "infernal" );
   gains.shadowburn_refund = get_gain( "shadowburn_refund" );
   gains.inferno = get_gain( "inferno" );
