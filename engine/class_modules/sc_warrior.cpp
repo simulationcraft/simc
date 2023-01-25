@@ -8695,13 +8695,13 @@ void warrior_t::apl_fury()
   single_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
+  single_target->add_action( "onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   single_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)" );
   single_target->add_action( "execute" );
   single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
   single_target->add_action( "bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)" );
-  single_target->add_action( "onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize" );
   single_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=charges>1&talent.wrath_and_fury" );
   single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
