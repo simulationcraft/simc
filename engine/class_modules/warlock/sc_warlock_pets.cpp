@@ -87,6 +87,30 @@ void warlock_pet_t::create_buffs()
 
   buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
                               ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+
+  // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
+  // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
+  player_t::buffs.movement->quiet = true;
+  assert( !player_t::buffs.movement->stack_change_callback );
+  player_t::buffs.movement->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
+                            {
+                              if ( cur > prev )
+                              {
+                                o()->buffs.pet_movement->trigger();
+                              }
+                              else if ( cur < prev )
+                              {
+                                o()->buffs.pet_movement->decrement();
+                              }
+                            } );
+
+  // These buffs are needed for operational purposes but serve little to no reporting purpose
+  buffs.demonic_strength->quiet = true;
+  buffs.grimoire_of_service->quiet = true;
+  buffs.annihilan_training->quiet = true;
+  buffs.antoran_armaments->quiet = true;
+  buffs.infernal_command->quiet = true;
+  buffs.embers->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -251,13 +275,13 @@ void warlock_pet_t::arise()
   {
     if ( pet_type == PET_WILD_IMP )
     {
-      o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
+      o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
     }
     else if ( pet_type != PET_DEMONIC_TYRANT )
     {
       if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
       {
-        o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+        o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
       }
     }
   }
@@ -1135,7 +1159,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     warlock_pet_spell_t::execute();
 
     if ( p()->o()->talents.stolen_power.ok() )
-      p()->o()->buffs.stolen_power_building->increment();
+      p()->o()->buffs.stolen_power_building->trigger();
   }
 };
 
@@ -1193,7 +1217,7 @@ void wild_imp_pet_t::arise()
 
   power_siphon = false;
   imploded = false;
-  o()->buffs.wild_imps->increment();
+  o()->buffs.wild_imps->trigger();
 
   if ( o()->talents.imp_gang_boss.ok() && rng().roll( o()->talents.imp_gang_boss->effectN( 1 ).percent() ) )
   { 
@@ -1546,7 +1570,7 @@ void pit_lord_t::arise()
 
   if ( o()->buffs.nether_portal_total->check() )
   {
-    buffs.soul_glutton->increment( o()->buffs.nether_portal_total->current_stack );
+    buffs.soul_glutton->trigger( o()->buffs.nether_portal_total->current_stack );
     o()->buffs.nether_portal_total->expire();
   }
 

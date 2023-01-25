@@ -363,7 +363,7 @@ public:
     // Arms Spells
     const spell_data_t* arms_warrior;
     const spell_data_t* seasoned_soldier;
-    //const spell_data_t* sweeping_strikes;
+    const spell_data_t* sweeping_strikes;
     const spell_data_t* deep_wounds_ARMS;
 
     // Fury Spells
@@ -494,7 +494,6 @@ public:
       player_talent_t exhilarating_blows;
       player_talent_t anger_management;
       player_talent_t massacre;
-      player_talent_t sweeping_strikes;
       player_talent_t cleave;
 
       player_talent_t tide_of_blood;
@@ -504,7 +503,6 @@ public:
       player_talent_t test_of_might;
       player_talent_t blunt_instruments;
       player_talent_t warbreaker;
-      player_talent_t improved_mortal_strike;
       player_talent_t storm_of_swords;
       player_talent_t collateral_damage;
       player_talent_t reaping_swings;
@@ -1118,9 +1116,7 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
     ab::apply_affecting_aura( p()->talents.arms.impale );
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
-    ab::apply_affecting_aura( p()->talents.arms.improved_mortal_strike );
     ab::apply_affecting_aura( p()->talents.arms.improved_slam );
-    ab::apply_affecting_aura( p()->talents.arms.improved_sweeping_strikes );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
     ab::apply_affecting_aura( p()->talents.arms.storm_of_swords );
@@ -1159,7 +1155,7 @@ public:
     affected_by.juggernaut               = ab::data().affected_by( p()->talents.arms.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.juggernaut_prot          = ab::data().affected_by( p()->talents.protection.juggernaut->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.bloodcraze               = ab::data().affected_by( p()->talents.fury.bloodcraze->effectN( 1 ).trigger()->effectN( 1 ) );
-    affected_by.sweeping_strikes         = ab::data().affected_by( p()->talents.arms.sweeping_strikes->effectN( 1 ) );
+    affected_by.sweeping_strikes         = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
     affected_by.fury_mastery_direct      = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot         = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.arms_mastery             = ab::data().affected_by( p()->mastery.deep_wounds_ARMS -> effectN( 3 ).trigger()->effectN( 2 ) );
@@ -1207,7 +1203,7 @@ public:
   {
     if ( affected_by.sweeping_strikes && p()->buff.sweeping_strikes->check() )
     {
-      return static_cast<int>( 1 + p()->talents.arms.sweeping_strikes->effectN( 1 ).base_value() );
+      return static_cast<int>( 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value() );
     }
 
     return ab::n_targets();
@@ -1317,7 +1313,7 @@ public:
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
-      dm *= p()->talents.arms.sweeping_strikes->effectN( 2 ).percent();
+      dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
     if ( affected_by.slaughtering_strikes && p()->buff.slaughtering_strikes_an->up() )
@@ -4402,12 +4398,12 @@ struct skullsplitter_t : public warrior_attack_t
   }
 };
 
-// Sweeping Strikes Talent ===================================================================
+// Sweeping Strikes ===================================================================
 
 struct sweeping_strikes_t : public warrior_spell_t
 {
   sweeping_strikes_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "sweeping_strikes", p, p->talents.arms.sweeping_strikes )
+    : warrior_spell_t( "sweeping_strikes", p, p->spec.sweeping_strikes )
   {
     parse_options( options_str );
     callbacks = false;
@@ -7899,7 +7895,7 @@ void warrior_t::init_spells()
   mastery.deep_wounds_ARMS      = find_mastery_spell( WARRIOR_ARMS );
   spec.arms_warrior             = find_specialization_spell( "Arms Warrior" );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier" );
-  //spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
+  spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.deep_wounds_ARMS         = find_specialization_spell("Mastery: Deep Wounds", WARRIOR_ARMS);
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.executioners_precision_debuff = find_spell( 386633 );
@@ -8026,7 +8022,6 @@ void warrior_t::init_spells()
   talents.arms.exhilarating_blows                  = find_talent_spell( talent_tree::SPECIALIZATION, "Exhilarating Blows" );
   talents.arms.anger_management                    = find_talent_spell( talent_tree::SPECIALIZATION, "Anger Management" );
   talents.arms.massacre                            = find_talent_spell( talent_tree::SPECIALIZATION, "Massacre", WARRIOR_ARMS );
-  talents.arms.sweeping_strikes                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sweeping Strikes" );
   talents.arms.cleave                              = find_talent_spell( talent_tree::SPECIALIZATION, "Cleave" );
 
   talents.arms.tide_of_blood                       = find_talent_spell( talent_tree::SPECIALIZATION, "Tide of Blood" );
@@ -8036,7 +8031,6 @@ void warrior_t::init_spells()
   talents.arms.test_of_might                       = find_talent_spell( talent_tree::SPECIALIZATION, "Test of Might" );
   talents.arms.blunt_instruments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Blunt Instruments" );
   talents.arms.warbreaker                          = find_talent_spell( talent_tree::SPECIALIZATION, "Warbreaker" );
-  talents.arms.improved_mortal_strike              = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Mortal Strike" );
   talents.arms.storm_of_swords                     = find_talent_spell( talent_tree::SPECIALIZATION, "Storm of Swords", WARRIOR_ARMS );
   talents.arms.collateral_damage                   = find_talent_spell( talent_tree::SPECIALIZATION, "Collateral Damage" );
   talents.arms.reaping_swings                      = find_talent_spell( talent_tree::SPECIALIZATION, "Reaping Swings" );
@@ -8626,7 +8620,7 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
-  default_list->add_action( "ravager,if=cooldown.avatar.remains<3" );
+  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8827,66 +8821,80 @@ void warrior_t::apl_arms()
   execute->add_action( "spear_of_bastion,if=debuff.colossus_smash.up|buff.test_of_might.up" );
   execute->add_action( "skullsplitter,if=rage<40" );
   execute->add_action( "cleave,if=spell_targets.whirlwind>2&dot.deep_wounds.remains<gcd" );
+  execute->add_action( "overpower,if=rage<40&buff.martial_prowess.stack<2" );
   execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd" );
-  execute->add_action( "rend,if=remains<duration*0.3&debuff.colossus_smash.down" );
   execute->add_action( "execute" );
   execute->add_action( "shockwave,if=talent.sonic_boom" );
   execute->add_action( "overpower" );
   execute->add_action( "bladestorm" );
 
   hac->add_action( "execute,if=buff.juggernaut.up&buff.juggernaut.remains<gcd" );
+  hac->add_action( "thunder_clap,if=active_enemies>2&talent.thunder_clap&talent.blood_and_thunder&talent.rend&dot.rend.remains<=dot.rend.duration*0.3" );
   hac->add_action( "sweeping_strikes,if=active_enemies>=2&(cooldown.bladestorm.remains>15|!talent.bladestorm)" );
-  hac->add_action( "thunder_clap,if=active_enemies>2&talent.thunder_clap&talent.blood_and_thunder&talent.rend&dot.rend.remains<=duration*0.3" );
-  hac->add_action( "rend,if=active_enemies=1&remains<=gcd&(target.health.pct>20|talent.massacre&target.health.pct>35)|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<duration*0.85" );
+  hac->add_action( "rend,if=active_enemies=1&remains<=gcd&(target.health.pct>20|talent.massacre&target.health.pct>35)|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<dot.rend.duration*0.85" );
   hac->add_action( "avatar,if=raid_event.adds.in>15|talent.blademasters_torment&active_enemies>1|target.time_to_die<20" );
   hac->add_action( "warbreaker,if=raid_event.adds.in>22|active_enemies>1" );
+  hac->add_action( "colossus_smash,cycle_targets=1,if=(target.health.pct<20|talent.massacre&target.health.pct<35)" );
   hac->add_action( "colossus_smash" );
   hac->add_action( "thunderous_roar,if=(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>15|active_enemies>1&dot.deep_wounds.remains" );
   hac->add_action( "spear_of_bastion,if=(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>15" );
   hac->add_action( "bladestorm,if=talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
   hac->add_action( "bladestorm,if=active_enemies>1&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)&raid_event.adds.in>30|active_enemies>1&dot.deep_wounds.remains" );
   //hac->add_action( "execute,if=active_enemies<=2&buff.hurricane.up" );
-  hac->add_action( "cleave,if=active_enemies>2|buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
+  hac->add_action( "cleave,if=active_enemies>2|!talent.battlelord&buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
   hac->add_action( "whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)" );
   hac->add_action( "skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)" );
-  hac->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2&rage.pct>70" );
-  hac->add_action( "execute,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up" );
+  hac->add_action( "overpower,if=buff.sweeping_strikes.up&talent.dreadnaught" );
+  hac->add_action( "mortal_strike,cycle_targets=1,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2" );
+  hac->add_action( "execute,cycle_targets=1,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up" );
   hac->add_action( "thunderous_roar,if=raid_event.adds.in>15" );
   hac->add_action( "shockwave,if=active_enemies>2&talent.sonic_boom" );
-  hac->add_action( "whirlwind,if=talent.storm_of_swords&talent.dreadnaught&talent.battlelord&rage.pct>70" );
-  hac->add_action( "slam,if=active_enemies=1&talent.crushing_force&talent.dreadnaught&talent.battlelord&rage.pct>70" );
+  hac->add_action( "overpower,if=active_enemies=1&(charges=2&!talent.battlelord&(debuff.colossus_smash.down|rage.pct<25)|talent.battlelord)" );
+  hac->add_action( "slam,if=active_enemies=1&!talent.battlelord&rage.pct>70" );
   hac->add_action( "overpower,if=charges=2&(!talent.test_of_might|talent.test_of_might&debuff.colossus_smash.down|talent.battlelord)|rage<70" );
   hac->add_action( "thunder_clap,if=active_enemies>2" );
   hac->add_action( "mortal_strike" );
   hac->add_action( "rend,if=active_enemies=1&dot.rend.remains<duration*0.3" );
   hac->add_action( "whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1" );
   hac->add_action( "cleave,if=!talent.crushing_force" );
-  hac->add_action( "slam,if=talent.crushing_force&rage>30&!talent.fervor_of_battle" );
+  hac->add_action( "ignore_pain,if=talent.battlelord&talent.anger_management&rage>30&(target.health.pct>20|talent.massacre&target.health.pct>35)" );
+  hac->add_action( "slam,if=talent.crushing_force&rage>30&(talent.fervor_of_battle&active_enemies=1|!talent.fervor_of_battle)" );
   hac->add_action( "shockwave,if=talent.sonic_boom" );
   hac->add_action( "bladestorm,if=raid_event.adds.in>30" );
   hac->add_action( "wrecking_throw" );
 
   single_target->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1" );
-  single_target->add_action( "rend,if=remains<=gcd|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<duration*0.85" );
+  single_target->add_action( "mortal_strike" );
+  single_target->add_action( "rend,if=remains<=gcd|talent.tide_of_blood&cooldown.skullsplitter.remains<=gcd&(cooldown.colossus_smash.remains<=gcd|debuff.colossus_smash.up)&dot.rend.remains<dot.rend.duration*0.85" );
   single_target->add_action( "avatar,if=talent.warlords_torment&rage.pct<33&(cooldown.colossus_smash.ready|debuff.colossus_smash.up|buff.test_of_might.up)|!talent.warlords_torment&(cooldown.colossus_smash.ready|debuff.colossus_smash.up)" );
+  single_target->add_action( "spear_of_bastion,if=cooldown.colossus_smash.remains<=gcd|cooldown.warbreaker.remains<=gcd" );
   single_target->add_action( "warbreaker" );
   single_target->add_action( "colossus_smash" );
-  single_target->add_action( "thunderous_roar,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
-  single_target->add_action( "spear_of_bastion,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
+  single_target->add_action( "thunderous_roar,if=buff.test_of_might.up|talent.test_of_might&debuff.colossus_smash.up&rage.pct<33|!talent.test_of_might&debuff.colossus_smash.up" );
+  //single_target->add_action( "spear_of_bastion,if=buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up" );
   single_target->add_action( "bladestorm,if=talent.hurricane&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)|talent.unhinged&(buff.test_of_might.up|!talent.test_of_might&debuff.colossus_smash.up)" );
   single_target->add_action( "skullsplitter,if=talent.tide_of_blood&dot.rend.remains&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>gcd*4&buff.test_of_might.up|!talent.test_of_might&cooldown.colossus_smash.remains>gcd*4)|rage<30" );
-  single_target->add_action( "mortal_strike,if=dot.deep_wounds.remains<=gcd|debuff.executioners_precision.stack=2" );
   single_target->add_action( "execute,if=buff.sudden_death.react" );
   single_target->add_action( "shockwave,if=talent.sonic_boom.enabled" );
-  single_target->add_action( "overpower,if=charges=2&(debuff.colossus_smash.down|rage.pct<25)" );
-  single_target->add_action( "mortal_strike" );
-  single_target->add_action( "rend,if=remains<duration*0.3" );
+  single_target->add_action( "ignore_pain,if=talent.anger_management|talent.test_of_might&debuff.colossus_smash.up" );
+  single_target->add_action( "whirlwind,if=talent.storm_of_swords&talent.battlelord&rage.pct>80&debuff.colossus_smash.up" );
+  single_target->add_action( "overpower,if=charges=2&!talent.battlelord&(debuff.colossus_smash.down|rage.pct<25)|talent.battlelord" );
   single_target->add_action( "whirlwind,if=talent.storm_of_swords|talent.fervor_of_battle&active_enemies>1" );
-  single_target->add_action( "overpower,if=debuff.colossus_smash.down&rage.pct<50|rage.pct<25" );
+  single_target->add_action( "thunder_clap,if=talent.battlelord&talent.blood_and_thunder" );
+  single_target->add_action( "overpower,if=debuff.colossus_smash.down&rage.pct<50&!talent.battlelord|rage.pct<25" );
   single_target->add_action( "whirlwind,if=buff.merciless_bonegrinder.up" );
   single_target->add_action( "cleave,if=set_bonus.tier29_2pc&!talent.crushing_force" );
-  single_target->add_action( "slam,if=rage>30&!talent.fervor_of_battle" );
+  single_target->add_action( "slam,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)" );
+  single_target->add_action( "bladestorm" );
+  single_target->add_action( "cleave" );
   single_target->add_action( "wrecking_throw" );
+  single_target->add_action( "rend,if=remains<duration*0.3" );
+
+
+
+
+
+
 }
 
 // Protection Warrior Action Priority List ========================================
@@ -9361,8 +9369,8 @@ void warrior_t::create_buffs()
   buff.spell_reflection = make_buff( this, "spell_reflection", talents.warrior.spell_reflection )
     -> set_cooldown( 0_ms ); // handled by the ability
 
-  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", talents.arms.sweeping_strikes)
-    ->set_duration(talents.arms.sweeping_strikes->duration() )
+  buff.sweeping_strikes = make_buff(this, "sweeping_strikes", spec.sweeping_strikes)
+    ->set_duration(spec.sweeping_strikes->duration() + talents.arms.improved_sweeping_strikes->effectN( 1 ).time_value() )
     ->set_cooldown(timespan_t::zero());
 
   buff.ignore_pain = new ignore_pain_buff_t( this );

@@ -289,7 +289,7 @@ struct mind_flay_t final : public priest_spell_t
 
   void execute() override
   {
-    if ( priest().talents.manipulation.enabled() && priest().is_ptr() )
+    if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
@@ -1288,7 +1288,7 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->schedule_execute();
     }
 
-    if ( result_is_hit( s->result ) && priest().is_ptr() )
+    if ( result_is_hit( s->result ) )
     {
       priest().trigger_psychic_link( s );
     }
@@ -1576,7 +1576,7 @@ struct void_torrent_t final : public priest_spell_t
       priest().procs.void_torrent_ticks_no_mastery->occur();
     }
 
-    if ( priest().talents.shadow.psychic_link.enabled() && priest().is_ptr() )
+    if ( priest().talents.shadow.psychic_link.enabled() )
     {
       priest().trigger_psychic_link( d->state );
     }
@@ -1667,15 +1667,15 @@ struct psychic_link_t final : public priest_spell_t
     {
       _pl_mind_flay_insanity->trigger( target, original_amount, action_name );
     }
-    else if ( action_name == "mindgames" && player->is_ptr() )
+    else if ( action_name == "mindgames" )
     {
       _pl_mindgames->trigger( target, original_amount, action_name );
     }
-    else if ( action_name == "void_bolt" && player->is_ptr() )
+    else if ( action_name == "void_bolt" )
     {
       _pl_void_bolt->trigger( target, original_amount, action_name );
     }
-    else if ( action_name == "void_torrent" && player->is_ptr() )
+    else if ( action_name == "void_torrent" )
     {
       _pl_void_torrent->trigger( target, original_amount, action_name );
     }
@@ -2072,18 +2072,8 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
     set_period( timespan_t::from_seconds( 1 ) );
     set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
 
-    // BUG: Ancient Madness consumes twice as much crit with Voidform
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1030
-    if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() && !priest().is_ptr() )
-    {
-      set_default_value( 0.02 );                                     // 2%
-      set_max_stack( as<int>( data().effectN( 3 ).base_value() ) );  // 5/10;
-    }
-    else
-    {
-      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
-      set_max_stack( 20 );                                 // 20/20;
-    }
+    set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
+    set_max_stack( 20 );                                 // 20/20;
   }
 };
 

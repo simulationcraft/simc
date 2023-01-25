@@ -3115,13 +3115,15 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43605 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43605 | PvP Coefficient: 1.25000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1 -> 1.25)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727), Yu'lon's Whisper (388044), Faeline Stomp (388207), Restoral (388615), Burst of Life (399230), Sheilun's Gift (399491)
                    Family Flags: 48, 102
 #3 (id=874900)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.61630 | PvP Coefficient: 1.00000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.61630 | PvP Coefficient: 1.25000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
+Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
 
 Applies Renewing Mist for $388847s1 seconds to an ally within $388847r yds.][]
@@ -7848,7 +7850,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=726171)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.66000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.66000 | PvP Coefficient: 1.25000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1 -> 1.25)
 #2 (id=893187)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #3 (id=893188)   : Direct Heal (10)
@@ -17802,7 +17805,8 @@ Effects          :
 #1 (id=1044751)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1044752)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 400117 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 400117 | Target: Self (1)
+Hotfixed         : Base Value (80 -> 50)
 Description      : $@spelldesc400089
 Tooltip          : Your Critical Strike is increased by $s1% while above $s2% health.
 

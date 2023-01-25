@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.5.47660
-static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
+// Spell text, wow build 10.0.5.47777
+static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18329,7 +18329,7 @@ static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
   { 390235, "Wave the scepter, projecting an illusory orb of frost in front of you.", 0, 0 },
   { 390236, "When your ghouls expire, they explode in viscera dealing $<damage> Shadow damage to nearby enemies. ", 0, 0 },
   { 390239, 0, "Reduces damage by $w1%.", 0 },
-  { 390241, "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.", 0, 0 },
+  { 390241, "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.\r\n\r\n", 0, 0 },
   { 390242, "$@spelldesc389543", "Versatility increased by $w1.", 0 },
   { 390243, "$@spelldesc389543", 0, 0 },
   { 390244, "$@spelldesc389543", 0, 0 },
@@ -18348,6 +18348,7 @@ static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
   { 390275, "Sudden Doom causes your next Death Coil to also increase your $?s207311[Clawing Shadows][Scourge Strike] damage against the target by $390276s1% for $390276d.", 0, 0 },
   { 390276, "$@spelldesc390275", "Scourge Strike damage taken from $@auracaster is increased by $s1%.", 0 },
   { 390279, "Inflict disease upon your enemies spreading Festering Wounds equal to the amount currently active on your target to $s1 nearby enemies.", 0, 0 },
+  { 390282, "Summon your eagle to fly beside you. It will leave upon moving.", 0, 0 },
   { 390283, "Your Virulent Plague also applies Frost Fever and Blood Plague at $s1% effectiveness.", 0, 0 },
   { 390287, "$@spelldesc319930", 0, 0 },
   { 390288, "Windfury Weapon has a $s1% chance to trigger a third attack.", 0, 0 },
@@ -19263,12 +19264,14 @@ static const std::array<spelltext_data_t, 19261> __ptr_spelltext_data { {
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47660
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.5.47777
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
+  {  390241,  0, "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.", "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.\r\n\r\n" },
+  {  390282,  0, nullptr, "Summon your eagle to fly beside you. It will leave upon moving." },
   {  397399,  0, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing as well as damage-dealing spells and abilities have a high chance to empower the gem, increasing its effect." },
 } };
 
-// Spell description variables, wow build 10.0.5.47660
+// Spell description variables, wow build 10.0.5.47777
 static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19326,7 +19329,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {   53343, "$coeff=${0.01127}\r\n" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$chance=$?a279830[${$s1+$279830s1}][${$s1}]" },
   {   79096, "$cdr=${$s1/10}" },
@@ -19494,7 +19497,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -19642,7 +19645,9 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47660
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.0.5.47777
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelldesc_vars_hotfix_data { {
+  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
 } };
 

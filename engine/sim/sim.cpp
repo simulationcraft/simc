@@ -1486,6 +1486,7 @@ sim_t::sim_t() :
   scale_to_itemlevel( -1 ),
   keystone_level( 10 ),
   keystone_pct_hp( 27 ),
+  dungeon_route_smart_targeting( true ),
   challenge_mode( false ),
   scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
@@ -3554,7 +3555,7 @@ void sim_t::create_options()
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
-  // Overrides"
+  // Overrides
   add_option( opt_bool( "override.allow_potions", allow_potions ) );
   add_option( opt_bool( "override.allow_food", allow_food ) );
   add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
@@ -3605,6 +3606,7 @@ void sim_t::create_options()
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
   add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+  add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );

@@ -49,7 +49,7 @@ actions.build=sepsis,target_if=max:target.time_to_die*debuff.between_the_eyes.up
 actions.build+=/ghostly_strike,if=debuff.ghostly_strike.remains<=3&(spell_targets.blade_flurry<=2|buff.dreadblades.up)&!buff.subterfuge.up&target.time_to_die>=5
 actions.build+=/echoing_reprimand,if=!buff.dreadblades.up
 # High priority Ambush line to apply Find Weakness or consume Audacity/Sepsis buff before Pistol Shot
-actions.build+=/ambush,if=(talent.hidden_opportunity|talent.keep_it_rolling)&(buff.audacity.up|buff.sepsis_buff.up)|talent.find_weakness&debuff.find_weakness.down
+actions.build+=/ambush,if=(talent.hidden_opportunity|talent.keep_it_rolling)&(buff.audacity.up|buff.sepsis_buff.up|buff.subterfuge.up&cooldown.keep_it_rolling.ready)|talent.find_weakness&debuff.find_weakness.down
 # With Audacity + Hidden Opportunity + Fan the Hammer, use Pistol Shot to proc Audacity any time Ambush is not available
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up&!buff.subterfuge.up&!buff.shadow_dance.up
 # Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer

@@ -1547,21 +1547,6 @@ void voidmenders_shadowgem( special_effect_t& effect )
   stacking_driver->name_str           = "voidmenders_shadowgem_stacks";
   stacking_driver->type               = SPECIAL_EFFECT_EQUIP;
   stacking_driver->source             = SPECIAL_EFFECT_SOURCE_ITEM;
-  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
-  if ( !maybe_ptr( effect.player->dbc->ptr ) )
-  {
-    stacking_driver->proc_flags_        = effect.driver()->proc_flags();
-    stacking_driver->proc_flags2_       = PF2_CAST_HEAL;
-
-    // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
-    // Shadow and Druid have global whitelists due to nearly every* rotational spell triggering the trinket.
-    // Evoker and Warlock both have whitelists inside of their class module in init_special_effects
-    if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
-    {
-      stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
-      stacking_driver->proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE;
-    }
-  }
   stacking_driver->spell_id           = effect.driver()->id();
   stacking_driver->cooldown_          = 0_ms;
   stacking_driver->cooldown_category_ = 0;
@@ -1940,10 +1925,11 @@ void storm_eaters_boon( special_effect_t& effect )
   };
   action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ )
-  {
-    boon_action->execute();
-  } );
+  main_buff->set_tick_callback(
+      [ boon_action, effect ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+        boon_action->execute();
+        effect.player->get_cooldown( effect.cooldown_group_name() )->start( effect.cooldown_group_duration() );
+      } );
   main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_)
   {
     if( new_ == 0 )

@@ -25,7 +25,7 @@ std::string flask_havoc( const player_t* p )
 
 std::string flask_vengeance( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "phial_of_glacial_fury_3" :
+  return ( ( p->true_level >= 61 ) ? "phial_of_tepid_versatility_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
            ( p->true_level >= 35 ) ? "greater_draenic_agility_flask" :
@@ -108,6 +108,7 @@ void havoc( player_t* p )
   default_->add_action( "annihilation,if=!variable.pooling_for_blade_dance" );
   default_->add_action( "throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<4&!debuff.serrated_glaive.up&!debuff.essence_break.up" );
   default_->add_action( "immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)" );
+  default_->add_action( "fel_rush,if=talent.isolated_prey&active_enemies=1&fury.deficit>=35" );
   default_->add_action( "felblade,if=fury.deficit>=40" );
   default_->add_action( "sigil_of_flame,if=active_enemies>desired_targets" );
   default_->add_action( "chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam" );
@@ -138,26 +139,17 @@ void vengeance( player_t* p )
   action_priority_list_t* the_hunt_ramp = p->get_action_priority_list( "the_hunt_ramp" );
   action_priority_list_t* elysian_decree_ramp = p->get_action_priority_list( "elysian_decree_ramp" );
   action_priority_list_t* soul_carver_without_fiery_demise_ramp = p->get_action_priority_list( "soul_carver_without_fiery_demise_ramp" );
-  action_priority_list_t* fiery_demise_window_with_soul_carver = p->get_action_priority_list( "fiery_demise_window_with_soul_carver" );
-  action_priority_list_t* fiery_demise_window_without_soul_carver = p->get_action_priority_list( "fiery_demise_window_without_soul_carver" );
+  action_priority_list_t* fiery_demise_window = p->get_action_priority_list( "fiery_demise_window" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "food" );
-  precombat->add_action( "variable,name=the_hunt_ramp_in_progress,value=0", "Variables for specific sub-APLs" );
+  precombat->add_action( "variable,name=sub_apl_in_progress,value=0", "Variables for specific sub-APLs" );
+  precombat->add_action( "variable,name=the_hunt_ramp_in_progress,value=0" );
   precombat->add_action( "variable,name=elysian_decree_ramp_in_progress,value=0" );
   precombat->add_action( "variable,name=soul_carver_ramp_in_progress,value=0" );
-  precombat->add_action( "variable,name=fiery_demise_with_soul_carver_in_progress,value=0" );
-  precombat->add_action( "variable,name=fiery_demise_without_soul_carver_in_progress,value=0" );
-  precombat->add_action( "variable,name=shear_fury_gain_not_in_meta_no_shear_fury,op=setif,value=12,value_else=10,condition=set_bonus.tier29_2pc", "Variables for complex derived values" );
-  precombat->add_action( "variable,name=shear_fury_gain_not_in_meta_shear_fury,op=setif,value=24,value_else=20,condition=set_bonus.tier29_4pc" );
-  precombat->add_action( "variable,name=shear_fury_gain_not_in_meta,op=setif,value=variable.shear_fury_gain_not_in_meta_shear_fury,value_else=variable.shear_fury_gain_not_in_meta_no_shear_fury,condition=talent.shear_fury.enabled" );
-  precombat->add_action( "variable,name=shear_fury_gain_in_meta_no_shear_fury,op=setif,value=36,value_else=30,condition=set_bonus.tier29_2pc" );
-  precombat->add_action( "variable,name=shear_fury_gain_in_meta_shear_fury,op=setif,value=48,value_else=40,condition=set_bonus.tier29_2pc" );
-  precombat->add_action( "variable,name=shear_fury_gain_in_meta,op=setif,value=variable.shear_fury_gain_in_meta_shear_fury,value_else=variable.shear_fury_gain_in_meta_no_shear_fury,condition=talent.shear_fury.enabled" );
-  precombat->add_action( "variable,name=fracture_fury_gain_not_in_meta,op=setif,value=30,value_else=25,condition=set_bonus.tier29_2pc" );
-  precombat->add_action( "variable,name=fracture_fury_gain_in_meta,op=setif,value=54,value_else=45,condition=set_bonus.tier29_2pc" );
-  precombat->add_action( "variable,name=spirit_bomb_soul_fragments_not_in_meta,op=setif,value=4,value_else=5,condition=talent.fracture.enabled" );
+  precombat->add_action( "variable,name=fiery_demise_in_progress,value=0" );
+  precombat->add_action( "variable,name=spirit_bomb_soul_fragments_not_in_meta,op=setif,value=4,value_else=5,condition=talent.fracture.enabled", "Variables for complex derived values" );
   precombat->add_action( "variable,name=spirit_bomb_soul_fragments_in_meta,op=setif,value=3,value_else=4,condition=talent.fracture.enabled" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "sigil_of_flame" );
@@ -169,44 +161,40 @@ void vengeance( player_t* p )
   default_->add_action( "demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains" );
   default_->add_action( "metamorphosis,if=!buff.metamorphosis.up&!dot.fiery_brand.ticking" );
   default_->add_action( "fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
+  default_->add_action( "fel_devastation,if=!talent.fiery_demise.enabled" );
   default_->add_action( "bulk_extraction" );
   default_->add_action( "potion" );
   default_->add_action( "use_item,slot=trinket1" );
   default_->add_action( "use_item,slot=trinket2" );
-  default_->add_action( "variable,name=fracture_fury_gain,op=setif,value=variable.fracture_fury_gain_in_meta,value_else=variable.fracture_fury_gain_not_in_meta,condition=buff.metamorphosis.up" );
-  default_->add_action( "variable,name=shear_fury_gain,op=setif,value=variable.shear_fury_gain_in_meta,value_else=variable.shear_fury_gain_not_in_meta,condition=buff.metamorphosis.up" );
   default_->add_action( "variable,name=spirit_bomb_soul_fragments,op=setif,value=variable.spirit_bomb_soul_fragments_in_meta,value_else=variable.spirit_bomb_soul_fragments_not_in_meta,condition=buff.metamorphosis.up" );
-  default_->add_action( "variable,name=frailty_target_requirement,op=setif,value=5,value_else=6,condition=spell_targets.spirit_bomb>1" );
-  default_->add_action( "variable,name=frailty_dump_fury_requirement,op=setif,value=action.spirit_bomb.cost+(action.soul_cleave.cost*2),value_else=action.soul_cleave.cost*3,condition=spell_targets.spirit_bomb>1" );
+  default_->add_action( "variable,name=frailty_target_requirement,op=setif,value=5,value_else=6,condition=spell_targets.spirit_bomb>1|spell_targets.soul_cleave>1" );
+  default_->add_action( "variable,name=frailty_dump_fury_requirement,op=setif,value=action.spirit_bomb.cost+(action.soul_cleave.cost*2),value_else=action.soul_cleave.cost*3,condition=spell_targets.spirit_bomb>1|spell_targets.soul_cleave" );
   default_->add_action( "variable,name=pooling_for_the_hunt,value=talent.the_hunt.enabled&cooldown.the_hunt.remains<(gcd.max*2)&fury<variable.frailty_dump_fury_requirement&debuff.frailty.stack<=1" );
   default_->add_action( "variable,name=pooling_for_elysian_decree,value=talent.elysian_decree.enabled&cooldown.elysian_decree.remains<(gcd.max*2)&fury<variable.frailty_dump_fury_requirement&debuff.frailty.stack<=1" );
   default_->add_action( "variable,name=pooling_for_soul_carver,value=talent.soul_carver.enabled&cooldown.soul_carver.remains<(gcd.max*2)&fury<variable.frailty_dump_fury_requirement&debuff.frailty.stack<=1" );
-  default_->add_action( "variable,name=pooling_for_fiery_demise_fel_devastation,value=talent.fiery_demise.enabled&cooldown.fel_devastation.remains_expected<(gcd.max*2)&dot.fiery_brand.ticking&fury<action.fel_devastation.cost" );
+  default_->add_action( "variable,name=pooling_for_fiery_demise_fel_devastation,value=talent.fiery_demise.enabled&cooldown.fel_devastation.remains<(gcd.max*2)&dot.fiery_brand.ticking&fury<(action.fel_devastation.cost+action.spirit_bomb.cost)" );
   default_->add_action( "variable,name=pooling_fury,value=variable.pooling_for_the_hunt|variable.pooling_for_elysian_decree|variable.pooling_for_soul_carver|variable.pooling_for_fiery_demise_fel_devastation" );
-  default_->add_action( "variable,name=the_hunt_ramp_in_progress,value=1,if=talent.the_hunt.enabled&cooldown.the_hunt.up&!dot.fiery_brand.ticking" );
-  default_->add_action( "variable,name=the_hunt_ramp_in_progress,value=0,if=cooldown.the_hunt.remains" );
-  default_->add_action( "variable,name=elysian_decree_ramp_in_progress,value=1,if=talent.elysian_decree.enabled&cooldown.elysian_decree.up&!dot.fiery_brand.ticking" );
-  default_->add_action( "variable,name=elysian_decree_ramp_in_progress,value=0,if=cooldown.elysian_decree.remains" );
-  default_->add_action( "variable,name=soul_carver_ramp_in_progress,value=1,if=talent.soul_carver.enabled&cooldown.soul_carver.up&!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
-  default_->add_action( "variable,name=soul_carver_ramp_in_progress,value=0,if=cooldown.soul_carver.remains" );
-  default_->add_action( "variable,name=fiery_demise_with_soul_carver_in_progress,value=1,if=talent.fiery_demise.enabled&talent.soul_carver.enabled&cooldown.soul_carver.up&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains_expected<10&!dot.fiery_brand.ticking" );
-  default_->add_action( "variable,name=fiery_demise_with_soul_carver_in_progress,value=0,if=cooldown.soul_carver.remains&(cooldown.fiery_brand.remains|(cooldown.fiery_brand.max_charges=2&cooldown.fiery_brand.charges=1))&cooldown.fel_devastation.remains_expected" );
-  default_->add_action( "variable,name=fiery_demise_without_soul_carver_in_progress,value=1,if=talent.fiery_demise.enabled&((talent.soul_carver.enabled&!cooldown.soul_carver.up)|!talent.soul_carver.enabled)&cooldown.fiery_brand.up&cooldown.immolation_aura.up&cooldown.fel_devastation.remains_expected<10&((talent.darkglare_boon.enabled&darkglare_boon_cdr_high_roll)|!talent.darkglare_boon.enabled)" );
-  default_->add_action( "variable,name=fiery_demise_without_soul_carver_in_progress,value=0,if=(cooldown.fiery_brand.remains|(cooldown.fiery_brand.max_charges=2&cooldown.fiery_brand.charges=1))&cooldown.fel_devastation.remains_expected>35" );
+  default_->add_action( "variable,name=sub_apl_in_progress,value=variable.the_hunt_ramp_in_progress|variable.elysian_decree_ramp_in_progress|variable.soul_carver_ramp_in_progress|variable.fiery_demise_in_progress" );
+  default_->add_action( "variable,name=the_hunt_ramp_in_progress,value=1,if=talent.the_hunt.enabled&cooldown.the_hunt.remains<=10&!variable.sub_apl_in_progress" );
+  default_->add_action( "variable,name=the_hunt_ramp_in_progress,value=0,if=talent.the_hunt.enabled&cooldown.the_hunt.remains>10" );
+  default_->add_action( "variable,name=elysian_decree_ramp_in_progress,value=1,if=talent.elysian_decree.enabled&cooldown.elysian_decree.remains<=10&!variable.sub_apl_in_progress" );
+  default_->add_action( "variable,name=elysian_decree_ramp_in_progress,value=0,if=talent.elysian_decree.enabled&cooldown.elysian_decree.remains>10" );
+  default_->add_action( "variable,name=soul_carver_ramp_in_progress,value=1,if=talent.soul_carver.enabled&!talent.fiery_demise.enabled&cooldown.soul_carver.remains<=10&!variable.sub_apl_in_progress" );
+  default_->add_action( "variable,name=soul_carver_ramp_in_progress,value=0,if=talent.soul_carver.enabled&!talent.fiery_demise.enabled&cooldown.soul_carver.remains>10" );
+  default_->add_action( "variable,name=fiery_demise_in_progress,value=1,if=talent.fiery_brand.enabled&talent.fiery_demise.enabled&cooldown.fiery_brand.charges_fractional>=1&cooldown.immolation_aura.remains<=2&!variable.sub_apl_in_progress&((talent.fel_devastation.enabled&cooldown.fel_devastation.remains<=10)|(talent.soul_carver.enabled&cooldown.soul_carver.remains<=10))" );
+  default_->add_action( "variable,name=fiery_demise_in_progress,value=0,if=talent.fiery_brand.enabled&talent.fiery_demise.enabled&cooldown.fiery_brand.charges_fractional<1.65&((talent.fel_devastation.enabled&cooldown.fel_devastation.remains>10)|(talent.soul_carver.enabled&cooldown.soul_carver.remains>10))" );
   default_->add_action( "run_action_list,name=the_hunt_ramp,if=variable.the_hunt_ramp_in_progress" );
   default_->add_action( "run_action_list,name=elysian_decree_ramp,if=variable.elysian_decree_ramp_in_progress" );
   default_->add_action( "run_action_list,name=soul_carver_without_fiery_demise_ramp,if=variable.soul_carver_ramp_in_progress" );
-  default_->add_action( "run_action_list,name=fiery_demise_window_with_soul_carver,if=variable.fiery_demise_with_soul_carver_in_progress" );
-  default_->add_action( "run_action_list,name=fiery_demise_window_without_soul_carver,if=variable.fiery_demise_without_soul_carver_in_progress" );
-  default_->add_action( "fel_devastation,if=!talent.down_in_flames.enabled" );
+  default_->add_action( "run_action_list,name=fiery_demise_window,if=variable.fiery_demise_in_progress" );
   default_->add_action( "spirit_bomb,if=soul_fragments>=variable.spirit_bomb_soul_fragments&spell_targets>1" );
-  default_->add_action( "soul_cleave,if=(talent.spirit_bomb.enabled&soul_fragments<=1&spell_targets>1)|(spell_targets<2&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50)))))|(!talent.spirit_bomb.enabled)&((talent.fracture.enabled&fury>=55)|(!talent.fracture.enabled&fury>=70)|(buff.metamorphosis.up&((talent.fracture.enabled&fury>=35)|(!talent.fracture.enabled&fury>=50))))" );
-  default_->add_action( "immolation_aura,if=(talent.fiery_demise.enabled&fury.deficit>=10&(cooldown.soul_carver.remains>15))|(!talent.fiery_demise.enabled&fury.deficit>=10)" );
-  default_->add_action( "felblade,if=fury.deficit>=40" );
-  default_->add_action( "fracture,if=(talent.spirit_bomb.enabled&(soul_fragments<=3&spell_targets>1|spell_targets<2&fury.deficit>=variable.fracture_fury_gain))|(!talent.spirit_bomb.enabled&fury.deficit>=variable.fracture_fury_gain)" );
-  default_->add_action( "sigil_of_flame,if=fury.deficit>=30" );
+  default_->add_action( "soul_cleave,if=soul_fragments<=1&spell_targets>1|spell_targets<2" );
+  default_->add_action( "immolation_aura,if=fury.deficit>=10&(((talent.fiery_demise.enabled&talent.soul_carver.enabled&cooldown.soul_carver.remains>10)|!talent.soul_carver.enabled)|!talent.fiery_demise.enabled)" );
+  default_->add_action( "sigil_of_flame" );
+  default_->add_action( "fracture" );
   default_->add_action( "shear" );
   default_->add_action( "throw_glaive" );
+  default_->add_action( "felblade" );
 
   the_hunt_ramp->add_action( "the_hunt,if=debuff.frailty.stack>=variable.frailty_target_requirement" );
   the_hunt_ramp->add_action( "spirit_bomb,if=!variable.pooling_fury&soul_fragments>=variable.spirit_bomb_soul_fragments&spell_targets>1" );
@@ -214,6 +202,8 @@ void vengeance( player_t* p )
   the_hunt_ramp->add_action( "sigil_of_flame" );
   the_hunt_ramp->add_action( "fracture" );
   the_hunt_ramp->add_action( "shear" );
+  the_hunt_ramp->add_action( "throw_glaive" );
+  the_hunt_ramp->add_action( "felblade" );
 
   elysian_decree_ramp->add_action( "elysian_decree,if=debuff.frailty.stack>=variable.frailty_target_requirement" );
   elysian_decree_ramp->add_action( "spirit_bomb,if=!variable.pooling_fury&soul_fragments>=variable.spirit_bomb_soul_fragments&spell_targets>1" );
@@ -221,6 +211,8 @@ void vengeance( player_t* p )
   elysian_decree_ramp->add_action( "sigil_of_flame" );
   elysian_decree_ramp->add_action( "fracture" );
   elysian_decree_ramp->add_action( "shear" );
+  elysian_decree_ramp->add_action( "throw_glaive" );
+  elysian_decree_ramp->add_action( "felblade" );
 
   soul_carver_without_fiery_demise_ramp->add_action( "soul_carver,if=debuff.frailty.stack>=variable.frailty_target_requirement" );
   soul_carver_without_fiery_demise_ramp->add_action( "spirit_bomb,if=!variable.pooling_fury&soul_fragments>=variable.spirit_bomb_soul_fragments&spell_targets>1" );
@@ -228,25 +220,20 @@ void vengeance( player_t* p )
   soul_carver_without_fiery_demise_ramp->add_action( "sigil_of_flame" );
   soul_carver_without_fiery_demise_ramp->add_action( "fracture" );
   soul_carver_without_fiery_demise_ramp->add_action( "shear" );
+  soul_carver_without_fiery_demise_ramp->add_action( "throw_glaive" );
+  soul_carver_without_fiery_demise_ramp->add_action( "felblade" );
 
-  fiery_demise_window_with_soul_carver->add_action( "fiery_brand,if=!fiery_brand_dot_primary_ticking&fury>=30" );
-  fiery_demise_window_with_soul_carver->add_action( "immolation_aura,if=fiery_brand_dot_primary_ticking" );
-  fiery_demise_window_with_soul_carver->add_action( "soul_carver,if=fiery_brand_dot_primary_ticking&debuff.frailty.stack>=variable.frailty_target_requirement&soul_fragments<=3" );
-  fiery_demise_window_with_soul_carver->add_action( "fel_devastation,if=fiery_brand_dot_primary_ticking&fiery_brand_dot_primary_remains<=2" );
-  fiery_demise_window_with_soul_carver->add_action( "spirit_bomb,if=!variable.pooling_fury&soul_fragments>=variable.spirit_bomb_soul_fragments&(spell_targets>1|dot.fiery_brand.ticking)" );
-  fiery_demise_window_with_soul_carver->add_action( "soul_cleave,if=!variable.pooling_fury&(soul_fragments<=1&spell_targets>1|spell_targets<2)" );
-  fiery_demise_window_with_soul_carver->add_action( "sigil_of_flame,if=dot.fiery_brand.ticking" );
-  fiery_demise_window_with_soul_carver->add_action( "fracture" );
-  fiery_demise_window_with_soul_carver->add_action( "shear" );
-
-  fiery_demise_window_without_soul_carver->add_action( "fiery_brand,if=!fiery_brand_dot_primary_ticking&fury>=30" );
-  fiery_demise_window_without_soul_carver->add_action( "immolation_aura,if=fiery_brand_dot_primary_ticking" );
-  fiery_demise_window_without_soul_carver->add_action( "fel_devastation,if=fiery_brand_dot_primary_ticking&fiery_brand_dot_primary_remains<=2" );
-  fiery_demise_window_without_soul_carver->add_action( "spirit_bomb,if=!variable.pooling_fury&soul_fragments>=variable.spirit_bomb_soul_fragments&(spell_targets>1|dot.fiery_brand.ticking)" );
-  fiery_demise_window_without_soul_carver->add_action( "soul_cleave,if=!variable.pooling_fury&(soul_fragments<=1&spell_targets>1|spell_targets<2)" );
-  fiery_demise_window_without_soul_carver->add_action( "sigil_of_flame,if=fiery_brand_dot_primary_ticking" );
-  fiery_demise_window_without_soul_carver->add_action( "fracture" );
-  fiery_demise_window_without_soul_carver->add_action( "shear" );
+  fiery_demise_window->add_action( "fiery_brand,if=!fiery_brand_dot_primary_ticking&fury>=30" );
+  fiery_demise_window->add_action( "immolation_aura,if=fiery_brand_dot_primary_ticking" );
+  fiery_demise_window->add_action( "soul_carver,if=fiery_brand_dot_primary_ticking&debuff.frailty.stack>=variable.frailty_target_requirement&soul_fragments<=3" );
+  fiery_demise_window->add_action( "fel_devastation,if=fiery_brand_dot_primary_ticking&fiery_brand_dot_primary_remains<=2" );
+  fiery_demise_window->add_action( "spirit_bomb,if=!variable.pooling_fury&soul_fragments>=variable.spirit_bomb_soul_fragments&(spell_targets>1|dot.fiery_brand.ticking)" );
+  fiery_demise_window->add_action( "soul_cleave,if=!variable.pooling_fury&(soul_fragments<=1&spell_targets>1|spell_targets<2)" );
+  fiery_demise_window->add_action( "sigil_of_flame,if=dot.fiery_brand.ticking" );
+  fiery_demise_window->add_action( "fracture" );
+  fiery_demise_window->add_action( "shear" );
+  fiery_demise_window->add_action( "throw_glaive" );
+  fiery_demise_window->add_action( "felblade" );
 }
 //vengeance_apl_end
 

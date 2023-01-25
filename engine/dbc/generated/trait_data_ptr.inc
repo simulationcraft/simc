@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.5.47660
+// Player trait definitions, wow build 10.0.5.47777
 static const std::array<trait_data_t, 2431> __ptr_trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 112109, 90259, 2, 20, 117114, 394855,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2433,8 +2433,8 @@ static const std::array<trait_data_t, 2431> __ptr_trait_data_data { {
   { 2, 13,  87674, 68648, 1,  8,  92676, 365937,      0,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.5.47660
-static const std::array<trait_definition_effect_entry_t, 670> __ptr_trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 10.0.5.47777
+static const std::array<trait_definition_effect_entry_t, 672> __ptr_trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },
   { 85152, 2, 0, 52492 },
@@ -2608,6 +2608,7 @@ static const std::array<trait_definition_effect_entry_t, 670> __ptr_trait_defini
   { 101185, 0, 0, 56921 },
   { 101185, 1, 0, 56920 },
   { 101185, 2, 0, 56919 },
+  { 101185, 3, 0, 56919 },
   { 101199, 0, 0, 56922 },
   { 101210, 1, 0, 56923 },
   { 101211, 0, 0, 56924 },
@@ -2895,9 +2896,10 @@ static const std::array<trait_definition_effect_entry_t, 670> __ptr_trait_defini
   { 108215, 1, 0, 61670 },
   { 108218, 0, 0, 58948 },
   { 108220, 0, 0, 58949 },
-  { 108228, 0, 0, 58950 },
+  { 108228, 0, 0, 58951 },
   { 108228, 1, 0, 61669 },
-  { 108231, 0, 0, 58951 },
+  { 108231, 0, 0, 58950 },
+  { 108231, 1, 0, 58950 },
   { 108233, 0, 0, 62116 },
   { 108289, 0, 0, 60947 },
   { 108289, 1, 0, 60946 },

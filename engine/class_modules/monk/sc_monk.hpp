@@ -495,22 +495,22 @@ public:
       // Row 1
       player_talent_t keg_smash;
       // Row 2
-      player_talent_t stagger;
-      // Row 3
       player_talent_t purifying_brew;
       player_talent_t shuffle;
+      // Row 3
+      player_talent_t staggering_strikes;
+      player_talent_t gift_of_the_ox;
+      player_talent_t spirit_of_the_ox;
+      player_talent_t quick_sip;
       // Row 4
       player_talent_t hit_scheme;
-      player_talent_t gift_of_the_ox;
       player_talent_t healing_elixir;
-      player_talent_t quick_sip;
       player_talent_t rushing_jade_wind;
       player_talent_t special_delivery;
       // 8 Required
       // Row 5
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
-      player_talent_t staggering_strikes;
       player_talent_t graceful_exit;
       player_talent_t zen_meditation;
       player_talent_t clash;
@@ -734,6 +734,7 @@ public:
     const spell_data_t* leather_specialization_brm;
     const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
+    const spell_data_t* stagger;
     const spell_data_t* touch_of_death_3_brm;
     const spell_data_t* two_hand_adjustment_brm;
 
@@ -899,6 +900,7 @@ public:
   struct rppms_t
   {
     real_ppm_t* bountiful_brew;
+    real_ppm_t* spirit_of_the_ox;
   } rppm;
 
   struct pets_t

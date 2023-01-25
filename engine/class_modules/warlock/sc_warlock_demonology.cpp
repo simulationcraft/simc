@@ -27,7 +27,7 @@ public:
         p()->procs.portal_summon->occur();
 
         if ( p()->talents.guldans_ambition->ok() )
-          p()->buffs.nether_portal_total->increment();
+          p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
@@ -35,7 +35,7 @@ public:
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
         }
       }
     }
@@ -181,7 +181,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     }
 
     if ( p()->talents.dread_calling->ok() )
-      p()->buffs.dread_calling->increment( shards_used );
+      p()->buffs.dread_calling->trigger( shards_used );
   }
 
   void consume_resource() override
@@ -354,7 +354,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
         p()->procs.portal_summon->occur();
 
         if ( p()->talents.guldans_ambition->ok() )
-          p()->buffs.nether_portal_total->increment();
+          p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
@@ -362,7 +362,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
         }
       }
 

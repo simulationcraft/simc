@@ -526,7 +526,7 @@ struct shadow_bolt_t : public warlock_spell_t
       p()->buffs.demonic_calling->trigger();
 
     if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->increment();
+      p()->buffs.fel_covenant->trigger();
 
     if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
     {
@@ -578,7 +578,7 @@ struct shadow_bolt_t : public warlock_spell_t
     double m = warlock_spell_t::composite_target_multiplier( t );
 
     if ( p()->talents.withering_bolt->ok() )
-      m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
+      m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
@@ -861,7 +861,7 @@ struct soulburn_t : public warlock_spell_t
           p()->procs.portal_summon->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
 
           if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
           {
@@ -869,7 +869,7 @@ struct soulburn_t : public warlock_spell_t
             p()->procs.nerzhuls_volition->occur();
 
             if ( p()->talents.guldans_ambition->ok() )
-              p()->buffs.nether_portal_total->increment();
+              p()->buffs.nether_portal_total->trigger();
           }
         }
       }
@@ -990,7 +990,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                           }
                           else if ( cur > prev )
                           {
-                            p.buffs.active_haunts->increment();
+                            p.buffs.active_haunts->trigger();
                           }
                         } );
 
@@ -1531,8 +1531,9 @@ void warlock_t::create_buffs()
                                        ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
                                        ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                           buffs.tormented_soul->increment();
+                                           buffs.tormented_soul->trigger();
                                          } );
+  buffs.tormented_soul_generator->quiet = true;
 
   buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff );
 
@@ -1556,13 +1557,15 @@ void warlock_t::create_buffs()
                             else
                             {
                               proc_actions.fel_bolt->execute_on_target( target );
-                              buffs.inquisitors_gaze_buildup->increment();
+                              buffs.inquisitors_gaze_buildup->trigger();
                             }
                           } );
   }
 
   buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
                                        ->set_max_stack( 3 );
+
+  buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
 
   // Affliction buffs
   create_buffs_affliction();
@@ -1857,95 +1860,6 @@ void warlock_t::init_special_effects()
 
     cb->initialize();
   }
-
-  // Voidmender's Shadowgem Exclusions.
-  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
-  if ( !maybe_ptr( dbc->ptr ) && unique_gear::find_special_effect( this, 397399 ) )
-  {
-    if ( specialization() == WARLOCK_DESTRUCTION )
-    {
-      // Whitelist
-      callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                                    []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-                                                      if ( a->special && a->type == ACTION_SPELL )
-                                                      {
-                                                        switch ( a->data().id() )
-                                                        {
-                                                          case 116858:  // Chaos bolt
-                                                          case 29722:   // Incinerate
-                                                          case 196447:  // Channel Demonfire
-                                                          case 5740:    // Rain of Fire
-                                                          case 387976:  // Dimensional Rift
-                                                          case 48018:   // Demonic Circle
-                                                          case 48020:   // Demonic Circle: Teleport
-                                                          case 333889:  // Fel Domination
-                                                          case 385899:  // Soulburn
-                                                          case 328774:  // Amplify Curse
-                                                          case 108416:  // Dark Pact
-                                                          case 104773:  // Unending Resolve
-                                                          case 386344:  // Inquisitor's Gaze (Summon)
-                                                            return true;
-                                                          default:
-                                                            return false;
-                                                        }
-                                                      }
-                                                    } );
-    }
-    else if ( specialization() == WARLOCK_DEMONOLOGY )
-    {
-      // Whitelist
-      callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                                    []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-                                                      if ( a->special && a->type == ACTION_SPELL )
-                                                      {
-                                                        switch ( a->data().id() )
-                                                        {
-                                                          case 267171:  // Demonic Strength
-                                                          case 265187:  // Summon Demonic Tyrant
-                                                          case 264130:  // Power Siphon
-                                                          case 196277:  // Implosion
-                                                          case 48018:   // Demonic Circle
-                                                          case 48020:   // Demonic Circle: Teleport
-                                                          case 333889:  // Fel Domination
-                                                          case 385899:  // Soulburn
-                                                          case 328774:  // Amplify Curse
-                                                          case 108416:  // Dark Pact
-                                                          case 104773:  // Unending Resolve
-                                                          case 386344:  // Inquisitor's Gaze (Summon)
-                                                            return true;
-                                                          default:
-                                                            return false;
-                                                        }
-                                                      }
-                                                    } );
-    }
-    else
-    {
-      // Whitelist
-      callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-                                                    []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-                                                      if ( a->special && a->type == ACTION_SPELL )
-                                                      {
-                                                        switch ( a->data().id() )
-                                                        {
-                                                          case 48181:   // Haunt
-                                                          case 205180:  // Summon Darkglare
-                                                          case 48018:   // Demonic Circle
-                                                          case 48020:   // Demonic Circle: Teleport
-                                                          case 333889:  // Fel Domination
-                                                          case 385899:  // Soulburn
-                                                          case 328774:  // Amplify Curse
-                                                          case 108416:  // Dark Pact
-                                                          case 104773:  // Unending Resolve
-                                                          case 386344:  // Inquisitor's Gaze (Summon)
-                                                            return true;
-                                                          default:
-                                                            return false;
-                                                        }
-                                                      }
-                                                    } );
-    }
-  }
 }
 
 void warlock_t::combat_begin()
@@ -2099,7 +2013,7 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet->pet_type == PET_PIT_LORD )
       continue;
 
-    lock_pet->buffs.the_expendables->increment();
+    lock_pet->buffs.the_expendables->trigger();
   }
 }
 

@@ -2111,29 +2111,6 @@ void evoker_t::init_spells()
 void evoker_t::init_special_effects()
 {
   player_t::init_special_effects();
-
-  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
-  if ( !maybe_ptr( dbc->ptr ) && unique_gear::find_special_effect( this, 397399 ) )
-  {
-    callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    [ ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-      if ( a->special && a->type == ACTION_SPELL )
-      {
-        switch ( a->data().id() )
-        {
-          case 362969: // Azure Strike
-          case 357210: // Deep Breath
-          case 357208: // Fire Breath
-          case 357209: // Fire Breath
-          case 382266: // Fire Breath
-            break;
-          default:
-            return false;
-        }
-      }
-      return true;
-    } );
-  }
 }
 
 void evoker_t::create_actions()

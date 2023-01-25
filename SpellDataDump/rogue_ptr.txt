@@ -1908,8 +1908,9 @@ Effects          :
 #5 (id=819851)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #6 (id=1046151)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Misc Value: 0x7f
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Base Value (65 -> -35), Target 1 (0 -> 1)
 Description      : Teleport to an enemy within 10 yards, attacking with both weapons for a total of $<dmg> Physical damage and taking $s6% reduced damage over $d.
 
 While Blade Flurry is active, also hits up to $s5 nearby enemies for $s2% damage.
@@ -12929,7 +12930,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012995)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 5)
 Description      : Stamina increased by $s1%.
 
 Name             : Deft Maneuvers (id=381878) [Spell Family (8), Passive] 
