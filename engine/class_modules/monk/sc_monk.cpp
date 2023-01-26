@@ -748,6 +748,7 @@ public:
          s->action->id == 196608 || // Eye of the Tiger
          s->action->id == 196733 || // Special Delivery
          s->action->id == 338141 || // Charred Passion
+         s->action->id == 386959 || // Charred Passion
          s->action->id == 387621 || // Dragonfire Brew
          s->action->id == 393786    // Chi Surge
        )
@@ -986,7 +987,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     : monk_spell_t( "storm_earth_and_fire", p, p->talent.windwalker.storm_earth_and_fire )
   {
     parse_options( options_str );
-    
+
     cast_during_sck = true;
     trigger_gcd     = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
@@ -3574,7 +3575,7 @@ struct serenity_t : public monk_spell_t
     : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
   {
     parse_options( options_str );
-    
+
     harmful         = false;
     cast_during_sck = true;
     trigger_gcd     = timespan_t::zero();
@@ -4526,7 +4527,7 @@ struct chi_surge_t : public monk_spell_t
     aoe               = -1;
     school            = SCHOOL_NATURE;
 
-    spell_power_mod.tick = data().effectN( 2 ).base_value() / 100; // Saved as 45
+    spell_power_mod.tick = 2 * data().effectN( 2 ).base_value() / 100; // Saved as 45, is really 90
   }
 
   double composite_spell_power() const override
@@ -6388,10 +6389,10 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
   {
-    if ( p().buff.kicks_of_flowing_momentum->up() )    
+    if ( p().buff.kicks_of_flowing_momentum->up() )
       p().buff.fists_of_flowing_momentum->trigger();
-      
-    base_t::decrement( stacks, value );  
+
+    base_t::decrement( stacks, value );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -8177,7 +8178,7 @@ bool monk_t::has_stagger()
 
 double monk_t::partial_clear_stagger_pct( double clear_percent )
 {
-  if ( !specialization() == MONK_BREWMASTER )
+  if ( specialization() != MONK_BREWMASTER )
     return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
@@ -8187,7 +8188,7 @@ double monk_t::partial_clear_stagger_pct( double clear_percent )
 
 double monk_t::partial_clear_stagger_amount( double clear_amount )
 {
-  if ( !specialization() == MONK_BREWMASTER )
+  if ( specialization() != MONK_BREWMASTER )
     return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
@@ -8766,14 +8767,14 @@ void monk_t::combat_begin()
   make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
 
     squirm_timer += 1;
-    
+
     // Do not interrupt a cast
     if ( ( executing && !executing->usable_moving() )
       || ( queueing && !queueing->usable_moving() )
       || ( channeling && !channeling->usable_moving() ) )
     {
       if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
-      {       
+      {
         movement.melee_squirm->trigger();
         squirm_timer = 0;
       }
@@ -9096,7 +9097,7 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
   // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
   double k            = dbc->armor_mitigation_constant( target_level );
-  k *= ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
+  k *= ( is_ptr() ? 1.992 : 1.384 );  // Mythic Raid
 
   double stagger = stagger_base / ( stagger_base + k );
 
