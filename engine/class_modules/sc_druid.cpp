@@ -4674,6 +4674,11 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     reduced_aoe_targets = 5.0;  // PTR not in spell data
   }
 
+  bool can_proc_moonless_night() const override
+  {
+    return true;
+  }
+
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
