@@ -4542,7 +4542,7 @@ struct mangle_t : public bear_attack_t
     p()->buff.guardian_of_elune->trigger();
 
     p()->buff.vicious_cycle_mangle->expire();
-    p()->buff.vicious_cycle_maul->trigger();
+    p()->buff.vicious_cycle_maul->trigger( num_targets_hit );
   }
 };
 
