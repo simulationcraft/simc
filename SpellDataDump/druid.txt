@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47825 Live (hotfix 2023-01-26/47825)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1950,7 +1950,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Starfire (194153), Starfire (197628)
                    Family Flags: 2
-Hotfixed         : Base Value (50 -> 30)
 #3 (id=816963)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Moonfire (164812), Starfall (191034), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (365640), Fury of Elune (394111)
@@ -19700,7 +19699,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815), Shooting Stars (202342), Stellar Flare (202347)
                    Family Flags: 92, 105, 124, 127
-Hotfixed         : Affects Spells
 Description      : Your Moonfire, Sunfire, and Stellar Flare deal damage $s1% faster.
 
 Name             : Forestwalk (id=400126) [Spell Family (7)] 
@@ -20035,7 +20033,6 @@ Effects          :
 Description      : Nourish extends the duration of your Lifebloom, Rejuvenation, Regrowth, and Wild Growth effects on the target by $s1 sec.
 
 Name             : Wild Synthesis (id=400533) [Spell Family (7), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 100)
 Talent Entry     : Restoration [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Druid
 School           : Physical
