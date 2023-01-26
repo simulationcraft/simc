@@ -737,6 +737,12 @@ struct player_t : public actor_t
     /// Stat to trigger for Gyroscopic Kaleidoscope
     /// Buff type: "mastery", "haste", "crit", "versatility"
     std::string gyroscopic_kaleidoscope_stat = "haste";
+    // Ruby Whelp Shell training levels
+    // Overrides sim-wide option with a player-specific one
+    std::string ruby_whelp_shell_training = "";
+    // A list of context-aware procs for Ruby Whelp Shell
+    // Overrides sim-wide option with a player-specific one
+    std::string ruby_whelp_shell_context = "";
   } dragonflight_opts;
 
 private:
@@ -1213,6 +1219,7 @@ public:
   virtual void cancel_auto_attacks();
   virtual void reset_auto_attacks( timespan_t delay = timespan_t::zero(), proc_t* proc = nullptr );
   virtual void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
+  virtual void delay_ranged_auto_attacks( timespan_t delay, proc_t* proc = nullptr );
 
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr );
 

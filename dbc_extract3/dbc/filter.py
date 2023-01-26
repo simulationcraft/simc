@@ -561,24 +561,27 @@ class TraitSet(DataSet):
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
                     if node['node'].type == 2:
-                        sel_idx = entry.child_ref('TraitNodeXTraitNodeEntry').index
-
                         # It's possible to have nodes with entries that have the same selection index.
-                        # In such cases, the game seems to assign the first choice to the entry that
-                        # comes earlier in TraitNodeXTraitNodeEntry.db2 itself. As entries are added in
-                        # this same order to _trait_nodes[node_id], we can adjust here by incrementing
-                        # the selection_index on successive entries with the same selection_index as an
-                        # already processed entry that is on the same node.
+                        # In such cases it seems random which entry the game assigns as the first entry,
+                        # and this can vary build by build with no changes to the underlying data. For 
+                        # such cases we temporarily implement a manual override until a more permanent 
+                        # solution can be found.
+                        if key == 109860: # new moon
+                            sel_idx = 200
+                        elif key == 109872: # rattle the stars
+                            sel_idx = 200
+                        else:
+                            sel_idx = entry.child_ref('TraitNodeXTraitNodeEntry').index
 
                         # Iterate through all entries on the node that does not match the current entry
-                        for _e, _id in [(e, i) for e, i in node['entries'] if e.id != entry.id]:
+                        # for _e, _id in [(e, i) for e, i in node['entries'] if e.id != entry.id]:
                             # Check for selection_index clash
-                            if _traits[_e.id]['selection_index'] == sel_idx:
+                            # if _traits[_e.id]['selection_index'] == sel_idx:
                                 # Adjust the selection_index of the higher TraitNodeXTraitNodeEntry.id by 1
-                                if _id > db2_id:
-                                    _traits[_e.id]['selection_index'] += 1
-                                else:
-                                    sel_idx += 1
+                                # if _id > db2_id:
+                                    # _traits[_e.id]['selection_index'] += 1
+                                # else:
+                                    # sel_idx += 1
 
                         _traits[key]['selection_index'] = sel_idx
 

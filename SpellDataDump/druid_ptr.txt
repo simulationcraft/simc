@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -243,7 +243,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18300 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18300 | PvP Coefficient: 0.82000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.82)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -343,7 +344,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Aura Never Bounces (148), Periodic Can Crit (265), Aura Points On Client (268), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16000 | PvP Coefficient: 0.82000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.82)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -1301,7 +1303,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=12790)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.05000 | PvP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.05000 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.8 -> 0.75)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a102543[${$s2*(1+$102543s3/100)}][$s2] additional Energy to increase damage by up to 100%.
@@ -1400,7 +1403,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
 Category         : 1568: Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Heart of the Wild (319454 effect#9), Reinvigoration (372945 effect#2), Innate Resolve (377811 effect#2)
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#11), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Verdant Heart (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1), Reinvigoration (372945 effect#1), Innate Resolve (377811 effect#1), Adaptive Swarm (391891 effect#2)
+Affecting spells : Berserk (50334 effect#11), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #18, #19), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Verdant Heart (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1), Reinvigoration (372945 effect#1), Innate Resolve (377811 effect#1), Adaptive Swarm (391891 effect#2)
 Family Flags     : 62
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1413,7 +1416,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : Is Ability (4), Do Not Sheath (18), No Threat (42), Can't Crit (93), Extra Initial Period (169), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62500 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62600 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.625 -> 0.626)
 #2 (id=815630)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Heals you for $o1% health over $d$?s301768[, and increases healing received by $301768s1%][].
@@ -2677,7 +2681,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.14367 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.14367 | PvP Coefficient: 1.40000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.2 -> 1.4)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -2864,6 +2869,7 @@ Effects          :
 Description      : Restores $s1 health to three injured allies within $A1 yards of the initial target every $81262t1 sec for $81262d.
 
 Name             : Fungal Growth (id=81281) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -2877,9 +2883,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
+                 : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=68703)    : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -4851,6 +4857,16 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=1032348)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=1049862)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+Hotfixed         : NEW EFFECT
+#13 (id=1049863)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+Hotfixed         : NEW EFFECT
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
@@ -4920,6 +4936,21 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
                    Family Flags: 4
+#17 (id=1049694)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748), Adaptive Swarm (391889), Adaptive Swarm (391891)
+                   Family Flags: 22
+Hotfixed         : NEW EFFECT
+#18 (id=1049860)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+Hotfixed         : NEW EFFECT
+#19 (id=1049861)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+Hotfixed         : NEW EFFECT
 Description      : Restoration Druid core passive
 
 Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
@@ -5276,7 +5307,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Always Hit (114), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), No Level Up Toast (281), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23110 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23110 | PvP Coefficient: 0.82000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.82)
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -6011,7 +6043,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.54000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -6204,7 +6237,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Haste Affects Duration (273), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=284976)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65025 | PvP Coefficient: 1.20000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.65025 | PvP Coefficient: 1.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1.2 -> 1.5)
 #2 (id=284977)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=295015)   : Dummy (3)
@@ -10140,7 +10174,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=726522)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=726523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726524)   : Energize Power (30)
@@ -10172,7 +10207,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=726525)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.00000 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=726526)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726527)   : Energize Power (30)
@@ -10204,7 +10240,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=726528)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.20000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=726529)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=726530)   : Dummy (3)
@@ -10329,11 +10366,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=727435)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09900 | PvP Coefficient: 0.90000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 #2 (id=727436)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.90000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 #3 (id=727440)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19800 | PvP Coefficient: 1.00000 | Mechanic: Bleed
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19800 | PvP Coefficient: 0.90000 | Mechanic: Bleed
+Hotfixed         : PvP Coefficient (1 -> 0.9)
 #4 (id=727443)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : $@spelldesc274837
@@ -12631,7 +12671,7 @@ Velocity         : 12 yards/sec
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Tiger's Fury (5217 effect#3), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2, #8, #9), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effect#3), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effect#17), Balance Druid (137013 effects: #1, #2, #8, #9), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 18, 22
 Attributes       : ........ ........ .......x x.......   .....x.x ..x..... ........ ........ 
                  : x....... ......x. ........ ........   .......x .x...... ....x... ......x. 
@@ -12663,7 +12703,7 @@ Duration         : 12 seconds
 Labels           : 1158: Flourish (197721 effect#4)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4)
+Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #17), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4)
 Family Flags     : 22, 118
 Attributes       : ........ ........ .......x .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ..x.x... 
@@ -15484,13 +15524,14 @@ Effects          :
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
+Hotfixed         : Proc Flags 1 (0 -> 16), Proc Flags 2 (4 -> 0)
 Talent Entry     : Guardian [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15533,6 +15574,7 @@ Description      : $@spelldesc371999
 Tooltip          : Your next Maul deals $w1% increased damage.
 
 Name             : Vicious Cycle (id=372019) [Spell Family (7)] 
+Hotfixed         : Proc Flags 1 (0 -> 16), Proc Flags 2 (4 -> 0)
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -15540,8 +15582,8 @@ Spell Level      : 60
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15749,7 +15791,8 @@ Description      : Increases the damage and radius of Thrash by $s1%.
 
 Name             : Reinvigoration (id=372945) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Guardian [tree=spec, row=5, col=1, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(-15, -30)]
+                 : Effect#2 [op=set, values=(-15, -30)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -16330,7 +16373,8 @@ Effects          :
 #1 (id=1014959)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1033069)  : None (0)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.75000
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : Every $s1th Shooting Star calls down a Full Moon at $s2% power upon its target.
 
 Name             : Tireless Energy (id=383352) [Spell Family (7), Passive] 
@@ -17335,7 +17379,7 @@ Velocity         : 12 yards/sec
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Tiger's Fury (5217 effect#3), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2, #8, #9), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effect#3), Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effect#17), Balance Druid (137013 effects: #1, #2, #8, #9), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 18, 22
 Attributes       : ........ ........ .......x x.......   .....x.x ..x..... ........ ........ 
                  : x....... ......x. ........ ........   .......x .x...... ....x... ......x. 
@@ -17367,7 +17411,7 @@ Duration         : 12 seconds
 Labels           : 1158: Flourish (197721 effect#4)
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4)
+Affecting spells : Tiger's Fury (5217 effect#3), Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #17), Balance Druid (137013 effects: #8, #9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Evolved Swarm (341447 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4)
 Family Flags     : 22, 118
 Attributes       : ........ ........ .......x .......x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ..x.x... 
@@ -17693,7 +17737,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1030128)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -4000 | Scaled Value: -4000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-3000 -> -4000)
 Description      : While channeling Tranquility, your other Druid spell cooldowns are reduced by up to ${($s1/-1000)*5} seconds.
 
 Name             : Budding Leaves (id=392167) [Spell Family (7), Passive] 
@@ -17715,13 +17760,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1030137)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.70000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.7 -> 0.5)
 #2 (id=1030140)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.70000 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.7 -> 0.5)
 #3 (id=1030644)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.70000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
+Hotfixed         : PvP Coefficient (0.7 -> 0.5)
 Description      : Lifebloom's healing is increased by ${$s1}.1% each time it heals, up to $s2%. Also increases Lifebloom's final bloom amount by $s3%.
 
 Name             : Flash of Clarity (id=392220) [Spell Family (7), Passive, Hidden] 
@@ -17963,7 +18011,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1030446)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.08000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.97200 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (1.08 -> 0.972)
 Description      : $@spelldesc392325
 
 Name             : Reforestation (id=392356) [Spell Family (7), Passive] 
@@ -18217,7 +18266,7 @@ Description      : $@spelldesc393381
 
 Name             : Flashing Claws (id=393427) [Spell Family (7), Passive] 
 Talent Entry     : Guardian [tree=spec, row=8, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-15, -30)]
+                 : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(-15, -30)]
 Class            : Druid
 School           : Physical
@@ -18496,8 +18545,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1032875)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2318 (Label) | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Misc Value: 3 | Misc Value 2: 2318 (Label) | Target: Self (1)
                    Affected Spells (Label): Umbral Embrace (393763)
+Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=1032888)  : Apply Aura (6) | Proc Trigger Spell (42): Umbral Embrace
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393763 | Target: Self (1)
 Description      : Dealing Astral damage has a chance to cause your next Wrath or Starfire cast during an Eclipse to become Astral and deal $s1% additional damage.
@@ -19389,9 +19439,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034016)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spellaura393632
 Tooltip          : Wrath and Starfire damage increased by $w1%.
 
@@ -19420,9 +19471,10 @@ Effects          :
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
 #2 (id=1034020)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.57200 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
+Hotfixed         : PvP Coefficient (1 -> 0.572)
 Description      : $@spelldesc393633
 Tooltip          : Starsurge and Starfall cost no Astral Power and deal $s2% increased damage.
 
@@ -19929,6 +19981,25 @@ Effects          :
                    Affected Spells: Primal Wrath (285381)
                    Family Flags: 93
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
+
+Name             : Moonless Night (id=400360) [Spell Family (7)] 
+Class            : Druid
+School           : Arcane
+Spell Type       : Magic
+Range            : 50000 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ..x..... 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Can Proc From Procs (122), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Ignore Positive Damage Taken Modifiers (321)
+Effects          :
+#1 (id=1045299)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc400278
 
 Name             : Forest's Flow (id=400531) [Spell Family (7), Passive] 
 Talent Entry     : Restoration [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]

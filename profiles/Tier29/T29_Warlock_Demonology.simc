@@ -9,7 +9,7 @@ talents=BoQAAAAAAAAAAAAAAAAAAAAAAgESSkIBSTLg0SSCpFAAAAA0SkEJEQiEJSRLJJHgAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3
@@ -26,7 +26,6 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
-actions.precombat+=/inquisitors_gaze
 actions.precombat+=/variable,name=tyrant_prep_start,op=set,value=12
 actions.precombat+=/variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend
 actions.precombat+=/power_siphon
@@ -54,7 +53,7 @@ actions+=/implosion,if=two_cast_imps>0&buff.tyrant.down&active_enemies>1+(talent
 actions+=/implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables
 actions+=/implosion,if=active_enemies=1&last_cast_imps>0&buff.tyrant.down&talent.imp_gang_boss.enabled&!talent.sacrificed_souls
 actions+=/soul_strike,if=soul_shard<5&active_enemies>1
-actions+=/summon_soulkeeper,if=active_enemies>1&buff.tormented_soul.stack=10
+actions+=/summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1
 actions+=/demonbolt,if=buff.demonic_core.up&soul_shard<4
 actions+=/power_siphon,if=buff.demonic_core.stack<1&(buff.dreadstalkers.remains>3|buff.dreadstalkers.down)
 actions+=/hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)

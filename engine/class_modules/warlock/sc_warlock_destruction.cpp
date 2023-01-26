@@ -168,6 +168,9 @@ struct shadowburn_t : public destruction_spell_t
     if ( result_is_hit( s->result ) )
     {
       td( s->target )->debuffs_shadowburn->trigger();
+
+      if ( p()->talents.eradication->ok() && p()->min_version_check( VERSION_10_0_5 ) )
+        td( s->target )->debuffs_eradication->trigger();
     }
   }
 
@@ -187,6 +190,9 @@ struct shadowburn_t : public destruction_spell_t
     if ( p()->talents.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_sb->trigger();
 
+    if ( p()->talents.burn_to_ashes->ok() && p()->min_version_check( VERSION_10_0_5 ) )
+      p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
+
     p()->buffs.crashing_chaos->decrement();
   }
 
@@ -196,6 +202,16 @@ struct shadowburn_t : public destruction_spell_t
 
     if ( p()->talents.madness_of_the_azjaqir->ok() )
       m *= 1.0 + p()->buffs.madness_sb->check_value();
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = destruction_spell_t::composite_target_multiplier( t );
+
+    if ( p()->talents.ashen_remains->ok() && td( t )->dots_immolate->is_ticking() && p()->min_version_check( VERSION_10_0_5 ) )
+      m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
     return m;
   }
@@ -431,6 +447,15 @@ struct incinerate_fnb_t : public destruction_spell_t
       m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
     return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    // 2023-01-24 Fire and Brimstone crits are apparently still yielding fragments (unaffected by Diabolic Embers)
+    if ( s->result == RESULT_CRIT )
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
   }
 };
 
@@ -1479,6 +1504,7 @@ void warlock_t::init_gains_destruction()
   gains.immolate = get_gain( "immolate" );
   gains.immolate_crits = get_gain( "immolate_crits" );
   gains.incinerate_crits = get_gain( "incinerate_crits" );
+  gains.incinerate_fnb_crits = get_gain( "incinerate_fnb_crits" );
   gains.infernal = get_gain( "infernal" );
   gains.shadowburn_refund = get_gain( "shadowburn_refund" );
   gains.inferno = get_gain( "inferno" );

@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.5.47621
+// Spell text, wow build 10.0.5.47777
 static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -2052,7 +2052,6 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   {  61684, "Increases your pet's movement speed by $s1% for $d.", "Increases movement speed by $s1%.", "Basic Ability" },
   {  61777, "A Gargoyle flies into the area and bombards the target with Shadow damage.", "Runic Power is being fed to the Gargoyle.", 0 },
   {  61778, "Increases attack power by $s1 for $d.", "Increases attack power by $s1.", 0 },
-  {  61815, "Shake your Spring Flowers to place rabbit ears on yourself or someone else.", "Shhh! Did you hear that? Don't move!", 0 },
   {  61882, "Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and has a $?s381743[${$77478s2+$381743S1)}.1][$77478s2]% chance to knock the enemy down.", 0, 0 },
   {  61999, "Pours dark energy into a dead target, reuniting spirit and body to allow the target to reenter battle with $s2% health and at least $s1% mana.", 0, 0 },
   {  62071, "$@spelldesc52610", "Damage increased $s1% while in Cat Form.\r\nEnergy regeneration increased by $s3%.", 0 },
@@ -18330,7 +18329,7 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   { 390235, "Wave the scepter, projecting an illusory orb of frost in front of you.", 0, 0 },
   { 390236, "When your ghouls expire, they explode in viscera dealing $<damage> Shadow damage to nearby enemies. ", 0, 0 },
   { 390239, 0, "Reduces damage by $w1%.", 0 },
-  { 390241, "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.", 0, 0 },
+  { 390241, "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.\r\n\r\n", 0, 0 },
   { 390242, "$@spelldesc389543", "Versatility increased by $w1.", 0 },
   { 390243, "$@spelldesc389543", 0, 0 },
   { 390244, "$@spelldesc389543", 0, 0 },
@@ -18349,6 +18348,7 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   { 390275, "Sudden Doom causes your next Death Coil to also increase your $?s207311[Clawing Shadows][Scourge Strike] damage against the target by $390276s1% for $390276d.", 0, 0 },
   { 390276, "$@spelldesc390275", "Scourge Strike damage taken from $@auracaster is increased by $s1%.", 0 },
   { 390279, "Inflict disease upon your enemies spreading Festering Wounds equal to the amount currently active on your target to $s1 nearby enemies.", 0, 0 },
+  { 390282, "Summon your eagle to fly beside you. It will leave upon moving.", 0, 0 },
   { 390283, "Your Virulent Plague also applies Frost Fever and Blood Plague at $s1% effectiveness.", 0, 0 },
   { 390287, "$@spelldesc319930", 0, 0 },
   { 390288, "Windfury Weapon has a $s1% chance to trigger a third attack.", 0, 0 },
@@ -19194,7 +19194,7 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   { 397118, 0, "Attack speed increased by $w1%. Attacking another target will reset this bonus.", 0 },
   { 397251, "Weapons of Order calls forth $?c1[Niuzao, the Black Ox]?c2&s325197[Chi-Ji, the Red Crane]?c3[Xuen, the White Tiger][Yu'lon, the Jade Serpent] to assist you for ${$s1/1000} sec.", 0, 0 },
   { 397364, "@spelldesc384318", "Bleeding for $w1 damage every $t1 sec.", 0 },
-  { 397399, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Critical Strike increased by $w1.", 0 },
+  { 397399, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing as well as damage-dealing spells and abilities have a high chance to empower the gem, increasing its effect.", "Critical Strike increased by $w1.", 0 },
   { 397400, "Feast upon the toe, increasing your Critical Strike by $s1 for $d and causing you to exude a fetid breath, dealing ${$397401s1*$d/$t2} Shadow damage split between enemies in front of you.", "Critical Strike increased by $w1. Exuding a fetid breath.", 0 },
   { 397401, "$@spelldesc397400", 0, 0 },
   { 397405, "Casting spells spins Crystalline Silk, granting [low] mastery per stack.\r\n\r\nAt X stacks, your next single-target spell deals [high] bonus Frost damage, encasing them and enemies within 10 yards in a Crystalline Web for X seconds. While the web persists, a portion of the damage you deal is shared across all enemies in the Web.", "Movement Speed reduced by $w2%. Damaging this unit will cause all webbed enemies to take $382132s2 Frost damage.\r\nThis can occur once every 1.5 sec.", 0 },
@@ -19264,11 +19264,14 @@ static const std::array<spelltext_data_t, 19262> __ptr_spelltext_data { {
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47621
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.5.47777
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
+  {  390241,  0, "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.", "Your ranged attacks and abilities have a high chance of granting you Eagle Training, increasing your Critical Strike by $390240s1 up to $390250u times.\r\nUpon dealing critical damage, your eagle will swoop down and deal $s1 physical damage to your current target.\r\n\r\nDealing critical damage removes all stacks of Eagle Training.\r\n\r\n" },
+  {  390282,  0, nullptr, "Summon your eagle to fly beside you. It will leave upon moving." },
+  {  397399,  0, "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing spells and abilities have a high chance to empower the gem, increasing its effect.", "Embrace the gem to increase your Critical Strike by $s1 for $d. Your healing as well as damage-dealing spells and abilities have a high chance to empower the gem, increasing its effect." },
 } };
 
-// Spell description variables, wow build 10.0.5.47621
+// Spell description variables, wow build 10.0.5.47777
 static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19326,7 +19329,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {   53343, "$coeff=${0.01127}\r\n" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
   {   64382, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {   77756, "$chance=$?a279830[${$s1+$279830s1}][${$s1}]" },
   {   79096, "$cdr=${$s1/10}" },
@@ -19494,7 +19497,7 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
-  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
@@ -19642,7 +19645,9 @@ static const std::array<spelldesc_vars_data_t, 370> __ptr_spelldesc_vars_data { 
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47621
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.0.5.47777
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelldesc_vars_hotfix_data { {
+  {   61882,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
+  {  298762,  0, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.1936*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}", "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
 } };
 

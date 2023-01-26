@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -623,6 +623,7 @@ Replaces         : Metamorphosis (id=191427)
 Class            : Vengeance Demon Hunter
 School           : Chaos
 Spell Type       : None
+Spell Level      : 20
 Duration         : 15 seconds
 Cooldown         : 240 seconds
 Category         : 1251
@@ -641,6 +642,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
                  : x....... ........ ........ ........   
                  : Is Ability (4), Do Not Sheath (18), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Prevent Jumping During Precast (448)
 Effects          :
+#1 (id=273949)   : Apply Aura (6) | Change Model (56)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #2 (id=273950)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=283617)   : Apply Aura (6) | Modify Leech% (443)
@@ -2372,7 +2375,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (187827), Metamorphosis (191427)
@@ -7501,7 +7503,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.62500 | Target: Enemy (6)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 14, 25, 37, 50, 127
-Hotfixed         : PvP Coefficient (1 -> 0.625)
 Description      : $@spelldesc258860
 Tooltip          : The Demon Hunter's Chaos Strike and Blade Dance inflict $s2% additional damage.
 
@@ -7671,7 +7672,6 @@ Effects          :
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=807420)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 130 | Scaled Value: 130 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 130)
 #3 (id=807421)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=807422)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -10609,7 +10609,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=982578)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.68550 | PvP Coefficient: 0.80000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10671,7 +10670,6 @@ Effects          :
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Nature
 Spell Type       : Magic
@@ -10693,7 +10691,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.81973 | PvP Coefficient: 0.80000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.6148 -> 0.819733)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 
@@ -10742,7 +10739,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023596)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.83333 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.833333)
 Description      : Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.
 
 Name             : Ragefire (id=388107) [Spell Family (107), Passive] 
@@ -11271,7 +11267,6 @@ Effects          :
 Description      : Afflicting an enemy with a Sigil reduces the cooldown of your Sigils by $s1 sec. 
 
 Name             : Calcified Spikes (id=389720) [Spell Family (107), Passive] 
-Hotfixed         : Description
 Talent Entry     : Vengeance [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
@@ -12485,10 +12480,8 @@ Effects          :
 #1 (id=1028499)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (-10 -> -12)
 #2 (id=1028500)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (-10 -> -12)
 Description      : $@spelldesc389720
 Tooltip          : Damage taken reduced by $w1%, fading over $d.
 
@@ -12659,7 +12652,6 @@ Effects          :
 #1 (id=1028838)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc388110
 Tooltip          : Damage taken from $@auracaster increased by $s1%.
 

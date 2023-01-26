@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47213 Live (hotfix 2023-01-11/47213)
+SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -243,7 +243,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200, replace="Dash" (id=1850)]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=200, replace="Dash" (id=1850)]
 Class            : Druid, Evoker
 School           : Physical
 Spell Type       : Magic
@@ -449,7 +449,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=881542)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
-Description      : Interrupt an enemy's spellcasting and preventing any spell from that school of magic from being cast for $d.
+Description      : Interrupt an enemy's spellcasting and prevent any spell from that school of magic from being cast for $d.
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
 Class            : Monk, Evoker
@@ -489,7 +489,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=885733)   : Apply Aura (6) | Periodic Damage (3): firestorm every 0.5 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.15000 | PvP Coefficient: 1.40000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.15000 | PvP Coefficient: 1.20000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
 Description      : $@spelldesc357210
 Tooltip          : Suffering $w1 Volcanic damage every $t1 sec.
 
@@ -726,12 +726,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
-Hotfixed         : NEW EFFECT
 #13 (id=1046957)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
-Hotfixed         : NEW EFFECT
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -862,8 +860,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273)
 Effects          :
 #1 (id=891202)   : Apply Aura (6) | Periodic Damage (3): spellfrost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87400 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.76 -> 0.874)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87400 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 Description      : Tear into an enemy with a blast of blue magic, inflicting $o1 Spellfrost damage over $d, and slowing their movement speed by $370898s1% for $370898d.
 Tooltip          : Suffering $w1 Spellfrost damage every $t1 sec.
 
@@ -884,10 +881,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Absorb Cannot Be Ignore (214), Vehicle Immunity Category (218), Aura Points On Client (268), Hide Damage Absorb UI (380), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=891504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -960,14 +957,14 @@ Affecting spells : Devastation Evoker (356809 effects: #1, #2, #12, #13), Preser
 Triggered by     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=891597)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.13400 | PvP Coefficient: 0.70000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone Front (104)
@@ -984,7 +981,7 @@ Name             : Deep Breath (desc=Black) (id=357210) [Spell Family (224)]
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
-Range            : 20 - 50 yards
+Range            : 15 - 50 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
@@ -1229,7 +1226,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.74000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (3.4 -> 3.74)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -1333,7 +1329,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : Magic
 Resource         : 4% Base Mana (0) (id=232519)
-Range            : 20 - 50 yards
+Range            : 15 - 50 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 120 seconds
@@ -1458,10 +1454,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=898467)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Description      : Fly to an ally and heal them for $361195s1.
+Description      : Fly to an ally and heal them for $361195s1, or heal yourself for the same amount.
 
 Name             : Mass Return (desc=Bronze) (id=361178) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Preservation Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -1541,7 +1536,7 @@ Class            : Evoker
 School           : Fire
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=232472) w/ Preservation Evoker (id=356810)
-Resource         : 4% Base Mana (0) (id=232606) w/ Devastation Evoker (id=356809)
+Resource         : 2% Base Mana (0) (id=232606) w/ Devastation Evoker (id=356809)
 Resource         : 2% Base Mana (0) (id=265450) w/ Initial Evoker (id=356816)
 Range            : 25 yards
 Cast Time        : 2 seconds
@@ -1556,9 +1551,9 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ......x. ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Threat (42), Heal Prediction (280), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Threat (42), Heal Prediction (280), Allow Class Ability Procs (416), Always Require PvP Target Match (430)
 Effects          :
 #1 (id=899400)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
@@ -1721,7 +1716,7 @@ Effects          :
 #1 (id=902036)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=902037)   : School Damage (2): spellfrost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75500 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.75500 | PvP Coefficient: 1.20000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=1017809)  : Trigger Spell (64): Azure Strike
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 355627 | Target: Self (1)
 Description      : Project intense energy onto $s1 enemies, dealing $s2 Spellfrost damage to them.
@@ -1790,7 +1785,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=902919)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Healing done to allies is increased by $s1% while their health percentage is lower than your own.
+Description      : Healing done to allies is increased by ${$s1}.1% while their health percentage is lower than your own.
 
 Name             : Rewind (desc=Bronze) (id=363534) [Spell Family (224)] 
 Talent Entry     : Preservation [tree=spec, row=3, col=3, max_rank=1, req_points=0]
@@ -2134,9 +2129,9 @@ Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... .....
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ......x. ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Always Require PvP Target Match (430), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=910748)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -2200,7 +2195,7 @@ Effects          :
 #1 (id=912785)   : Apply Raid Aura (65) | Trigger Spell Based on Health% (468)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 368435 | Radius: 25 yards | Target: Self (1)
 #2 (id=997898)   : Dummy (3)
-                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : When you or an ally fall below $s1% health, a version of yourself enters your timeline and heals them for $361195s1. Your alternate self continues healing for $368415d before returning to their timeline.
 
 May only occur once every $s2 sec.
@@ -2211,7 +2206,7 @@ School           : Arcane
 Spell Type       : None
 Range            : 40 yards
 Duration         : 8 seconds
-Cooldown         : 90 seconds
+Cooldown         : 60 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2446,7 +2441,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=914653)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.33120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.276 -> 0.3312)
 Description      : $@spelldesc368847
 
 Name             : Eye of Infinity (id=369375) [Spell Family (224), Passive] 
@@ -3044,14 +3038,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : ..x..... ........ ........ ........   
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982398)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66700 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
-Hotfixed         : Base Value (20 -> 30)
 Description      : Your damaging critical strikes deal ${$s1+200}% damage instead of the usual 200%.
 
 Name             : Iridescence (id=370867) [Spell Family (224), Passive] 
@@ -3247,17 +3240,20 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
+                 : Generic Heal, Magic Heal, Helpful Periodic
 Affecting spells : Hover (358267 effect#5), Dreamwalker (377082 effect#1)
 Family Flags     : 2, 47
 Attributes       : ........ ........ x.x..... x.......   .....xx. ........ ..x..... .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... .x...x.. .x...... ........ 
+                 : ........ ........ ........ ........   ...x.... .x...x.. .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ......x. ........   ......x. ........ ........ ..x..... 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ..x..... ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), Is Self Channelled (38), Prevents Anim (50), Name in Channel Bar (61), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), No Client Fail While Stunned, Fleeing, Confused (244), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Stealthed (37), Is Self Channelled (38), Prevents Anim (50), Name in Channel Bar (61), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), No Client Fail While Stunned, Fleeing, Confused (244), Allow While Charmed (261), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow While Stunned By Horror Mechanic (342), Unbreakable Channel (358), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=982563)   : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3269,9 +3265,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
 #5 (id=982569)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-#6 (id=982612)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=982612)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 20.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=983192)   : Apply Aura (6) | Root (26)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=1047555)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Commune with the Emerald Dream, restoring $s6% health and $s1% mana every $t1 sec for $d. Overhealing is transferred to a nearby injured ally.
 
@@ -3366,7 +3364,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759)
                    Family Flags: 34
-Hotfixed         : Base Value (10 -> 15)
 Description      : Deep Breath's damage is increased by $s1%.
 
 Name             : Honed Aggression (id=371038) [Spell Family (224), Passive] 
@@ -3664,7 +3661,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=996739)   : Energize Power (30) | Scaling Class: -2
                    Base Value: 0.5 | Scaled Value: 1800 (coefficient=0.012) | PvP Coefficient: 0.75000 | Misc Value: mana | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc372233
 
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
@@ -3893,10 +3889,10 @@ Spell Type       : None
 Resource         : 7.5% Base Mana (0) (id=265379)
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Duration         : 6 seconds
-Cooldown         : 6 seconds
+Duration         : 4 seconds
+Cooldown         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Affecting spells : Preservation Evoker (356810 effect#9), Hover (358267 effect#5), Nozdormu's Teachings (376237 effect#1)
+Affecting spells : Preservation Evoker (356810 effect#9), Hover (358267 effect#5)
 Family Flags     : 2, 45
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3910,9 +3906,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=999377)   : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 25294 | Target: Unknown(47)
-#2 (id=1013851)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Send forward a vortex of temporal energy, absorbing $<shield> damage on $s2 nearby allies every $t2 sec. Lasts $d.
+#2 (id=1044076)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Send forward a vortex of temporal energy, absorbing $<shield> damage on you and any allies in its path. Absorption is reduced beyond $s2 targets.
 Variables        : $shield=${$SP*1.75*(1+$@versadmg)}
 
 Name             : Zephyr (id=374227) [Spell Family (224)] 
@@ -5002,7 +4998,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1003135)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Temporal Anomaly applies Echo at $s1% effectiveness to allies it heals.
+#2 (id=1044131)  : Dummy (3)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
+Description      : Temporal Anomaly applies Echo at $s1% effectiveness to the first $s2 allies it passes through.
 
 Name             : Nozdormu's Teachings (id=376237) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
@@ -5020,11 +5018,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1003137)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Temporal Anomaly (373861)
-                   Family Flags: 45
-Description      : Temporal Anomaly shields $s1 additional target each time it pulses.
+#1 (id=1003137)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Temporal Anomaly reduces the cooldowns of your empower spells by $s1 sec.
 
 Name             : Grace Period (id=376239) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=9, col=2, max_rank=2, req_points=20]
@@ -5968,9 +5964,9 @@ Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... .....
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ......x. ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), Is Self Channelled (38), No Threat (42), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Include In Advanced Combat Log (72), Always Hit (114), Force Display Castbar (155), No Aura Log (202), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Always Require PvP Target Match (430), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=1014217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -6135,7 +6131,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020361)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc370867
 Tooltip          : Your next Red spell deals $s1% more damage.
 
@@ -6159,7 +6154,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1020432)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
 
@@ -6641,11 +6635,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026763)  : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6681,7 +6675,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 1216 (Label) | Target: Self (1)
                    Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Roar of Exhilaration (375507), Roar of Exhilaration (375508), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006)
 Description      : $@spelldesc385696
-Tooltip          : Time is moving $s1% faster.
+Tooltip          : Time is moving $w1% faster.
 
 Name             : Fury of the Aspects (id=390386) [Spell Family (224)] 
 Class            : Evoker
@@ -6928,7 +6922,6 @@ Attributes       : ........ ........ ........ ........   ...x...x ..x..... .....
 Effects          :
 #1 (id=1040015)  : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: essence | Target: Self (1)
-Hotfixed         : Base Value (1 -> 2)
 Description      : $@spelldesc369375
 
 Name             : Titanic Wrath (id=397870) [Spell Family (224), Hidden] 
@@ -6973,7 +6966,6 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1043306)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 20)
 Description      : $@spelldesc370867
 Tooltip          : Your next Blue spell deals $s1% more damage.
 

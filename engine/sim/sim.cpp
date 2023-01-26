@@ -1486,6 +1486,7 @@ sim_t::sim_t() :
   scale_to_itemlevel( -1 ),
   keystone_level( 10 ),
   keystone_pct_hp( 27 ),
+  dungeon_route_smart_targeting( true ),
   challenge_mode( false ),
   scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
@@ -3554,7 +3555,7 @@ void sim_t::create_options()
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
-  // Overrides"
+  // Overrides
   add_option( opt_bool( "override.allow_potions", allow_potions ) );
   add_option( opt_bool( "override.allow_food", allow_food ) );
   add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
@@ -3605,6 +3606,7 @@ void sim_t::create_options()
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
   add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+  add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
@@ -3915,7 +3917,11 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.hood_of_surging_time_chance", dragonflight_opts.hood_of_surging_time_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.hood_of_surging_time_period", dragonflight_opts.hood_of_surging_time_period, 1_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.hood_of_surging_time_stacks", dragonflight_opts.hood_of_surging_time_stacks, 0, 5 ) );
-  add_option( opt_string( "dragonflight.whelp_training_weights", dragonflight_opts.whelp_training_weights ) );
+  add_option( opt_deprecated( "dragonflight.whelp_training_weights", "dragonflight.ruby_whelp_shell_training" ) );
+  add_option( opt_string( "dragonflight.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
+  add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
+  add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================

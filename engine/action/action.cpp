@@ -1552,7 +1552,7 @@ int action_t::num_targets() const
 size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 {
   tl.clear();
-  if ( !target->is_sleeping() )
+  if ( !target->is_sleeping() && target->is_enemy() )
     tl.push_back( target );
 
   for ( auto* t : sim->target_non_sleeping_list )
@@ -3563,7 +3563,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         double evaluate_spell() const
         {
           auto original_target = spell->target;
-          spell->target = original_spell.target;
+          spell->target = original_spell.get_expression_target();
           spell->target_cache.is_valid = false;
           auto n_targets = spell->target_list().size();
           spell->target = original_target;

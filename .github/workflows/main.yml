@@ -49,13 +49,12 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build lld ccache ${{ matrix.packages }}
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
 
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }}
-              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
               -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
 

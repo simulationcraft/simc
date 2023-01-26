@@ -5,7 +5,7 @@ level=70
 race=dwarf
 role=spell
 position=back
-talents=B8DAAAAAAAAAAAAAAAAAAAAAAEJgkWigIFQSLhISikAAAAAAAAAQCBSEKHQSyBSkkkkUAAAA
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAkkQIplIkkUA0SiIiIJAAAAAAAAAkQgEhyBkIJRSSSSBAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -101,13 +101,15 @@ actions.combustion_cooldowns+=/blood_fury
 actions.combustion_cooldowns+=/berserking,if=buff.combustion.up
 actions.combustion_cooldowns+=/fireblood
 actions.combustion_cooldowns+=/ancestral_call
-actions.combustion_cooldowns+=/invoke_external_buff,name=power_infusion,if=!buff.power_infusion.up
+actions.combustion_cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.power_infusion.down
+actions.combustion_cooldowns+=/invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down
 actions.combustion_cooldowns+=/time_warp,if=talent.temporal_warp&buff.exhaustion.up
 actions.combustion_cooldowns+=/use_item,effect_name=gladiators_badge
 actions.combustion_cooldowns+=/use_item,name=irideus_fragment
 actions.combustion_cooldowns+=/use_item,name=spoils_of_neltharus
 actions.combustion_cooldowns+=/use_item,name=tome_of_unstable_power
 actions.combustion_cooldowns+=/use_item,name=timebreaching_talon
+actions.combustion_cooldowns+=/use_item,name=voidmenders_shadowgem
 actions.combustion_cooldowns+=/use_item,name=horn_of_valor
 
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
@@ -156,6 +158,7 @@ actions.combustion_phase+=/rune_of_power,if=buff.sun_kings_blessing_ready.up&buf
 actions.combustion_phase+=/pyroblast,if=buff.sun_kings_blessing_ready.up&buff.sun_kings_blessing_ready.remains>cast_time&buff.sun_kings_blessing_ready.expiration_delay_remains=0
 # Pyroclasm procs should be used in Combustion at higher priority than Phoenix Flames and Scorch.
 actions.combustion_phase+=/pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&buff.combustion.remains>cast_time&active_enemies<variable.combustion_flamestrike&(!talent.feel_the_burn|buff.feel_the_burn.remains>execute_time|buff.heating_up.react+hot_streak_spells_in_flight<2)
+actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time&buff.flame_accelerant.react
 # Use Phoenix Flames and Scorch in Combustion to help generate Hot Streaks when Fire Blasts are not available or need to be conserved.
 actions.combustion_phase+=/phoenix_flames,if=!talent.alexstraszas_fury&buff.combustion.up&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2&(!talent.from_the_ashes|variable.extended_combustion_remains<10)
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time
@@ -205,7 +208,7 @@ actions.rop_phase+=/dragons_breath,if=active_enemies>2
 actions.rop_phase+=/arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana
 # With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball.
 actions.rop_phase+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
-actions.rop_phase+=/pyroblast,if=talent.tempered_flames
+actions.rop_phase+=/pyroblast,if=talent.tempered_flames&!buff.flame_accelerant.react
 actions.rop_phase+=/fireball
 
 actions.standard_rotation=flamestrike,if=active_enemies>=variable.hot_streak_flamestrike&(buff.hot_streak.react|buff.hyperthermia.react)
@@ -227,34 +230,34 @@ actions.standard_rotation+=/scorch,if=searing_touch.active
 actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_explosion&mana.pct>=variable.arcane_explosion_mana
 # With enough targets, it is a gain to cast Flamestrike as filler instead of Fireball.
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
-actions.standard_rotation+=/pyroblast,if=talent.tempered_flames
+actions.standard_rotation+=/pyroblast,if=talent.tempered_flames&!buff.flame_accelerant.react
 actions.standard_rotation+=/fireball
 
-head=crystal_scholars_cowl,id=200318,bonus_id=523,ilevel=424,gem_id=192961
-neck=elemental_lariat,id=193001,ilevel=418,gem_id=192988/192961/192961,crafted_stats=32/49
-shoulders=amice_of_the_blue,id=193526,ilevel=418
-back=potionstained_cloak,id=193712,ilevel=421
-chest=crystal_scholars_tunic,id=200315,ilevel=421,enchant=waking_stats_3
-wrists=chilled_silken_restraints,id=195508,ilevel=415,gem_id=192961
-hands=crystal_scholars_pageturners,id=200317,ilevel=421
-waist=magathas_spiritual_sash,id=195515,ilevel=421,gem_id=192961
-legs=crystal_scholars_britches,id=200319,ilevel=421,enchant=temporal_spellthread_3
-feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424
-finger1=seal_of_diurnas_chosen,id=195480,ilevel=421,gem_id=192961,enchant=devotion_of_mastery_3
-finger2=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192961,enchant=devotion_of_mastery_3
-trinket1=conjured_chillglobe,id=194300,ilevel=421
-trinket2=furious_ragefeather,id=193677,ilevel=421
-main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant=sophic_devotion_3
-off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
+head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498/8810,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=8960/8836/8782/1508,gem_id=192952/192952/192952,crafted_stats=36/49
+shoulders=crystal_scholars_beacons,id=200320,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8175/8960/8836/1508,crafted_stats=36/49
+chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=overengineered_sleeve_extenders,id=198322,bonus_id=1508/8836/8810,gem_id=192952,crafted_stats=36
+hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1501
+waist=crystal_scholars_cinch,id=200321,bonus_id=4800/4786/1504/1808,gem_id=192952
+legs=leggings_of_swirling_runes,id=133610,bonus_id=8767/7977/6216,enchant=frozen_spellthread_3
+feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/8810,gem_id=192952,enchant=devotion_of_haste_3
+finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/8810,gem_id=192952,enchant=devotion_of_haste_3
+trinket1=desperate_invokers_codex,id=194310,bonus_id=4800/4786/1498
+trinket2=furious_ragefeather,id=193677,bonus_id=8767/7977/1643
+main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=wafting_devotion_3
+off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
 
 # Gear Summary
-# gear_ilvl=421.38
-# gear_stamina=13164
-# gear_intellect=7151
-# gear_crit_rating=1628
-# gear_haste_rating=2932
-# gear_mastery_rating=4460
-# gear_versatility_rating=2218
-# gear_armor=2034
+# gear_ilvl=422.19
+# gear_stamina=13390
+# gear_intellect=7195
+# gear_crit_rating=986
+# gear_haste_rating=5124
+# gear_mastery_rating=2927
+# gear_versatility_rating=2237
+# gear_armor=2045
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

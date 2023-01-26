@@ -169,6 +169,7 @@ struct sim_t : private sc_thread_t
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   int keystone_level; // keystone difficulty for scaling purposes
   int keystone_pct_hp;     // keystone mob health percent
+  bool dungeon_route_smart_targeting;            // sets whether the list of mobs will be sorted by their hp
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.
@@ -497,8 +498,14 @@ struct sim_t : private sc_thread_t
     timespan_t hood_of_surging_time_period = 5_s;
     // Hood of Surging Time stacks to grant when the period is set
     unsigned int hood_of_surging_time_stacks = 1;
-    // Weighting for the whelp. It get's normalized and converted into chance.
-    std::string whelp_training_weights = "fire_shot:1/lobbing_fire_nova:1/curing_whiff:1/mending_breath:1/sleepy_ruby_warmth:1/under_red_wings:1";
+    // Ruby Whelp Shell training levels
+    std::string ruby_whelp_shell_training = "";
+    // A list of context-aware procs for Ruby Whelp Shell
+    std::string ruby_whelp_shell_context = "";
+    // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
+    double blue_silken_lining_uptime = 0.7;
+    // Interval between checking blue_silken_lining_uptime
+    timespan_t blue_silken_lining_update_interval = 5_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

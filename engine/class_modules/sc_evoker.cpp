@@ -307,6 +307,7 @@ struct evoker_t : public player_t
   void init_base_stats() override;
   // void init_resources( bool ) override;
   // void init_benefits() override;
+  role_e primary_role() const override;
   void init_gains() override;
   void init_procs() override;
   // void init_rng() override;
@@ -1969,6 +1970,28 @@ void evoker_t::init_action_list()
   player_t::init_action_list();
 }
 
+role_e evoker_t::primary_role() const
+{
+  switch ( player_t::primary_role() )
+  {
+    case ROLE_HEAL:
+      return ROLE_HEAL;
+    case ROLE_DPS:
+    case ROLE_SPELL:
+      return ROLE_SPELL;
+    case ROLE_ATTACK:
+      return ROLE_SPELL;
+    default:
+      if ( specialization() == EVOKER_PRESERVATION )
+      {
+        return ROLE_HEAL;
+      }
+      break;
+  }
+
+  return ROLE_SPELL;
+}
+
 void evoker_t::init_gains()
 {
   player_t::init_gains();
@@ -2088,28 +2111,6 @@ void evoker_t::init_spells()
 void evoker_t::init_special_effects()
 {
   player_t::init_special_effects();
-
-  if ( unique_gear::find_special_effect( this, 397399 ) )
-  {
-    callbacks.register_callback_trigger_function( 397399, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    [ ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-      if ( a->special && a->type == ACTION_SPELL )
-      {
-        switch ( a->data().id() )
-        {
-          case 362969: // Azure Strike
-          case 357210: // Deep Breath
-          case 357208: // Fire Breath
-          case 357209: // Fire Breath
-          case 382266: // Fire Breath
-            break;
-          default:
-            return false;
-        }
-      }
-      return true;
-    } );
-  }
 }
 
 void evoker_t::create_actions()
@@ -2187,7 +2188,7 @@ void evoker_t::create_buffs()
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
-  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
+  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_trigger_spell( talent.iridescence )

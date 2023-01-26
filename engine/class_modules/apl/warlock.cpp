@@ -12,7 +12,7 @@ namespace warlock_apl{
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 70 ) return "phial_of_static_empowerment_3";
+    if ( p->true_level >= 70 ) return "phial_of_tepid_versatility_3";
     return ( p->true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
   }
 
@@ -52,7 +52,6 @@ void affliction( player_t* p )
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>3" );
   precombat->add_action( "haunt" );
   precombat->add_action( "unstable_affliction,if=!talent.soul_swap" );
@@ -63,7 +62,6 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
@@ -80,14 +78,13 @@ void affliction( player_t* p )
   default_->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
-  default_->add_action( "malefic_rapture,if=variable.cd_dots_up" );
+  default_->add_action( "malefic_rapture,if=variable.cd_dots_up|dot.vile_taint_dot.ticking&soul_shard>1" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
   default_->add_action( "shadow_bolt,if=buff.nightfall.react" );
   default_->add_action( "agony,if=refreshable" );
   default_->add_action( "corruption,if=refreshable" );
-  default_->add_action( "soul_tap" );
   default_->add_action( "drain_soul,interrupt=1" );
   default_->add_action( "shadow_bolt" );
 
@@ -110,7 +107,7 @@ void affliction( player_t* p )
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
   aoe->add_action( "malefic_rapture" );
   aoe->add_action( "drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "siphon_life,target_if=remains<5,if=active_dot.siphon_life<3" );
   aoe->add_action( "drain_soul,interrupt_global=1" );
   aoe->add_action( "shadow_bolt" );
@@ -119,7 +116,6 @@ void affliction( player_t* p )
   cleave->add_action( "call_action_list,name=items" );
   cleave->add_action( "malefic_rapture,if=soul_shard=5" );
   cleave->add_action( "haunt" );
-  cleave->add_action( "soul_swap,if=dot.unstable_affliction.remains<5" );
   cleave->add_action( "unstable_affliction,if=remains<5" );
   cleave->add_action( "agony,if=remains<5" );
   cleave->add_action( "agony,target_if=!(target=self.target)&remains<5" );
@@ -170,7 +166,6 @@ void demonology( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
 
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
@@ -198,7 +193,7 @@ void demonology( player_t* p )
   default_->add_action( "implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables" );
   default_->add_action( "implosion,if=active_enemies=1&last_cast_imps>0&buff.tyrant.down&talent.imp_gang_boss.enabled&!talent.sacrificed_souls" );
   default_->add_action( "soul_strike,if=soul_shard<5&active_enemies>1" );
-  default_->add_action( "summon_soulkeeper,if=active_enemies>1&buff.tormented_soul.stack=10" );
+  default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1" );
   default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4" );
   default_->add_action( "power_siphon,if=buff.demonic_core.stack<1&(buff.dreadstalkers.remains>3|buff.dreadstalkers.down)" );
   default_->add_action( "hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)" );
@@ -250,7 +245,6 @@ void destruction( player_t* p )
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "inquisitors_gaze" );
   precombat->add_action( "soul_fire" );
   precombat->add_action( "cataclysm" );
   precombat->add_action( "incinerate" );
@@ -263,8 +257,8 @@ void destruction( player_t* p )
   default_->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
   default_->add_action( "cataclysm" );
   default_->add_action( "channel_demonfire,if=talent.raging_demonfire" );
-  default_->add_action( "soul_fire,if=soul_shard<=4" );
-  default_->add_action( "immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains>dot.immolate.remains)" );
+  default_->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)" );
+  default_->add_action( "immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>dot.immolate.remains)" );
   default_->add_action( "havoc,if=talent.cry_havoc&((buff.ritual_of_ruin.up&pet.infernal.active&talent.burn_to_ashes)|((buff.ritual_of_ruin.up|pet.infernal.active)&!talent.burn_to_ashes))" );
   default_->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
   default_->add_action( "summon_infernal" );
@@ -293,7 +287,7 @@ void destruction( player_t* p )
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire" );
   aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=6" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire" );
-  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10" );
+  aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
   aoe->add_action( "rain_of_fire" );
@@ -315,8 +309,8 @@ void destruction( player_t* p )
   cleave->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
   cleave->add_action( "cataclysm" );
   cleave->add_action( "channel_demonfire,if=talent.raging_demonfire" );
-  cleave->add_action( "soul_fire,if=soul_shard<=4&!variable.pool_soul_shards" );
-  cleave->add_action( "immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains>remains)" );
+  cleave->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)&!variable.pool_soul_shards" );
+  cleave->add_action( "immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains+(!talent.mayhem*action.soul_fire.cast_time)>dot.immolate.remains)" );
   cleave->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&(!cooldown.summon_infernal.up|!talent.summon_infernal)" );
   cleave->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
   cleave->add_action( "summon_infernal" );
@@ -337,7 +331,7 @@ void destruction( player_t* p )
   cleave->add_action( "incinerate" );
 
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
-  havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<3" );
+  havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<2.5" );
   havoc->add_action( "channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2&active_enemies>2" );
   havoc->add_action( "immolate,cycle_targets=1,if=dot.immolate.refreshable&dot.immolate.remains<havoc_remains&soul_shard<4.5&(debuff.havoc.down|!dot.immolate.ticking)" );
   havoc->add_action( "chaos_bolt,if=talent.cry_havoc&!talent.inferno&cast_time<havoc_remains" );
@@ -347,8 +341,8 @@ void destruction( player_t* p )
   havoc->add_action( "conflagrate,if=!talent.backdraft" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 
-  items->add_action( "use_item,slot=trinket1,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains" );
-  items->add_action( "use_item,slot=trinket2,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains" );
+  items->add_action( "use_item,slot=trinket1,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains+5" );
+  items->add_action( "use_item,slot=trinket2,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains+5" );
   items->add_action( "use_item,slot=trinket1,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.1.cooldown.duration&time_to_die>trinket.1.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|(trinket.2.cooldown.remains>0&trinket.2.cooldown.remains<cooldown.summon_infernal.remains)", "We might use trinket outside of infernal to not lose a use if we don't have RoC" );
   items->add_action( "use_item,slot=trinket2,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.2.cooldown.duration&time_to_die>trinket.2.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|(trinket.1.cooldown.remains>0&trinket.1.cooldown.remains<cooldown.summon_infernal.remains)" );
   items->add_action( "use_item,name=erupting_spear_fragment,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.erupting_spear_fragment.cooldown.duration&time_to_die>trinket.erupting_spear_fragment.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|trinket.erupting_spear_fragment.cooldown.duration<cooldown.summon_infernal.remains+5" );

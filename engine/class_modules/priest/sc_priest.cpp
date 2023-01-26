@@ -644,7 +644,7 @@ struct mindgames_t final : public priest_spell_t
         priest().procs.mindgames_casts_no_mastery->occur();
       }
 
-      if ( result_is_hit( s->result ) && priest().is_ptr() )
+      if ( result_is_hit( s->result ) )
       {
         priest().trigger_psychic_link( s );
       }

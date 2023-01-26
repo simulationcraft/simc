@@ -872,10 +872,6 @@ struct melee_t : public paladin_melee_attack_t
         // Check for BoW procs
         double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
 
-        // apparently on live, AoW procs with an 8% chance
-        if ( p()->bugs )
-          aow_proc_chance = 0.08;
-
         if ( p()->talents.blade_of_wrath->ok() )
           aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
 
@@ -3241,14 +3237,7 @@ double paladin_t::composite_mastery_value() const
 
   if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
   {
-    if ( bugs )
-    {
-      m += talents.seal_of_might->effectN( 2 ).percent();
-    }
-    else
-    {
-      m += talents.seal_of_might->effectN( 1 ).percent();
-    }
+    m += talents.seal_of_might->effectN( 1 ).percent();
   }
 
   return m;
