@@ -24,14 +24,13 @@ def->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack=4&dot
 def->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking" );
 def->add_action( "sunfire,target_if=refreshable&target.time_to_die>5&talent.improved_sunfire.enabled" );
 def->add_action( "moonfire,target_if=refreshable&time_to_die>12" );
-def->add_action( "starsurge" );
+def->add_action( "starsurge,if=active_enemies<8" );
 def->add_action( "sunfire,target_if=refreshable&target.time_to_die>7&active_enemies<7" );
 def->add_action( "starfire,if=spell_targets.starfire>1" );
 def->add_action( "wrath" );
 
 cat->add_action( "rake,if=buff.shadowmeld.up|buff.prowl.up|buff.sudden_ambush.up" );
 cat->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
-cat->add_action( "natures_vigil,if=!buff.prowl.up&!buff.shadowmeld.up" );
 cat->add_action( "heart_of_the_wild,if=(cooldown.convoke_the_spirits.remains<30|!covenant.night_fae)&!buff.heart_of_the_wild.up" );
 cat->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack=2&dot.adaptive_swarm_damage.remains>2" );
 cat->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack=1&dot.adaptive_swarm_damage.remains>2" );
@@ -47,8 +46,8 @@ cat->add_action( "sunfire,target_if=(refreshable&target.time_to_die>5)&!prev_gcd
 cat->add_action( "cat_form,if=!buff.cat_form.up&energy>50&(dot.thrash_cat.refreshable&spell_targets.swipe_cat>=9&talent.thrash.enabled)" );
 cat->add_action( "moonfire,target_if=(refreshable&time_to_die>12&!ticking|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1))&!prev_gcd.1.cat_form" );
 cat->add_action( "sunfire,if=prev_gcd.1.moonfire&remains<duration*0.8" );
-cat->add_action( "starfire,if=time_to_die<10&spell_targets.starfire>1&(!talent.swipe.enabled|spell_targets.swipe_cat>=9)" );
-cat->add_action( "starsurge,if=active_enemies=1|(active_enemies<5&!buff.cat_form.up)" );
+cat->add_action( "starsurge,if=active_enemies=1|(active_enemies<8&!buff.cat_form.up)" );
+cat->add_action( "starfire,if=time_to_die<10&spell_targets.starfire>1&(!talent.improved_swipe.enabled|spell_targets.swipe_cat>=9)" );
 cat->add_action( "cat_form,if=!buff.cat_form.up&energy>50" );
 cat->add_action( "ferocious_bite,if=(combo_points>3&target.1.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>10)&spell_targets.swipe_cat<4" );
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>2" );
@@ -57,7 +56,7 @@ cat->add_action( "rip,target_if=((refreshable|energy>90&remains<=10)&(combo_poin
 cat->add_action( "rake,target_if=(refreshable&time_to_die>10&spell_targets.swipe_cat<10)&(combo_points<5|remains<1)" );
 cat->add_action( "sunfire,target_if=refreshable&target.time_to_die>5&active_enemies<7&!talent.improved_sunfire.enabled" );
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5" );
-cat->add_action( "swipe_cat,if=active_enemies>1&combo_points<5" );
+cat->add_action( "swipe_cat,if=active_enemies>1&combo_points<5&talent.improved_swipe.enabled" );
 cat->add_action( "shred,if=energy>60&combo_points<5" );
 
 owl->add_action( "moonkin_form,if=!buff.moonkin_form.up" );

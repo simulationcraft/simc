@@ -8801,7 +8801,9 @@ private:
 
 public:
   astral_power_decay_event_t( druid_t* p )
-    : event_t( *p, 500_ms ), p_( p ), nb_cap( p->talent.natures_balance->effectN( 2 ).base_value() )
+    : event_t( *p, 500_ms ),
+      p_( p ),
+      nb_cap( p->resources.base[ RESOURCE_ASTRAL_POWER ] * p->talent.natures_balance->effectN( 2 ).percent() )
   {}
 
   const char* name() const override { return "astral_power_decay"; }
@@ -9726,10 +9728,15 @@ void druid_t::create_buffs()
       auto tick_gain = nb_eff->resource( RESOURCE_ASTRAL_POWER );
       if ( sim->target_non_sleeping_list.empty() )
       {
-        if ( resources.current[ RESOURCE_ASTRAL_POWER ] < talent.natures_balance->effectN( 2 ).base_value() )
+        if ( resources.current[ RESOURCE_ASTRAL_POWER ] <
+             resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent() )
+        {
           tick_gain *= 3.0;
+        }
         else
+        {
           tick_gain = 0;
+        }
       }
       resource_gain( RESOURCE_ASTRAL_POWER, tick_gain, gain.natures_balance );
     } );
@@ -10536,9 +10543,14 @@ void druid_t::init_resources( bool force )
   resources.current[ RESOURCE_RAGE ]         = 0;
   resources.current[ RESOURCE_COMBO_POINT ]  = 0;
   if ( options.initial_astral_power == 0.0 && talent.natures_balance.ok() )
-    resources.current[RESOURCE_ASTRAL_POWER] = 50.0;
+  {
+    resources.current[ RESOURCE_ASTRAL_POWER ] =
+        resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent();
+  }
   else
-    resources.current[RESOURCE_ASTRAL_POWER] = options.initial_astral_power;
+  {
+    resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
+  }
   expected_max_health = calculate_expected_max_health();
 }
 
@@ -10860,7 +10872,8 @@ void druid_t::combat_begin()
 
     if ( options.raid_combat )
     {
-      double cap = talent.natures_balance.ok() ? 50.0 : 20.0;
+      double cap =
+          std::max( resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent(), 20.0 );
       double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
 
       resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );
