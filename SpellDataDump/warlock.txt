@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47825 Live (hotfix 2023-01-26/47825)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47849 Live (hotfix 2023-01-27/47849)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -16744,14 +16744,15 @@ Effects          :
 Description      : Fires a Chaos Bolt, dealing $s1 Chaos damage. This Chaos Bolt always critically strikes and your critical strike chance increases its damage.
 
 Name             : Cruel Epiphany (id=394253) [Spell Family (5)] 
+Hotfixed         : Proc Flags 1 (0 -> 332048), Proc Flags 2 (4 -> 0)
 Class            : Warlock
 School           : Physical
 Spell Type       : None
 Duration         : 40 seconds
 Stacks           : 5 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ....x... x...x... x.x..... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
