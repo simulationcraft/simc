@@ -252,9 +252,9 @@ void fire( player_t* p )
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "counterspell" );
-  default_->add_action( "call_action_list,name=combustion_timing,if=!variable.disable_combustion", "The combustion_timing action list schedules when Combustion will be used and stores the result in variable.time_to_combustion." );
-  default_->add_action( "variable,name=shifting_power_before_combustion,value=variable.time_to_combustion-cooldown.shifting_power.remains>action.shifting_power.full_reduction&(cooldown.rune_of_power.remains-cooldown.shifting_power.remains>5|!talent.rune_of_power)&(variable.combustion_shifting_power>active_enemies|variable.time_to_combustion>=cooldown.shifting_power.duration)", "Variable that estimates whether Shifting Power will be used before Combustion is ready." );
-  default_->add_action( "shifting_power,if=buff.combustion.down&action.fire_blast.charges<=1&!buff.hot_streak.react&variable.shifting_power_before_combustion" );
+  default_->add_action( "call_action_list,name=combustion_timing,if=!variable.disable_combustion", "The combustion_timing action list schedules the approximate time when Combustion should be used and stores the number of seconds until then in variable.time_to_combustion." );
+  default_->add_action( "variable,name=shifting_power_before_combustion,value=variable.time_to_combustion>cooldown.shifting_power.remains|firestarter.active", "Variable that estimates whether Shifting Power will be used before the next Combustion. TODO: During Firestarter, it sims higher to always set this to 1 even when Shifting Power has already been used. This needs further investigation." );
+  default_->add_action( "shifting_power,if=buff.combustion.down&action.fire_blast.charges<=1&(cooldown.rune_of_power.remains|!talent.rune_of_power)&!buff.hot_streak.react&variable.shifting_power_before_combustion" );
   default_->add_action( "variable,name=item_cutoff_active,value=(variable.time_to_combustion<variable.on_use_cutoff|buff.combustion.remains>variable.skb_duration&!cooldown.item_cd_1141.remains)&((trinket.1.has_cooldown&trinket.1.cooldown.remains<variable.on_use_cutoff)+(trinket.2.has_cooldown&trinket.2.cooldown.remains<variable.on_use_cutoff)>1)" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=moonlit_prism,if=variable.time_to_combustion<=5|fight_remains<variable.time_to_combustion" );
@@ -328,7 +328,8 @@ void fire( player_t* p )
   combustion_phase->add_action( "pyroblast,if=buff.pyroclasm.react&buff.pyroclasm.remains>cast_time&buff.combustion.remains>cast_time&active_enemies<variable.combustion_flamestrike&(!talent.feel_the_burn|buff.feel_the_burn.remains>execute_time|buff.heating_up.react+hot_streak_spells_in_flight<2)", "Pyroclasm procs should be used in Combustion at higher priority than Phoenix Flames and Scorch." );
   combustion_phase->add_action( "fireball,if=buff.combustion.remains>cast_time&buff.flame_accelerant.react" );
   combustion_phase->add_action( "phoenix_flames,if=!talent.alexstraszas_fury&buff.combustion.up&travel_time<buff.combustion.remains&buff.heating_up.react+hot_streak_spells_in_flight<2&(!talent.from_the_ashes|variable.extended_combustion_remains<10)", "Use Phoenix Flames and Scorch in Combustion to help generate Hot Streaks when Fire Blasts are not available or need to be conserved." );
-  combustion_phase->add_action( "scorch,if=buff.combustion.remains>cast_time" );
+  combustion_phase->add_action( "scorch,if=buff.combustion.remains>cast_time&cast_time>=gcd.max" );
+  combustion_phase->add_action( "fireball,if=buff.combustion.remains>cast_time" );
   combustion_phase->add_action( "living_bomb,if=buff.combustion.remains<gcd.max&active_enemies>1", "If there isn't enough time left in Combustion for a Phoenix Flames or Scorch to hit inside of Combustion, use something else." );
   combustion_phase->add_action( "ice_nova,if=buff.combustion.remains<gcd.max" );
 
