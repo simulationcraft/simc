@@ -53,7 +53,7 @@ st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(8*(1+0.5*talent.soul_of_the_forest*buff.eclipse_solar.up))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
-st->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+5&(!talent.fungal_growth|talent.stellar_flare|dot.fungal_growth.remains<2)&raid_event.adds.in>30-15*charges|fight_remains<10" );
+st->add_action( "wild_mushroom,if=!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10" );
 st->add_action( "starfire,if=eclipse.in_lunar&buff.umbral_embrace.react|buff.eclipse_lunar.up&buff.warrior_of_elune.up" );
 st->add_action( "wrath" );
 st->add_action( "run_action_list,name=fallthru" );
