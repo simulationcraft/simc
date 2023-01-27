@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.5.47825
-static const std::array<spelltext_data_t, 19263> __spelltext_data { {
+// Spell text, wow build 10.0.5.47849
+static const std::array<spelltext_data_t, 19264> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19263,13 +19263,14 @@ static const std::array<spelltext_data_t, 19263> __spelltext_data { {
   { 400813, "Harness the heat of the unhinged timelines during the Storm's Fury event in the Primalist Future to remove one stack of  $@spellicon396050$@spellname396050 every $t seconds.", "Harnessing the heat of the unhinged timelines to remove one stack of  $@spellicon396050$@spellname396050 every $t seconds.", 0 },
   { 401150, "Transform into a colossus for $d, causing you to deal $s1% increased damage$?s394314[, take $394314s2% reduced damage][] and removing all roots and snares.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Damage done increased by $s1%.", 0 },
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
+  { 403777, "\r\n\r\n", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47825
+// spelltext hotfix entries, wow build 10.0.5.47849
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.5.47825
+// Spell description variables, wow build 10.0.5.47849
 static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19612,7 +19613,7 @@ static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {  377192, "$duration=${$377195d+(($w2-1)*$377190s~2/1000)}" },
   {  378285, "$dmg=${$378286s1*(1+($s2/100))}" },
   {  378405, "$heal=${$378412o1*(1+($s1/100))}" },
-  {  378986, "$cap=${$SP*1.40}" },
+  {  378986, "$cap=${$SP*2.2}" },
   {  382266, "$blastTicks=$?s375510[${$375510s1/2}][${0}]\r\n$dmgI=${$357209s1}\r\n$dotI=${$357209o2*(10+$<blastTicks>)}\r\n$durI=${20+$375510s1}\r\n$dmgII=${$357209s1+($357209o2*3)}\r\n$dotII=${$357209o2*(7+$<blastTicks>)}\r\n$durII=${14+$375510s1}\r\n$dmgIII=${$357209s1+($357209o2*6)}\r\n$dotIII=${$357209o2*(4+$<blastTicks>)}\r\n$durIII=${8+$375510s1}\r\n$dmgIV=${$357209s1+($357209o2*9)}\r\n$dotIV=${$357209o2*(1+$<blastTicks>)}\r\n$durIV=${2+$375510s1}" },
   {  382411, "$dmg=${$359077s2}" },
   {  382614, "$sOneHeal=${2*$355941s1}\r\n$sTwoHeal=${2.25*$355941s1}\r\n$sThreeHeal=${2.5*$355941s1}\r\n$sFourHeal=${2.75*$355941s1}\r\n$sOneDur=${16}\r\n$sTwoDur=${12}\r\n$sThreeDur=${8}\r\n$sFourDur=${4}" },
@@ -19643,7 +19644,7 @@ static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47825
+// spelldesc_vars hotfix entries, wow build 10.0.5.47849
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
