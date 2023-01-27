@@ -8798,15 +8798,6 @@ void warrior_t::apl_arms()
     }
   }
 
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + item.name_str );
-    }
-  }
-
   //default_list->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15)" );
 
   default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2" );
