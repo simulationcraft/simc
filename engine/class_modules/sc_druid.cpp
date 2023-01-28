@@ -4557,6 +4557,11 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     : druid_mixin_t( n, p, p->talent.maul, opt ), ursocs_fury_mul( p->talent.ursocs_fury->effectN( 1 ).percent() )
   {}
 
+  bool ready() override
+  {
+    return p()->talent.raze.ok() ? false : base_t::ready();
+  }
+
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
