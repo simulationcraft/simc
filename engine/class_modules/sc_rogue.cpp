@@ -3545,9 +3545,8 @@ struct dispatch_t: public rogue_attack_t
 
     if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
     {
-      // 2022-11-12 -- Currently does not benefit from animacharged CP
       p()->buffs.t29_outlaw_2pc->expire();
-      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points( p()->bugs ) );
+      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
     trigger_restless_blades( execute_state );
