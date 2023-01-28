@@ -2157,13 +2157,6 @@ public:
 
   void execute() override
   {
-    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
-    // 2021-04-22 - Night Fae Lego Toxic Onslaught on PTR shows this happens and applies proc buffs before damage (Shadow Blades)
-    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) )
-    {
-      p()->buffs.sepsis->decrement();
-    }
-
     ab::execute();
 
     if ( ab::hit_any_target )
@@ -2201,6 +2194,12 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
+    }
+
+    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) )
+    {
+      p()->buffs.sepsis->decrement();
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -3545,9 +3544,8 @@ struct dispatch_t: public rogue_attack_t
 
     if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
     {
-      // 2022-11-12 -- Currently does not benefit from animacharged CP
       p()->buffs.t29_outlaw_2pc->expire();
-      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points( p()->bugs ) );
+      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
     trigger_restless_blades( execute_state );
@@ -3815,6 +3813,8 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str )
   {
+    // 2023-01-28 -- Sepsis buff is consumed by Garrote when used for Improved Garrote
+    affected_by.sepsis = p->talent.assassination.improved_garrote->ok();
   }
 
   void init() override
@@ -3874,9 +3874,11 @@ struct garrote_t : public rogue_attack_t
 
     // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
     //               Additionally works every global of Improved Garrote regardless of Subterfuge
+    // 2023-01-28 -- However, this does not work with Improved Garrote triggered by Sepsis
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) || ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) ) &&
-         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) )
+         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
+         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
+           ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) && !p()->buffs.sepsis->check() ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -3900,6 +3902,11 @@ struct garrote_t : public rogue_attack_t
     if ( p()->talent.assassination.improved_garrote->ok() &&
          p()->stealthed( STEALTH_IMPROVED_GARROTE ) )
     {
+      cd_duration = timespan_t::zero();
+    }
+    else if ( p()->bugs && p()->buffs.sepsis->check() )
+    {
+      // 2023-01-28 -- Sepsis buff causes Garrote to have no cooldown regardless of Improved Garrote
       cd_duration = timespan_t::zero();
     }
 
@@ -4134,7 +4141,7 @@ struct killing_spree_t : public rogue_attack_t
     player_t* tick_target = d->target;
     if ( p()->buffs.blade_flurry->check() )
     {
-      auto candidate_targets = targets_in_range_list( target_list() );
+      auto& candidate_targets = targets_in_range_list( target_list() );
       tick_target = candidate_targets[ rng().range( candidate_targets.size() ) ];
     }
 
@@ -4183,7 +4190,7 @@ struct pistol_shot_t : public rogue_attack_t
       }
     }
 
-    if ( p()->is_ptr() && secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
     {
       energize_amount -= p()->talent.outlaw.fan_the_hammer->effectN( 3 ).base_value();
     }
@@ -5787,10 +5794,7 @@ struct sepsis_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    if ( p()->is_ptr() )
-    {
-      p()->buffs.sepsis->trigger();
-    }
+    p()->buffs.sepsis->trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -8964,7 +8968,7 @@ void rogue_t::init_spells()
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
-  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 347037 ) : spell_data_t::not_found();
+  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
@@ -10112,9 +10116,8 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
     return true;
 
   // Sepsis gives all the benefits of Improved Garrote including CDR on PTR, even without the buff
-  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) &&
-       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() ||
-         ( is_ptr() && buffs.sepsis->check() ) ) )
+  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) && talent.assassination.improved_garrote->ok() &&
+       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() || buffs.sepsis->check() ) )
     return true;
 
   return false;

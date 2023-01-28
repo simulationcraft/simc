@@ -28,7 +28,6 @@ actions.precombat+=/summon_pet
 actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/inquisitors_gaze
 actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>3
 actions.precombat+=/haunt
 actions.precombat+=/unstable_affliction,if=!talent.soul_swap
@@ -40,7 +39,6 @@ actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|var
 actions+=/call_action_list,name=aoe,if=active_enemies>3
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
-actions+=/soul_swap,if=dot.unstable_affliction.remains<5
 actions+=/unstable_affliction,if=remains<5
 actions+=/agony,if=remains<5
 actions+=/corruption,if=remains<5
@@ -64,7 +62,6 @@ actions+=/drain_soul,if=buff.nightfall.react
 actions+=/shadow_bolt,if=buff.nightfall.react
 actions+=/agony,if=refreshable
 actions+=/corruption,if=refreshable
-actions+=/soul_tap
 actions+=/drain_soul,interrupt=1
 actions+=/shadow_bolt
 
@@ -80,7 +77,7 @@ actions.aoe+=/summon_darkglare
 actions.aoe+=/seed_of_corruption,if=talent.sow_the_seeds
 actions.aoe+=/malefic_rapture
 actions.aoe+=/drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10
-actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10
 actions.aoe+=/siphon_life,target_if=remains<5,if=active_dot.siphon_life<3
 actions.aoe+=/drain_soul,interrupt_global=1
 actions.aoe+=/shadow_bolt
@@ -89,7 +86,6 @@ actions.cleave=call_action_list,name=ogcd
 actions.cleave+=/call_action_list,name=items
 actions.cleave+=/malefic_rapture,if=soul_shard=5
 actions.cleave+=/haunt
-actions.cleave+=/soul_swap,if=dot.unstable_affliction.remains<5
 actions.cleave+=/unstable_affliction,if=remains<5
 actions.cleave+=/agony,if=remains<5
 actions.cleave+=/agony,target_if=!(target=self.target)&remains<5

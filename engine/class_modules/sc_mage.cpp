@@ -5264,7 +5264,6 @@ struct radiant_spark_t final : public mage_spell_t
   {
     parse_options( options_str );
     affected_by.ice_floes = affected_by.savant = true;
-    if ( p->bugs ) affected_by.shifting_power = false;
   }
 
   void impact( action_state_t* s ) override

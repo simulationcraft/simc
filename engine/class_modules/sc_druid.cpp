@@ -4542,7 +4542,7 @@ struct mangle_t : public bear_attack_t
     p()->buff.guardian_of_elune->trigger();
 
     p()->buff.vicious_cycle_mangle->expire();
-    p()->buff.vicious_cycle_maul->trigger();
+    p()->buff.vicious_cycle_maul->trigger( num_targets_hit );
   }
 };
 
@@ -4564,7 +4564,7 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( p()->buff.tooth_and_claw->up() )
+    if ( p()->buff.tooth_and_claw->check() )
       td( s->target )->debuff.tooth_and_claw->trigger();
 
     p()->buff.ursocs_fury->trigger( 1, s->result_amount * ( 1.0 + ursocs_fury_mul ) );
@@ -4674,12 +4674,20 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
     reduced_aoe_targets = 5.0;  // PTR not in spell data
   }
 
+  bool can_proc_moonless_night() const override
+  {
+    return true;
+  }
+
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
       return;
+
+    if ( p()->buff.tooth_and_claw->check() )
+      td( s->target )->debuff.tooth_and_claw->trigger();
 
     p()->buff.ursocs_fury->trigger( 1, s->result_amount * ( 1.0 + ursocs_fury_mul ) );
   }
@@ -4698,25 +4706,10 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
       return;
 
     p()->buff.vicious_cycle_maul->expire();
-    // PTR raze triggers vicious cycle once per target hit
+    // raze triggers vicious cycle once per target hit
     p()->buff.vicious_cycle_mangle->trigger( num_targets_hit );
 
-    // PTR raze consumes consumes & debuffs one stack of tooth and claw per target hit, random targets
-    if ( p()->buff.tooth_and_claw->check() )
-    {
-      auto tl = target_list();
-      if ( tl.size() > 1 )
-        rng().shuffle( tl.begin(), tl.end() );
-
-      for ( auto t : tl )
-      {
-        td( t )->debuff.tooth_and_claw->trigger();
-        p()->buff.tooth_and_claw->decrement();
-
-        if ( !p()->buff.tooth_and_claw->check() )
-          break;
-      }
-    }
+    p()->buff.tooth_and_claw->decrement();
   }
 };
 
@@ -8808,7 +8801,9 @@ private:
 
 public:
   astral_power_decay_event_t( druid_t* p )
-    : event_t( *p, 500_ms ), p_( p ), nb_cap( p->talent.natures_balance->effectN( 2 ).base_value() )
+    : event_t( *p, 500_ms ),
+      p_( p ),
+      nb_cap( p->resources.base[ RESOURCE_ASTRAL_POWER ] * p->talent.natures_balance->effectN( 2 ).percent() )
   {}
 
   const char* name() const override { return "astral_power_decay"; }
@@ -9733,10 +9728,15 @@ void druid_t::create_buffs()
       auto tick_gain = nb_eff->resource( RESOURCE_ASTRAL_POWER );
       if ( sim->target_non_sleeping_list.empty() )
       {
-        if ( resources.current[ RESOURCE_ASTRAL_POWER ] < talent.natures_balance->effectN( 2 ).base_value() )
+        if ( resources.current[ RESOURCE_ASTRAL_POWER ] <
+             resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent() )
+        {
           tick_gain *= 3.0;
+        }
         else
+        {
           tick_gain = 0;
+        }
       }
       resource_gain( RESOURCE_ASTRAL_POWER, tick_gain, gain.natures_balance );
     } );
@@ -10543,9 +10543,14 @@ void druid_t::init_resources( bool force )
   resources.current[ RESOURCE_RAGE ]         = 0;
   resources.current[ RESOURCE_COMBO_POINT ]  = 0;
   if ( options.initial_astral_power == 0.0 && talent.natures_balance.ok() )
-    resources.current[RESOURCE_ASTRAL_POWER] = 50.0;
+  {
+    resources.current[ RESOURCE_ASTRAL_POWER ] =
+        resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent();
+  }
   else
-    resources.current[RESOURCE_ASTRAL_POWER] = options.initial_astral_power;
+  {
+    resources.current[ RESOURCE_ASTRAL_POWER ] = options.initial_astral_power;
+  }
   expected_max_health = calculate_expected_max_health();
 }
 
@@ -10867,7 +10872,8 @@ void druid_t::combat_begin()
 
     if ( options.raid_combat )
     {
-      double cap = talent.natures_balance.ok() ? 50.0 : 20.0;
+      double cap =
+          std::max( resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent(), 20.0 );
       double curr = resources.current[ RESOURCE_ASTRAL_POWER ];
 
       resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );

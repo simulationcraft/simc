@@ -13,7 +13,6 @@ std::string rune( const player_t* );
 std::string temporary_enchant( const player_t* );
 void beast_mastery( player_t* );
 void marksmanship( player_t* );
-void marksmanship_ptr( player_t* );
 void survival( player_t* );
 
 } // namespace hunter_apl

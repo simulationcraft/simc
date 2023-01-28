@@ -28,7 +28,6 @@ actions.precombat+=/summon_pet
 actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/inquisitors_gaze
 actions.precombat+=/soul_fire
 actions.precombat+=/cataclysm
 actions.precombat+=/incinerate
@@ -59,7 +58,6 @@ actions+=/chaos_bolt,if=soul_shard>3.5
 actions+=/chaos_bolt,if=talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft
 actions+=/chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time
 actions+=/conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges
-actions+=/summon_soulkeeper,if=buff.tormented_soul.stack=10
 actions+=/incinerate
 
 actions.aoe=call_action_list,name=ogcd
@@ -73,7 +71,7 @@ actions.aoe+=/cataclysm
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire
 actions.aoe+=/immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=6
 actions.aoe+=/havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire
-actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10
 actions.aoe+=/call_action_list,name=ogcd
 actions.aoe+=/summon_infernal
 actions.aoe+=/rain_of_fire

@@ -576,6 +576,7 @@ public:
 
     // Destruction
     gain_t* incinerate_crits;
+    gain_t* incinerate_fnb_crits;
     gain_t* immolate;
     gain_t* immolate_crits;
     gain_t* infernal;

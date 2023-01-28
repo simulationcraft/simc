@@ -140,7 +140,7 @@ actions.rotation+=/arcane_missiles,if=buff.clearcasting.react&buff.nether_precis
 actions.rotation+=/arcane_blast
 actions.rotation+=/arcane_barrage
 
-actions.spark_phase=nether_tempest,if=!ticking&variable.opener&buff.bloodlust.up,line_cd=15
+actions.spark_phase=nether_tempest,if=!ticking&variable.opener&buff.bloodlust.up,line_cd=45
 actions.spark_phase+=/rune_of_power
 actions.spark_phase+=/arcane_blast,if=variable.opener&cooldown.arcane_surge.ready&buff.bloodlust.up&mana>=variable.opener_min_mana&buff.rune_of_power.remains>gcd.max*4
 actions.spark_phase+=/arcane_missiles,if=variable.opener&buff.bloodlust.up&buff.clearcasting.react&buff.clearcasting.stack>=2&cooldown.radiant_spark.remains<5&buff.nether_precision.down,chain=1

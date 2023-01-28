@@ -6915,6 +6915,7 @@ struct avatar_t : public warrior_spell_t
 
     parse_options( options_str );
     callbacks = false;
+    harmful   = false;
 
     // Vision of Perfection doesn't reduce the cooldown for non-prot
     if ( p -> azerite.vision_of_perfection.enabled() && p -> specialization() == WARRIOR_PROTECTION )
@@ -8562,6 +8563,12 @@ void warrior_t::default_apl_dps_precombat()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
+  if ( specialization() == WARRIOR_FURY )
+  {
+    precombat->add_action( "avatar,if=!talent.titans_torment" );
+    precombat->add_action( "recklessness,if=!talent.reckless_abandon" );
+  }
+
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -8620,7 +8627,7 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
-  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3" );
+  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8634,10 +8641,10 @@ void warrior_t::apl_fury()
     {
       default_list->add_action( racial_action + ",if=buff.recklessness.down" );
     }
-    else if ( racial_action == "bag_of_tricks" )
-    {
-      default_list->add_action( racial_action + ",if=buff.recklessness.down&buff.enrage.up" );
-    }
+    //else if ( racial_action == "bag_of_tricks" ) // currently better to ignore entirely due to eating a GCD
+    //{
+      //default_list->add_action( racial_action + ",if=buff.recklessness.down&buff.enrage.up" );
+    //}
     else if ( racial_action == "berserking" )
     {
       default_list->add_action( racial_action + ",if=buff.recklessness.up" );
@@ -8695,13 +8702,15 @@ void warrior_t::apl_fury()
   single_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
+  single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( "execute,if=buff.enrage.up" );
+  single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
-  single_target->add_action( "rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)" );
+  single_target->add_action( "rampage,if=talent.reckless_abandon&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
+  single_target->add_action( "rampage,if=talent.anger_management" );
   single_target->add_action( "execute" );
   single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury" );
   single_target->add_action( "bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)" );
-  single_target->add_action( "onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize" );
   single_target->add_action( "raging_blow,if=charges>1&talent.wrath_and_fury" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=charges>1&talent.wrath_and_fury" );
   single_target->add_action( this, spec.bloodbath, "bloodbath,if=buff.enrage.down|!talent.wrath_and_fury" );
@@ -8713,6 +8722,7 @@ void warrior_t::apl_fury()
   single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( "raging_blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
+  single_target->add_action( "bloodthirst" );
   single_target->add_action( "whirlwind" );
   single_target->add_action( "wrecking_throw" );
   single_target->add_action( "storm_bolt" );
@@ -8793,15 +8803,6 @@ void warrior_t::apl_arms()
     else
     {
       default_list->add_action( racial_action + ",if=debuff.colossus_smash.up" );
-    }
-  }
-
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
 
