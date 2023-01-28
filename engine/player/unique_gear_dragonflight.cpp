@@ -1886,6 +1886,9 @@ void rumbling_ruby( special_effect_t& effect )
 // 382092 Damage Value
 void storm_eaters_boon( special_effect_t& effect )
 {
+  if ( create_fallback_buffs( effect, { "stormeaters_boon" } ) )
+    return;
+
   buff_t* stack_buff;
   buff_t* main_buff;
 
@@ -1895,7 +1898,7 @@ void storm_eaters_boon( special_effect_t& effect )
       ->set_duration( effect.player -> find_spell( 377453 )->duration() )
       ->set_cooldown( 0_ms );
 
-  effect.custom_buff = main_buff;
+  effect.custom_buff = effect.player->buffs.stormeaters_boon = main_buff;
 
   struct storm_eaters_boon_damage_t : public proc_spell_t
   {
