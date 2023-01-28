@@ -713,7 +713,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     // TOCHECK: As of 2023-01-22, GFG Felstorm is also triggering this inadvertently
     if ( internal_cooldown )
     {
-      internal_cooldown->start( 5_s * p()->composite_spell_speed() );
+      internal_cooldown->start( 5_s * p()->composite_spell_haste() );
     }
   }
 };
