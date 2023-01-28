@@ -41,7 +41,7 @@ bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk
 bear->add_action( "maul,if=((buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)&active_enemies<=5)" );
 bear->add_action( "maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3|active_enemies<4&!talent.vicious_cycle_maul.enabled" );
 bear->add_action( "raze,if=((buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)&active_enemies>1)" );
-bear->add_action( "raze,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3|active_enemies>1&!talent.vicious_cycle_maul.enabled" );
+bear->add_action( "raze,if=active_enemies>1&buff.vicious_cycle_maul.stack>=3|active_enemies>1&!talent.vicious_cycle_maul.enabled" );
 bear->add_action( "mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<90)&active_enemies<11)|((rage<85)&active_enemies<11&talent.soul_of_the_forest.enabled)" );
 bear->add_action( "thrash_bear,if=active_enemies>1" );
 bear->add_action( "pulverize,target_if=dot.thrash_bear.stack>2" );
