@@ -3019,6 +3019,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
       p()->buff.metamorphosis->trigger();
     }
   }
+
+  bool ready() override
+  {
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return demon_hunter_spell_t::ready();
+  }
 };
 
 // Pick up Soul Fragment ====================================================
@@ -3554,7 +3563,13 @@ struct the_hunt_t : public demon_hunter_spell_t
 
   // Bypass the normal demon_hunter_spell_t out of range and movement ready checks
   bool ready() override
-  { return spell_t::ready(); }
+  {
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return spell_t::ready();
+  }
 };
 
 }  // end namespace spells
@@ -4546,9 +4561,11 @@ struct fel_rush_t : public demon_hunter_attack_t
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     if ( p()->cooldown.movement_shared->down() )
-    {
       return false;
-    }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     return demon_hunter_attack_t::ready();
   }
@@ -4888,6 +4905,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         dual = true;
       }
+
+      void init() override
+      {
+        base_t::init();
+        update_flags = 0; // Snapshots on refresh, does not update dynamically
+      }
     };
 
     soulrend_t* soulrend;
@@ -5022,10 +5045,12 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
   bool ready() override
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
-    if (p()->cooldown.movement_shared->down())
-    {
+    if ( p()->cooldown.movement_shared->down() )
       return false;
-    }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     return demon_hunter_spell_t::ready();
   }
