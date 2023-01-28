@@ -618,7 +618,7 @@ struct demonic_strength_t : public demonology_spell_t
       // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
       if ( p()->min_version_check( VERSION_10_0_5 ) )
       {
-        internal_cooldown->start( 5_s * p()->composite_spell_speed() );
+        internal_cooldown->start( 5_s * p()->composite_spell_haste() );
       }
     }
   }
