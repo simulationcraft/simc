@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47849 Live (hotfix 2023-01-27/47849)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47871 Live (hotfix 2023-01-28/47871)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1974,7 +1974,6 @@ Description      : $@spelldesc79577
 Tooltip          : Arcane spells deal $w1% additional damage$?<$w5>0>[, area effect damage increased $w5%,][] and increases the damage Starfire deals to nearby enemies by $w2%.
 
 Name             : Cat Form (id=48629) [Spell Family (7), Hidden] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -6483,7 +6482,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Incapacitating Roar (99), Tranquility (740), Maul (6807), Starfall (50286), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Brutal Slash (202028), Overgrowth (203651), Lunar Beam (204069), Brambles (213709), Swipe (213771), Strength of the Wild (236716), Primal Wrath (285381), Thorns (305497), Berserk (343216), After the Wildfire (371982), Raze (400254)
                    Family Flags: 3, 7, 10, 11, 27, 32, 52, 53, 54, 55, 56, 72, 74, 82, 87, 88, 91, 93, 99, 100, 126
-Hotfixed         : Affects Spells
 #4 (id=340874)   : Apply Aura (6) | Unknown(188)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=874468)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
@@ -19909,7 +19907,6 @@ Effects          :
 Description      : $@spelldesc400222
 
 Name             : Raze (id=400254) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Guardian [tree=spec, row=10, col=2, max_rank=1, req_points=20, replace="Maul" (id=6807)]
 Class            : Druid
 School           : Physical

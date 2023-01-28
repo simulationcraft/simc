@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47849 Live (hotfix 2023-01-27/47849)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47871 Live (hotfix 2023-01-28/47871)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
