@@ -435,7 +435,7 @@ void assassination_df( player_t* p )
   cds->add_action( "marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD for max CP." );
   cds->add_action( "variable,name=deathmark_exsanguinate_condition,value=!talent.exsanguinate|cooldown.exsanguinate.remains>15|exsanguinated.rupture|exsanguinated.garrote", "Sync Deathmark window with Exsanguinate if applicable" );
   cds->add_action( "variable,name=deathmark_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking", "Wait on Deathmark for Garrote with MA" );
-  cds->add_action( "sepsis,if=!stealthed.rogue&dot.garrote.ticking&(target.time_to_die>10|fight_remains<10)" );
+  cds->add_action( "sepsis,if=!stealthed.rogue&!stealthed.improved_garrote&(!talent.improved_garrote&dot.garrote.ticking|talent.improved_garrote&cooldown.garrote.up)&(target.time_to_die>10|fight_remains<10)" );
   cds->add_action( "variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&!debuff.deathmark.up&variable.deathmark_exsanguinate_condition&variable.deathmark_ma_condition", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
   cds->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=(!talent.exsanguinate|cooldown.exsanguinate.remains>15|exsanguinated.rupture|exsanguinated.garrote)&dot.rupture.ticking&cooldown.deathmark.remains<2|fight_remains<=22", "Sync the priority stat buff trinket with Deathmark, otherwise use on cooldown" );
   cds->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)" );
@@ -491,7 +491,7 @@ void assassination_df( player_t* p )
   stealthed->add_action( "pool_resource,for_next=1", "Improved Garrote: Apply or Refresh with buffed Garrotes" );
   stealthed->add_action( "garrote,target_if=min:remains,if=stealthed.improved_garrote&!will_lose_exsanguinate&(remains<12%exsanguinated_rate|pmultiplier<=1)&target.time_to_die-remains>2" );
   stealthed->add_action( "pool_resource,for_next=1", "Improved Garrote + Exsg on 1T: Refresh Garrote at the end of stealth to get max duration before Exsanguinate" );
-  stealthed->add_action( "garrote,if=talent.exsanguinate.enabled&stealthed.improved_garrote&active_enemies=1&!will_lose_exsanguinate&improved_garrote_remains<1.3" );
+  stealthed->add_action( "garrote,if=talent.exsanguinate.enabled&stealthed.improved_garrote&active_enemies=1&!will_lose_exsanguinate&(remains<18%exsanguinated_rate|pmultiplier<=1)&variable.exsang_sync_remains<18&improved_garrote_remains<1.3" );
 
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45", "Stealth Cooldowns  Vanish Sync for Improved Garrote with Deathmark" );
   vanish->add_action( "vanish,if=talent.improved_garrote&cooldown.garrote.up&!exsanguinated.garrote&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)" );

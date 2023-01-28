@@ -3814,6 +3814,8 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str )
   {
+    // 2023-01-28 -- Sepsis buff is consumed by Garrote when used for Improved Garrote
+    affected_by.sepsis = p->talent.assassination.improved_garrote->ok();
   }
 
   void init() override
@@ -3873,9 +3875,11 @@ struct garrote_t : public rogue_attack_t
 
     // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
     //               Additionally works every global of Improved Garrote regardless of Subterfuge
+    // 2023-01-28 -- However, this does not work with Improved Garrote triggered by Sepsis
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) || ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) ) &&
-         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) )
+         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
+         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
+           ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) && !p()->buffs.sepsis->check() ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -3899,6 +3903,11 @@ struct garrote_t : public rogue_attack_t
     if ( p()->talent.assassination.improved_garrote->ok() &&
          p()->stealthed( STEALTH_IMPROVED_GARROTE ) )
     {
+      cd_duration = timespan_t::zero();
+    }
+    else if ( p()->bugs && p()->buffs.sepsis->check() )
+    {
+      // 2023-01-28 -- Sepsis buff causes Garrote to have no cooldown regardless of Improved Garrote
       cd_duration = timespan_t::zero();
     }
 
@@ -8960,7 +8969,7 @@ void rogue_t::init_spells()
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
-  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 347037 ) : spell_data_t::not_found();
+  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
