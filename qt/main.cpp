@@ -105,6 +105,14 @@ int main( int argc, char* argv[] )
   }
   a.installTranslator( &myappTranslator );
 
+  // Chromium theme color
+  QString color;
+  color = settings.value( "options/theme_color", "Light" ).toString();
+  if ( color == "Dark" )
+  {
+    qputenv( "QTWEBENGINE_CHROMIUM_FLAGS", "--force-dark-mode --enable-features=WebUIDarkMode" );
+  }
+
   QString iconlocation =
       QStandardPaths::locate( QStandardPaths::AppDataLocation, QString( "icon" ), QStandardPaths::LocateDirectory );
   QDir::addSearchPath( "icon", iconlocation );
