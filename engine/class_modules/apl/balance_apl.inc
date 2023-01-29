@@ -15,7 +15,6 @@ precombat->add_action( "wrath" );
 precombat->add_action( "stellar_flare" );
 
 def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1" );
-def->add_action( "variable,name=is_cleave,value=spell_targets.starfire>1" );
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40" );
 def->add_action( "berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15" );
 def->add_action( "potion,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<30" );
@@ -82,7 +81,8 @@ aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17" );
-aoe->add_action( "starfire" );
+aoe->add_action( "starfire,if=spell_targets>1" );
+aoe->add_action( "wrath" );
 aoe->add_action( "run_action_list,name=fallthru" );
 
 fallthru->add_action( "starfall,if=variable.is_aoe" );
