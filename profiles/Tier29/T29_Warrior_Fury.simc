@@ -29,6 +29,8 @@ actions.precombat+=/berserker_stance,toggle=on
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/avatar,if=!talent.titans_torment
+actions.precombat+=/recklessness,if=!talent.reckless_abandon
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -37,7 +39,7 @@ actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/use_item,name=manic_grieftorch,if=buff.recklessness.down&buff.avatar.down
-actions+=/ravager,if=cooldown.recklessness.remains<3
+actions+=/ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
@@ -102,6 +104,7 @@ actions.single_target+=/slam,if=talent.annihilator
 actions.single_target+=/bloodbath
 actions.single_target+=/raging_blow
 actions.single_target+=/crushing_blow
+actions.single_target+=/bloodthirst
 actions.single_target+=/whirlwind
 actions.single_target+=/wrecking_throw
 actions.single_target+=/storm_bolt
