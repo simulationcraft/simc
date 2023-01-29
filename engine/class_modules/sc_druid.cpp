@@ -9828,7 +9828,7 @@ void druid_t::create_buffs()
       make_buff<berserk_cat_buff_t>( this, "berserk_cat", spec.berserk_cat );
 
   buff.incarnation_cat =
-      make_buff<berserk_cat_buff_t>( this, "incarnation_king_of_the_jungle", talent.incarnation_cat, true );
+      make_buff<berserk_cat_buff_t>( this, "incarnation_avatar_of_ashamane", talent.incarnation_cat, true );
 
   buff.bloodtalons = make_buff( this, "bloodtalons", find_spell( 145152 ) )
     ->set_trigger_spell( talent.bloodtalons );
@@ -9856,7 +9856,8 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.incarnation_cat_prowl =
-      make_buff( this, "incarnation_avatar_of_ashamane_prowl", talent.incarnation_cat->effectN( 2 ).trigger() );
+      make_buff( this, "incarnation_avatar_of_ashamane_prowl", talent.incarnation_cat->effectN( 2 ).trigger() )
+          ->set_name_reporting( "Prowl" );
 
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_trigger_spell( talent.predatory_swiftness );
@@ -11466,7 +11467,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     switch ( specialization() )
     {
       case DRUID_BALANCE:     splits[ 1 ] = "incarnation_chosen_of_elune";    break;
-      case DRUID_FERAL:       splits[ 1 ] = "incarnation_king_of_the_jungle"; break;
+      case DRUID_FERAL:       splits[ 1 ] = "incarnation_avatar_of_ashamane"; break;
       case DRUID_GUARDIAN:    splits[ 1 ] = "incarnation_guardian_of_ursoc";  break;
       case DRUID_RESTORATION: splits[ 1 ] = "incarnation_tree_of_life";       break;
       default: break;
@@ -11492,7 +11493,7 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     if ( specialization() == DRUID_FERAL )
     {
       if ( talent.incarnation_cat.ok() )
-        splits[ 1 ] = "incarnation_king_of_the_jungle";
+        splits[ 1 ] = "incarnation_avatar_of_ashamane";
       else
         splits[ 1 ] = "berserk_cat";
     }
