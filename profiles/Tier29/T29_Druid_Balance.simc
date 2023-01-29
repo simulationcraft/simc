@@ -40,7 +40,6 @@ actions.precombat+=/stellar_flare
 
 # Executed every time the actor is available.
 actions=variable,name=is_aoe,value=spell_targets.starfall>1
-actions+=/variable,name=is_cleave,value=spell_targets.starfire>1
 actions+=/variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40
 actions+=/berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15
 actions+=/potion,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<30
@@ -74,7 +73,8 @@ actions.aoe+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
 actions.aoe+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.aoe+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17
-actions.aoe+=/starfire
+actions.aoe+=/starfire,if=spell_targets>1
+actions.aoe+=/wrath
 actions.aoe+=/run_action_list,name=fallthru
 
 actions.fallthru=starfall,if=variable.is_aoe
