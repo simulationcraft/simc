@@ -10121,6 +10121,7 @@ void shaman_t::init_action_list_elemental()
         "If you've selected <a href='https://www.wowhead.com/spell=114050/ascendance'>Ascendance</a> sync "
         "<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with it. Otherwise use "
         "<a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> on Cooldown." );
+    def->add_action( "potion" );
 
     // Pick APL to run
     def->add_action(
