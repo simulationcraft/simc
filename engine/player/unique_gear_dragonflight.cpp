@@ -784,17 +784,18 @@ void darkmoon_deck_dance( special_effect_t& effect )
     action_t* damage;
     action_t* heal;
 
-    // TODO: confirm mixed order remains true in-game
-    // card order is [ 2 3 6 7 4 5 8 A ]
+    // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_dance_t( const special_effect_t& e )
       : DF_darkmoon_proc_t( e, "refreshing_dance", 382958,
-                            { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
+                            { 382861, 382862, 382863, 382864, 382865, 382866, 382867, 382860 } )
     {
       damage =
         create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
       damage->background = damage->dual = true;
       damage->stats = stats;
 
+      // TODO: this value is wrong. unknown which coefficient is used, as the heal itself has a 5% variable so precise
+      // comparison to spell query scaled values is difficult.
       heal =
         create_proc_action<base_generic_proc_t<proc_heal_t>>( "refreshing_dance_heal", e, "refreshing_dance_heal", 384624 );
       heal->name_str_reporting = "Heal";
@@ -821,7 +822,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
       }
     }
   };
-  // TODO: currently this trinket is doing ~1% of the damage it should based on spell data.
+
   effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "refreshing_dance", effect );
 }
 
