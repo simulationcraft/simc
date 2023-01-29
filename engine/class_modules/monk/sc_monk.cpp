@@ -3682,20 +3682,42 @@ struct dragonfire_brew_t : public monk_spell_t
 {
   dragonfire_brew_t( monk_t& p ) : monk_spell_t( "dragonfire_brew", &p, p.passives.dragonfire_brew )
   {
-    background    = true;
+    background = true;
     aoe        = -1;
   }
 };
 
 struct breath_of_fire_dot_t : public monk_spell_t
 {
-  breath_of_fire_dot_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
+  bool blackout_combo;
+
+  breath_of_fire_dot_t( monk_t& p )
+    : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot ),
+      blackout_combo( false )
   {
-    background    = true;
+    background               = true;
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
     reduced_aoe_targets      = 1.0;
     full_amount_targets      = 1;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( blackout_combo )
+      am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.blackout_combo->up() )
+        blackout_combo = true;
+
+    monk_spell_t::execute();
   }
 };
 
@@ -3729,13 +3751,11 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( no_bof_hit == true )
+    if ( no_bof_hit )
       return 0;
 
     if ( blackout_combo )
-    {
       am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
-    }
 
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
@@ -3755,11 +3775,7 @@ struct breath_of_fire_t : public monk_spell_t
   void execute() override
   {
     if ( p()->buff.blackout_combo->up() )
-    {
       blackout_combo = true;
-      p()->proc.blackout_combo_breath_of_fire->occur();
-      p()->buff.blackout_combo->expire();
-    }
 
     monk_spell_t::execute();
 
@@ -3769,6 +3785,11 @@ struct breath_of_fire_t : public monk_spell_t
     {
       dragonfire->execute();
       dragonfire->execute();
+    }
+    if ( blackout_combo )
+    {
+      p()->proc.blackout_combo_breath_of_fire->occur();
+      p()->buff.blackout_combo->expire();
     }
   }
 
@@ -3787,14 +3808,6 @@ struct breath_of_fire_t : public monk_spell_t
 
       p()->active_actions.breath_of_fire->execute();
     }
-
-    // if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
-    // {
-    //   dragonfire->execute();
-    //   dragonfire->execute();
-    //   // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-    //   //   dragonfire->execute();
-    // }
   }
 };
 
