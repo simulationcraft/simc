@@ -636,6 +636,7 @@ public:
     proc_t* death_sweep_in_essence_break;
     proc_t* felblade_reset;
     proc_t* shattered_destiny;
+    proc_t* eye_beam_canceled;
 
     // Vengeance
     proc_t* soul_fragment_expire;
@@ -2251,7 +2252,14 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::last_tick( d );
 
-    if ( p()->talent.havoc.furious_gaze->ok() )
+    // If Eye Beam is canceled early, cancel Blind Fury and skip granting Furious Gaze
+    // Collective Anguish is *not* canceled when early canceling Eye Beam, however
+    if ( d->current_tick < d->num_ticks() )
+    {
+      p()->buff.blind_fury->cancel();
+      p()->proc.eye_beam_canceled->occur();
+    }
+    else if ( p()->talent.havoc.furious_gaze->ok() )
     {
       p()->buff.furious_gaze->trigger();
     }
@@ -5990,6 +5998,7 @@ void demon_hunter_t::init_procs()
   proc.blade_dance_in_essence_break   = get_proc( "blade_dance_in_essence_break" );
   proc.death_sweep_in_essence_break   = get_proc( "death_sweep_in_essence_break" );
   proc.shattered_destiny              = get_proc( "shattered_destiny" );
+  proc.eye_beam_canceled              = get_proc( "eye_beam_canceled" );
 
   // Vengeance
   proc.soul_fragment_expire           = get_proc( "soul_fragment_expire" );
