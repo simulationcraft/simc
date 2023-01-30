@@ -4214,7 +4214,7 @@ void register_special_effects()
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
-  register_special_effect( 377453, items::storm_eaters_boon );
+  register_special_effect( 377453, items::storm_eaters_boon, true );
   register_special_effect( 377449, items::decoration_of_flame );
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );
