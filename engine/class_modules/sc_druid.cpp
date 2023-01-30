@@ -1653,7 +1653,7 @@ struct fury_of_elune_buff_t : public druid_buff_t
 struct protector_of_the_pack_buff_t : public druid_buff_t
 {
   double mul;
-  double cap_coeff = 1.4;  // from tooltip desc, TODO: don't hardcode this
+  double cap_coeff = 2.2;  // from tooltip desc, TODO: don't hardcode this
 
   protector_of_the_pack_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, s ), mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() )
@@ -1670,20 +1670,6 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
       return;
 
     current_value = std::min( cap, current_value + amt * mul );
-  }
-};
-
-// Tiger Dash Buff ===========================================================
-struct tiger_dash_buff_t : public druid_buff_t
-{
-  tiger_dash_buff_t( druid_t* p ) : base_t( p, "tiger_dash", p->talent.tiger_dash )
-  {
-    set_cooldown( 0_ms );
-    set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
-    set_freeze_stacks( true );
-    set_tick_callback( []( buff_t* b, int, timespan_t ) {
-      b->current_value -= b->data().effectN( 2 ).percent();
-    } );
   }
 };
 
@@ -5233,6 +5219,26 @@ struct nourish_t : public druid_heal_t
 // Regrowth =================================================================
 struct regrowth_t : public druid_heal_t
 {
+  struct protector_of_the_pack_regrowth_t : public druid_heal_t
+  {
+    protector_of_the_pack_regrowth_t( druid_t* p ) : druid_heal_t( "protector_of_the_pack_regrowth", p, p->find_spell( 400204 ) )
+    {
+      // 1 point to allow proper snapshot/update flag parsing
+      base_dd_min = base_dd_max = 1.0;
+    }
+
+    double base_da_min( const action_state_t* s ) const override
+    {
+      return p()->buff.protector_of_the_pack_regrowth->check_value();
+    }
+
+    double base_da_max( const action_state_t* s ) const override
+    {
+      return p()->buff.protector_of_the_pack_regrowth->check_value();
+    }
+  };
+
+  action_t* potp = nullptr;
   timespan_t gcd_add;
   double bonus_crit;
   double sotf_mul;
@@ -5248,6 +5254,12 @@ struct regrowth_t : public druid_heal_t
     may_autounshift = true;
 
     affected_by.soul_of_the_forest = true;
+
+    if ( p->talent.protector_of_the_pack.ok() )
+    {
+      potp = p->get_secondary_action<protector_of_the_pack_regrowth_t>( "protector_of_the_pack_regrowth" );
+      add_child( potp );
+    }
   }
 
   timespan_t gcd() const override
@@ -5266,11 +5278,6 @@ struct regrowth_t : public druid_heal_t
       return 0_ms;
 
     return druid_heal_t::execute_time();
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    return druid_heal_t::bonus_da( s ) + p()->buff.protector_of_the_pack_regrowth->check_value();
   }
 
   double composite_target_crit_chance( player_t* t ) const override
@@ -5323,12 +5330,17 @@ struct regrowth_t : public druid_heal_t
     if ( target == p() )
       p()->buff.protective_growth->trigger();
 
+    if ( p()->buff.protector_of_the_pack_regrowth->check() )
+    {
+      potp->execute_on_target( target );
+      p()->buff.protector_of_the_pack_regrowth->expire();
+    }
+
     if ( is_free() )
       return;
 
     p()->buff.dream_of_cenarius->expire();
     p()->buff.natures_swiftness->expire();
-    p()->buff.protector_of_the_pack_regrowth->expire();
   }
 
   void last_tick( dot_t* d ) override
@@ -6673,6 +6685,26 @@ struct moonfire_t : public druid_spell_t
   struct moonfire_damage_t
     : public druid_mixin_t<trigger_gore_t<trigger_shooting_stars_t<trigger_waning_twilight_t<druid_spell_t>>>>
   {
+    struct protector_of_the_pack_moonfire_t : public druid_spell_t
+    {
+      protector_of_the_pack_moonfire_t( druid_t* p ) : druid_spell_t( "protector_of_the_pack_moonfire", p, p->find_spell( 400202 ) )
+      {
+        // 1 point to allow proper snapshot/update flag parsing
+        base_dd_min = base_dd_max = 1.0;
+      }
+
+      double base_da_min( const action_state_t* s ) const override
+      {
+        return p()->buff.protector_of_the_pack_moonfire->check_value();
+      }
+
+      double base_da_max( const action_state_t* s ) const override
+      {
+        return p()->buff.protector_of_the_pack_moonfire->check_value();
+      }
+    };
+
+    action_t* potp = nullptr;
     double gg_mul = 0.0;
     double feral_override_da = 0.0;
     double feral_override_ta = 0.0;
@@ -6721,11 +6753,12 @@ struct moonfire_t : public druid_spell_t
         feral_override_ta =
             p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent();
       }
-    }
 
-    double bonus_da( const action_state_t* s ) const override
-    {
-      return base_t::bonus_da( s ) + p()->buff.protector_of_the_pack_moonfire->check_value();
+      if ( p->talent.protector_of_the_pack.ok() )
+      {
+        potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
+        add_child( potp );
+      }
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -6793,7 +6826,11 @@ struct moonfire_t : public druid_spell_t
 
       if ( hit_any_target )
       {
-        p()->buff.protector_of_the_pack_moonfire->expire();
+        if ( p()->buff.protector_of_the_pack_moonfire->check() )
+        {
+          potp->execute_on_target( target );
+          p()->buff.protector_of_the_pack_moonfire->expire();
+        }
 
         if ( !is_free() )
           p()->buff.galactic_guardian->expire();
@@ -9640,7 +9677,13 @@ void druid_t::create_buffs()
   buff.protector_of_the_pack_regrowth =
       make_buff<protector_of_the_pack_buff_t>( this, "protector_of_the_pack_regrowth", find_spell( 395336 ) );
 
-  buff.tiger_dash = make_buff<tiger_dash_buff_t>( this );
+  buff.tiger_dash = make_buff( this, "tiger_dash", talent.tiger_dash )
+    ->set_cooldown( 0_ms )
+    ->set_freeze_stacks( true )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->set_tick_callback( []( buff_t* b, int, timespan_t ) {
+      b->current_value -= b->data().effectN( 2 ).percent();
+    } );
 
   buff.tireless_pursuit =
       make_buff( this, "tireless_pursuit", find_spell( 340546 ) )

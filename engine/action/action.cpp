@@ -2546,8 +2546,11 @@ void action_t::init()
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
 
-  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
+  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
+       data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
+  {
     snapshot_flags &= ~( STATE_VERSATILITY );
+  }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
   {
