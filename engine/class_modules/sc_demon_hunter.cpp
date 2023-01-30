@@ -3251,6 +3251,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       return false;
     }
 
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
     // Catch edge case where a fragment exists but we can't pick it up in time.
     return select_fragment() != nullptr;
   }
