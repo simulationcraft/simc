@@ -62,7 +62,7 @@ race=dwarf
 role=tank
 position=front
 professions=blacksmithing=100/jewelcrafting=100
-talents=BkEAAAAAAAAAAAAAAAAAAAAAAIECAAAAIJJSSCSLpkkkWDRgQRAlkEAikkQLkkAEOQIAAAAAAAQEAAKlCA
+talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEBAAAASSikkg0SKJJp1QEIUEQJJBgIJJ0QSCQ4AhAAAAAAAARAAKlCAIA
 
 head=infurious_helm_of_vengeance,id=190522,bonus_id=8836/8840/8902/8960/8809/8801,ilevel=418,gem_id=192919
 neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
