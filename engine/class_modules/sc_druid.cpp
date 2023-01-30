@@ -2430,8 +2430,10 @@ public:
       p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
       p()->proc.pulsar->occur();
 
-      // TODO: nature's grace always procs for pulsar
       p()->buff.natures_grace->trigger();
+
+      // Touch the cosmos will proc again after being used shortly after Pulsar is consumed in game
+      make_event( *sim, [ this ]() { p()->buff.touch_the_cosmos->trigger(); } );
 
       p()->uptime.primordial_arcanic_pulsar->update( true, sim->current_time() );
 
@@ -6157,7 +6159,7 @@ struct celestial_alignment_base_t : public druid_spell_t
 
     buff->trigger();
 
-    // TODO: nature's grace only procs for CA if an eclipse already exists
+    // nature's grace only procs for CA if an eclipse already exists
     if ( p()->eclipse_handler.state != eclipse_state_e::ANY_NEXT )
       p()->buff.natures_grace->trigger();
 
@@ -12248,8 +12250,6 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
-
-  // TODO: nature's grace handled in CA/pulsar as they behave differently
 
   state = IN_BOTH;
   p->uptime.eclipse_none->update( false, p->sim->current_time() );
