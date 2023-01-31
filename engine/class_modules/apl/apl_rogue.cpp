@@ -646,7 +646,7 @@ void subtlety_df( player_t* p )
   default_->add_action( "lights_judgment" );
   default_->add_action( "bag_of_tricks" );
 
-  build->add_action( "shuriken_storm,if=spell_targets>=2+(talent.gloomblade&buff.lingering_shadow.remains>=4|buff.perforated_veins.up)", "Builders" );
+  build->add_action( "shuriken_storm,if=spell_targets>=2+(talent.gloomblade&buff.lingering_shadow.remains>=6|buff.perforated_veins.up)", "Builders" );
   build->add_action( "variable,name=anima_helper,value=!talent.echoing_reprimand.enabled|!(variable.is_next_cp_animacharged&(time_to_sht.3.plus<0.5|time_to_sht.4.plus<1)&energy<60)", "Build immediately unless the next CP is Animacharged and we won't cap energy waiting for it." );
   build->add_action( "gloomblade,if=variable.anima_helper" );
   build->add_action( "backstab,if=variable.anima_helper" );
