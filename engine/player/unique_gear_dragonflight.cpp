@@ -894,7 +894,7 @@ void darkmoon_deck_rime( special_effect_t& effect )
 
     timespan_t get_duration( size_t index ) const
     {
-      return 5_s + timespan_t::from_seconds( index );
+      return 4_s + timespan_t::from_seconds( index );
     }
 
     void impact( action_state_t* s ) override
