@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47871 Live (hotfix 2023-01-30/47871)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -11483,9 +11483,11 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Item Cast With Owner Skill (88), Do Not Display Range (126), No Partial Immunity (139), Show Mechanic as Combat Text (213), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=894884)   : Apply Aura (6) | Modify Casting Speed (216)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.
 Tooltip          : Casting slowed by $s1%.
 
