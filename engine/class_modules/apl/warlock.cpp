@@ -281,8 +281,8 @@ void destruction( player_t* p )
   aoe->add_action( "call_action_list,name=items" );
   aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd&active_enemies<5+(talent.cry_havoc&!talent.inferno)" );
   aoe->add_action( "rain_of_fire,if=pet.infernal.active" );
-  aoe->add_action( "rain_of_fire,if=talent.avatar_of_destruction" );
-  aoe->add_action( "rain_of_fire,if=soul_shard=5" );
+  aoe->add_action( "rain_of_fire,if=pet.blasphemy.active" );
+  aoe->add_action( "rain_of_fire,if=soul_shard=4.5" );
   aoe->add_action( "chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire" );
   aoe->add_action( "cataclysm" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire" );
@@ -291,7 +291,7 @@ void destruction( player_t* p )
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
-  aoe->add_action( "rain_of_fire" );
+  aoe->add_action( "rain_of_fire,if=debuff.pyrogenics.down|buff.madness_rof.up" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)" );
