@@ -2135,8 +2135,7 @@ struct kill_command_sv_t: public kill_command_base_t
   {
     double am = kill_command_base_t::action_multiplier();
 
-    if ( !p() -> bugs )
-      am *= 1 + o() -> buffs.deadly_duo -> stack_value();
+    am *= 1 + o() -> buffs.deadly_duo -> stack_value();
 
     return am;
   }
