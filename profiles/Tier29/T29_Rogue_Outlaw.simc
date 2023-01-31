@@ -5,7 +5,7 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAAgEkEgDkkEJlEBkkWSkISSSSIAAAAAAARiAlIkkEpEAAAA
+talents=BQQAAAAAAAAAAAAAAAAAAAAAAAAABSQSASSSkUEBkkWSkISSSSIAAAAAAARLAlIkkEpFAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -50,10 +50,8 @@ actions+=/variable,name=rtb_reroll,if=talent.hidden_opportunity,value=!rtb_buffs
 actions+=/variable,name=rtb_reroll,op=reset,if=!(raid_event.adds.remains>12|raid_event.adds.up&(raid_event.adds.in-raid_event.adds.remains)<6|target.time_to_die>12)|fight_remains<12
 # Ensure we get full Ambush CP gains and aren't rerolling Count the Odds buffs away
 actions+=/variable,name=ambush_condition,value=combo_points.deficit>=2+talent.improved_ambush+buff.broadside.up&energy>=50&(!talent.count_the_odds|buff.roll_the_bones.remains>=10)
-# Finish at max possible CP without overflowing bonus combo points, unless for BtE which always should be 5+ CP
-actions+=/variable,name=finish_condition,value=combo_points>=cp_max_spend-buff.broadside.up-(buff.opportunity.up*(talent.quick_draw|talent.fan_the_hammer))|effective_combo_points>=cp_max_spend
-# Always attempt to use BtE at 5+ CP, regardless of CP gen waste
-actions+=/variable,name=finish_condition,op=reset,if=cooldown.between_the_eyes.ready&effective_combo_points<5
+# Finish at 6 (5 with Summarily Dispatched talented) CP or CP Max-1, whichever is greater of the two
+actions+=/variable,name=finish_condition,value=combo_points>=((cp_max_spend-1)<?(6-talent.summarily_dispatched))|effective_combo_points>=cp_max_spend
 # With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry
 actions+=/variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.remains>1+talent.killing_spree.enabled
 # Higher priority Stealth list for Count the Odds or true Stealth/Vanish that will break in a single global
@@ -71,9 +69,8 @@ actions+=/bag_of_tricks
 # Builders
 actions.build=sepsis,target_if=max:target.time_to_die*debuff.between_the_eyes.up,if=target.time_to_die>11&debuff.between_the_eyes.up|fight_remains<11
 actions.build+=/ghostly_strike,if=debuff.ghostly_strike.remains<=3&(spell_targets.blade_flurry<=2|buff.dreadblades.up)&!buff.subterfuge.up&target.time_to_die>=5
-actions.build+=/echoing_reprimand,if=!buff.dreadblades.up
-# High priority Ambush line to apply Find Weakness or consume HO+Audacity buff before Pistol Shot
-actions.build+=/ambush,if=talent.hidden_opportunity&buff.audacity.up|talent.find_weakness&debuff.find_weakness.down
+# High priority Ambush line to apply Find Weakness or consume Audacity/Sepsis buff before Pistol Shot
+actions.build+=/ambush,if=(talent.hidden_opportunity|talent.keep_it_rolling)&(buff.audacity.up|buff.sepsis_buff.up|buff.subterfuge.up&cooldown.keep_it_rolling.ready)|talent.find_weakness&debuff.find_weakness.down
 # With Audacity + Hidden Opportunity + Fan the Hammer, use Pistol Shot to proc Audacity any time Ambush is not available
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up&!buff.subterfuge.up&!buff.shadow_dance.up
 # Use Greenskins Wickers buff immediately with Opportunity unless running Fan the Hammer
@@ -81,6 +78,7 @@ actions.build+=/pistol_shot,if=buff.greenskins_wickers.up&(!talent.fan_the_hamme
 # With Fan the Hammer, consume Opportunity at max stacks or if we will get max 4+ CP and Dreadblades is not up
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&combo_points.deficit>((1+talent.quick_draw)*talent.fan_the_hammer.rank)&!buff.dreadblades.up&(!talent.hidden_opportunity|!buff.subterfuge.up&!buff.shadow_dance.up)
+actions.build+=/echoing_reprimand,if=!buff.dreadblades.up
 actions.build+=/pool_resource,for_next=1
 actions.build+=/ambush,if=talent.hidden_opportunity|talent.find_weakness&debuff.find_weakness.down
 # Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw
@@ -94,7 +92,7 @@ actions.cds+=/roll_the_bones,if=buff.dreadblades.down&(rtb_buffs.total=0|variabl
 actions.cds+=/keep_it_rolling,if=!variable.rtb_reroll&(buff.broadside.up+buff.true_bearing.up+buff.skull_and_crossbones.up+buff.ruthless_precision.up)>2&(buff.shadow_dance.down|rtb_buffs>=6)
 actions.cds+=/blade_rush,if=variable.blade_flurry_sync&!buff.dreadblades.up&(energy.base_time_to_max>4+stealthed.rogue-spell_targets%3)
 actions.cds+=/call_action_list,name=stealth_cds,if=!stealthed.all|talent.count_the_odds&!variable.stealthed_cto
-actions.cds+=/dreadblades,if=!stealthed.all&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)&target.time_to_die>=10
+actions.cds+=/dreadblades,if=!(variable.stealthed_cto|stealthed.basic|talent.hidden_opportunity&stealthed.rogue)&combo_points<=2&(!talent.marked_for_death|!cooldown.marked_for_death.ready)&target.time_to_die>=10
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds+=/marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|combo_points.deficit>=cp_max_spend-1)&!buff.dreadblades.up
 # If no adds will die within the next 30s, use MfD on boss without any CP.
@@ -136,31 +134,31 @@ actions.stealth_cds+=/variable,name=shadow_dance_condition,value=talent.shadow_d
 actions.stealth_cds+=/shadow_dance,if=!talent.keep_it_rolling&variable.shadow_dance_condition&buff.slice_and_dice.up&(variable.finish_condition|talent.hidden_opportunity)&(!talent.hidden_opportunity|!cooldown.vanish.ready)
 actions.stealth_cds+=/shadow_dance,if=talent.keep_it_rolling&variable.shadow_dance_condition&(cooldown.keep_it_rolling.remains<=30|cooldown.keep_it_rolling.remains>120&(variable.finish_condition|talent.hidden_opportunity))
 
-head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/40
+head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192925/192925/192925,crafted_stats=32/40
 shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-back=potionstained_cloak,id=193712,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8840/8836/8902/1508,crafted_stats=32/40
 chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
+wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/7936/7937/1508,gem_id=192925,crafted_stats=32/40
 hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-waist=leafmender_girdle,id=109832,bonus_id=6652/8811/8812/6808/4786/1808/3306,gem_id=192925
-legs=vault_delvers_pantaloons,id=200373,ilevel=424,enchant=fierce_armor_kit_3
-feet=biornskin_moccasins,id=134193,bonus_id=6652/8811/8812/6808/4786/3300
+waist=vault_delvers_utility_belt,id=200375,bonus_id=1504,gem_id=192925
+legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
+feet=infurious_footwraps_of_indemnity,id=193455,bonus_id=8809/8960/8840/8836/8902/1508,crafted_stats=32/40
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
 finger2=crystallized_droplet,id=144112,bonus_id=6652/8811/8812/6808/4786/1808/3311,gem_id=192925,enchant=devotion_of_critical_strike_3
 trinket1=windscar_whetstone,id=137486,bonus_id=6652/8811/8812/6808/4786/3300
 trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-main_hand=refractions_edge,id=193646,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
-off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
+main_hand=refractions_edge,id=193646,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=frozen_devotion_3
+off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=frozen_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.56
-# gear_agility=4962
-# gear_stamina=13248
-# gear_crit_rating=5097
-# gear_haste_rating=1336
-# gear_mastery_rating=1856
-# gear_versatility_rating=3735
-# gear_armor=3347
+# gear_ilvl=420.81
+# gear_agility=4927
+# gear_stamina=13126
+# gear_crit_rating=5092
+# gear_haste_rating=1165
+# gear_mastery_rating=1542
+# gear_versatility_rating=4209
+# gear_armor=3326
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

@@ -2,14 +2,14 @@ warlock="T29_Warlock_Destruction"
 source=default
 spec=destruction
 level=70
-race=orc
+race=human
 role=spell
 position=ranged_back
-talents=BsQAAAAAAAAAAAAAAAAAAAAAAgcASSkIBSTLCSLJJkWgDkokkIQSrgEAAAAAAAAAAAAhkUSC
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAgcASSkIBSTLCSLJJkWgDkokkkEk0KNJBAAAAAAAAAAAQAlkA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3
@@ -28,7 +28,6 @@ actions.precombat+=/summon_pet
 actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/snapshot_stats
-actions.precombat+=/inquisitors_gaze
 actions.precombat+=/soul_fire
 actions.precombat+=/cataclysm
 actions.precombat+=/incinerate
@@ -42,8 +41,8 @@ actions+=/conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|c
 actions+=/dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)
 actions+=/cataclysm
 actions+=/channel_demonfire,if=talent.raging_demonfire
-actions+=/soul_fire,if=soul_shard<=4
-actions+=/immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains>dot.immolate.remains)
+actions+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)
+actions+=/immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>dot.immolate.remains)
 actions+=/havoc,if=talent.cry_havoc&((buff.ritual_of_ruin.up&pet.infernal.active&talent.burn_to_ashes)|((buff.ritual_of_ruin.up|pet.infernal.active)&!talent.burn_to_ashes))
 actions+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
 actions+=/summon_infernal
@@ -72,7 +71,7 @@ actions.aoe+=/cataclysm
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire
 actions.aoe+=/immolate,cycle_targets=1,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=6
 actions.aoe+=/havoc,cycle_targets=1,if=!(self.target=target)&!talent.rain_of_fire
-actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10
 actions.aoe+=/call_action_list,name=ogcd
 actions.aoe+=/summon_infernal
 actions.aoe+=/rain_of_fire
@@ -94,8 +93,8 @@ actions.cleave+=/conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate
 actions.cleave+=/dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)
 actions.cleave+=/cataclysm
 actions.cleave+=/channel_demonfire,if=talent.raging_demonfire
-actions.cleave+=/soul_fire,if=soul_shard<=4&!variable.pool_soul_shards
-actions.cleave+=/immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains>remains)
+actions.cleave+=/soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)&!variable.pool_soul_shards
+actions.cleave+=/immolate,cycle_targets=1,if=((talent.internal_combustion&dot.immolate.refreshable)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains+(!talent.mayhem*action.soul_fire.cast_time)>dot.immolate.remains)
 actions.cleave+=/havoc,cycle_targets=1,if=!(target=self.target)&(!cooldown.summon_infernal.up|!talent.summon_infernal)
 actions.cleave+=/chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4
 actions.cleave+=/summon_infernal
@@ -116,7 +115,7 @@ actions.cleave+=/conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges
 actions.cleave+=/incinerate
 
 actions.havoc=conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4
-actions.havoc+=/soul_fire,if=cast_time<havoc_remains&soul_shard<3
+actions.havoc+=/soul_fire,if=cast_time<havoc_remains&soul_shard<2.5
 actions.havoc+=/channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2&active_enemies>2
 actions.havoc+=/immolate,cycle_targets=1,if=dot.immolate.refreshable&dot.immolate.remains<havoc_remains&soul_shard<4.5&(debuff.havoc.down|!dot.immolate.ticking)
 actions.havoc+=/chaos_bolt,if=talent.cry_havoc&!talent.inferno&cast_time<havoc_remains
@@ -126,8 +125,8 @@ actions.havoc+=/rain_of_fire,if=active_enemies>1&(talent.avatar_of_destruction|(
 actions.havoc+=/conflagrate,if=!talent.backdraft
 actions.havoc+=/incinerate,if=cast_time<havoc_remains
 
-actions.items=use_item,slot=trinket1,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains
-actions.items+=/use_item,slot=trinket2,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains
+actions.items=use_item,slot=trinket1,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.1.cooldown.duration<cooldown.summon_infernal.remains+5
+actions.items+=/use_item,slot=trinket2,if=pet.infernal.active|!talent.summon_infernal|time_to_die<21|trinket.2.cooldown.duration<cooldown.summon_infernal.remains+5
 # We might use trinket outside of infernal to not lose a use if we don't have RoC
 actions.items+=/use_item,slot=trinket1,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.1.cooldown.duration&time_to_die>trinket.1.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|(trinket.2.cooldown.remains>0&trinket.2.cooldown.remains<cooldown.summon_infernal.remains)
 actions.items+=/use_item,slot=trinket2,if=(!talent.rain_of_chaos&time_to_die<cooldown.summon_infernal.remains+trinket.2.cooldown.duration&time_to_die>trinket.2.cooldown.duration)|time_to_die<cooldown.summon_infernal.remains|(trinket.1.cooldown.remains>0&trinket.1.cooldown.remains<cooldown.summon_infernal.remains)

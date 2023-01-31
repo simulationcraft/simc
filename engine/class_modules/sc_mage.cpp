@@ -5264,7 +5264,6 @@ struct radiant_spark_t final : public mage_spell_t
   {
     parse_options( options_str );
     affected_by.ice_floes = affected_by.savant = true;
-    if ( p->bugs ) affected_by.shifting_power = false;
   }
 
   void impact( action_state_t* s ) override
@@ -6701,9 +6700,12 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
   m *= 1.0 + spec.fire_mage->effectN( 3 ).percent();
   m *= 1.0 + spec.frost_mage->effectN( 3 ).percent();
 
-  m *= 1.0 + buffs.bone_chilling->check_stack_value();
-  m *= 1.0 + buffs.incanters_flow->check_stack_value();
-  m *= 1.0 + buffs.rune_of_power->check_value();
+  if ( !guardian )
+  {
+    m *= 1.0 + buffs.bone_chilling->check_stack_value();
+    m *= 1.0 + buffs.incanters_flow->check_stack_value();
+    m *= 1.0 + buffs.rune_of_power->check_value();
+  }
 
   return m;
 }
@@ -6881,8 +6883,10 @@ std::unique_ptr<expr_t> mage_t::create_action_expression( action_t& action, std:
         return expr_t::create_constant( name_str, false );
 
       return make_fn_expr( name_str, [ &action, actual_pct, execute ]
-      { return execute ? action.get_expression_target()->health_percentage() < actual_pct :
-                         action.get_expression_target()->health_percentage() > actual_pct; } );
+      {
+        double pct = action.get_expression_target()->health_percentage();
+        return execute ? pct < actual_pct : pct > actual_pct;
+      } );
     }
 
     if ( util::str_compare_ci( splits[ 1 ], "remains" ) )

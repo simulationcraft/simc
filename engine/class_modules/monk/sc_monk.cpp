@@ -748,6 +748,7 @@ public:
          s->action->id == 196608 || // Eye of the Tiger
          s->action->id == 196733 || // Special Delivery
          s->action->id == 338141 || // Charred Passion
+         s->action->id == 386959 || // Charred Passion
          s->action->id == 387621 || // Dragonfire Brew
          s->action->id == 393786    // Chi Surge
        )
@@ -986,7 +987,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
     : monk_spell_t( "storm_earth_and_fire", p, p->talent.windwalker.storm_earth_and_fire )
   {
     parse_options( options_str );
-    
+
     cast_during_sck = true;
     trigger_gcd     = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
@@ -1630,6 +1631,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
         p()->buff.thunder_focus_tea->decrement();
     }
+
+    if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
+        p()->buff.gift_of_the_ox->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -1973,6 +1977,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     }
 
     p()->buff.transfer_the_power->trigger();
+
+    if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
+        p()->buff.gift_of_the_ox->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3122,7 +3129,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     monk_melee_attack_t::impact( s );
 
-    p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
+    if ( p()->spec.stagger->ok() )
+        p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
   }
 };
 
@@ -3567,7 +3575,7 @@ struct serenity_t : public monk_spell_t
     : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
   {
     parse_options( options_str );
-    
+
     harmful         = false;
     cast_during_sck = true;
     trigger_gcd     = timespan_t::zero();
@@ -3674,20 +3682,42 @@ struct dragonfire_brew_t : public monk_spell_t
 {
   dragonfire_brew_t( monk_t& p ) : monk_spell_t( "dragonfire_brew", &p, p.passives.dragonfire_brew )
   {
-    background    = true;
+    background = true;
     aoe        = -1;
   }
 };
 
 struct breath_of_fire_dot_t : public monk_spell_t
 {
-  breath_of_fire_dot_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
+  bool blackout_combo;
+
+  breath_of_fire_dot_t( monk_t& p )
+    : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot ),
+      blackout_combo( false )
   {
-    background    = true;
+    background               = true;
     tick_may_crit = may_crit = true;
     hasted_ticks             = false;
     reduced_aoe_targets      = 1.0;
     full_amount_targets      = 1;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( blackout_combo )
+      am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.blackout_combo->up() )
+        blackout_combo = true;
+
+    monk_spell_t::execute();
   }
 };
 
@@ -3721,13 +3751,11 @@ struct breath_of_fire_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( no_bof_hit == true )
+    if ( no_bof_hit )
       return 0;
 
     if ( blackout_combo )
-    {
       am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
-    }
 
     if ( p()->talent.brewmaster.dragonfire_brew->ok() )
     {
@@ -3747,11 +3775,7 @@ struct breath_of_fire_t : public monk_spell_t
   void execute() override
   {
     if ( p()->buff.blackout_combo->up() )
-    {
       blackout_combo = true;
-      p()->proc.blackout_combo_breath_of_fire->occur();
-      p()->buff.blackout_combo->expire();
-    }
 
     monk_spell_t::execute();
 
@@ -3761,6 +3785,11 @@ struct breath_of_fire_t : public monk_spell_t
     {
       dragonfire->execute();
       dragonfire->execute();
+    }
+    if ( blackout_combo )
+    {
+      p()->proc.blackout_combo_breath_of_fire->occur();
+      p()->buff.blackout_combo->expire();
     }
   }
 
@@ -3779,14 +3808,6 @@ struct breath_of_fire_t : public monk_spell_t
 
       p()->active_actions.breath_of_fire->execute();
     }
-
-    // if ( no_bof_hit == false && p()->talent.brewmaster.dragonfire_brew->ok() )
-    // {
-    //   dragonfire->execute();
-    //   dragonfire->execute();
-    //   // for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
-    //   //   dragonfire->execute();
-    // }
   }
 };
 
@@ -4519,7 +4540,7 @@ struct chi_surge_t : public monk_spell_t
     aoe               = -1;
     school            = SCHOOL_NATURE;
 
-    spell_power_mod.tick = data().effectN( 2 ).base_value() / 100; // Saved as 45
+    spell_power_mod.tick = 2 * data().effectN( 2 ).base_value() / 100; // Saved as 45, is really 90
   }
 
   double composite_spell_power() const override
@@ -6334,7 +6355,7 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
 
     // set_duration(stagger_duration);
     set_duration( timespan_t::zero() );
-    set_trigger_spell( p.talent.brewmaster.stagger );
+    set_trigger_spell( p.spec.stagger );
     if ( p.talent.brewmaster.high_tolerance->ok() )
     {
       add_invalidate( CACHE_HASTE );
@@ -6381,10 +6402,10 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t<buff_t>
 
   void decrement( int stacks, double value = DEFAULT_VALUE() ) override
   {
-    if ( p().buff.kicks_of_flowing_momentum->up() )    
+    if ( p().buff.kicks_of_flowing_momentum->up() )
       p().buff.fists_of_flowing_momentum->trigger();
-      
-    base_t::decrement( stacks, value );  
+
+    base_t::decrement( stacks, value );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -7009,21 +7030,21 @@ void monk_t::init_spells()
   // Row 1
   talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
   // Row 2
-  talent.brewmaster.stagger                             = _ST( "Stagger" );
-  // Row 3
   talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
   talent.brewmaster.shuffle                             = _ST( "Shuffle" );
+  // Row 3
+  talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
+  talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
+  talent.brewmaster.spirit_of_the_ox                    = _ST( "Spirit of the Ox " );
+  talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
   // Row 4
   talent.brewmaster.hit_scheme                          = _ST( "Hit Scheme" );
-  talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
   talent.brewmaster.healing_elixir                      = _ST( "Healing Elixir" );
-  talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
   talent.brewmaster.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
   talent.brewmaster.special_delivery                    = _ST( "Special Delivery" );
   // Row 5
   talent.brewmaster.celestial_flames                    = _ST( "Celestial Flames" );
   talent.brewmaster.celestial_brew                      = _ST( "Celestial Brew" );
-  talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
   talent.brewmaster.graceful_exit                       = _ST( "Graceful Exit" );
   talent.brewmaster.zen_meditation                      = _ST( "Zen Meditation" );
   talent.brewmaster.clash                               = _ST( "Clash" );
@@ -7227,6 +7248,7 @@ void monk_t::init_spells()
   spec.leather_specialization_brm                       = find_spell( 120225 );
   spec.spinning_crane_kick_brm                          = find_spell( 322729 );
   spec.spinning_crane_kick_2_brm                        = find_spell( 322700 );
+  spec.stagger                                          = find_specialization_spell( "Stagger" );
   spec.touch_of_death_3_brm                             = find_rank_spell( "Touch of Death", "Rank 3", MONK_BREWMASTER );
   spec.two_hand_adjustment_brm                          = find_spell( 346104 );
 
@@ -7651,11 +7673,11 @@ void monk_t::create_buffs ()
       ->add_invalidate( CACHE_MASTERY );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) )
-        ->set_trigger_spell( talent.brewmaster.stagger );
+        ->set_trigger_spell( spec.stagger );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) )
-        ->set_trigger_spell( talent.brewmaster.stagger );
+        ->set_trigger_spell( spec.stagger );
     buff.heavy_stagger = make_buff<buffs::stagger_buff_t>( *this, "heavy_stagger", passives.heavy_stagger )
-        ->set_trigger_spell( talent.brewmaster.stagger );
+        ->set_trigger_spell( spec.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
   // Mistweaver
@@ -7899,6 +7921,9 @@ void monk_t::init_rng()
   player_t::init_rng();
   if ( shared.bountiful_brew && shared.bountiful_brew->ok() )
     rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
+
+  if ( talent.brewmaster.spirit_of_the_ox->ok() )
+    rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
 }
 
 // monk_t::init_special_effects ===========================================
@@ -8166,7 +8191,7 @@ bool monk_t::has_stagger()
 
 double monk_t::partial_clear_stagger_pct( double clear_percent )
 {
-  if ( !talent.brewmaster.stagger->ok() )
+  if ( specialization() != MONK_BREWMASTER )
     return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_pct( clear_percent );
@@ -8176,7 +8201,7 @@ double monk_t::partial_clear_stagger_pct( double clear_percent )
 
 double monk_t::partial_clear_stagger_amount( double clear_amount )
 {
-  if ( !talent.brewmaster.stagger->ok() )
+  if ( specialization() != MONK_BREWMASTER )
     return 0;
 
   return active_actions.stagger_self_damage->clear_partial_damage_amount( clear_amount );
@@ -8755,14 +8780,14 @@ void monk_t::combat_begin()
   make_repeating_event( sim, timespan_t::from_seconds( 1 ), [ this ] () {
 
     squirm_timer += 1;
-    
+
     // Do not interrupt a cast
     if ( ( executing && !executing->usable_moving() )
       || ( queueing && !queueing->usable_moving() )
       || ( channeling && !channeling->usable_moving() ) )
     {
       if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
-      {       
+      {
         movement.melee_squirm->trigger();
         squirm_timer = 0;
       }
@@ -8924,9 +8949,9 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
       if ( school == SCHOOL_PHYSICAL )
         stagger_dmg += s->result_amount * stagger_pct( s->target->level() );
 
-      else if ( talent.brewmaster.stagger->ok() && school != SCHOOL_PHYSICAL )
+      else if ( spec.stagger->ok() && school != SCHOOL_PHYSICAL )
       {
-        double stagger_magic = stagger_pct( s->target->level() ) * talent.brewmaster.stagger->effectN( 5 ).percent();
+        double stagger_magic = stagger_pct( s->target->level() ) * spec.stagger->effectN( 5 ).percent();
 
         stagger_dmg += s->result_amount * stagger_magic;
       }
@@ -8939,7 +8964,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
     {
       // Blizzard is putting a cap on how much damage can go into stagger
       double amount_remains = active_actions.stagger_self_damage->amount_remaining();
-      double cap            = max_health() * talent.brewmaster.stagger->effectN( 4 ).percent();
+      double cap            = max_health() * spec.stagger->effectN( 4 ).percent();
       if ( amount_remains + stagger_dmg >= cap )
       {
         double diff = ( amount_remains + stagger_dmg ) - cap;
@@ -9059,7 +9084,7 @@ double monk_t::stagger_base_value()
 
   if ( specialization() == MONK_BREWMASTER )  // no stagger when not in Brewmaster Specialization
   {
-    stagger_base = agility() * talent.brewmaster.stagger->effectN( 1 ).percent();
+    stagger_base = agility() * spec.stagger->effectN( 1 ).percent();
 
     if ( talent.brewmaster.high_tolerance->ok() )
       stagger_base *= 1 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
@@ -9085,7 +9110,7 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
   // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
   double k            = dbc->armor_mitigation_constant( target_level );
-  k *= ( is_ptr() ? 1.384 : 1.992 );  // Mythic Raid
+  k *= ( is_ptr() ? 1.992 : 1.384 );  // Mythic Raid
 
   double stagger = stagger_base / ( stagger_base + k );
 
@@ -9472,7 +9497,7 @@ public:
                   ( quick_sip / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
                   ( staggering_strikes / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", tranquil_spirit,
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Tranquil Spirit: {} / {:.2f}%</p>\n", tranquil_spirit,
                   ( tranquil_spirit / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
                   ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );

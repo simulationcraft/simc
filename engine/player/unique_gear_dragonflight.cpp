@@ -784,17 +784,18 @@ void darkmoon_deck_dance( special_effect_t& effect )
     action_t* damage;
     action_t* heal;
 
-    // TODO: confirm mixed order remains true in-game
-    // card order is [ 2 3 6 7 4 5 8 A ]
+    // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_dance_t( const special_effect_t& e )
       : DF_darkmoon_proc_t( e, "refreshing_dance", 382958,
-                            { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
+                            { 382861, 382862, 382863, 382864, 382865, 382866, 382867, 382860 } )
     {
       damage =
         create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
       damage->background = damage->dual = true;
       damage->stats = stats;
 
+      // TODO: this value is wrong. unknown which coefficient is used, as the heal itself has a 5% variable so precise
+      // comparison to spell query scaled values is difficult.
       heal =
         create_proc_action<base_generic_proc_t<proc_heal_t>>( "refreshing_dance_heal", e, "refreshing_dance_heal", 384624 );
       heal->name_str_reporting = "Heal";
@@ -821,7 +822,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
       }
     }
   };
-  // TODO: currently this trinket is doing ~1% of the damage it should based on spell data.
+
   effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "refreshing_dance", effect );
 }
 
@@ -1547,21 +1548,6 @@ void voidmenders_shadowgem( special_effect_t& effect )
   stacking_driver->name_str           = "voidmenders_shadowgem_stacks";
   stacking_driver->type               = SPECIAL_EFFECT_EQUIP;
   stacking_driver->source             = SPECIAL_EFFECT_SOURCE_ITEM;
-  // 10.0.5 PTR 'fixes' voidmender to properly proc off all hostile actions
-  if ( !maybe_ptr( effect.player->dbc->ptr ) )
-  {
-    stacking_driver->proc_flags_        = effect.driver()->proc_flags();
-    stacking_driver->proc_flags2_       = PF2_CAST_HEAL;
-
-    // TODO: Check this. As of 28/12/22 every single spell on shadow procs this item for some reason.
-    // Shadow and Druid have global whitelists due to nearly every* rotational spell triggering the trinket.
-    // Evoker and Warlock both have whitelists inside of their class module in init_special_effects
-    if ( effect.player->specialization() == PRIEST_SHADOW || effect.player->type == player_e::DRUID || effect.player->type == player_e::EVOKER  || effect.player->type == player_e::WARLOCK )
-    {
-      stacking_driver->proc_flags_ |= PF_ALL_DAMAGE;
-      stacking_driver->proc_flags2_ |= PF2_CAST | PF2_CAST_DAMAGE;
-    }
-  }
   stacking_driver->spell_id           = effect.driver()->id();
   stacking_driver->cooldown_          = 0_ms;
   stacking_driver->cooldown_category_ = 0;
@@ -1901,6 +1887,9 @@ void rumbling_ruby( special_effect_t& effect )
 // 382092 Damage Value
 void storm_eaters_boon( special_effect_t& effect )
 {
+  if ( create_fallback_buffs( effect, { "stormeaters_boon" } ) )
+    return;
+
   buff_t* stack_buff;
   buff_t* main_buff;
 
@@ -1910,7 +1899,7 @@ void storm_eaters_boon( special_effect_t& effect )
       ->set_duration( effect.player -> find_spell( 377453 )->duration() )
       ->set_cooldown( 0_ms );
 
-  effect.custom_buff = main_buff;
+  effect.custom_buff = effect.player->buffs.stormeaters_boon = main_buff;
 
   struct storm_eaters_boon_damage_t : public proc_spell_t
   {
@@ -1940,10 +1929,11 @@ void storm_eaters_boon( special_effect_t& effect )
   };
   action_t* boon_action = create_proc_action<storm_eaters_boon_damage_t>( "stormeaters_boon_damage", effect, stack_buff );
   main_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
-  main_buff->set_tick_callback( [ boon_action ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ )
-  {
-    boon_action->execute();
-  } );
+  main_buff->set_tick_callback(
+      [ boon_action, effect ]( buff_t* /* buff */, int /* current_tick */, timespan_t /* tick_time */ ) {
+        boon_action->execute();
+        effect.player->get_cooldown( effect.cooldown_group_name() )->start( effect.cooldown_group_duration() );
+      } );
   main_buff->set_stack_change_callback( [ stack_buff ](buff_t*, int, int new_)
   {
     if( new_ == 0 )
@@ -4224,7 +4214,7 @@ void register_special_effects()
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
-  register_special_effect( 377453, items::storm_eaters_boon );
+  register_special_effect( 377453, items::storm_eaters_boon, true );
   register_special_effect( 377449, items::decoration_of_flame );
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );

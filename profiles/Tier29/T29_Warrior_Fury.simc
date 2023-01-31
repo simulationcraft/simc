@@ -6,7 +6,7 @@ race=human
 role=attack
 position=back
 professions=blacksmithing=100/engineering=65
-talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAIAJNKBQEEiARjIhkARSIJpFJSkgQSSSkWKBIRSAAAAB
+talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAChIoEARQISQUgEiARSIJpFRSkgQSSSkSASSkEAAAAEE
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -29,6 +29,8 @@ actions.precombat+=/berserker_stance,toggle=on
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/avatar,if=!talent.titans_torment
+actions.precombat+=/recklessness,if=!talent.reckless_abandon
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -37,13 +39,13 @@ actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/use_item,name=manic_grieftorch,if=buff.recklessness.down&buff.avatar.down
-actions+=/ravager,if=cooldown.avatar.remains<3
+actions+=/ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
 actions+=/fireblood
 actions+=/ancestral_call
-actions+=/bag_of_tricks,if=buff.recklessness.down&buff.enrage.up
+actions+=/bag_of_tricks
 actions+=/avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)
 actions+=/recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)
 actions+=/recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12
@@ -82,13 +84,15 @@ actions.single_target=whirlwind,if=spell_targets.whirlwind>1&talent.improved_whi
 actions.single_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
 actions.single_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.single_target+=/odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)
+actions.single_target+=/rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
 actions.single_target+=/execute,if=buff.enrage.up
+actions.single_target+=/onslaught,if=buff.enrage.up|talent.tenderize
 actions.single_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
-actions.single_target+=/rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)
+actions.single_target+=/rampage,if=talent.reckless_abandon&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
+actions.single_target+=/rampage,if=talent.anger_management
 actions.single_target+=/execute
 actions.single_target+=/bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury
 actions.single_target+=/bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)
-actions.single_target+=/onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize
 actions.single_target+=/raging_blow,if=charges>1&talent.wrath_and_fury
 actions.single_target+=/crushing_blow,if=charges>1&talent.wrath_and_fury
 actions.single_target+=/bloodbath,if=buff.enrage.down|!talent.wrath_and_fury
@@ -100,6 +104,7 @@ actions.single_target+=/slam,if=talent.annihilator
 actions.single_target+=/bloodbath
 actions.single_target+=/raging_blow
 actions.single_target+=/crushing_blow
+actions.single_target+=/bloodthirst
 actions.single_target+=/whirlwind
 actions.single_target+=/wrecking_throw
 actions.single_target+=/storm_bolt

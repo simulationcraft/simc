@@ -5,7 +5,7 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICBIhkgkkEJkEpkkEJQSJCJJJpFAAAA
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICBIhkgkkEJkEpkkElAJlIkkkkWAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -173,18 +173,18 @@ actions.stealthed+=/shuriken_storm,if=spell_targets>=3+buff.the_rotten.up&(!buff
 actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains
 actions.stealthed+=/shadowstrike
 
-head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/40
+head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192958/192958/192958,crafted_stats=32/40
 shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-back=sootscarred_longcloak,id=109918,bonus_id=6652/8811/8812/6808/4786/3306
+back=windsoaked_drape,id=144111,bonus_id=6652/8811/8812/6808/4786/3311
 chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
 hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925
-legs=vault_delvers_pantaloons,id=200373,ilevel=424,enchant=fierce_armor_kit_3
-feet=biornskin_moccasins,id=134193,bonus_id=6652/8811/8812/6808/4786/3300
-finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925,enchant=devotion_of_critical_strike_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
+waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
+legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
+feet=boots_of_burning_focus,id=109787,bonus_id=6652/8811/8812/6808/4786/3306
+finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498/1808,gem_id=192958,enchant=devotion_of_critical_strike_3
 trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
@@ -194,10 +194,10 @@ off_hand=fenryrs_bloodstained_fang,id=201998,bonus_id=6652/8783/8784/7936/7937/6
 # gear_ilvl=421.56
 # gear_agility=5435
 # gear_stamina=13248
-# gear_crit_rating=5674
+# gear_crit_rating=5328
 # gear_haste_rating=1165
-# gear_mastery_rating=2366
-# gear_versatility_rating=2264
+# gear_mastery_rating=2911
+# gear_versatility_rating=2066
 # gear_armor=3347
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

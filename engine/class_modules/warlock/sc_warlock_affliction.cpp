@@ -816,6 +816,7 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 void warlock_t::create_buffs_affliction()
 {
   buffs.drain_life = make_buff( this, "drain_life" );
+  buffs.drain_life->quiet = true;
 
   buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
@@ -857,6 +858,7 @@ void warlock_t::create_buffs_affliction()
                                     buffs.haunted_soul->trigger();
                                 }
                               } );
+  buffs.active_haunts->quiet = true;
 
   buffs.cruel_inspiration = make_buff( this, "cruel_inspiration", tier.cruel_inspiration )
                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -917,7 +919,7 @@ void warlock_t::init_spells_affliction()
   talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
 
   talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
-  talents.soul_swap_ua = min_version_check( VERSION_10_0_5 ) ? spell_data_t::nil() : find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
+  talents.soul_swap_ua = find_spell( 316099 ); // Unnecessary in 10.0.5 due to spell changes
   talents.soul_swap_buff = find_spell( 86211 ); // Buff data
   talents.soul_swap_exhale = find_spell( 86213 ); // Replacement action while buff active
 

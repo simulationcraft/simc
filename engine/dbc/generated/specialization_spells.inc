@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.2.47631
-static const std::array<specialization_spell_entry_t, 350> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.5.47884
+static const std::array<specialization_spell_entry_t, 353> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -15,6 +15,7 @@ static const std::array<specialization_spell_entry_t, 350> __specialization_spel
   {  1,   71,  86101,      0, "Plate Specialization"              , 0 },
   {  1,   71, 137049,      0, "Arms Warrior"                      , 0 },
   {  1,   71, 162698,      0, "Stat Negation Aura - Strength DPS" , 0 },
+  {  1,   71, 260708,      0, "Sweeping Strikes"                  , 0 },
   {  1,   71, 262111,      0, "Mastery: Deep Wounds"              , 0 },
   {  1,   71, 279423,      0, "Seasoned Soldier"                  , 0 },
   {  1,   72,   5308, 163201, "Execute"                           , 0 },
@@ -221,6 +222,7 @@ static const std::array<specialization_spell_entry_t, 350> __specialization_spel
   {  9,  267, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   {  9,  267, 193541,      0, "Immolate"                          , 0 },
   {  9,  267, 231811,      0, "Soulstone"                         , "Rank 2" },
+  { 10,  268, 115069,      0, "Stagger"                           , 0 },
   { 10,  268, 117906,      0, "Mastery: Elusive Brawler"          , 0 },
   { 10,  268, 120225,      0, "Leather Specialization"            , 0 },
   { 10,  268, 124146,      0, "Dual Wield"                        , 0 },
@@ -292,6 +294,7 @@ static const std::array<specialization_spell_entry_t, 350> __specialization_spel
   { 11,  104, 231052,      0, "Improved Prowl"                    , 0 },
   { 11,  104, 231065,      0, "Lightning Reflexes"                , 0 },
   { 11,  104, 270100,      0, "Bear Form"                         , "Rank 2" },
+  { 11,  104, 300346,      0, "Ursine Adept"                      , 0 },
   { 11,  105,  77495,      0, "Mastery: Harmony"                  , 0 },
   { 11,  105,  86093,      0, "Leather Specialization"            , 0 },
   { 11,  105,  88423,      0, "Nature's Cure"                     , 0 },

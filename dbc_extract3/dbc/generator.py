@@ -2081,7 +2081,7 @@ class SpellDataGenerator(DataGenerator):
           # Dragonflight
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
-          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
+          ( 395336, 0 ), ( 378987, 0 ), ( 400202, 0 ), ( 400204, 0 ), # Protector of the Pack
           # Balance
           ( 188046, 1 ), # Denizen of the Dream pet attack
           ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things

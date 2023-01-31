@@ -2546,8 +2546,11 @@ void action_t::init()
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
 
-  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
+  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
+       data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
+  {
     snapshot_flags &= ~( STATE_VERSATILITY );
+  }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
   {
@@ -3489,27 +3492,27 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       {
         struct gcd_expr_t : public action_expr_t
         {
-          double gcd_time;
-          gcd_expr_t( action_t& a ) : action_expr_t( "gcd", a ), gcd_time( 0 )
+          timespan_t gcd_time;
+          gcd_expr_t( action_t& a ) : action_expr_t( "gcd", a ), gcd_time( 0_ms )
           {
           }
           double evaluate() override
           {
-            gcd_time = action.player->base_gcd.total_seconds();
+            gcd_time = action.player->base_gcd;
             if ( action.player->cache.attack_haste() < action.player->cache.spell_haste() )
               gcd_time *= action.player->cache.attack_haste();
             else
               gcd_time *= action.player->cache.spell_haste();
 
-            auto min_gcd = action.min_gcd.total_seconds();
-            if ( min_gcd == 0 )
+            auto min_gcd = action.min_gcd;
+            if ( min_gcd == 0_ms )
             {
-              min_gcd = 0.750;
+              min_gcd = 750_ms;
             }
 
             if ( gcd_time < min_gcd )
               gcd_time = min_gcd;
-            return gcd_time;
+            return gcd_time.total_seconds();
           }
         };
         return std::make_unique<gcd_expr_t>( *this );

@@ -636,6 +636,7 @@ public:
     proc_t* death_sweep_in_essence_break;
     proc_t* felblade_reset;
     proc_t* shattered_destiny;
+    proc_t* eye_beam_canceled;
 
     // Vengeance
     proc_t* soul_fragment_expire;
@@ -2251,7 +2252,14 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::last_tick( d );
 
-    if ( p()->talent.havoc.furious_gaze->ok() )
+    // If Eye Beam is canceled early, cancel Blind Fury and skip granting Furious Gaze
+    // Collective Anguish is *not* canceled when early canceling Eye Beam, however
+    if ( d->current_tick < d->num_ticks() )
+    {
+      p()->buff.blind_fury->cancel();
+      p()->proc.eye_beam_canceled->occur();
+    }
+    else if ( p()->talent.havoc.furious_gaze->ok() )
     {
       p()->buff.furious_gaze->trigger();
     }
@@ -3019,6 +3027,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
       p()->buff.metamorphosis->trigger();
     }
   }
+
+  bool ready() override
+  {
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return demon_hunter_spell_t::ready();
+  }
 };
 
 // Pick up Soul Fragment ====================================================
@@ -3233,6 +3250,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       return false;
     }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     // Catch edge case where a fragment exists but we can't pick it up in time.
     return select_fragment() != nullptr;
@@ -3554,7 +3575,13 @@ struct the_hunt_t : public demon_hunter_spell_t
 
   // Bypass the normal demon_hunter_spell_t out of range and movement ready checks
   bool ready() override
-  { return spell_t::ready(); }
+  {
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return spell_t::ready();
+  }
 };
 
 }  // end namespace spells
@@ -4546,9 +4573,11 @@ struct fel_rush_t : public demon_hunter_attack_t
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     if ( p()->cooldown.movement_shared->down() )
-    {
       return false;
-    }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     return demon_hunter_attack_t::ready();
   }
@@ -4888,6 +4917,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         dual = true;
       }
+
+      void init() override
+      {
+        base_t::init();
+        update_flags = 0; // Snapshots on refresh, does not update dynamically
+      }
     };
 
     soulrend_t* soulrend;
@@ -5022,10 +5057,12 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
   bool ready() override
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
-    if (p()->cooldown.movement_shared->down())
-    {
+    if ( p()->cooldown.movement_shared->down() )
       return false;
-    }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     return demon_hunter_spell_t::ready();
   }
@@ -5965,6 +6002,7 @@ void demon_hunter_t::init_procs()
   proc.blade_dance_in_essence_break   = get_proc( "blade_dance_in_essence_break" );
   proc.death_sweep_in_essence_break   = get_proc( "death_sweep_in_essence_break" );
   proc.shattered_destiny              = get_proc( "shattered_destiny" );
+  proc.eye_beam_canceled              = get_proc( "eye_beam_canceled" );
 
   // Vengeance
   proc.soul_fragment_expire           = get_proc( "soul_fragment_expire" );
