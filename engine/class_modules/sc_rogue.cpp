@@ -8147,6 +8147,12 @@ std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std
       return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
     } );
   }
+  else if ( util::str_compare_ci( name_str, "used_for_danse" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      return range::contains( danse_macabre_tracker, action.data().id() );
+    } );
+  }
 
   return player_t::create_action_expression( action, name_str );
 }
