@@ -1118,7 +1118,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
   {
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
@@ -1604,6 +1604,18 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
       if ( util::str_compare_ci( splits[ 1 ], "self_power_infusion" ) )
       {
         return expr_t::create_constant( "self_power_infusion", options.self_power_infusion );
+      }
+
+      if ( util::str_compare_ci(splits[1], "cthun_last_trigger_attempt") )
+      {
+        if ( talents.shadow.idol_of_cthun.ok() )
+          // std::min( sim->current_time() - last_trigger, max_interval() ).total_seconds();
+          return make_fn_expr( "cthun_last_trigger_attempt", [ this ] {
+            return std::min( sim->current_time() - rppm.idol_of_cthun->get_last_trigger_attempt(), 3.5_s )
+                .total_seconds();
+          } );
+        else
+          return expr_t::create_constant( "cthun_last_trigger_attempt", -1 );
       }
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }

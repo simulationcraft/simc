@@ -424,7 +424,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
   {
     parse_options( options_str );
 
@@ -2300,7 +2300,7 @@ void priest_t::init_spells_shadow()
   specs.shadowform     = find_specialization_spell( "Shadowform" );
   specs.void_bolt      = find_spell( 205448 );
   specs.voidform       = find_spell( 194249 );
-  specs.hallucinations = find_spell( 280752 );
+  specs.hallucinations = find_spell( 199579 );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
