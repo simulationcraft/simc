@@ -164,7 +164,7 @@ constexpr double m_pi = 3.14159265358979323846;
 #endif
 
 #ifndef SC_USE_PTR
-#define SC_USE_PTR 0
+#define SC_USE_PTR 1
 #endif
 
 // ==========================================================================
