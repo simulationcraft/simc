@@ -47,68 +47,26 @@ void fury( player_t* p )
 
   //   default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
 
-  for ( const auto& item : p->items )
-  {
-    if ( item.name_str == "algethar_puzzle_box" )
-    {
-      default_list->add_action(
-          "use_item,name=" + item.name_str +
-          ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
-    }
-    else if ( item.name_str == "irideus_fragment" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str + ",if=buff.recklessness.up" );
-    }
-    else if ( item.name_str == "manic_grieftorch" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str + ",if=buff.recklessness.down&buff.avatar.down" );
-    }
-    else if ( item.name_str == "gladiators_badge" )
-    {
-      default_list->add_action(
-          "use_item,name=" + item.name_str +
-          ",if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
-    }
-    else if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + item.name_str );
-    }
-  }
+  default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
+  default_list->add_action( "use_item,name=irideus_fragment,if=buff.recklessness.up" );
+  default_list->add_action( "use_item,name=manic_grieftorch,if=buff.recklessness.down&buff.avatar.down" );
+  default_list->add_action( "use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
+  default_list->add_action( "use_items");
+
   default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
 
-  for ( const auto& racial_action : racial_actions )
-  {
-    if ( racial_action == "arcane_torrent" )
-    {
-      // While it's on the GCD, arcane torrent wasting a global
-      // is a dps decrease.
-      // default_list->add_action( racial_actions[ i ] + ",if=rage<40&!buff.recklessness.up" );
-    }
-    else if ( racial_action == "lights_judgment" )
-    {
-      default_list->add_action( racial_action + ",if=buff.recklessness.down" );
-    }
-    // else if ( racial_action == "bag_of_tricks" ) // currently better to ignore entirely due to eating a GCD
-    //{
-    // default_list->add_action( racial_action + ",if=buff.recklessness.down&buff.enrage.up" );
-    //}
-    else if ( racial_action == "berserking" )
-    {
-      default_list->add_action( racial_action + ",if=buff.recklessness.up" );
-    }
-    else
-    {
-      default_list->add_action( racial_action );
-    }
-  }
+  // default_list->add_action( "arcane_torrent" ); // While it's on the GCD, arcane torrent wasting a global is a dps decrease.
+  default_list->add_action( "lights_judgment,if=buff.recklessness.down" );
+  // default_list->add_action( "bag_of_tricks" ); // currently better to ignore entirely due to eating a GCD
+  default_list->add_action( "berserking,if=buff.recklessness.up" );
+  default_list->add_action( "blood_fury" );
+  default_list->add_action( "fireblood" );
+  default_list->add_action( "ancestral_call" );
+
 
   default_list->add_action( "avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)" );
-
   default_list->add_action( "recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)" );
-
   default_list->add_action( "recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12" );
-
   default_list->add_action( "spear_of_bastion,if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20|active_enemies>1)&raid_event.adds.in>15" );
 
   // default_list->add_action(
@@ -116,7 +74,6 @@ void fury( player_t* p )
   // );
 
   default_list->add_action( "call_action_list,name=multi_target,if=raid_event.adds.exists|active_enemies>2" );
-
   default_list->add_action( "call_action_list,name=single_target,if=!raid_event.adds.exists" );
 
   // movement->add_action( this, "Heroic Leap" );
@@ -203,55 +160,20 @@ void arms( player_t* p )
 
   default_list->add_action( "pummel,if=target.debuff.casting.react" );
 
-  for ( const auto& item : p->items )
-  {
-    if ( item.name_str == "algethar_puzzle_box" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str + ",if=cooldown.avatar.remains<3" );
-    }
-    else if ( item.name_str == "irideus_fragment" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str + ",if=buff.avatar.up" );
-    }
-    else if ( item.name_str == "manic_grieftorch" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str + ",if=!buff.avatar.up&!debuff.colossus_smash.up" );
-    }
-    else if ( item.name_str == "gladiators_badge" )
-    {
-      default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25" );
-    }
-    else if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + item.name_str );
-    }
-  }
 
-  for ( const auto& racial_action : racial_actions )
-  {
-    if ( racial_action == "arcane_torrent" )
-    {
-      default_list->add_action( racial_action + ",if=cooldown.mortal_strike.remains>1.5&rage<50" );
-    }
-    else if ( racial_action == "lights_judgment" )
-    {
-      default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
-    }
-    else if ( racial_action == "bag_of_tricks" )
-    {
-      default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
-    }
-    else if ( racial_action == "berserking" )
-    {
-      default_list->add_action( racial_action + ",if=debuff.colossus_smash.remains>6" );
-    }
-    else
-    {
-      default_list->add_action( racial_action + ",if=debuff.colossus_smash.up" );
-    }
-  }
+  default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.avatar.remains<3" );
+  default_list->add_action( "use_item,name=irideus_fragment,if=buff.avatar.up" );
+  default_list->add_action( "use_item,name=manic_grieftorch,if=!buff.avatar.up&!debuff.colossus_smash.up" );
+  default_list->add_action( "use_item,name=gladiators_badge,if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25" );
+  default_list->add_action( "use_items");
+  
+  default_list->add_action( "arcane_torrent,if=cooldown.mortal_strike.remains>1.5&rage<50" );
+  default_list->add_action( "lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
+  default_list->add_action( "bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
+  default_list->add_action( "berserking,if=debuff.colossus_smash.remains>6" );
+  default_list->add_action( "blood_fury,if=debuff.colossus_smash.up" );
+  default_list->add_action( "fireblood,if=debuff.colossus_smash.up" );
+  default_list->add_action( "ancestral_call,if=debuff.colossus_smash.up" );
 
   // default_list->add_action( "sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15)" );
 
