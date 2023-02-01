@@ -10543,9 +10543,9 @@ inline double death_knight_t::rune_regen_coefficient() const
     coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
   }
 
-  else if (buffs.runic_corruption->check())
+  else if ( buffs.runic_corruption->check() )
   {
-    coeff /= 1.0 + spell.runic_corruption->effectN(1).percent();
+    coeff /= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
   }
 
   return coeff;
