@@ -10480,7 +10480,7 @@ inline double death_knight_t::runes_per_second() const
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
     
-    rps *= 1.0 + talent.unholy.runic_mastery -> effectN( 1 ).base_value() / 10;
+    rps *= 1.0 + talent.unholy.runic_mastery -> effectN( 1 ).base_value() / 1000;
   }
 
   return rps;
