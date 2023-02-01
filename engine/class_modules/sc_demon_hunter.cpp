@@ -636,6 +636,7 @@ public:
     proc_t* death_sweep_in_essence_break;
     proc_t* felblade_reset;
     proc_t* shattered_destiny;
+    proc_t* eye_beam_canceled;
 
     // Vengeance
     proc_t* soul_fragment_expire;
@@ -2251,7 +2252,14 @@ struct eye_beam_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::last_tick( d );
 
-    if ( p()->talent.havoc.furious_gaze->ok() )
+    // If Eye Beam is canceled early, cancel Blind Fury and skip granting Furious Gaze
+    // Collective Anguish is *not* canceled when early canceling Eye Beam, however
+    if ( d->current_tick < d->num_ticks() )
+    {
+      p()->buff.blind_fury->cancel();
+      p()->proc.eye_beam_canceled->occur();
+    }
+    else if ( p()->talent.havoc.furious_gaze->ok() )
     {
       p()->buff.furious_gaze->trigger();
     }
@@ -2997,6 +3005,14 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
     if ( p()->specialization() == DEMON_HUNTER_HAVOC )
     {
+      // 2023-01-31 -- Metamorphosis's "extension" mechanic technically fades and reapplies the buff
+      //               This means it (probably inadvertently) triggers Restless Hunter
+      if ( p()->talent.havoc.restless_hunter->ok() && p()->buff.metamorphosis->check() )
+      {
+        p()->cooldown.fel_rush->reset( false, 1 );
+        p()->buff.restless_hunter->trigger();
+      }
+
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
       p()->buff.inner_demon->trigger();
@@ -3018,6 +3034,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
     {
       p()->buff.metamorphosis->trigger();
     }
+  }
+
+  bool ready() override
+  {
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -3233,6 +3258,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     {
       return false;
     }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     // Catch edge case where a fragment exists but we can't pick it up in time.
     return select_fragment() != nullptr;
@@ -3554,7 +3583,13 @@ struct the_hunt_t : public demon_hunter_spell_t
 
   // Bypass the normal demon_hunter_spell_t out of range and movement ready checks
   bool ready() override
-  { return spell_t::ready(); }
+  {
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
+
+    return spell_t::ready();
+  }
 };
 
 }  // end namespace spells
@@ -3823,9 +3858,14 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::execute();
 
-      if ( last_attack )
+      if ( last_attack && p()->buff.restless_hunter->check() )
       {
-        p()->buff.restless_hunter->expire(); // DFALPHA TOCHECK -- Timing?
+        // 2023-01-31 -- If Restless Hunter is triggered when the delayed final impact is queued, it does not fade
+        //               Seems similar to some other 500ms buff protection in the game
+        if( !p()->bugs || sim->current_time() - p()->buff.restless_hunter->last_trigger_time() > 0.5_s )
+        {
+          p()->buff.restless_hunter->expire();
+        }
       }
     }
   };
@@ -4546,9 +4586,11 @@ struct fel_rush_t : public demon_hunter_attack_t
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     if ( p()->cooldown.movement_shared->down() )
-    {
       return false;
-    }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     return demon_hunter_attack_t::ready();
   }
@@ -4888,6 +4930,12 @@ struct throw_glaive_t : public demon_hunter_attack_t
       {
         dual = true;
       }
+
+      void init() override
+      {
+        base_t::init();
+        update_flags = 0; // Snapshots on refresh, does not update dynamically
+      }
     };
 
     soulrend_t* soulrend;
@@ -5022,10 +5070,12 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
   bool ready() override
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
-    if (p()->cooldown.movement_shared->down())
-    {
+    if ( p()->cooldown.movement_shared->down() )
       return false;
-    }
+
+    // Not usable during the root effect of Stormeater's Boon
+    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
+      return false;
 
     return demon_hunter_spell_t::ready();
   }
@@ -5249,6 +5299,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( p()->talent.havoc.restless_hunter->ok() )
     {
+      p()->cooldown.fel_rush->reset( false, 1 );
       p()->buff.restless_hunter->trigger();
     }
   }
@@ -5965,6 +6016,7 @@ void demon_hunter_t::init_procs()
   proc.blade_dance_in_essence_break   = get_proc( "blade_dance_in_essence_break" );
   proc.death_sweep_in_essence_break   = get_proc( "death_sweep_in_essence_break" );
   proc.shattered_destiny              = get_proc( "shattered_destiny" );
+  proc.eye_beam_canceled              = get_proc( "eye_beam_canceled" );
 
   // Vengeance
   proc.soul_fragment_expire           = get_proc( "soul_fragment_expire" );

@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost

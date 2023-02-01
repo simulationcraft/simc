@@ -1679,7 +1679,8 @@ public:
                            cold_blood_consumed_proc );
     register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
-    register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) );
+    register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) &&
+                                                        secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO );
   }
 
   // Type Wrappers ============================================================
@@ -2157,13 +2158,6 @@ public:
 
   void execute() override
   {
-    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
-    // 2021-04-22 - Night Fae Lego Toxic Onslaught on PTR shows this happens and applies proc buffs before damage (Shadow Blades)
-    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) )
-    {
-      p()->buffs.sepsis->decrement();
-    }
-
     ab::execute();
 
     if ( ab::hit_any_target )
@@ -2201,6 +2195,12 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
+    }
+
+    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) )
+    {
+      p()->buffs.sepsis->decrement();
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -3545,9 +3545,8 @@ struct dispatch_t: public rogue_attack_t
 
     if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
     {
-      // 2022-11-12 -- Currently does not benefit from animacharged CP
       p()->buffs.t29_outlaw_2pc->expire();
-      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points( p()->bugs ) );
+      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
     trigger_restless_blades( execute_state );
@@ -3815,6 +3814,8 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str )
   {
+    // 2023-01-28 -- Sepsis buff is consumed by Garrote when used for Improved Garrote
+    affected_by.sepsis = p->talent.assassination.improved_garrote->ok();
   }
 
   void init() override
@@ -3874,9 +3875,11 @@ struct garrote_t : public rogue_attack_t
 
     // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
     //               Additionally works every global of Improved Garrote regardless of Subterfuge
+    // 2023-01-28 -- However, this does not work with Improved Garrote triggered by Sepsis
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) || ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) ) &&
-         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) )
+         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
+         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
+           ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) && !p()->buffs.sepsis->check() ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -3900,6 +3903,11 @@ struct garrote_t : public rogue_attack_t
     if ( p()->talent.assassination.improved_garrote->ok() &&
          p()->stealthed( STEALTH_IMPROVED_GARROTE ) )
     {
+      cd_duration = timespan_t::zero();
+    }
+    else if ( p()->bugs && p()->buffs.sepsis->check() )
+    {
+      // 2023-01-28 -- Sepsis buff causes Garrote to have no cooldown regardless of Improved Garrote
       cd_duration = timespan_t::zero();
     }
 
@@ -5141,7 +5149,9 @@ struct shuriken_storm_t: public rogue_attack_t
       trigger_find_weakness( state, duration );
     }
 
-    if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
+    // 2023-01-31 -- Tornado-triggered Shuriken Storms do not activate 4pc
+    if ( p()->set_bonuses.t29_subtlety_4pc->ok() && state->result == RESULT_CRIT &&
+         secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
       p()->buffs.t29_subtlety_4pc_black_powder->trigger();
@@ -8140,6 +8150,12 @@ std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std
       return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
     } );
   }
+  else if ( util::str_compare_ci( name_str, "used_for_danse" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      return range::contains( danse_macabre_tracker, action.data().id() );
+    } );
+  }
 
   return player_t::create_action_expression( action, name_str );
 }
@@ -8961,7 +8977,7 @@ void rogue_t::init_spells()
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
-  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 347037 ) : spell_data_t::not_found();
+  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();

@@ -6,7 +6,7 @@ race=human
 role=attack
 position=back
 professions=blacksmithing=100/engineering=65
-talents=BcEAAAAAAAAAAAAAAAAAAAAAAAAkIJJRSSoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQkkSrkEAAAAQQkIKEQREQiQSoJRIAhECAAAAAAAAJBJJgQ0QA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -43,7 +43,6 @@ actions+=/lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.r
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
 actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
-actions+=/use_item,name=manic_grieftorch
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2
 actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 actions+=/run_action_list,name=single_target,if=!raid_event.adds.exists

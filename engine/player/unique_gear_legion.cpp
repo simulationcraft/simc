@@ -2992,13 +2992,11 @@ void item::windscar_whetstone( special_effect_t& effect )
       create_proc_action<generic_aoe_proc_t>( "slicing_maelstrom", effect, "slicing_maelstrom", effect.trigger(), true );
   maelstrom->cooldown->duration = 0_ms;  // damage spell has erroneous cooldown
 
-  effect.custom_buff =
-      create_buff<buff_t>( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
-          ->set_tick_zero( true )
-          ->set_tick_callback( [ maelstrom, effect ]( buff_t*, int, timespan_t ) {
-            maelstrom->schedule_execute();
-            effect.player->get_cooldown( effect.cooldown_group_name() )->start( effect.cooldown_group_duration() );
-          } );
+  effect.custom_buff = create_buff<buff_t>( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
+    ->set_tick_zero( true )
+    ->set_tick_callback( [ maelstrom ]( buff_t*, int, timespan_t ) {
+      maelstrom -> schedule_execute();
+    } );
 
   // Disable automatic creation of a trigger spell.
   effect.trigger_spell_id = 1;

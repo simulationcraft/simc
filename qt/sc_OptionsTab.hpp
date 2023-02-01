@@ -85,6 +85,7 @@ public:
     QComboBox* deterministic_rng;
     QComboBox* center_scale_delta;
     QComboBox* challenge_mode;
+    QComboBox* theme_color;
     // scaling
     QComboBox* scale_over;
     QComboBox* plots_points;
@@ -105,6 +106,7 @@ public slots:
   void _resetallSettings();
   void _savefilelocation();
   void _armoryRegionChanged( const QString& );
+  void _themeColorChanged( const QString& );
 
 protected:
   SC_MainWindow* mainWindow;

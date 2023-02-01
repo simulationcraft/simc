@@ -6915,6 +6915,7 @@ struct avatar_t : public warrior_spell_t
 
     parse_options( options_str );
     callbacks = false;
+    harmful   = false;
 
     // Vision of Perfection doesn't reduce the cooldown for non-prot
     if ( p -> azerite.vision_of_perfection.enabled() && p -> specialization() == WARRIOR_PROTECTION )
@@ -8562,6 +8563,12 @@ void warrior_t::default_apl_dps_precombat()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
+  if ( specialization() == WARRIOR_FURY )
+  {
+    precombat->add_action( "avatar,if=!talent.titans_torment" );
+    precombat->add_action( "recklessness,if=!talent.reckless_abandon" );
+  }
+
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -8620,7 +8627,7 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
-  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3" );
+  default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
 
   for ( const auto& racial_action : racial_actions )
   {
@@ -8715,6 +8722,7 @@ void warrior_t::apl_fury()
   single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( "raging_blow" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow" );
+  single_target->add_action( "bloodthirst" );
   single_target->add_action( "whirlwind" );
   single_target->add_action( "wrecking_throw" );
   single_target->add_action( "storm_bolt" );
@@ -8795,15 +8803,6 @@ void warrior_t::apl_arms()
     else
     {
       default_list->add_action( racial_action + ",if=debuff.colossus_smash.up" );
-    }
-  }
-
-  for ( const auto& item : items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.slot != SLOT_WAIST )
-        default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
 

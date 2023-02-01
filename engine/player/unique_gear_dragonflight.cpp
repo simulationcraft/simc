@@ -784,17 +784,18 @@ void darkmoon_deck_dance( special_effect_t& effect )
     action_t* damage;
     action_t* heal;
 
-    // TODO: confirm mixed order remains true in-game
-    // card order is [ 2 3 6 7 4 5 8 A ]
+    // card order is [ 2 3 4 5 6 7 8 A ]
     darkmoon_deck_dance_t( const special_effect_t& e )
       : DF_darkmoon_proc_t( e, "refreshing_dance", 382958,
-                            { 382861, 382862, 382865, 382866, 382863, 382864, 382867, 382860 } )
+                            { 382861, 382862, 382863, 382864, 382865, 382866, 382867, 382860 } )
     {
       damage =
         create_proc_action<generic_proc_t>( "refreshing_dance_damage", e, "refreshing_dance_damage", 384613 );
       damage->background = damage->dual = true;
       damage->stats = stats;
 
+      // TODO: this value is wrong. unknown which coefficient is used, as the heal itself has a 5% variable so precise
+      // comparison to spell query scaled values is difficult.
       heal =
         create_proc_action<base_generic_proc_t<proc_heal_t>>( "refreshing_dance_heal", e, "refreshing_dance_heal", 384624 );
       heal->name_str_reporting = "Heal";
@@ -821,7 +822,7 @@ void darkmoon_deck_dance( special_effect_t& effect )
       }
     }
   };
-  // TODO: currently this trinket is doing ~1% of the damage it should based on spell data.
+
   effect.execute_action = create_proc_action<darkmoon_deck_dance_t>( "refreshing_dance", effect );
 }
 
@@ -1561,7 +1562,7 @@ void voidmenders_shadowgem( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem", effect.player->find_spell( 397399 ) );
   buff->set_chance( 1.0 );
   buff->set_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
-      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int old_, int new_ ) {
+      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int, int new_ ) {
         if ( new_ )
           stacking_cb->activate();
         else
@@ -1886,6 +1887,9 @@ void rumbling_ruby( special_effect_t& effect )
 // 382092 Damage Value
 void storm_eaters_boon( special_effect_t& effect )
 {
+  if ( create_fallback_buffs( effect, { "stormeaters_boon" } ) )
+    return;
+
   buff_t* stack_buff;
   buff_t* main_buff;
 
@@ -1895,7 +1899,7 @@ void storm_eaters_boon( special_effect_t& effect )
       ->set_duration( effect.player -> find_spell( 377453 )->duration() )
       ->set_cooldown( 0_ms );
 
-  effect.custom_buff = main_buff;
+  effect.custom_buff = effect.player->buffs.stormeaters_boon = main_buff;
 
   struct storm_eaters_boon_damage_t : public proc_spell_t
   {
@@ -2447,7 +2451,8 @@ void algethar_puzzle_box( special_effect_t& effect )
 
   auto buff_spell = effect.player->find_spell( 383781 );
   buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+    ->set_cooldown( 0_ms );
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
 
   auto action = new puzzle_box_channel_t( effect, buff );
@@ -3571,9 +3576,13 @@ void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  bool first = !buff->manual_stats_added;
+  // In some cases, the buff values from separate items don't stack. This seems to fix itself
+  // when the player loses and regains the buff, so we just assume they stack properly.
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
-  if ( buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
+  // In case the player has two copies of this embellishment, set up the buff events only once.
+  if ( first && buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
   {
     buff->player->register_combat_begin( [ buff ]( player_t* p ) {
       buff->trigger();
@@ -4210,7 +4219,7 @@ void register_special_effects()
   register_special_effect( 377452, items::whispering_incarnate_icon );
   register_special_effect( 384112, items::the_cartographers_calipers );
   register_special_effect( 377454, items::rumbling_ruby );
-  register_special_effect( 377453, items::storm_eaters_boon );
+  register_special_effect( 377453, items::storm_eaters_boon, true );
   register_special_effect( 377449, items::decoration_of_flame );
   register_special_effect( 377463, items::manic_grieftorch );
   register_special_effect( 377457, items::alltotem_of_the_master );

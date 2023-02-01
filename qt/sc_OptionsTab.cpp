@@ -15,6 +15,30 @@
 
 #include <QtCore/QDateTime>
 
+#ifdef Q_OS_WIN
+  #include <dwmapi.h>
+  #pragma comment( lib, "Dwmapi.lib" )  // fixes error LNK2019: unresolved external symbol __imp__DwmExtendFrameIntoClientArea
+
+  enum : WORD
+  {
+    DwmwaUseImmersiveDarkMode           = 20,
+    DwmwaUseImmersiveDarkModeBefore20h1 = 19
+  };
+
+  bool setDarkBorderToWindow( HWND hwnd, bool dark )
+  {
+    const BOOL darkBorder = dark ? TRUE : FALSE;
+    const bool ok =
+      SUCCEEDED( DwmSetWindowAttribute( hwnd, DwmwaUseImmersiveDarkMode, &darkBorder, sizeof( darkBorder ) ) ) ||
+      SUCCEEDED( DwmSetWindowAttribute( hwnd, DwmwaUseImmersiveDarkModeBefore20h1, &darkBorder, sizeof( darkBorder ) ) );
+    if ( !ok )
+    {
+      qDebug() << QString( "%1: Unable to set %2 window border." ).arg( __FUNCTION__, dark ? "dark" : "light" );
+    }
+    return ok;
+  }
+#endif
+
 namespace
 {  // unnamed namespace
 
@@ -396,6 +420,11 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right->addRow( tr( "Statistics Level" ),
                                choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right->addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
+
+  globalsLayout_right->addRow( tr( "Theme Color" ), choice.theme_color = createChoice( 2, "Light", "Dark" ) );
+  connect( choice.theme_color, SIGNAL( currentTextChanged( const QString& ) ), this,
+           SLOT( _themeColorChanged( const QString& ) ) );
+
   globalsLayout_right->addRow(
       tr( "Auto-Save Reports" ),
       choice.auto_save = createChoice( 3, "No", "Use current date/time", "Ask for filename on each simulation" ) );
@@ -835,6 +864,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "statistics_level", choice.statistics_level, "1" );
   load_setting( settings, "deterministic_rng", choice.deterministic_rng, "No" );
   load_setting( settings, "challenge_mode", choice.challenge_mode );
+  load_setting( settings, "theme_color", choice.theme_color, "Light" );
 
   load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
   load_setting( settings, "scale_over", choice.scale_over );
@@ -931,6 +961,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "center_scale_delta", choice.center_scale_delta->currentText() );
   settings.setValue( "scale_over", choice.scale_over->currentText() );
   settings.setValue( "challenge_mode", choice.challenge_mode->currentText() );
+  settings.setValue( "theme_color", choice.theme_color->currentText() );
 
   settings.setValue( "plot_points", choice.plots_points->currentText() );
   settings.setValue( "plot_step", choice.plots_step->currentText() );
@@ -1126,6 +1157,8 @@ void SC_OptionsTab::createToolTips()
   choice.reforgeplot_step->setToolTip(
       tr( "The stat difference between two points.\n"
           "It's NOT the number of steps: a lower value will generate more points!" ) );
+
+  choice.theme_color->setToolTip( tr( "Application theme color" ) );
 }
 
 QString SC_OptionsTab::get_globalSettings()
@@ -1603,4 +1636,57 @@ void SC_OptionsTab::_savefilelocation()
   f.exec();
 
   auto_save_location = f.selectedFiles().at( 0 );
+}
+
+void SC_OptionsTab::_themeColorChanged( const QString& color )
+{
+  //  if ( qApp->style()->name() != "fusion" )
+  //  {
+  //    qDebug()<<"Current style is not Fusion";
+  //    return;
+  //  }
+
+  if ( color == "Light" )
+  {
+    QPalette pal;
+    QToolTip::setPalette( pal );
+    qApp->setPalette( pal );
+#ifdef Q_OS_WIN
+    setDarkBorderToWindow( (HWND)window()->winId(), false );
+#endif
+  }
+  else if ( color == "Dark" )
+  {
+    QPalette pal;
+    pal.setColor( QPalette::Window, QColor( 52, 54, 58 ) );
+    pal.setColor( QPalette::Button, QColor( 52, 54, 58 ) );
+    pal.setColor( QPalette::Disabled, QPalette::Button, QColor( 40, 41, 45 ) );
+    pal.setColor( QPalette::Base, QColor( 47, 48, 52 ) );
+    pal.setColor( QPalette::Disabled, QPalette::Base, QColor( 35, 36, 40 ) );
+    pal.setColor( QPalette::AlternateBase, QColor( 66, 66, 66 ) );
+    pal.setColor( QPalette::ToolTipBase, QColor( 75, 76, 77 ) );
+
+    pal.setColor( QPalette::Dark, QColor( 66, 66, 66 ) );
+    pal.setColor( QPalette::Light, QColor( 66, 66, 66 ) );
+    pal.setColor( QPalette::Shadow, QColor( 20, 20, 20 ) );
+
+    pal.setColor( QPalette::Text, QColor( 230, 231, 232 ) );
+    pal.setColor( QPalette::Disabled, QPalette::Text, QColor( 127, 127, 127 ) );
+    pal.setColor( QPalette::WindowText, QColor( 230, 231, 232 ) );
+    pal.setColor( QPalette::Disabled, QPalette::WindowText, QColor( 127, 127, 127 ) );
+    pal.setColor( QPalette::ToolTipText, QColor( 230, 231, 232 ) );
+    pal.setColor( QPalette::ButtonText, QColor( 230, 231, 232 ) );
+    pal.setColor( QPalette::Disabled, QPalette::ButtonText, QColor( 127, 127, 127 ) );
+    pal.setColor( QPalette::BrightText, Qt::red );
+    pal.setColor( QPalette::Link, QColor( 20, 100, 170 ) );
+    pal.setColor( QPalette::Highlight, QColor( 20, 100, 170 ) );
+    pal.setColor( QPalette::Disabled, QPalette::Highlight, QColor( 80, 80, 80 ) );
+    pal.setColor( QPalette::HighlightedText, QColor( 230, 231, 232 ) );
+    pal.setColor( QPalette::Disabled, QPalette::HighlightedText, QColor( 127, 127, 127 ) );
+    QToolTip::setPalette( pal );
+    qApp->setPalette( pal );
+#ifdef Q_OS_WIN
+    setDarkBorderToWindow( (HWND)window()->winId(), true );
+#endif
+  }
 }

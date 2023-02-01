@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.5.47799 Live (hotfix 2023-01-25/47799)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -14890,7 +14890,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1012979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Mana Spring (381930), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
+                   Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
                    Family Flags: 29
 #2 (id=1014666)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 1569 | Target: Self (1)
@@ -14903,19 +14903,17 @@ Effects          :
                    Affected Spells (Category): Cloudburst Totem (157153)
 Description      : Reduces the cooldown of your totems by ${$s1/-1000} sec.
 
-Name             : Mana Spring (id=381930) [Spell Family (11), Passive] 
+Name             : Mana Spring (id=381930) [Spell Family (11), Passive, Hidden] 
+Hotfixed         : Attributes, Affecting Spells
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 1.5% Base Mana (0) (id=265445)
 Spell Level      : 10
 Proc Chance      : 101%
 Proc Flags       : ....x... ......x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Magic Heal, Magic Hostile Spell
-Affecting spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
-Family Flags     : 29
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -14923,7 +14921,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Can Proc From Procs (122), No Caster Aura Icon (187), No Aura Log (202)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), No Caster Aura Icon (187), No Aura Log (202)
 Effects          :
 #1 (id=1013069)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14942,7 +14940,6 @@ Spell Type       : None
 Spell Level      : 10
 Max Scaling Level: 70
 Range            : 100 yards
-Labels           : 1660: Totemic Focus (382201 effect#3)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ xx...... ......x. 
                  : .......x ........ ........ ........   ...x.... ..x..... .xx..... ........ 
@@ -14954,7 +14951,8 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1013071)  : Energize Power (30) | Scaling Class: -2
-                   Base Value: 0 | Scaled Value: 400.05 (coefficient=0.002667) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 199.95 (coefficient=0.001333) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Friend (21)
+Hotfixed         : Coefficient (0.002667 -> 0.001333)
 Description      : $@spelldesc381930
 
 Name             : Magma Chamber (id=381932) [Spell Family (11), Passive, Hidden] 
@@ -15565,7 +15563,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013456)  : Apply Aura (6) | Modify Stance Mask (275)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Greater Purge (378773), Mana Spring (381930), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
+                   Affected Spells: Purge (370), Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Windfury Totem (8512), Mana Tide Totem (16191), Earthgrab Totem (51485), Cleanse Spirit (51886), Wind Shear (57994), Purify Spirit (77130), Spirit Link Totem (98008), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Greater Purge (378773), Poison Cleansing Totem (383013), Stoneskin Totem (383017), Tranquil Air Totem (383019)
                    Family Flags: 29, 35, 59, 88, 109
 Description      : Cleanse Spirit, Wind Shear, Purge, and totem casts no longer cancel Ghost Wolf.
 
@@ -15595,7 +15593,7 @@ Effects          :
                    Affected Spells (Label): Healing Stream Totem (5394), Healing Stream (5672), Tremor Totem (8143), Cloudburst Totem (157153), Wind Rush Totem (192077), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Ancestral Protection (207498), Poison Cleansing Totem (383013), Poison Cleansing (383014)
 #3 (id=1013879)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 1660 (Label) | Target: Self (1)
-                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Static Charge (118905), Cloudburst (157503), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Liquid Magma Totem (192223), Liquid Magma (192231), Earthen Wall Totem (198838), Mana Spring (381931), Poison Cleansing Totem (383013), Poison Cleansing (383015), Magma Eruption (383061), Magma Eruption (395349)
+                   Affected Spells (Label): Earthbind Totem (2484), Earthbind (3600), Tremor Totem Effect (8146), Earthgrab Totem (51485), Healing Stream Totem (52042), Earthgrab (64695), Spirit Link Totem (98007), Spirit Link Totem (98008), Healing Tide (114942), Earthgrab (116943), Static Charge (118905), Cloudburst (157503), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Liquid Magma Totem (192223), Liquid Magma (192231), Earthen Wall Totem (198838), Poison Cleansing Totem (383013), Poison Cleansing (383015), Magma Eruption (383061), Magma Eruption (395349)
 Description      : Increases the radius of your totem effects by $s3%.
 
 Increases the duration of your Earthbind and Earthgrab Totems by ${$s1/1000} sec.

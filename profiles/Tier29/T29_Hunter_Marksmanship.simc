@@ -26,7 +26,6 @@ actions.precombat+=/augmentation
 actions.precombat+=/food
 actions.precombat+=/summon_pet,if=!talent.lone_wolf
 actions.precombat+=/snapshot_stats
-actions.precombat+=/double_tap,precast_time=10
 actions.precombat+=/salvo,precast_time=10
 actions.precombat+=/use_item,name=algethar_puzzle_box
 # Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
@@ -52,24 +51,22 @@ actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fi
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26
-actions.cds+=/salvo
+actions.cds+=/salvo,if=active_enemies>2|cooldown.volley.remains<10
 
 actions.st=steady_shot,if=talent.steady_focus&(steady_focus_count&buff.steady_focus.remains<5|buff.steady_focus.down&!buff.trueshot.up)
 actions.st+=/kill_shot
+actions.st+=/volley,if=buff.salvo.up
 actions.st+=/steel_trap,if=buff.trueshot.down
 actions.st+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=refreshable&!talent.serpentstalkers_trickery&buff.trueshot.down
 actions.st+=/explosive_shot
-# Save Double Tap for Rapid Fire if at least Streamline is taken.
-actions.st+=/double_tap,if=(cooldown.rapid_fire.remains<gcd|!talent.streamline)&(!raid_event.adds.exists|raid_event.adds.up&(raid_event.adds.in<10&raid_event.adds.remains<3|raid_event.adds.in>cooldown|active_enemies>1)|!raid_event.adds.up&(raid_event.adds.count=1|raid_event.adds.in>cooldown))
 actions.st+=/stampede
 actions.st+=/death_chakram
 actions.st+=/wailing_arrow,if=active_enemies>1
 actions.st+=/volley
-# With at least Streamline, Double Tap Rapid Fire.
-actions.st+=/rapid_fire,if=talent.surging_shots|buff.double_tap.up&talent.streamline
+actions.st+=/rapid_fire,if=talent.surging_shots
 actions.st+=/trueshot,if=variable.trueshot_ready
 # Trigger Trick Shots from Bombardment if it isn't already up, or trigger Salvo if Volley isn't being used to trigger it.
-actions.st+=/multishot,if=buff.bombardment.up&buff.trick_shots.down&active_enemies>1|talent.salvo&buff.salvo.down&!talent.volley
+actions.st+=/multishot,if=buff.bombardment.up&buff.trick_shots.down&active_enemies>1|buff.salvo.up&!talent.volley
 # With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Without Chimaera Shot don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. On two targets with Chimaera Shot don't overwrite Precise Shots unless the target is within Careful Aim range in addition to either Trueshot being active or Aimed Shot capping before its next cast. Overwrite freely if it can cleave.
 actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1)
 # Without Serpentstalker's Trickery, target the highest Latent Poison stack. Same rules as the previous line.
@@ -86,7 +83,6 @@ actions.st+=/steady_shot
 
 actions.trickshots=steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8
 actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
-actions.trickshots+=/double_tap,if=cooldown.rapid_fire.remains<gcd|!talent.streamline
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/death_chakram
 actions.trickshots+=/stampede
@@ -95,7 +91,7 @@ actions.trickshots+=/serpent_sting,target_if=min:dot.serpent_sting.remains,if=re
 actions.trickshots+=/barrage,if=active_enemies>7
 actions.trickshots+=/volley
 actions.trickshots+=/trueshot
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&(talent.surging_shots|buff.double_tap.up&talent.streamline)
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time&talent.surging_shots
 # For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Generally only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots unless Trueshot is up or Aimed Shot would cap otherwise.
 actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.trick_shots.remains>=execute_time&(buff.precise_shots.down|buff.trueshot.up|full_recharge_time<cast_time+gcd))
 # For no Serpentstalker's Trickery, target the highest Latent Poison stack. Same general rules as the previous line.
@@ -134,19 +130,19 @@ hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
 waist=arcanebound_gale_chain,id=137489,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
 legs=allied_legguards_of_sansok_khan,id=193464,bonus_id=8960/8840/8836/8902/1508,enchant=fierce_armor_kit_3
 feet=boots_of_explosive_growth,id=193715,bonus_id=6808/4786/1643
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192958,enchant=devotion_of_mastery_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 # Gear Summary
-# gear_ilvl=422.40
-# gear_agility=5464
-# gear_stamina=13448
-# gear_crit_rating=3742
-# gear_haste_rating=2338
-# gear_mastery_rating=3361
+# gear_ilvl=422.53
+# gear_agility=5469
+# gear_stamina=13479
+# gear_crit_rating=3745
+# gear_haste_rating=2341
+# gear_mastery_rating=3368
 # gear_versatility_rating=1517
 # gear_armor=4819
 # set_bonus=tier29_2pc=1

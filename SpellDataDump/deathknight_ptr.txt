@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.47631 Live (hotfix 2023-01-18/47631)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1165,10 +1165,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46426 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=42114)    : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.75 -> 1)
 #3 (id=287354)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.75 -> 1)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focuses dark power into a strike$?s137006[ with both weapons, that deals a total of ${$s1+$66188s1}][ that deals $s1] Physical damage and heals you for ${$s2}.2% of all damage taken in the last $s4 sec, minimum ${$s3}.1% of maximum health.
@@ -1384,6 +1382,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Duration         : 3 seconds
 Proc Chance      : 101%
+Affecting spells : Runic Mastery (390166 effect#2)
 Family Flags     : 102
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3233,7 +3232,7 @@ Description      : An unholy pact that prevents fatal damage, instead absorbing 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
 
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -3591,7 +3590,6 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
-Hotfixed         : Base Value (32 -> 45)
 #14 (id=1026052)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -19.9 | Scaled Value: -19.9 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
@@ -3609,12 +3607,10 @@ Hotfixed         : Base Value (32 -> 45)
                    Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
-Hotfixed         : Base Value (37.5 -> 51)
 #19 (id=1040491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
-Hotfixed         : Base Value (37.5 -> 51)
 #20 (id=1040492)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
@@ -4067,7 +4063,6 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.3 -> 1)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -5828,7 +5823,7 @@ Effects          :
 Description      : Raise Dead now summons an abomination instead of a ghoul, with improved innate abilities.
 
 Name             : Epidemic (id=207317) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -11385,7 +11380,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6242 | Misc Value 2: 0xb
 #2 (id=818067)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.40000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : Engrave your weapon with a rune that deflects $326864s2% of all spell damage and taking magic damage has a chance to create a shield that absorbs magic damage equal to $s2% of your maximum health. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d. 
 
 Modifying your rune requires a Runeforge in Ebon Hold.
@@ -11415,7 +11409,7 @@ Effects          :
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Passive: Deflects $s2% of all spell damage.
 
-Taking magic damage has a chance to grant you a shield that absorbs ${$MHP*.1} magic damage for $326867d. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d.
+Taking magic damage has a chance to grant you a shield that absorbs ${$MHP*$326867s2/100} magic damage for $326867d. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d.
 
 Name             : Rune of Spellwarding (id=326867) [Spell Family (15)] 
 Class            : Death Knight
@@ -11440,10 +11434,8 @@ Effects          :
 #1 (id=818082)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.40000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : PvP Coefficient (1 -> 0.4)
 #2 (id=890165)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.40000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc326864
 
 Tooltip          : Absorbs $w1 magic damage.
@@ -11471,7 +11463,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=818084)   : Apply Aura (6) | Modify Spell Speed% (65)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.40000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc326864
 
 Tooltip          : Casting speed reduced by $w1%.
@@ -13691,7 +13682,6 @@ Effects          :
 Description      : Increases Strength by $s1%.
 
 Name             : Unholy Bond (id=374261) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
@@ -13723,7 +13713,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Razorice (50401)
                    Family Flags: 104
-Hotfixed         : NEW EFFECT
 Description      : Increases the effectiveness of your Runeforge effects by $s1%.
 
 Name             : Unholy Ground (id=374265) [Spell Family (15), Passive, Hidden] 
@@ -15583,6 +15572,7 @@ Description      : $@spelldesc390161
 Name             : Runic Mastery (id=390166) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Unholy [tree=spec, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(100, 200)]
+                 : Effect#2 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15598,7 +15588,11 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026788)  : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-Description      : Increases your maximum Runic Power by ${$s1/10}.
+#2 (id=1050309)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Runic Corruption (51460)
+                   Family Flags: 102
+Description      : Increases your maximum Runic Power by ${$s1/10} and increases the Rune regeneration rate of Runic Corruption by $s2%.
 
 Name             : Plaguebringer (id=390175) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
@@ -15728,14 +15722,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026942)  : Apply Aura (6) | Proc Trigger Spell (42): Commander of the Dead
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390260 | Target: Self (1)
-Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead for $390264d, increasing their damage by $390264s1%.
+Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead near you for $390264d, increasing their damage by $390264s1%.
 
-Name             : Commander of the Dead (id=390260) [Spell Family (15), Hidden] 
+Name             : Commander of the Dead (id=390260) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
+Duration         : 30 seconds
 Triggered by     : Commander of the Dead (390259)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15743,11 +15738,14 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+                 : No Aura Cancel (31), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1026943)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+#2 (id=1051086)  : Apply Party Aura (35) | Unknown(395)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 28179 | Target: Self (1)
 Description      : $@spelldesc390259
+Tooltip          : Your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead ghouls deal $390264s1% increased damage.
 
 Name             : Commander of the Dead (id=390264) [Spell Family (15)] 
 Class            : Death Knight
@@ -15757,19 +15755,19 @@ Range            : 100 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126)
+                 : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 25 yards | Target: Unknown(120)
                    Affected School(s): All
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: Unknown(120)
 Description      : $@spelldesc390259
 Tooltip          : All damage done increased by $s1%.
 
@@ -15862,7 +15860,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16290,7 +16288,6 @@ Effects          :
 #2 (id=1030864)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66700 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : $@spelldesc392487
 Tooltip          : Movement Speed slowed by $w1% and damage dealt to $@auracaster reduced by $w2%.
 

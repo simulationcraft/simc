@@ -1319,6 +1319,7 @@ enum spell_attribute : unsigned
   SX_DURATION_HASTED                = 273u,
   SX_DOT_HASTED_MELEE               = 278u,
   SX_FIXED_TRAVEL_TIME              = 292u,
+  SX_DISABLE_PLAYER_HEALING_MULT    = 312u,
   SX_DISABLE_TARGET_POSITIVE_MULT   = 321u,
   SX_TARGET_SPECIFIC_COOLDOWN       = 330u,
   SX_SCALE_ILEVEL                   = 354u,

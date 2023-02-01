@@ -5,7 +5,7 @@ level=70
 race=orc
 role=hybrid
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEkkkEtIBAAAAAJSSCgkkkEIFhISIRSSSSJJAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJRLiEBAAAASkkEAJJJJQSJSEJkIJJJJlEcAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -186,32 +186,32 @@ actions.st_cleave+=/whirling_dragon_punch
 actions.st_cleave+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 
-head=gaze_of_the_waking_fist,id=200363,bonus_id=4800/4786/1498,gem_id=192982
-neck=custodians_medallion_of_delusion,id=193647,bonus_id=6808/4786/1643,gem_id=192932/192932/192932
-shoulders=mantle_of_the_waking_fist,id=200365,bonus_id=4800/4786/1498
-back=cape_of_valarjar_courage,id=133765,bonus_id=1795/6808/4786/3300
-chest=chestwrap_of_the_waking_fist,id=200360,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/4786/1498,gem_id=192932
-hands=palms_of_the_waking_fist,id=200362,bonus_id=4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=4177/6808/4786/3311,gem_id=192932
-legs=loathsome_thunderhosen,id=195530,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
-feet=biornskin_moccasins,id=134193,bonus_id=1795/6808/4786/3300
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192932,enchant=devotion_of_versatility_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192932,enchant=devotion_of_versatility_3
-trinket1=windscar_whetstone,id=137486,bonus_id=1795/6808/4786/3300
-trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-main_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937/1540,enchant=frozen_devotion_3
-off_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937/1540,enchant=frozen_devotion_3
+head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
+neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
+shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
+back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
+chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192932
+hands=palms_of_the_waking_fist,id=200362,ilevel=421
+waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192932
+legs=legguards_of_the_waking_fist,id=200364,ilevel=415,enchant_id=6496
+feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
+finger1=valkyr_ascension_signet,id=133679,bonus_id=3524/7580,ilevel=421,gem_id=192932,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
+trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
+trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
+main_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
+off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=422.25
-# gear_agility=5009
-# gear_stamina=13451
+# gear_ilvl=420.81
+# gear_agility=4914
+# gear_stamina=12972
 # gear_attack_power=270
-# gear_crit_rating=3397
-# gear_haste_rating=1973
-# gear_mastery_rating=2458
-# gear_versatility_rating=3659
-# gear_armor=3387
+# gear_crit_rating=3967
+# gear_haste_rating=522
+# gear_mastery_rating=2854
+# gear_versatility_rating=4033
+# gear_armor=3319
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
