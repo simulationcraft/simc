@@ -3576,9 +3576,14 @@ void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+  bool first = !buff->manual_stats_added;
+  // The stats vector should always be nonempty, but check just in case.
+  double value = buff->stats.empty() ? 0.0 : buff->stats[ 0 ].amount;
+  double new_value = effect.driver()->effectN( 1 ).average( effect.item );
+  if ( new_value > value ) buff->set_stat( STAT_MASTERY_RATING, new_value );
 
-  if ( buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
+  // In case the player has two copies of this embellishment, set up the buff events only once.
+  if ( first && buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
   {
     buff->player->register_combat_begin( [ buff ]( player_t* p ) {
       buff->trigger();
