@@ -16,11 +16,11 @@ hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
 waist=arcanebound_gale_chain,id=137489,bonus_id=1795/6808/4786/3300,gem_id=192945
 legs=allied_legguards_of_sansok_khan,id=193464,bonus_id=8960/8840/8836/8902/1508,enchant=fierce_armor_kit_3
 feet=ley_dragoons_stompers,id=134298,bonus_id=1795/6808/4786/3300
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant=devotion_of_haste_3
 trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 save=T29_Hunter_Beast_Mastery.simc
 
@@ -43,11 +43,11 @@ hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
 waist=arcanebound_gale_chain,id=137489,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
 legs=allied_legguards_of_sansok_khan,id=193464,bonus_id=8960/8840/8836/8902/1508,enchant=fierce_armor_kit_3
 feet=boots_of_explosive_growth,id=193715,bonus_id=6808/4786/1643
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192958,enchant=devotion_of_mastery_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 save=T29_Hunter_Marksmanship.simc
 
@@ -70,7 +70,7 @@ hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
 waist=unnatural_dripstone_cinch,id=195507,bonus_id=4800/4786/1498,gem_id=192945
 legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
 feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
 trinket1=decoration_of_flame,id=194299,bonus_id=4800/4786/1498
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
