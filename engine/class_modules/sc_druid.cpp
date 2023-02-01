@@ -3079,7 +3079,9 @@ public:
     if ( !special || !harmful || !s->result_amount )
       return;
 
-    auto d = s->result_amount / s->persistent_multiplier * p()->talent.berserk_frenzy->effectN( 1 ).percent();
+    auto d = s->result_amount * p()->talent.berserk_frenzy->effectN( 1 ).percent();
+    // TODO: currently bugged to ignore benefit from tiger's fury
+    d /= 1.0 + p()->buff.tigers_fury->check_value();
 
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
@@ -9934,7 +9936,10 @@ void druid_t::create_buffs()
 
   buff.tigers_fury = make_buff( this, "tigers_fury", talent.tigers_fury )
     ->set_cooldown( 0_ms )
-    ->apply_affecting_aura( talent.predator );
+    ->apply_affecting_aura( talent.predator )
+    // TODO: hack for bug where frenzied assault ignores benefit from tigers fury
+    ->set_default_value_from_effect( 1 )
+    ->apply_affecting_aura( talent.carnivorous_instinct );
 
   // Guardian buffs
   buff.after_the_wildfire = make_buff( this, "after_the_wildfire", talent.after_the_wildfire->effectN( 1 ).trigger() )
