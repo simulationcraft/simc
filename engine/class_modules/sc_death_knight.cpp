@@ -4828,23 +4828,53 @@ struct dark_transformation_t : public death_knight_spell_t
 // Death and Decay and Defile ===============================================
 
 // Death and Decay direct damage spells
-
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
+  // Values found from testing
+  const int PESTILENCE_CAP_PER_TICK = 2;
+  const int PESTILENCE_CAP_PER_CAST = 10;
+
+  int pestilence_procs_per_tick;
+  int pestilence_procs_per_cast;
   death_and_decay_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
-    death_knight_spell_t( name, p, spell )
+    death_knight_spell_t( name, p, spell ),
+    pestilence_procs_per_tick( 0 ),
+    pestilence_procs_per_cast( 0 )
   {
     aoe = -1;
     background = dual = true;
   }
 
+  void execute() override
+  {
+    pestilence_procs_per_tick = 0;
+
+    death_knight_spell_t::execute();
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
-
-    if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
+    if ( p() -> is_ptr() && p() -> talent.unholy.pestilence.ok() )
     {
-      p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+      if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+      }
+    }
+    else
+    {
+      if ( p() -> talent.unholy.pestilence.ok() &&
+         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
+      {
+        if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
+        {
+          p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+          pestilence_procs_per_tick++;
+          pestilence_procs_per_cast++;
+        }
+      }
     }
   }
 };
@@ -4972,6 +5002,10 @@ struct death_and_decay_base_t : public death_knight_spell_t
       event_t::cancel( p() -> active_dnd );
       p() -> active_dnd = nullptr;
     }
+
+    // Reset death and decay damage's pestilence proc per cast counter
+    debug_cast<death_and_decay_damage_base_t*>( damage ) -> pestilence_procs_per_cast = 0;
+
     death_knight_spell_t::execute();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
@@ -9760,9 +9794,17 @@ void death_knight_t::create_buffs()
            -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
-           -> set_duration( pet_spell.commander_of_the_dead -> duration() )
-           -> set_quiet( true );
+  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" );
+
+  buffs.commander_of_the_dead_window -> set_quiet( true );
+  if ( is_ptr() )
+  {
+    buffs.commander_of_the_dead_window -> set_duration( pet_spell.commander_of_the_dead -> duration() );
+  }
+  else
+  { 
+    buffs.commander_of_the_dead_window -> set_duration ( 4_s );
+  }
 
 }
 
@@ -10479,11 +10521,14 @@ inline double death_knight_t::runes_per_second() const
 {
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() )
+  if ( is_ptr() && buffs.runic_corruption -> check() )
+  {
+    rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
+  }
+
+  else if ( buffs.runic_corruption -> check() )
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
-    
-    rps *= 1.0 + talent.unholy.runic_mastery -> effectN( 1 ).base_value() / 1000;
   }
 
   return rps;
@@ -10493,9 +10538,14 @@ inline double death_knight_t::rune_regen_coefficient() const
 {
   auto coeff = cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() )
+  if ( is_ptr() && buffs.runic_corruption -> check() )
   {
-    coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
+    coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
+  }
+
+  else if (buffs.runic_corruption->check())
+  {
+    coeff /= 1.0 + spell.runic_corruption->effectN(1).percent();
   }
 
   return coeff;
@@ -10710,7 +10760,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-
+  /*
   void register_hotfixes() const override
   {
       hotfix::register_spell( "Death Knight", "2023-01-31", "Rotten Touch Duration increased to 10 seconds", 390276, hotfix::HOTFIX_FLAG_LIVE )
@@ -10719,7 +10769,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 10000 )
       .verification_value( 6000 );
   }
-
+  */
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
