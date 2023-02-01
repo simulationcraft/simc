@@ -3005,6 +3005,14 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
     if ( p()->specialization() == DEMON_HUNTER_HAVOC )
     {
+      // 2023-01-31 -- Metamorphosis's "extension" mechanic technically fades and reapplies the buff
+      //               This means it (probably inadvertently) triggers Restless Hunter
+      if ( p()->talent.havoc.restless_hunter->ok() && p()->buff.metamorphosis->check() )
+      {
+        p()->cooldown.fel_rush->reset( false, 1 );
+        p()->buff.restless_hunter->trigger();
+      }
+
       // Buff is gained at the start of the leap.
       p()->buff.metamorphosis->extend_duration_or_trigger();
       p()->buff.inner_demon->trigger();
@@ -3852,7 +3860,12 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
       if ( last_attack )
       {
-        p()->buff.restless_hunter->expire(); // DFALPHA TOCHECK -- Timing?
+        // 2023-01-31 -- If Restless Hunter is triggered when the delayed final impact is queued, it does not fade
+        //               Seems similar to some other 500ms buff protection in the game
+        if( !p()->bugs || sim->current_time() - p()->buff.restless_hunter->last_trigger_time() > 0.5_s )
+        {
+          p()->buff.restless_hunter->expire();
+        }
       }
     }
   };
@@ -5286,6 +5299,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     if ( p()->talent.havoc.restless_hunter->ok() )
     {
+      p()->cooldown.fel_rush->reset( false, 1 );
       p()->buff.restless_hunter->trigger();
     }
   }
