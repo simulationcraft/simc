@@ -4368,9 +4368,12 @@ struct incapacitating_roar_t : public bear_attack_t
 // Ironfur ==================================================================
 struct ironfur_t : public rage_spender_t
 {
+  double lm_chance;
+
   ironfur_t( druid_t* p, std::string_view opt ) : ironfur_t( p, "ironfur", p->talent.ironfur, opt ) {}
 
-  ironfur_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt ) : base_t( n, p, s, opt )
+  ironfur_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : base_t( n, p, s, opt ), lm_chance( p->talent.layered_mane->effectN( 1 ).percent() )
   {
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = false;
@@ -4383,7 +4386,7 @@ struct ironfur_t : public rage_spender_t
     int stack = 1;
 
     // TODO: does guardian of elune also apply to the extra application from layered mane?
-    if ( p()->talent.layered_mane.ok() && rng().roll( p()->talent.layered_mane->effectN( 1 ).percent() ) )
+    if ( p()->talent.layered_mane.ok() && rng().roll( lm_chance ) )
       stack++;
 
     auto dur = p()->buff.ironfur->buff_duration();
