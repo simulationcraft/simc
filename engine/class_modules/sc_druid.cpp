@@ -4402,7 +4402,10 @@ struct ironfur_t : public rage_spender_t
     p()->buff.guardian_of_elune->expire();
 
     if ( !is_free_proc() )
+    {
       p()->buff.gory_fur->expire();
+      p()->active.thorns_of_iron->execute();
+    }
   }
 };
 
@@ -10236,10 +10239,6 @@ void druid_t::create_actions()
   if ( talent.thorns_of_iron.ok() )
   {
     active.thorns_of_iron = get_secondary_action<thorns_of_iron_t>( "thorns_of_iron" );
-    buff.ironfur->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        active.thorns_of_iron->execute();
-    } );
   }
 
   // Restoration
