@@ -68,8 +68,8 @@ back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300
 chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrist=sharpeye_bracers,id=109873,bonus_id=3306,gem_id=192945
 hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
-waist=unnatural_dripstone_cinch,id=195507,bonus_id=4800/4786/1498,gem_id=192945
-legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
+waist=stormwing_harriers_belt,id=200393,bonus_id=1507,gem_id=192945
+legs=stormwing_harriers_greaves,id=200391,bonus_id=1507,enchant=fierce_armor_kit_3
 feet=acidic_hailstone_treads,id=193466,bonus_id=8802/8846
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
