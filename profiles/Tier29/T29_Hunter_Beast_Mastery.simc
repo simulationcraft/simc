@@ -2,7 +2,7 @@ hunter="T29_Hunter_Beast_Mastery"
 source=default
 spec=beast_mastery
 level=70
-race=orc
+race=tauren
 role=attack
 position=ranged_back
 talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AgWSAIEAAAAAAAAAAAaEHoIhmEJkIRCaSkWIJkIkoRSE
@@ -99,30 +99,30 @@ actions.trinkets+=/variable,name=trinket_2_stronger,value=!trinket.1.has_cooldow
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=(trinket.1.has_use_buff&(variable.sync_up&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|!variable.sync_up&(variable.trinket_1_stronger&(variable.sync_remains>trinket.1.cooldown.duration%2|trinket.2.has_use_buff&trinket.2.cooldown.remains>variable.sync_remains-15&trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_2_stronger&(trinket.2.cooldown.remains&(trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.2.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.1.cooldown.duration%2|trinket.1.cooldown.duration<fight_remains&(variable.sync_remains+trinket.1.cooldown.duration>fight_remains)))|trinket.2.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.2.cooldown.duration%2)))|!trinket.1.has_use_buff&((!trinket.2.has_use_buff&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|trinket.2.has_use_buff&(variable.sync_remains>20|trinket.2.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_1_stronger|trinket.2.cooldown.remains))&pet.main.buff.frenzy.remains>trinket.1.cast_time
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=(trinket.2.has_use_buff&(variable.sync_up&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_up&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+40>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%2|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%2)))|!trinket.2.has_use_buff&((!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(variable.sync_remains>20|trinket.1.cooldown.remains>20)))|target.time_to_die<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains))&pet.main.buff.frenzy.remains>trinket.2.cast_time
 
-head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192945
-neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8791/8846,gem_id=192945/192945/192985,crafted_stats=40/32
+head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8791/8846,gem_id=192919/192919/192919,crafted_stats=49/40
 shoulders=stormwing_harriers_pinions,id=200392,bonus_id=4800/4786/1498
-back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+back=cape_of_entanglement,id=144094,bonus_id=4177/6808/4786/3311
 chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=surgingsong_conductors,id=195516,bonus_id=4800/4786/1498,gem_id=192945
+wrists=ley_dragoons_wristbraces,id=134296,bonus_id=1795/6808/4786/3300,gem_id=192919
 hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
-waist=arcanebound_gale_chain,id=137489,bonus_id=1795/6808/4786/3300,gem_id=192945
-legs=allied_legguards_of_sansok_khan,id=193464,bonus_id=8960/8840/8836/8902/1508,enchant=fierce_armor_kit_3
-feet=ley_dragoons_stompers,id=134298,bonus_id=1795/6808/4786/3300
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant=devotion_of_haste_3
+waist=arcanebound_gale_chain,id=137489,bonus_id=1795/6808/4786/3300,gem_id=192919
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
+feet=venomsteeped_stompers,id=193460,bonus_id=8802/8846
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_mastery_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192919,enchant=devotion_of_mastery_3
 trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 # Gear Summary
-# gear_ilvl=422.20
-# gear_agility=5450
-# gear_stamina=13448
-# gear_crit_rating=3431
-# gear_haste_rating=3378
-# gear_mastery_rating=3400
-# gear_versatility_rating=749
-# gear_armor=4819
+# gear_ilvl=422.53
+# gear_agility=5472
+# gear_stamina=13541
+# gear_crit_rating=3220
+# gear_haste_rating=3495
+# gear_mastery_rating=3425
+# gear_versatility_rating=812
+# gear_armor=4836
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
