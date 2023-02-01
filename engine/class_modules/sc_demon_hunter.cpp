@@ -3858,7 +3858,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::execute();
 
-      if ( last_attack )
+      if ( last_attack && p()->buff.restless_hunter->check() )
       {
         // 2023-01-31 -- If Restless Hunter is triggered when the delayed final impact is queued, it does not fade
         //               Seems similar to some other 500ms buff protection in the game
