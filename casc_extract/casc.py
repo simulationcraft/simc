@@ -515,7 +515,9 @@ class CDNIndex(CASCObject):
 		return self.cdn_url('data', self.get_build_cfg().encoding[1])
 
 	def patch_base_url(self):
-		if self.options.ptr:
+		if self.options.product:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, self.options.product )
+		elif self.options.ptr:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_PTR )
 		elif self.options.beta:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_BETA )
@@ -709,7 +711,9 @@ class RibbitIndex(CDNIndex):
 			return s.makefile('b')
 
 	def patch_base_url(self):
-		if self.options.ptr:
+		if self.options.product:
+			return 'v1/products/%s' % self.options.product
+		elif self.options.ptr:
 			return 'v1/products/%s' % self.PATCH_PTR
 		elif self.options.beta:
 			return 'v1/products/%s' % self.PATCH_BETA
