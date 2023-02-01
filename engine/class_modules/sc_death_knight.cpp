@@ -9116,6 +9116,9 @@ void death_knight_t::init_base_stats()
   if ( talent.frost.runic_command.ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
+  if ( talent.unholy.runic_mastery.ok() )
+    resources.base [ RESOURCE_RUNIC_POWER ] += talent.unholy.runic_mastery -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
