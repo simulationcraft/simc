@@ -2979,7 +2979,7 @@ public:
       if ( p()->talent.berserk_frenzy->ok() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
            ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
       {
-        trigger_berserk_frenzy( s->target, s->result_amount );
+        trigger_berserk_frenzy( s->target, s );
       }
     }
   }
@@ -3074,12 +3074,14 @@ public:
     p()->proc.predator->occur();
   }
 
-  void trigger_berserk_frenzy( player_t* t, double d )
+  void trigger_berserk_frenzy( player_t* t, const action_state_t* s )
   {
-    if ( !special || !harmful || !d )
+    if ( !special || !harmful || !s->result_amount )
       return;
 
-    residual_action::trigger( p()->active.frenzied_assault, t, p()->talent.berserk_frenzy->effectN( 1 ).percent() * d );
+    auto d = s->result_amount / s->persistent_multiplier * p()->talent.berserk_frenzy->effectN( 1 ).percent();
+
+    residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
 };  // end druid_cat_attack_t
 
