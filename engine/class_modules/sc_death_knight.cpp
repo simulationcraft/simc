@@ -4831,42 +4831,20 @@ struct dark_transformation_t : public death_knight_spell_t
 
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
-  // Values found from testing
-  const int PESTILENCE_CAP_PER_TICK = 2;
-  const int PESTILENCE_CAP_PER_CAST = 10;
-
-  int pestilence_procs_per_tick;
-  int pestilence_procs_per_cast;
   death_and_decay_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
-    death_knight_spell_t( name, p, spell ),
-    pestilence_procs_per_tick( 0 ),
-    pestilence_procs_per_cast( 0 )
+    death_knight_spell_t( name, p, spell )
   {
     aoe = -1;
     background = dual = true;
-  }
-
-  void execute() override
-  {
-    pestilence_procs_per_tick = 0;
-
-    death_knight_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
 
-    if ( p() -> talent.unholy.pestilence.ok() &&
-         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
-         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
+    if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
     {
-      if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
-      {
-        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-        pestilence_procs_per_tick++;
-        pestilence_procs_per_cast++;
-      }
+      p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
     }
   }
 };
@@ -4994,10 +4972,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
       event_t::cancel( p() -> active_dnd );
       p() -> active_dnd = nullptr;
     }
-
-    // Reset death and decay damage's pestilence proc per cast counter
-    debug_cast<death_and_decay_damage_base_t*>( damage ) -> pestilence_procs_per_cast = 0;
-
     death_knight_spell_t::execute();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
@@ -9141,9 +9115,6 @@ void death_knight_t::init_base_stats()
 
   if ( talent.frost.runic_command.ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-  
-  if ( talent.unholy.runic_mastery.ok() )
-    resources.base [ RESOURCE_RUNIC_POWER ] += talent.unholy.runic_mastery -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
@@ -9787,7 +9758,8 @@ void death_knight_t::create_buffs()
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
-           -> set_duration( 4_s );
+           -> set_duration( pet_spell.commander_of_the_dead -> duration() )
+           -> set_quiet( true );
 
 }
 
@@ -10507,6 +10479,8 @@ inline double death_knight_t::runes_per_second() const
   if ( buffs.runic_corruption -> check() )
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
+    
+    rps *= 1.0 + talent.unholy.runic_mastery -> effectN( 1 ).base_value() / 10;
   }
 
   return rps;
@@ -10734,70 +10708,14 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
-  /*
   void register_hotfixes() const override
   {
-      hotfix::register_spell( "Death Knight", "2022-12-16", "Apocalypse Duration increased to 20 seconds.", 221180, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "duration" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20000 )
-      .verification_value( 15000 );
-
-      hotfix::register_spell( "Death Knight", "2022-12-16", "Icy Talons Duration increased to 10 seconds", 194879, hotfix::HOTFIX_FLAG_LIVE )
+      hotfix::register_spell( "Death Knight", "2023-01-31", "Rotten Touch Duration increased to 10 seconds", 390276, hotfix::HOTFIX_FLAG_LIVE )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 10000 )
       .verification_value( 6000 );
-
-      hotfix::register_spell( "Death Knight", "2022-12-16", "Plaguebringer Duration increased to 10 seconds.", 332688 )
-      .field( "duration" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 10000 )
-      .verification_value( 5000 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper initial buffed by 10%", 844983, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.374 )
-      .verification_value( 0.34 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Soul Reaper execute buffed by 10%", 844986, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.716 )
-      .verification_value( 1.56 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Death Coil buffed by 10%", 39872, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.470305 )
-      .verification_value( 0.42755 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Clawing Shadows buffed by 6%", 324719, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.59214144 )
-      .verification_value( 0.558624 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike physical buffed by 6%", 48019, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.4037328 )
-      .verification_value( 0.38088 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Scourge Strike shadow buffed by 6%", 214692, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.222388 )
-      .verification_value( 0.20980 );
-
-      hotfix::register_effect( "Death Knight", "2022-12-16", "Reaping damage increased from 20% to 25%", 1005394, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 25 )
-      .verification_value( 20 );
   }
-  */ 
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
