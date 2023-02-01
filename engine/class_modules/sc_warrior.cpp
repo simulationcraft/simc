@@ -9263,7 +9263,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
-  buff.avatar = make_buff( this, "avatar", find_spell( 107574 ) )
+  buff.avatar = make_buff( this, "avatar", talents.warrior.avatar )
       ->set_default_value( talents.warrior.avatar->effectN( 1 ).percent() 
                            * ( 1.0 + talents.arms.spiteful_serenity->effectN( 1 ).percent() ) )
       ->set_duration( talents.warrior.avatar->duration() + talents.arms.spiteful_serenity->effectN( 4 ).time_value() )
@@ -10242,7 +10242,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( buff.brace_for_impact -> check() )
   {
-    br *= 1.0 + buff.brace_for_impact -> check_stack_value();
+    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact -> effectN( 2 ).percent();
   }
 
   if ( azerite.iron_fortress.enabled() )
