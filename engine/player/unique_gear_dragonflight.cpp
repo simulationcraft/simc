@@ -1562,7 +1562,7 @@ void voidmenders_shadowgem( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem", effect.player->find_spell( 397399 ) );
   buff->set_chance( 1.0 );
   buff->set_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
-      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int old_, int new_ ) {
+      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int, int new_ ) {
         if ( new_ )
           stacking_cb->activate();
         else

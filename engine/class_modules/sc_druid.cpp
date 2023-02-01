@@ -5239,12 +5239,12 @@ struct regrowth_t : public druid_heal_t
       base_dd_min = base_dd_max = 1.0;
     }
 
-    double base_da_min( const action_state_t* s ) const override
+    double base_da_min( const action_state_t* ) const override
     {
       return p()->buff.protector_of_the_pack_regrowth->check_value();
     }
 
-    double base_da_max( const action_state_t* s ) const override
+    double base_da_max( const action_state_t* ) const override
     {
       return p()->buff.protector_of_the_pack_regrowth->check_value();
     }
@@ -6705,12 +6705,12 @@ struct moonfire_t : public druid_spell_t
         base_dd_min = base_dd_max = 1.0;
       }
 
-      double base_da_min( const action_state_t* s ) const override
+      double base_da_min( const action_state_t* ) const override
       {
         return p()->buff.protector_of_the_pack_moonfire->check_value();
       }
 
-      double base_da_max( const action_state_t* s ) const override
+      double base_da_max( const action_state_t* ) const override
       {
         return p()->buff.protector_of_the_pack_moonfire->check_value();
       }
