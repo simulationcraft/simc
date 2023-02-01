@@ -7,7 +7,7 @@ action_priority_list_t* cconvoke = get_action_priority_list( "cconvoke" );
 action_priority_list_t* oconvoke = get_action_priority_list( "oconvoke" );
 
 precombat->add_action( "variable,name=If_build,value=1,value_else=0,if=!talent.vulnerable_flesh.enabled&!talent.tooth_and_claw.enabled&talent.thorns_of_iron.enabled&talent.layered_mane.enabled&talent.reinforced_fur.enabled","Executed before combat begins. Accepts non-harmful actions only." );
-precombat->add_action( "variable,name=Maul_build,value=1,value_else=0,if=!talent.thorns_of_iron.enabled&!talent.layered_mane.enabled&!talent.reinforced_fur.enabled" );
+precombat->add_action( "variable,name=Maul_build,value=1,value_else=0,if=!talent.layered_mane.enabled&!talent.reinforced_fur.enabled" );
 precombat->add_action( "cat_form,if=druid.catweave_bear=1&(cooldown.pause_action.remains|time>30)" );
 precombat->add_action( "moonkin_form,if=(!druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)" );
 precombat->add_action( "heart_of_the_Wild,if=talent.heart_of_the_wild.enabled" );
