@@ -24,6 +24,7 @@ parser.add_option( '-z', '--region', type = 'string', dest = 'region', default =
 parser.add_option( '-k', '--keydb', type = 'string', dest = 'key_file',
 		help = "A JSON key database file [default keyfile]", default = 'keyfile')
 parser.add_option( '-x', '--cache', type = 'string', dest = 'cache', default = 'cache', help = 'Cache directory [default cache]' )
+parser.add_option( '--product', type = 'string', dest = 'product', default = '', help = 'Download files for a specific product [default empty, only used for --cdn]' )
 parser.add_option( '--ptr', action = 'store_true', dest = 'ptr', default = False, help = 'Download PTR files [default no, only used for --cdn]' )
 parser.add_option( '--beta', action = 'store_true', dest = 'beta', default = False, help = 'Download Beta files [default no, only used for --cdn]' )
 parser.add_option( '--alpha', action = 'store_true', dest = 'alpha', default = False, help = 'Download Alpha files [default no, only used for --cdn]' )
