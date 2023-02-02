@@ -10633,7 +10633,9 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
 
   // Generate 3 Rage on auto-attack taken.
   // TODO: Update with spelldata once it actually exists
-  else if ( ! s -> action -> special && cooldown.rage_from_auto_attack->up() )
+  // Arma Feb 1 2023 - We check that damage was actually done, as otherwise, flasks that did not do damage were
+  // giving us rage
+  else if ( ! s -> action -> special && cooldown.rage_from_auto_attack->up() && s->result_raw > 0.0 )
   {
     resource_gain( RESOURCE_RAGE, 3.0, gain.rage_from_damage_taken, s -> action );
     cooldown.rage_from_auto_attack->start( cooldown.rage_from_auto_attack->duration );
