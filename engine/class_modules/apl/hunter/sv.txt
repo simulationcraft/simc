@@ -26,6 +26,7 @@ actions.cds+=/berserking,if=buff.coordinated_assault.up|buff.spearhead.up|!talen
 actions.cds+=/muzzle
 actions.cds+=/potion,if=target.time_to_die<30|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=gcd.remains>gcd.max-0.1
+actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up
 actions.cds+=/use_items
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 

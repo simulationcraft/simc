@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-02/47936)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -14904,7 +14904,6 @@ Effects          :
 Description      : Reduces the cooldown of your totems by ${$s1/-1000} sec.
 
 Name             : Mana Spring (id=381930) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : Attributes, Affecting Spells
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Nature
@@ -14952,7 +14951,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1013071)  : Energize Power (30) | Scaling Class: -2
                    Base Value: 0 | Scaled Value: 199.95 (coefficient=0.001333) | PvP Coefficient: 1.00000 | Misc Value: mana | Target: Friend (21)
-Hotfixed         : Coefficient (0.002667 -> 0.001333)
 Description      : $@spelldesc381930
 
 Name             : Magma Chamber (id=381932) [Spell Family (11), Passive, Hidden] 

@@ -4406,7 +4406,9 @@ struct ironfur_t : public rage_spender_t
     if ( !is_free_proc() )
     {
       p()->buff.gory_fur->expire();
-      p()->active.thorns_of_iron->execute();
+
+      if ( p()->active.thorns_of_iron )
+        p()->active.thorns_of_iron->execute();
     }
   }
 };
