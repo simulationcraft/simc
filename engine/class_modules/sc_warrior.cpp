@@ -10251,11 +10251,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( talents.protection.shield_specialization->ok() )
   {
-    // Live is applying a multiplier, like it should, but ptr/beta is doing a flat modifier
-    if ( is_ptr() )
       br += talents.protection.shield_specialization->effectN( 2 ).percent();
-    else
-      br *= 1.0 + talents.protection.shield_specialization->effectN( 2 ).percent();
   }
 
   return br;
