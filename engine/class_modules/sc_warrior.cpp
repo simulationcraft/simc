@@ -8135,7 +8135,7 @@ void warrior_t::init_spells()
   talents.protection.rend                   = find_talent_spell( talent_tree::SPECIALIZATION, "Rend", WARRIOR_PROTECTION );
   talents.protection.bloodsurge             = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodsurge", WARRIOR_PROTECTION );
   talents.protection.fueled_by_violence     = find_talent_spell( talent_tree::SPECIALIZATION, "Fueled by Violence", WARRIOR_PROTECTION );
-  talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" );
+  talents.protection.brutal_vitality        = find_talent_spell( talent_tree::SPECIALIZATION, "Brutal Vitality" ); // NYI
 
   talents.protection.disrupting_shout       = find_talent_spell( talent_tree::SPECIALIZATION, "Disrupting Shout" );
   talents.protection.show_of_force          = find_talent_spell( talent_tree::SPECIALIZATION, "Show of Force" );
@@ -9262,7 +9262,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
-  buff.avatar = make_buff( this, "avatar", find_spell( 107574 ) )
+  buff.avatar = make_buff( this, "avatar", talents.warrior.avatar )
       ->set_default_value( talents.warrior.avatar->effectN( 1 ).percent() 
                            * ( 1.0 + talents.arms.spiteful_serenity->effectN( 1 ).percent() ) )
       ->set_duration( talents.warrior.avatar->duration() + talents.arms.spiteful_serenity->effectN( 4 ).time_value() )
@@ -10241,7 +10241,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( buff.brace_for_impact -> check() )
   {
-    br *= 1.0 + buff.brace_for_impact -> check_stack_value();
+    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact -> effectN( 2 ).percent();
   }
 
   if ( azerite.iron_fortress.enabled() )
@@ -10251,11 +10251,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( talents.protection.shield_specialization->ok() )
   {
-    // Live is applying a multiplier, like it should, but ptr/beta is doing a flat modifier
-    if ( is_ptr() )
       br += talents.protection.shield_specialization->effectN( 2 ).percent();
-    else
-      br *= 1.0 + talents.protection.shield_specialization->effectN( 2 ).percent();
   }
 
   return br;
@@ -10637,7 +10633,9 @@ void warrior_t::assess_damage( school_e school, result_amount_type type, action_
 
   // Generate 3 Rage on auto-attack taken.
   // TODO: Update with spelldata once it actually exists
-  else if ( ! s -> action -> special && cooldown.rage_from_auto_attack->up() )
+  // Arma Feb 1 2023 - We check that damage was actually done, as otherwise, flasks that did not do damage were
+  // giving us rage
+  else if ( ! s -> action -> special && cooldown.rage_from_auto_attack->up() && s->result_raw > 0.0 )
   {
     resource_gain( RESOURCE_RAGE, 3.0, gain.rage_from_damage_taken, s -> action );
     cooldown.rage_from_auto_attack->start( cooldown.rage_from_auto_attack->duration );
