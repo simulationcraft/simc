@@ -3080,8 +3080,6 @@ public:
       return;
 
     auto d = s->result_amount * p()->talent.berserk_frenzy->effectN( 1 ).percent();
-    // TODO: currently bugged to ignore benefit from tiger's fury
-    d /= 1.0 + p()->buff.tigers_fury->check_value();
 
     residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
