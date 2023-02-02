@@ -48,6 +48,7 @@ actions.cds+=/berserking,if=buff.coordinated_assault.up|buff.spearhead.up|!talen
 actions.cds+=/muzzle
 actions.cds+=/potion,if=target.time_to_die<30|buff.coordinated_assault.up|buff.spearhead.up|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=gcd.remains>gcd.max-0.1
+actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up
 actions.cds+=/use_items
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
@@ -111,8 +112,8 @@ back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300
 chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
 wrists=sharpeye_bracers,id=109873,bonus_id=3306,gem_id=192945
 hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
-waist=unnatural_dripstone_cinch,id=195507,bonus_id=4800/4786/1498,gem_id=192945
-legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
+waist=stormwing_harriers_belt,id=200393,bonus_id=1507,gem_id=192945
+legs=stormwing_harriers_greaves,id=200391,bonus_id=1507,enchant=fierce_armor_kit_3
 feet=acidic_hailstone_treads,id=193466,bonus_id=8802/8846
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
@@ -121,14 +122,14 @@ trinket2=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 main_hand=backdraft_cleaver,id=193755,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=420.67
-# gear_agility=5351
-# gear_stamina=13105
+# gear_ilvl=421.87
+# gear_agility=5423
+# gear_stamina=13360
 # gear_attack_power=135
-# gear_crit_rating=3889
-# gear_haste_rating=3882
+# gear_crit_rating=3701
+# gear_haste_rating=4129
 # gear_mastery_rating=1991
 # gear_versatility_rating=1130
-# gear_armor=4766
+# gear_armor=4834
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

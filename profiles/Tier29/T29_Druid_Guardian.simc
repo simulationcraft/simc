@@ -29,7 +29,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=!talent.vulnerable_flesh.enabled&!talent.tooth_and_claw.enabled&talent.thorns_of_iron.enabled&talent.layered_mane.enabled&talent.reinforced_fur.enabled
+actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.layered_mane.enabled&talent.reinforced_fur.enabled
 actions.precombat+=/variable,name=Maul_build,value=1,value_else=0,if=!talent.layered_mane.enabled&!talent.reinforced_fur.enabled
 actions.precombat+=/cat_form,if=druid.catweave_bear=1&(cooldown.pause_action.remains|time>30)
 actions.precombat+=/moonkin_form,if=(!druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)
@@ -51,6 +51,7 @@ actions.bear=bear_form,if=!buff.bear_form.up
 actions.bear+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
 actions.bear+=/moonfire,cycle_targets=1,if=((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<8
 actions.bear+=/barkskin,if=buff.bear_form.up
+actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains
 actions.bear+=/convoke_the_spirits
 actions.bear+=/berserk_bear
 actions.bear+=/incarnation
@@ -62,14 +63,14 @@ actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironf
 actions.bear+=/ironfur,if=rage>40&variable.If_build=1|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1
 actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=gcd+0.5
 actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3
-actions.bear+=/maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1
-actions.bear+=/raze,if=((buff.incarnation.up|buff.berserk_bear.up)&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1
+actions.bear+=/maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/raze,if=((buff.incarnation.up|buff.berserk_bear.up)&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1&!talent.thorns_of_iron.enabled
 actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|active_enemies>=5
 actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=11
-actions.bear+=/maul,if=((buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)&active_enemies<=5)&variable.Maul_build=1
-actions.bear+=/maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3&variable.Maul_build=1|active_enemies<4&!talent.vicious_cycle_maul.enabled&variable.Maul_build=1
-actions.bear+=/raze,if=((buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5))&variable.Maul_build=1
-actions.bear+=/raze,if=buff.vicious_cycle_maul.stack>=3&variable.Maul_build=1|!talent.vicious_cycle_maul.enabled&variable.Maul_build=1
+actions.bear+=/maul,if=(buff.tooth_and_claw.up&active_enemies<=5)
+actions.bear+=/maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3&variable.Maul_build=1&!talent.thorns_of_iron.enabled|active_enemies<4&!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/raze,if=(buff.tooth_and_claw.up)
+actions.bear+=/raze,if=buff.vicious_cycle_maul.stack>=3&variable.Maul_build=1&!talent.thorns_of_iron.enabled|!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
 actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<90)&active_enemies<11)|((rage<85)&active_enemies<11&talent.soul_of_the_forest.enabled)
 actions.bear+=/thrash_bear,if=active_enemies>1
 actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
