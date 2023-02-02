@@ -1522,18 +1522,21 @@ struct living_flame_t : public evoker_spell_t
     int total_hits = damage->num_targets_hit;
 
     p()->buff.ancient_flame->expire();
+    p()->buff.scarlet_adaptation->expire();
+
     if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
     {
       p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
       heal->execute_on_target( p() );
+      /* Healing Leaping Flames Hotfixed to not trigger esssence bursts ~02/02/2023 TODO: Check
       for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
       {
         if ( rng().roll( p()->option.heal_eb_chance ) )
           total_hits += 1;
-      }
+      } */
     }
+
     p()->buff.leaping_flames->expire();
-    p()->buff.scarlet_adaptation->expire();
 
     if ( p()->talent.ruby_essence_burst.ok() )
     {
