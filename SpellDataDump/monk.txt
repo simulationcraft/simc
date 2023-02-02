@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-02/47936)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -915,7 +915,6 @@ Effects          :
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #5 (id=140824)   : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
-Hotfixed         : Base Value (35 -> 45)
 Description      : You shrug off attacks, delaying a portion of Physical damage based on your Agility, instead taking it over $124273d. Affects magical attacks at $s5% effectiveness.$?s383714[
 
 $@spelldesc383714][]

@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-02/47936)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2102,12 +2102,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Vile Taint (278350), Unstable Affliction (316099), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997)
                    Family Flags: 1, 8, 10, 36, 40, 47, 84, 85, 112
-Hotfixed         : Affects Spells
 #2 (id=92150)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Corruption (172), Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997)
                    Family Flags: 1, 8, 10, 36, 40, 47, 73, 84, 85, 112
-Hotfixed         : Affects Spells
 Description      : Increases damage done by Malefic Rapture, Agony, Corruption,$?s63106[ Siphon Life,][]$?s205179[ Phantom Singularity,][]$?s278350[ Vile Taint,][] Unstable Affliction, and Seed of Corruption by ${$77215s1}.1%.
 
 Name             : Mastery: Master Demonologist (id=77219) [Spell Family (5), Passive] 
@@ -10628,7 +10626,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830188)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (219 -> 4), Misc Value (3 -> 0)
 Description      : Damaging an enemy with Agony increases the damage of your next Drain Life by $s1%. This effect stacks up to $334320u times.
 
 Name             : Inevitable Demise (id=334320) [Spell Family (5)] 
@@ -13510,7 +13507,6 @@ Description      : $@spelldesc278350
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
 Name             : Soul Swap (id=386951) [Spell Family (5)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Affliction [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Warlock
 School           : Shadow
@@ -16389,7 +16385,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Siphon Life (63106), Corruption (146739), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Vile Taint (278350), Unstable Affliction (316099), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997)
                    Family Flags: 1, 8, 10, 40, 84, 85, 112
-Hotfixed         : Affects Spells
 Description      : $@spelldesc389775
 Tooltip          : Damage taken from $@auracaster's damage over time effects increased by $s1%.
 
@@ -16431,7 +16426,6 @@ Effects          :
 Description      : When Darkglare deals damage, it deals $s1% of that damage to all enemies affected by your damage over time effects.
 
 Name             : Grim Reach (id=390097) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
