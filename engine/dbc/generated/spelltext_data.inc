@@ -1,4 +1,4 @@
-// Spell text, wow build 10.0.5.47884
+// Spell text, wow build 10.0.5.47936
 static const std::array<spelltext_data_t, 19266> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
@@ -19140,7 +19140,7 @@ static const std::array<spelltext_data_t, 19266> __spelltext_data { {
   { 396166, "Your Combo Strikes grant a stacking ${$396167s3/100}.1% chance for your next Fists of Fury to grant $s1% Haste and invoke Xuen, The White Tiger for $396168d.", 0, 0 },
   { 396167, "$@spelldesc396166", "Your next Fists of Fury has a ${$w3/100}.1% chance to grant $w1% Haste and invoke Xuen, The White Tiger for $396168d.", 0 },
   { 396168, "$@spelldesc396166", "Haste increased by $w1%.", 0 },
-  { 396176, "Your spells and abilities have a low chance to create a Temporal Pocket near your location for $d. Standing within the pocket grants you $s2 Haste and $s3 rapidly decaying movement speed.", 0, 0 },
+  { 396176, "Your spells and abilities have a low chance to create a Temporal Pocket near your location for $396190d. Standing within the pocket grants you $s2 Haste and $s3 rapidly decaying movement speed.", 0, 0 },
   { 396184, "Too full to continue eating food from The Ruby Feast in Valdrakken.", "Too full to continue eating food from The Ruby Feast in Valdrakken.", 0 },
   { 396255, 0, "Damage taken increased by $w1%.", 0 },
   { 396256, 0, "Damage taken increased by $w1%.", 0 },
@@ -19268,11 +19268,11 @@ static const std::array<spelltext_data_t, 19266> __spelltext_data { {
   { 404012, "Prepare a treat for your Ruby Whelpling, energizing them for additional training.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47884
+// spelltext hotfix entries, wow build 10.0.5.47936
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.5.47884
+// Spell description variables, wow build 10.0.5.47936
 static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19646,7 +19646,7 @@ static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47884
+// spelldesc_vars hotfix entries, wow build 10.0.5.47936
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
