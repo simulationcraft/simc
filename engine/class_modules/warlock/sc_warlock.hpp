@@ -994,6 +994,20 @@ public:
 
   //Destruction specific things for Havoc/Mayhem
 
+  // We need to ensure that the target cache is invalidated, which sometimes does not take place in select_target()
+  // due to other methods we have overridden involving Havoc
+  bool select_target() override
+  {
+    auto saved_target = target;
+
+    bool passed = spell_t::select_target();
+
+    if ( passed && target != saved_target && use_havoc() )
+      target_cache.is_valid = false;
+
+    return passed;
+  }
+
   bool use_havoc() const
   {
     // Ensure we do not try to hit the same target twice.
