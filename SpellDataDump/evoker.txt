@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-02/47936)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-03/47936)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -434,7 +434,6 @@ Range            : 25 yards
 Duration         : 4 seconds
 Cooldown         : 40 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Mechanic         : Interrupt
 Affecting spells : Imposing Presence (371016 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
