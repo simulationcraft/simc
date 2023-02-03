@@ -615,6 +615,11 @@ struct soul_rot_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_ta_multiplier( s );
 
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
     if ( s->chain_target == 0 )
     {
       m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage

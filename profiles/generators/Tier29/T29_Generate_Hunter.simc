@@ -1,26 +1,27 @@
 hunter="T29_Hunter_Beast_Mastery"
 level=70
-race=orc
+race=tauren
 role=attack
 position=ranged_back
 spec=beast_mastery
 talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AgWSAIEAAAAAAAAAAAaEHoIhmEJkIRCaSkWIJkIkoRSE
+target_race=dragonkin
 
-head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192945
-neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8791/8846,gem_id=192945/192945/192985,crafted_stats=40/32
+head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8791/8846,gem_id=192919/192919/192919,crafted_stats=49/40
 shoulders=stormwing_harriers_pinions,id=200392,bonus_id=4800/4786/1498
-back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+back=cape_of_entanglement,id=144094,bonus_id=4177/6808/4786/3311
 chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=surgingsong_conductors,id=195516,bonus_id=4800/4786/1498,gem_id=192945
+wrists=ley_dragoons_wristbraces,id=134296,bonus_id=1795/6808/4786/3300,gem_id=192919
 hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
-waist=arcanebound_gale_chain,id=137489,bonus_id=1795/6808/4786/3300,gem_id=192945
-legs=allied_legguards_of_sansok_khan,id=193464,bonus_id=8960/8840/8836/8902/1508,enchant=fierce_armor_kit_3
-feet=ley_dragoons_stompers,id=134298,bonus_id=1795/6808/4786/3300
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant=devotion_of_haste_3
+waist=arcanebound_gale_chain,id=137489,bonus_id=1795/6808/4786/3300,gem_id=192919
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
+feet=venomsteeped_stompers,id=193460,bonus_id=8802/8846
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_mastery_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192919,enchant=devotion_of_mastery_3
 trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 save=T29_Hunter_Beast_Mastery.simc
 
@@ -43,11 +44,11 @@ hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
 waist=arcanebound_gale_chain,id=137489,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
 legs=allied_legguards_of_sansok_khan,id=193464,bonus_id=8960/8840/8836/8902/1508,enchant=fierce_armor_kit_3
 feet=boots_of_explosive_growth,id=193715,bonus_id=6808/4786/1643
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192958,enchant=devotion_of_mastery_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant=devotion_of_mastery_3
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1497,enchant=high_intensity_thermal_scanner_3
+main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 save=T29_Hunter_Marksmanship.simc
 
@@ -61,19 +62,19 @@ position=back
 talents=B8PAAAAAAAAAAAAAAAAAAAAAAIBaBJBSQQCRkQiQSSIJJAAAAAQQUEaCJSIhgGAAAAgA
 
 head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192945
-shoulder=stormwing_harriers_pinions,id=200392,bonus_id=4800/4786/1498
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8790/8846,gem_id=192982/192945/192945,crafted_stats=32/49
+shoulder=epaulets_of_deceitful_intent,id=134480,bonus_id=1795/6808/4786/3300
+back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300
 chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
-neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192945/192945/192945
-back=acidproof_webbing,id=195511,bonus_id=4800/4786/1498
-wrists=surgingsong_conductors,id=195516,bonus_id=4800/4786/1498,gem_id=192945
+wrist=sharpeye_bracers,id=109873,bonus_id=3306,gem_id=192945
 hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
-waist=unnatural_dripstone_cinch,id=195507,bonus_id=4800/4786/1498,gem_id=192945
-legs=stormwing_harriers_greaves,id=200391,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
-feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192945,enchant=devotion_of_haste_3
+waist=stormwing_harriers_belt,id=200393,bonus_id=1507,gem_id=192945
+legs=stormwing_harriers_greaves,id=200391,bonus_id=1507,enchant=fierce_armor_kit_3
+feet=acidic_hailstone_treads,id=193466,bonus_id=8802/8846
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192945,enchant=devotion_of_haste_3
-trinket1=decoration_of_flame,id=194299,bonus_id=4800/4786/1498
-trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-main_hand=awakmani_grimtotems_legacy,id=195483,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
+main_hand=backdraft_cleaver,id=193755,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
 
 save=T29_Hunter_Survival.simc

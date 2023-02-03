@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-03/47936)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -16828,7 +16828,6 @@ Effects          :
 Tooltip          : $?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery cost no Focus and deal $s2% increased damage.
 
 Name             : Deadly Duo (id=397568) [Spell Family (9)] 
-Hotfixed         : Proc Flags 1 (69904 -> 69648), Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None

@@ -773,7 +773,7 @@ struct DF_darkmoon_proc_t : public darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t
     base_t::execute();
 
     if ( base_t::deck->shuffle_event )
-      base_t::deck->shuffle_event->reschedule( base_t::data().category_cooldown() );
+      base_t::deck->shuffle_event->reschedule( base_t::cooldown->base_duration );
   }
 };
 
@@ -1562,7 +1562,7 @@ void voidmenders_shadowgem( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, "voidmenders_shadowgem", effect.player->find_spell( 397399 ) );
   buff->set_chance( 1.0 );
   buff->set_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
-      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int old_, int new_ ) {
+      ->set_stack_change_callback( [ stacking_cb, stacking_buff ]( buff_t*, int, int new_ ) {
         if ( new_ )
           stacking_cb->activate();
         else
@@ -2451,7 +2451,8 @@ void algethar_puzzle_box( special_effect_t& effect )
 
   auto buff_spell = effect.player->find_spell( 383781 );
   buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+    ->set_cooldown( 0_ms );
   buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
 
   auto action = new puzzle_box_channel_t( effect, buff );
@@ -3575,9 +3576,13 @@ void blue_silken_lining( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 387336 ) );
   buff->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  bool first = !buff->manual_stats_added;
+  // In some cases, the buff values from separate items don't stack. This seems to fix itself
+  // when the player loses and regains the buff, so we just assume they stack properly.
   buff->add_stat( STAT_MASTERY_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
 
-  if ( buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
+  // In case the player has two copies of this embellishment, set up the buff events only once.
+  if ( first && buff->sim->dragonflight_opts.blue_silken_lining_uptime > 0.0 )
   {
     buff->player->register_combat_begin( [ buff ]( player_t* p ) {
       buff->trigger();

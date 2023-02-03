@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.5.47777
-static const std::array<specialization_spell_entry_t, 353> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.7.47910
+static const std::array<specialization_spell_entry_t, 356> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -75,6 +75,7 @@ static const std::array<specialization_spell_entry_t, 353> __ptr_specialization_
   {  2,   70, 267316,      0, "Mastery: Hand of Light"            , 0 },
   {  2,   70, 315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   70, 342348,      0, "Crusader Strike"                   , "Rank 2" },
+  {  2,   70, 403876,      0, "Divine Protection"                 , 0 },
   {  3,  253,  53270,      0, "Exotic Beasts"                     , 0 },
   {  3,  253,  76657,      0, "Mastery: Master of Beasts"         , 0 },
   {  3,  253, 137015,      0, "Beast Mastery Hunter"              , 0 },
@@ -177,6 +178,7 @@ static const std::array<specialization_spell_entry_t, 353> __ptr_specialization_
   {  7,  263, 157444,      0, "Critical Strikes"                  , 0 },
   {  7,  263, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
   {  7,  263, 201845,      0, "Stormbringer"                      , 0 },
+  {  7,  264,  52127,      0, "Water Shield"                      , 0 },
   {  7,  264,  77130,      0, "Purify Spirit"                     , 0 },
   {  7,  264,  77226,      0, "Mastery: Deep Healing"             , 0 },
   {  7,  264,  86100,      0, "Mail Specialization"               , 0 },
@@ -303,6 +305,7 @@ static const std::array<specialization_spell_entry_t, 353> __ptr_specialization_
   { 11,  105, 197490,      0, "Feral Affinity"                    , 0 },
   { 11,  105, 212040,      0, "Revitalize"                        , 0 },
   { 11,  105, 231052,      0, "Improved Prowl"                    , 0 },
+  { 11,  105, 326228,      0, "Natural Wisdom"                    , 0 },
   { 12,  577, 162243, 344859, "Demon's Bite"                      , 0 },
   { 12,  577, 162697,      0, "Stat Negation Aura - Agility DPS"  , 0 },
   { 12,  577, 162794, 344862, "Chaos Strike"                      , 0 },

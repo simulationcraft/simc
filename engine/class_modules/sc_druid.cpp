@@ -2979,7 +2979,7 @@ public:
       if ( p()->talent.berserk_frenzy->ok() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
            ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
       {
-        trigger_berserk_frenzy( s->target, s->result_amount );
+        trigger_berserk_frenzy( s->target, s );
       }
     }
   }
@@ -3074,12 +3074,14 @@ public:
     p()->proc.predator->occur();
   }
 
-  void trigger_berserk_frenzy( player_t* t, double d )
+  void trigger_berserk_frenzy( player_t* t, const action_state_t* s )
   {
-    if ( !special || !harmful || !d )
+    if ( !special || !harmful || !s->result_amount )
       return;
 
-    residual_action::trigger( p()->active.frenzied_assault, t, p()->talent.berserk_frenzy->effectN( 1 ).percent() * d );
+    auto d = s->result_amount * p()->talent.berserk_frenzy->effectN( 1 ).percent();
+
+    residual_action::trigger( p()->active.frenzied_assault, t, d );
   }
 };  // end druid_cat_attack_t
 
@@ -4368,9 +4370,12 @@ struct incapacitating_roar_t : public bear_attack_t
 // Ironfur ==================================================================
 struct ironfur_t : public rage_spender_t
 {
+  double lm_chance;
+
   ironfur_t( druid_t* p, std::string_view opt ) : ironfur_t( p, "ironfur", p->talent.ironfur, opt ) {}
 
-  ironfur_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt ) : base_t( n, p, s, opt )
+  ironfur_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : base_t( n, p, s, opt ), lm_chance( p->talent.layered_mane->effectN( 1 ).percent() )
   {
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = false;
@@ -4383,7 +4388,7 @@ struct ironfur_t : public rage_spender_t
     int stack = 1;
 
     // TODO: does guardian of elune also apply to the extra application from layered mane?
-    if ( p()->talent.layered_mane.ok() && rng().roll( p()->talent.layered_mane->effectN( 1 ).percent() ) )
+    if ( p()->talent.layered_mane.ok() && rng().roll( lm_chance ) )
       stack++;
 
     auto dur = p()->buff.ironfur->buff_duration();
@@ -4397,7 +4402,12 @@ struct ironfur_t : public rage_spender_t
     p()->buff.guardian_of_elune->expire();
 
     if ( !is_free_proc() )
+    {
       p()->buff.gory_fur->expire();
+
+      if ( p()->active.thorns_of_iron )
+        p()->active.thorns_of_iron->execute();
+    }
   }
 };
 
@@ -5229,12 +5239,12 @@ struct regrowth_t : public druid_heal_t
       base_dd_min = base_dd_max = 1.0;
     }
 
-    double base_da_min( const action_state_t* s ) const override
+    double base_da_min( const action_state_t* ) const override
     {
       return p()->buff.protector_of_the_pack_regrowth->check_value();
     }
 
-    double base_da_max( const action_state_t* s ) const override
+    double base_da_max( const action_state_t* ) const override
     {
       return p()->buff.protector_of_the_pack_regrowth->check_value();
     }
@@ -6695,12 +6705,12 @@ struct moonfire_t : public druid_spell_t
         base_dd_min = base_dd_max = 1.0;
       }
 
-      double base_da_min( const action_state_t* s ) const override
+      double base_da_min( const action_state_t* ) const override
       {
         return p()->buff.protector_of_the_pack_moonfire->check_value();
       }
 
-      double base_da_max( const action_state_t* s ) const override
+      double base_da_max( const action_state_t* ) const override
       {
         return p()->buff.protector_of_the_pack_moonfire->check_value();
       }
@@ -9608,6 +9618,7 @@ void druid_t::create_buffs()
   buff.ironfur = make_buff( this, "ironfur", talent.ironfur )
     ->set_default_value_from_effect_type( A_MOD_ARMOR_BY_PRIMARY_STAT_PCT )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.reinforced_fur )
     ->apply_affecting_aura( spec.ursine_adept )
     ->apply_affecting_aura( talent.ursocs_endurance )
@@ -9925,7 +9936,10 @@ void druid_t::create_buffs()
 
   buff.tigers_fury = make_buff( this, "tigers_fury", talent.tigers_fury )
     ->set_cooldown( 0_ms )
-    ->apply_affecting_aura( talent.predator );
+    ->apply_affecting_aura( talent.predator )
+    // TODO: hack for bug where frenzied assault ignores benefit from tigers fury
+    ->set_default_value_from_effect( 1 )
+    ->apply_affecting_aura( talent.carnivorous_instinct );
 
   // Guardian buffs
   buff.after_the_wildfire = make_buff( this, "after_the_wildfire", talent.after_the_wildfire->effectN( 1 ).trigger() )
@@ -10230,10 +10244,6 @@ void druid_t::create_actions()
   if ( talent.thorns_of_iron.ok() )
   {
     active.thorns_of_iron = get_secondary_action<thorns_of_iron_t>( "thorns_of_iron" );
-    buff.ironfur->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        active.thorns_of_iron->execute();
-    } );
   }
 
   // Restoration

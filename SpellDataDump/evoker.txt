@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-03/47936)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -434,7 +434,6 @@ Range            : 25 yards
 Duration         : 4 seconds
 Cooldown         : 40 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Mechanic         : Interrupt
 Affecting spells : Imposing Presence (371016 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1483,6 +1482,7 @@ Description      : Brings all dead party members back to life with $s1% health a
 
 
 Name             : Verdant Embrace (id=361195) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -1493,14 +1493,14 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #10), Initial Evoker (356816 effects: #6, #7), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 36
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
+                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x ........ ...x.... ........   x..x.... ........ .xx..... ........ 
                  : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=898900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.09600 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -1591,6 +1591,7 @@ Description      : $@spelldesc361469
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.
 
 Name             : Living Flame (desc=Red) (id=361509) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
@@ -1604,14 +1605,14 @@ Proc Chance      : 101%
 Affecting spells : Devastation Evoker (356809 effects: #5, #6, #11), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7, #11), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
 Family Flags     : 1, 7, 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
+                 : ........ ........ ........ ......x.   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
+                 : Active Threat (94), DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=899463)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.98000 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -2147,6 +2148,7 @@ Description      : Divert spiritual energy, healing an ally for $367230s1. Split
 Variables        : $range=${30}
 
 Name             : Spiritbloom (id=367230) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Nature
 Spell Type       : None
@@ -2158,14 +2160,14 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 27
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Icon (60), Not a Proc (105), No Aura Log (202), Allow Class Ability Procs (416)
+                 : No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910753)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 5.08500 | PvP Coefficient: 1.00000 | Target: Friend (21)
