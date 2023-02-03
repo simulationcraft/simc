@@ -773,7 +773,7 @@ struct DF_darkmoon_proc_t : public darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t
     base_t::execute();
 
     if ( base_t::deck->shuffle_event )
-      base_t::deck->shuffle_event->reschedule( base_t::data().category_cooldown() );
+      base_t::deck->shuffle_event->reschedule( base_t::cooldown->base_duration );
   }
 };
 
