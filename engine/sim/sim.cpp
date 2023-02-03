@@ -708,6 +708,13 @@ bool parse_fight_style( sim_t*             sim,
     throw std::invalid_argument( fmt::format( "Invalid fight style {}", value ) );
   }
 
+  // Disable optimal raid setting for Dungeon-style sim types
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    sim->optimal_raid = 0;
+    sim->use_optimal_buffs_and_debuffs( 0 );
+  }
+
   return true;
 }
 
@@ -1479,6 +1486,7 @@ sim_t::sim_t() :
   scale_to_itemlevel( -1 ),
   keystone_level( 10 ),
   keystone_pct_hp( 27 ),
+  dungeon_route_smart_targeting( true ),
   challenge_mode( false ),
   scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
@@ -1513,7 +1521,7 @@ sim_t::sim_t() :
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ),
-  buff_uptime_timeline( 0 ), buff_stack_uptime_timeline( 0 ),
+  buff_uptime_timeline( 1 ), buff_stack_uptime_timeline( 1 ),
   json_full_states( 0 ),
   decorated_tooltips( -1 ),
   allow_potions( true ),
@@ -2254,18 +2262,10 @@ void sim_t::init_fight_style()
     
     case FIGHT_STYLE_DUNGEON_SLICE:
       //Based on the Hero Dungeon setup
+      desired_targets = 1;
       max_time = timespan_t::from_seconds( 360.0 );
-      //Disables all raidbuffs, except those provided by scrolls or the character itself.
-      optimal_raid = 0;
-      overrides.arcane_intellect = 1;
-      overrides.battle_shout = 1;
-      overrides.mark_of_the_wild = 0;
-      overrides.power_word_fortitude = 1;
-      overrides.bloodlust = 1;
-      overrides.windfury_totem = 0;
 
       shadowlands_opts.enable_rune_words = false;
-
       ignore_invulnerable_targets = true;
 
       raid_events_str +=
@@ -2277,11 +2277,13 @@ void sim_t::init_fight_style()
     
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
+      range::for_each( target_list, []( player_t* t ) {
+        t -> base.sleeping = true;
+      });
       desired_targets = 1;
       fixed_time = false;
-      ignore_invulnerable_targets = true;
-      shadowlands_opts.enable_rune_words = false;
-      overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
+      // Bloodlust is handled by an option on each pull raid event.
+      overrides.bloodlust = 0;
       break;
     
     case FIGHT_STYLE_CLEAVE_ADD:
@@ -2717,15 +2719,12 @@ void sim_t::init()
   }
 
   {
-    // Determine whether we have healers or tanks.
+    // Determine whether we have healers.
     unsigned int healers = 0;
-    unsigned int tanks = 0;
     for ( const auto* p : player_no_pet_list )
     {
       if ( p->primary_role() == ROLE_HEAL )
         ++healers;
-      else if ( p->primary_role() == ROLE_TANK )
-        ++tanks;
     }
     if ( healers > 0 || healing > 0 )
       heal_target = module_t::heal_enemy() -> create_player( this, "Healing_Target", RACE_NONE );
@@ -3284,7 +3283,9 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return make_ref_expr( name_str, expected_iteration_time );
 
   if ( util::str_compare_ci( name_str, "fight_remains" ) )
-    return make_fn_expr( name_str, [ this ] { return expected_iteration_time - event_mgr.current_time; } );
+    return make_fn_expr( name_str, [ this ] {
+      return expected_iteration_time - event_mgr.current_time;
+    } );
 
   if ( util::str_compare_ci( name_str, "interpolated_fight_remains" ) )
     return make_fn_expr( name_str, [ this ] {
@@ -3316,15 +3317,14 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     return make_ref_expr( name_str, active_allies );
 
   // Get the number of actors in the simulation that do not have execute abilities
-  if (name_str == "nonexecute_actors_pct")
+  if ( name_str == "nonexecute_actors_pct" )
   {
     struct nonexecute_actors_pct_expr : public expr_t
     {
       double nonexecute_actors_pct;  // Cached value, created on expression
                                      // creation
 
-      nonexecute_actors_pct_expr( const sim_t* sim )
-        : expr_t( "nonexecute_actors_pct" )
+      nonexecute_actors_pct_expr( const sim_t* sim ) : expr_t( "nonexecute_actors_pct" )
       {
         double execute    = 0.0;
         double nonexecute = 0.0;
@@ -3360,28 +3360,40 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "fight_style" ) )
+  {
+    return expr_t::create_constant(
+        name_str, util::str_compare_ci( util::fight_style_string( fight_style ), splits[ 1 ] ) );
+  }
+
   if ( splits.size() == 3 )
   {
     if ( splits[ 0 ] == "aura" )
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
-      if ( ! buff ) return nullptr;
+      if ( !buff )
+        return nullptr;
+
       return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
     }
   }
+
   if ( splits.size() >= 3 && splits[ 0 ] == "actors" )
   {
     player_t* actor = sim_t::find_player( splits[ 1 ] );
-    if ( ! target ) return nullptr;
-    auto rest = std::string(splits[ 2 ]);
+    if ( !target )
+      return nullptr;
+
+    auto rest = std::string( splits[ 2 ] );
     for ( size_t i = 3; i < splits.size(); ++i )
       rest += fmt::format( ".{}", splits[ i ] );
-    return actor -> create_expression( rest );
+
+    return actor->create_expression( rest );
   }
 
   if ( splits.size() == 1 && splits[ 0 ] == "target" )
   {
-    return make_ref_expr( name_str, target -> actor_index );
+    return make_ref_expr( name_str, target->actor_index );
   }
 
   // conditionals that handle upcoming raid events
@@ -3396,7 +3408,10 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
     raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true, &is_constant );
 
     if ( is_constant )
-      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, false, &is_constant ) );
+    {
+      return expr_t::create_constant(
+          name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, false, &is_constant ) );
+    }
 
     struct raid_event_expr_t : public expr_t
     {
@@ -3404,15 +3419,14 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
       std::string type;
       std::string filter;
 
-      raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter ) :
-        expr_t( fmt::format("raid_event_{}_{}", type, filter) ), s( s ), type( type ), filter( filter )
+      raid_event_expr_t( sim_t* s, util::string_view type, util::string_view filter )
+        : expr_t( fmt::format( "raid_event_{}_{}", type, filter ) ), s( s ), type( type ), filter( filter )
       {}
 
       double evaluate() override
       {
         return raid_event_t::evaluate_raid_event_expression( s, type, filter, false, nullptr );
       }
-
     };
 
     return std::make_unique<raid_event_expr_t>( this, type_or_name, filter );
@@ -3422,8 +3436,8 @@ std::unique_ptr<expr_t> sim_t::create_expression( util::string_view name_str )
   // If so, return their actor index
   if ( splits.size() == 1 )
     for ( size_t i = 0; i < actor_list.size(); i++ )
-      if ( name_str == actor_list[ i ] -> name_str )
-        return make_ref_expr( name_str, actor_list[ i ] -> actor_index );
+      if ( name_str == actor_list[ i ]->name_str )
+        return make_ref_expr( name_str, actor_list[ i ]->actor_index );
 
   return nullptr;
 }
@@ -3488,6 +3502,7 @@ void sim_t::create_options()
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
+  add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
@@ -3540,7 +3555,7 @@ void sim_t::create_options()
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
-  // Overrides"
+  // Overrides
   add_option( opt_bool( "override.allow_potions", allow_potions ) );
   add_option( opt_bool( "override.allow_food", allow_food ) );
   add_option( opt_bool( "override.allow_flasks", allow_flasks ) );
@@ -3566,7 +3581,6 @@ void sim_t::create_options()
   add_option( opt_string( "reference_player", reference_player_str ) );
   add_option( opt_string( "raid_events", raid_events_str ) );
   add_option( opt_append( "raid_events+", raid_events_str ) );
-  add_option( opt_func( "fight_style", parse_fight_style ) );
   add_option( opt_string( "main_target", main_target_str ) );
   add_option( opt_float( "enemy_death_pct", enemy_death_pct ) );
   add_option( opt_int( "target_level", target_level ) );
@@ -3592,6 +3606,7 @@ void sim_t::create_options()
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
   add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+  add_option( opt_bool( "dungeon_route_smart_targeting", dungeon_route_smart_targeting ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
@@ -3902,6 +3917,11 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.hood_of_surging_time_chance", dragonflight_opts.hood_of_surging_time_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.hood_of_surging_time_period", dragonflight_opts.hood_of_surging_time_period, 1_s, timespan_t::max() ) );
   add_option( opt_uint( "dragonflight.hood_of_surging_time_stacks", dragonflight_opts.hood_of_surging_time_stacks, 0, 5 ) );
+  add_option( opt_deprecated( "dragonflight.whelp_training_weights", "dragonflight.ruby_whelp_shell_training" ) );
+  add_option( opt_string( "dragonflight.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
+  add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
+  add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
+  add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================

@@ -5,12 +5,11 @@ level=70
 race=tauren
 role=spell
 position=ranged_back
-class_talents=improved_lightning_bolt:2/natures_fury:2/frost_shock:1/totemic_surge:2/fire_and_ice:1/totemic_recall:1/call_of_the_elements:1
-spec_talents=earth_shock:1/earthquake:1/elemental_fury:1/fire_elemental:1/storm_elemental:0/inundate:0/call_of_thunder:0/flow_of_power:1/lava_surge:1/unrelenting_calamity:0/icefury:1/swelling_maelstrom:1/echo_of_the_elements:1/call_of_fire:1/stormkeeper:0/flux_melting:1/electrified_shocks:0/aftershock:1/surge_of_power:0/flames_of_the_cauldron:1/flash_of_lightning:0/eye_of_the_storm:2/power_of_the_maelstrom:0/master_of_the_elements:2/improved_flametongue_weapon:1/elemental_blast:1/primordial_wave:1/deeply_rooted_elements:1/ascendance:0/primal_elementalist:0/liquid_magma_totem:0/echoes_of_great_sundering:0/elemental_equilibrium:0/rolling_magma:2/echo_chamber:2/oath_of_the_far_seer:0/magma_chamber:1/searing_flames:0/lightning_rod:0/primordial_surge:1/splintered_elements:0/mountains_will_fall:1/further_beyond:0/windspeakers_lava_resurgence:0/skybreakers_fiery_demise:0
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSp0SCAJlkUSKBlkQEAAAAAAUCQKJBEFiIJJtUC0SSAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+flask=phial_of_elemental_chaos_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=disabled
@@ -42,8 +41,10 @@ actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.as
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
 actions+=/use_items
-actions+=/auto_attack
 actions+=/natures_swiftness
+# If you've selected <a href='https://www.wowhead.com/spell=114050/ascendance'>Ascendance</a> sync <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> with it. Otherwise use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> on Cooldown.
+actions+=/invoke_external_buff,name=power_infusion,if=talent.ascendance.enabled&buff.ascendance.up|!talent.ascendance.enabled
+actions+=/potion
 actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
 actions+=/run_action_list,name=single_target
 
@@ -53,22 +54,30 @@ actions.aoe=fire_elemental
 actions.aoe+=/storm_elemental
 # Keep your cooldowns rolling.
 actions.aoe+=/stormkeeper,if=!buff.stormkeeper.up
+# Reset LMT CD as early as possible.
+actions.aoe+=/totemic_recall,if=cooldown.liquid_magma_totem.remains>45
+# Keep your cooldowns rolling.
+actions.aoe+=/liquid_magma_totem
 # Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll keep that logic here).
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&buff.surge_of_power.up&!buff.splintered_elements.up
 # Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll keep that logic here).
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&!buff.splintered_elements.up
 # Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll keep that logic here).
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled
-# Spread Flame Shock using Surge of Power.
-actions.aoe+=/flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)
-# Spread Flame Shock against low target counts if Master of the Elements was selected.
-actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled
-# Spread Flame Shock to gamble on Deeply Rooted Element procs.
-actions.aoe+=/flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled
+# Spread Flame Shock using Surge of Power up to 6.
+actions.aoe+=/flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
+# Spread Flame Shock against low target counts if Master of the Elements was selected up to 6.
+actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
+# Spread Flame Shock to gamble on Deeply Rooted Element procs up to 6.
+actions.aoe+=/flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6
+# Refresh Flame Shock using Surge of Power up to 6.
+actions.aoe+=/flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
+# Refresh Flame Shock against low target counts if Master of the Elements was selected up to 6.
+actions.aoe+=/flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
+# Refresh Flame Shock to gamble on Deeply Rooted Element procs up to 6.
+actions.aoe+=/flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0
 # JUST DO IT! https://i.kym-cdn.com/entries/icons/mobile/000/018/147/Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___Turner)_0-4_screenshot.jpg
 actions.aoe+=/ascendance
-# Keep your cooldowns rolling.
-actions.aoe+=/liquid_magma_totem
 # Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)
 # Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease.
@@ -92,17 +101,17 @@ actions.aoe+=/lava_beam,if=buff.stormkeeper.up
 # Stormkeeper is strong and should be used.
 actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
 # Power of the Maelstrom is strong and should be used.
-actions.aoe+=/lava_beam,if=buff.power_of_the_maelstrom.up
+actions.aoe+=/lava_beam,if=buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time
 # Power of the Maelstrom is strong and should be used.
 actions.aoe+=/chain_lightning,if=buff.power_of_the_maelstrom.up
 # Against 6 targets or more Surge of Power should be used with Lava Beam rather than Lava Burst.
-actions.aoe+=/lava_beam,if=active_enemies>=6&buff.surge_of_power.up
+actions.aoe+=/lava_beam,if=active_enemies>=6&buff.surge_of_power.up&buff.ascendance.remains>cast_time
 # Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst.
 actions.aoe+=/chain_lightning,if=active_enemies>=6&buff.surge_of_power.up
 # Proc Deeply Rooted Elements against 3 targets.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled&buff.windspeakers_lava_resurgence.up
 # Consume Master of the Elements with Lava Beam.
-actions.aoe+=/lava_beam,if=buff.master_of_the_elements.up
+actions.aoe+=/lava_beam,if=buff.master_of_the_elements.up&buff.ascendance.remains>cast_time
 # Proc Master of the Elements against 3 targets.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled
 # Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient.
@@ -111,7 +120,7 @@ actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up
 actions.aoe+=/icefury,if=talent.electrified_shocks.enabled&active_enemies<5
 # Spread out your Frost Shock casts to empower as many Chain Lightnings as possible.
 actions.aoe+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5
-actions.aoe+=/lava_beam
+actions.aoe+=/lava_beam,if=buff.ascendance.remains>cast_time
 actions.aoe+=/chain_lightning
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
@@ -148,7 +157,7 @@ actions.single_target+=/lightning_bolt,if=buff.surge_of_power.up
 actions.single_target+=/icefury,if=talent.electrified_shocks.enabled
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up
-actions.single_target+=/lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up
+actions.single_target+=/lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time
 # Windspeaker's Lava Resurgence is strong. Don't sit on it.
 actions.single_target+=/lava_burst,if=buff.windspeakers_lava_resurgence.up
 # Lava Surge is neat. Utilize it.
@@ -178,6 +187,7 @@ actions.single_target+=/icefury
 actions.single_target+=/lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
 actions.single_target+=/frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled
+actions.single_target+=/frost_shock,if=buff.icefury.up&talent.flux_melting.enabled
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
 actions.single_target+=/lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled)
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2
@@ -192,33 +202,33 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=faceguard_of_infused_earth,id=200399,ilevel=424,gem_id=192948
-neck=ukhel_ancestry_beads,id=193676,ilevel=421,gem_id=192985/192948/192948
+head=faceguard_of_infused_earth,id=200399,bonus_id=8780,ilevel=424,gem_id=192985
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=7935,ilevel=421,gem_id=192948/192948/192948
 shoulders=calderas_of_infused_earth,id=200401,ilevel=424
-back=cloak_of_failing_will,id=144115,ilevel=421
-chest=robe_of_infused_earth,id=200396,ilevel=424,enchant=waking_stats_3
-wrists=surgingsong_conductors,id=195516,ilevel=421,gem_id=192948
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932/8960,ilevel=418,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,ilevel=421,enchant_id=6625
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7974,ilevel=421,gem_id=192948,enchant_id=6573
 hands=gauntlets_of_infused_earth,id=200398,ilevel=424
-waist=morningscale_waistguard,id=109843,ilevel=421,gem_id=192948
-legs=leggings_of_infused_earth,id=200400,ilevel=424,enchant=frozen_spellthread_3
-feet=lightningcharged_striders,id=193685,ilevel=421,enchant=plainsrunners_breeze_3
-finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3
-finger2=signet_of_shifting_magics,id=109780,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3
-trinket1=horn_of_valor,id=133642,ilevel=421
-trinket2=infernal_writ,id=137485,ilevel=421
-main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant=sophic_devotion_3
+waist=flametouched_chain,id=193425,bonus_id=3524/8836/8840/8902/8960/8932,ilevel=418,gem_id=192948,crafted_stats=49/36
+legs=tassets_of_the_tarasek_legion,id=195522,ilevel=424,enchant_id=6541
+feet=lightningcharged_striders,id=193685,ilevel=421
+finger1=seal_of_filial_duty,id=195526,bonus_id=8780,ilevel=430,gem_id=192948,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=8780,ilevel=421,gem_id=192948,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=furious_ragefeather,id=193677,ilevel=421
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6655
 off_hand=broodsworn_legionnaires_pavise,id=195520,ilevel=424
 
 # Gear Summary
-# gear_ilvl=422.88
+# gear_ilvl=422.31
 # gear_strength=256
-# gear_stamina=13551
-# gear_intellect=7044
-# gear_crit_rating=1229
-# gear_haste_rating=3275
-# gear_mastery_rating=4770
-# gear_versatility_rating=1515
-# gear_speed_rating=250
-# gear_armor=8575
+# gear_stamina=13435
+# gear_intellect=7204
+# gear_crit_rating=1011
+# gear_haste_rating=4934
+# gear_mastery_rating=3728
+# gear_versatility_rating=1315
+# gear_avoidance_rating=175
+# gear_armor=8546
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

@@ -1,5 +1,5 @@
-// Rank class spells, wow build 10.0.2.46924
-static const std::array<rank_class_spell_t, 55> __rank_spells_data { {
+// Rank class spells, wow build 10.0.5.47936
+static const std::array<rank_class_spell_t, 53> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -13,8 +13,6 @@ static const std::array<rank_class_spell_t, 55> __rank_spells_data { {
   {  2,   66, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,   70, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  6,  252, 325554,      0, "Dark Transformation"               , "Rank 2" },
-  { 12,  581, 320381,      0, "Demonic Wards"                     , "Rank 2" },
-  { 12,  581, 320382,      0, "Demonic Wards"                     , "Rank 3" },
   { 10,  269, 343731,      0, "Disable"                           , "Rank 2" },
   { 11,    0, 343238,      0, "Entangling Roots"                  , "Rank 2" },
   {  4,  261, 231716,      0, "Eviscerate"                        , "Rank 2" },

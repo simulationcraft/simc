@@ -1552,7 +1552,7 @@ int action_t::num_targets() const
 size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 {
   tl.clear();
-  if ( !target->is_sleeping() )
+  if ( !target->is_sleeping() && target->is_enemy() )
     tl.push_back( target );
 
   for ( auto* t : sim->target_non_sleeping_list )
@@ -1790,9 +1790,34 @@ void action_t::execute()
 
     // Proc generic abilities on execute.
     proc_types pt;
+    proc_types2 pt2;
     if ( execute_state && callbacks && ( pt = execute_state->proc_type() ) != PROC1_INVALID )
     {
-      proc_types2 pt2;
+      // "On spell cast", only performed for foreground actions
+      if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+
+      // "On an execute result"
+      if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
+      {
+        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+
+      // "On interrupt cast result"
+      if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
+      {
+        if ( execute_state->target->debuffs.casting->check() )
+          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
+      }
+    }
+
+    // Special handling for "Cast Successful" procs
+    // TODO: What happens when there is a PROC1 type handled above in addition to Cast Successful?
+    if ( execute_state && callbacks )
+    {
+      pt = PROC1_CAST_SUCCESSFUL;
 
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
@@ -1970,7 +1995,7 @@ void action_t::assess_damage( result_amount_type type, action_state_t* state )
       }
     }
     else if ( state->target == sim->target ||
-              ( sim->merge_enemy_priority_dmg && state->target->is_enemy() && !state->target->is_pet() ) )
+              ( sim->merge_enemy_priority_dmg && state->target->is_boss() ) )
     {
       player->priority_iteration_dmg += state->result_amount;
     }
@@ -2202,6 +2227,17 @@ bool action_t::usable_moving() const
   return true;
 }
 
+bool action_t::usable_precombat() const
+{
+  if ( !harmful )
+    return true;
+
+  if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
+    return true;
+
+  return false;
+}
+
 bool action_t::target_ready( player_t* candidate_target )
 {
   // Ensure target is valid to execute on
@@ -2345,7 +2381,7 @@ bool action_t::select_target()
 
   // Normal casting (no cycle_targets, cycle_players, target_number, or target_if specified). Check
   // that we can cast on the target
-  return target_ready( target );
+  return target ? target_ready( target ) : false;
 }
 
 bool action_t::action_ready()
@@ -2510,8 +2546,11 @@ void action_t::init()
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
 
-  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) )
+  if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
+       data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
+  {
     snapshot_flags &= ~( STATE_VERSATILITY );
+  }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
   {
@@ -2578,19 +2617,14 @@ void action_t::init()
 
   if ( !( background || sequence ) && ( action_list && action_list->name_str == "precombat" ) )
   {
-    if ( harmful )
+    if ( usable_precombat() )
     {
-      if ( this->travel_time() > timespan_t::zero() || this->base_execute_time > timespan_t::zero() )
-      {
-        player->precombat_action_list.push_back( this );
-      }
-      else
-      {
-        throw std::runtime_error("Can only add harmful action with travel or cast-time to precombat action list.");
-      }
+      player->precombat_action_list.push_back( this );
     }
     else
-      player->precombat_action_list.push_back( this );
+    {
+      throw std::runtime_error( "Can only add harmful action with travel or cast-time to precombat action list." );
+    }
   }
   else if ( action_list && action_list->name_str != "precombat" )
   {
@@ -3458,27 +3492,27 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       {
         struct gcd_expr_t : public action_expr_t
         {
-          double gcd_time;
-          gcd_expr_t( action_t& a ) : action_expr_t( "gcd", a ), gcd_time( 0 )
+          timespan_t gcd_time;
+          gcd_expr_t( action_t& a ) : action_expr_t( "gcd", a ), gcd_time( 0_ms )
           {
           }
           double evaluate() override
           {
-            gcd_time = action.player->base_gcd.total_seconds();
+            gcd_time = action.player->base_gcd;
             if ( action.player->cache.attack_haste() < action.player->cache.spell_haste() )
               gcd_time *= action.player->cache.attack_haste();
             else
               gcd_time *= action.player->cache.spell_haste();
 
-            auto min_gcd = action.min_gcd.total_seconds();
-            if ( min_gcd == 0 )
+            auto min_gcd = action.min_gcd;
+            if ( min_gcd == 0_ms )
             {
-              min_gcd = 0.750;
+              min_gcd = 750_ms;
             }
 
             if ( gcd_time < min_gcd )
               gcd_time = min_gcd;
-            return gcd_time;
+            return gcd_time.total_seconds();
           }
         };
         return std::make_unique<gcd_expr_t>( *this );
@@ -3532,7 +3566,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         double evaluate_spell() const
         {
           auto original_target = spell->target;
-          spell->target = original_spell.target;
+          spell->target = original_spell.get_expression_target();
           spell->target_cache.is_valid = false;
           auto n_targets = spell->target_list().size();
           spell->target = original_target;
@@ -3754,22 +3788,26 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
       double evaluate() override
       {
-        if ( proxy_expr.size() <= action.target->actor_index )
-        {
+        // In the case of player-targeted non-hostile actions, target.x expressions are not typically relevant
+        // Assume in this case the intent is to use the player's target rather than the player for evaluation
+        // For things such as self-heals, self.x (e.g. self.health.pct) expressions should be used
+        player_t* target = action.get_expression_target();
 
-          std::generate_n(std::back_inserter(proxy_expr), action.target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
+        if ( proxy_expr.size() <= target->actor_index )
+        {
+          std::generate_n(std::back_inserter(proxy_expr), target->actor_index + 1 - proxy_expr.size(), []{ return std::unique_ptr<expr_t>(); });
         }
 
-        auto& expr = proxy_expr[ action.target->actor_index ];
+        auto& expr = proxy_expr[ target->actor_index ];
 
         if ( !expr )
         {
-          expr = action.target->create_action_expression( action, suffix_expr_str );
+          expr = target->create_action_expression( action, suffix_expr_str );
           if ( !expr )
           {
             throw std::invalid_argument(
                 fmt::format( "Cannot create dynamic target expression for target '{}' from '{}'.",
-                             action.target->name(), suffix_expr_str ) );
+                             target->name(), suffix_expr_str ) );
           }
         }
 
@@ -3926,7 +3964,7 @@ double action_t::ppm_proc_chance( double PPM ) const
 timespan_t action_t::tick_time( const action_state_t* state ) const
 {
   timespan_t t = base_tick_time;
-  if ( channeled || hasted_ticks )
+  if ( hasted_ticks )
   {
     t *= state->haste;
   }
@@ -4647,6 +4685,13 @@ void action_t::set_target( player_t* new_target )
   }
 
   target = new_target;
+}
+
+// Returns the target to use in expressions for an action
+// Default behavior is for player-targeted abilities to return the player's target
+player_t* action_t::get_expression_target()
+{
+  return ( target == player ) ? player->target : target;
 }
 
 void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* gain )

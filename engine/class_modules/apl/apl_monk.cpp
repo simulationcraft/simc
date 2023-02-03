@@ -72,7 +72,7 @@ namespace monk_apl
         break;
       case MONK_WINDWALKER:
         if ( p->true_level > 60 )
-          return "phial_of_static_empowerment_3";
+          return "phial_of_tepid_versatility_3";
         else if ( p->true_level > 50 )
           return "spectral_flask_of_power";
         else if ( p->true_level > 45 )
@@ -176,217 +176,163 @@ namespace monk_apl
   void brewmaster( player_t* p )
   {
     std::vector<std::string> racial_actions = p->get_racial_actions();
-    action_priority_list_t* pre = p->get_action_priority_list( "precombat" );
-    action_priority_list_t* def = p->get_action_priority_list( "default" );
+    action_priority_list_t* pre             = p->get_action_priority_list( "precombat" );
+    action_priority_list_t* def             = p->get_action_priority_list( "default" );
+
+    action_priority_list_t* cooldowns_niuzao_woo          = p->get_action_priority_list( "cooldowns_niuzao_woo" );
     action_priority_list_t* cooldowns_improved_niuzao_woo = p->get_action_priority_list( "cooldowns_improved_niuzao_woo" );
     action_priority_list_t* cooldowns_improved_niuzao_cta = p->get_action_priority_list( "cooldowns_improved_niuzao_cta" );
-    action_priority_list_t* cooldowns_niuzao_woo = p->get_action_priority_list( "cooldowns_niuzao_woo" );
 
-    action_priority_list_t* rotation_boc      = p->get_action_priority_list( "rotation_boc" );
-    action_priority_list_t* rotation_fom_boc  = p->get_action_priority_list( "rotation_fom_boc" );
-    action_priority_list_t* rotation_chp_dfb  = p->get_action_priority_list( "rotation_chp_dfb" );
+    action_priority_list_t* rotation_boc_dfb  = p->get_action_priority_list( "rotation_boc_dfb" );
+    action_priority_list_t* rotation_dfb      = p->get_action_priority_list( "rotation_dfb" );
+    action_priority_list_t* rotation_chp      = p->get_action_priority_list( "rotation_chp" );
     action_priority_list_t* rotation_fallback = p->get_action_priority_list( "rotation_fallback" );
 
-
-    // Flask
     pre->add_action( "flask" );
-
-    // Food
     pre->add_action( "food" );
-
-    // Rune
     pre->add_action( "augmentation" );
-
-    // Snapshot stats
     pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
     pre->add_action( "potion" );
-
     pre->add_action( "chi_burst,if=talent.chi_burst.enabled" );
     pre->add_action( "chi_wave,if=talent.chi_wave.enabled" );
 
-    // ---------------------------------
-    // PRE-COMBAT VARIABLE CONFIGURATION
-    // ---------------------------------
-    // Blackout Combo
-    pre->add_action( "variable,name=boc_count,op=set,value=0", "Blackout Combo" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=0", "Rotation Selection" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=1,if=(talent.charred_passions.enabled|talent.dragonfire_brew.enabled)&talent.salsalabims_strength.enabled" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=2,if=talent.charred_passions.enabled&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
-    pre->add_action( "variable,op=set,name=rotation_selection,value=3-variable.rotation_selection" );
-
-    // ---------------------------------
-    // BEGIN ACTIONS
-    // ---------------------------------
+    // To account for some strange behaviour, these are in combat, and not strictly pre-combat.
+    def->add_action( "variable,op=set,name=rotation_selection,value=0" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=1,if=talent.charred_passions.enabled&talent.salsalabims_strength.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=2,if=talent.dragonfire_brew.enabled&talent.salsalabims_strength.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=3,if=talent.dragonfire_brew.enabled&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled" );
+    def->add_action( "variable,op=set,name=rotation_selection,value=4-variable.rotation_selection" );
 
     def->add_action( "auto_attack" );
     def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
-
-    // Base DPS Cooldowns
-    def->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled", "Base DPS Cooldowns" );
-    def->add_action( "touch_of_death" );
-    def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up&talent.bonedust_brew.enabled" );
-
-    // On-Use Effects
-    if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
-      def->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str );
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-      {
-        if ( item.name_str == "scars_of_fraternal_strife" )
-          def->add_action( "use_item,name=" + item.name_str + ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
-        else if ( item.name_str == "cache_of_acquired_treasures" )
-          def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
-        else if ( item.name_str == "jotungeirr_destinys_call" )
-          continue;
-        else
-          def->add_action( "use_item,name=" + item.name_str );
-      }
-    }
-
     def->add_action( "potion" );
+    def->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled" );
+    def->add_action( "use_item,slot=trinket1,if=debuff.weapons_of_order_debuff.stack>3|fight_remains<25" );
+    def->add_action( "use_item,slot=trinket2,if=debuff.weapons_of_order_debuff.up|fight_remains<15" );
 
     for ( const auto& racial_action : racial_actions )
-    {
-      if ( racial_action != "arcane_torrent" )
-        def->add_action( racial_action );
-    }
+      {
+        if ( racial_action != "arcane_torrent" )
+          def->add_action( racial_action );
+      }
 
-    // Cooldown Action Lists
-    def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1",
-      "Cooldown Action Lists" );
+    def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1" );
     def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)=2" );
     def->add_action( "call_action_list,name=cooldowns_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)<=1" );
 
-    // Rotation Action Lists
-    def->add_action("call_action_list,name=rotation_boc,if=variable.rotation_selection=1&(((1%spell_haste-1)*100>=1%3&talent.fluidity_of_motion.enabled)|!talent.fluidity_of_motion.enabled)", "Rotation Action Lists" );
-    def->add_action("call_action_list,name=rotation_fom_boc,if=variable.rotation_selection=1&((1%spell_haste-1)*100<1%3&talent.fluidity_of_motion.enabled)" );
-    def->add_action("call_action_list,name=rotation_chp_dfb,if=variable.rotation_selection=2" );
-    def->add_action("call_action_list,name=rotation_fallback,if=variable.rotation_selection=3", "Fallback Rotation" );
+    def->add_action( "call_action_list,name=rotation_boc_dfb,if=variable.rotation_selection=1" );
+    def->add_action( "call_action_list,name=rotation_dfb,if=variable.rotation_selection=2" );
+    def->add_action( "call_action_list,name=rotation_chp,if=variable.rotation_selection=3" );
+    def->add_action( "call_action_list,name=rotation_fallback,if=variable.rotation_selection=4" );
 
-    // ---------------------------------
-    // DPS COOLDOWNS
-    // ---------------------------------
+    // // On-Use Effects
+    // if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
+    //   def->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str );
 
-    // Name: Niuzao + Weapons of Order / Niuzao + Call to Arms
-    cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled",
-      "Name: Niuzao + Weapons of Order / Niuzao + Call to Arms" );
-    cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=16&talent.weapons_of_order.enabled" );
-    cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&!talent.weapons_of_order.enabled" );
-    cooldowns_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&stagger.amounttototalpct>=0.7&!buff.blackout_combo.up" );
-    cooldowns_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up" );
+    // for ( const auto& item : p->items )
+    // {
+    //   if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+    //   {
+    //     if ( item.name_str == "scars_of_fraternal_strife" )
+    //       def->add_action( "use_item,name=" + item.name_str + ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
+    //     else if ( item.name_str == "cache_of_acquired_treasures" )
+    //       def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
+    //     else if ( item.name_str == "jotungeirr_destinys_call" )
+    //       continue;
+    //     else
+    //       def->add_action( "use_item,name=" + item.name_str );
+    //   }
+    // }
 
-    /*
-     * Process Overview:
-     * snapshot purifies in cta, or niuzao into pb_in_window
-     * decrement pb_in_window if a pb is cast in window
-     * evenly cast pb across window
-     * dump excess pbs at end of niuzao window if available(excess at end of CtA will be consumed by niuzao, as they tend to be pretty well synced with wwto)
-     * pre - purify if WoO is up in 4 or fewer seconds, and the last purification was longer ago than half a gcd after next woo is expected to be usable(a lil latency fudge factor)
-     * WoO if pre - purify buff exists
-     * pre - purify if last CtA stomp has occurred, and niuzao will be cast in <= $( pre_pb_wiggle )
-     * niuzao if enough time has passed, and most recent stomp is older than most recent purification(indirectly via woo last used + small error.pet last used isn't a thing?)
-     * consume excess pbs
-     */
+    cooldowns_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
+                                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
+    cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled" );
+    cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack=4" );
+    cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
+    cooldowns_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
+    cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=buff.weapons_of_order.remains<=16&talent.weapons_of_order.enabled" );
+    cooldowns_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled" );
+    cooldowns_niuzao_woo->add_action( "purifying_brew,if=stagger.amounttototalpct>=0.7&!buff.blackout_combo.up" );
+    cooldowns_niuzao_woo->add_action( "purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up" );
 
-     // Name: Improved Niuzao + Weapons of Order
-    cooldowns_improved_niuzao_woo->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox",
-      "Name: Improved Niuzao + Weapons of Order" );
+    cooldowns_improved_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
+                                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_improved_niuzao_woo->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox" );
-    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
-    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
-    cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled" );
-    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains" );
-    cooldowns_improved_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&time-action.purifying_brew.last_used<=5" );
-    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
+    cooldowns_improved_niuzao_woo->add_action( "variable,name=pb_in_window,op=sub,value=1,if=prev.purifying_brew&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05" );
+    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
+    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
+    cooldowns_improved_niuzao_woo->add_action( "weapons_of_order" );
+    cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack=4" );
+    cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
+    cooldowns_improved_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
+    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains" );
+    cooldowns_improved_niuzao_woo->add_action( "invoke_niuzao_the_black_ox,if=time-action.purifying_brew.last_used<=5" );
+    cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
 
-    // Name: Improved Niuzao + Call to Arms
-    cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(10+2*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.weapons_of_order",
-      "Name: Improved Niuzao + Call to Arms" );
+    cooldowns_improved_niuzao_cta->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
+                                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
+    cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(10+2*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.weapons_of_order" );
     cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox" );
     cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=sub,value=1,if=prev.purifying_brew&(time-action.weapons_of_order.last_used<=10+2*0.05|time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
-    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=10+2*0.05-time+action.weapons_of_order.last_used%variable.pb_in_window&time-action.weapons_of_order.last_used<=10+2*0.05)" );
-    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
-    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,use_off_gcd=1,if=talent.purifying_brew.enabled&(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
-    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains" );
-    cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled&time-action.purifying_brew.last_used<=5" );
-    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains&buff.weapons_of_order.remains<=30-17" );
-    cooldowns_improved_niuzao_cta->add_action( "invoke_niuzao_the_black_ox,if=talent.invoke_niuzao_the_black_ox.enabled&buff.weapons_of_order.remains<=30-17&action.purifying_brew.last_used>action.weapons_of_order.last_used+10+2*0.05" );
-    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=talent.purifying_brew.enabled&cooldown.purifying_brew.full_recharge_time*2<=cooldown.weapons_of_order.remains-3.5&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
+    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=(time-action.purifying_brew.last_used>=10+2*0.05-time+action.weapons_of_order.last_used%variable.pb_in_window&time-action.weapons_of_order.last_used<=10+2*0.05)" );
+    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
+    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
+    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains" );
+    cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if=time-action.purifying_brew.last_used<=5" );
+    cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack=4" );
+    cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
+    cooldowns_improved_niuzao_cta->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
+    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains&buff.weapons_of_order.remains<=30-17" );
+    cooldowns_improved_niuzao_cta->add_action( "invoke_niuzao_the_black_ox,if=buff.weapons_of_order.remains<=30-17&action.purifying_brew.last_used>action.weapons_of_order.last_used+10+2*0.05" );
+    cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=cooldown.purifying_brew.full_recharge_time*2<=cooldown.weapons_of_order.remains-3.5&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
 
-    // ---------------------------------
-    // ROTATIONS
-    // ---------------------------------
+    rotation_boc_dfb->add_action( "blackout_kick" );
+    rotation_boc_dfb->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
+    rotation_boc_dfb->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled&buff.rushing_jade_wind.remains<1" );
+    rotation_boc_dfb->add_action( "breath_of_fire,if=buff.blackout_combo.up" );
+    rotation_boc_dfb->add_action( "keg_smash" );
+    rotation_boc_dfb->add_action( "black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65&talent.black_ox_brew.enabled" );
+    rotation_boc_dfb->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
+    rotation_boc_dfb->add_action( "spinning_crane_kick,if=active_enemies>1&energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65" );
+    rotation_boc_dfb->add_action( "tiger_palm,if=active_enemies=1&energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65" );
+    rotation_boc_dfb->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
+    rotation_boc_dfb->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+    rotation_boc_dfb->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
-    // Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]
-    // Basic Sequence: Blackout Kick Breath of Fire x x Blackout Kick Keg Smash x x
-    // Fluidity of Motion Sequence: Blackout Kick Breath of Fire x Blackout Kick Keg Smash x
-    rotation_boc->add_action( "variable,name=boc_count,op=add,value=1,if=prev.blackout_kick",
-      "Name: Blackout Combo Salsalabim's Strength Charred Passions [Shadowboxing Treads or high haste Fluidity of Motion]" );
-    rotation_boc->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%2)+cooldown.blackout_kick.remains+1" );
-    rotation_boc->add_action( "blackout_kick" );
-    rotation_boc->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%2=0" );
-    rotation_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%2=1" );
-    rotation_boc->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_boc->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-    rotation_boc->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
-    rotation_boc->add_action( "keg_smash,if=cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
-    rotation_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies>1" );
-    rotation_boc->add_action( "tiger_palm,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies=1&!buff.blackout_combo.up" );
-    rotation_boc->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
-    rotation_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_boc->add_action( "chi_burst,if=talent.chi_burst.enabled" );
+    rotation_dfb->add_action( "blackout_kick" );
+    rotation_dfb->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
+    rotation_dfb->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled&buff.rushing_jade_wind.remains<1" );
+    rotation_dfb->add_action( "breath_of_fire" );
+    rotation_dfb->add_action( "keg_smash" );
+    rotation_dfb->add_action( "black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65&talent.black_ox_brew.enabled" );
+    rotation_dfb->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
+    rotation_dfb->add_action( "spinning_crane_kick,if=active_enemies>1&energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65" );
+    rotation_dfb->add_action( "tiger_palm,if=active_enemies=1&energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65" );
+    rotation_dfb->add_action( "celestial_brew,if=talent.celestial_brew.enabled" );
+    rotation_dfb->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+    rotation_dfb->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
-    // Name: Blackout Combo Salsalabim's Strength Chared Passions Fluidity of Motion Not High Haste
-    // Basic Sequence: Blackout Kick Breath of Fire x Blackout Kick (Keg Smash / x) x Blackout Kick Keg Smash x
-    rotation_fom_boc->add_action( "variable,name=boc_count,op=add,value=1,if=prev.blackout_kick",
-      "Name: Blackout Combo Salsalabim's Strength Chared Passions Fluidity of Motion Not High Haste" );
-    rotation_fom_boc->add_action( "variable,name=time_to_scheduled_ks,op=set,value=cooldown.blackout_kick.duration_expected*(1-(variable.boc_count)%%3)+cooldown.blackout_kick.remains+1" );
-    rotation_fom_boc->add_action( "blackout_kick" );
-    rotation_fom_boc->add_action( "rising_sun_kick,if=variable.boc_count%%3=1&talent.rising_sun_kick.enabled" );
-    rotation_fom_boc->add_action( "breath_of_fire,if=buff.blackout_combo.up&variable.boc_count%%3=1" );
-    rotation_fom_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%3=2" );
-    rotation_fom_boc->add_action( "keg_smash,if=buff.blackout_combo.up&variable.boc_count%%3=0&cooldown.keg_smash.charges_fractional>1&cooldown.keg_smash.full_recharge_time<=variable.time_to_scheduled_ks&energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=80" );
-    rotation_fom_boc->add_action( "cancel_buff,name=blackout_combo,if=variable.boc_count%%3=0" );
-    rotation_fom_boc->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_fom_boc->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-    rotation_fom_boc->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
-    rotation_fom_boc->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
-    rotation_fom_boc->add_action( "spinning_crane_kick,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&buff.charred_passions.up&active_enemies>1" );
-    rotation_fom_boc->add_action( "tiger_palm,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&active_enemies=1&!buff.blackout_combo.up" );
-    rotation_fom_boc->add_action( "celestial_brew,if=!buff.blackout_combo.up" );
-    rotation_fom_boc->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_fom_boc->add_action( "chi_burst,if=talent.chi_burst.enabled" );
+    rotation_chp->add_action( "breath_of_fire,if=!buff.charred_passions.up" );
+    rotation_chp->add_action( "blackout_kick" );
+    rotation_chp->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
+    rotation_chp->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled&buff.rushing_jade_wind.remains<1" );
+    rotation_chp->add_action( "keg_smash" );
+    rotation_chp->add_action( "black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65&talent.black_ox_brew.enabled" );
+    rotation_chp->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
+    rotation_chp->add_action( "spinning_crane_kick,if=active_enemies>1&energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65" );
+    rotation_chp->add_action( "tiger_palm,if=active_enemies=1&energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65" );
+    rotation_chp->add_action( "celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up" );
+    rotation_chp->add_action( "chi_wave,if=talent.chi_wave.enabled" );
+    rotation_chp->add_action( "chi_burst,if=talent.chi_burst.enabled" );
 
-    // Name: Salsalabim's Strength Charred Passions / Dragonfire Brew
-    // Basic Sequence: Keg Smash Breath of Fire x x x x x
-    rotation_chp_dfb->add_action( "breath_of_fire,if=talent.charred_passions.enabled&buff.charred_passions.remains<1.5|talent.dragonfire_brew.enabled",
-      "Name: Salsalabim's Strength Charred Passions / Dragonfire Brew" );
-    rotation_chp_dfb->add_action( "blackout_kick" );
-    rotation_chp_dfb->add_action( "keg_smash" );
-    rotation_chp_dfb->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
-    rotation_chp_dfb->add_action( "rushing_jade_wind,if=buff.rushing_jade_wind.down&talent.rushing_jade_wind.enabled" );
-    rotation_chp_dfb->add_action( "black_ox_brew,if=energy+energy.regen*(variable.time_to_scheduled_ks+execute_time)>=65&talent.black_ox_brew.enabled" );
-    rotation_chp_dfb->add_action( "rising_sun_kick" );
-    rotation_chp_dfb->add_action( "spinning_crane_kick,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&active_enemies>1" );
-    rotation_chp_dfb->add_action( "tiger_palm,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&active_enemies=1" );
-    rotation_chp_dfb->add_action( "chi_wave,if=talent.chi_wave.enabled" );
-    rotation_chp_dfb->add_action( "chi_burst,if=talent.chi_burst.enabled" );
-    rotation_chp_dfb->add_action( "celestial_brew" );
-
-    // Name: Fallback
-    rotation_fallback->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled",
-      "Name: Fallback" );
+    rotation_fallback->add_action( "rising_sun_kick,if=talent.rising_sun_kick.enabled" );
     rotation_fallback->add_action( "keg_smash" );
     rotation_fallback->add_action( "breath_of_fire,if=talent.breath_of_fire.enabled" );
     rotation_fallback->add_action( "blackout_kick" );
-    rotation_fallback->add_action( "exploding_keg,if=talent.exploding_keg.enabled" );
     rotation_fallback->add_action( "black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&talent.black_ox_brew.enabled" );
     rotation_fallback->add_action( "rushing_jade_wind,if=talent.rushing_jade_wind.enabled" );
-    rotation_fallback->add_action( "spinning_crane_kick,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65" );
+    rotation_fallback->add_action( "spinning_crane_kick,if=active_enemies>1" );
+    rotation_fallback->add_action( "tiger_palm,if=active_enemies=1" );
     rotation_fallback->add_action( "celestial_brew,if=!buff.blackout_combo.up&talent.celestial_brew.enabled" );
     rotation_fallback->add_action( "chi_wave,if=talent.chi_wave.enabled" );
     rotation_fallback->add_action( "chi_burst,if=talent.chi_burst.enabled" );
@@ -479,6 +425,8 @@ namespace monk_apl
       const static std::unordered_map<std::string, std::string> serenity_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
+        { "manic_grieftorch",",if=!pet.xuen_the_white_tiger.active&!buff.serenity.up|fight_remains<5" },
+        { "algethar_puzzle_box",",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.serenity.up|fight_remains<25" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=buff.serenity.remains>10" },
@@ -491,6 +439,8 @@ namespace monk_apl
       const static std::unordered_map<std::string, std::string> sef_trinkets {
         // name_str -> APL
         { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
+        { "manic_grieftorch",",if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up|fight_remains<5" },
+        { "algethar_puzzle_box",",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_and_fire.up|fight_remains<25" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|cooldown<=60&buff.storm_earth_and_fire.remains>10|!talent.invoke_xuen_the_white_tiger" },
@@ -504,13 +454,11 @@ namespace monk_apl
       try { concat = talent_map.at( item.name_str ); }
       catch ( ... )
       {
-
         int duration = 0;
 
         for ( auto e : item.parsed.special_effects )
         {
-
-          int duration = (int) floor( e->duration().total_seconds() );
+          duration = (int) floor( e->duration().total_seconds() );
 
           // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
           // Unless defined in the map above these will be used on cooldown.
@@ -595,6 +543,9 @@ namespace monk_apl
     // Use Chi Burst to reset Faeline Stomp
     def->add_action( "chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)", "Use Chi Burst to reset Faeline Stomp" );
 
+    // Special Trinkets
+    def->add_action( "use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)", "Special Trinkets" );
+
     // Use Cooldowns
     def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity", "Cooldowns" );
     def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
@@ -607,8 +558,17 @@ namespace monk_apl
 
     // Storm, Earth and Fire Cooldowns
     cd_sef->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Storm, Earth and Fire Cooldowns" );
+    cd_sef->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
+                        "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3" );
+
+    for ( const auto& item : p->items )
+    {
+      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
+    }
+
     cd_sef->add_action( "storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
     cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10" );
     cd_sef->add_action(
@@ -623,14 +583,6 @@ namespace monk_apl
     }
     else
       cd_sef->add_action( "touch_of_death,cycle_targets=1,if=combo_strike" );
-
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cd_sef->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
-    }
-
 
     if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
       cd_sef->add_action( "touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
@@ -663,8 +615,16 @@ namespace monk_apl
 
     // Serenity Cooldowns
     cd_serenity->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Serenity Cooldowns" );
+    cd_serenity->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
+                             "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25" );
+
+    for ( const auto& item : p->items )
+    {
+      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
+    }
 
     cd_serenity->add_action(
       "bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10" );
@@ -697,12 +657,6 @@ namespace monk_apl
         cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
       else if ( racial_action != "arcane_torrent" )
         cd_serenity->add_action( racial_action );
-    }
-
-    for ( const auto& item : p->items )
-    {
-      if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
     }
 
     // AoE priority

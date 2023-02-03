@@ -464,7 +464,7 @@ struct pull_event_t final : raid_event_t
 
     cooldown = sim->max_time * 2;
 
-    mark_duration = clamp<timespan_t>(mark_duration, 0_s, 15_s);
+    mark_duration = clamp<timespan_t>( mark_duration, 0_s, 15_s );
 
     master = sim->target_list.data().front();
     if ( !master )
@@ -490,7 +490,7 @@ struct pull_event_t final : raid_event_t
       auto enemy_splits = util::string_split<util::string_view>( enemies_str, "|" );
       if ( enemy_splits.empty() )
       {
-        throw std::invalid_argument( fmt::format( "{} at least one enmy is required.", *this ) );
+        throw std::invalid_argument( fmt::format( "{} at least one enemy is required.", *this ) );
       }
       else
       {
@@ -508,9 +508,9 @@ struct pull_event_t final : raid_event_t
             if ( util::starts_with( splits[ 0 ], "BOSS_" ) )
               spawn.boss = true;
 
-            spawn.name = splits[ 0 ];
+            spawn.name   = splits[ 0 ];
             spawn.health = util::to_double( splits[ 1 ] );
-            
+
             if ( splits.size() > 2 )
               spawn.race = util::parse_race_type( util::tokenize_fn( splits[ 2 ] ) );
 
@@ -518,10 +518,13 @@ struct pull_event_t final : raid_event_t
           }
         }
 
-        // Sort adds by descending HP order to improve retargeting logic
-        range::sort( spawn_parameters, []( const spawn_parameter a, const spawn_parameter b ) {
-          return a.health > b.health;
-        } );
+        // Sort adds by descending HP order to improve retargeting logic if the dungeon_route_smart_targeting option is
+        // set to true
+        if ( sim->dungeon_route_smart_targeting )
+        {
+          range::sort( spawn_parameters,
+                       []( const spawn_parameter a, const spawn_parameter b ) { return a.health > b.health; } );
+        }
       }
     }
   }
@@ -535,7 +538,7 @@ struct pull_event_t final : raid_event_t
         return;
     }
 
-    if ( demised )
+    if ( demised || !spawned )
       return;
 
     demised = true;

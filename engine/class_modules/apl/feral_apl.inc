@@ -9,6 +9,7 @@ action_priority_list_t* owlweaving = get_action_priority_list( "owlweaving" );
 action_priority_list_t* bloodtalons = get_action_priority_list( "bloodtalons" );
 action_priority_list_t* def = get_action_priority_list( "default" );
 
+precombat->add_action( "use_item,name=algethar_puzzle_box" );
 precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
 
@@ -59,6 +60,7 @@ cooldown->add_action( "convoke_the_spirits,if=buff.tigers_fury.up&combo_points<3
 cooldown->add_action( "berserking" );
 cooldown->add_action( "shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5" );
 cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains|fight_remains<35" );
+cooldown->add_action( "use_item,name=manic_grieftorch,if=energy.deficit>40" );
 cooldown->add_action( "use_items" );
 
 owlweaving->add_action( "sunfire,line_cd=4*gcd" );

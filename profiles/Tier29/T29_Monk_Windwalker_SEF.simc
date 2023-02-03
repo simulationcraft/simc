@@ -5,11 +5,11 @@ level=70
 race=orc
 role=hybrid
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEJJJlkEAAAAAkIJJASSSSgEhISIRSSSSKJgAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESkkElISEAAAAIRSSAkkkkAJlkERCJSSSyBSJBAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:primal_whetstone_3/off_hand:primal_whetstone_3
@@ -44,6 +44,8 @@ actions+=/faeline_stomp,target_if=min:debuff.fae_exposure_damage.remains,if=comb
 actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|(!talent.skyreach|time>5|pet.xuen_the_white_tiger.active))
 # Use Chi Burst to reset Faeline Stomp
 actions+=/chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)
+# Special Trinkets
+actions+=/use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)
 # Cooldowns
 actions+=/call_action_list,name=cd_sef,if=!talent.serenity
 actions+=/call_action_list,name=cd_serenity,if=talent.serenity
@@ -88,15 +90,17 @@ actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remai
 
 # Storm, Earth and Fire Cooldowns
 actions.cd_sef=summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active.
+actions.cd_sef+=/invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active
 actions.cd_sef+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25
 actions.cd_sef+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3
+actions.cd_sef+=/use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger|fight_remains<6
+actions.cd_sef+=/use_item,name=manic_grieftorch,if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up|fight_remains<5
 actions.cd_sef+=/storm_earth_and_fire,if=talent.bonedust_brew&(fight_remains<30&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up|!spinning_crane_kick.max&active_enemies>=3&cooldown.bonedust_brew.remains<=2&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)
 actions.cd_sef+=/bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max&chi>=4)|fight_remains<10
 actions.cd_sef+=/call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&talent.bonedust_brew&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))
 actions.cd_sef+=/storm_earth_and_fire,if=fight_remains<20|(cooldown.storm_earth_and_fire.charges=2&cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12
 actions.cd_sef+=/touch_of_death,cycle_targets=1,if=combo_strike
-actions.cd_sef+=/use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
-actions.cd_sef+=/use_item,name=manic_grieftorch,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
 actions.cd_sef+=/touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
@@ -107,8 +111,12 @@ actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
 
 # Serenity Cooldowns
 actions.cd_serenity=summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active.
+actions.cd_serenity+=/invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25
+actions.cd_serenity+=/use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger|fight_remains<6
+actions.cd_serenity+=/use_item,name=manic_grieftorch,if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up|fight_remains<5
 actions.cd_serenity+=/bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10
 actions.cd_serenity+=/serenity,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|!talent.invoke_xuen_the_white_tiger|fight_remains<15
 actions.cd_serenity+=/touch_of_death,cycle_targets=1,if=combo_strike
@@ -119,8 +127,6 @@ actions.cd_serenity+=/lights_judgment
 actions.cd_serenity+=/fireblood,if=buff.serenity.up|fight_remains<20
 actions.cd_serenity+=/ancestral_call,if=buff.serenity.up|fight_remains<20
 actions.cd_serenity+=/bag_of_tricks,if=buff.serenity.up|fight_remains<20
-actions.cd_serenity+=/use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
-actions.cd_serenity+=/use_item,name=manic_grieftorch,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
 
 # Fallthru
 actions.fallthru=crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|fight_remains<5)
@@ -180,32 +186,32 @@ actions.st_cleave+=/whirling_dragon_punch
 actions.st_cleave+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 
-head=gaze_of_the_waking_fist,id=200363,bonus_id=8780,ilevel=424,gem_id=192991
-neck=custodians_medallion_of_delusion,id=193647,bonus_id=3524/8782,ilevel=421,gem_id=192925/192925/192925
+head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
+neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
 shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
 back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
-chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192925
+chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192932
 hands=palms_of_the_waking_fist,id=200362,ilevel=421
-waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192925
-legs=loathsome_thunderhosen,id=195530,bonus_id=3524,ilevel=424,enchant=fierce_armor_kit_3
+waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192932
+legs=legguards_of_the_waking_fist,id=200364,ilevel=415,enchant_id=6496
 feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant=devotion_of_critical_strike_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192925,enchant=devotion_of_critical_strike_3
+finger1=valkyr_ascension_signet,id=133679,bonus_id=3524/7580,ilevel=421,gem_id=192932,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
 trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
 trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
-main_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant=frozen_devotion_3
-off_hand=primal_molten_mace,id=190509,bonus_id=3524/1679/8937,ilevel=418,enchant=frozen_devotion_3
+main_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
+off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=421.56
-# gear_agility=4969
-# gear_stamina=13301
+# gear_ilvl=420.81
+# gear_agility=4914
+# gear_stamina=12972
 # gear_attack_power=270
-# gear_crit_rating=3735
-# gear_haste_rating=1973
-# gear_mastery_rating=2445
-# gear_versatility_rating=3302
-# gear_armor=3363
+# gear_crit_rating=3967
+# gear_haste_rating=522
+# gear_mastery_rating=2854
+# gear_versatility_rating=4033
+# gear_armor=3319
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

@@ -163,6 +163,19 @@ struct mind_sear_t final : public priest_spell_t
 
   void tick( dot_t* d ) override
   {
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/966
+    if ( priest().bugs && priest().options.gathering_shadows_bug )
+    {
+      double insanity_before_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
+
+      // Determine if this is the last tick
+      if ( insanity_before_tick < ( cost_per_tick( RESOURCE_INSANITY ) ) )
+      {
+        // This is the last tick, cancel the buff before the damage goes out
+        priest().buffs.gathering_shadows->expire();
+      }
+    }
+
     priest_spell_t::tick( d );
 
     if ( priest().talents.shadow.shadowy_apparitions.enabled() )
@@ -261,10 +274,13 @@ struct mind_flay_base_t final : public priest_spell_t
 
 struct mind_flay_t final : public priest_spell_t
 {
+  timespan_t manipulation_cdr;
+
   mind_flay_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
       _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
-      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) )
+      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
 
@@ -273,6 +289,11 @@ struct mind_flay_t final : public priest_spell_t
 
   void execute() override
   {
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
     if ( priest().buffs.mind_flay_insanity->check() )
     {
       _insanity_spell->execute();
@@ -343,6 +364,7 @@ struct shadowform_t final : public priest_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    target  = player;
   }
 
   void execute() override
@@ -402,7 +424,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
   {
     parse_options( options_str );
 
@@ -465,7 +487,8 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().talents.shadow.auspicious_spirits.enabled() )
+    if ( priest().talents.shadow.auspicious_spirits.enabled() &&
+         ( !priest().bugs || !priest().options.as_insanity_bug ) )
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
@@ -481,9 +504,11 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   bool gets_crit_mod = false;
+  double insanity_gain;
 
   shadowy_apparition_spell_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions )
+    : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions ),
+      insanity_gain( priest().talents.shadow.auspicious_spirits->effectN( 2 ).percent() )
   {
     background   = true;
     proc         = false;
@@ -519,6 +544,12 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     proc->occur();
     set_target( target );
     execute();
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1081
+    if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug )
+    {
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, execute_state->action );
+    }
   }
 };
 
@@ -591,11 +622,12 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
   }
 
+  // TODO: Check if this is still bugged, as of 23/12/2022 screams is confirmed broken again with mental decay.
   timespan_t tick_time( const action_state_t* state ) const override
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_screams_of_the_void_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target, id ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
@@ -858,7 +890,7 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_screams_of_the_void_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target, id ) )
     {
       t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
@@ -1255,6 +1287,11 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
     }
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().trigger_psychic_link( s );
+    }
   }
 };
 
@@ -1538,6 +1575,11 @@ struct void_torrent_t final : public priest_spell_t
     {
       priest().procs.void_torrent_ticks_no_mastery->occur();
     }
+
+    if ( priest().talents.shadow.psychic_link.enabled() )
+    {
+      priest().trigger_psychic_link( d->state );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -1566,6 +1608,7 @@ struct psychic_link_base_t final : public priest_spell_t
     may_crit   = false;
     may_miss   = false;
     radius     = data().effectN( 1 ).radius_max();
+    school     = SCHOOL_SHADOW;
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
@@ -1587,7 +1630,10 @@ struct psychic_link_t final : public priest_spell_t
       _pl_mind_spike( new psychic_link_base_t( "psychic_link_mind_spike", p, p.talents.shadow.psychic_link ) ),
       _pl_mind_flay( new psychic_link_base_t( "psychic_link_mind_flay", p, p.talents.shadow.psychic_link ) ),
       _pl_mind_flay_insanity(
-          new psychic_link_base_t( "psychic_link_mind_flay_insanity", p, p.talents.shadow.psychic_link ) )
+          new psychic_link_base_t( "psychic_link_mind_flay_insanity", p, p.talents.shadow.psychic_link ) ),
+      _pl_mindgames( new psychic_link_base_t( "psychic_link_mindgames", p, p.talents.shadow.psychic_link ) ),
+      _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
+      _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -1598,6 +1644,9 @@ struct psychic_link_t final : public priest_spell_t
     add_child( _pl_mind_spike );
     add_child( _pl_mind_flay );
     add_child( _pl_mind_flay_insanity );
+    add_child( _pl_mindgames );
+    add_child( _pl_void_bolt );
+    add_child( _pl_void_torrent );
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
@@ -1618,6 +1667,18 @@ struct psychic_link_t final : public priest_spell_t
     {
       _pl_mind_flay_insanity->trigger( target, original_amount, action_name );
     }
+    else if ( action_name == "mindgames" )
+    {
+      _pl_mindgames->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "void_bolt" )
+    {
+      _pl_void_bolt->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "void_torrent" )
+    {
+      _pl_void_torrent->trigger( target, original_amount, action_name );
+    }
     else
     {
       player->sim->print_debug( "{} tried to trigger psychic_link from unknown action {}.", priest(), action_name );
@@ -1629,6 +1690,9 @@ private:
   propagate_const<psychic_link_base_t*> _pl_mind_spike;
   propagate_const<psychic_link_base_t*> _pl_mind_flay;
   propagate_const<psychic_link_base_t*> _pl_mind_flay_insanity;
+  propagate_const<psychic_link_base_t*> _pl_mindgames;
+  propagate_const<psychic_link_base_t*> _pl_void_bolt;
+  propagate_const<psychic_link_base_t*> _pl_void_torrent;
 };
 
 // ==========================================================================
@@ -1726,9 +1790,16 @@ struct shadow_crash_dots_t final : public priest_spell_t
       rng().shuffle( tl.begin(), tl.end() );
 
       // sort targets without Vampiric Touch to the front
-      std::sort( tl.begin(), tl.end(), [ this ]( player_t* a, player_t* b ) {
-        priest_td_t* td = priest().get_target_data( a );
-        return !td->dots.vampiric_touch->is_ticking();
+      std::sort( tl.begin(), tl.end(), [ this ]( player_t* l, player_t* r ) {
+        priest_td_t* tdl = priest().get_target_data( l );
+        priest_td_t* tdr = priest().get_target_data( r );
+
+        if ( !tdl->dots.vampiric_touch->is_ticking() && tdr->dots.vampiric_touch->is_ticking() )
+        {
+          return true;
+        }
+
+        return false;
       } );
 
       // resize to dot target cap
@@ -1898,6 +1969,7 @@ struct shadowform_t final : public priest_buff_t<buff_t>
   shadowform_t( priest_t& p ) : base_t( p, "shadowform", p.specs.shadowform )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 };
 
@@ -2000,18 +2072,8 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
     set_period( timespan_t::from_seconds( 1 ) );
     set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
 
-    // BUG: Ancient Madness consumes twice as much crit with Voidform
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1030
-    if ( priest().bugs && priest().talents.shadow.void_eruption.enabled() )
-    {
-      set_default_value( 0.02 );                                     // 2%
-      set_max_stack( as<int>( data().effectN( 3 ).base_value() ) );  // 5/10;
-    }
-    else
-    {
-      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
-      set_max_stack( 20 );                                 // 20/20;
-    }
+    set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
+    set_max_stack( 20 );                                 // 20/20;
   }
 };
 
@@ -2238,7 +2300,7 @@ void priest_t::init_spells_shadow()
   specs.shadowform     = find_specialization_spell( "Shadowform" );
   specs.void_bolt      = find_spell( 205448 );
   specs.voidform       = find_spell( 194249 );
-  specs.hallucinations = find_spell( 280752 );
+  specs.hallucinations = find_spell( 199579 );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2465,12 +2527,20 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
 
-bool priest_t::is_screams_of_the_void_up( player_t* target ) const
+bool priest_t::is_screams_of_the_void_up( player_t* target, const unsigned int spell_id ) const
 {
   priest_td_t* td = get_target_data( target );
 
   if ( talents.shadow.screams_of_the_void.enabled() )
   {
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1038
+    if ( spell_id == dot_spells.shadow_word_pain->id() &&
+         ( td->dots.mind_flay->is_ticking() || td->dots.mind_flay_insanity->is_ticking() ) &&
+         talents.shadow.mental_decay.enabled() && options.priest_screams_bug && bugs )
+    {
+      return false;
+    }
+
     if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
          td->dots.mind_flay_insanity->is_ticking() ||
          ( talents.shadow.mind_sear.enabled() && channeling != nullptr &&

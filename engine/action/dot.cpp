@@ -375,7 +375,7 @@ struct dot_expr_t : public expr_t
     if ( !dynamic )
       return static_dot;
 
-    player_t* dot_target = source_action->target;
+    player_t* dot_target = source_action->get_expression_target();
 
     action->player->get_target_data( dot_target );
 

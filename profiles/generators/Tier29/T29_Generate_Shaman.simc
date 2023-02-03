@@ -4,30 +4,26 @@ race=tauren
 spec=elemental
 role=spell
 position=ranged_back
-# talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCAJlkUoEOgkkEBAAAAAAlAQSARhISSSJlASSSA
-# https://www.wowhead.com/talent-calc/shaman/elemental/DARBBRBAFBAYolhlCAUQCAANVRRRVFSJVAoQUDAAA
-class_talents=improved_lightning_bolt:2/natures_fury:2/frost_shock:1/totemic_surge:2/fire_and_ice:1/totemic_recall:1/call_of_the_elements:1
-spec_talents=earth_shock:1/earthquake:1/elemental_fury:1/fire_elemental:1/storm_elemental:0/inundate:0/call_of_thunder:0/flow_of_power:1/lava_surge:1/unrelenting_calamity:0/icefury:1/swelling_maelstrom:1/echo_of_the_elements:1/call_of_fire:1/stormkeeper:0/flux_melting:1/electrified_shocks:0/aftershock:1/surge_of_power:0/flames_of_the_cauldron:1/flash_of_lightning:0/eye_of_the_storm:2/power_of_the_maelstrom:0/master_of_the_elements:2/improved_flametongue_weapon:1/elemental_blast:1/primordial_wave:1/deeply_rooted_elements:1/ascendance:0/primal_elementalist:0/liquid_magma_totem:0/echoes_of_great_sundering:0/elemental_equilibrium:0/rolling_magma:2/echo_chamber:2/oath_of_the_far_seer:0/magma_chamber:1/searing_flames:0/lightning_rod:0/primordial_surge:1/splintered_elements:0/mountains_will_fall:1/further_beyond:0/windspeakers_lava_resurgence:0/skybreakers_fiery_demise:0
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSp0SCAJlkUSKBlkQEAAAAAAUCQKJBEFiIJJtUC0SSAA
+# https://www.wowhead.com/talent-calc/shaman/elemental/DARBFRBAFBEYolhFCEQQCAUNVRRRVFSJVQiARDEAA
 
 # TODO: First attempt at creating a profile
-head=,id=200399,ilevel=424,gem_id=192948
-neck=,id=193676,ilevel=421,gem_id=192985/192948/192948
-shoulder=,id=200401,ilevel=424
-back=,id=144115,ilevel=421
-chest=,id=200396,ilevel=424,enchant=waking_stats_3
-wrist=,id=195516,ilevel=421,gem_id=192948
-hands=,id=200398,ilevel=424
-waist=,id=109843,ilevel=421,gem_id=192948
-legs=,id=200400,ilevel=424,enchant=frozen_spellthread_3
-feet=,id=193685,ilevel=421,enchant=plainsrunners_breeze_3
-finger1=,id=195526,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3
-# ,enchant=devotion_of_mastery_3
-finger2=,id=109780,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3
-# ,enchant=devotion_of_mastery_3
-trinket1=,id=133642,ilevel=421
-trinket2=,id=137485,ilevel=421
-main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
-off_hand=,id=195520,ilevel=424
+head=faceguard_of_infused_earth,id=200399,bonus_id=8780,ilevel=424,gem_id=192985
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=7935,ilevel=421,gem_id=192948/192948/192948
+shoulders=calderas_of_infused_earth,id=200401,ilevel=424
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932/8960,ilevel=418,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,ilevel=421,enchant_id=6625
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7974,ilevel=421,gem_id=192948,enchant_id=6573
+hands=gauntlets_of_infused_earth,id=200398,ilevel=424
+waist=flametouched_chain,id=193425,bonus_id=3524/8836/8840/8902/8960/8932,ilevel=418,gem_id=192948,crafted_stats=49/36
+legs=tassets_of_the_tarasek_legion,id=195522,ilevel=424,enchant_id=6541
+feet=lightningcharged_striders,id=193685,ilevel=421
+finger1=seal_of_filial_duty,id=195526,bonus_id=8780,ilevel=430,gem_id=192948,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=8780,ilevel=421,gem_id=192948,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=furious_ragefeather,id=193677,ilevel=421
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6655
+off_hand=broodsworn_legionnaires_pavise,id=195520,ilevel=424
 
 save=T29_Shaman_Elemental.simc
 
@@ -44,12 +40,12 @@ neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_
 shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
 chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192961
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767,gem_id=192961
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
-waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192961
+waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192961
 legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
-feet=lightningcharged_striders,id=193685,bonus_id=6808/4786/1643
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
+feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
 trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
@@ -71,14 +67,14 @@ neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_
 shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
 chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767,gem_id=192948
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
-waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192948
+waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192948
 legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
-feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant=devotion_of_haste_3
+feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=7977/6652/7937/8822/8818/9144/3300/8767,gem_id=192948,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
-trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket1=algethar_puzzle_box,id=193701,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
@@ -98,14 +94,14 @@ neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_
 shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
 back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
 chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=6808/4786/1643,gem_id=192948
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767,gem_id=192948
 hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
-waist=morningscale_waistguard,id=109843,bonus_id=4238/4786/6808/3306,gem_id=192948
+waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192948
 legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
-feet=daring_chasmleapers,id=195495,bonus_id=4800/4786/1498
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant=devotion_of_haste_3
+feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=7977/6652/7937/8822/8818/9144/3300/8767,gem_id=192948,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
-trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket1=windswept_pages,id=144113,bonus_id=7977/6652/7937/8822/8818/9144/3311/8767
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3

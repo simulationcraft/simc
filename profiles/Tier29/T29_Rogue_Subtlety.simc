@@ -5,7 +5,7 @@ level=70
 race=tauren
 role=attack
 position=back
-talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICBIhkgkkEJkEpkkEJQSJCJJJpFAAAA
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICBIhkgkkEJkEpkkElAJlIkkkkWAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -29,6 +29,8 @@ actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stealth
 actions.precombat+=/marked_for_death,precombat_seconds=15
+actions.precombat+=/variable,name=algethar_puzzle_box_precombat_cast,value=3
+actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/slice_and_dice,precombat_seconds=1
 
 # Executed every time the actor is available.
@@ -36,8 +38,6 @@ actions.precombat+=/slice_and_dice,precombat_seconds=1
 actions=stealth
 # Interrupt on cooldown to allow simming interactions with that
 actions+=/kick
-# Wait for for the 3rd Secret Technique attack to trigger when syncing with Cold Blood
-actions+=/wait,sec=0.3,if=buff.cold_blood.up&buff.secret_technique.up
 # Used to determine whether cooldowns wait for SnD based on targets.
 actions+=/variable,name=snd_condition,value=buff.slice_and_dice.up|spell_targets.shuriken_storm>=cp_max_spend
 # Check to see if the next CP (in the event of a ShT proc) is Animacharged
@@ -59,7 +59,7 @@ actions+=/variable,name=stealth_threshold,value=25+talent.vigor.enabled*20+talen
 actions+=/call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold
 actions+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
 # Finish at maximum or close to maximum combo point value
-actions+=/call_action_list,name=finish,if=combo_points.deficit<=1|fight_remains<=1&variable.effective_combo_points>=3
+actions+=/call_action_list,name=finish,if=combo_points.deficit<=1+buff.the_rotten.up|fight_remains<=1&variable.effective_combo_points>=3
 # Finish at 4+ against 4 targets (outside stealth)
 actions+=/call_action_list,name=finish,if=spell_targets.shuriken_storm>=(4-talent.seal_fate)&variable.effective_combo_points>=4
 # Use a builder when reaching the energy threshold
@@ -71,7 +71,7 @@ actions+=/lights_judgment
 actions+=/bag_of_tricks
 
 # Builders
-actions.build=shuriken_storm,if=spell_targets>=2+(buff.lingering_shadow.up|buff.perforated_veins.up)
+actions.build=shuriken_storm,if=spell_targets>=2+(talent.gloomblade&buff.lingering_shadow.remains>=6|buff.perforated_veins.up)
 # Build immediately unless the next CP is Animacharged and we won't cap energy waiting for it.
 actions.build+=/variable,name=anima_helper,value=!talent.echoing_reprimand.enabled|!(variable.is_next_cp_animacharged&(time_to_sht.3.plus<0.5|time_to_sht.4.plus<1)&energy<60)
 actions.build+=/gloomblade,if=variable.anima_helper
@@ -81,11 +81,10 @@ actions.build+=/backstab,if=variable.anima_helper
 actions.cds=shadow_dance,use_off_gcd=1,if=!buff.shadow_dance.up&buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
 # (Unless already up because we took Shadow Focus) use Symbols off-gcd before the first Shuriken Storm from Tornado comes in.
 actions.cds+=/symbols_of_death,use_off_gcd=1,if=buff.shuriken_tornado.up&buff.shuriken_tornado.remains<=3.5
-# Cold Blood on 5 combo points when not playing DM or secret technique
-actions.cds+=/cold_blood,if=(!talent.danse_macabre|!talent.secret_technique)&combo_points>=5
-# Cold Blood after secret techniques initial attack
-actions.cds+=/cold_blood,use_off_gcd=1,if=buff.secret_technique.up
-actions.cds+=/vanish,if=buff.cold_blood.up&talent.danse_macabre&spell_targets.shuriken_storm<=2
+# Vanish for Shadowstrike with Danse Macabre at adaquate stacks
+actions.cds+=/vanish,if=buff.danse_macabre.stack>3&combo_points<=2
+# Cold Blood on 5 combo points when not playing Secret Technique
+actions.cds+=/cold_blood,if=!talent.secret_technique&combo_points>=5
 actions.cds+=/flagellation,target_if=max:target.time_to_die,if=variable.snd_condition&combo_points>=5&target.time_to_die>10
 # Pool for Tornado pre-SoD with ShD ready when not running SF.
 actions.cds+=/pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled
@@ -98,18 +97,19 @@ actions.cds+=/symbols_of_death,if=variable.snd_condition&(!talent.flagellation|c
 actions.cds+=/marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD on boss without any CP.
 actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend
-actions.cds+=/shadow_blades,if=variable.snd_condition&combo_points.deficit>=2
+actions.cds+=/shadow_blades,if=variable.snd_condition&combo_points.deficit>=2&target.time_to_die>=10&(dot.sepsis.ticking|cooldown.sepsis.remains<=8|!talent.sepsis)|fight_remains<=20
 actions.cds+=/echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=3&(variable.priority_rotation|spell_targets.shuriken_storm<=4|talent.resounding_clarity)&(buff.shadow_dance.up|!talent.danse_macabre)
 # With SF, if not already done, use Tornado with SoD up.
 actions.cds+=/shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)
 actions.cds+=/shuriken_tornado,if=cooldown.shadow_dance.ready&!stealthed.all&spell_targets.shuriken_storm>=3&!talent.flagellation.enabled
 actions.cds+=/shadow_dance,if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled
-actions.cds+=/thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&buff.shadow_dance.up)|buff.shadow_dance.up&!buff.thistle_tea.up&spell_targets.shuriken_storm>=3|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges)
+actions.cds+=/thistle_tea,if=cooldown.symbols_of_death.remains>=3&!buff.thistle_tea.up&(energy.deficit>=100|cooldown.thistle_tea.charges_fractional>=2.75&buff.shadow_dance.up)|buff.shadow_dance.remains>=4&!buff.thistle_tea.up&spell_targets.shuriken_storm>=3|!buff.thistle_tea.up&fight_remains<=(6*cooldown.thistle_tea.charges)
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)
 actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
 actions.cds+=/fireblood,if=buff.symbols_of_death.up
 actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
+actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1,if=!stealthed.all
 # Default fallback for usable items: Use with Symbols of Death.
 actions.cds+=/use_items,if=buff.symbols_of_death.up|fight_remains<20
 
@@ -122,7 +122,9 @@ actions.finish+=/variable,name=skip_rupture,value=buff.thistle_tea.up&spell_targ
 actions.finish+=/rupture,if=(!variable.skip_rupture|variable.priority_rotation)&target.time_to_die-remains>6&refreshable
 # Refresh Rupture early for Finality
 actions.finish+=/rupture,if=!variable.skip_rupture&buff.finality_rupture.up&cooldown.shadow_dance.remains<12&cooldown.shadow_dance.charges_fractional<=1&spell_targets.shuriken_storm=1&(talent.dark_brew|talent.danse_macabre)
-actions.finish+=/secret_technique,if=buff.shadow_dance.up&(buff.danse_macabre.stack>=3|!talent.danse_macabre)
+# Sync Cold Blood with Secret Technique when possible
+actions.finish+=/cold_blood,if=buff.shadow_dance.up&(buff.danse_macabre.stack>=3|!talent.danse_macabre)&cooldown.secret_technique.ready
+actions.finish+=/secret_technique,if=buff.shadow_dance.up&(buff.danse_macabre.stack>=3|!talent.danse_macabre)&(!talent.cold_blood|cooldown.cold_blood.remains>buff.shadow_dance.remains-2)
 # Multidotting targets that will live for the duration of Rupture, refresh during pandemic.
 actions.finish+=/rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable
 # Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s.
@@ -133,7 +135,7 @@ actions.finish+=/eviscerate
 # Stealth Cooldowns  Helper Variable
 actions.stealth_cds=variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=0.75+talent.shadow_dance
 # Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin).
-actions.stealth_cds+=/vanish,if=(!talent.cold_blood|!talent.danse_macabre|spell_targets.shuriken_storm>=3)&!variable.shd_threshold&combo_points.deficit>1
+actions.stealth_cds+=/vanish,if=(!talent.danse_macabre|spell_targets.shuriken_storm>=3)&!variable.shd_threshold&combo_points.deficit>1
 # Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out.
 actions.stealth_cds+=/pool_resource,for_next=1,extra_amount=40,if=race.night_elf
 actions.stealth_cds+=/shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>4
@@ -146,13 +148,13 @@ actions.stealth_cds+=/variable,name=shd_combo_points,value=1,if=spell_targets.sh
 # Dance during Symbols or above threshold.
 actions.stealth_cds+=/shadow_dance,if=(variable.shd_combo_points&(buff.symbols_of_death.remains>=(2.2-talent.flagellation.enabled)|variable.shd_threshold)|buff.flagellation.up|buff.flagellation_persist.remains>=6|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&!buff.the_rotten.up
 # Burn Dances charges if before the fight ends if SoD won't be ready in time.
-actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.shadow_dance&dot.rupture.ticking&spell_targets.shuriken_storm<=4
+actions.stealth_cds+=/shadow_dance,if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.shadow_dance&dot.rupture.ticking&spell_targets.shuriken_storm<=4&!buff.the_rotten.up
 
 # Stealthed Rotation  If Stealth/vanish are up, use Shadowstrike to benefit from the passive bonus and Find Weakness, even if we are at max CP (unless using Master Assassin)
 actions.stealthed=shadowstrike,if=(buff.stealth.up|buff.vanish.up)&(spell_targets.shuriken_storm<4|variable.priority_rotation)
 # Variable to Gloomblade / Backstab when on 4 or 5 combo points with premediation and when the combo point is not anima charged
 actions.stealthed+=/variable,name=gloomblade_condition,value=buff.danse_macabre.stack<5&(combo_points.deficit=2|combo_points.deficit=3)&(buff.premeditation.up|effective_combo_points<7)&(spell_targets.shuriken_storm<=8|talent.lingering_shadow)
-actions.stealthed+=/shuriken_storm,if=variable.gloomblade_condition&buff.silent_storm.up&!debuff.find_weakness.remains
+actions.stealthed+=/shuriken_storm,if=variable.gloomblade_condition&buff.silent_storm.up&!debuff.find_weakness.remains&talent.improved_shuriken_storm.enabled
 actions.stealthed+=/gloomblade,if=variable.gloomblade_condition
 actions.stealthed+=/backstab,if=variable.gloomblade_condition&talent.danse_macabre&buff.danse_macabre.stack<=2&spell_targets.shuriken_storm<=2
 actions.stealthed+=/call_action_list,name=finish,if=variable.effective_combo_points>=cp_max_spend
@@ -171,18 +173,18 @@ actions.stealthed+=/shuriken_storm,if=spell_targets>=3+buff.the_rotten.up&(!buff
 actions.stealthed+=/shadowstrike,if=debuff.find_weakness.remains<=1|cooldown.symbols_of_death.remains<18&debuff.find_weakness.remains<cooldown.symbols_of_death.remains
 actions.stealthed+=/shadowstrike
 
-head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/40
+head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192958/192958/192958,crafted_stats=32/40
 shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-back=sootscarred_longcloak,id=109918,bonus_id=6652/8811/8812/6808/4786/3306
+back=windsoaked_drape,id=144111,bonus_id=6652/8811/8812/6808/4786/3311
 chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
 hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925
-legs=vault_delvers_pantaloons,id=200373,ilevel=424,enchant=fierce_armor_kit_3
-feet=biornskin_moccasins,id=134193,bonus_id=6652/8811/8812/6808/4786/3300
-finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925,enchant=devotion_of_critical_strike_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
+waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
+legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
+feet=boots_of_burning_focus,id=109787,bonus_id=6652/8811/8812/6808/4786/3306
+finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498/1808,gem_id=192958,enchant=devotion_of_critical_strike_3
 trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
@@ -192,10 +194,10 @@ off_hand=fenryrs_bloodstained_fang,id=201998,bonus_id=6652/8783/8784/7936/7937/6
 # gear_ilvl=421.56
 # gear_agility=5435
 # gear_stamina=13248
-# gear_crit_rating=5674
+# gear_crit_rating=5327
 # gear_haste_rating=1165
-# gear_mastery_rating=2366
-# gear_versatility_rating=2264
+# gear_mastery_rating=2910
+# gear_versatility_rating=2066
 # gear_armor=3347
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

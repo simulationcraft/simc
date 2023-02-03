@@ -348,6 +348,11 @@ struct blessed_hammer_tick_t : public paladin_spell_t
       1,
       s -> attack_power * p() -> talents.blessed_hammer -> effectN( 1 ).percent()
     );
+
+    if ( p()->talents.aspiration_of_divinity->ok() )
+    {
+      p()->buffs.aspiration_of_divinity->trigger();
+    }
   }
 };
 
@@ -520,6 +525,14 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     // 2022-11-09 Old HotR Rank 2 doesn't seem to exist anymore. New talent only has 1 charge, but it has 2 charges.
     cooldown->charges = 2;
     cooldown->hasted  = true;
+  }
+  
+  void impact( action_state_t* s )
+  {
+    if ( p()->talents.aspiration_of_divinity->ok() )
+    {
+      p()->buffs.aspiration_of_divinity->trigger();
+    }
   }
 
   void execute() override
@@ -1119,6 +1132,13 @@ action_t* paladin_t::create_action_protection( util::string_view name, util::str
   if ( name == "moment_of_glory"           ) return new moment_of_glory_t          ( this, options_str );
   if ( name == "bastion_of_light"          ) return new bastion_of_light_t         ( this, options_str );
   if ( name == "eye_of_tyr"                ) return new eye_of_tyr_t               ( this, options_str );
+  if ( name == "avenging_wrath" )
+  {
+    if ( talents.sentinel->ok() )
+      return new sentinel_t( this, options_str );
+    else
+      return new avenging_wrath_t( this, options_str );
+  }
 
 
   if ( specialization() == PALADIN_PROTECTION )

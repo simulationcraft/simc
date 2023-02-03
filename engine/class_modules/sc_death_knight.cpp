@@ -465,6 +465,7 @@ public:
   unsigned int bone_shield_charges_consumed; // Counts how many bone shield charges have been consumed for T29 4pc blood
 
   stats_t* antimagic_shell;
+  stats_t* antimagic_zone;
 
   // Data collection for cooldown waste
   auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
@@ -474,6 +475,7 @@ public:
   struct buffs_t {
     // Shared
     buff_t* antimagic_shell;
+    buff_t* antimagic_zone;
     buff_t* icebound_fortitude;
     buff_t* rune_mastery;
     buff_t* unholy_ground;
@@ -605,6 +607,7 @@ public:
   struct gains_t {
     // Shared
     gain_t* antimagic_shell; // RP from magic damage absorbed
+    gain_t* antimagic_zone; // RP from magic damage absorbed
     gain_t* rune; // Rune regeneration
     gain_t* rune_of_hysteria;
     gain_t* spirit_drain;
@@ -687,7 +690,7 @@ public:
     player_talent_t coldthirst;
     player_talent_t permafrost; // NYI
     player_talent_t improved_death_strike;
-    player_talent_t antimagic_barrier; // NYI
+    player_talent_t antimagic_barrier;
     player_talent_t march_of_darkness; // NYI
     player_talent_t sacrificial_pact;
     player_talent_t control_undead; // NYI
@@ -1055,6 +1058,8 @@ public:
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
     bool split_obliterate_schools = true;
+    double ams_absorb_percent = 0;
+    double amz_absorb_percent = 0;
   } options;
 
   // Runes
@@ -1069,6 +1074,7 @@ public:
     festering_wounds_target_count( 0 ),
     bone_shield_charges_consumed( 0 ),
     antimagic_shell( nullptr ),
+    antimagic_zone( nullptr ),
     buffs(),
     runeforge(),
     active_spells(),
@@ -3207,7 +3213,7 @@ struct death_knight_action_t : public Base
     Base::execute();
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
-    if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() )
+    if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() && p() -> in_combat)
       p() -> active_spells.blood_draw -> execute();
   }
 
@@ -4822,7 +4828,6 @@ struct dark_transformation_t : public death_knight_spell_t
 // Death and Decay and Defile ===============================================
 
 // Death and Decay direct damage spells
-
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
   // Values found from testing
@@ -4850,16 +4855,25 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
   void impact( action_state_t* s ) override
   {
     death_knight_spell_t::impact( s );
-
-    if ( p() -> talent.unholy.pestilence.ok() &&
-         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
-         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
+    if ( p() -> is_ptr() && p() -> talent.unholy.pestilence.ok() )
     {
       if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
       {
         p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-        pestilence_procs_per_tick++;
-        pestilence_procs_per_cast++;
+      }
+    }
+    else
+    {
+      if ( p() -> talent.unholy.pestilence.ok() &&
+         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
+      {
+        if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
+        {
+          p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+          pestilence_procs_per_tick++;
+          pestilence_procs_per_cast++;
+        }
       }
     }
   }
@@ -7580,7 +7594,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value();
+    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value() / 1000;
+    interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value() / 1000;
 
     // Don't allow lower than AMS cd intervals
     if ( interval < min_interval )
@@ -7608,6 +7623,12 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   void execute() override
   {
+    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY || p() -> specialization() == DEATH_KNIGHT_FROST )
+    {
+      double opt = p() -> options.ams_absorb_percent;
+      damage = ( p()->resources.max[ RESOURCE_HEALTH ] * ( p() -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p() -> talent.antimagic_barrier -> effectN( 3 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) ) * opt;
+    }
+
     if ( damage > 0 )
     {
      timespan_t new_cd = timespan_t::from_seconds( std::max( min_interval, rng().gauss( interval, interval_stddev ) ) );
@@ -7623,13 +7644,152 @@ struct antimagic_shell_t : public death_knight_spell_t
       double absorbed = std::min( damage,
                                   debug_cast< antimagic_shell_buff_t* >( p() -> buffs.antimagic_shell ) -> calc_absorb() );
 
-      // AMS generates 1 runic power per percentage max health absorbed.
-      double rp_generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ] * 100;
+      // AMS generates 0.833~ runic power per percentage max health absorbed.
+      double rp_generated = absorbed / p()->resources.max[RESOURCE_HEALTH] * 83.333;
 
       p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p() -> gains.antimagic_shell, this );
     }
     else
       p() -> buffs.antimagic_shell -> trigger();
+  }
+};
+
+// Anti-magic Zone =========================================================
+
+struct antimagic_zone_buff_t : public buff_t
+{
+  double remaining_absorb;
+
+  antimagic_zone_buff_t( death_knight_t* p ) :
+    buff_t( p, "antimagic_zone", p -> talent.antimagic_zone ),
+    remaining_absorb( 0.0 )
+  {
+    cooldown -> duration = 0_ms;
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    remaining_absorb = calc_absorb();
+
+    buff_t::execute( stacks, value, duration );
+  }
+
+  void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    remaining_absorb = 0;
+  }
+
+  double calc_absorb()
+  {
+    death_knight_t* dk = debug_cast< death_knight_t* >( player );
+    // HP Value doesnt appear in spell data, instead stored in a variable in spell ID 51052, had coding the % hp value for now
+    double max_absorb = dk -> resources.max[ RESOURCE_HEALTH ] * 1.5;
+
+    max_absorb *= 1.0 + dk -> talent.assimilation -> effectN( 1 ).percent();
+
+    max_absorb *= 1.0 + dk -> cache.heal_versatility();
+
+    return max_absorb;
+  }
+
+  double absorb_damage( double incoming_damage )
+  {
+    if ( incoming_damage >= remaining_absorb )
+    {
+      this -> expire();
+
+      return remaining_absorb;
+    }
+
+    remaining_absorb -= incoming_damage;
+
+    return incoming_damage;
+  }
+};
+
+struct antimagic_zone_t : public death_knight_spell_t
+{
+  double min_interval;
+  double interval;
+  double interval_stddev;
+  double interval_stddev_opt;
+  double damage;
+
+  antimagic_zone_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_spell_t( "antimagic_zone", p, p -> talent.antimagic_zone ),
+    min_interval( 120 ), interval( 120 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
+  {
+    harmful = may_crit = may_miss = false;
+    base_dd_min = base_dd_max = 0;
+    target = player;
+
+    add_option( opt_float( "interval", interval ) );
+    add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
+    add_option( opt_float( "damage", damage ) );
+    parse_options( options_str );
+
+    // Don't allow lower than AMZ cd intervals
+    if ( interval < min_interval )
+    {
+      sim -> errorf( "%s minimum interval for Anti-Magic Zone is %f seconds.", player -> name(), min_interval );
+      interval = min_interval;
+    }
+
+    // Less than a second standard deviation is translated to a percent of
+    // interval
+    if ( interval_stddev_opt < 1 )
+      interval_stddev = interval * interval_stddev_opt;
+    // >= 1 seconds is used as a standard deviation normally
+    else
+      interval_stddev = interval_stddev_opt;
+
+    // Setup an Absorb stats tracker for AMZ if it's used "for reals"
+    if ( damage == 0 )
+    {
+      stats -> type = STATS_ABSORB;
+      if ( ! p -> antimagic_zone )
+        p -> antimagic_zone = stats;
+    }
+  }
+
+  void execute() override
+  {
+    if ( p() -> talent.assimilation -> ok() && ( p() -> specialization() == DEATH_KNIGHT_UNHOLY || p() -> specialization() == DEATH_KNIGHT_FROST ) )
+    {
+      double opt = p() -> options.amz_absorb_percent;
+      // AMZ Absorbs a maximum of 1.5x player hp. This value is stored in a variable in the spell, not accessiable to the code. Hard coding for now.
+      damage = p()->resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1.0 + p() -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) * opt;
+    }
+
+    if ( damage > 0 )
+    {
+     timespan_t new_cd = timespan_t::from_seconds( std::max( min_interval, rng().gauss( interval, interval_stddev ) ) );
+
+     cooldown -> duration = new_cd;
+    }
+
+    death_knight_spell_t::execute();
+
+    // If using the fake soaking, immediately grant the RP in one go
+    if ( damage > 0 )
+    {
+      double absorbed = std::min( damage,
+                                  debug_cast< antimagic_zone_buff_t* >( p() -> buffs.antimagic_zone ) -> calc_absorb() );
+
+      // AMZ Generates 1% RP per 1% of the shield absorbed if Assimilation is talented.
+      if ( p() -> talent.assimilation -> ok() )
+      {
+        double absorb_pct = p() -> resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1 + p() -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1 + p() -> cache.heal_versatility() );
+        // Assimilation can generate no more than 100 runic power 
+        double rp_generated = std::min( p() -> talent.assimilation -> effectN( 2 ).base_value() * 100, absorbed / absorb_pct * 100);
+
+        p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p() -> gains.antimagic_zone, this );
+      }
+    }
+    else
+      p() -> buffs.antimagic_zone -> trigger();
   }
 };
 
@@ -8148,9 +8308,11 @@ void death_knight_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
-  add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
-  add_option( opt_bool( "split_obliterate_schools", options.split_obliterate_schools ) );
+  add_option( opt_bool( "deathknight.disable_aotd", options.disable_aotd ) );
+  add_option( opt_bool( "deathknight.split_ghoul_regen", options.split_ghoul_regen ) );
+  add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
+  add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent ) );
+  add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -8520,8 +8682,8 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
 
   const death_knight_td_t* td = find_target_data( target );
 
-  // Don't bother creating the event if n is 0 or the target has no wounds
-  if ( ! spec.festering_wound -> ok() || ! n || ! td || ! td -> debuff.festering_wound -> up() )
+  // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
+  if ( ! spec.festering_wound -> ok() || ! n || ! td || ! td -> debuff.festering_wound -> up() || target -> demise_event )
   {
     return;
   }
@@ -8627,6 +8789,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   // General Actions
   if ( name == "abomination_limb"  ) return new abomination_limb_t  ( this, options_str );
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
+  if ( name == "antimagic_zone"           ) return new antimagic_zone_t           ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
   if ( name == "death_strike"             ) return new death_strike_t             ( this, options_str );
@@ -8777,6 +8940,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
   {
     if ( util::str_compare_ci( splits[ 1 ], "disable_iqd_execute" ) && splits.size() == 2 )
       return expr_t::create_constant( " disable_iqd_execute_expression ", sim->shadowlands_opts.disable_iqd_execute);
+  }
+
+  // Expose AMZ Absorb Percent to the APL to prevent its use if disabled.
+  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "amz_absorb_percent" ) && splits.size() == 2 )
+      return expr_t::create_constant( "amz_absorb_percent", options.amz_absorb_percent );
   }
 
   // Death Knight special expressions
@@ -8979,7 +9149,7 @@ void death_knight_t::init_base_stats()
 
   if ( talent.frost.runic_command.ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-  
+
   if ( talent.unholy.runic_mastery.ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.unholy.runic_mastery -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
@@ -9408,6 +9578,8 @@ void death_knight_t::create_buffs()
   // Shared
   buffs.antimagic_shell = new antimagic_shell_buff_t( this );
 
+  buffs.antimagic_zone = new antimagic_zone_buff_t( this );
+
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
         -> set_duration( talent.icebound_fortitude -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -9622,8 +9794,17 @@ void death_knight_t::create_buffs()
            -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
-           -> set_duration( 4_s );
+  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" );
+
+  buffs.commander_of_the_dead_window -> set_quiet( true );
+  if ( is_ptr() )
+  {
+    buffs.commander_of_the_dead_window -> set_duration( pet_spell.commander_of_the_dead -> duration() );
+  }
+  else
+  { 
+    buffs.commander_of_the_dead_window -> set_duration ( 4_s );
+  }
 
 }
 
@@ -9635,6 +9816,7 @@ void death_knight_t::init_gains()
 
   // Shared
   gains.antimagic_shell                  = get_gain( "Antimagic Shell" );
+  gains.antimagic_zone                   = get_gain( "Antimagic Zone");
   gains.rune                             = get_gain( "Rune Regeneration" );
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
   gains.spirit_drain                     = get_gain( "Spirit Drain" );
@@ -9863,6 +10045,30 @@ void death_knight_t::assess_damage_imminent( school_e school, result_amount_type
       double rp_generated = damage_absorbed / resources.max[ RESOURCE_HEALTH ] * 100;
 
       resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_shell, s -> action );
+    }
+
+    if ( buffs.antimagic_zone -> up() )
+    {
+      // AMZ only absorbs 20% of incoming magic damage
+      double damage_absorbed = debug_cast< antimagic_zone_buff_t* >( buffs.antimagic_zone ) -> absorb_damage( s -> result_amount * 0.2 );
+
+      s -> result_amount -= damage_absorbed;
+      s -> result_absorbed -= damage_absorbed;
+      s -> self_absorb_amount += damage_absorbed;
+      iteration_absorb_taken += damage_absorbed;
+
+      if ( antimagic_zone )
+        antimagic_zone -> add_result( damage_absorbed, damage_absorbed, result_amount_type::ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, this );
+
+      // Generates 1 RP for every 1% of the shield
+      if (talent.assimilation)
+      {
+        double absorb_pct = resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1 + talent.assimilation -> effectN( 1 ).percent() ) * ( 1 + cache.heal_versatility() );
+        // Assimilation can generate no more than 100 runic power 
+        double rp_generated = std::min( talent.assimilation -> effectN( 2 ).base_value() * 100, damage_absorbed / absorb_pct * 100);
+        
+        resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), gains.antimagic_zone, s -> action );
+      }
     }
   }
 }
@@ -10315,7 +10521,12 @@ inline double death_knight_t::runes_per_second() const
 {
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() )
+  if ( is_ptr() && buffs.runic_corruption -> check() )
+  {
+    rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
+  }
+
+  else if ( buffs.runic_corruption -> check() )
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
   }
@@ -10327,9 +10538,14 @@ inline double death_knight_t::rune_regen_coefficient() const
 {
   auto coeff = cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() )
+  if ( is_ptr() && buffs.runic_corruption -> check() )
   {
-    coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
+    coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
+  }
+
+  else if ( buffs.runic_corruption->check() )
+  {
+    coeff /= 1.0 + spell.runic_corruption->effectN( 1 ).percent();
   }
 
   return coeff;
@@ -10544,18 +10760,16 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-
   /*
   void register_hotfixes() const override
   {
-      hotfix::register_effect( "Death Knight", "2022-09-15", "Icecap's CDR per Crit reduced to 2s per Crit in notes, not represented in game", 306334 )
-      .field( "base_value" )
+      hotfix::register_spell( "Death Knight", "2023-01-31", "Rotten Touch Duration increased to 10 seconds", 390276, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 40 );
+      .modifier( 10000 )
+      .verification_value( 6000 );
   }
   */
-
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}

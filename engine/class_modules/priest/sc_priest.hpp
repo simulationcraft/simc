@@ -186,6 +186,7 @@ public:
     player_talent_t move_with_grace;
     player_talent_t power_infusion;
     player_talent_t vampiric_embrace;
+    player_talent_t sanguine_teachings;
     player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;
@@ -498,6 +499,15 @@ public:
     bool mindgames_damage_reversal  = true;
 
     bool power_infusion_fiend = false;
+
+    // Actives the screams bug with Mental Decay and Shadow Word: Pain
+    bool priest_screams_bug = true;
+
+    // Last tick of Mind Sear does not get buffed by Gathering Shadows
+    bool gathering_shadows_bug = true;
+
+    // Auspicious Spirits generates insanity on execute not hit
+    bool as_insanity_bug = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -587,7 +597,7 @@ public:
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
-  bool is_screams_of_the_void_up( player_t* target ) const;
+  bool is_screams_of_the_void_up( player_t* target, const unsigned int spell_id ) const;
   void spawn_thing_from_beyond();
   void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;

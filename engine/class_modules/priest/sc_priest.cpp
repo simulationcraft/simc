@@ -637,9 +637,17 @@ struct mindgames_t final : public priest_spell_t
       child_mindgames_damage_reversal->execute();
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW && priest().shadow_weaving_active_dots( target, id ) != 3 )
+    if ( priest().specialization() == PRIEST_SHADOW )
     {
-      priest().procs.mindgames_casts_no_mastery->occur();
+      if ( priest().shadow_weaving_active_dots( target, id ) != 3 )
+      {
+        priest().procs.mindgames_casts_no_mastery->occur();
+      }
+
+      if ( result_is_hit( s->result ) )
+      {
+        priest().trigger_psychic_link( s );
+      }
     }
   }
 };
@@ -742,7 +750,7 @@ struct summon_mindbender_t final : public summon_pet_t
 {
   timespan_t default_duration;
 
-  summon_mindbender_t( priest_t& p, util::string_view options_str, int version )
+  summon_mindbender_t( priest_t& p, util::string_view options_str )
     : summon_pet_t( "mindbender", p, p.talents.shadow.mindbender )
   {
     parse_options( options_str );
@@ -1110,7 +1118,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
-      insanity( priest().specs.hallucinations->effectN( 1 ).base_value() )
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
   {
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
@@ -1597,6 +1605,18 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
       {
         return expr_t::create_constant( "self_power_infusion", options.self_power_infusion );
       }
+
+      if ( util::str_compare_ci(splits[1], "cthun_last_trigger_attempt") )
+      {
+        if ( talents.shadow.idol_of_cthun.ok() )
+          // std::min( sim->current_time() - last_trigger, max_interval() ).total_seconds();
+          return make_fn_expr( "cthun_last_trigger_attempt", [ this ] {
+            return std::min( sim->current_time() - rppm.idol_of_cthun->get_last_trigger_attempt(), 3.5_s )
+                .total_seconds();
+          } );
+        else
+          return expr_t::create_constant( "cthun_last_trigger_attempt", -1 );
+      }
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
@@ -1764,14 +1784,7 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     if ( talents.shadow.mindbender.enabled() )
     {
-      if ( specialization() == PRIEST_SHADOW )
-      {
-        return new summon_mindbender_t( *this, options_str, 2 );
-      }
-      else
-      {
-        return new summon_mindbender_t( *this, options_str, 3 );
-      }
+      return new summon_mindbender_t( *this, options_str );
     }
     else
     {
@@ -1958,6 +1971,7 @@ void priest_t::init_spells()
   talents.move_with_grace    = CT( "Move With Grace" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
+  talents.sanguine_teachings = CT( "Sanguine Teachings" );  // NYI
   talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
   talents.inspiration                = CT( "Inspiration" );           // NYI
@@ -1965,7 +1979,7 @@ void priest_t::init_spells()
   talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
-  talents.sanlayn                    = CT( "San'layn" );
+  talents.sanlayn                    = CT( "San'layn" );  // TODO: Support working with Sanguine Teachings
   talents.apathy                     = CT( "Apathy" );
   // Row 7
   talents.unwavering_will = CT( "Unwavering Will" );
@@ -2232,6 +2246,9 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   add_option( opt_bool( "priest.power_infusion_fiend", options.power_infusion_fiend ) );
+  add_option( opt_bool( "priest.screams_bug", options.priest_screams_bug ) );
+  add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
+  add_option( opt_bool( "priest.as_insanity_bug", options.as_insanity_bug ) );
 }
 
 std::string priest_t::create_profile( save_e type )

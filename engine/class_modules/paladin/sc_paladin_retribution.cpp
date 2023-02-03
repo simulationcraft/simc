@@ -530,6 +530,12 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
   void execute() override
   {
+    if ( p() -> bugs && p() -> buffs.empyrean_power -> up() )
+    {
+      if ( p() -> buffs.fires_of_justice -> up() )
+        p() -> buffs.fires_of_justice -> expire();
+    }
+
     holy_power_consumer_t::execute();
 
     if ( p() -> talents.tempest_of_the_lightbringer -> ok() )
@@ -830,6 +836,10 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       if ( p() -> buffs.righteous_verdict -> check() )
         am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+
+      // this happens twice apparently
+      if ( p() -> bugs && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
+        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
     }
     return am;
   }
@@ -1216,6 +1226,8 @@ struct exorcism_t : public paladin_spell_t
       paladin_spell_t( "exorcism_dot", p, p -> find_spell( 383208 ) )
     {
       background = true;
+      if ( p->bugs )
+        tick_may_crit = false;
     }
 
     int n_targets() const override

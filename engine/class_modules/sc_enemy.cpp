@@ -857,7 +857,7 @@ struct summon_add_t : public spell_t
   pet_t* pet;
 
   summon_add_t( player_t* p, util::string_view options_str )
-    : spell_t( "summon_add", player, spell_data_t::nil() ),
+    : spell_t( "summon_add", p, spell_data_t::nil() ),
       add_name( "" ),
       summoning_duration( timespan_t::zero() ),
       pet( nullptr )

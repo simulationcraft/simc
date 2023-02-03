@@ -715,7 +715,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       if ( !s.portion_aps.simple && p.sim->scaling->has_scale_factors() && s.scaling )
       {
-        int colspan = 0;
         os << "<table class=\"details\">\n";
         os << "<tr>\n"
            << "<th class=\"help\" data-help=\"#help-scale-factors\">?</th>\n";
@@ -723,12 +722,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           if ( p.scaling->scales_with[ i ] )
           {
             os.printf( "<th>%s</th>\n", util::stat_type_abbrev( i ) );
-            colspan++;
           }
         if ( p.sim->scaling->scale_lag )
         {
           os << "<th>ms Lag</th>\n";
-          colspan++;
         }
         os << "</tr>\n";
         os << "<tr>\n"
@@ -1949,8 +1946,8 @@ int raidbots_talent_render_width( specialization_e spec, int height )
 
 std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, int width, bool mini, bool ptr )
 {
-  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?level={}&width={}{}", ptr ? "mimiron" : "www",
-                      base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
+  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
+                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
 }
 
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
@@ -1992,12 +1989,17 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle\">Talents</h3>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
-  os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
-             raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
+  int num_players = p.sim->players_by_name.size();
+  if ( num_players == 1 )
+  {
+    auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
+    os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
+               raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
 
-  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
-     << "<div class=\"toggle-content hide\">\n";
+    // Hide the talent table only if the Raidbots talent iframe is present.
+    os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+       << "<div class=\"toggle-content hide\">\n";
+  }
 
   os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
              util::player_type_string_long( p.type ),
@@ -2042,8 +2044,11 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   }
   os << "</table>\n";
 
+  // Close the talent table div only if it exists.
+  if ( num_players == 1 )
+    os << "</div>\n";
+
   os << "</div>\n"
-     << "</div>\n"
      << "</div>\n";
 }
 
@@ -3994,10 +3999,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   {
     os << "<div>\n";
 
-    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
-    os.format(
-      "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
-      raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+    if ( p.sim->players_by_name.size() == 1 )
+    {
+      auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+      os.format(
+        "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+        raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+    }
 
     os << "<table class=\"sc spec\">\n";
 

@@ -92,6 +92,9 @@ public:
   blp get_blp_state() const
   { return blp_state; }
 
+  timespan_t get_last_trigger_attempt()
+  { return last_trigger_attempt; }
+
   void set_last_trigger_attempt( timespan_t ts )
   { last_trigger_attempt = ts; }
 

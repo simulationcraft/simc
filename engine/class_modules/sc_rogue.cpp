@@ -739,6 +739,7 @@ public:
       player_talent_t dashing_scoundrel;
       player_talent_t scent_of_blood;
 
+      player_talent_t arterial_precision;
       player_talent_t kingsbane;
       player_talent_t dragon_tempered_blades;
       player_talent_t indiscriminate_carnage;
@@ -1026,6 +1027,7 @@ public:
   void        combat_begin() override;
   timespan_t  available() const override;
   action_t*   create_action( util::string_view name, util::string_view options ) override;
+  std::unique_ptr<expr_t> create_action_expression( action_t& action, std::string_view name_str ) override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
   std::unique_ptr<expr_t> create_resource_expression( util::string_view name ) override;
   void        regen( timespan_t periodicity ) override;
@@ -1498,6 +1500,7 @@ public:
     ab::apply_affecting_aura( p->talent.assassination.flying_daggers );
     ab::apply_affecting_aura( p->talent.assassination.tiny_toxic_blade );
     ab::apply_affecting_aura( p->talent.assassination.shrouded_suffocation );
+    ab::apply_affecting_aura( p->talent.assassination.arterial_precision );
 
     ab::apply_affecting_aura( p->talent.outlaw.blinding_powder );
     ab::apply_affecting_aura( p->talent.outlaw.improved_between_the_eyes );
@@ -1531,8 +1534,10 @@ public:
     affected_by.blindside = ab::data().affected_by( p->spec.blindside_buff->effectN( 1 ) );
     affected_by.danse_macabre = ab::data().affected_by( p->spec.danse_macabre_buff->effectN( 1 ) );
     affected_by.improved_ambush = ab::data().affected_by( p->talent.rogue.improved_ambush->effectN( 1 ) );
-    affected_by.improved_shiv = ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) );
     affected_by.master_assassin = ab::data().affected_by( p->spec.master_assassin_buff->effectN( 1 ) );
+    affected_by.improved_shiv =
+      ( p->talent.assassination.improved_shiv->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 1 ) ) ) ||
+      ( p->talent.assassination.arterial_precision->ok() && ab::data().affected_by( p->spec.improved_shiv_debuff->effectN( 3 ) ) );
 
     if ( p->spell.sepsis_buff->ok() )
     {
@@ -1593,6 +1598,11 @@ public:
     if ( consumes_echoing_reprimand() )
     {
       animacharged_cp_proc = p()->get_proc( "Echoing Reprimand " + ab::name_str );
+    }
+
+    if ( p()->buffs.cold_blood->is_affecting( &ab::data() ) )
+    {
+      cold_blood_consumed_proc = p()->get_proc( "Cold Blood " + ab::name_str );
     }
 
     auto register_damage_buff = [ this ]( damage_buff_t* buff ) {
@@ -1665,10 +1675,12 @@ public:
     register_consume_buff( p()->buffs.audacity, affected_by.audacity );
     register_consume_buff( p()->buffs.blindside, affected_by.blindside );
     register_consume_buff( p()->buffs.cold_blood,
-                           p()->buffs.cold_blood->is_affecting( &ab::data() ), cold_blood_consumed_proc );
+                           p()->buffs.cold_blood->is_affecting( &ab::data() ) && ab::data().id() != p()->talent.subtlety.secret_technique->id(),
+                           cold_blood_consumed_proc );
     register_consume_buff( p()->buffs.t29_outlaw_2pc, p()->buffs.t29_outlaw_2pc->is_affecting( &ab::data() ) );
     register_consume_buff( p()->buffs.t29_outlaw_4pc, p()->buffs.t29_outlaw_4pc->is_affecting( &ab::data() ) );
-    register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) );
+    register_consume_buff( p()->buffs.t29_subtlety_2pc, p()->buffs.t29_subtlety_2pc->is_affecting( &ab::data() ) &&
+                                                        secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO );
   }
 
   // Type Wrappers ============================================================
@@ -2146,17 +2158,7 @@ public:
 
   void execute() override
   {
-    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
-    // 2021-04-22 - Night Fae Lego Toxic Onslaught on PTR shows this happens and applies proc buffs before damage (Shadow Blades)
-    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_ALL & ~STEALTH_SEPSIS ) )
-    {
-      p()->buffs.sepsis->decrement();
-    }
-
     ab::execute();
-
-    if ( ab::harmful )
-      p()->restealth_allowed = false;
 
     if ( ab::hit_any_target )
     {
@@ -2165,6 +2167,11 @@ public:
 
       if ( ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT )
       {
+        if ( p()->buffs.shadow_techniques->check() )
+        {
+          p()->buffs.shadow_techniques->cancel(); // Remove tracking mechanism on CP generators
+        }
+
         if ( affected_by.shadow_blades_cp && p()->buffs.shadow_blades->up() )
         {
           trigger_combo_point_gain( as<int>( p()->buffs.shadow_blades->data().effectN( 2 ).base_value() ), p()->gains.shadow_blades );
@@ -2190,6 +2197,12 @@ public:
       trigger_flagellation( ab::execute_state );
     }
 
+    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) )
+    {
+      p()->buffs.sepsis->decrement();
+    }
+
     // Trigger the 1ms delayed breaking of all stealth buffs
     if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) && breaks_stealth() )
     {
@@ -2201,9 +2214,12 @@ public:
     {
       if ( !ab::background || consume_buff.on_background )
       {
-        consume_buff.buff->expire( consume_buff.delay );
-        if ( consume_buff.proc )
-          consume_buff.proc->occur();
+        if ( consume_buff.buff->check() )
+        {
+          consume_buff.buff->expire( consume_buff.delay );
+          if ( consume_buff.proc )
+            consume_buff.proc->occur();
+        }
       }
     }
 
@@ -2456,19 +2472,6 @@ struct instant_poison_t : public rogue_poison_t
       rogue_poison_t( name, p, s, true, true )
     {
     }
-
-    double composite_da_multiplier( const action_state_t* state ) const override
-    {
-      double m = rogue_poison_t::composite_da_multiplier( state );
-
-      // 2020-10-18- Nightstalker appears to buff Instant Poison by the base 50% amount, despite being in no whitelists
-      if ( p()->bugs && p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
-      {
-        m *= 1.0 + p()->spell.nightstalker_buff->effectN( 2 ).percent();
-      }
-
-      return m;
-    }
   };
 
   instant_poison_t( util::string_view name, rogue_t* p ) :
@@ -2654,6 +2657,7 @@ struct apply_poison_t : public action_t
 
     trigger_gcd = timespan_t::zero();
     harmful = false;
+    set_target( p );
 
     if ( p->main_hand_weapon.type != WEAPON_NONE || p->off_hand_weapon.type != WEAPON_NONE )
     {
@@ -2981,6 +2985,7 @@ struct adrenaline_rush_t : public rogue_spell_t
     parse_options( options_str );
 
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -3293,6 +3298,7 @@ struct blade_flurry_t : public rogue_attack_t
     instant_attack( nullptr )
   {
     harmful = false;
+    set_target( p ); // Does not require a target to use
 
     if ( p->spec.blade_flurry_attack->ok() )
     {
@@ -3311,12 +3317,18 @@ struct blade_flurry_t : public rogue_attack_t
     rogue_attack_t::execute();
     p()->buffs.blade_flurry->trigger();
 
+    // Don't trigger the attack if there are no targets to avoid breaking Stealth
+    // Set target to invalidate the target cache prior to checking the list size
     if ( instant_attack )
     {
-      instant_attack->set_target( target );
-      instant_attack->execute();
+      instant_attack->set_target( player->target );
+      if ( !instant_attack->target_list().empty() )
+        instant_attack->execute();
     }
   }
+
+  bool breaks_stealth() const override
+  { return false; }
 };
 
 // Blade Rush ===============================================================
@@ -3349,6 +3361,9 @@ struct blade_rush_t : public rogue_attack_t
 
       return m;
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
   };
 
   blade_rush_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
@@ -3357,9 +3372,6 @@ struct blade_rush_t : public rogue_attack_t
     execute_action = p->get_background_action<blade_rush_attack_t>( "blade_rush_attack" );
     execute_action->stats = stats;
   }
-
-  bool procs_main_gauche() const override
-  { return true; }
 };
 
 // Cold Blood ===============================================================
@@ -3376,6 +3388,7 @@ struct cold_blood_t : public rogue_spell_t
     parse_options( options_str );
 
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -3532,9 +3545,8 @@ struct dispatch_t: public rogue_attack_t
 
     if ( p()->set_bonuses.t29_outlaw_2pc->ok() )
     {
-      // 2022-11-12 -- Currently does not benefit from animacharged CP
       p()->buffs.t29_outlaw_2pc->expire();
-      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points( p()->bugs ) );
+      p()->buffs.t29_outlaw_2pc->trigger( cast_state( execute_state )->get_combo_points() );
     }
 
     trigger_restless_blades( execute_state );
@@ -3802,6 +3814,8 @@ struct garrote_t : public rogue_attack_t
   garrote_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str )
   {
+    // 2023-01-28 -- Sepsis buff is consumed by Garrote when used for Improved Garrote
+    affected_by.sepsis = p->talent.assassination.improved_garrote->ok();
   }
 
   void init() override
@@ -3833,10 +3847,10 @@ struct garrote_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_persistent_multiplier( state );
 
-    if ( p()->talent.assassination.improved_garrote->ok() )
+    if ( p()->talent.assassination.improved_garrote->ok() &&
+         p()->stealthed( STEALTH_IMPROVED_GARROTE ) )
     {
-      m *= 1.0 + p()->buffs.improved_garrote->stack_value();
-      m *= 1.0 + p()->buffs.improved_garrote_aura->stack_value();
+      m *= 1.0 + p()->spec.improved_garrote_buff->effectN( 2 ).percent();
     }
 
     return m;
@@ -3859,10 +3873,13 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 2022-11-28 -- Does not work with Shadow Dance currently based on testing but supposed to
+    // 2022-11-28 -- Currently does not work correctly at all without Improved Garrote
+    //               Additionally works every global of Improved Garrote regardless of Subterfuge
+    // 2023-01-28 -- However, this does not work with Improved Garrote triggered by Sepsis
     if ( p()->talent.assassination.shrouded_suffocation->ok() &&
-         ( p()->stealthed( STEALTH_IMPROVED_GARROTE ) ||
-           ( !p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE | STEALTH_IMPROVED_GARROTE ) ) ) )
+         ( !p()->bugs || p()->stealthed( STEALTH_IMPROVED_GARROTE ) ) &&
+         ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) ||
+           ( p()->bugs && p()->stealthed( STEALTH_IMPROVED_GARROTE ) && !p()->buffs.sepsis->check() ) ) )
     {
       trigger_combo_point_gain( as<int>( p()->talent.assassination.shrouded_suffocation->effectN( 2 ).base_value() ),
                                 p()->gains.shrouded_suffocation );
@@ -3883,12 +3900,15 @@ struct garrote_t : public rogue_attack_t
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    if ( p()->talent.assassination.improved_garrote->ok() )
+    if ( p()->talent.assassination.improved_garrote->ok() &&
+         p()->stealthed( STEALTH_IMPROVED_GARROTE ) )
     {
-      if ( p()->buffs.improved_garrote->check() || p()->buffs.improved_garrote_aura->check() )
-      {
-        cd_duration = timespan_t::zero();
-      }
+      cd_duration = timespan_t::zero();
+    }
+    else if ( p()->bugs && p()->buffs.sepsis->check() )
+    {
+      // 2023-01-28 -- Sepsis buff causes Garrote to have no cooldown regardless of Improved Garrote
+      cd_duration = timespan_t::zero();
     }
 
     rogue_attack_t::update_ready( cd_duration );
@@ -4023,6 +4043,7 @@ struct indiscriminate_carnage_t : public rogue_spell_t
     rogue_spell_t( name, p, p->talent.assassination.indiscriminate_carnage, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -4121,7 +4142,7 @@ struct killing_spree_t : public rogue_attack_t
     player_t* tick_target = d->target;
     if ( p()->buffs.blade_flurry->check() )
     {
-      auto candidate_targets = targets_in_range_list( target_list() );
+      auto& candidate_targets = targets_in_range_list( target_list() );
       tick_target = candidate_targets[ rng().range( candidate_targets.size() ) ];
     }
 
@@ -4169,6 +4190,11 @@ struct pistol_shot_t : public rogue_attack_t
         add_child( p()->active.fan_the_hammer );
       }
     }
+
+    if ( secondary_trigger_type == secondary_trigger::FAN_THE_HAMMER )
+    {
+      energize_amount -= p()->talent.outlaw.fan_the_hammer->effectN( 3 ).base_value();
+    }
   }
 
   double cost() const override
@@ -4196,8 +4222,6 @@ struct pistol_shot_t : public rogue_attack_t
   double generate_cp() const override
   {
     double g = rogue_attack_t::generate_cp();
-    if ( g == 0.0 )
-      return 0.0;
 
     if ( p()->talent.outlaw.quick_draw->ok() && p()->buffs.opportunity->check() )
     {
@@ -4214,7 +4238,7 @@ struct pistol_shot_t : public rogue_attack_t
     // Opportunity-Triggered Mechanics
     if ( p()->buffs.opportunity->check() )
     {
-      if ( generate_cp() > 0 && p()->talent.outlaw.quick_draw->ok() )
+      if ( p()->talent.outlaw.quick_draw->ok() )
       {
         const int cp_gain = as<int>( p()->talent.outlaw.quick_draw->effectN( 2 ).base_value() );
         trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
@@ -4455,6 +4479,7 @@ struct roll_the_bones_t : public rogue_spell_t
 
     harmful = false;
     dot_duration = timespan_t::zero();
+    set_target( p );
   }
 
   void execute() override
@@ -4689,8 +4714,10 @@ struct secret_technique_t : public rogue_attack_t
 
     player_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_player", p->spec.secret_technique_attack );
+    player_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed attacks
     clone_attack = p->get_secondary_trigger_action<secret_technique_attack_t>(
       secondary_trigger::SECRET_TECHNIQUE, "secret_technique_clones", p->spec.secret_technique_clone_attack );
+    clone_attack->update_flags &= ~STATE_CRIT; // Hotfixed to snapshot in Cold Blood on delayed clone attacks
 
     add_child( player_attack );
     add_child( clone_attack );
@@ -4702,14 +4729,32 @@ struct secret_technique_t : public rogue_attack_t
 
     int cp = cast_state( execute_state )->get_combo_points();
 
-    // Hit of the main char happens right on cast.
-    player_attack->trigger_secondary_action( execute_state->target, cp );
+    // All attacks need to snapshot the state here due to the delayed attacks snapshotting Cold Blood
+    // Hit of the main char happens right after the primary cast.
+    auto player_state = player_attack->get_state();
+    player_state->target = execute_state->target;
+    player_attack->cast_state( player_state )->set_combo_points( cp, cp );
+    player_attack->snapshot_internal( player_state, player_attack->snapshot_flags, player_attack->amount_type( player_state ) );
+    player_attack->trigger_secondary_action( player_state );
 
     // The clones seem to hit 1s and 1.3s later (no time reference in spell data though)
-    // Trigger tracking buff until first clone's damage
+    // Trigger tracking buff for APL conditions until final clone's damage
+    auto clone_state = clone_attack->get_state();
+    clone_state->target = execute_state->target;
+    clone_attack->cast_state( clone_state )->set_combo_points( cp, cp );
+    clone_attack->snapshot_internal( clone_state, clone_attack->snapshot_flags, clone_attack->amount_type( clone_state ) );
+    auto clone_state_2 = clone_attack->get_state( clone_state );
+
     p()->buffs.secret_technique->trigger( 1.3_s );
-    clone_attack->trigger_secondary_action( execute_state->target, cp, 1_s );
-    clone_attack->trigger_secondary_action( execute_state->target, cp, 1.3_s );
+    clone_attack->trigger_secondary_action( clone_state, 1_s );
+    clone_attack->trigger_secondary_action( clone_state_2, 1.3_s );
+
+    // Manually expire Cold Blood due to special handling above
+    if ( p()->buffs.cold_blood->check() )
+    {
+      p()->buffs.cold_blood->expire();
+      cold_blood_consumed_proc->occur();
+    }
   }
 };
 
@@ -4744,6 +4789,7 @@ struct shadow_blades_t : public rogue_spell_t
 
     harmful = false;
     school = SCHOOL_SHADOW;
+    set_target( p );
 
     add_child( p->active.shadow_blades_attack );
   }
@@ -4772,6 +4818,7 @@ struct shadow_dance_t : public rogue_spell_t
   {
     harmful = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
+    set_target( p );
   }
 
   void execute() override
@@ -5102,7 +5149,9 @@ struct shuriken_storm_t: public rogue_attack_t
       trigger_find_weakness( state, duration );
     }
 
-    if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
+    // 2023-01-31 -- Tornado-triggered Shuriken Storms do not activate 4pc
+    if ( p()->set_bonuses.t29_subtlety_4pc->ok() && state->result == RESULT_CRIT &&
+         secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     {
       p()->buffs.t29_subtlety_4pc->trigger();
       p()->buffs.t29_subtlety_4pc_black_powder->trigger();
@@ -5265,6 +5314,7 @@ struct slice_and_dice_t : public rogue_spell_t
 
     harmful = false;
     dot_duration = timespan_t::zero();
+    set_target( p );
   }
 
   timespan_t get_triggered_duration( int cp )
@@ -5328,6 +5378,7 @@ struct sprint_t : public rogue_spell_t
   {
     harmful = callbacks = false;
     cooldown = p->cooldowns.sprint;
+    set_target( p );
   }
 
   void execute() override
@@ -5346,6 +5397,7 @@ struct symbols_of_death_t : public rogue_spell_t
   {
     harmful = callbacks = false;
     dot_duration = timespan_t::zero();
+    set_target( p );
   }
 
   void execute() override
@@ -5391,6 +5443,7 @@ struct vanish_t : public rogue_spell_t
     rogue_spell_t( name, p, p->spell.vanish, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -5418,6 +5471,7 @@ struct stealth_t : public rogue_spell_t
     rogue_spell_t( name, p, p->spell.stealth, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -5429,17 +5483,21 @@ struct stealth_t : public rogue_spell_t
 
   bool ready() override
   {
-    if ( p() -> stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
+    if ( p()->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
       return false;
 
-    if ( ! p() -> in_combat )
+    if ( !p()->in_combat )
       return true;
 
-    // HAX: Allow restealth for DungeonSlice against non-"boss" targets because Shadowmeld drops combat against trash.
-    if ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
+    // Allow restealth for Dungeon sims against non-boss targets as Shadowmeld drops combat against trash.
+    if ( ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p()->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE ) &&
+         p()->player_t::buffs.shadowmeld->check() && !target->is_boss() )
       return true;
 
     if ( !p()->restealth_allowed )
+      return false;
+
+    if ( !p()->sim->target_non_sleeping_list.empty() )
       return false;
 
     return rogue_spell_t::ready();
@@ -5584,6 +5642,7 @@ struct thistle_tea_t : public rogue_spell_t
 
     harmful = false;
     energize_type = action_energize::ON_CAST;
+    set_target( p );
   }
 
   void execute() override
@@ -5607,6 +5666,7 @@ struct keep_it_rolling_t : public rogue_spell_t
     rogue_spell_t( name, p, p->talent.outlaw.keep_it_rolling, options_str )
   {
     harmful = false;
+    set_target( p );
   }
 
   void execute() override
@@ -5646,8 +5706,12 @@ struct echoing_reprimand_t : public rogue_attack_t
 
       if ( p()->talent.rogue.resounding_clarity->ok() )
       {
-        for ( buff_t* b : p()->buffs.echoing_reprimand )
-          b->trigger();
+        // 2022-12-16 -- Resounding Clarity now animacharges 2 instead of 3 additional buffs
+        // This was accomplished by simply removing the chance to generate a 5 CP buff
+        for ( int i = random_min; i < random_max; i++ )
+        {
+          p()->buffs.echoing_reprimand[ i ]->trigger();
+        }
       }
       else
       {
@@ -5728,6 +5792,12 @@ struct sepsis_t : public rogue_attack_t
     affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+    p()->buffs.sepsis->trigger();
   }
 
   void last_tick( dot_t* d ) override
@@ -5875,6 +5945,8 @@ struct weapon_swap_t : public action_t
     rogue( rogue_ )
   {
     may_miss = may_crit = may_dodge = may_parry = may_glance = callbacks = harmful = false;
+    
+    set_target( rogue );
 
     add_option( opt_string( "slot", slot_str ) );
     add_option( opt_string( "swap_to", swap_to_str ) );
@@ -6212,6 +6284,7 @@ struct blade_flurry_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_default_value_from_effect( 2 );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
     apply_affecting_aura( p->talent.outlaw.dancing_steel );
   }
 };
@@ -6547,7 +6620,7 @@ struct roll_the_bones_t : public buff_t
 
   void expire_secondary_buffs()
   {
-    for ( int i = 0; i < buffs.size(); i++ )
+    for ( std::size_t i = 0; i < buffs.size(); i++ )
     {
       if ( buffs[ i ]->check() )
       {
@@ -7348,6 +7421,7 @@ void actions::rogue_action_t<Base>::trigger_find_weakness( const action_state_t*
   if ( !ab::result_is_hit( state->result ) )
     return;
 
+  // Subtlety duration-triggered Find Weakness applications do not require the talent
   if ( !( p()->talent.rogue.find_weakness->ok() || duration > timespan_t::zero() ) )
     return;
 
@@ -7557,7 +7631,8 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   
   debuffs.marked_for_death = make_buff( *this, "marked_for_death", source->talent.rogue.marked_for_death )
     ->set_cooldown( timespan_t::zero() );
-  debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff );
+  debuffs.shiv = make_buff<damage_buff_t>( *this, "shiv", source->spec.improved_shiv_debuff, false )
+    ->set_direct_mod( source->spec.improved_shiv_debuff->effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source->talent.outlaw.ghostly_strike )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
     ->set_tick_behavior( buff_tick_behavior::NONE )
@@ -7604,7 +7679,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // Sepsis Cooldown Reduction
   if ( source->talent.shared.sepsis->ok() )
   {
-    target->register_on_demise_callback( source, [ this, source ]( player_t* target ) {
+    target->register_on_demise_callback( source, [ this, source ]( player_t* /*target*/ ) {
       if ( dots.sepsis->is_ticking() )
       {
         source->cooldowns.sepsis->adjust( -timespan_t::from_seconds( source->talent.shared.sepsis->effectN( 3 ).base_value() ) );
@@ -8026,6 +8101,65 @@ action_t* rogue_t::create_action( util::string_view name, util::string_view opti
 
 // rogue_t::create_expression ===============================================
 
+std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std::string_view name_str )
+{
+  auto split = util::string_split<util::string_view>( name_str, "." );
+
+  if ( util::str_compare_ci( name_str, "poisoned" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->is_lethal_poisoned();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "poison_remains" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->lethal_poison_remains();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "bleeds" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      rogue_td_t* tdata = get_target_data( action.get_expression_target() );
+      return tdata->dots.garrote->is_ticking() +
+        tdata->dots.internal_bleeding->is_ticking() +
+        tdata->dots.rupture->is_ticking() +
+        tdata->dots.crimson_tempest->is_ticking() +
+        tdata->dots.mutilated_flesh->is_ticking() +
+        tdata->dots.serrated_bone_spike->is_ticking();
+    } );
+  }
+  // exsanguinated.(garrote|internal_bleeding|rupture|crimson_tempest)
+  else if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "exsanguinated" ) &&
+            ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
+              util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
+              util::str_compare_ci( split[ 1 ], "rupture" ) ||
+              util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ||
+              util::str_compare_ci( split[ 1 ], "serrated_bone_spike" ) ) )
+  {
+    action_t* dot_action = find_action( split[ 1 ] );
+    if ( !dot_action )
+    {
+      return expr_t::create_constant( "exsanguinated_expr", 0 );
+    }
+
+    return make_fn_expr( name_str, [ &action, dot_action ]() {
+      dot_t* d = dot_action->get_dot( action.get_expression_target() );
+      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
+    } );
+  }
+  else if ( util::str_compare_ci( name_str, "used_for_danse" ) )
+  {
+    return make_fn_expr( name_str, [ this, &action ]() {
+      return range::contains( danse_macabre_tracker, action.data().id() );
+    } );
+  }
+
+  return player_t::create_action_expression( action, name_str );
+}
+
 std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 {
   auto split = util::string_split<util::string_view>( name_str, "." );
@@ -8089,32 +8223,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return buffs.improved_garrote->remains();
     } );
   }
-  else if ( util::str_compare_ci( name_str, "poisoned" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = get_target_data( target );
-      return tdata->is_lethal_poisoned();
-    } );
-  }
-  else if ( util::str_compare_ci( name_str, "poison_remains" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = get_target_data( target );
-      return tdata->lethal_poison_remains();
-    } );
-  }
-  else if ( util::str_compare_ci( name_str, "bleeds" ) )
-  {
-    return make_fn_expr( name_str, [ this ]() {
-      rogue_td_t* tdata = get_target_data( target );
-      return tdata->dots.garrote->is_ticking() +
-        tdata->dots.internal_bleeding->is_ticking() +
-        tdata->dots.rupture->is_ticking() +
-        tdata->dots.crimson_tempest->is_ticking() +
-        tdata->dots.mutilated_flesh->is_ticking() +
-        tdata->dots.serrated_bone_spike->is_ticking();
-    } );
-  }
   else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
@@ -8159,65 +8267,58 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return expr_t::create_constant( name_str, 0 );
 
     buffs::roll_the_bones_t* primary = static_cast<buffs::roll_the_bones_t*>( buffs.roll_the_bones );
+    std::function<bool( buff_t*, buff_t* )> normal_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && buff->remains() == primary->remains(); };
+    std::function<bool( buff_t*, buff_t* )> longer_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && buff->remains_gt( primary->remains() ); };
+    std::function<bool( buff_t*, buff_t* )> shorter_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && buff->remains_lt( primary->remains() ); };
+    std::function<bool( buff_t*, buff_t* )> will_lose_pred =
+      []( buff_t* primary, buff_t* buff ) { return buff->check() && !buff->remains_gt( primary->remains() ); };
+
     if ( split.size() == 1 || ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "total" ) ) )
     {
-      return make_fn_expr( name_str, [ this, primary ]() {
+      // Return the total amount of RtB buffs regardless of duration
+      return make_fn_expr( name_str, [ primary ]() {
         double n_buffs = 0;
         for ( auto buff : primary->buffs )
           n_buffs += buff->check();
         return n_buffs;
       } );
     }
-    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "longer" ) )
+    else if ( ( util::str_compare_ci( split[ 1 ], "longer" ) ||
+                util::str_compare_ci( split[ 1 ], "shorter" ) ||
+                util::str_compare_ci( split[ 1 ], "normal" ) ||
+                util::str_compare_ci( split[ 1 ], "will_lose" ) ||
+                util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
     {
-      return make_fn_expr( name_str, [ this, primary ]() {
-        double n_buffs = 0;
-        for ( auto buff : primary->buffs )
-          n_buffs += ( buff->check() && buff->remains_gt( primary->remains() ) );
-        return n_buffs;
-      } );
-    }
-    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "shorter" ) )
-    {
-      return make_fn_expr( name_str, [ this, primary ]() {
-        double n_buffs = 0;
-        for ( auto buff : primary->buffs )
-          n_buffs += ( buff->check() && buff->remains_lt( primary->remains() ) );
-        return n_buffs;
-      } );
-    }
-    else if ( split.size() == 2 && util::str_compare_ci( split[ 1 ], "normal" ) )
-    {
-      return make_fn_expr( name_str, [ this, primary ]() {
-        double n_buffs = 0;
-        for ( auto buff : primary->buffs )
-          n_buffs += ( buff->check() && buff->remains() == primary->remains() );
-        return n_buffs;
-      } );
-    }
-    else if ( split.size() == 3 && ( util::str_compare_ci( split[ 1 ], "will_lose" ) ||
-                                     util::str_compare_ci( split[ 1 ], "will_retain" ) ) )
-    {
-      util::string_view buff_name = split[ 2 ];
-      auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) { 
-        return util::str_compare_ci( buff->name_str, buff_name ); } );
+      buff_t* filter_buff = nullptr;
+      if ( split.size() == 3 )
+      {
+        util::string_view buff_name = split[ 2 ];
+        auto it = range::find_if( primary->buffs, [buff_name]( const buff_t* buff ) {
+          return util::str_compare_ci( buff->name_str, buff_name ); } );
 
-      if ( it == primary->buffs.end() )
-      {
-        throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
-      }
-      else
-      {
-        const buff_t* rtb_buff = ( *it );
-        if( util::str_compare_ci( split[ 1 ], "will_lose" ) )
-          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
-            return rtb_buff->check() && !rtb_buff->remains_gt( primary->remains() );
-          } );
+        if ( it == primary->buffs.end() )
+          throw std::invalid_argument( fmt::format( "Invalid rtb_buffs.{} buff name given '{}'.", split[ 1 ], buff_name ) );
         else
-          return make_fn_expr( name_str, [ this, primary, rtb_buff ]() {
-            return rtb_buff->check() && rtb_buff->remains_gt( primary->remains() );
-          } );
+          filter_buff = ( *it );
       }
+
+      std::function<bool( buff_t*, buff_t* )> pred = normal_pred;
+      if ( util::str_compare_ci( split[ 1 ], "shorter" ) )
+        pred = shorter_pred;
+      else if ( util::str_compare_ci( split[ 1 ], "longer" ) || util::str_compare_ci( split[ 1 ], "will_retain" ) )
+        pred = longer_pred;
+      else if ( util::str_compare_ci( split[ 1 ], "will_lose" ) )
+        pred = will_lose_pred;
+
+      return make_fn_expr( name_str, [ primary, pred, filter_buff ]() {
+        double n_buffs = 0;
+        for ( auto buff : primary->buffs )
+          n_buffs += ( !filter_buff || filter_buff == buff ) && pred( primary, buff );
+        return n_buffs;
+      } );
     }
   }
   else if ( util::str_compare_ci(name_str, "priority_rotation") )
@@ -8270,25 +8371,6 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
         return stealthed();
       } );
     }
-  }
-  // exsanguinated.(garrote|internal_bleeding|rupture|crimson_tempest)
-  else if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "exsanguinated" ) &&
-    ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
-      util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
-      util::str_compare_ci( split[ 1 ], "rupture" ) ||
-      util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ||
-      util::str_compare_ci( split[ 1 ], "serrated_bone_spike" ) ) )
-  {
-    action_t* action = find_action( split[ 1 ] );
-    if ( !action )
-    {
-      return expr_t::create_constant( "exsanguinated_expr", 0 );
-    }
-
-    return make_fn_expr( name_str, [ action ]() {
-      dot_t* d = action->get_dot( action->target );
-      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
-    } );
   }
   // rtb_list.<buffs>
   else if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "rtb_list" ) && ! split[ 1 ].empty() )
@@ -8754,6 +8836,7 @@ void rogue_t::init_spells()
   talent.assassination.dashing_scoundrel = find_talent_spell( talent_tree::SPECIALIZATION, "Dashing Scoundrel" );
   talent.assassination.scent_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Scent of Blood" );
 
+  talent.assassination.arterial_precision = find_talent_spell( talent_tree::SPECIALIZATION, "Arterial Precision" );
   talent.assassination.kingsbane = find_talent_spell( talent_tree::SPECIALIZATION, "Kingsbane" );
   talent.assassination.dragon_tempered_blades = find_talent_spell( talent_tree::SPECIALIZATION, "Dragon-Tempered Blades" );
   talent.assassination.indiscriminate_carnage = find_talent_spell( talent_tree::SPECIALIZATION, "Indiscriminate Carnage" );
@@ -8894,7 +8977,7 @@ void rogue_t::init_spells()
   spell.leeching_poison_buff = talent.rogue.leeching_poison->ok() ? find_spell( 108211 ) : spell_data_t::not_found();
   spell.nightstalker_buff = talent.rogue.nightstalker->ok() ? find_spell( 130493 ) : spell_data_t::not_found();
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
-  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 347037 ) : spell_data_t::not_found();
+  spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
@@ -8909,7 +8992,7 @@ void rogue_t::init_spells()
   spec.doomblade_debuff = talent.assassination.doomblade->ok() ? spec.doomblade_debuff = find_spell( 381672 ) : spell_data_t::not_found();
   spec.elaborate_planning_buff = talent.assassination.elaborate_planning->ok() ? find_spell( 193641 ) : spell_data_t::not_found();
   spec.improved_garrote_buff = talent.assassination.improved_garrote->ok() ? find_spell( 392401 ) : spell_data_t::not_found();
-  spec.improved_shiv_debuff = talent.assassination.improved_shiv->ok() ? find_spell( 319504 ) : spell_data_t::not_found();
+  spec.improved_shiv_debuff = ( talent.assassination.improved_shiv->ok() || talent.assassination.arterial_precision->ok() ) ? find_spell( 319504 ) : spell_data_t::not_found();
   spec.internal_bleeding_debuff = talent.assassination.internal_bleeding->ok() ? find_spell( 154953 ) : spell_data_t::not_found();
   spec.kingsbane_buff = talent.assassination.kingsbane->ok() ? find_spell( 394095 ) : spell_data_t::not_found();
   spec.master_assassin_buff = talent.assassination.master_assassin->ok() ? find_spell( 256735 ) : spell_data_t::not_found();
@@ -9357,10 +9440,16 @@ void rogue_t::create_buffs()
 
   // DFALPHA -- This still seems very messed up and still appears to have a 50% value in data
   //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
+  //            2023-01-07 -- Nightstalker still does nothing on live after December hotfixes
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
+  if ( bugs )
+  {
+    buffs.nightstalker->direct_mod.multiplier = 1.0;
+    buffs.nightstalker->periodic_mod.multiplier = 1.0;
+  }
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
@@ -9908,6 +9997,8 @@ void rogue_t::activate()
 
 void rogue_t::break_stealth()
 {
+  restealth_allowed = false;
+
   // Trigger Subterfuge
   if ( talent.rogue.subterfuge->ok() && !buffs.subterfuge->check() && stealthed( STEALTH_BASIC ) )
   {
@@ -10033,8 +10124,9 @@ bool rogue_t::stealthed( uint32_t stealth_mask ) const
   if ( ( stealth_mask & STEALTH_SEPSIS ) && buffs.sepsis->check() )
     return true;
 
-  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) &&
-       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() ) )
+  // Sepsis gives all the benefits of Improved Garrote including CDR on PTR, even without the buff
+  if ( ( stealth_mask & STEALTH_IMPROVED_GARROTE ) && talent.assassination.improved_garrote->ok() &&
+       ( buffs.improved_garrote->check() || buffs.improved_garrote_aura->check() || buffs.sepsis->check() ) )
     return true;
 
   return false;

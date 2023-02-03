@@ -115,20 +115,27 @@ class XFTHParser(DBCParserBase):
     def parse_blocks(self):
         # For some reason, 9.1.0 builds do not use the version 8 format.
         if self.version < 8 or self.options.build.patch_level() == dbc.WowVersion(9, 1, 0, 0).patch_level():
-            entry_unpacker = struct.Struct('<4sIIIIB3s')
+            entry_unpacker = struct.Struct('<4siIIIB3s')
+        elif self.version < 9:
+            entry_unpacker = struct.Struct('<4siIIIIB3s')
         else:
-            entry_unpacker = struct.Struct('<4sIIIIIB3s')
+            entry_unpacker = struct.Struct('<4siiIIIIB3s')
 
         n_entries = 0
         all_entries = []
         while self.parse_offset < len(self.data):
             # For some reason, 9.1.0 builds do not use the version 8 format.
             if self.version < 8 or self.options.build.patch_level() == dbc.WowVersion(9, 1, 0, 0).patch_level():
-                magic, unk_2, sig, record_id, length, state, pad = \
+                magic, index, sig, record_id, length, state, pad = \
                         entry_unpacker.unpack_from(self.data, self.parse_offset)
-                unk_3 = None
+                region_id = None
+                unique_id = None
+            elif self.version < 9:
+                magic, index, unique_id, sig, record_id, length, state, pad = \
+                        entry_unpacker.unpack_from(self.data, self.parse_offset)
+                region_id = None
             else:
-                magic, unk_2, unk_3, sig, record_id, length, state, pad = \
+                magic, region_id, index, unique_id, sig, record_id, length, state, pad = \
                         entry_unpacker.unpack_from(self.data, self.parse_offset)
 
             if magic != b'XFTH':
@@ -139,8 +146,9 @@ class XFTHParser(DBCParserBase):
 
             entry = {
                 'record_id': record_id,
-                'unk_2': unk_2,
-                'unk_3': unk_3,
+                'region_id' : region_id,
+                'index': index,
+                'unique_id': unique_id,
                 'state': state,
                 'length': length,
                 'offset': self.parse_offset,
@@ -164,7 +172,7 @@ class XFTHParser(DBCParserBase):
             for entry in sorted(all_entries, key = lambda e: (e['sig'], e['record_id'])):
                 logging.debug('entry: { %s }',
                         ('record_id=%(record_id)-6u table_hash=%(sig)#.8x ' +
-                            'unk_2=%(unk_2)#.8x state=%(state)u ' +
+                            'index=%(index)#.8x state=%(state)u ' +
                             'length=%(length)-3u pad=%(pad)-6s offset=%(offset)-7u') % entry)
 
         logging.debug('Parsed %d hotfix entries', n_entries)

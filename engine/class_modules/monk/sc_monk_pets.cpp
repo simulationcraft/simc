@@ -518,7 +518,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       auto owner = this->o();
 
-      owner->trigger_empowered_tiger_lightning( s, true, false );
+      owner->trigger_empowered_tiger_lightning( s, true );
 
       super_t::impact( s );
     }
@@ -1326,7 +1326,7 @@ private:
 
     void impact( action_state_t* s ) override
     {
-      o()->trigger_empowered_tiger_lightning( s, true, false );
+      o()->trigger_empowered_tiger_lightning( s, true );
 
       pet_melee_attack_t::impact( s );
     }
@@ -1344,7 +1344,7 @@ private:
     void impact( action_state_t* s ) override
     {
       auto owner = o();
-      owner->trigger_empowered_tiger_lightning( s, true, false );
+      owner->trigger_empowered_tiger_lightning( s, true );
 
       pet_spell_t::impact( s );
     }
@@ -1780,7 +1780,7 @@ private:
         void impact( action_state_t* s ) override
         {
           auto owner = o();
-          owner->trigger_empowered_tiger_lightning( s, true, false );
+          owner->trigger_empowered_tiger_lightning( s, true );
 
           pet_spell_t::impact( s );
         }

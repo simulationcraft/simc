@@ -164,14 +164,14 @@ constexpr double m_pi = 3.14159265358979323846;
 #endif
 
 #ifndef SC_USE_PTR
-#define SC_USE_PTR 0
+#define SC_USE_PTR 1
 #endif
 
 // ==========================================================================
 // Simc related value definitions
 // ==========================================================================
 
-#define SC_MAJOR_VERSION "1002"
+#define SC_MAJOR_VERSION "1005"
 #define SC_MINOR_VERSION "01"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0

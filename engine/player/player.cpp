@@ -2022,17 +2022,6 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-  {
-    special_effect_t effect( this );
-
-    unique_gear::initialize_special_effect( effect, 368240 );
-    if ( !effect.custom_init_object.empty() )
-    {
-      special_effects.push_back( new special_effect_t( effect ) );
-    }
-  }
-
   // Initialize generic azerite powers. Note that this occurs later in the process than the class
   // module spell initialization (init_spells()), which is where the core presumes that each class
   // module gets the state their azerite powers (through the invocation of find_azerite_spells).
@@ -2639,7 +2628,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       val += ( byte >> bit & 0b1 ) << std::min( i, sizeof( byte ) * 8 - 1 );
       if ( bit == byte_size - 1 )
       {
-        byte = base64_char.find( talents_str[ head / byte_size ] );
+        if ( ( head / byte_size ) >= talents_str.size() )
+          byte = 0;
+        else
+          byte = base64_char.find( talents_str[ head / byte_size ] );
       }
     }
     return val;
@@ -5548,7 +5540,7 @@ void player_t::datacollection_begin()
   // Check whether the actor was arisen at least once during the _previous_ iteration
   // Note that this check is dependant on sim_t::combat_begin() having
   // sim_t::datacollection_begin() call before the player_t::combat_begin() calls.
-  if ( !active_during_iteration )
+  if ( !requires_data_collection() )
     return;
 
   sim->print_debug( "Data collection begins for {} (id={})", *this, index );
@@ -9789,10 +9781,10 @@ struct invoke_external_buff_t : public action_t
   invoke_external_buff_t( player_t* player, util::string_view options_str )
     : action_t( ACTION_OTHER, "invoke_external_buff", player ),
       buff_str(),
-      buff( nullptr ),
       buff_duration( timespan_t::min() ),
       buff_stacks( -1 ),
       use_pool( true ),
+      buff( nullptr ),
       invoke_cds( nullptr )
   {
     add_option( opt_string( "name", buff_str ) );
@@ -11990,6 +11982,16 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
     }
+
+    if ( !dragonflight_opts.ruby_whelp_shell_training.empty() )
+    {
+      profile_str += "dragonflight.player.ruby_whelp_shell_training=" + dragonflight_opts.ruby_whelp_shell_training + term;
+    }
+
+    if ( !dragonflight_opts.ruby_whelp_shell_context.empty() )
+    {
+      profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12236,6 +12238,8 @@ void player_t::copy_from( player_t* source )
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
   player_traits     = source->player_traits;
+  shadowlands_opts  = source->shadowlands_opts;
+  dragonflight_opts = source->dragonflight_opts;
 
   if ( azerite )
   {
@@ -12575,6 +12579,8 @@ void player_t::create_options()
 
   // Dragonflight options
   add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
+  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
+  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
 
   // Obsolete options
 
@@ -12614,8 +12620,15 @@ void player_t::analyze( sim_t& s )
 
   if ( quiet )
     return;
+
   if ( collected_data.fight_length.mean() == 0 )
-    return;
+  {
+    auto it = range::find_if( pet_list, []( pet_t* pet ) {
+      return pet->collected_data.fight_length.mean() > 0; } );
+
+    if ( it == pet_list.end() )
+      return;
+  }
 
   range::for_each( sample_data_list, []( sample_data_helper_t* sd ) { sd->analyze(); } );
 
@@ -12810,6 +12823,20 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       else
         return { SCALE_METRIC_DPS, q->collected_data.dps };
   }
+}
+
+bool player_t::requires_data_collection() const
+{
+  if ( active_during_iteration )
+    return true;
+  
+  for ( const auto* pet : pet_list )
+  {
+    if ( pet->requires_data_collection() )
+      return true;
+  }
+
+  return false;
 }
 
 /**
@@ -14007,7 +14034,7 @@ void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
   {
     event_t::cancel( main_hand_attack->execute_event );
     main_hand_attack->schedule_execute();
-    if ( delay > timespan_t::zero() )
+    if ( delay > timespan_t::zero() && main_hand_attack->execute_event )
     {
       main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
     }
@@ -14017,7 +14044,7 @@ void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
   {
     event_t::cancel( off_hand_attack->execute_event );
     off_hand_attack->schedule_execute();
-    if ( delay > timespan_t::zero() )
+    if ( delay > timespan_t::zero() && off_hand_attack->execute_event )
     {
       off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
     }
@@ -14045,6 +14072,27 @@ void player_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
   {
     sim->print_debug( "Delaying OH auto attack swing timer by {} to {}", delay, off_hand_attack->execute_event->remains() + delay );
     off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
+    delayed = true;
+  }
+
+  if ( proc && delayed )
+    proc->occur();
+}
+
+/**
+* Delay ranged swing timer
+*/
+void player_t::delay_ranged_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  if ( delay == timespan_t::zero() )
+    return;
+
+  bool delayed = false;
+
+  if ( main_hand_attack && main_hand_attack->execute_event && dynamic_cast<ranged_attack_t*>(main_hand_attack) )
+  {
+    sim->print_debug( "Delaying ranged auto attack swing timer by {} to {}", delay, main_hand_attack->execute_event->remains() + delay );
+    main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
     delayed = true;
   }
 

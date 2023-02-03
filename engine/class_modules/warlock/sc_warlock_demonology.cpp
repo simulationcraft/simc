@@ -27,7 +27,7 @@ public:
         p()->procs.portal_summon->occur();
 
         if ( p()->talents.guldans_ambition->ok() )
-          p()->buffs.nether_portal_total->increment();
+          p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
@@ -35,7 +35,7 @@ public:
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
         }
       }
     }
@@ -181,7 +181,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     }
 
     if ( p()->talents.dread_calling->ok() )
-      p()->buffs.dread_calling->increment( shards_used );
+      p()->buffs.dread_calling->trigger( shards_used );
   }
 
   void consume_resource() override
@@ -260,9 +260,8 @@ struct demonbolt_t : public demonology_spell_t
 
     p()->buffs.stolen_power_final->expire();
 
-    // 2022-10-17 Percent chance for this effect is not in spell data!
-    // TOCHECK with further testing.
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.15 ) )
+    // 2023-01-05 Percent chance for this effect is still not in spell data! Update since beta appears to have adjusted it to 30%
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.30 ) )
     {
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
@@ -355,7 +354,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
         p()->procs.portal_summon->occur();
 
         if ( p()->talents.guldans_ambition->ok() )
-          p()->buffs.nether_portal_total->increment();
+          p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
@@ -363,7 +362,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
         }
       }
 
@@ -580,9 +579,12 @@ struct demonic_strength_t : public demonology_spell_t
     : demonology_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
   {
     parse_options( options_str );
+    
+    internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
   // If you have Guillotine or regular Felstorm active, attempting to activate Demonic Strength will fail
+  // TOCHECK: New cooldown handling should render these redundant
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -603,14 +605,21 @@ struct demonic_strength_t : public demonology_spell_t
 
   void execute() override
   {
+    auto active_pet = p()->warlock_pet_list.active;
+
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
+      active_pet->buffs.demonic_strength->trigger();
 
-      auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->queue_ds_felstorm();
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
+
+      // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+      if ( p()->min_version_check( VERSION_10_0_5 ) )
+      {
+        internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+      }
     }
   }
 };
@@ -668,6 +677,8 @@ struct power_siphon_t : public demonology_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+
+    target = player;
   }
 
   bool ready() override
@@ -827,16 +838,22 @@ struct soul_strike_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->soul_strike->execute_on_target( execute_state->target );
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->soul_strike->execute_on_target( execute_state->target );
     }
   }
 
   bool ready() override
   {
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
+    if ( active_pet->pet_type == PET_FELGUARD )
       return demonology_spell_t::ready();
 
     return false;
@@ -901,9 +918,12 @@ struct guillotine_t : public demonology_spell_t
   {
     parse_options( options_str );
     may_crit = false;
+
+    internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
   // Guillotine takes priority over any other actions except Demonic Strength Felstorm
+  // TOCHECK: New cooldown handling should render these redundant
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -937,11 +957,17 @@ struct guillotine_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      p()->warlock_pet_list.active->buffs.fiendish_wrath->trigger();
+      active_pet->buffs.fiendish_wrath->trigger();
 
-      debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active )->felguard_guillotine->execute_on_target( execute_state->target );
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
+
+      // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+      if ( p()->min_version_check( VERSION_10_0_5 ) )
+      {
+        internal_cooldown->start( 8_s );
+      }
     }
   }
 };

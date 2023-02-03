@@ -432,7 +432,7 @@ struct spell_data_t
   unsigned    _max_stack;          // Maximum stack size for spell
   unsigned    _proc_chance;        // Spell proc chance in percent
   int         _proc_charges;       // Per proc charge amount
-  unsigned    _proc_flags;         // Proc flags
+  uint64_t    _proc_flags;         // Proc flags
   unsigned    _internal_cooldown;  // ICD
   double      _rppm;               // Base real procs per minute
   // SpellEquippedItems.dbc
@@ -546,7 +546,7 @@ struct spell_data_t
   double proc_chance() const
   { return _proc_chance * ( 1 / 100.0 ); }
 
-  unsigned proc_flags() const
+  uint64_t proc_flags() const
   { return _proc_flags; }
 
   timespan_t internal_cooldown() const

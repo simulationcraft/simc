@@ -77,6 +77,7 @@ public:
     action_t* lights_decree;
     action_t* sanctified_wrath;
     action_t* virtuous_command;
+    action_t* create_aw_expression;
 
     // Required for seraphim
     action_t* sotr;
@@ -699,6 +700,7 @@ public:
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
   std::set<ground_aoe_event_t*> all_active_consecrations;
@@ -812,11 +814,11 @@ struct execution_sentence_debuff_t : public buff_t
   {
     buff_t::expire_override( stacks, duration );
 
-    accumulated_damage = 0.0;
-    extended_count = 0;
-
     paladin_t* paladin = debug_cast<paladin_t*>( source );
     paladin -> trigger_es_explosion( player );
+
+    accumulated_damage = 0.0;
+    extended_count = 0;
   }
 
   void accumulate_damage( const action_state_t* s )
@@ -1109,7 +1111,12 @@ public:
     }
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
-      am *= 1.0 + p() -> talents.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+      double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
+      if ( p()->bugs && p()->talents.seal_of_order->ok() )
+      {
+        bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
+      }
+      am *= bod_mult;
     }
 
     if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
@@ -1166,7 +1173,6 @@ public:
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
   {
     ab::assess_damage( typ, s );
-
     paladin_td_t* td = this -> td( s -> target );
     if ( td -> debuff.execution_sentence -> check() )
     {
@@ -1334,11 +1340,13 @@ struct holy_power_consumer_t : public Base
   bool is_divine_storm;
   bool is_wog;
   bool is_sotr;
+  bool doesnt_consume_dp;
   holy_power_consumer_t( util::string_view n, paladin_t* player, const spell_data_t* s ) :
     ab( n, player, s ),
     is_divine_storm ( false ),
     is_wog( false ),
-    is_sotr( false )
+    is_sotr( false ),
+    doesnt_consume_dp( false )
   { }
 
   double cost() const override
@@ -1423,8 +1431,8 @@ struct holy_power_consumer_t : public Base
       p -> buffs.crusade -> trigger( num_hopo_spent );
     }
 
-    if ( p -> talents.righteous_protector -> ok() 
-      && !ab::background 
+    if ( p -> talents.righteous_protector -> ok()
+      && !ab::background
       && p->cooldowns.righteous_protector_icd->up())
     {
         timespan_t reduction = timespan_t::from_seconds(
@@ -1531,7 +1539,7 @@ struct holy_power_consumer_t : public Base
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p -> buffs.divine_purpose -> up() )
+      if ( p -> buffs.divine_purpose -> up() && !doesnt_consume_dp )
       {
         p -> buffs.divine_purpose -> expire();
       }
@@ -1600,6 +1608,12 @@ struct holy_power_consumer_t : public Base
       ab::p() -> trigger_memory_of_lucid_dreams( ab::last_resource_cost );
     }
   }
+};
+
+struct avenging_wrath_t : public paladin_spell_t
+{
+  avenging_wrath_t( paladin_t* p, util::string_view options_str );
+  void execute() override;
 };
 
 struct judgment_t : public paladin_melee_attack_t

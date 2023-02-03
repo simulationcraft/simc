@@ -68,6 +68,7 @@ constexpr auto MAX_ARTIFACT_RELIC = 4;
 // relic's own item level
 constexpr auto RELIC_ILEVEL_BONUS_CURVE = 1718;
 
+constexpr auto POTION_COOLDOWN_CATEGORY    = 4;     /// "Item - Combat Cons. (Potion)" category (for shared CD)
 constexpr auto ITEM_TRINKET_BURST_CATEGORY = 1141;  /// Trinket On-Use effect default category (for shared CD)
 constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of gem slots in any specific item
 
@@ -314,6 +315,7 @@ enum pet_e
   PET_TURTLE,
   PET_WARP_STALKER,
   PET_WORM,
+  PET_DUCK,
   //PET_RIVERBEAST,
 
   PET_TENACITY_TYPE,
@@ -848,6 +850,7 @@ enum set_bonus_type_e
   T29_HORIZON_STRIDERS_GARMENTS,
   T29_AZUREWEAVE_VESTMENTS,
   T29_WOVEN_CHRONOCLOTH,
+  T29_RAGING_TEMPESTS,
   SET_BONUS_MAX
 };
 

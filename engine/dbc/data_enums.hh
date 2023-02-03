@@ -1,6 +1,8 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+#include <cstdint>
+
 enum spell_type
 {
   SPELL_TYPE_NONE = 0u,
@@ -88,7 +90,7 @@ enum proc_types
   PROC1_PERIODIC,
   PROC1_PERIODIC_TAKEN,
   PROC1_ANY_DAMAGE_TAKEN,
-  PROC1_TRAP_TRIGGERED,
+  PROC1_PERIODIC_HELPFUL, // TODO: Replace with PROC1_PERIODIC_HEAL and remove special handling for that?
   PROC1_MAINHAND_ATTACK,
   PROC1_OFFHAND_ATTACK,
   // Relevant blizzard flags end here
@@ -99,6 +101,10 @@ enum proc_types
   // given proc flags.
   PROC1_PERIODIC_HEAL,
   PROC1_PERIODIC_HEAL_TAKEN,
+
+  // This is a Blizzard type, but define is separately here for now.
+  PROC1_CAST_SUCCESSFUL,
+
   PROC1_TYPE_MAX,
 
   // Helper types to loop around stuff
@@ -142,37 +148,46 @@ enum item_raid_type
 };
 
 // Mangos data types for various DBC-related enumerations
-enum proc_flag
+enum proc_flag : uint64_t
 {
-  PF_KILLED               = 1 << PROC1_KILLED,
-  PF_KILLING_BLOW         = 1 << PROC1_KILLING_BLOW,
-  PF_MELEE                = 1 << PROC1_MELEE,
-  PF_MELEE_TAKEN          = 1 << PROC1_MELEE_TAKEN,
-  PF_MELEE_ABILITY        = 1 << PROC1_MELEE_ABILITY,
-  PF_MELEE_ABILITY_TAKEN  = 1 << PROC1_MELEE_ABILITY_TAKEN,
-  PF_RANGED               = 1 << PROC1_RANGED,
-  PF_RANGED_TAKEN         = 1 << PROC1_RANGED_TAKEN,
-  PF_RANGED_ABILITY       = 1 << PROC1_RANGED_ABILITY,
-  PF_RANGED_ABILITY_TAKEN = 1 << PROC1_RANGED_ABILITY_TAKEN,
-  PF_NONE_HEAL            = 1 << PROC1_NONE_HEAL,
-  PF_NONE_HEAL_TAKEN      = 1 << PROC1_NONE_HEAL_TAKEN,
-  PF_NONE_SPELL           = 1 << PROC1_NONE_SPELL,
-  PF_NONE_SPELL_TAKEN     = 1 << PROC1_NONE_SPELL_TAKEN,
-  PF_MAGIC_HEAL           = 1 << PROC1_MAGIC_HEAL,
-  PF_MAGIC_HEAL_TAKEN     = 1 << PROC1_MAGIC_HEAL_TAKEN,
-  PF_MAGIC_SPELL          = 1 << PROC1_MAGIC_SPELL, // Any "negative" spell
-  PF_MAGIC_SPELL_TAKEN    = 1 << PROC1_MAGIC_SPELL_TAKEN,
-  PF_PERIODIC             = 1 << PROC1_PERIODIC, // Any periodic ability landed
-  PF_PERIODIC_TAKEN       = 1 << PROC1_PERIODIC_TAKEN,
+  PF_KILLED               = uint64_t( 1 ) << PROC1_KILLED,
+  PF_KILLING_BLOW         = uint64_t( 1 ) << PROC1_KILLING_BLOW,
+  PF_MELEE                = uint64_t( 1 ) << PROC1_MELEE,
+  PF_MELEE_TAKEN          = uint64_t( 1 ) << PROC1_MELEE_TAKEN,
+  PF_MELEE_ABILITY        = uint64_t( 1 ) << PROC1_MELEE_ABILITY,
+  PF_MELEE_ABILITY_TAKEN  = uint64_t( 1 ) << PROC1_MELEE_ABILITY_TAKEN,
+  PF_RANGED               = uint64_t( 1 ) << PROC1_RANGED,
+  PF_RANGED_TAKEN         = uint64_t( 1 ) << PROC1_RANGED_TAKEN,
+  PF_RANGED_ABILITY       = uint64_t( 1 ) << PROC1_RANGED_ABILITY,
+  PF_RANGED_ABILITY_TAKEN = uint64_t( 1 ) << PROC1_RANGED_ABILITY_TAKEN,
+  PF_NONE_HEAL            = uint64_t( 1 ) << PROC1_NONE_HEAL,
+  PF_NONE_HEAL_TAKEN      = uint64_t( 1 ) << PROC1_NONE_HEAL_TAKEN,
+  PF_NONE_SPELL           = uint64_t( 1 ) << PROC1_NONE_SPELL,
+  PF_NONE_SPELL_TAKEN     = uint64_t( 1 ) << PROC1_NONE_SPELL_TAKEN,
+  PF_MAGIC_HEAL           = uint64_t( 1 ) << PROC1_MAGIC_HEAL,
+  PF_MAGIC_HEAL_TAKEN     = uint64_t( 1 ) << PROC1_MAGIC_HEAL_TAKEN,
+  PF_MAGIC_SPELL          = uint64_t( 1 ) << PROC1_MAGIC_SPELL, // Any "negative" spell
+  PF_MAGIC_SPELL_TAKEN    = uint64_t( 1 ) << PROC1_MAGIC_SPELL_TAKEN,
+  PF_PERIODIC             = uint64_t( 1 ) << PROC1_PERIODIC, // Any periodic ability landed
+  PF_PERIODIC_TAKEN       = uint64_t( 1 ) << PROC1_PERIODIC_TAKEN,
 
-  PF_ANY_DAMAGE_TAKEN     = 1 << PROC1_ANY_DAMAGE_TAKEN,
+  PF_ANY_DAMAGE_TAKEN     = uint64_t( 1 ) << PROC1_ANY_DAMAGE_TAKEN,
 
-  // Irrelevant ones for us
-  PF_TRAP_TRIGGERED           = 0x00200000,
+  // Unused ones for us
+  PF_HELPFUL_PERIODIC         = 0x00200000, // TODO: Map this to PROC1_PERIODIC_HEAL?
   PF_MAINHAND                 = 0x00400000,
   PF_OFFHAND                  = 0x00800000,
   PF_DEATH                    = 0x01000000,
   PF_JUMP                     = 0x02000000,
+  PF_CLONE_SPELL              = 0x04000000,
+  PF_ENTER_COMBAT             = 0x08000000,
+  PF_ENCOUNTER_START          = 0x10000000,
+  PF_CAST_ENDED               = 0x20000000,
+  PF_LOOTED                   = 0x40000000,
+  PF_HELPFUL_PERIODIC_TAKEN   = 0x80000000, // TODO: Map this to PROC1_PERIODIC_HEAL_TAKEN?
+  PF_TARGET_DIES              = 0x100000000,
+  PF_KNOCKBACK                = 0x200000000,
+  PF_CAST_SUCCESSFUL          = 0x400000000, // TODO: This is relatively commonly used and should be supported.
 
   // Helper types
   PF_ALL_DAMAGE               = PF_MELEE | PF_MELEE_ABILITY |
@@ -207,6 +222,7 @@ enum proc_flag2
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
   PF2_PERIODIC_DAMAGE         = 1 << PROC2_PERIODIC_DAMAGE,
   PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT | PF2_GLANCE, // All damaging/healing "hit" results
+  PF2_ALL_CAST                = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL, // All successful cast results
 };
 
 enum item_flag
@@ -1303,6 +1319,7 @@ enum spell_attribute : unsigned
   SX_DURATION_HASTED                = 273u,
   SX_DOT_HASTED_MELEE               = 278u,
   SX_FIXED_TRAVEL_TIME              = 292u,
+  SX_DISABLE_PLAYER_HEALING_MULT    = 312u,
   SX_DISABLE_TARGET_POSITIVE_MULT   = 321u,
   SX_TARGET_SPECIFIC_COOLDOWN       = 330u,
   SX_SCALE_ILEVEL                   = 354u,

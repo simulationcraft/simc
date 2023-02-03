@@ -67,6 +67,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* grudge;          // spiteful storm
     buff_t* skewering_cold;  // globe of jagged ice
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
+    buff_t* crystalline_web; // Iceblood Deathsnare
   } debuff;
 
   struct atd_dot_t

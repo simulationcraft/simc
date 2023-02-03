@@ -175,6 +175,7 @@ public:
   } passive_actions;
 
   std::vector<action_t*> combo_strike_actions;
+  double squirm_timer;
   double spiritual_focus_count;
   double shuffle_count_secs;
 
@@ -205,7 +206,7 @@ public:
     double distance_moved;
 
     monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::not_found() )
-      : buff_t( player, n ), p( player ), data( s ), base_movement( find( player, "movement" ) )
+      : buff_t( player, n ), p( player ), base_movement( find( player, "movement" ) ), data( s )
     {
       set_chance( 1 );
       set_max_stack( 1 );
@@ -226,7 +227,8 @@ public:
       distance_moved = distance;
     }
 
-    bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
+    bool trigger( int stacks = 1, double value = -std::numeric_limits<double>::min(), double chance = -1.0,
+                  timespan_t /*duration*/ = timespan_t::min() ) override
     {
       if ( distance_moved > 0 )
       {
@@ -248,7 +250,7 @@ public:
           p->current.movement_direction = movement_direction_type::AWAY;
         }
 
-        return base_movement->trigger( s, v, c, this->buff_duration() );
+        return base_movement->trigger( stacks, value, chance, this->buff_duration() );
       }
 
       return false;
@@ -493,22 +495,22 @@ public:
       // Row 1
       player_talent_t keg_smash;
       // Row 2
-      player_talent_t stagger;
-      // Row 3
       player_talent_t purifying_brew;
       player_talent_t shuffle;
+      // Row 3
+      player_talent_t staggering_strikes;
+      player_talent_t gift_of_the_ox;
+      player_talent_t spirit_of_the_ox;
+      player_talent_t quick_sip;
       // Row 4
       player_talent_t hit_scheme;
-      player_talent_t gift_of_the_ox;
       player_talent_t healing_elixir;
-      player_talent_t quick_sip;
       player_talent_t rushing_jade_wind;
       player_talent_t special_delivery;
       // 8 Required
       // Row 5
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
-      player_talent_t staggering_strikes;
       player_talent_t graceful_exit;
       player_talent_t zen_meditation;
       player_talent_t clash;
@@ -732,6 +734,7 @@ public:
     const spell_data_t* leather_specialization_brm;
     const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
+    const spell_data_t* stagger;
     const spell_data_t* touch_of_death_3_brm;
     const spell_data_t* two_hand_adjustment_brm;
 
@@ -897,6 +900,7 @@ public:
   struct rppms_t
   {
     real_ppm_t* bountiful_brew;
+    real_ppm_t* spirit_of_the_ox;
   } rppm;
 
   struct pets_t
@@ -1037,7 +1041,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t*, bool, bool );
+  void trigger_empowered_tiger_lightning( action_state_t*, bool );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();

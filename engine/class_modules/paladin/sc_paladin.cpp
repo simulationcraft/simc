@@ -186,46 +186,43 @@ struct blessing_of_protection_t : public paladin_spell_t
 // Avenging Wrath ===========================================================
 // Most of this can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
-struct avenging_wrath_t : public paladin_spell_t
+avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str )
+  : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884 ) )
 {
-  avenging_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884) )
-  {
-    parse_options( options_str );
-    if ( !p->talents.avenging_wrath->ok() )
-      background = true;
-    if ( p->talents.crusade->ok() )
-      background = true;
-    if ( p->talents.avenging_crusader->ok() )
-      background = true;
-    if ( p->talents.sentinel->ok() )
-      background = true;
-    harmful = false;
+  parse_options( options_str );
+  if ( !p->talents.avenging_wrath->ok() )
+    background = true;
+  if ( p->talents.crusade->ok() )
+    background = true;
+  if ( p->talents.avenging_crusader->ok() )
+    background = true;
+  if ( p->talents.sentinel->ok() )
+    background = true;
+  harmful = false;
 
-    // link needed for Righteous Protector / SotR cooldown reduction
-    cooldown = p->cooldowns.avenging_wrath;
+  // link needed for Righteous Protector / SotR cooldown reduction
+  cooldown = p->cooldowns.avenging_wrath;
 
-    //if ( p->talents.avenging_wrath_2->ok() )
-    //  cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
+  // if ( p->talents.avenging_wrath_2->ok() )
+  //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
-    cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
-  }
+  cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
+}
 
-  void execute() override
-  {
-    paladin_spell_t::execute();
+void avenging_wrath_t::execute()
+{
+  paladin_spell_t::execute();
 
-    p()->buffs.avenging_wrath->trigger();
+  p()->buffs.avenging_wrath->trigger();
 
-    if ( p()->azerite.avengers_might.ok() )
-      p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
-                                          p()->buffs.avenging_wrath->buff_duration() );
+  if ( p()->azerite.avengers_might.ok() )
+    p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
+                                        p()->buffs.avenging_wrath->buff_duration() );
 
-    //Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
-   // if ( p()->talents.avenging_wrath_might->ok() )
-   //   p()->buffs.avenging_wrath_might->trigger();
-  }
-};
+  // Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
+  // if ( p()->talents.avenging_wrath_might->ok() )
+  //   p()->buffs.avenging_wrath_might->trigger();
+}
 
 // Holy Avenger
 struct holy_avenger_t : public paladin_spell_t
@@ -259,6 +256,8 @@ struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
 
     if ( p->talents.quickened_invocations->ok() )
       cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 2 ).base_value() );
+
+    doesnt_consume_dp = p->bugs;
   }
 
   void execute() override
@@ -873,10 +872,6 @@ struct melee_t : public paladin_melee_attack_t
         // Check for BoW procs
         double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
 
-        // apparently on live, AoW procs with an 8% chance
-        if ( p()->bugs )
-          aow_proc_chance = 0.08;
-
         if ( p()->talents.blade_of_wrath->ok() )
           aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
 
@@ -886,6 +881,11 @@ struct melee_t : public paladin_melee_attack_t
 
           if ( p()->talents.ashes_to_ashes->ok() )
           {
+            if ( p()->bugs && p()->buffs.fires_of_justice->up() )
+            {
+              p()->buffs.fires_of_justice->expire();
+            }
+
             p()->buffs.seraphim->extend_duration_or_trigger(
               timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
               player
@@ -2641,10 +2641,13 @@ void paladin_t::create_buffs()
                               if ( b->player != this ) return;
                               if ( cooldowns.ret_aura_icd->up() && rng().roll( options.proc_chance_ret_aura_sera ) )
                               {
-                                buffs.seraphim->extend_duration_or_trigger(
-                                  timespan_t::from_seconds( b->data().effectN( 4 ).base_value() ),
-                                  this
-                                );
+                                if ( !bugs || !buffs.seraphim->up() )
+                                {
+                                  buffs.seraphim->extend_duration_or_trigger(
+                                    timespan_t::from_seconds( b->data().effectN( 4 ).base_value() ),
+                                    this
+                                  );
+                                }
                                 cooldowns.ret_aura_icd->start();
                               }
                             });
@@ -2708,9 +2711,12 @@ void paladin_t::create_buffs()
               this->active.divine_resonance->schedule_execute();
           } );
 
-  buffs.aspiration_of_divinity = make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
-    ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
-    ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() );
+ buffs.aspiration_of_divinity =
+      make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
+          ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
+          ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() )
+          ->set_cooldown( talents.aspiration_of_divinity->internal_cooldown() )
+          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   // Covenants
   buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
@@ -2721,9 +2727,9 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
+  std::string retribution_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
-  std::string protection_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
+  std::string protection_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -2744,9 +2750,9 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string retribution_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
-  std::string protection_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
+  std::string protection_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -2767,9 +2773,9 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
+  std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
+  std::string protection_flask = ( true_level > 50 ) ? "phial_of_static_empowerment_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -2790,7 +2796,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return ( true_level > 50 ) ? "veiled" : "disabled";
+  return ( true_level > 50 ) ? "draconic_augment_rune" : "disabled";
 }
 
 // paladin_t::default_temporary_enchant ================================
@@ -2800,12 +2806,12 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:shaded_sharpening_stone";
+      return "main_hand:howling_rune_3";
     case PALADIN_RETRIBUTION:
-      return "main_hand:shaded_sharpening_stone";
+      return "main_hand:howling_rune_3";
 
     default:
-      return "main_hand:shadowcore_oil";
+      return "main_hand:howling_rune_3";
   }
 }
 
@@ -3230,7 +3236,9 @@ double paladin_t::composite_mastery_value() const
   double m = player_t::composite_mastery_value();
 
   if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
+  {
     m += talents.seal_of_might->effectN( 1 ).percent();
+  }
 
   return m;
 }
@@ -3423,7 +3431,15 @@ double paladin_t::composite_attack_power_multiplier() const
 
   // Mastery bonus is multiplicative with other effects
   if ( specialization() == PALADIN_PROTECTION )
-    ap *= 1.0 + cache.mastery() * mastery.divine_bulwark->effectN( 2 ).mastery_value();
+  {
+      //Note for future; If something changes with mastery, make sure you verify this to still be accurate
+    auto m = cache.mastery();
+
+    if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
+      m += talents.seal_of_might->effectN( 2 ).base_value();
+
+    ap *= 1.0 + m * mastery.divine_bulwark->effectN( 2 ).mastery_value();
+  }
 
   // Holy paladin AP scales purely off of Spell power and nothing else not even Weapon
   // This means literally nothing, not sharpning/weight stones, battle shout, weapon, etc etc
@@ -3926,6 +3942,31 @@ std::unique_ptr<expr_t> paladin_t::create_ashen_hallow_expression( util::string_
   return nullptr;
 }
 
+std::unique_ptr<expr_t> paladin_t::create_aw_expression( util::string_view name_str )
+{
+  auto expr = util::string_split<util::string_view>( name_str, "." );
+  if ( expr.size() < 2 )
+  {
+    return nullptr;
+  }
+
+  if ( !util::str_compare_ci( expr[ 1 ], "avenging_wrath" ) )
+  {
+    return nullptr;
+  }
+
+  // Convert [talent/buff/cooldown].avenging_wrath to sentinel if taken
+  if ( expr.size() >= 2 && util::str_compare_ci( expr[ 1 ], "avenging_wrath" ) &&
+       ( util::str_compare_ci( expr[ 0 ], "buff" ) || util::str_compare_ci( expr[ 0 ], "talent" ) ||
+         util::str_compare_ci( expr[ 0 ], "cooldown" ) ) )
+  {
+    if ( talents.sentinel->ok() )
+      expr[ 1 ] = "sentinel";
+    else
+      expr[ 1 ] = "avenging_wrath";
+  }
+  return player_t::create_expression( util::string_join( expr, "." ) );
+}
 std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str )
 {
   struct paladin_expr_t : public expr_t
@@ -4036,13 +4077,30 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   }
 
   auto cons_expr = create_consecration_expression( name_str );
-  auto ah_expr = create_ashen_hallow_expression( name_str );
+  auto ah_expr   = create_ashen_hallow_expression( name_str );
+  auto aw_expr   = create_aw_expression( name_str );
   if ( cons_expr )
   {
     return cons_expr;
   }
   if ( ah_expr )
-    return ah_expr;
+  {
+     return ah_expr;
+  }
+  if ( aw_expr )
+  {
+    return aw_expr;
+  }
+
+  return player_t::create_expression( name_str );
+
+
+ if ( specialization() == PALADIN_PROTECTION && (  splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
+  {
+  splits[ 1 ] = talents.sentinel->ok()? "sentinel" : "avenging_wrath";
+
+    return paladin_t::create_expression( util::string_join( splits, "." ) );
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -4242,7 +4300,7 @@ struct paladin_module_t : public module_t
               proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 4 ).percent();
 
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
-                 summer_data->proc_flags() & ( 1 << s->proc_type() ) && p->rng().roll( proc_chance ) )
+                 summer_data->proc_flags() & ( UINT64_C( 1 ) << s->proc_type() ) && p->rng().roll( proc_chance ) )
             {
               double da = s->result_amount * summer_data->effectN( 1 ).percent();
               if ( has_equinox )

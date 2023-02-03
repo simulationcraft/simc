@@ -105,6 +105,13 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
+    // Should every Disintegrate in Dragonrage be clipped after the 3rd tick
+    bool use_clipping       = true;
+    // Should chained Disintegrates( those with 5 ticks ) be chained after the 3rd tick in Dragonrage
+    bool use_early_chaining = true;
+    double scarlet_overheal = 0.5;
+    double ancient_flame_chance = 0.05;
+    double heal_eb_chance = 0.9;
   } option;
 
   // Action pointers
@@ -300,11 +307,13 @@ struct evoker_t : public player_t
   void init_base_stats() override;
   // void init_resources( bool ) override;
   // void init_benefits() override;
+  role_e primary_role() const override;
   void init_gains() override;
   void init_procs() override;
   // void init_rng() override;
   // void init_uptimes() override;
   void init_spells() override;
+  void init_special_effects() override;
   // void init_finished() override;
   void create_actions() override;
   void create_buffs() override;
@@ -588,7 +597,7 @@ public:
       // stored += s->result_amount * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
       stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
       // TODO: confirm if this always matches living flame SP coeff
-      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
+      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap * ( 1 - p()->option.scarlet_overheal ));
     }
   }
 
@@ -1464,7 +1473,8 @@ struct living_flame_t : public evoker_spell_t
     {
       base_t::execute();
 
-      p()->buff.ancient_flame->trigger();
+      if ( rng().roll( p()->option.ancient_flame_chance ) )
+        p()->buff.ancient_flame->trigger();
     }
   };
 
@@ -1509,13 +1519,28 @@ struct living_flame_t : public evoker_spell_t
 
     damage->execute_on_target( target );
 
+    int total_hits = damage->num_targets_hit;
+
     p()->buff.ancient_flame->expire();
-    p()->buff.leaping_flames->expire();
     p()->buff.scarlet_adaptation->expire();
+
+    if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
+    {
+      p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
+      heal->execute_on_target( p() );
+      /* Healing Leaping Flames Hotfixed to not trigger esssence bursts ~02/02/2023 TODO: Check
+      for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
+      {
+        if ( rng().roll( p()->option.heal_eb_chance ) )
+          total_hits += 1;
+      } */
+    }
+
+    p()->buff.leaping_flames->expire();
 
     if ( p()->talent.ruby_essence_burst.ok() )
     {
-      for ( int i = 0; i < damage->num_targets_hit; i++ )
+      for ( int i = 0; i < total_hits; i++ )
       {
         if ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) )
         {
@@ -1887,8 +1912,7 @@ void karnalex_the_first_light( special_effect_t& effect )
         player->schedule_ready( rng().gauss( sim->channel_lag, sim->channel_lag_stddev ) );
       }
     }
-    // TODO: As of 30/10/22 this does not scale with mastery at all despite saying it should. TODO: Recheck this.
-    /*
+
     double composite_target_multiplier( player_t* t ) const override
     {
       double tm = generic_proc_t::composite_target_multiplier( t );
@@ -1902,7 +1926,7 @@ void karnalex_the_first_light( special_effect_t& effect )
       }
 
       return tm;
-    }*/
+    }
   };
 
   effect.execute_action = unique_gear::create_proc_action<light_of_creation_t>( "light_of_creation", effect );
@@ -1947,6 +1971,28 @@ void evoker_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+role_e evoker_t::primary_role() const
+{
+  switch ( player_t::primary_role() )
+  {
+    case ROLE_HEAL:
+      return ROLE_HEAL;
+    case ROLE_DPS:
+    case ROLE_SPELL:
+      return ROLE_SPELL;
+    case ROLE_ATTACK:
+      return ROLE_SPELL;
+    default:
+      if ( specialization() == EVOKER_PRESERVATION )
+      {
+        return ROLE_HEAL;
+      }
+      break;
+  }
+
+  return ROLE_SPELL;
 }
 
 void evoker_t::init_gains()
@@ -2065,6 +2111,11 @@ void evoker_t::init_spells()
   spec.living_flame_heal   = find_spell( 361509 );
 }
 
+void evoker_t::init_special_effects()
+{
+  player_t::init_special_effects();
+}
+
 void evoker_t::create_actions()
 {
   using namespace spells;
@@ -2140,7 +2191,7 @@ void evoker_t::create_buffs()
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
-  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
+  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_trigger_spell( talent.iridescence )
@@ -2187,6 +2238,12 @@ void evoker_t::create_buffs()
 void evoker_t::create_options()
 {
   player_t::create_options();
+
+  add_option( opt_bool( "evoker.use_clipping", option.use_clipping ) );
+  add_option( opt_bool( "evoker.use_early_chaining", option.use_early_chaining ) );
+  add_option( opt_float( "evoker.scarlet_overheal", option.scarlet_overheal, 0.0, 1.0 ) );
+  add_option( opt_float( "evoker.ancient_flame_chance", option.ancient_flame_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "evoker.heal_eb_chance", option.heal_eb_chance, 0.0, 1.0 ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -2361,6 +2418,18 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
   if ( util::str_compare_ci( expr_str, "essense" ) || util::str_compare_ci( expr_str, "essences" ) )
     return make_ref_expr( expr_str, resources.current[ RESOURCE_ESSENCE ] );
+
+  if ( splits.size() >= 2 )
+  {
+    if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
+    {
+      if ( util::str_compare_ci( splits[ 1 ], "use_clipping" ) )
+        return expr_t::create_constant( "use_clipping", option.use_clipping );
+      if ( util::str_compare_ci( splits[ 1 ], "use_early_chaining" ) )
+        return expr_t::create_constant( "use_early_chaining", option.use_early_chaining );
+      throw std::invalid_argument( fmt::format( "Unsupported evoker expression '{}'.", splits[ 1 ] ) );
+    }
+  }
 
   return player_t::create_expression( expr_str );
 }

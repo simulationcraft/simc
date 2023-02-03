@@ -112,6 +112,7 @@ void SC_MainWindow::loadHistory()
   {
     savedApplicationGeometry.moveTopLeft( pos.toPoint() );
   }
+  setGeometry(savedApplicationGeometry);
   QVariant maximized = settings.value( "gui/maximized" );
   if ( maximized.isValid() )
   {

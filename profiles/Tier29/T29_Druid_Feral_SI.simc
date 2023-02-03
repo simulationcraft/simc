@@ -6,7 +6,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJFkISSSSJtDIaJRkkAAAAAAgiAIJAIikQIJUSolkAAAAAAASA
+talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApEkISSSKpAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -27,6 +27,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
 
@@ -103,6 +104,7 @@ actions.cooldown+=/convoke_the_spirits,if=buff.tigers_fury.up&combo_points<3|fig
 actions.cooldown+=/berserking
 actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains|fight_remains<35
+actions.cooldown+=/use_item,name=manic_grieftorch,if=energy.deficit>40
 actions.cooldown+=/use_items
 
 actions.finisher=primal_wrath,if=spell_targets.primal_wrath>2

@@ -1,5 +1,5 @@
-// Racial abilities, wow build 10.0.2.46801
-static const std::array<racial_spell_entry_t, 155> __ptr_racial_spell_data { {
+// Racial abilities, wow build 10.0.7.47910
+static const std::array<racial_spell_entry_t, 156> __ptr_racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
@@ -92,6 +92,7 @@ static const std::array<racial_spell_entry_t, 155> __ptr_racial_spell_data { {
   { 0x0000000000004000, 0x00000000, 312924, "Hyper Organic Light Originator"     },
   { 0x0000000000004000, 0x00000000, 312896, "Mastercraft"                        },
   { 0x0000000000004000, 0x00000000, 312890, "Skeleton Pinkie"                    },
+  { 0x0000000000018000, 0x00001000, 403216, "Aerial Halt"                        },
   { 0x0000000000018000, 0x00000000, 365575, "Awakened"                           },
   { 0x0000000000018000, 0x00000000, 360022, "Chosen Identity"                    },
   { 0x0000000000018000, 0x00000000, 366489, "Discerning Eye"                     },

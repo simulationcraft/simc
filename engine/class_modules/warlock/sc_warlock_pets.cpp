@@ -87,6 +87,30 @@ void warlock_pet_t::create_buffs()
 
   buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
                               ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+
+  // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
+  // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
+  player_t::buffs.movement->quiet = true;
+  assert( !player_t::buffs.movement->stack_change_callback );
+  player_t::buffs.movement->set_stack_change_callback( [ this ]( buff_t*, int prev, int cur )
+                            {
+                              if ( cur > prev )
+                              {
+                                o()->buffs.pet_movement->trigger();
+                              }
+                              else if ( cur < prev )
+                              {
+                                o()->buffs.pet_movement->decrement();
+                              }
+                            } );
+
+  // These buffs are needed for operational purposes but serve little to no reporting purpose
+  buffs.demonic_strength->quiet = true;
+  buffs.grimoire_of_service->quiet = true;
+  buffs.annihilan_training->quiet = true;
+  buffs.antoran_armaments->quiet = true;
+  buffs.infernal_command->quiet = true;
+  buffs.embers->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -194,7 +218,17 @@ double warlock_pet_t::composite_player_target_multiplier( player_t* target, scho
     // TOCHECK: There is no "affected by" information for pets. Presumably matching school should be a sufficient check.
     // If there's a non-warlock guardian in game that benefits from this... well, good luck with that.
     if ( td->debuffs_from_the_shadows->check() )
-      m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+    {
+      // 2023-01-22 From the Shadows appears to ignore the Demonic Servitude multiplier, renormalizing it here
+      if ( pet_type == PET_DEMONIC_TYRANT )
+      {
+        m *= ( 1.0 + td->debuffs_from_the_shadows->check_value() + buffs.demonic_servitude->check_value() ) / ( 1.0 + buffs.demonic_servitude->check_value() );
+      }
+      else
+      {
+        m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+      }    
+    }
   }
 
   return m;
@@ -241,13 +275,13 @@ void warlock_pet_t::arise()
   {
     if ( pet_type == PET_WILD_IMP )
     {
-      o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
+      o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 1 ).base_value() ) );
     }
     else if ( pet_type != PET_DEMONIC_TYRANT )
     {
       if ( !( pet_type == PET_PIT_LORD || pet_type == PET_WARLOCK_RANDOM ) )
       {
-        o()->buffs.demonic_servitude->increment( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
+        o()->buffs.demonic_servitude->trigger( as<int>( o()->talents.reign_of_tyranny->effectN( 2 ).base_value() ) );
       }
     }
   }
@@ -661,11 +695,26 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     if ( !main_pet )
       cooldown->duration = 45_s; // 2022-11-11: GFG does not appear to cast a second Felstorm even if the cooldown would come up, so we will pad this value to be longer than the possible duration.
 
+    if ( main_pet )
+      internal_cooldown = p->o()->get_cooldown( "felstorm_icd" );
+
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s->action->tick_time( s ) * 5.0;
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+    // TOCHECK: As of 2023-01-22, GFG Felstorm is also triggering this inadvertently
+    if ( internal_cooldown )
+    {
+      internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+    }
   }
 };
 
@@ -1111,7 +1160,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     warlock_pet_spell_t::execute();
 
     if ( p()->o()->talents.stolen_power.ok() )
-      p()->o()->buffs.stolen_power_building->increment();
+      p()->o()->buffs.stolen_power_building->trigger();
   }
 };
 
@@ -1169,7 +1218,7 @@ void wild_imp_pet_t::arise()
 
   power_siphon = false;
   imploded = false;
-  o()->buffs.wild_imps->increment();
+  o()->buffs.wild_imps->trigger();
 
   if ( o()->talents.imp_gang_boss.ok() && rng().roll( o()->talents.imp_gang_boss->effectN( 1 ).percent() ) )
   { 
@@ -1522,7 +1571,7 @@ void pit_lord_t::arise()
 
   if ( o()->buffs.nether_portal_total->check() )
   {
-    buffs.soul_glutton->increment( o()->buffs.nether_portal_total->current_stack );
+    buffs.soul_glutton->trigger( o()->buffs.nether_portal_total->current_stack );
     o()->buffs.nether_portal_total->expire();
   }
 
@@ -2158,6 +2207,10 @@ struct eye_beam_t : public warlock_pet_spell_t
       background = dual = true;
 
       base_dd_min = base_dd_max = 0.0;
+
+      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_PERSISTENT;
+      update_flags   |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET;
+
     }
   };
   
@@ -2201,18 +2254,15 @@ struct eye_beam_t : public warlock_pet_spell_t
 
   void impact( action_state_t* s ) override
   {
-    auto raw_damage = s->result_raw;
-
     warlock_pet_spell_t::impact( s );
+
+    auto raw_damage = s->result_total;
 
     if ( p()->o()->talents.grim_reach->ok() )
     {
       grim_reach->base_dd_min = grim_reach->base_dd_max = raw_damage * p()->o()->talents.grim_reach->effectN( 1 ).percent();
       for ( player_t* target : sim->target_non_sleeping_list )
       {
-        if ( target == s->target )
-          continue;
-
         if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
         {
           grim_reach->execute_on_target( target );
