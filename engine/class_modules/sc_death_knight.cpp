@@ -10778,8 +10778,8 @@ struct death_knight_module_t : public module_t {
       hotfix::register_effect( "Death Knight", "2023-02-03", "Frost Strike (2h) buffed by 10%", 815761, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
       .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.680416 )
-      .verification_value( 0.61856 );
+      .modifier( 0.6804193 )
+      .verification_value( 0.618563 );
 
       hotfix::register_effect( "Death Knight", "2023-02-03", "Frost Strike (off-hand) buffed by 10%", 60368, hotfix::HOTFIX_FLAG_LIVE )
       .field( "ap_coefficient" )
