@@ -2399,9 +2399,9 @@ public:
       p_cap( p->talent.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
   {}
 
-  bool bugged_weaver()
+  bool procced_pulsar()
   {
-    return p()->bugs && p_buff->current_value + base_cost() >= p_cap;
+    return p()->bugs && p()->talent.primordial_arcanic_pulsar.ok() && p_buff->current_value + base_cost() >= p_cap;
   }
 
   void consume_resource() override
@@ -7459,7 +7459,7 @@ struct starfall_t : public astral_power_spender_t
 
     if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
     {
-      auto bug = bugged_weaver();
+      auto bug = procced_pulsar();
 
       p()->active.starfall_starweaver->execute_on_target( target );
 
@@ -7684,7 +7684,7 @@ struct starsurge_t : public astral_power_spender_t
 
     if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
     {
-      auto bug = bugged_weaver();
+      auto bug = procced_pulsar();
 
       p()->active.starsurge_starweaver->execute_on_target( target );
 
