@@ -96,3 +96,10 @@ install(FILES
 DESTINATION ${SIMC_INSTALL_SHARED})
 
 include(${PROJECT_SOURCE_DIR}/cmake/package.cmake)
+
+option(BUILD_TESTING "Build tests" ON)
+if (BUILD_TESTING)
+  include(CTest)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
