@@ -10760,16 +10760,65 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-  /*
+  
   void register_hotfixes() const override
   {
-      hotfix::register_spell( "Death Knight", "2023-01-31", "Rotten Touch Duration increased to 10 seconds", 390276, hotfix::HOTFIX_FLAG_LIVE )
+      hotfix::register_spell( "Death Knight", "2023-02-03", "Unleashed Frenzy Duration increased to 10 seconds", 338501, hotfix::HOTFIX_FLAG_LIVE )
       .field( "duration" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 10000 )
       .verification_value( 6000 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Frost Strike (main-hand) buffed by 10%", 331347, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.4598 )
+      .verification_value( 0.41800 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Frost Strike (2h) buffed by 10%", 815761, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.6804193 )
+      .verification_value( 0.618563 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Frost Strike (off-hand) buffed by 10%", 60368, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.4598 )
+      .verification_value( 0.41800 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Glacial Advance buffed by 20%", 287633, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.53928 )
+      .verification_value( 0.44940 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Frost Fever buffed by 15%", 48025, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.2461 )
+      .verification_value( 0.21400 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Frostwhelp's Aid buffed by 100%", 1004974, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.42000 )
+      .verification_value( 0.21000 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Frostscythe buffed by 35%", 306492, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.2325645 )
+      .verification_value( 0.17227 );
+
+      hotfix::register_effect( "Death Knight", "2023-02-03", "Cleaving Strikes cleave increased from 1 target to 2", 999768, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2 )
+      .verification_value( 1 );
+
   }
-  */
+  
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}

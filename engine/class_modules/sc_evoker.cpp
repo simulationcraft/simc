@@ -111,7 +111,7 @@ struct evoker_t : public player_t
     bool use_early_chaining = true;
     double scarlet_overheal = 0.5;
     double ancient_flame_chance = 0.05;
-    double heal_eb_chance = 0.9;
+    double heal_eb_chance = 0.0;
   } option;
 
   // Action pointers
@@ -1528,12 +1528,11 @@ struct living_flame_t : public evoker_spell_t
     {
       p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
       heal->execute_on_target( p() );
-      /* Healing Leaping Flames Hotfixed to not trigger esssence bursts ~02/02/2023 TODO: Check
       for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
       {
         if ( rng().roll( p()->option.heal_eb_chance ) )
           total_hits += 1;
-      } */
+      }
     }
 
     p()->buff.leaping_flames->expire();

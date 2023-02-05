@@ -1259,7 +1259,7 @@ struct void_bolt_t final : public priest_spell_t
     cooldown->hasted           = true;
     affected_by_shadow_weaving = true;
 
-    auto rank2 = p.find_rank_spell( "Void Bolt", "Rank 2" );
+    auto rank2 = p.find_spell( 231688 );
     if ( rank2->ok() )
     {
       void_bolt_extension = new void_bolt_extension_t( p, rank2 );
