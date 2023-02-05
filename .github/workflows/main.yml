@@ -21,20 +21,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        cc: [gcc-12, gcc-7]
+        cc: [gcc-12, gcc-9]
         cppVersion: [17, 20]
         include:
-          - cc: gcc-7
-            cxx: g++-7
-            packages: gcc-7 g++-7
-            os: ubuntu-18.04
+          - cc: gcc-9
+            cxx: g++-9
+            packages: gcc-9 g++-9
+            os: ubuntu-20.04
           - cc: gcc-12
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
-        exclude:
-          - cc: gcc-7
-            cppVersion: 20   
 
     steps:
       - uses: actions/checkout@v3
@@ -144,7 +141,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-12, clang++-14, gcc-7, gcc-12]
+        compiler: [clang++-12, clang++-14, gcc-9, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -161,11 +158,8 @@ jobs:
             os: ubuntu-22.04
           - compiler: gcc-12
             os: ubuntu-22.04
-          - compiler: gcc-7
-            os: ubuntu-18.04
-        exclude:
-          - compiler: gcc-7
-            cppVersion: 20
+          - compiler: gcc-9
+            os: ubuntu-20.04
 
     steps:
       - uses: actions/cache@v3
