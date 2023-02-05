@@ -289,7 +289,7 @@ void destruction( player_t* p )
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
-  aoe->add_action( "rain_of_fire,if=debuff.pyrogenics.down|buff.madness_rof.up" );
+  aoe->add_action( "rain_of_fire,if=(debuff.pyrogenics.down|buff.madness_rof.up)&active_enemies<=4" );
   aoe->add_action( "havoc,target_if=min:dot.immolate.remains+99*(self.target=target)" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=dot.immolate.refreshable|active_enemies>active_dot.immolate" );
