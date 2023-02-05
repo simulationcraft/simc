@@ -326,6 +326,7 @@ void destruction( player_t* p )
   cleave->add_action( "chaos_bolt,if=soul_shard>3.5" );
   cleave->add_action( "chaos_bolt,if=!variable.pool_soul_shards&(talent.soul_conduit&!talent.madness_of_the_azjaqir|!talent.backdraft)" );
   cleave->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
+  cleave->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   cleave->add_action( "conflagrate,if=charges>(max_charges-1)|time_to_die<gcd*charges" );
   cleave->add_action( "incinerate" );
 
