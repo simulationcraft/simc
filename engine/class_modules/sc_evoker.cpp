@@ -111,7 +111,7 @@ struct evoker_t : public player_t
     bool use_early_chaining = true;
     double scarlet_overheal = 0.5;
     double ancient_flame_chance = 0.05;
-    double heal_eb_chance = 0.0;
+    double heal_eb_chance = 0.9;
   } option;
 
   // Action pointers
