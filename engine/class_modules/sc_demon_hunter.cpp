@@ -701,7 +701,7 @@ public:
     double initial_fury = 0;
     int fodder_to_the_flame_kill_seconds = 4;
     // Chance to proc initiative off of the fodder demon (ie. not get damaged by it first)
-    // TODO: Determine a more realistic value 
+    // TODO: Determine a more realistic value
     double fodder_to_the_flame_initiative_chance = 1;
     double darkglare_boon_cdr_high_roll_seconds = 18;
   } options;
@@ -1385,7 +1385,7 @@ public:
       // Affect Flags
       parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       parse_affect_flags( p->mastery.any_means_necessary, affected_by.any_means_necessary );
-      
+
       if ( p->talent.havoc.essence_break->ok() )
       {
         affected_by.essence_break = ab::data().affected_by( p->spec.essence_break_debuff );
@@ -2771,7 +2771,7 @@ struct infernal_strike_t : public demon_hunter_spell_t
       /* NYI
       if ( p->talent.abyssal_strike->ok() )
       {
-        timespan_t sigil_delay = p->talent.demon_hunter.sigil_of_flame->duration() - 
+        timespan_t sigil_delay = p->talent.demon_hunter.sigil_of_flame->duration() -
           p->talent.demon_hunter.quickened_sigils->effectN( 1 ).time_value();
         sigil = p->get_background_action<sigil_of_flame_damage_t>( "abyssal_strike", sigil_delay );
       }
@@ -2883,7 +2883,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
           p()->resource_gain( RESOURCE_FURY, p()->talent.vengeance.volatile_flameblood->effectN( 1 ).base_value(),
                               p()->talent.vengeance.volatile_flameblood->effectN( 1 ).m_delta(),
                               p()->gain.volatile_flameblood );
-          p()->cooldown.volatile_flameblood_icd->start();
+          p()->cooldown.volatile_flameblood_icd->start(
+              p()->talent.vengeance.volatile_flameblood->internal_cooldown() );
         }
 
         accumulate_ragefire( s );
@@ -2934,7 +2935,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
   bool usable_precombat() const override
   {
-    return true; // Disables initial hit if used at time 0 
+    return true; // Disables initial hit if used at time 0
   }
 
   void execute() override
@@ -2982,7 +2983,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       {
         impact_action = p->get_background_action<metamorphosis_impact_t>( "metamorphosis_impact" );
       }
-      
+
       // Don't assign the stats here because we don't want Meta to show up in the DPET chart
     }
     else // DEMON_HUNTER_VENGEANCE
@@ -3533,7 +3534,7 @@ struct fodder_to_the_flame_cb_t : public dbc_proc_callback_t
     make_event<delayed_execute_event_t>( *dh->sim, dh, damage, s->target, trigger_delay );
     spawn_trigger->execute();
   }
-}; 
+};
 
 // The Hunt =================================================================
 
@@ -3762,7 +3763,7 @@ struct auto_attack_t : public demon_hunter_attack_t
     // Range check
     if ( !demon_hunter_attack_t::ready() )
       return false;
-    
+
     if ( p()->main_hand_attack->execute_event == nullptr || p()->off_hand_attack->execute_event == nullptr )
       return true;
 
@@ -3810,8 +3811,8 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       if ( p()->talent.havoc.first_blood->ok() && !from_first_blood )
       {
         // Ensure the non-First Blood AoE spell doesn't hit the primary target
-        tl.erase( std::remove_if( tl.begin(), tl.end(), [this]( player_t* t ) { 
-          return t == this->target; 
+        tl.erase( std::remove_if( tl.begin(), tl.end(), [this]( player_t* t ) {
+          return t == this->target;
         } ), tl.end() );
       }
 
@@ -4335,7 +4336,7 @@ struct burning_wound_t : public demon_hunter_spell_t
 
           return lhd->remains() < rhd->remains();
         } );
-      
+
         auto tdata = td( lowest_duration );
         p()->sim->print_debug( "{} removes burning_wound on {} with duration {}",
                                *p(), *lowest_duration, tdata->dots.burning_wound->remains().total_seconds() );
@@ -5434,7 +5435,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.the_hunt = target->get_dot( "the_hunt_dot", &p );
-  
+
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
     ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
 
@@ -5604,7 +5605,7 @@ void demon_hunter_t::create_buffs()
   buff.metamorphosis = new buffs::metamorphosis_buff_t( this );
 
   // Havoc ==================================================================
-  
+
   buff.out_of_range = make_buff( this, "out_of_range", spell_data_t::nil() )
     ->set_chance( 1.0 );
 
@@ -6114,7 +6115,7 @@ void demon_hunter_t::init_spells()
   // Shared Abilities
   spell.disrupt                 = find_class_spell( "Disrupt" );
   spell.immolation_aura         = find_class_spell( "Immolation Aura" );
-  spell.immolation_aura_2       = find_rank_spell( "Immolation Aura", "Rank 2" ); 
+  spell.immolation_aura_2       = find_rank_spell( "Immolation Aura", "Rank 2" );
 
   // Spec-Overriden Passives
   spec.demonic_wards       = find_specialization_spell( "Demonic Wards" );
@@ -6173,7 +6174,7 @@ void demon_hunter_t::init_spells()
   mastery.fel_blood_rank_2        = find_rank_spell( "Mastery: Fel Blood", "Rank 2" );
 
   // Talents ================================================================
-  
+
   talent.demon_hunter.vengeful_retreat = find_talent_spell( talent_tree::CLASS, "Vengeful Retreat" );
   talent.demon_hunter.blazing_path = find_talent_spell( talent_tree::CLASS, "Blazing Path" );
   talent.demon_hunter.sigil_of_flame = find_talent_spell( talent_tree::CLASS, "Sigil of Flame" );
@@ -6626,8 +6627,6 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_silence                  = get_cooldown( "sigil_of_silence" );
   cooldown.fel_devastation                   = get_cooldown( "fel_devastation" );
   cooldown.volatile_flameblood_icd           = get_cooldown( "volatile_flameblood_icd" );
-  cooldown.volatile_flameblood_icd->duration =
-      timespan_t::from_seconds( talent.vengeance.volatile_flameblood->internal_cooldown().total_seconds() );
 }
 
 // demon_hunter_t::create_gains =============================================
