@@ -243,6 +243,14 @@ public:
 
   bool ready() override
   {
+    // Spell data nil or not_found
+    if ( this->data().id() == 0 )
+      return false;
+
+    // These abilities are able to be used during Spinning Crane Kick
+    if ( this->cast_during_sck )
+      this->usable_while_casting = p()->channeling && p()->find_action( "spinning_crane_kick" ) && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
+
     return ab::ready();
   }
 
@@ -770,15 +778,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
     ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
-  bool ready() override
-  {
-    // Spell data nil or not_found
-    if ( data().id() == 0 )
-      return false;
-
-    return monk_action_t::ready();
-  }
-
   double composite_target_crit_chance( player_t* target ) const override
   {
     double c = base_t::composite_target_crit_chance( target );
@@ -1086,19 +1085,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     special    = true;
     may_glance = false;
-  }
-
-  bool ready() override
-  {
-    // Spell data nil or not_found
-    if ( data().id() == 0 )
-      return false;
-
-    // These abilities are able to be used during Spinning Crane Kick
-    if ( cast_during_sck )
-      usable_while_casting = p()->channeling && p()->channeling->id == p()->find_action( "spinning_crane_kick" )->id;
-
-    return monk_action_t::ready();
   }
 
   void init_finished() override
