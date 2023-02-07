@@ -8590,10 +8590,6 @@ void warrior_t::apl_fury()
                             //"This is mostly to prevent cooldowns from being accidentally used during movement." );
   default_list->add_action( "heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)" );
 
-  if ( sim->allow_potions && true_level >= 40 )
-  {
-    default_list->add_action( "potion" );
-  }
 
   default_list->add_action( this, "Pummel", "if=target.debuff.casting.react" );
 
@@ -8627,6 +8623,12 @@ void warrior_t::apl_fury()
         default_list->add_action( "use_item,name=" + item.name_str );
     }
   }
+  
+    if ( sim->allow_potions && true_level >= 40 )
+  {
+    default_list->add_action( "potion" );
+  }
+  
   default_list->add_action( "ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up" );
 
   for ( const auto& racial_action : racial_actions )
