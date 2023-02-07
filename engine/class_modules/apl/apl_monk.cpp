@@ -738,6 +738,7 @@ namespace monk_apl
 
     // Bonedust Brew Setup
     bdb_setup->add_action( "bonedust_brew,if=spinning_crane_kick.max&chi>=4&(active_enemies<3|!set_bonus.tier29_2pc|buff.kicks_of_flowing_momentum.up)", "Bonedust Brew Setup" );
+    bdb_setup->add_action( "fists_of_fury,target_if=max:target.time_to_die,if=chi>=5&active_enemies>=3&set_bonus.tier29_2pc&!buff.kicks_of_flowing_momentum.up" );
     bdb_setup->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&!talent.whirling_dragon_punch" );
     bdb_setup->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi>=5" );
     bdb_setup->add_action( p, "Tiger Palm",
