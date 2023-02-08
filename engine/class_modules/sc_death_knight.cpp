@@ -8530,7 +8530,7 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
 void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc )
 {
   bool triggered = false;
-  bool wasted = buffs.killing_machine -> up();
+  bool wasted = buffs.killing_machine -> at_max_stacks();
   // If the given chance is 0, use the auto attack proc mechanic (new system, or rppm if the option is selected)
   // Melekus, 2020-06-03: It appears that Killing Machine now procs from auto attacks following a custom system
   // Every critical auto attack has a 30% * number of missed proc attempts to trigger Killing Machine
