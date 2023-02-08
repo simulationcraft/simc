@@ -1,6 +1,6 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967, git build new_build 4e0a3ac6f5)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
-Class            : Priest, Shaman
+Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 3.1% Base Mana (0) (id=7) w/ Discipline Priest (id=137032)
@@ -1415,7 +1415,7 @@ Critical heals with Power Word: Shield absorb $s2% additional damage.
 
 Name             : Rapture (id=47536) [Spell Family (6)] 
 Talent Entry     : Discipline [tree=spec, row=5, col=2, max_rank=1, req_points=8]
-Class            : Priest, Shaman
+Class            : Priest
 School           : Holy
 Spell Type       : None
 Resource         : 3.1% Base Mana (0) (id=215335)
@@ -2723,7 +2723,7 @@ Effects          :
 Description      : Your healing spells and Smite have a $s1% chance to make your next Flash Heal instant and cost no mana. Stacks to $114255u.
 
 Name             : Spirit Shell (id=109964) [Spell Family (6)] 
-Class            : Priest, Shaman
+Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=215334)
@@ -3431,7 +3431,7 @@ Effects          :
 Description      : An explosion of holy light around you deals up to $s1 Holy damage to enemies and up to $281265s1 healing to allies within $A1 yds, reduced if there are more than $s3 targets.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Paladin, Rogue, Priest, Shaman, Mage, Monk, Evoker
+Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3449,7 +3449,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Paladin, Rogue, Priest, Shaman, Mage, Monk, Evoker
+Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -3516,7 +3516,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
 
 Name             : Holy Priest (id=137031) [Spell Family (6), Passive, Hidden] 
-Class            : Holy Priest, Shaman
+Class            : Holy Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3590,7 +3590,7 @@ Effects          :
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Priest, Shaman
+Class            : Discipline Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3671,7 +3671,7 @@ Effects          :
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
-Class            : Shadow Priest, Shaman
+Class            : Shadow Priest
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
@@ -10042,7 +10042,7 @@ Description      : Power Word: Radiance has a $s1% chance to cause your next Pen
 Tooltip          : Penance will fire for ${$s1/1000} additional seconds.
 
 Name             : Clarity of Mind (id=336067) [Spell Family (6), Passive] 
-Class            : Priest, Shaman
+Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 50%
@@ -15076,7 +15076,7 @@ Tooltip          : Smite and Power Word: Solace damage increased by $s1%.
 
 Name             : Weal and Woe (id=390786) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=10, col=2, max_rank=1, req_points=20]
-Class            : Priest, Shaman
+Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -15099,7 +15099,7 @@ Description      : Your Penance bolts increase the damage of your next Smite or 
 Stacks up to $390787U times.
 
 Name             : Weal and Woe (id=390787) [Spell Family (6)] 
-Class            : Priest, Shaman
+Class            : Priest
 School           : Holy
 Spell Type       : None
 Duration         : 20 seconds

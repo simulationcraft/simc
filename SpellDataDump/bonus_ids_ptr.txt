@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -498,7 +498,6 @@ bonus_id={ 605 }, stats={ 100% Mastery [0.6666] }
 bonus_id={ 606 }, stats={ 100% Crit [0.6666] }
 bonus_id={ 607 }, stats={ 100% Vers [0.6666] }
 bonus_id={ 608 }, socket={ 1 }
-bonus_id={ 609 }, ilevel_adjust={ 8 }
 bonus_id={ 615 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
 bonus_id={ 617 }, desc={ Stage 5 of 6 }, ilevel_adjust={ 4 }
 bonus_id={ 618 }, desc={ Stage 6 of 6 }, ilevel_adjust={ 6 }
@@ -1672,7 +1671,6 @@ bonus_id={ 3462 }, base_ilevel={ 855 }, quality={ epic }
 bonus_id={ 3463 }, base_ilevel={ 865 }, quality={ epic }
 bonus_id={ 3464 }, base_ilevel={ 875 }, quality={ epic }
 bonus_id={ 3465 }, base_ilevel={ 885 }, quality={ epic }
-bonus_id={ 3466 }, base_ilevel={ 860 }
 bonus_id={ 3467 }, base_ilevel={ 860 }, quality={ epic }
 bonus_id={ 3468 }, base_ilevel={ 875 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 3469 }, base_ilevel={ 890 }, desc={ Mythic }, quality={ epic }
@@ -4596,7 +4594,7 @@ bonus_id={ 9066 }, quality={ epic }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
 bonus_id={ 9067 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
 bonus_id={ 9068 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
 bonus_id={ 9069 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
-bonus_id={ 9070 }, desc={ Raid Finder }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
+bonus_id={ 9070 }, quality={ epic }, ilevel={ 37 @plvl 1 - 210 @plvl 70 }
 bonus_id={ 9071 }, quality={ epic }, ilevel={ 39 @plvl 1 - 212 @plvl 70 }
 bonus_id={ 9072 }, desc={ Heroic }, quality={ epic }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
 bonus_id={ 9073 }, desc={ Mythic }, quality={ epic }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
@@ -4672,3 +4670,10 @@ bonus_id={ 9270 }, quality={ legendary }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
 bonus_id={ 9271 }, quality={ legendary }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9272 }, quality={ legendary }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
 bonus_id={ 9310 }, quality={ legendary }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
+bonus_id={ 9355 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9356 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9357 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9358 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9359 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9362 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9363 }, quality={ epic }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
