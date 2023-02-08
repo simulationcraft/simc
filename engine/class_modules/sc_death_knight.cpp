@@ -9929,7 +9929,7 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Frost Strike" );
   procs.km_from_obliteration_hb   = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga   = get_proc( "Killing Machine: Glacial Advance" );
-  procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Soul Reaper" );
+  procs.km_from_obliteration_sr   = get_proc( "Killing Machine: Soul Reaper" );
   procs.km_from_t29_4pc           = get_proc( "Killing Machine: T29 4pc" );
 
   procs.km_from_crit_aa_wasted           = get_proc( "Killing Machine wasted: Critical auto attacks" );
@@ -9937,7 +9937,7 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted   = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
-  procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Soul Reaper" );
+  procs.km_from_obliteration_sr_wasted   = get_proc( "Killing Machine wasted: Soul Reaper" );
   procs.km_from_t29_4pc_wasted           = get_proc( "Killing Machine wasted: T29 4pc" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
