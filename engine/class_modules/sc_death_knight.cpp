@@ -7327,7 +7327,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
+    if ( p() -> is_ptr() && p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_sr,
                                            p() -> procs.km_from_obliteration_sr_wasted );
