@@ -1,5 +1,5 @@
-// Item effects, wow build 10.0.7.47910
-static const std::array<item_effect_t, 8290> __ptr_item_effect_data { {
+// Item effects, wow build 10.0.7.47983
+static const std::array<item_effect_t, 8314> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8289,10 +8289,34 @@ static const std::array<item_effect_t, 8290> __ptr_item_effect_data { {
   { 173505,  24292, 203810,   0,   1,    0,      -1,      -1 }, // Dragon Slaying 117
   { 173506,  14098, 203811,   0,   1,    0,      -1,      -1 }, // Demon Slaying
   { 173507,   7711, 203813,   1,   1,    0,      -1,      -1 }, // Add Fire Dam - Weap 02
+  { 173881, 404864, 204000,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173903, 404866, 204001,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173873, 404865, 204002,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173904, 404867, 204003,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173895, 404868, 204004,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173896, 404869, 204005,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173897, 404870, 204006,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173898, 404871, 204007,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173899, 404872, 204009,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173900, 404873, 204010,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173901, 404874, 204011,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173902, 404875, 204012,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173889, 404876, 204013,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173890, 404877, 204014,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173891, 404878, 204015,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173892, 404879, 204018,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173893, 404880, 204019,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173894, 404881, 204020,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173884, 404882, 204021,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173885, 404883, 204022,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173886, 404884, 204025,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173887, 404885, 204027,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173888, 404518, 204029,   0,   1,    0,      -1,      -1 }, // Primordial Stones
+  { 173880, 401678, 204030,   0,   1,    0,      -1,      -1 }, // Wind
   { 173655, 403012, 204072,   0,   0,   11,       0,       0 }, // Refreshment
 } };
 
-static const std::array<uint16_t, 8290> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8314> __ptr_item_effect_id_index { {
     410,   411,   412,   413,   414,   415,   416,   419,
     420,   421,   422,   423,   424,   425,   426,   427,
     428,   429,   430,   431,   434,   435,   436,   437,
@@ -9328,7 +9352,10 @@ static const std::array<uint16_t, 8290> __ptr_item_effect_id_index { {
    8262,  8263,  8264,  8265,  8266,  8267,  8268,  8269,
    8270,  8271,  8272,  8273,  8274,  8275,  8276,  8277,
     336,  8278,  8279,  8227,  8226,  8225,  8280,  8281,
-   8282,  8283,  8284,  8285,  8286,  8287,  8288,  8289,
-   8127,  8160,
+   8282,  8283,  8284,  8285,  8286,  8287,  8288,  8313,
+   8127,  8160,  8291,  8312,  8289,  8307,  8308,  8309,
+   8310,  8311,  8301,  8302,  8303,  8304,  8305,  8306,
+   8293,  8294,  8295,  8296,  8297,  8298,  8299,  8300,
+   8290,  8292,
 } };
 
