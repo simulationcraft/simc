@@ -166,6 +166,9 @@ enum class buff_refresh_behavior
   // Refresh to given duration plus ongoing tick time
   TICK,
 
+  // Refresh to given duration or remaining duration, whichever is greater
+  MAX,
+
   // Refresh to duration returned by the custom callback
   CUSTOM,
 };
