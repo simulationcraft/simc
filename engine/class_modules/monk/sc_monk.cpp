@@ -6491,13 +6491,11 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
         ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
     debuff.keefers_skyreach = make_buff( *this, "keefers_skyreach", p->passives.keefers_skyreach_debuff )
-        ->set_trigger_spell( p->talent.windwalker.skyreach )
         ->set_default_value_from_effect( 1 )
         ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
         ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
-    debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 337341 ) ) // 393050
-        ->set_trigger_spell( p->talent.windwalker.skyreach )
+    debuff.skyreach_exhaustion = make_buff( *this, "skyreach_exhaustion", p->find_spell( 393050 ) )
         ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
     debuff.storm_earth_and_fire = make_buff( *this, "storm_earth_and_fire_target", spell_data_t::nil() )
@@ -6778,7 +6776,7 @@ void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 
 void monk_t::trigger_keefers_skyreach( action_state_t* s )
 {
-  if ( talent.windwalker.skyreach->ok() )
+  if ( talent.windwalker.skyreach->ok() || talent.windwalker.skytouch->ok() )
   {
     if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
     {
@@ -7205,6 +7203,7 @@ void monk_t::init_spells()
   talent.windwalker.attenuation                         = _ST( "Attenuation" );
   talent.windwalker.dust_in_the_wind                    = _ST( "Dust in the Wind" );
   talent.windwalker.skyreach                            = _ST( "Skyreach" );
+  talent.windwalker.skytouch                            = _ST( "Skytouch" );
   talent.windwalker.invokers_delight                    = _ST( "Invoker's Delight" );
   talent.windwalker.way_of_the_fae                      = _ST( "Way of the Fae" );
   talent.windwalker.faeline_harmony                     = _ST( "Faeline Harmony" );
