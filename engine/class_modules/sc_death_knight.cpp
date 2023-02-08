@@ -661,6 +661,11 @@ public:
     const spell_data_t* death_and_decay;
     const spell_data_t* rune_strike;
 
+    // Frost
+    const spell_data_t* remorseless_winter;
+    const spell_data_t* might_of_the_frozen_wastes;
+    const spell_data_t* frostreaper;
+
     // Unholy
     const spell_data_t* dark_transformation_2;
     const spell_data_t* festering_wound;
@@ -804,7 +809,7 @@ public:
       player_talent_t unleashed_frenzy;
       player_talent_t runic_command;
       player_talent_t improved_frost_strike;
-      player_talent_t remorseless_winter;
+      player_talent_t remorseless_winter;   // baseline, Remove with 10.0.7
       // Row 5
       player_talent_t improved_obliterate;
       player_talent_t glacial_advance;
@@ -815,11 +820,12 @@ public:
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
       player_talent_t horn_of_winter;
-      player_talent_t frostreaper;
+      player_talent_t frostreaper; // baseline, Remove with 10.0.7
+      player_talent_t fatal_fixation; // replaces frostreaper with 10.0.7
       player_talent_t enduring_strength;
       player_talent_t frostwhelps_aid;
       player_talent_t cold_heart;
-      player_talent_t biting_cold;
+      player_talent_t biting_cold; // replaces remoeseless winter with 10.0.7
       player_talent_t chill_streak;
       // Row 7
       player_talent_t murderous_efficiency;
@@ -830,12 +836,12 @@ public:
       player_talent_t enduring_chill;
       player_talent_t piercing_chill;
       // Row 8
-      player_talent_t might_of_the_frozen_wastes;
+      player_talent_t might_of_the_frozen_wastes;  // baseline, Remove with 10.0.7
       player_talent_t bonegrinder;
       player_talent_t shattering_blade;
       player_talent_t avalanche;
       player_talent_t icebreaker;
-      player_talent_t everfrost;
+      player_talent_t everfrost;  // replaces biting cold with 10.0.7
       // Row 9
       player_talent_t cold_blooded_rage;
       player_talent_t frostwyrms_fury;
@@ -1027,6 +1033,7 @@ public:
     proc_t* km_from_obliteration_fs;   // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb;   // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga;   // Glacial Advance during Obliteration
+    proc_t* km_from_obliteration_sr;   // Soul Reaper during Obliteration
     proc_t* km_from_t29_4pc;           // T29 Frost 4PC
 
     // Killing machine refreshed by
@@ -1035,6 +1042,7 @@ public:
     proc_t* km_from_obliteration_fs_wasted;   // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb_wasted;   // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga_wasted;   // Glacial Advance during Obliteration
+    proc_t* km_from_obliteration_sr_wasted;   // Soul Reaper during Obliteration
     proc_t* km_from_t29_4pc_wasted;           // T29 Frost 4PC
 
     // Runic corruption triggered by
@@ -3034,9 +3042,9 @@ struct death_knight_action_t : public Base
     // When using a 2H, might of the frozen wastes rank 1 effect#2 buffs the direct damage, but not td
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
-      if ( this -> data().affected_by( p -> talent.frost.might_of_the_frozen_wastes -> effectN( 2 ) ) )
+      if ( this -> data().affected_by( p -> is_ptr() ? p -> spec.might_of_the_frozen_wastes -> effectN( 2 ) : p -> talent.frost.might_of_the_frozen_wastes -> effectN( 2 ) ) )
       {
-        this -> base_dd_multiplier *= 1.0 + p -> talent.frost.might_of_the_frozen_wastes -> effectN( 2 ).percent();
+        this -> base_dd_multiplier *= 1.0 + ( p -> is_ptr() ? p -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent() : p -> talent.frost.might_of_the_frozen_wastes -> effectN( 2 ).percent() );
       }
     }
   }
@@ -6475,9 +6483,9 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
                                 as<int>( p -> talent.cleaving_strikes -> effectN( 2 ).base_value() );
 
     base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
-    if ( p -> talent.frost.might_of_the_frozen_wastes.ok() && p -> main_hand_weapon.group() == WEAPON_2H )
+    if ( ( p -> is_ptr() ? p -> spec.might_of_the_frozen_wastes -> ok() : p -> talent.frost.might_of_the_frozen_wastes.ok() ) && p -> main_hand_weapon.group() == WEAPON_2H )
     {
-      base_multiplier *= 1.0 + p -> talent.frost.might_of_the_frozen_wastes -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + ( p -> is_ptr() ? p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() : p -> talent.frost.might_of_the_frozen_wastes -> effectN( 1 ).percent() );
     }
 
     if ( p -> talent.frost.frigid_executioner.ok() )
@@ -6503,7 +6511,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
     // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied automatically.
-    if ( p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
+    if ( ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() ) || ( p() -> is_ptr() && p() -> spec.frostreaper->ok() ) ) && p() -> buffs.killing_machine -> up())
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }    
@@ -6529,7 +6537,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     const death_knight_td_t* td = find_td( target );
     // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
-    if ( td && p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
+    if ( td && ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() ) || ( p() -> is_ptr() && p() -> spec.frostreaper -> ok() ) ) && p() -> buffs.killing_machine -> up() )
     {
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
     }
@@ -6569,7 +6577,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     if ( ! p() -> options.split_obliterate_schools &&
-         p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
+        ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() ) || ( p() -> is_ptr() && p() -> spec.frostreaper -> ok() ) ) && p() -> buffs.killing_machine -> up() )
     {
       school = SCHOOL_FROST;
     }
@@ -6603,7 +6611,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
       add_child( oh );
     }
-    if ( p -> options.split_obliterate_schools && p -> talent.frost.frostreaper.ok() )
+    if ( p -> options.split_obliterate_schools && ( ( !p -> is_ptr() && p -> talent.frost.frostreaper.ok() ) || ( p -> is_ptr() && p -> spec.frostreaper -> ok()  ) ) )
     {
       km_mh = new obliterate_strike_t( p, "obliterate_km", &( p -> main_hand_weapon ), mh_data );
       km_mh -> school = SCHOOL_FROST;
@@ -6918,7 +6926,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   bool triggered_biting_cold;
 
   remorseless_winter_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> talent.frost.remorseless_winter -> effectN( 2 ).trigger() ),
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> is_ptr() ? p -> spec.remorseless_winter -> effectN( 2 ).trigger() : p -> talent.frost.remorseless_winter -> effectN( 2 ) .trigger() ),
     biting_cold_target_threshold( 0 ), triggered_biting_cold( false )
   {
     background = true;
@@ -6979,7 +6987,7 @@ struct remorseless_winter_buff_t : public buff_t
   remorseless_winter_damage_t* damage; // (AOE) damage that ticks every second
 
   remorseless_winter_buff_t( death_knight_t* p ) :
-    buff_t( p, "remorseless_winter", p -> talent.frost.remorseless_winter ),
+    buff_t( p, "remorseless_winter", p -> is_ptr() ? p -> spec.remorseless_winter : p -> talent.frost.remorseless_winter ),
     damage( new remorseless_winter_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
@@ -7010,7 +7018,7 @@ struct remorseless_winter_buff_t : public buff_t
 struct remorseless_winter_t : public death_knight_spell_t
 {
   remorseless_winter_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "remorseless_winter", p, p -> talent.frost.remorseless_winter )
+    death_knight_spell_t( "remorseless_winter", p, p -> is_ptr() ? p -> spec.remorseless_winter : p -> talent.frost.remorseless_winter )
   {
     may_crit = may_miss = may_dodge = may_parry = false;
 
@@ -7312,6 +7320,24 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.soul_reaper -> execute_on_target( target );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_melee_attack_t::impact( s );
+
+    if ( p() -> is_ptr() && p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
+    {
+      p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_sr,
+                                           p() -> procs.km_from_obliteration_sr_wasted );
+
+      // Obliteration's rune generation
+      if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
+      {
+        // WTB spelldata for the rune gain
+        p() -> replenish_rune( 1, p() -> gains.obliteration );
+      }
     }
   }
 };
@@ -8227,7 +8253,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // for each spell cast that normally consumes a rune (even if it ended up free)
     // But it doesn't count the original Relentless Winter cast
     if ( talent.frost.gathering_storm.ok() && buffs.remorseless_winter -> check() &&
-         action -> data().id() != talent.frost.remorseless_winter -> id() )
+         ( !is_ptr() && action -> data().id() != talent.frost.remorseless_winter -> id() || is_ptr() && action -> data().id() != spec.remorseless_winter -> id() ) )
     {
       unsigned consumed = static_cast<unsigned>( action -> base_costs[ RESOURCE_RUNE ] );
       buffs.gathering_storm -> trigger( consumed );
@@ -8517,7 +8543,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
     // If we are using a 1H, km_proc_attempts*0.3
     // with 2H it looks to be km_proc_attempts*0.7 through testing
     double km_proc_chance = 0.13;
-    if ( talent.frost.might_of_the_frozen_wastes.ok() && main_hand_weapon.group() == WEAPON_2H )
+    if ( ( !is_ptr() && talent.frost.might_of_the_frozen_wastes.ok() || is_ptr() && spec.might_of_the_frozen_wastes -> ok() ) && main_hand_weapon.group() == WEAPON_2H )
     {
       km_proc_chance = 1.0;
     }
@@ -9186,6 +9212,13 @@ void death_knight_t::init_spells()
   // Frost Baselines
   spec.frost_death_knight    = find_specialization_spell( "Frost Death Knight" );
 
+  if ( is_ptr() )
+  {
+    spec.remorseless_winter         = find_specialization_spell( "Remorseless Winter" );
+    spec.might_of_the_frozen_wastes = find_specialization_spell( "Might of the Frozen Wastes" );
+    spec.frostreaper                = find_specialization_spell( "Frostreaper" );
+  }
+
   // Unholy Baselines
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
   spec.festering_wound     = find_spell( 197147 );
@@ -9315,7 +9348,14 @@ void death_knight_t::init_spells()
   talent.frost.unleashed_frenzy = find_talent_spell( talent_tree::SPECIALIZATION, "Unleashed Frenzy" );
   talent.frost.runic_command = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Command" );
   talent.frost.improved_frost_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Frost Strike" );
-  talent.frost.remorseless_winter = find_talent_spell( talent_tree::SPECIALIZATION, "Remorseless Winter" );
+  if ( is_ptr() )
+  {
+    talent.frost.biting_cold = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
+  }
+  else
+  {
+    talent.frost.remorseless_winter = find_talent_spell( talent_tree::SPECIALIZATION, "Remorseless Winter" );
+  }
   // Row 5
   talent.frost.improved_obliterate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Obliterate" );
   talent.frost.glacial_advance = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Advance" );
@@ -9326,11 +9366,25 @@ void death_knight_t::init_spells()
   talent.frost.rage_of_the_frozen_champion = find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
   talent.frost.frigid_executioner = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
   talent.frost.horn_of_winter = find_talent_spell( talent_tree::SPECIALIZATION, "Horn of Winter" );
-  talent.frost.frostreaper = find_talent_spell( talent_tree::SPECIALIZATION, "Frostreaper" );
+  if( is_ptr() )
+  {
+    talent.frost.fatal_fixation = find_talent_spell( talent_tree::SPECIALIZATION, "Fatal Fixation" );
+  }
+  else
+  {
+    talent.frost.frostreaper = find_talent_spell( talent_tree::SPECIALIZATION, "Frostreaper" );
+  }
   talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
   talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
   talent.frost.cold_heart = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Heart" );
-  talent.frost.biting_cold = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
+  if ( is_ptr() )
+  {
+    talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
+  }
+  else
+  {
+    talent.frost.biting_cold = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
+  }
   talent.frost.chill_streak = find_talent_spell( talent_tree::SPECIALIZATION, "Chill Streak" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
@@ -9341,12 +9395,18 @@ void death_knight_t::init_spells()
   talent.frost.enduring_chill = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Chill" );
   talent.frost.piercing_chill = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Chill" );
   // Row 8
-  talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
+  if( !is_ptr() )
+  {
+    talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
+  }
   talent.frost.bonegrinder = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
   talent.frost.shattering_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Blade" );
   talent.frost.avalanche = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
   talent.frost.icebreaker = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
-  talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
+  if( !is_ptr() )
+  {
+    talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
+  }
   // Row 9
   talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, "Cold-Blooded Rage" );
   talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
@@ -9707,6 +9767,10 @@ void death_knight_t::create_buffs()
   buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine -> effectN( 1 ).trigger() )
         -> set_chance( 1.0 )
         -> set_default_value_from_effect( 1 );
+  if ( is_ptr() )
+  {
+    buffs.killing_machine -> set_max_stack( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() );
+  }
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
   buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
@@ -9865,6 +9929,7 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Frost Strike" );
   procs.km_from_obliteration_hb   = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga   = get_proc( "Killing Machine: Glacial Advance" );
+  procs.km_from_obliteration_sr   = get_proc( "Killing Machine: Soul Reaper" );
   procs.km_from_t29_4pc           = get_proc( "Killing Machine: T29 4pc" );
 
   procs.km_from_crit_aa_wasted           = get_proc( "Killing Machine wasted: Critical auto attacks" );
@@ -9872,6 +9937,7 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted   = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
+  procs.km_from_obliteration_sr_wasted   = get_proc( "Killing Machine wasted: Soul Reaper" );
   procs.km_from_t29_4pc_wasted           = get_proc( "Killing Machine wasted: T29 4pc" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
