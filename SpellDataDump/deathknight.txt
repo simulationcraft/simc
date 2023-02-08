@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967, git build dragonflight 65ad13bc14)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967, git build new_build 4e0a3ac6f5)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1695,7 +1695,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24610 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
 #2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
                    Affected School(s): All
@@ -9561,7 +9561,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 198
-Triggered by     :  (0),  (0), Frostwhelp's Aid (377253)
+Triggered by     : Frostwhelp's Indignation (287320), Frostwhelp's Indignation (287338), Frostwhelp's Aid (377253)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12618,7 +12618,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Spell Level      : 60
-Duration         : 10 seconds
+Duration         : 6 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Unleashed Frenzy (338492)
