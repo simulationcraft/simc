@@ -6511,7 +6511,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
     // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied automatically.
-    if ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() || p() -> is_ptr() && p() -> spec.frostreaper->ok() ) && p() -> buffs.killing_machine -> up())
+    if ( ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() ) || ( p() -> is_ptr() && p() -> spec.frostreaper->ok() ) ) && p() -> buffs.killing_machine -> up())
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }    
@@ -6537,7 +6537,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     const death_knight_td_t* td = find_td( target );
     // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
-    if ( td && ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() || p() -> is_ptr() && p() -> spec.frostreaper -> ok() ) && p() -> buffs.killing_machine -> up() )
+    if ( td && ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() ) || ( p() -> is_ptr() && p() -> spec.frostreaper -> ok() ) ) && p() -> buffs.killing_machine -> up() )
     {
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
     }
@@ -6577,7 +6577,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     if ( ! p() -> options.split_obliterate_schools &&
-        ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() || p() -> is_ptr() && p() -> spec.frostreaper -> ok() ) && p() -> buffs.killing_machine -> up() )
+        ( ( !p() -> is_ptr() && p() -> talent.frost.frostreaper.ok() ) || ( p() -> is_ptr() && p() -> spec.frostreaper -> ok() ) ) && p() -> buffs.killing_machine -> up() )
     {
       school = SCHOOL_FROST;
     }
@@ -6611,7 +6611,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
       add_child( oh );
     }
-    if ( p -> options.split_obliterate_schools && ( !p -> is_ptr() && p -> talent.frost.frostreaper.ok() || p -> is_ptr() && p -> spec.frostreaper -> ok() ) )
+    if ( p -> options.split_obliterate_schools && ( ( !p -> is_ptr() && p -> talent.frost.frostreaper.ok() ) || ( p -> is_ptr() && p -> spec.frostreaper -> ok()  ) ) )
     {
       km_mh = new obliterate_strike_t( p, "obliterate_km", &( p -> main_hand_weapon ), mh_data );
       km_mh -> school = SCHOOL_FROST;
