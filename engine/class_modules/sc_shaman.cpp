@@ -10148,13 +10148,13 @@ void shaman_t::init_action_list_elemental()
         "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled",
         "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
         "keep that logic here)." );
+
     aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock using Surge of Power up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock against low target counts if Master of the Elements was selected up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&dot.flame_shock.remains<target.time_to_die-5&active_dot.flame_shock<6",
                      "Spread Flame Shock to gamble on Deeply Rooted Element procs up to 6." );
-    
     aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&(!talent.lightning_rod.enabled|talent.skybreakers_fiery_demise.enabled)&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
                      "Refresh Flame Shock using Surge of Power up to 6." );
     aoe->add_action( "flame_shock,target_if=refreshable,if=talent.master_of_the_elements.enabled&!talent.lightning_rod.enabled&dot.flame_shock.remains<target.time_to_die-5&dot.flame_shock.remains>0",
@@ -10168,8 +10168,11 @@ void shaman_t::init_action_list_elemental()
                      "Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___"
                      "Turner)_0-4_screenshot.jpg" );
     aoe->add_action(
-        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
+        "lava_burst,target_if=dot.flame_shock.remains,if=!talent.elemental_blast.enabled&cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
         "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
+    aoe->add_action(
+        "lava_burst,target_if=dot.flame_shock.remains,if=talent.elemental_blast.enabled&cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=90-8*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)&(!buff.ascendance.up&active_enemies>3&talent.unrelenting_calamity.enabled|active_enemies>3&!talent.unrelenting_calamity.enabled|active_enemies=3)",
+        "Cast Lava Burst to buff your immediately follow-up Elemental Blast with Master of the Elements." );
     aoe->add_action(
         "earthquake,if=!talent.echoes_of_great_sundering.enabled&active_enemies>3&(spell_targets.chain_lightning>3|spell_targets.lava_beam>3)",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
@@ -10196,6 +10199,12 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action(
         "earth_shock,if=talent.echoes_of_great_sundering.enabled",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+    aoe->add_action(
+        "lava_burst,target_if=dot.flame_shock.remains,if=talent.icefury.enabled&talent.electrified_shocks.enabled&cooldown_react&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&active_enemies<5",
+        "Cast Lava Burst to buff your immediately follow-up Electrified Shocks empowered Frost Shock with Master of the Elements." );
+    aoe->add_action(
+        "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&talent.electrified_shocks.enabled&!talent.unrelenting_calamity.enabled&active_enemies<5",
+        "Cast Frost Shock if you have Icefury active and selected Electrified Shocks against 4 or fewer enemies." );
     aoe->add_action( "lava_beam,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
     aoe->add_action( "chain_lightning,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
     aoe->add_action( "lava_beam,if=buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time",
@@ -10214,14 +10223,14 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action(
         "lava_beam,if=buff.master_of_the_elements.up&buff.ascendance.remains>cast_time",
         "Consume Master of the Elements with Lava Beam." );
+    aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=enemies=3&talent.master_of_the_elements.enabled",
         "Proc Master of the Elements against 3 targets." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
         "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
-    aoe->add_action( "icefury,if=talent.electrified_shocks.enabled&active_enemies<5", "Use Icefury if you can get the full benefit from Electrified Shocks. If more targets are present ignore it." );
-    aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
+    aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up&active_enemies<5&talent.unrelenting_calamity.enabled", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
     aoe->add_action( "lava_beam,if=buff.ascendance.remains>cast_time", "" );
     aoe->add_action( "chain_lightning" );
     aoe->add_action( "flame_shock,moving=1,target_if=refreshable" );
@@ -10247,6 +10256,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&!talent.surge_of_power.enabled&!talent.master_of_the_elements.enabled", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up", "Surge of Power is strong and should be used." );
     single_target->add_action( "icefury,if=talent.electrified_shocks.enabled" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd|spell_targets.frost_shock>1&buff.master_of_the_elements.up)" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up" );
     single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time" );
