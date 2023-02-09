@@ -59,9 +59,9 @@ void shadow( player_t* p )
   precombat->add_action( "arcane_torrent" );
   precombat->add_action( "variable,name=mind_sear_cutoff,op=set,value=2" );
   precombat->add_action( "variable,name=pool_amount,op=set,value=60" );
-  precombat->add_action( "shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8" );
-  precombat->add_action( "mind_blast,if=talent.damnation.enabled&(!talent.shadow_crash.enabled|raid_event.adds.in>=25&spell_targets.shadow_crash<=8)" );
-  precombat->add_action( "vampiric_touch,if=!talent.damnation.enabled&(!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8)" );
+  precombat->add_action( "shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8&!fight_style.dungeonslice" );
+  precombat->add_action( "mind_blast,if=talent.damnation.enabled&(!talent.shadow_crash.enabled|raid_event.adds.in>=25&spell_targets.shadow_crash<=8|fight_style.dungeonslice)" );
+  precombat->add_action( "vampiric_touch,if=!talent.damnation.enabled&(!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8|fight_style.dungeonslice)" );
 
   default_->add_action( "variable,name=dp_cutoff,op=set,value=!talent.mind_sear|(spell_targets.mind_sear<=variable.mind_sear_cutoff&(!buff.mind_devourer.up|spell_targets.mind_sear=1))" );
   default_->add_action( "variable,name=holding_crash,op=set,value=raid_event.adds.in<20" );
