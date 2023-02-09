@@ -249,8 +249,8 @@ void destruction( player_t* p )
   precombat->add_action( "cataclysm" );
   precombat->add_action( "incinerate" );
 
-  default_->add_action( "call_action_list,name=aoe,if=(active_enemies>=3-(talent.inferno&!talent.madness_of_the_azjaqir))&!(!talent.inferno&talent.madness_of_the_azjaqir&talent.chaos_incarnate)&!variable.cleave_apl" );
-  default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1&active_enemies<=2+(!talent.inferno&talent.madness_of_the_azjaqir&talent.chaos_incarnate)|variable.cleave_apl" );
+  default_->add_action( "call_action_list,name=aoe,if=(active_enemies>=3-(talent.inferno&!talent.madness_of_the_azjaqir))&!(!talent.inferno&talent.madness_of_the_azjaqir&talent.chaos_incarnate&active_enemies<4)&!variable.cleave_apl" );
+  default_->add_action( "call_action_list,name=cleave,if=active_enemies!=1|variable.cleave_apl" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges" );
