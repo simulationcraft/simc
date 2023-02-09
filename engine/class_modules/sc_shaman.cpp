@@ -9845,7 +9845,7 @@ void shaman_t::init_procs()
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_primordial_surge              = get_proc( "Lava Surge: Primordial Surge" );
-  proc.lava_surge_windspeakers_lava_resurgence  = get_proc( "Lava Surge: Windspeaker's Fiery Demise" );
+  proc.lava_surge_windspeakers_lava_resurgence  = get_proc( "Lava Surge: Windspeaker's Lava Resurgence" );
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_primordial_surge       = get_proc( "Lava Surge: Primordial Surge" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );

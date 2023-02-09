@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -651,7 +651,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Bouncy Chain Missiles (146), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.55000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -1786,7 +1786,7 @@ Effects          :
 Description      : When your pet is at or above $s3 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1806,7 +1806,7 @@ Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1827,7 +1827,7 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2213,7 +2213,7 @@ Effects          :
 Description      : You command your Bird of Prey to do a trick. Larger birds may not be interested.
 
 Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2940,15 +2940,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191140)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -2958,7 +2958,7 @@ Effects          :
                    Affected Spells: Volley (260247)
                    Family Flags: 34
 #6 (id=1032354)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
@@ -2975,15 +2975,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 23.5 | Scaled Value: 23.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 23.5 | Scaled Value: 23.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 23.5 | Scaled Value: 23.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191136)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -3006,7 +3006,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1715 | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
 #10 (id=1032356)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 23.5 | Scaled Value: 23.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -3023,15 +3023,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191132)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -3043,7 +3043,7 @@ Effects          :
                    Affected Spells: Auto Shot (75)
                    Family Flags: 0
 #7 (id=260878)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=260879)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=260880)   : Apply Aura (6) | Dummy (4)
@@ -5843,7 +5843,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Uses Ranged Slot (1), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Durability Loss (101), Not a Proc (105), Bouncy Chain Missiles (146), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45600 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -13208,7 +13208,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868192)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 Description      : $@spelldesc342049
 
 Name             : Chimaera Shot (id=344121) [Spell Family (9)] 
@@ -13232,7 +13232,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868193)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 Description      : $@spelldesc342049
 
 Name             : Spore Cloud (desc=Special Ability) (id=344347) [Spell Family (9)] 
@@ -15615,7 +15615,7 @@ Effects          :
 #1 (id=1021278)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1021279)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc386876
 Tooltip          : Critical strike chance increased by $s1%. Critical damage dealt increased by $s2%.
@@ -16717,7 +16717,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : $@spelldesc393647

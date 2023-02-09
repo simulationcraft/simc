@@ -8614,7 +8614,7 @@ void warrior_t::apl_fury()
     else if ( item.name_str == "manic_grieftorch" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=buff.recklessness.down&buff.avatar.down" );
+                                ",if=buff.avatar.down" );
     }
     else if ( item.name_str == "gladiators_badge" )
     {

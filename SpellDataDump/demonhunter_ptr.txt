@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47884 Live (hotfix 2023-01-31/47884)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -8887,8 +8887,6 @@ Effects          :
 Description      : The cooldown of $?c1[Blur][Fel Devastation] is reduced by |cFFFFFFFF${$s1/-1000} sec|r.
 
 Name             : Viscous Ink (id=338682) [Spell Family (107), Passive, Hidden] 
-Class            : Demon Hunter
-Race             : Blood Elf (0x200)
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12275,7 +12273,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026864)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 25, 37
 Description      : $@spelldesc390142

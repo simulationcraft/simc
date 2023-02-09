@@ -1669,6 +1669,8 @@ timespan_t buff_t::refresh_duration( timespan_t new_duration ) const
     }
     case buff_refresh_behavior::EXTEND:
       return remains() + new_duration;
+    case buff_refresh_behavior::MAX:
+      return std::max( remains(), new_duration );
     case buff_refresh_behavior::CUSTOM:
       return refresh_duration_callback( this, new_duration );
     default:

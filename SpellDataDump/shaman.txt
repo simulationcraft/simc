@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-03/47936)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967, git build dragonflight 65ad13bc14)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -128,7 +128,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=387)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.10000 | PvP Coefficient: 1.20000 | Chain Multiplier: 0.7 | Chain Targets: 4 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.31000 | PvP Coefficient: 1.20000 | Chain Multiplier: 0.7 | Chain Targets: 4 | Target: Chain Friendly (45)
+Hotfixed         : SP Coefficient (2.1 -> 2.31)
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Heals the friendly target for $s1, then jumps to heal the $<jumps> most injured nearby allies. Healing is reduced by $s2% with each jump.
@@ -365,7 +366,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.85200 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.13720 | PvP Coefficient: 1.00000 | Target: Friend (21)
+Hotfixed         : SP Coefficient (2.852 -> 3.1372)
 Description      : A quick surge of healing energy that restores $s1 of a friendly target's health.
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
@@ -2025,7 +2027,8 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=67015)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.26500 | PvP Coefficient: 1.20000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.29150 | PvP Coefficient: 1.20000 | Radius: 0 - 11 yards | Target: Unknown(87) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.265 -> 0.2915)
 Description      : $@spelldesc73920
 
 Name             : Purify Spirit (id=77130) [Spell Family (11)] 
@@ -2164,7 +2167,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.18000 | PvP Coefficient: 1.30000 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.49800 | PvP Coefficient: 1.30000 | Target: Chain Friendly (45)
+Hotfixed         : SP Coefficient (3.18 -> 3.498)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -16231,7 +16235,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Caster Procs (112), Do Not Display Range (126)
 Effects          :
 #1 (id=1014997)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 13 yards | Target: Unknown(87) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44000 | PvP Coefficient: 1.00000 | Radius: 0 - 13 yards | Target: Unknown(87) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.4 -> 0.44)
 Description      : $@spelldesc383222
 
 Name             : Improved Maelstrom Weapon (id=383303) [Spell Family (11), Passive, Hidden] 

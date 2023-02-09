@@ -962,7 +962,7 @@ class ItemDataGenerator(DataGenerator):
         return s
 
 class SpellDataGenerator(DataGenerator):
-    _spell_ref_rx = r'(?:\??\(?[Saps]|@spell(?:name|desc|icon|tooltip)|\$|&)([0-9]{2,})(?:\[|(?<=[0-9a-zA-Z])|\&|\))'
+    _spell_ref_rx = r'(?:[?|&]\(?!?[Saps]|@spell(?:name|desc|icon|tooltip)|\$|&)([0-9]+)'
 
     # Pattern based whitelist, these will always be added
     _spell_name_whitelist = [

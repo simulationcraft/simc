@@ -2580,6 +2580,7 @@ const char* util::buff_refresh_behavior_string( buff_refresh_behavior behavior )
     case buff_refresh_behavior::EXTEND: return "extend";
     case buff_refresh_behavior::PANDEMIC: return "pandemic";
     case buff_refresh_behavior::TICK: return "tick";
+    case buff_refresh_behavior::MAX: return "max";
     case buff_refresh_behavior::CUSTOM: return "custom";
     default: return "unknown";
   }

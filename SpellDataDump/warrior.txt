@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-03/47936)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967, git build dragonflight 65ad13bc14)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -309,7 +309,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=462)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.4)
 #2 (id=1024888)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Slams an opponent, causing $s1 Physical damage.$?s388903[
@@ -814,11 +815,13 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.20000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33000 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294)
                    Family Flags: 22, 25
+Hotfixed         : PvP Coefficient (0.5 -> 0.33)
 Description      : Overpower the enemy, dealing $s1 Physical damage. Cannot be blocked, dodged, or parried.$?s316440&s845[
 
 Increases the damage of your next Mortal Strike or Cleave by $s2%. Stacking up to $u times]?s316440[
@@ -15112,7 +15115,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1020852)  : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.50000 | Trigger Spell: 386633 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.30000 | Trigger Spell: 386633 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.3)
 Description      : $?a317320[Condemn][Execute] causes the target to take $s1% more damage from your next Mortal Strike, stacking up to $386633u times.
 
 Name             : Slaughtering Strikes (id=388004) [Spell Family (4), Passive] 

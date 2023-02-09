@@ -284,7 +284,7 @@ struct immolate_t : public destruction_spell_t
     {
       destruction_spell_t::tick( d );
 
-      if ( d->state->result == RESULT_CRIT && rng().roll( data().effectN( 2 ).percent() ) )
+      if ( d->state->result == RESULT_CRIT && rng().roll( p()->warlock_base.immolate->effectN( 2 ).percent() ) )
         p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );

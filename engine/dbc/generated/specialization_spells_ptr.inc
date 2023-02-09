@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.7.47910
-static const std::array<specialization_spell_entry_t, 356> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.7.47983
+static const std::array<specialization_spell_entry_t, 360> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -76,6 +76,7 @@ static const std::array<specialization_spell_entry_t, 356> __ptr_specialization_
   {  2,   70, 315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   70, 342348,      0, "Crusader Strike"                   , "Rank 2" },
   {  2,   70, 403876,      0, "Divine Protection"                 , 0 },
+  {  2,   70, 404752,      0, "Instrument of Retribution"         , 0 },
   {  3,  253,  53270,      0, "Exotic Beasts"                     , 0 },
   {  3,  253,  76657,      0, "Mastery: Master of Beasts"         , 0 },
   {  3,  253, 137015,      0, "Beast Mastery Hunter"              , 0 },
@@ -151,11 +152,14 @@ static const std::array<specialization_spell_entry_t, 356> __ptr_specialization_
   {  6,  251,    674,      0, "Dual Wield"                        , 0 },
   {  6,  251,  77514,      0, "Mastery: Frozen Heart"             , 0 },
   {  6,  251,  81229,      0, "Runic Empowerment"                 , 0 },
+  {  6,  251,  81333,      0, "Might of the Frozen Wastes"        , 0 },
   {  6,  251,  86113,      0, "Plate Specialization"              , 0 },
   {  6,  251, 137006,      0, "Frost Death Knight"                , 0 },
   {  6,  251, 162698,      0, "Stat Negation Aura - Strength DPS" , 0 },
   {  6,  251, 178819,      0, "Dark Succor"                       , 0 },
   {  6,  251, 195621,      0, "Frost Fever"                       , 0 },
+  {  6,  251, 196770,      0, "Remorseless Winter"                , 0 },
+  {  6,  251, 317214,      0, "Frostreaper"                       , 0 },
   {  6,  252,  51462,      0, "Runic Corruption"                  , 0 },
   {  6,  252,  77515,      0, "Mastery: Dreadblade"               , 0 },
   {  6,  252,  86536,      0, "Plate Specialization"              , 0 },

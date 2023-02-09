@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.7.47910
-static const std::array<active_class_spell_t, 270> __ptr_active_spells_data { {
+// Active class spells, wow build 10.0.7.47983
+static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -138,6 +138,7 @@ static const std::array<active_class_spell_t, 270> __ptr_active_spells_data { {
   {  6,    0,  56222,      0, "Dark Command"                       },
   {  6,    0,  61999,      0, "Raise Ally"                         },
   {  6,    0, 316239,      0, "Rune Strike"                        },
+  {  6,  251, 196770,      0, "Remorseless Winter"                 },
   {  7,    0,    546,      0, "Water Walking"                      },
   {  7,    0,    556,      0, "Astral Recall"                      },
   {  7,    0,   2008,      0, "Ancestral Spirit"                   },
@@ -272,7 +273,7 @@ static const std::array<active_class_spell_t, 270> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.7.47910
+// Pet active spells, wow build 10.0.7.47983
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

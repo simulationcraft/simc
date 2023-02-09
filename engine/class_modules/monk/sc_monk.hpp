@@ -686,6 +686,7 @@ public:
       player_talent_t attenuation;
       player_talent_t dust_in_the_wind;
       player_talent_t skyreach;
+      player_talent_t skytouch;
       player_talent_t invokers_delight;
       player_talent_t way_of_the_fae;
       player_talent_t faeline_harmony;

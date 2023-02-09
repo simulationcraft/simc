@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47936 Live (hotfix 2023-02-03/47936)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967, git build dragonflight 65ad13bc14)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -596,7 +596,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1895: Paladin (137026 effect#6), Vanguard's Momentum (337638 effect#1), Vanguard's Momentum (383314 effect#3), Blessing of Dusk (385126 effect#8)
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #7, #11), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#7), Crusade (231895 effects: #1, #2, #4), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), Final Verdict (337228 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3, #7), Zealot's Paragon (391142 effect#2), Veneration (392939 effect#1), Luminous Force (394550 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #7, #11), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #5, #19), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#7), Crusade (231895 effects: #1, #2, #4), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), Final Verdict (337228 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3, #7), Zealot's Paragon (391142 effect#2), Veneration (392939 effect#1), Luminous Force (394550 effect#1)
 Family Flags     : 27, 39, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -956,7 +956,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=21607)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60280 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66310 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.6028 -> 0.6631)
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Interrupt | Target: Enemy (6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
@@ -1219,7 +1220,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=46252)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.71500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.55 -> 0.715)
 #2 (id=171314)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573&s203785[
@@ -2059,7 +2061,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Dead Target (64), Not a Proc (105), Always Hit (114), Do Not Display Range (126), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=90535)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08705 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11300 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.087048 -> 0.113)
 #2 (id=171313)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc53595
@@ -2968,13 +2971,19 @@ Effects          :
 #16 (id=1032419)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #17 (id=1042754)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -22 | Scaled Value: -22 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Crusader Strike (35395)
                    Family Flags: 47
+Hotfixed         : Base Value (-22 -> 0)
 #18 (id=1043197)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Word of Glory (85673)
                    Family Flags: 78
+#19 (id=1052746)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Hammer of Wrath (24275)
+                   Family Flags: 39
+Hotfixed         : NEW EFFECT
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
@@ -4501,7 +4510,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Do Not Display Range (126), No Cast Log (128), Treat as Area Effect (175), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301536)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14300 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.11 -> 0.143)
 #2 (id=303007)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc204019

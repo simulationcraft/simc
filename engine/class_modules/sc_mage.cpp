@@ -5677,7 +5677,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots.radiant_spark  = target->get_dot( "radiant_spark", mage );
 
   debuffs.frozen                      = make_buff( *this, "frozen" )
-                                          ->set_duration( mage->options.frozen_duration );
+                                          ->set_duration( mage->options.frozen_duration )
+                                          ->set_refresh_behavior( buff_refresh_behavior::MAX );
   debuffs.improved_scorch             = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
                                           ->set_schools_from_effect( 1 )
                                           ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
