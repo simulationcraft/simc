@@ -1282,7 +1282,7 @@ public:
                                      } );
   }
 
-  void trigger_attack( sef_ability_e ability, const action_t* source_action )
+  void trigger_attack( sef_ability_e ability, const action_t* source_action, bool combo_strike = false )
   {
     if ( channeling ) {
       // the only time we're not cancellign is if we use something instant 
@@ -1308,8 +1308,20 @@ public:
       assert( attacks[ (int)ability ] );
       attacks[ (int)ability ]->source_action = source_action;
       attacks[ (int)ability ]->execute();
-    }
+    }   
+
+    if ( combo_strike )
+      trigger_combo_strikes();
   }
+
+  void trigger_combo_strikes()
+  {
+    // TODO: Test Meridian Strikes
+
+    if ( o()->talent.windwalker.xuens_bond->ok() )
+      o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
+  }
+
 };
 
 // ==========================================================================
@@ -1882,7 +1894,7 @@ void monk_t::create_pets()
   }
 }
 
-void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability )
+void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability, bool combo_strike = false )
 {
   if ( specialization() != MONK_WINDWALKER )
     return;
@@ -1905,8 +1917,8 @@ void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_
     retarget_storm_earth_and_fire_pets();
   }
 
-  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->trigger_attack( sef_ability, a );
-  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->trigger_attack( sef_ability, a );
+  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->trigger_attack( sef_ability, a, combo_strike );
+  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->trigger_attack( sef_ability, a, combo_strike );
 }
 
 void monk_t::storm_earth_and_fire_fixate( player_t* target )
@@ -2006,7 +2018,6 @@ void sef_despawn_cb_t::operator()( player_t* )
     }
   } );
 }
-
 void monk_t::trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet )
 {
   pets.sef[ (int)sef_pet ]->buff.bok_proc_sef->trigger();
