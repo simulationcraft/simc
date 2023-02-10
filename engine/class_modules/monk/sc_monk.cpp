@@ -717,8 +717,8 @@ public:
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
-  {
-    p()->trigger_storm_earth_and_fire( a, sef_ability );
+  {    
+    p()->trigger_storm_earth_and_fire( a, sef_ability, ( may_combo_strike && is_combo_strike() ) );
   }
 
   void trigger_mystic_touch( action_state_t* s )
