@@ -1348,6 +1348,12 @@ void spiteful_storm( special_effect_t& effect )
       base_td = e.driver()->effectN( 1 ).average( e.item );
     }
 
+    void reset() override
+    {
+      generic_proc_t::reset();
+      grudge = nullptr;
+    }
+
     void set_target( player_t* t ) override
     {
       if ( grudge )
