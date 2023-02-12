@@ -4252,6 +4252,18 @@ void flame_licked_stone( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+/**Freezing Ice Stone
+ * id=404874 Primordial Stones aura
+ * id=402940 driver
+ * id=403391 damage
+ */
+void freezing_ice_stone( special_effect_t& effect )
+{
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }
 
 void register_special_effects()
@@ -4381,6 +4393,7 @@ void register_special_effects()
   // Primordial Stones
   register_special_effect( 402929, primordial_stones::echoing_thunder_stone );
   register_special_effect( 402930, primordial_stones::flame_licked_stone );
+  register_special_effect( 402940, primordial_stones::freezing_ice_stone );
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
