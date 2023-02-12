@@ -4231,6 +4231,27 @@ void echoing_thunder_stone( special_effect_t& effect )
     }
   } );
 }
+
+/**Flame Licked Stone
+ * id=404865 Primordial Stones aura
+ * id=402930 driver
+ * id=403225 DoT
+ */
+void flame_licked_stone( special_effect_t& effect )
+{
+  struct flame_t : public generic_proc_t
+  {
+    flame_t( const special_effect_t& e ) :
+      generic_proc_t( e, "flame", e.trigger() )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+    }
+  };
+
+  effect.execute_action = new flame_t( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }
 
 void register_special_effects()
@@ -4359,6 +4380,7 @@ void register_special_effects()
 
   // Primordial Stones
   register_special_effect( 402929, primordial_stones::echoing_thunder_stone );
+  register_special_effect( 402930, primordial_stones::flame_licked_stone );
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
