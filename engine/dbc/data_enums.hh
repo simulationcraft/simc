@@ -460,6 +460,7 @@ enum item_socket_color
   SOCKET_COLOR_CRYSTALLIC           = 0x0800000,
   // Dragonflight
   SOCKET_COLOR_TINKER               = 0x1000000,
+  SOCKET_COLOR_PRIMORDIAL           = 0x2000000,
   SOCKET_COLOR_MAX,
   SOCKET_COLOR_RELIC                = SOCKET_COLOR_IRON | SOCKET_COLOR_BLOOD  | SOCKET_COLOR_SHADOW |
                                       SOCKET_COLOR_FEL  | SOCKET_COLOR_ARCANE | SOCKET_COLOR_FROST |
