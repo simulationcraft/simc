@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.7.47983
-static const std::array<spelltext_data_t, 19410> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19412> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19303,6 +19303,8 @@ static const std::array<spelltext_data_t, 19410> __ptr_spelltext_data { {
   { 403071, "$@spelldesc401678", "Speed increased by $w1.", 0 },
   { 403081, "@spelldesc$383314", 0, 0 },
   { 403087, "$@spelldesc402928", 0, 0 },
+  { 403094, "$@spelldesc402929", "At 100 stacks, your next damaging spell or ability will shock the target dealing Nature damage.", 0 },
+  { 403170, "$@spelldesc402929", "Your next damaging spell or ability will shock the target dealing $402929w1 Nature damage.", 0 },
   { 403171, "$@spelldesc402929", 0, 0 },
   { 403216, "Flap back, reducing forward movement.", 0, "Racial" },
   { 403225, "$@spelldesc402930", "Burning for $w1 Fire damage every second.", 0 },
