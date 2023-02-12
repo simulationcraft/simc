@@ -3337,7 +3337,8 @@ struct iceblood_deathsnare_cb_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* s ) override
   {
-    if ( effect.player->find_target_data( s->target )->debuff.crystalline_web->up() )
+    const auto td = effect.player->find_target_data( s->target );
+    if ( td && td->debuff.crystalline_web->up() )
       damage->execute_on_target( s->target );
   }
 };
