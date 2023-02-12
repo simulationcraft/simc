@@ -4158,6 +4158,81 @@ void raging_tempests( special_effect_t& effect )
 }
 }  // namespace sets
 
+namespace primordial_stones
+{
+/**Echoing Thunder Stone
+ * id=404866 Primordial Stones aura
+ * id=402929 driver
+ * id=403094 stacking buff
+ * id=403170 ready buff
+ * id=403171 damage
+ */
+void echoing_thunder_stone( special_effect_t& effect )
+{
+  struct uncontainable_charge_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    buff_t* ready_buff;
+
+    uncontainable_charge_cb_t( const special_effect_t& e, action_t* d, buff_t* b ) :
+      dbc_proc_callback_t( e.player, e ), damage( d ), ready_buff ( b )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      damage->execute_on_target( s->target );
+      ready_buff->expire();
+    }
+  };
+
+  auto damage = create_proc_action<generic_proc_t>( "uncontainable_charge", effect, "uncontainable_charge", 403171 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  auto ready_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 403170 ) );
+  auto counter    = create_buff<buff_t>( effect.player, effect.player->find_spell( 403094 ) )
+                      ->set_expire_at_max_stack( true )
+                      ->set_stack_change_callback( [ ready_buff ] ( buff_t*, int, int cur )
+                        { if ( cur == 0 ) ready_buff->trigger(); } );
+
+  // Each time the driver ticks, 4 stacks of Rolling Thunder are applied.
+  // If Rolling Thunder is not already active, the player must be moving
+  // when the tick occurs to gain the first 4 stacks.
+  // TODO: Add an option for chance to be moving?
+  effect.player->register_combat_begin( [ effect, counter ]( player_t* p )
+  {
+    timespan_t period = effect.driver()->effectN( 1 ).period();
+    timespan_t first_update = p->rng().real() * period;
+    make_event( p->sim, first_update, [ period, counter, p ]()
+    {
+      counter->trigger( 4 );
+      make_repeating_event( p->sim, period, [ counter ](){ counter->trigger( 4 ); } );
+    } );
+  } );
+
+  effect.spell_id = 403170;
+  auto cb = new uncontainable_charge_cb_t( effect, damage, ready_buff );
+  cb->initialize();
+  cb->deactivate();
+
+  ready_buff->set_stack_change_callback( [ cb, counter ] ( buff_t*, int old, int )
+  {
+    if ( old == 0 )
+    {
+      cb->activate();
+      counter->set_chance( 0.0 );
+    }
+    else
+    {
+      cb->deactivate();
+      counter->set_chance( 1.0 );
+    }
+  } );
+}
+}
+
 void register_special_effects()
 {
   // Food
@@ -4281,6 +4356,9 @@ void register_special_effects()
   register_special_effect( { 393987, 393768 }, sets::azureweave_vestments );
   register_special_effect( { 393993, 393818 }, sets::woven_chronocloth );
   register_special_effect( { 389987, 389498, 391117 }, sets::raging_tempests );
+
+  // Primordial Stones
+  register_special_effect( 402929, primordial_stones::echoing_thunder_stone );
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
