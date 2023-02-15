@@ -1704,7 +1704,7 @@ namespace pets {
 
 struct death_knight_pet_t : public pet_t
 {
-  bool use_auto_attack, precombat_spawn;
+  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   double precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
   buff_t* commander_of_the_dead;
 
@@ -1712,7 +1712,7 @@ struct death_knight_pet_t : public pet_t
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0 ),
     spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), 
-    commander_of_the_dead( nullptr )
+    commander_of_the_dead( nullptr ), affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
@@ -1738,6 +1738,18 @@ struct death_knight_pet_t : public pet_t
     // 2021-01-29: The bdk aura is currently set to 0,
     // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
     dk() -> apply_affecting_auras( action );
+  }
+
+  double composite_player_multiplier ( school_e s ) const override
+  {
+    double m = pet_t::composite_player_multiplier( s );
+
+    if ( is_ptr() && affected_by_commander_of_the_dead && dk() -> buffs.commander_of_the_dead -> up() )
+    {
+      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   // Standard Death Knight pet actions
@@ -1992,7 +2004,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
-
     // Army ghouls, apoc ghouls and raise dead ghoul all share the same spawn/travel animation lock
     spawn_travel_duration = 4.5;
     spawn_travel_stddev = 0.1;
@@ -2303,16 +2314,18 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
     base_ghoul_pet_t( owner, name, true )
-  { }
+  {
+    if( dk() -> is_ptr() )
+    {
+      affected_by_commander_of_the_dead = true;
+    }
+  }
 
   void arise() override
   {
     base_ghoul_pet_t::arise();
-    if ( dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead -> up() )
-    {
-      commander_of_the_dead -> trigger();
-    }
-    else if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+
+    if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -2407,6 +2420,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
 
+    if( dk() -> is_ptr() )
+    {
+        affected_by_commander_of_the_dead = true;
+    }
+
     spawn_travel_duration = 2.9;
     spawn_travel_stddev = 0.2;
   }
@@ -2414,11 +2432,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead -> up() )
-    {
-      commander_of_the_dead -> trigger();
-    }
-    else if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+
+    if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -2932,16 +2947,18 @@ struct magus_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
+
+    if( dk() -> is_ptr() )
+    {
+      affected_by_commander_of_the_dead = true;
+    }
   }
 
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead -> up() )
-    {
-      commander_of_the_dead -> trigger();
-    }
-    else if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+
+    if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -4827,7 +4844,12 @@ struct dark_transformation_t : public death_knight_spell_t
         p() -> buffs.unholy_pact -> trigger();
       }
 
-      if ( p( ) -> talent.unholy.commander_of_the_dead.ok() )
+      if ( p() -> is_ptr() && p() -> talent.unholy.commander_of_the_dead.ok() )
+      {
+        p() -> buffs.commander_of_the_dead -> trigger();
+      }
+
+      else if ( !p() -> is_ptr() && p( ) -> talent.unholy.commander_of_the_dead.ok() )
       {
         if ( p() -> pets.gargoyle )
         {
@@ -4849,14 +4871,7 @@ struct dark_transformation_t : public death_knight_spell_t
           magus -> commander_of_the_dead -> trigger();
         }
 
-        if( p() -> is_ptr() )
-        {
-          p() -> buffs.commander_of_the_dead -> trigger();
-        }
-        else
-        {
-          p() -> buffs.commander_of_the_dead_window -> trigger();
-        }
+        p() -> buffs.commander_of_the_dead_window -> trigger();
     }
   }
 
