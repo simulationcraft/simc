@@ -1612,7 +1612,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
    if ( p()->is_ptr() )
-      m += p()->talent.windwalker.rising_star->effectN( 2 ).percent();
+      m *= 1 + p()->talent.windwalker.rising_star->effectN( 2 ).percent();
 
     return m;
   }
