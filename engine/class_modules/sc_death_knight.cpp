@@ -5223,7 +5223,7 @@ struct death_coil_damage_t : public death_knight_spell_t
 
     if ( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
     {
-      m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent();
+      m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent() * p() -> buffs.sudden_doom -> stack();
     }
 
     return m;
