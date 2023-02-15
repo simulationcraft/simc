@@ -536,6 +536,8 @@ public:
     buff_t* plaguebringer; 
     buff_t* ghoulish_infusion;
     buff_t* commander_of_the_dead_window;
+    buff_t* commander_of_the_dead;
+    buff_t* defile_buff;
 
   } buffs;
 
@@ -952,6 +954,9 @@ public:
     const spell_data_t* festermight_buff;
     const spell_data_t* ghoulish_infusion;
     const spell_data_t* unholy_blight_dot;
+    const spell_data_t* commander_of_the_dead;
+    const spell_data_t* defile_buff;
+    const spell_data_t* ruptured_viscera_chance;
 
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
@@ -1058,6 +1063,7 @@ public:
     proc_t* fw_pestilence;
     proc_t* fw_unholy_assault;
     proc_t* fw_vile_contagion;
+    proc_t* fw_ruptured_viscera;
   } procs;
 
   // Death Knight Options
@@ -2283,6 +2289,15 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
       aoe = -1;
       background = true;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_spell_t::impact( s );
+      if ( dk() -> is_ptr() && dk() -> rng().roll( dk() -> spell.ruptured_viscera_chance -> effectN( 1 ).percent() ) )
+      {
+        dk() -> trigger_festering_wound( s, 1, dk() -> procs.fw_ruptured_viscera );
+      }
+    }
   };
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
@@ -2292,7 +2307,11 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   void arise() override
   {
     base_ghoul_pet_t::arise();
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    if ( dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
+    else if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -2357,7 +2376,9 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   void dismiss( bool expired = false ) override
   {
     if ( !sim -> event_mgr.canceled && dk() -> talent.unholy.ruptured_viscera.ok() )
+    {
       ruptured_viscera -> execute_on_target( target );
+    }
 	  
     pet_t::dismiss( expired );
   }
@@ -2392,7 +2413,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    if ( dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
+    else if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -2911,7 +2936,11 @@ struct magus_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+    if ( dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead -> up() )
+    {
+      commander_of_the_dead -> trigger();
+    }
+    else if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -4818,7 +4847,15 @@ struct dark_transformation_t : public death_knight_spell_t
         {
           magus -> commander_of_the_dead -> trigger();
         }
-        p() -> buffs.commander_of_the_dead_window -> trigger();
+
+        if( p() -> is_ptr() )
+        {
+          p() -> buffs.commander_of_the_dead -> trigger();
+        }
+        else
+        {
+          p() -> buffs.commander_of_the_dead_window -> trigger();
+        }
     }
   }
 
@@ -4924,6 +4961,11 @@ struct defile_damage_t : public death_and_decay_damage_base_t
     if ( hit_any_target )
     {
       active_defile_multiplier *= defile_tick_multiplier;
+
+      if ( p() -> is_ptr() )
+      {
+        p() -> buffs.defile_buff -> trigger();
+      }
     }
   }
 };
@@ -5176,6 +5218,11 @@ struct death_coil_damage_t : public death_knight_spell_t
     if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
       m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+    }
+
+    if ( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent();
     }
 
     return m;
@@ -5610,6 +5657,11 @@ struct epidemic_damage_main_t : public death_knight_spell_t
 
     cam *= soft_cap_multiplier;
 
+    if( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
+    }
+
     return cam;
   }
 };
@@ -5647,6 +5699,10 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
     cam *= soft_cap_multiplier;
 
+    if( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
+    }
     return cam;
   }
 };
@@ -5829,6 +5885,11 @@ struct festering_strike_t : public death_knight_melee_attack_t
       if ( rng().roll( p() -> talent.unholy.feasting_strikes -> effectN( 1 ).percent() ) )
       {
         p() -> replenish_rune( as<unsigned int>( p() -> spell.feasting_strikes_gain -> effectN( 1 ).base_value() ), p() -> gains.feasting_strikes );
+
+        if( p() -> is_ptr() )
+        {
+          p() -> buffs.runic_corruption -> trigger();
+        }
       }
     }
   }
@@ -9523,6 +9584,9 @@ void death_knight_t::init_spells()
   spell.festermight_buff           = find_spell( 377591 );
   spell.ghoulish_infusion          = find_spell( 394899 );
   spell.unholy_blight_dot          = find_spell( 115994 );
+  spell.commander_of_the_dead      = find_spell( 390260 );
+  spell.defile_buff                = find_spell( 218100 );
+  spell.ruptured_viscera_chance    = find_spell( 390266 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -9858,18 +9922,21 @@ void death_knight_t::create_buffs()
            -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" );
-
-  buffs.commander_of_the_dead_window -> set_quiet( true );
-  if ( is_ptr() )
+  if( !is_ptr() )
   {
-    buffs.commander_of_the_dead_window -> set_duration( pet_spell.commander_of_the_dead -> duration() );
+    buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
+      -> set_quiet( true )
+      -> set_duration( 4_s );
   }
-  else
-  { 
-    buffs.commander_of_the_dead_window -> set_duration ( 4_s );
-  }
+  else if ( is_ptr() )
+  {
+    buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
+    buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+        -> add_invalidate ( CACHE_MASTERY )
+        -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() );
+  }
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9955,6 +10022,7 @@ void death_knight_t::init_procs()
   procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
   procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
+  procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
 
 }
 
