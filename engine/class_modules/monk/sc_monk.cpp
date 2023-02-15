@@ -1604,6 +1604,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     c += p()->buff.pressure_point->check_value();
 
+    if ( p()->is_ptr() )
+      c += p()->talent.windwalker.rising_star->effectN( 2 ).percent();
+
     return c;
   }
 
