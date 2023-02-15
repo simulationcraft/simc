@@ -1604,10 +1604,17 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     c += p()->buff.pressure_point->check_value();
 
-    if ( p()->is_ptr() )
-      c += p()->talent.windwalker.rising_star->effectN( 2 ).percent();
-
     return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+   if ( p()->is_ptr() )
+      m += p()->talent.windwalker.rising_star->effectN( 2 ).percent();
+
+    return m;
   }
 
   void execute() override
