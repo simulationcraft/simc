@@ -1415,6 +1415,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
+    if ( p()->is_ptr() )
+        am * 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
+
     return am;
   }
 
