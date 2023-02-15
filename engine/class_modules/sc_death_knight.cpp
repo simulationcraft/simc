@@ -9586,7 +9586,7 @@ void death_knight_t::init_spells()
   spell.unholy_blight_dot          = find_spell( 115994 );
   spell.commander_of_the_dead      = find_spell( 390260 );
   spell.defile_buff                = find_spell( 218100 );
-  spell.ruptured_viscera_chance    = find_spell( 390266 );
+  spell.ruptured_viscera_chance    = find_spell( 390236 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
