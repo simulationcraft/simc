@@ -1,4 +1,4 @@
-// Gem properties, wow build 10.0.7.47983
+// Gem properties, wow build 10.0.7.48076
 static const std::array<gem_property_data_t, 2083> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -2074,13 +2074,13 @@ static const std::array<gem_property_data_t, 2083> __ptr_gem_property_data { {
   { 4048,  6773, 0x02000000 }, // |C00C942FDHumming Arcane Stone
   { 4049,  6774, 0x02000000 }, // |C00C942FDHarmonic Music Stone
   { 4050,  6775, 0x02000000 }, // |C0040C040Wild Spirit Stone
-  { 4051,  6776, 0x02000000 }, // |C00CC0000Necromantic Death Stone
+  { 4051,  6776, 0x02000000 }, // |C00FF516CNecromantic Death Stone
   { 4052,  6777, 0x02000000 }, // |C0040C040Pestilent Plague Stone
   { 4053,  6778, 0x02000000 },
   { 4054,  6779, 0x02000000 },
   { 4055,  6780, 0x02000000 }, // |C00C942FDObscure Pastel Stone
   { 4056,  6781, 0x02000000 },
-  { 4057,  6782, 0x02000000 }, // |C00CC0000Desirous Blood Stone
+  { 4057,  6782, 0x02000000 }, // |C00FF516CDesirous Blood Stone
   { 4058,  6783, 0x02000000 },
   { 4059,  6784, 0x02000000 }, // |C00B84EFFProphetic Twilight Stone
 } };
