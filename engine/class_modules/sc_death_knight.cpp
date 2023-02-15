@@ -1055,6 +1055,7 @@ public:
     proc_t* rp_runic_corruption; // from RP spent
     proc_t* sr_runic_corruption; // from soul reaper
     proc_t* al_runic_corruption; // from abomination limb
+    proc_t* fs_runic_corruption; // from feasting strikes
 
     // Festering Wound applied by
     proc_t* fw_festering_strike;
@@ -5888,7 +5889,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
         if( p() -> is_ptr() )
         {
-          p() -> buffs.runic_corruption -> trigger();
+          p() -> trigger_runic_corruption( p() -> procs.fs_runic_corruption, 0, 1.0, true );
         }
       }
     }
@@ -10015,6 +10016,7 @@ void death_knight_t::init_procs()
   procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" ); // Remove with 10.0.7
   procs.sr_runic_corruption   = get_proc( "Runic Corruption from Soul Reaper" );
   procs.al_runic_corruption   = get_proc( "Runic Corruption from Abomination Limb" );
+  procs.fs_runic_corruption   = get_proc( "Runic Corruption from Feasting Strikes" );
 
   procs.bloodworms            = get_proc( "Bloodworms" );
 
