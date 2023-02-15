@@ -879,7 +879,7 @@ public:
       player_talent_t sudden_doom;
       player_talent_t all_will_serve;
       // Row 6
-      player_talent_t pestilent_pustules;
+      player_talent_t pestilent_pustules; // Replaced by Defile in 10.0.7
       player_talent_t bursting_sores;
       player_talent_t ebon_fever;
       player_talent_t unholy_command;
@@ -888,7 +888,7 @@ public:
       player_talent_t improved_death_coil;
       player_talent_t rotten_touch;
       player_talent_t unholy_pact;
-      player_talent_t defile;
+      player_talent_t defile; // Replaces Pestilent Pustules in 10.0.7
       // Row 7
       player_talent_t vile_contagion;
       player_talent_t pestilence;
@@ -1051,7 +1051,7 @@ public:
     proc_t* km_from_t29_4pc_wasted;           // T29 Frost 4PC
 
     // Runic corruption triggered by
-    proc_t* pp_runic_corruption; // from pestilent pustules
+    proc_t* pp_runic_corruption; // from pestilent pustules, remove with 10.0.7
     proc_t* rp_runic_corruption; // from RP spent
     proc_t* sr_runic_corruption; // from soul reaper
     proc_t* al_runic_corruption; // from abomination limb
@@ -8510,6 +8510,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
                  talent.unholy.replenishing_wounds->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
                  gains.replenishing_wounds );
 
+  // Remove with 10.0.7
   if ( talent.unholy.pestilent_pustules.ok() )
   {
     trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n_wounds, true );
@@ -8748,6 +8749,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       // Triggers once per target per player action:
       // Apocalypse is 10% * n wounds burst to proc
       // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
+      // Remove with 10.0.7
       if ( dk -> talent.unholy.pestilent_pustules.ok() )
       {
         dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n, false );
@@ -9502,7 +9504,7 @@ void death_knight_t::init_spells()
   talent.unholy.sudden_doom = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Doom" );
   talent.unholy.all_will_serve = find_talent_spell( talent_tree::SPECIALIZATION, "All Will Serve" );
   // Row 6
-  talent.unholy.pestilent_pustules = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilent Pustules" );
+  talent.unholy.pestilent_pustules = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilent Pustules" ); // Replaced by Defile in 10.0.7
   talent.unholy.bursting_sores = find_talent_spell( talent_tree::SPECIALIZATION, "Bursting Sores" );
   talent.unholy.ebon_fever = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
   talent.unholy.unholy_command = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Command" );
@@ -9511,7 +9513,7 @@ void death_knight_t::init_spells()
   talent.unholy.improved_death_coil = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Death Coil" );
   talent.unholy.rotten_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Rotten Touch" );
   talent.unholy.unholy_pact = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Pact" );
-  talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
+  talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" ); // Replaces Pestilent Pustules in 10.0.7
   // Row 7
   talent.unholy.vile_contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Contagion" );
   talent.unholy.pestilence = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
@@ -10010,7 +10012,7 @@ void death_knight_t::init_procs()
   procs.ready_rune            = get_proc( "Rune ready" );
 
   procs.rp_runic_corruption   = get_proc( "Runic Corruption from Runic Power Spent" );
-  procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" );
+  procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" ); // Remove with 10.0.7
   procs.sr_runic_corruption   = get_proc( "Runic Corruption from Soul Reaper" );
   procs.al_runic_corruption   = get_proc( "Runic Corruption from Abomination Limb" );
 
