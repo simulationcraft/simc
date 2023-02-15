@@ -938,7 +938,7 @@ Effects          :
 Description      : You are able to jump again while near the apex of your first jump.
 
 Name             : Netherwalk (id=196555) [Spell Family (107)] 
-Talent Entry     : Havoc [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Havoc [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -1703,16 +1703,16 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Eye Beam (198013), Eye Beam (198030), Eye Beam (391058)
                    Family Flags: 10
-#2 (id=300254)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+#2 (id=300254)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Eye Beam (198013), Eye Beam (198030), Eye Beam (391058)
                    Family Flags: 10
 #3 (id=355951)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Eye Beam generates ${$s3/5} Fury every sec. and its duration is increased by $s1%.
+Description      : Eye Beam generates ${$s3/5} Fury every second, and its damage and duration are increased by $s1%.
 
 Name             : Prepared (id=203551) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -2384,7 +2384,7 @@ Description      : Leech increased by $s1%.
 Gain an additional $s2% Leech while Metamorphosis is active.
 
 Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Havoc [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -3359,7 +3359,7 @@ Effects          :
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% off-hand weapon damage.
 
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
-Talent Entry     : Havoc [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Havoc [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Melee
@@ -9506,7 +9506,7 @@ Effects          :
 Description      : When Fiery Brand expires on your primary target, you gain a shield that absorbs up ${$AP*($s2/100)*(1+$@versadmg)} damage for $343013d, based on your damage dealt to them while Fiery Brand was active. 
 
 Name             : Improved Fel Rush (id=343017) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Havoc [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -12844,7 +12844,7 @@ Description      : $@spelldesc337546
 Tooltip          : Magic damage taken reduced by $s1%.
 
 Name             : Furious Throws (id=393029) [Spell Family (107), Passive] 
-Talent Entry     : Havoc [tree=spec, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Havoc [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
