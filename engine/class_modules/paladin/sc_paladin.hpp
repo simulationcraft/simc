@@ -1112,10 +1112,7 @@ public:
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
       double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
-      if ( p()->bugs && p()->talents.seal_of_order->ok() )
-      {
-        bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
-      }
+
       am *= bod_mult;
     }
 
