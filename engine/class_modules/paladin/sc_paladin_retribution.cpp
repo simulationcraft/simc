@@ -707,6 +707,10 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   {
     parse_options( options_str );
 
+    // spell is not usable without a 2hander
+    if ( p -> items[ SLOT_MAIN_HAND ].dbc_inventory_type() != INVTYPE_2HWEAPON )
+      background = true;
+
     // wtf is happening in spell data?
     aoe = 0;
 

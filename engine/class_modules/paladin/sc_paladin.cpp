@@ -32,6 +32,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER )
 {
   active_consecration = nullptr;
+  active_boj_cons = nullptr;
   all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
@@ -434,12 +435,16 @@ struct consecration_t : public paladin_spell_t
                           case ground_aoe_params_t::EVENT_CREATED:
                             if ( ! background ) {
                               p()->active_consecration = event;
+                            } else {
+                              p()->active_boj_cons = event;
                             }
                             p()->all_active_consecrations.insert(event);
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
                             if ( ! background ) {
                               p()->active_consecration = nullptr;
+                            } else {
+                              p()->active_boj_cons = nullptr;
                             }
                             p()->all_active_consecrations.erase(event);
                             break;
@@ -454,6 +459,9 @@ struct consecration_t : public paladin_spell_t
     // If this is an active Cons, cancel the current consecration if it exists
     if ( !background && p()->active_consecration != nullptr )
       event_t::cancel( p()->active_consecration );
+    // or if it's a boj-triggered Cons, cancel the previous BoJ-triggered cons
+    else if ( background && p()->active_boj_cons != nullptr )
+      event_t::cancel( p()->active_boj_cons );
 
     paladin_spell_t::execute();
 
@@ -2509,6 +2517,7 @@ void paladin_t::reset()
   player_t::reset();
 
   active_consecration = nullptr;
+  active_boj_cons = nullptr;
   all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
