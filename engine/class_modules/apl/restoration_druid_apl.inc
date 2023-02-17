@@ -2,6 +2,7 @@ action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 action_priority_list_t* def = get_action_priority_list( "default" );
 action_priority_list_t* cat = get_action_priority_list( "cat" );
 action_priority_list_t* owl = get_action_priority_list( "owl" );
+action_priority_list_t* healing = get_action_priority_list( "healing" );
 
 precombat->add_action( "heart_of_the_wild","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "cat_form,if=talent.rake.enabled" );
@@ -10,7 +11,7 @@ precombat->add_action( "moonkin_form,if=talent.moonkin_form.enabled&!talent.rake
 
 def->add_action( "berserking","Executed every time the actor is available." );
 def->add_action( "natures_vigil,if=!buff.prowl.up&!buff.shadowmeld.up" );
-def->add_action( "regrowth,if=!buff.prowl.up&!buff.shadowmeld.up&druid.time_spend_healing,line_cd=7" );
+def->add_action( "run_action_list,name=healing,if=!buff.prowl.up&!buff.shadowmeld.up&druid.time_spend_healing,line_cd=10" );
 def->add_action( "use_items,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "potion,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "run_action_list,name=cat,if=talent.rake.enabled" );
@@ -37,8 +38,8 @@ cat->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack=1&dot
 cat->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack=3&dot.adaptive_swarm_damage.remains>2" );
 cat->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack=4&dot.adaptive_swarm_damage.remains>2" );
 cat->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking" );
-cat->add_action( "run_action_list,name=owl,if=active_enemies>2&talent.moonkin_form.enabled&cooldown.convoke_the_spirits.remains<=gcd.max&(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)" );
-cat->add_action( "cat_form,if=(active_enemies<2|!talent.moonkin_form.enabled)&(!buff.cat_form.up&cooldown.convoke_the_spirits.remains<=gcd.max&(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled))" );
+cat->add_action( "run_action_list,name=owl,if=active_enemies>2&talent.convoke_the_spirits.enabled&talent.moonkin_form.enabled&cooldown.convoke_the_spirits.remains<=gcd.max&(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)" );
+cat->add_action( "cat_form,if=talent.convoke_the_spirits.enabled&(active_enemies<2|!talent.moonkin_form.enabled)&(!buff.cat_form.up&cooldown.convoke_the_spirits.remains<=gcd.max&(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled))" );
 cat->add_action( "convoke_the_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)" );
 cat->add_action( "rip,if=remains<=gcd&combo_points>0&dot.adaptive_swarm_damage.ticking" );
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>1" );
@@ -61,3 +62,5 @@ cat->add_action( "shred,if=energy>60&combo_points<5" );
 
 owl->add_action( "moonkin_form,if=!buff.moonkin_form.up" );
 owl->add_action( "convoke_the_spirits" );
+
+healing->add_action( "strict_sequence,name=heal:regrowth:regrowth:regrowth" );
