@@ -626,7 +626,7 @@ Range            : 40 yards
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.1 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Improved Death Coil (377580 effects: #1, #2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2, #3), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Improved Death Coil (377580 effects: #1, #2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Family Flags     : 13, 43, 64, 78
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -2654,7 +2654,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... .....x..   ........ ........ ........ ........   
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Cast Ended
-Affecting spells : Harbinger of Doom (276023 effect#1), Embrace Death (337980 effect#1)
+Affecting spells : Harbinger of Doom (276023 effects: #1, #3), Embrace Death (337980 effect#1)
 Triggered by     : Sudden Doom (49530)
 Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2672,6 +2672,10 @@ Effects          :
                    Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Epidemic (207317), Epidemic (212739), Epidemic (215969)
                    Family Flags: 13, 121
 #2 (id=836283)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Death Coil (47632)
+                   Family Flags: 64
+#3 (id=1054853)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632)
                    Family Flags: 64
@@ -3735,7 +3739,8 @@ Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Defile (id=152280) [Spell Family (15)] 
 Replaces         : Death and Decay (id=43265)
-Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200, replace="Death and Decay" (id=43265)]
+Talent Entry     : Unholy [tree=spec, row=6, col=1, max_rank=1, req_points=8, replace="Death and Decay" (id=43265)]
+                 : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, replace="Death and Decay" (id=43265)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -3774,7 +3779,7 @@ While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Str
 
 Death's Due reduces damage enemies deal to you by $324164s1%, up to a maximum of ${$324164s1*-$324164u}% and their power is transferred to you as an equal amount of Strength.][.]
 
-If any enemies are standing in the Defile, it grows in size and deals increasing damage every sec.
+Every sec, if any enemies are standing in the Defile, it grows in size, dealing increased damage, and increasing your Mastery by $218100s1%, up to ${$218100s1*$218100u}%.
 
 Name             : Expansive Mind (desc=Racial Passive) (id=154747) [Passive] 
 Class            : Death Knight
@@ -4451,7 +4456,6 @@ Effects          :
 Description      : Your Raise Dead spell summons an additional skeletal minion.
 
 Name             : Pestilent Pustules (id=194917) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -6222,6 +6226,30 @@ Effects          :
 #2 (id=328301)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207317
+
+Name             : Defile (id=218100) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Cooldown         : 1 seconds
+Stacks           : 8 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : x....... ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Redirection (35), No Reflection (39), Not On AOE Immune (127), No Cast Log (128), Treat as Area Effect (175), Mastery Affects Points (285), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=324699)   : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc152280
+Tooltip          : Mastery increased by $s1%.
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=4, col=1, max_rank=1, req_points=0]
@@ -8183,7 +8211,13 @@ Effects          :
                    Family Flags: 81
 #2 (id=729402)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
+#3 (id=1054862)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Sudden Doom (81340)
+                   Family Flags: 81
+#4 (id=1054864)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Sudden Doom triggers $s2% more often, can accumulate up to ${$m1+1} charges, and increases the damage of your next Death Coil by $s3%$?s207317[ or Epidemic by $s4%][].
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
@@ -10883,7 +10917,7 @@ Description      : $@spelldesc207167
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Unholy Pact (id=319230) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13848,7 +13882,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13856,7 +13890,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Reflection (39), Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000451)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15560,7 +15594,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026779)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Festering Strike has a $s1% chance to generate $390162s1 Rune.
+Description      : Festering Strike has a $s1% chance to generate $390162s1 Rune and grant Runic Corruption.
 
 Name             : Feasting Strikes (id=390162) [Spell Family (15)] 
 Class            : Death Knight
@@ -15689,7 +15723,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1026875)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
 
 Name             : Ruptured Viscera (id=390236) [Spell Family (15), Passive] 
@@ -15708,8 +15742,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1026902)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When your ghouls expire, they explode in viscera dealing $<damage> Shadow damage to nearby enemies. 
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When your ghouls expire, they explode in viscera dealing $<damage> Shadow damage to nearby enemies. Each explosion has a $s1% chance to apply Festering Wounds to enemies hit.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
 $damage=${0.44*($390220s1)*(1+$@versadmg)*$<mastery>}
 
@@ -15733,7 +15767,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026942)  : Apply Aura (6) | Proc Trigger Spell (42): Commander of the Dead
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390260 | Target: Self (1)
-Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead near you for $390264d, increasing their damage by $390264s1%.
+Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead for $390264d, increasing their damage by $390264s1%.
 
 Name             : Commander of the Dead (id=390260) [Spell Family (15)] 
 Class            : Death Knight
@@ -15775,7 +15809,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 25 yards | Target: Unknown(120)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
                    Affected School(s): All
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: Unknown(120)

@@ -488,7 +488,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     if ( priest().talents.shadow.auspicious_spirits.enabled() &&
-         ( !priest().bugs || !priest().options.as_insanity_bug ) )
+         ( !priest().bugs || !priest().options.as_insanity_bug || priest().is_ptr() ) )
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
@@ -546,7 +546,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     execute();
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1081
-    if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug )
+    if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug &&
+         !priest().is_ptr() )
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, execute_state->action );
     }
@@ -1354,7 +1355,7 @@ struct void_eruption_damage_t final : public priest_spell_t
 
     // BUG: on beta this is hitting 4 times instead of 2 on your main target, not sure why
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/963
-    if ( priest().bugs && s->target == parent_dot->target )
+    if ( priest().bugs && s->target == parent_dot->target && !priest().is_ptr() )
     {
       priest_spell_t::impact( s );
       priest_spell_t::impact( s );

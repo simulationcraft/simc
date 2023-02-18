@@ -717,8 +717,8 @@ public:
   }
 
   void trigger_storm_earth_and_fire( const action_t* a )
-  {
-    p()->trigger_storm_earth_and_fire( a, sef_ability );
+  {    
+    p()->trigger_storm_earth_and_fire( a, sef_ability, ( may_combo_strike && is_combo_strike() ) );
   }
 
   void trigger_mystic_touch( action_state_t* s )
@@ -1415,6 +1415,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
+    if ( p()->is_ptr() )
+        am * 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
+
     return am;
   }
 
@@ -1605,6 +1608,16 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     c += p()->buff.pressure_point->check_value();
 
     return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+   if ( p()->is_ptr() )
+      m *= 1 + p()->talent.windwalker.rising_star->effectN( 2 ).percent();
+
+    return m;
   }
 
   void execute() override

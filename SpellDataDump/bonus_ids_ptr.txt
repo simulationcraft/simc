@@ -4677,3 +4677,7 @@ bonus_id={ 9358 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9359 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9362 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9363 }, quality={ epic }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
+bonus_id={ 9367 }, base_ilevel={ 411 }
+bonus_id={ 9368 }, ilevel_adjust={ 7 }
+bonus_id={ 9369 }, ilevel_adjust={ 13 }
+bonus_id={ 9370 }, ilevel={ 1 @plvl 1 - 167 @plvl 70 }

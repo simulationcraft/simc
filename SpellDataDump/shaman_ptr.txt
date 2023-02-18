@@ -14447,7 +14447,7 @@ Tooltip          : The mana cost of your next heal is reduced by $w1% and its ef
 
 Name             : Go with the Flow (id=381678) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-7500, -15000)]
+                 : Effect#1 [op=set, values=(-10000, -20000)]
                  : Effect#2 [op=set, values=(-5000, -10000)]
 Class            : Shaman
 School           : Physical
@@ -16689,53 +16689,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 387622 | Target: Self (1)
 Description      : Casting Primordial Wave triggers Lava Surge immediately and every $387622T sec for $387622d. Lava Surges triggered by Primordial Wave increase the damage of your next Lava Burst by $396484s1%.
 
-Name             : Infused Globule (id=387363) 
-Class            : Shaman
-School           : Frost
-Spell Type       : Magic
-Cast Time        : 3 seconds
-Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
-                 : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ...x.... ........ .xxx.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261)
-Effects          :
-#1 (id=1022109)  : School Damage (2): frost
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-#2 (id=1022113)  : Dummy (3)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage to players within $387474A1 yards of each impact.
-
-The Infused Globule then drifts about, applying Waterlogged to players on contact.
-
-After $s2 sec, the Globule explodes, inflicting $s1 Frost damage to players within $a1 yards.
-
-Name             : Infused Globule (id=387474) 
-Class            : Shaman
-School           : Frost
-Spell Type       : Magic
-Range            : 1000 yards
-Duration         : 30 seconds
-Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
-                 : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
-                 : x......x ........ ........ ........   ...x.... ........ .xxx.... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1022276)  : School Damage (2): frost
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 2.5 yards | Target: AOE enemy (instant) (16)
-#2 (id=1022277)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 196008 | Misc Value 2: 0xc3d | Target: Unknown(87)
-Description      : $@spelldesc387363
-
 Name             : Primordial Surge (id=387622) [Spell Family (11), Hidden] 
 Class            : Shaman
 School           : Physical
@@ -16756,7 +16709,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 77762 | Target: Self (1)
 #2 (id=1037802)  : Apply Aura (6) | Periodic Trigger Spell (23): Primordial Surge every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 396484 | Target: Self (1)
-Description      : $@spelldesc387474
+Description      : $@spelldesc386474
 
 Name             : Stormblast (id=390287) [Spell Family (11)] 
 Class            : Shaman
@@ -17341,7 +17294,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1037798)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
-Description      : $@spelldesc387474
+Description      : $@spelldesc386474
 
 Name             : Fire Elemental (id=398856) [Passive] 
 Class            : Shaman

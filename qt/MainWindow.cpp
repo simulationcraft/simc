@@ -101,18 +101,24 @@ void SC_MainWindow::loadHistory()
                               tr( "We have reset your configuration settings due to major changes to the GUI" ) );
   }
 
-  QVariant size                  = settings.value( "gui/size" );
-  QRect savedApplicationGeometry = geometry();
-  if ( size.isValid() )
+  // Restoring the ui to a previously stored place that is potentially not the primary monitor causes issues for some users. See https://github.com/simulationcraft/simc/issues/5047
+  // Until we can figure out why this is happening and can be resolved, restoring the ui position is intentionally disabled
+  if constexpr(false)
   {
-    savedApplicationGeometry.setSize( size.toSize() );
+    QVariant size                  = settings.value( "gui/size" );
+    QRect savedApplicationGeometry = geometry();
+    if ( size.isValid() )
+    {
+      savedApplicationGeometry.setSize( size.toSize() );
+    }
+    QVariant pos = settings.value( "gui/position" );
+    if ( pos.isValid() )
+    {
+      savedApplicationGeometry.moveTopLeft( pos.toPoint() );
+    }
+    setGeometry(savedApplicationGeometry);
   }
-  QVariant pos = settings.value( "gui/position" );
-  if ( pos.isValid() )
-  {
-    savedApplicationGeometry.moveTopLeft( pos.toPoint() );
-  }
-  setGeometry(savedApplicationGeometry);
+
   QVariant maximized = settings.value( "gui/maximized" );
   if ( maximized.isValid() )
   {

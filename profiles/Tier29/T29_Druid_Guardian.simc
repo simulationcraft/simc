@@ -5,7 +5,7 @@ level=70
 race=highmountain_tauren
 role=tank
 position=front
-talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASEJJlkIJJJhCESJBAAAAAAAAAAAAAAAAA
+talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJSSiUSiEJJJQIRDAIJIQgkkkkkkUgGOAAAAAAgIgoJA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -56,11 +56,12 @@ actions.bear+=/convoke_the_spirits
 actions.bear+=/berserk_bear
 actions.bear+=/incarnation
 actions.bear+=/rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60|buff.incarnation_guardian_of_ursoc.up|(talent.convoke_the_spirits.enabled)
+actions.bear+=/lunar_beam
 actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
 actions.bear+=/maul,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&variable.Maul_build=1
 actions.bear+=/raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.Maul_build=1
 actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&!cooldown.pause_action.remains&variable.Maul_build=1|rage>90&variable.Maul_build=1
-actions.bear+=/ironfur,if=rage>40&variable.If_build=1|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1
+actions.bear+=/ironfur,if=rage>90&variable.If_build=1|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1
 actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=gcd+0.5
 actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3
 actions.bear+=/maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1&!talent.thorns_of_iron.enabled
@@ -68,9 +69,9 @@ actions.bear+=/raze,if=((buff.incarnation.up|buff.berserk_bear.up)&(buff.tooth_a
 actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|active_enemies>=5
 actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=11
 actions.bear+=/maul,if=(buff.tooth_and_claw.up&active_enemies<=5)
-actions.bear+=/maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3&variable.Maul_build=1&!talent.thorns_of_iron.enabled|active_enemies<4&!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3|active_enemies<4&!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
 actions.bear+=/raze,if=(buff.tooth_and_claw.up)
-actions.bear+=/raze,if=buff.vicious_cycle_maul.stack>=3&variable.Maul_build=1&!talent.thorns_of_iron.enabled|!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/raze,if=buff.vicious_cycle_maul.stack>=3|!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
 actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<90)&active_enemies<11)|((rage<85)&active_enemies<11&talent.soul_of_the_forest.enabled)
 actions.bear+=/thrash_bear,if=active_enemies>1
 actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
@@ -101,31 +102,32 @@ actions.owlweave+=/sunfire,if=dot.sunfire.refreshable
 actions.owlweave+=/starsurge
 
 head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
-neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/40
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/36
 shoulders=lost_landcallers_mantle,id=200356,bonus_id=7977/8807
-back=fireproof_drape,id=193763,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
+back=goldscar_pelt,id=133639,bonus_id=6652/8811/8812/6808/4786/3300
 chest=lost_landcallers_robes,id=200351,ilevel=421,enchant=waking_stats_3
 wrists=loyal_flametenders_bracers,id=195525,bonus_id=7977/8807,gem_id=192958
 hands=lost_landcallers_claws,id=200353,ilevel=421
 waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925
-legs=lost_landcallers_leggings,id=200355,ilevel=424,enchant=fierce_armor_kit_3
-feet=treads_of_corrupted_water,id=143973,bonus_id=1594/657/3189/7981,enchant_id=6606
+legs=lost_landcallers_leggings,id=200355,ilevel=424,enchant=frosted_armor_kit_3
+feet=lost_landcallers_moccasins,id=200352,bonus_id=6808/4786/1504,enchant_id=6606
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
 finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1594/657/3178/7981,gem_id=192958,enchant=devotion_of_critical_strike_3
-trinket1=windscar_whetstone,id=137486,bonus_id=1594/657/3178/7981
+trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
 trinket2=manic_grieftorch,id=194308,bonus_id=7977/8807
 main_hand=crux_of_blind_faith,id=201995,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
 
 # Gear Summary
 # gear_ilvl=421.40
-# gear_agility=4955
-# gear_stamina=13224
+# gear_agility=5428
+# gear_stamina=13119
 # gear_attack_power=135
-# gear_crit_rating=3761
-# gear_haste_rating=2710
-# gear_mastery_rating=2879
-# gear_versatility_rating=2056
+# gear_crit_rating=3597
+# gear_haste_rating=3333
+# gear_mastery_rating=2058
+# gear_versatility_rating=1867
 # gear_speed_rating=225
 # gear_armor=3347
+# gear_bonus_armor=141
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

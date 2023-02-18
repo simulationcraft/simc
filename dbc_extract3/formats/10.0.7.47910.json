@@ -482,7 +482,7 @@
       { "data_type": "f", "field": "unk_1" },
       { "data_type": "I", "field": "flags", "elements": 4, "formats": { "cpp": "%#.8x" } },
       { "data_type": "i", "field": "faction_conv_id" },
-      { "data_type": "i", "field": "unk_901_1" },
+      { "data_type": "i", "field": "id_modified_crafting_reagent_item", "ref": "ModifiedCraftingReagentItem" },
       { "data_type": "I", "field": "req_spell" },
       { "data_type": "i", "field": "id_curve" },
 

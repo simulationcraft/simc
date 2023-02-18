@@ -1063,7 +1063,7 @@ public:
   void retarget_storm_earth_and_fire_pets() const;
 
   void bonedust_brew_assessor( action_state_t* );
-  void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
+  void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability, bool combo_strike );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
