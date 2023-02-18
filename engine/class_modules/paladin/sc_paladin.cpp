@@ -45,6 +45,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.blessing_of_protection       = get_cooldown( "blessing_of_protection" );
   cooldowns.blessing_of_spellwarding     = get_cooldown( "blessing_of_spellwarding" );
   cooldowns.divine_shield                = get_cooldown( "divine_shield" );
+  cooldowns.lay_on_hands                 = get_cooldown( "lay_on_hands" );
 
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
@@ -651,7 +652,7 @@ struct lay_on_hands_t : public paladin_heal_t
     }
 
     // Improved Lay on Hands also reduces cooldown
-    if (p->talents.improved_lay_on_hands->ok())
+    if (!p->is_ptr() && p->talents.improved_lay_on_hands->ok())
     {
       cooldown->duration *= 1.0 + p->talents.improved_lay_on_hands->effectN( 1 ).percent();
     }
@@ -659,6 +660,7 @@ struct lay_on_hands_t : public paladin_heal_t
     may_crit    = false;
     use_off_gcd = true;
     trigger_gcd = 0_ms;
+    cooldown    = p->cooldowns.lay_on_hands; // Link needed for Tirion's Devotion
   }
 
   void execute() override
@@ -2953,7 +2955,6 @@ void paladin_t::init_spells()
   talents.blessing_of_sacrifice           = find_talent_spell( talent_tree::CLASS, "Blessing of Sacrifice" );
   //Judgment causes the target to take 25% more damage from your next holy power spending ability
   talents.greater_judgment                = find_talent_spell( talent_tree::CLASS, "Greater Judgment" );
-  talents.seal_of_reprisal                = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
   talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
   talents.recompense                      = find_talent_spell( talent_tree::CLASS, "Recompense" );
   talents.sacrifice_of_the_just           = find_talent_spell( talent_tree::CLASS, "Sacrifice of the Just" );
@@ -2992,6 +2993,7 @@ void paladin_t::init_spells()
     talents.divine_toll      = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
     talents.divine_resonance = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
     talents.sanctified_wrath = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath" );
+    talents.seal_of_reprisal = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
   }
 
   // Shared Passives and spells

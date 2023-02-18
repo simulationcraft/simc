@@ -241,6 +241,7 @@ public:
     cooldown_t* blessing_of_protection; // Blessing of Spellwarding Shared CD
     cooldown_t* blessing_of_spellwarding; // Blessing of Protection Shared CD
     cooldown_t* divine_shield; // Resolute Defender (Prot)
+    cooldown_t* lay_on_hands; // Tirion's Devotion
 
     cooldown_t* holy_shock; // Crusader's Might, Divine Purpose
     cooldown_t* light_of_dawn; // Divine Purpose
@@ -1461,6 +1462,13 @@ struct holy_power_consumer_t : public Base
           timespan_t::from_seconds( -1.0 * p->talents.resolute_defender->effectN( 1 ).base_value() / 10 );
       p->cooldowns.ardent_defender->adjust( reduction );
       p->cooldowns.divine_shield->adjust( reduction );
+    }
+
+    if (p -> talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok())
+    {
+      timespan_t reduction =
+          timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost());
+      p->cooldowns.lay_on_hands->adjust( reduction );
     }
 
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ

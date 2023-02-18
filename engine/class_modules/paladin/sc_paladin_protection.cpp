@@ -430,6 +430,8 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     harmful = false;
     may_miss = false;
     cooldown = p->cooldowns.blessing_of_spellwarding; // Needed for shared cooldown with Blessing of Protection
+    if ( p->talents.uthers_counsel->ok() )
+      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
   }
 
   void execute() override
@@ -1304,6 +1306,7 @@ void paladin_t::init_spells_protection()
     talents.inmost_light     = find_talent_spell( talent_tree::SPECIALIZATION, "Inmost Light" );
     talents.seal_of_charity  = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
     talents.tirions_devotion = find_talent_spell( talent_tree::SPECIALIZATION, "Tirion's Devotion" );
+    talents.seal_of_reprisal = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Reprisal" );
   }
   else
   {
