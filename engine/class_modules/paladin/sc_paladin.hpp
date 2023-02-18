@@ -463,7 +463,6 @@ public:
     const spell_data_t* soaring_shield;
     const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* eye_of_tyr;
-    const spell_data_t* inmost_light;
     const spell_data_t* righteous_protector;
     const spell_data_t* faith_in_the_light;
     const spell_data_t* ferren_marcuss_fervor;
