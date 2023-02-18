@@ -463,6 +463,7 @@ public:
     const spell_data_t* soaring_shield;
     const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* eye_of_tyr;
+    const spell_data_t* inmost_light;
     const spell_data_t* righteous_protector;
     const spell_data_t* faith_in_the_light;
     const spell_data_t* ferren_marcuss_fervor;
@@ -1118,10 +1119,7 @@ public:
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
       double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
-      if ( p()->bugs && p()->talents.seal_of_order->ok() )
-      {
-        bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
-      }
+
       am *= bod_mult;
     }
 

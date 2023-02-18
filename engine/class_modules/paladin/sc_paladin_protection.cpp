@@ -571,6 +571,10 @@ struct eye_of_tyr_t : public paladin_spell_t
     parse_options( options_str );
     aoe      = -1;
     may_crit = true;
+
+    if ( p->talents.inmost_light->ok() )
+      cooldown->duration = data().cooldown() * ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
+
   }
   void impact(action_state_t* s) override
   {
@@ -581,6 +585,19 @@ struct eye_of_tyr_t : public paladin_spell_t
           ->debuff.eye_of_tyr->trigger( 1, data().effectN( 1 ).percent(), 1.0, p()->talents.eye_of_tyr->duration() );
     }
   }
+
+
+
+  double action_multiplier() const override
+  {
+    double m = paladin_spell_t::action_multiplier();
+    if ( p()->talents.inmost_light->ok() )
+    {
+      m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
+    }
+    return m;
+  }
+
 };
 
 // Judgment - Protection =================================================================
@@ -1269,6 +1286,7 @@ void paladin_t::init_spells_protection()
   talents.soaring_shield                 = find_talent_spell( talent_tree::SPECIALIZATION, "Soaring Shield" );
   talents.gift_of_the_golden_valkyr      = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Golden Val'kyr" );
   talents.eye_of_tyr                     = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
+  talents.inmost_light                   = find_talent_spell( talent_tree::SPECIALIZATION, "Inmost Light" );
   talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
   talents.faith_in_the_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Faith in the Light" );
   talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );

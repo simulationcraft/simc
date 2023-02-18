@@ -2653,9 +2653,18 @@ void paladin_t::create_buffs()
                             });
 
   // Legendaries
-    buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
+  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
+  if ( paladin_t::is_ptr() )
+  {
     buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
-                                 ->set_default_value_from_effect( 1 );
+      ->set_default_value_from_effect( 1 );
+  }
+  else
+
+  {
+    buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 )->effectN( 2 ).trigger() )
+      ->set_default_value_from_effect( 1 );
+  }
   if ( talents.seal_of_order->ok() )
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -3643,17 +3652,19 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
 {
   double initial_hp = health_percentage();
   double result     = player_t::resource_loss( resource_type, amount, source, action );
-  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
-       resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 2 ).base_value() )
+  if ( !paladin_t::is_ptr() )
   {
-    buffs.blessing_of_dusk->trigger();
+    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
+      resources.current[RESOURCE_HOLY_POWER] == legendary.of_dusk_and_dawn->effectN( 2 ).base_value() )
+    {
+      buffs.blessing_of_dusk->trigger();
+    }
+    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && talents.of_dusk_and_dawn->ok() &&
+      resources.current[RESOURCE_HOLY_POWER] == talents.of_dusk_and_dawn->effectN( 2 ).base_value() )
+    {
+      buffs.blessing_of_dusk->trigger();
+    }
   }
-  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && talents.of_dusk_and_dawn->ok() &&
-       resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 2 ).base_value() )
-  {
-    buffs.blessing_of_dusk->trigger();
-  }
-
   if ( resource_type == RESOURCE_HEALTH && legendary.reign_of_endless_kings->ok() &&
        !buffs.reign_of_ancient_kings->up() &&
        health_percentage() < legendary.reign_of_endless_kings->effectN( 2 ).base_value() &&
