@@ -472,6 +472,12 @@ public:
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* quickened_invocations;
 
+    // PTR
+    const spell_data_t* inmost_light;
+    const spell_data_t* tirions_devotion;
+    const spell_data_t* seal_of_charity;
+    const spell_data_t* quickened_invocation;
+
     // Retribution
     // 0
     const spell_data_t* blade_of_justice;

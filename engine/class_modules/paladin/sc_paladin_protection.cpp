@@ -1239,7 +1239,6 @@ void paladin_t::init_spells_protection()
   talents.grand_crusader                 = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Crusader" );
   talents.shining_light                  = find_talent_spell( talent_tree::SPECIALIZATION, "Shining Light" );
   talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
-  talents.improved_lay_on_hands          = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Lay on Hands" );
   talents.inspiring_vanguard             = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Vanguard" );
   talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
   talents.barricade_of_faith             = find_talent_spell( talent_tree::SPECIALIZATION, "Barricade of Faith" );
@@ -1259,7 +1258,6 @@ void paladin_t::init_spells_protection()
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
   talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
-  talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
   talents.bastion_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
@@ -1274,13 +1272,26 @@ void paladin_t::init_spells_protection()
   talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
   talents.faith_in_the_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Faith in the Light" );
   talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );
-  talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
   talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
-  talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
   talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
   talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
-  talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
-  talents.quickened_invocations          = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
+
+  if ( player_t::is_ptr() )
+  {
+    talents.sanctified_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Wrath" );
+    talents.inmost_light     = find_talent_spell( talent_tree::SPECIALIZATION, "Inmost Light" );
+    talents.seal_of_charity  = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
+    talents.tirions_devotion = find_talent_spell( talent_tree::SPECIALIZATION, "Tirion's Devotion" );
+  }
+  else
+  {
+    talents.divine_toll            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
+    talents.improved_lay_on_hands = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Lay on Hands" );
+    talents.divine_resonance      = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
+    talents.quickened_invocations = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
+    talents.faiths_armor           = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
+    talents.strength_of_conviction = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
+  }
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );

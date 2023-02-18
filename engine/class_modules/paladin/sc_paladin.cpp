@@ -2653,9 +2653,9 @@ void paladin_t::create_buffs()
                             });
 
   // Legendaries
-  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
-  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
-                               ->set_default_value_from_effect( 1 );
+    buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
+    buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
+                                 ->set_default_value_from_effect( 1 );
   if ( talents.seal_of_order->ok() )
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -2962,15 +2962,27 @@ void paladin_t::init_spells()
   talents.improved_blessing_of_protection = find_talent_spell( talent_tree::CLASS, "Improved Blessing of Protection" );
   talents.seal_of_the_crusader            = find_talent_spell( talent_tree::CLASS, "Seal of the Crusader" );
   talents.seal_of_order                   = find_talent_spell( talent_tree::CLASS, "Seal of Order" );
-  talents.sanctified_wrath                = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath" );
   talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
   talents.zealots_paragon                 = find_talent_spell( talent_tree::CLASS, "Zealot's Paragon" );
 
   // spec talents shared among specs
-  talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
-  talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
+
+  if ( player_t::is_ptr() )
+  {
+    talents.divine_toll      = find_talent_spell( talent_tree::CLASS, "Divine Toll" );
+    talents.divine_resonance = find_talent_spell( talent_tree::CLASS, "Divine Resonance" );
+    talents.quickened_invocation = find_talent_spell( talent_tree::CLASS, "Quickened Invocation" );
+    talents.faiths_armor         = find_talent_spell( talent_tree::CLASS, "Faith's Armor" );
+    talents.strength_of_conviction = find_talent_spell( talent_tree::CLASS, "Strength of Conviction" );
+  }
+  else
+  {
+    talents.divine_toll      = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
+    talents.divine_resonance = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
+    talents.sanctified_wrath = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath" );
+  }
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
