@@ -703,6 +703,8 @@ struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
   bool jetscale;     // no longer shuffles on Ace
   bool sagescale;    // only shuffle on jump NYI
 
+  bool reset = false; // whether to reset the deck on shuffle
+
   DF_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
     : darkmoon_spell_deck_t( e, std::move( c ) ),
       bronzescale( unique_gear::find_special_effect( player, 382913 ) != nullptr ),
@@ -721,9 +723,10 @@ struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
   void shuffle() override
   {
     // NOTE: assumes last card, and thus highest index, is Ace
-    if ( jetscale && top_index == cards.size() - 1 )
+    if ( !reset && jetscale && top_index == cards.size() - 1 )
       return;
 
+    reset = false;
     darkmoon_spell_deck_t::shuffle();
   }
 
@@ -771,6 +774,8 @@ struct DF_darkmoon_proc_t : public darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t
   void execute() override
   {
     base_t::execute();
+
+    base_t::deck->reset = true;
 
     if ( base_t::deck->shuffle_event )
       base_t::deck->shuffle_event->reschedule( base_t::cooldown->base_duration );
