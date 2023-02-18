@@ -1462,8 +1462,10 @@ struct divine_toll_t : public paladin_spell_t
     add_child( p->active.divine_toll );
     add_child( p->active.divine_resonance );
 
-    if ( p->talents.quickened_invocations->ok() )
+    if ( !p->is_ptr() && p->talents.quickened_invocations->ok() )
       cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 1 ).base_value() );
+    else if ( p->talents.quickened_invocation->ok() ) // They share spell id, so it's the same in the end
+      cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocation->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -2654,13 +2656,12 @@ void paladin_t::create_buffs()
 
   // Legendaries
   buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
-  if ( paladin_t::is_ptr() )
+  if ( !paladin_t::is_ptr() )
   {
     buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
       ->set_default_value_from_effect( 1 );
   }
   else
-
   {
     buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 )->effectN( 2 ).trigger() )
       ->set_default_value_from_effect( 1 );

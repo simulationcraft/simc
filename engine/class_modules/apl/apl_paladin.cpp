@@ -140,7 +140,8 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
-  cooldowns->add_action( "seraphim" );
+  if (!p->is_ptr())
+    cooldowns->add_action( "seraphim" );
   cooldowns->add_action( "avenging_wrath,if=(buff.seraphim.up|!talent.seraphim.enabled)" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );

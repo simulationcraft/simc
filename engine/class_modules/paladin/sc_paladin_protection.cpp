@@ -102,7 +102,8 @@ struct avengers_shield_base_t : public paladin_spell_t
     //Turn off chaining if focused enmity
     if ( p->talents.focused_enmity->ok() )
     {
-      aoe += as<int>( p->talents.focused_enmity->effectN( 1 ).base_value() );
+      if (!p->is_ptr())
+        aoe += as<int>( p->talents.focused_enmity->effectN( 1 ).base_value() );
     }
     else
     {
@@ -169,20 +170,23 @@ double recharge_multiplier( const cooldown_t& cd ) const override
   double action_multiplier() const override
   {
     double m = paladin_spell_t::action_multiplier();
+    double foo = paladin_spell_t::aoe;
     if ( p()->buffs.moment_of_glory->up() )
     {
       m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
     }
     if ( p()->talents.focused_enmity->ok() )
     {
-      m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
+      if ( !p()->is_ptr() )
+        m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
+      else if ( paladin_spell_t::num_targets() == 1 )
+        m *= 1.0 + p()->talents.focused_enmity->effectN( 1 ).percent();
     }
     return m;
   }
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = paladin_spell_t::composite_da_multiplier( state );
-
     if ( state->chain_target == 0 )
     {
       {
