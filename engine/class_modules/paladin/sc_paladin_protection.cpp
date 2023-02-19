@@ -170,7 +170,6 @@ double recharge_multiplier( const cooldown_t& cd ) const override
   double action_multiplier() const override
   {
     double m = paladin_spell_t::action_multiplier();
-    double foo = paladin_spell_t::aoe;
     if ( p()->buffs.moment_of_glory->up() )
     {
       m *= 1.0 + p()->talents.moment_of_glory->effectN( 2 ).percent();
