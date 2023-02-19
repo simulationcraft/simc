@@ -1131,7 +1131,7 @@ public:
       am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
 
-    if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
+    if ( !p()->is_ptr() && affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
     {
       am *= 1.0 + p()->talents.seal_of_order->effectN( 2 ).percent();
     }
@@ -1139,8 +1139,17 @@ public:
     {
       if ( p()->is_ptr() )
       {
-        double bod_mult = 1.0 + p()->buffs.blessing_of_dawn->stack_value();
-        am *= bod_mult;
+        // Get base multiplier
+        double bod_mult  = p()->buffs.blessing_of_dawn->value();
+        // Increase base multiplier by SoO/FL increase
+        if ( p()->talents.seal_of_order->ok() )
+          bod_mult += p()->talents.seal_of_order->effectN( 1 ).percent();
+        // Separating those, in case on of them gets changed. Both do exactly the same to Dawn, though.
+        if ( p()->talents.fading_light->ok() )
+          bod_mult += p()->talents.fading_light->effectN( 1 ).percent();
+        // Multiply by stack count
+        bod_mult *= p()->buffs.blessing_of_dawn->stack();
+        am *= 1.0 + bod_mult;
         p()->buffs.blessing_of_dawn->expire();
         p()->buffs.blessing_of_dusk->trigger();
       }
