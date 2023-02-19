@@ -405,6 +405,15 @@ public:
     const spell_data_t* divine_resonance;
     const spell_data_t* relentless_inquisitor;
 
+
+    // PTR
+    const spell_data_t* justification;
+    const spell_data_t* punishment;
+    const spell_data_t* sanctified_plates;
+    const spell_data_t* lightforged_blessing;
+    const spell_data_t* crusaders_reprieve;
+    const spell_data_t* fading_light;
+
     // Holy -- NYI, Not touching for now
     // T15
     const spell_data_t* crusaders_might;
@@ -622,6 +631,8 @@ public:
 
   double lucid_dreams_accumulator;
   double lucid_dreams_minor_refund_coeff;
+
+  int holy_power_generators_used;
 
   season next_season;
 
@@ -967,10 +978,13 @@ public:
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 2 ) );
     this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
     this -> affected_by.seal_of_reprisal = this -> data().affected_by( p -> talents.seal_of_reprisal -> effectN( 1 ) );
-    this -> affected_by.seal_of_clarity = this -> data().affected_by( p -> spells.seal_of_clarity_buff -> effectN( 1 ) );
+    this->affected_by.seal_of_clarity  = this->data().affected_by( p->spells.seal_of_clarity_buff->effectN( 1 ) );
+    if ( !p->is_ptr() )
+      this->affected_by.blessing_of_dawn = this->data().affected_by( p->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ) );
+    else
+      this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1116,16 +1130,25 @@ public:
     {
       am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
-    if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
-    {
-      double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
-
-      am *= bod_mult;
-    }
 
     if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
     {
       am *= 1.0 + p()->talents.seal_of_order->effectN( 2 ).percent();
+    }
+    if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() )
+    {
+      if ( p()->is_ptr() )
+      {
+        double bod_mult = 1.0 + p()->buffs.blessing_of_dawn->stack_value();
+        am *= bod_mult;
+        p()->buffs.blessing_of_dawn->expire();
+        p()->buffs.blessing_of_dusk->trigger();
+      }
+      else
+      {
+        double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
+        am *= bod_mult;
+      }
     }
 
     return am;
@@ -1464,7 +1487,7 @@ struct holy_power_consumer_t : public Base
       p->cooldowns.divine_shield->adjust( reduction );
     }
 
-    if (p -> talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok())
+    if (p->is_ptr() && p -> talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok())
     {
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost());

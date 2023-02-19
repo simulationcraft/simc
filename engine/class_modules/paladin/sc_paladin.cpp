@@ -29,7 +29,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     options( options_t() ),
     beacon_target( nullptr ),
     lucid_dreams_accumulator( 0.0 ),
-    next_season( SUMMER )
+    next_season( SUMMER ),
+    holy_power_generators_used( 0 )
 {
   active_consecration = nullptr;
   all_active_consecrations.clear();
@@ -1466,7 +1467,7 @@ struct divine_toll_t : public paladin_spell_t
 
     if ( !p->is_ptr() && p->talents.quickened_invocations->ok() )
       cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 1 ).base_value() );
-    else if ( p->talents.quickened_invocation->ok() ) // They share spell id, so it's the same in the end
+    else if ( p->is_ptr() && p->talents.quickened_invocation->ok() ) // They share spell id, so it's the same in the end
       cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocation->effectN( 1 ).base_value() );
   }
 
@@ -2657,16 +2658,17 @@ void paladin_t::create_buffs()
                             });
 
   // Legendaries
-  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
   if ( !paladin_t::is_ptr() )
   {
+    buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
     buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
       ->set_default_value_from_effect( 1 );
   }
   else
   {
-    buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 )->effectN( 2 ).trigger() )
-      ->set_default_value_from_effect( 1 );
+    buffs.blessing_of_dawn =
+        make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect(1);
+    buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
   }
   if ( talents.seal_of_order->ok() )
   {
@@ -2678,7 +2680,11 @@ void paladin_t::create_buffs()
         // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
         if ( i == 6 )
           i = 8;
-        auto label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( i );
+        spelleffect_data_t label;
+        if ( !paladin_t::is_ptr() )
+          label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( i );
+        else
+          label = find_spell( 385126 )->effectN( i );
         for ( auto a : action_list )
         {
           if ( a->cooldown->duration != 0_ms && (a->data().affected_by( label ) || a->data().affected_by_category(label) ))
@@ -2987,6 +2993,13 @@ void paladin_t::init_spells()
     talents.quickened_invocation = find_talent_spell( talent_tree::CLASS, "Quickened Invocation" );
     talents.faiths_armor         = find_talent_spell( talent_tree::CLASS, "Faith's Armor" );
     talents.strength_of_conviction = find_talent_spell( talent_tree::CLASS, "Strength of Conviction" );
+
+    talents.justification = find_talent_spell( talent_tree::CLASS, "Justification" );
+    talents.punishment = find_talent_spell( talent_tree::CLASS, "Punishment" );
+    talents.sanctified_plates = find_talent_spell( talent_tree::CLASS, "Sanctified Plates" );
+    talents.lightforged_blessing = find_talent_spell( talent_tree::CLASS, "Lightforged Blessing" );
+    talents.crusaders_reprieve = find_talent_spell( talent_tree::CLASS, "Crusader's Reprieve" );
+    talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
   }
   else
   {
@@ -3636,15 +3649,37 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double result = player_t::resource_gain( resource_type, amount, source, action );
 
-  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && ( talents.of_dusk_and_dawn->ok() )&&
-       resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 1 ).base_value() )
+  if ( !paladin_t::is_ptr() )
   {
-    buffs.blessing_of_dawn->trigger();
+    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && ( talents.of_dusk_and_dawn->ok() ) &&
+         resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 1 ).base_value() )
+    {
+      buffs.blessing_of_dawn->trigger();
+    }
+    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
+         resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 1 ).base_value() )
+    {
+      buffs.blessing_of_dawn->trigger();
+    }
   }
-  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
-       resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 1 ).base_value() )
+  else
   {
-    buffs.blessing_of_dawn->trigger();
+    if ( resource_type == RESOURCE_HOLY_POWER && amount > 0 && ( talents.of_dusk_and_dawn->ok() ) )
+    {
+      // There's probably a better way to do this, so many spells that don't trigger Dawn
+      // Also Judgment only gives Dawn when it impacts, but eh...
+      if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ||
+              source->name_str == "wake_of_ashes" || source->name_str == "final_reckoning" ||
+              source->name_str == "execution_sentence" || source->name_str == "divine_hammer" ||
+              source->name_str == "crusading_strikes" ) )
+      {
+        holy_power_generators_used++;
+        if ( holy_power_generators_used % 3 == 0 )
+        {
+          buffs.blessing_of_dawn->trigger();
+        }
+      }
+    }
   }
   return result;
 }
