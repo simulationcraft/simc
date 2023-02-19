@@ -320,7 +320,7 @@ void destruction( player_t* p )
   cleave->add_action( "chaos_bolt,if=buff.rain_of_chaos.remains>cast_time" );
   cleave->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards" );
   cleave->add_action( "chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time&!action.chaos_bolt.in_flight" );
-  cleave->add_action( "chaos_bolt,if=buff.madness_cb.up&(!variable.pool_soul_shards|talent.burn_to_ashes|talent.soul_fire)" );
+  cleave->add_action( "chaos_bolt,if=buff.madness_cb.up&(!variable.pool_soul_shards|(talent.burn_to_ashes&buff.burn_to_ashes.stack=0)|talent.soul_fire)" );
   cleave->add_action( "soul_fire,if=soul_shard<=4&talent.mayhem" );
   cleave->add_action( "channel_demonfire,if=!(talent.diabolic_embers&talent.avatar_of_destruction&(talent.burn_to_ashes|talent.chaos_incarnate))" );
   cleave->add_action( "dimensional_rift" );
@@ -334,7 +334,7 @@ void destruction( player_t* p )
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<2.5" );
   havoc->add_action( "channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2&active_enemies>2" );
-  havoc->add_action( "immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=((dot.immolate.refreshable&variable.havoc_immo_time<5.4)|(dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|variable.havoc_immo_time<3)&soul_shard<4.5&target.time_to_die>11" );
+  havoc->add_action( "immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=((dot.immolate.refreshable&variable.havoc_immo_time<5.4)|(dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|variable.havoc_immo_time<2)&soul_shard<4.5&target.time_to_die>11" );
   havoc->add_action( "chaos_bolt,if=((talent.cry_havoc&!talent.inferno)|!talent.rain_of_fire)&cast_time<havoc_remains" );
   havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&(active_enemies<=3-talent.inferno+(talent.madness_of_the_azjaqir&!talent.inferno))" );
   havoc->add_action( "rain_of_fire,if=active_enemies>=3&talent.inferno" );
