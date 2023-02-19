@@ -3674,7 +3674,8 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
               source->name_str == "crusading_strikes" ) )
       {
         holy_power_generators_used++;
-        if ( holy_power_generators_used % 3 == 0 )
+        int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
+        if ( holy_power_generators_used % hpGensNeeded == 0 )
         {
           buffs.blessing_of_dawn->trigger();
         }
