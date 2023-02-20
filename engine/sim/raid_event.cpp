@@ -725,6 +725,7 @@ struct pull_event_t final : raid_event_t
             continue;
 
           p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
         }
       }
       else
@@ -733,6 +734,7 @@ struct pull_event_t final : raid_event_t
         if ( p )
         {
           p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
         }
       }
     }    
