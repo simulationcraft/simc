@@ -1321,6 +1321,12 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
   {
     base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 3 ).percent();
   }
+
+  if ( p->is_ptr()  && p->talents.seal_of_alacrity->ok())
+  {
+    // Prot's base recharge multiplier is .5, so we need to divide by it.
+    cooldown->duration -= timespan_t::from_millis(p->talents.seal_of_alacrity->effectN( 2 ).base_value() / base_recharge_multiplier);
+  }
 }
 
 proc_types judgment_t::proc_type() const
@@ -1337,8 +1343,11 @@ void judgment_t::impact( action_state_t* s )
       if ( p()->talents.greater_judgment->ok() )
         td( s->target )->debuff.judgment->trigger();
 
+    int amount = 25;
+      if ( p()->is_ptr() )
+        amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
-      td( s->target )->debuff.judgment_of_light->trigger( 25 );
+      td( s->target )->debuff.judgment_of_light->trigger( amount );
   }
 }
 

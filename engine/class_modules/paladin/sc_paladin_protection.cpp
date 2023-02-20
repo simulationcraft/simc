@@ -1076,9 +1076,7 @@ void paladin_t::trigger_grand_crusader()
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
-    //Cooldown should be reduced by 3 seconds, but apparently that's nyi on live servers. Still old functionality.
-    //cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
-    cooldowns.judgment->adjust( -( cooldowns.judgment->duration ), true );
+    cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
   }
 
   if ( talents.inspiring_vanguard->ok() )
