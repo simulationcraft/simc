@@ -772,8 +772,11 @@ struct seal_of_the_crusader_cb_t : public dbc_proc_callback_t
 
   void execute( action_t*, action_state_t* s ) override
   {
-    auto td = p->get_target_data( s->target );
-    td->debuff.seal_of_the_crusader->trigger();
+    if ( !p->is_ptr() )
+    {
+      auto td = p->get_target_data( s->target );
+      td->debuff.seal_of_the_crusader->trigger();
+    }
   }
 };
 
@@ -833,10 +836,28 @@ struct touch_of_light_cb_t : public dbc_proc_callback_t
 
 // Melee Attack =============================================================
 
+struct seal_of_the_crusader_t : public paladin_spell_t
+{
+  seal_of_the_crusader_t( paladin_t* p )
+    : paladin_spell_t( "seal_of_the_crusader", p, p->talents.seal_of_the_crusader->effectN( 1 ).trigger() )
+  {
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = paladin_spell_t::action_multiplier();
+    am *= 1.0 + p()->talents.seal_of_the_crusader->effectN( 2 ).percent();
+    return am;
+  }
+};
+
 struct melee_t : public paladin_melee_attack_t
 {
   bool first;
-  melee_t( paladin_t* p ) : paladin_melee_attack_t( "melee", p, spell_data_t::nil() ), first( true )
+  seal_of_the_crusader_t* seal_of_the_crusader;
+  melee_t( paladin_t* p )
+    : paladin_melee_attack_t( "melee", p, spell_data_t::nil() ), first( true ), seal_of_the_crusader( nullptr )
   {
     school            = SCHOOL_PHYSICAL;
     special           = false;
@@ -849,6 +870,12 @@ struct melee_t : public paladin_melee_attack_t
     weapon_multiplier = 1.0;
 
     affected_by.avenging_wrath = affected_by.crusade = affected_by.blessing_of_dawn = true;
+
+    if ( p->is_ptr() && p->talents.seal_of_the_crusader->ok() )
+    {
+      seal_of_the_crusader = new seal_of_the_crusader_t( p );
+      add_child( seal_of_the_crusader );
+    }
   }
 
   timespan_t execute_time() const override
@@ -934,6 +961,12 @@ struct melee_t : public paladin_melee_attack_t
         vc->set_target( execute_state->target );
         vc->schedule_execute();
       }
+
+      if ( p()->is_ptr() && p()->talents.seal_of_the_crusader->ok() )
+      {
+        seal_of_the_crusader->target = execute_state->target;
+        seal_of_the_crusader->schedule_execute();
+      }
     }
   }
 };
@@ -957,7 +990,10 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
 
   void execute() override
   {
-    p()->main_hand_attack->schedule_execute();
+    if ( p()->main_hand_attack->execute_event == nullptr )
+    {
+      p()->main_hand_attack->schedule_execute();
+    }
   }
 
   bool ready() override
@@ -2194,14 +2230,17 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
   debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                                 ->set_default_value( paladin->conduit.vengeful_shock.percent() );
-  debuff.seal_of_the_crusader  = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) )
-                                ->set_default_value( paladin->talents.seal_of_the_crusader->effectN( 2 ).percent() );
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
   debuff.eye_of_tyr            = make_buff( *this, "eye_of_tyr", paladin->find_spell( 387174 ) )
                                 ->set_cooldown( 0_ms );
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                                 ->set_max_stack(3);
+                                 ->set_max_stack( 3 );
+
+  if ( !paladin->is_ptr() )
+    debuff.seal_of_the_crusader =
+        make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) )
+            ->set_default_value( paladin->talents.seal_of_the_crusader->effectN( 2 ).percent() );
 }
 
 bool paladin_td_t::standing_in_consecration()
@@ -2889,7 +2928,7 @@ void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  if ( talents.seal_of_the_crusader->ok() )
+  if ( !player_t::is_ptr() && talents.seal_of_the_crusader->ok() )
   {
     auto const seal_of_the_crusader_driver = new special_effect_t( this );
     seal_of_the_crusader_driver->name_str  = "seal_of_the_crusader_driver";
@@ -3329,7 +3368,7 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
   {
     cptm *= 1.0 + td->debuff.vengeful_shock->value();
   }
-  if ( dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
+  if (!paladin_t::is_ptr() && dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
   {
     cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();
   }
