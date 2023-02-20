@@ -115,6 +115,7 @@ public:
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
     buff_t* seal_of_clarity;
+    buff_t* faiths_armor;
 
     // Holy
     buff_t* divine_protection;
@@ -1640,6 +1641,15 @@ struct holy_power_consumer_t : public Base
 
     if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() ))
       p->buffs.seal_of_clarity->trigger();
+
+    if ( p->is_ptr() && p->talents.faiths_armor->ok())
+    {
+      if ( (p->specialization() == PALADIN_RETRIBUTION && is_wog)
+        || (p->specialization() != PALADIN_RETRIBUTION && is_sotr))
+      {
+        p->buffs.faiths_armor->trigger();
+      }
+    }
   }
 
   void consume_resource() override

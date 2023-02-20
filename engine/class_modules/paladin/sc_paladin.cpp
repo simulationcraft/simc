@@ -2717,6 +2717,9 @@ void paladin_t::create_buffs()
     buffs.blessing_of_dawn =
         make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect(1);
     buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
+    buffs.faiths_armor = make_buff( this, "faiths_armor", find_spell( 379017 ) )
+                             ->set_default_value_from_effect(1)
+                             ->add_invalidate( CACHE_BONUS_ARMOR );
   }
   if ( talents.seal_of_order->ok() )
   {
@@ -3249,6 +3252,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
     if ( passives.aegis_of_light -> ok() )
       m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
 
+    if ( talents.sanctified_plates->ok() )
+      m *= 1.0 + talents.sanctified_plates->effectN( 1 ).percent();
+
     // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?
     if ( buffs.redoubt->up() )
       m *= 1.0 + buffs.redoubt->stack_value();
@@ -3366,6 +3372,12 @@ double paladin_t::composite_base_armor_multiplier() const
   if ( talents.holy_aegis -> ok() )
     a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
 
+  if ( is_ptr() && talents.sanctified_plates->ok() )
+    a *= 1.0 + talents.sanctified_plates->effectN( 3 ).percent();
+
+  if ( is_ptr() && talents.faiths_armor->ok() && buffs.faiths_armor->up() )
+    a *= 1.0 + buffs.faiths_armor->default_value;
+
   return a;
 }
 
@@ -3452,7 +3464,7 @@ double paladin_t::composite_bonus_armor() const
   if ( buffs.shield_of_the_righteous->check() )
   {
     double bonus = buffs.shield_of_the_righteous->value() * cache.strength();
-    if ( talents.faiths_armor->ok() )
+    if (!is_ptr() && talents.faiths_armor->ok() )
       bonus *= 1.0 + talents.faiths_armor->effectN( 1 ).percent();
     ba += bonus;
   }
