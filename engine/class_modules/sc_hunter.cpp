@@ -428,6 +428,7 @@ public:
     gain_t* trueshot;
 
     gain_t* barbed_shot;
+    gain_t* dire_beast;
 
     gain_t* terms_of_engagement;
     gain_t* coordinated_kill;
@@ -1785,6 +1786,13 @@ struct dire_critter_t final : public hunter_pet_t
     hunter_pet_t::summon( duration );
 
     o() -> buffs.dire_beast -> trigger();
+
+    //20/02/2023
+    //When Dire Beast has been glyphed with Dire Stable it generates 10 focus on summon
+    if ( o() -> bugs) 
+    {
+      o() -> resource_gain( RESOURCE_FOCUS, find_spell( 120694 ) -> effectN( 1 ).base_value(), o() -> gains.dire_beast );
+    }
 
     o() -> state.dire_pack_counter++;
     if ( o() -> state.dire_pack_counter == dire_pack_threshold )
@@ -6956,6 +6964,7 @@ void hunter_t::init_gains()
   gains.trueshot               = get_gain( "Trueshot" );
 
   gains.barbed_shot            = get_gain( "Barbed Shot" );
+  gains.dire_beast             = get_gain( "Dire Beast (Bug)" ); 
 
   gains.terms_of_engagement    = get_gain( "Terms of Engagement" );
   gains.coordinated_kill       = get_gain( "Coordinated Kill" );
