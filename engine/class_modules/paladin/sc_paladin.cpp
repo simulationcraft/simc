@@ -3265,6 +3265,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
+    if ( is_ptr() && talents.seal_of_might->ok() )
+      // Currently only gives base str, but they'll fix that for sure. And I have no clue how to get base str in SimC
+      m *= 1.0 + talents.seal_of_might->effectN( 1 ).percent();
     if ( buffs.redoubt->up() )
       // Applies to base str, gear str and buffs. So everything basically.
       m *= 1.0 + buffs.redoubt->stack_value();
@@ -3326,9 +3329,13 @@ double paladin_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  if ( talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
+  if (!is_ptr() && talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
   {
     m += talents.seal_of_might->effectN( 1 ).percent();
+  }
+  if ( is_ptr() && talents.seal_of_might->ok() )
+  {
+    m += talents.seal_of_might->effectN( 2 ).percent();
   }
 
   return m;
