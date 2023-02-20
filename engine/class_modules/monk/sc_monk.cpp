@@ -4847,13 +4847,21 @@ namespace monk
           add_child( heal );
           add_child( ww_damage );
         } 
-
+        
         std::vector<player_t *> &target_list() const override
         {
-          auto tl = monk_spell_t::target_list();
+          // Check if target cache is still valid. If not, recalculate it
+          if ( !target_cache.is_valid )
+          {
+            available_targets( target_cache.list );  // This grabs the full list of targets, which will also pickup various
+                                                     // awfulness that some classes have.. such as prismatic crystal.
+            if ( sim->distance_targeting_enabled )
+              check_distance_targeting( target_cache.list );
+            target_cache.is_valid = true;
+          }
 
           // Prioritize enemies / players that do not have fae exposure 
-          sort( tl.begin(), tl.end(), [ this ] ( player_t *left, player_t *right )
+          range::sort(target_cache.list, [ this ] (player_t *left, player_t *right)
           {
             return get_td( left )->debuff.fae_exposure->remains() < get_td( right )->debuff.fae_exposure->remains();
           });
@@ -4871,9 +4879,7 @@ namespace monk
           monk_spell_t::execute();
 
           p()->buff.faeline_stomp_reset->expire();
-
           p()->buff.faeline_stomp->trigger();
-
           p()->buff.fae_exposure->trigger();
         }
 
