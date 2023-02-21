@@ -15,7 +15,6 @@ def->add_action( "use_item,slot=trinket1" );
 def->add_action( "use_item,slot=trinket2" );
 def->add_action( "potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))" );
 def->add_action( "run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)" );
-def->add_action( "run_action_list,name=owlweave,if=(target.cooldown.pause_action.remains|time>=30)&buff.tooth_and_claw.remains<1.5&((druid.owlweave_bear=1)&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&cooldown.starsurge.up)" );
 def->add_action( "run_action_list,name=bear" );
 
 bear->add_action( "bear_form,if=!buff.bear_form.up" );
@@ -57,4 +56,4 @@ catweave->add_action( "rake,if=dot.rake.refreshable|energy<45" );
 catweave->add_action( "rip,if=dot.rip.refreshable&combo_points>=1" );
 catweave->add_action( "convoke_the_spirits" );
 catweave->add_action( "ferocious_bite,if=combo_points>=4&energy>50" );
-catweave->add_action( "shred,if=combo_points<=5" );
+catweave->add_action( "shred,if=combo_points<5" );
