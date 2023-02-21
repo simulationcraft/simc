@@ -3252,7 +3252,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
     if ( passives.aegis_of_light -> ok() )
       m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
 
-    if ( talents.sanctified_plates->ok() )
+    if ( is_ptr() && talents.sanctified_plates->ok() )
       m *= 1.0 + talents.sanctified_plates->effectN( 1 ).percent();
 
     // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?

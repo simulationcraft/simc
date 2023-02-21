@@ -577,7 +577,7 @@ struct eye_of_tyr_t : public paladin_spell_t
     aoe      = -1;
     may_crit = true;
 
-    if ( p->talents.inmost_light->ok() )
+    if ( p->is_ptr() && p->talents.inmost_light->ok() )
       cooldown->duration = data().cooldown() * ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
 
   }
@@ -596,7 +596,7 @@ struct eye_of_tyr_t : public paladin_spell_t
   double action_multiplier() const override
   {
     double m = paladin_spell_t::action_multiplier();
-    if ( p()->talents.inmost_light->ok() )
+    if ( p()->is_ptr() && p()->talents.inmost_light->ok() )
     {
       m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
     }
