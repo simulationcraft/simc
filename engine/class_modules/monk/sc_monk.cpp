@@ -4860,11 +4860,14 @@ namespace monk
             target_cache.is_valid = true;
           }
 
-          // Prioritize enemies / players that do not have fae exposure 
-          range::sort(target_cache.list, [ this ] (player_t *left, player_t *right)
+          if ( !target_cache.list.empty() )
           {
-            return get_td( left )->debuff.fae_exposure->remains() < get_td( right )->debuff.fae_exposure->remains();
-          });
+            // Prioritize enemies / players that do not have fae exposure 
+            range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
+            {
+              return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
+            } );
+          }
 
           return target_cache.list;
         }
@@ -9510,12 +9513,81 @@ namespace monk
   class monk_report_t : public player_report_extension_t
   {
     public:
+
+    struct monk_bug
+    {
+      std::string desc;
+      std::string date;
+      bool match;
+    };
+
+    std::vector<monk_bug *> issues;
+
     monk_report_t( monk_t &player ) : p( player )
     {
     }
 
+    void monk_bugreport( report::sc_html_stream &os  )
+    {
+
+      // Description: Self-explanatory
+      // Date: Self-explanatory
+      // Match: True if sim matches in-game behavior
+      auto ReportIssue = [ this ] ( std::string desc, std::string date, bool match = false )
+      {
+        monk_bug *new_issue = new monk_bug;
+        new_issue->desc = desc;
+        new_issue->date = date;
+        new_issue->match = match;
+        issues.push_back( new_issue );
+      };
+
+      // Add bugs / issues with sims here:
+      ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
+      ReportIssue( "Blackout Combo Celestial Brew is overriding any current Purrifying Chi", "2023-02-21", true );
+      ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
+      ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
+      ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
+
+      // =================================================
+
+      os << "<div class=\"section\">\n";
+      os << "<h2 class=\"toggle\">Known Bugs and Issues</h2>\n";
+      os << "<div class=\"toggle-content hide\">\n";
+
+
+      for ( auto issue : issues )
+      {
+        if ( issue->desc.empty() )
+          continue;
+
+        os << "<h3>" << issue->desc << "</h3>\n";
+
+        os << "<table class=\"sc even\">\n"
+          << "<thead>\n"
+          << "<tr>\n"
+          << "<th class=\"left\">Effective Date</th>\n"
+          << "<th class=\"left\">Sim Matches Game Behavior</th>\n"
+          << "</tr>\n"
+          << "</thead>\n";
+
+        os << "<tr>\n"
+          << "<td class=\"left\"><strong>" << issue->date << "</strong></td>\n"
+          << "<td class=\"left\" colspan=\"5\"><strong>" << ( issue->match ? "YES" : "NO" ) << "</strong></td>\n"
+          << "</tr>\n";
+
+        os << "</table>\n";
+      }
+      
+      os << "</table>\n";
+      os << "</div>\n";
+      os << "</div>\n";
+    }
+
     void html_customsection( report::sc_html_stream &os ) override
     {
+      monk_bugreport( os );
+
       // Custom Class Section
       if ( p.specialization() == MONK_BREWMASTER )
       {
