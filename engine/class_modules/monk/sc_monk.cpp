@@ -4860,11 +4860,14 @@ namespace monk
             target_cache.is_valid = true;
           }
 
-          // Prioritize enemies / players that do not have fae exposure 
-          range::sort(target_cache.list, [ this ] (player_t *left, player_t *right)
+          if ( !target_cache.list.empty() )
           {
-            return get_td( left )->debuff.fae_exposure->remains() < get_td( right )->debuff.fae_exposure->remains();
-          });
+            // Prioritize enemies / players that do not have fae exposure 
+            range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
+            {
+              return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
+            } );
+          }
 
           return target_cache.list;
         }
@@ -9510,12 +9513,173 @@ namespace monk
   class monk_report_t : public player_report_extension_t
   {
     public:
+
+    struct monk_bug
+    {
+      std::string desc;
+      std::string date;
+      bool match;
+    };
+
+    std::vector<monk_bug *> issues;
+
     monk_report_t( monk_t &player ) : p( player )
     {
     }
 
+    void monk_bugreport( report::sc_html_stream &os  )
+    {
+
+      // Description: Self-explanatory
+      // Date: Self-explanatory
+      // Match: True if sim matches in-game behavior
+      auto ReportIssue = [ this ] ( std::string desc, std::string date, bool match = false )
+      {
+        monk_bug *new_issue = new monk_bug;
+        new_issue->desc = desc;
+        new_issue->date = date;
+        new_issue->match = match;
+        issues.push_back( new_issue );
+      };
+
+      // Add bugs / issues with sims here:
+      ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
+      ReportIssue( "Blackout Combo Celestial Brew is overriding any current Purrifying Chi", "2023-02-21", true );
+      ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
+      ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
+      ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
+
+      // =================================================
+
+      os << "<div class=\"section\">\n";
+      os << "<h2 class=\"toggle\">Known Bugs and Issues</h2>\n";
+      os << "<div class=\"toggle-content hide\">\n";
+
+
+      for ( auto issue : issues )
+      {
+        if ( issue->desc.empty() )
+          continue;
+
+        os << "<h3>" << issue->desc << "</h3>\n";
+
+        os << "<table class=\"sc even\">\n"
+          << "<thead>\n"
+          << "<tr>\n"
+          << "<th class=\"left\">Effective Date</th>\n"
+          << "<th class=\"left\">Sim Matches Game Behavior</th>\n"
+          << "</tr>\n"
+          << "</thead>\n";
+
+        os << "<tr>\n"
+          << "<td class=\"left\"><strong>" << issue->date << "</strong></td>\n"
+          << "<td class=\"left\" colspan=\"5\"><strong>" << ( issue->match ? "YES" : "NO" ) << "</strong></td>\n"
+          << "</tr>\n";
+
+        os << "</table>\n";
+      }
+      
+
+      /*
+      std::string current_group;
+      bool first_group = true;
+
+      for ( size_t i = 0; i < entries.size(); ++i )
+      {
+        const hotfix::hotfix_entry_t *entry = entries[entries.size() - 1 - i];
+        if ( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_QUIET ) )
+        {
+          continue;
+        }
+
+        if ( sim.dbc->ptr &&
+          !( entry && ( entry->flags_ & hotfix::HOTFIX_FLAG_PTR ) ) )
+        {
+          continue;
+        }
+
+        if ( entry && !sim.dbc->ptr &&
+          !( entry->flags_ & hotfix::HOTFIX_FLAG_LIVE ) )
+        {
+          continue;
+        }
+
+        if ( entry && current_group != entry->group_ )
+        {
+          if ( !first_group )
+          {
+            os << "</table>\n";
+          }
+
+          os << "<h3>" << util::encode_html( entry->group_ ) << "</h3>\n"
+            << "<table class=\"sc even\">\n"
+            << "<thead>\n"
+            << "<tr>\n"
+            << "<th>Tag</th>\n"
+            << "<th class=\"left\">Spell / Effect</th>\n"
+            << "<th class=\"left\">Field</th>\n"
+            << "<th class=\"left\">Hotfixed Value</th>\n"
+            << "<th class=\"left\" colspan=\"2\">DBC Value</th>\n"
+            << "</tr>\n"
+            << "</thead>\n";
+          current_group = entry->group_;
+          first_group = false;
+        }
+
+        if ( entry )
+        {
+          os << "<tr>\n"
+            << "<td class=\"left\"><strong>" << util::encode_html( entry->tag_.substr( 0, 10 ) ) << "</strong></td>\n"
+            << "<td class=\"left\" colspan=\"5\"><strong>" << util::encode_html( entry->note_ ) << "</strong></td>\n"
+            << "</tr>\n";
+        }
+        if ( const hotfix::effect_hotfix_entry_t *e = dynamic_cast< const hotfix::effect_hotfix_entry_t * >( entry ) )
+        {
+          os << "<tr>\n"
+            << "<td></td>\n";
+          const spelleffect_data_t *effect = sim.dbc->effect( e->id_ );
+
+          std::string name = report_decorators::decorated_spell_name( sim, *effect->spell() );
+          name += " (effect#" + util::to_string( effect->index() + 1 ) + ")";
+          os << "<td class=\"left\">" << name << "</td>\n";
+        }
+        else if ( const hotfix::spell_hotfix_entry_t *e = dynamic_cast< const hotfix::spell_hotfix_entry_t * >( entry ) )
+        {
+          os << "<tr>\n"
+            << "<td></td>\n";
+          const spell_data_t *spell = sim.dbc->spell( e->id_ );
+          std::string name = report_decorators::decorated_spell_name( sim, *spell );
+          os << "<td class=\"left\">" << name << "</td>\n";
+        }
+
+        if ( const hotfix::dbc_hotfix_entry_t *e = dynamic_cast< const hotfix::dbc_hotfix_entry_t * >( entry ) )
+        {
+          os << "<td class=\"left\">" << util::encode_html( e->field_name_ ) << "</td>\n";
+          os << "<td class=\"left\">" << e->hotfix_value_ << "</td>\n";
+          if ( e->orig_value_ != -std::numeric_limits<double>::max() &&
+            util::round( e->orig_value_, 6 ) != util::round( e->dbc_value_, 6 ) )
+          {
+            os << "<td class=\"left\">" << e->dbc_value_ << "</td>\n";
+            os << "<td class=\"left\" style=\"color:red;\"><strong>Verification Failure ("
+              << e->orig_value_ << ")</strong></td>";
+          }
+          else
+          {
+            os << "<td colspan=\"2\" class=\"left\">" << e->dbc_value_ << "</td>\n";
+          }
+          os << "</tr>\n";
+        }
+      }
+      */
+      os << "</table>\n";
+      os << "</div>\n";
+      os << "</div>\n";
+    }
+
     void html_customsection( report::sc_html_stream &os ) override
     {
+      monk_bugreport( os );
+
       // Custom Class Section
       if ( p.specialization() == MONK_BREWMASTER )
       {
