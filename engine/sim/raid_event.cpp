@@ -414,17 +414,67 @@ struct pull_event_t final : raid_event_t
     }
   };
 
+  struct redistribute_event_t : public event_t
+  {
+    pull_event_t* pull;
+
+    redistribute_event_t( pull_event_t* pull_ )
+      : event_t( *pull_->sim, 1.0_s ),
+        pull( pull_ )
+    { }
+
+    const char* name() const override
+    {
+      return "redistribute_event_t";
+    }
+
+    void execute() override
+    {
+      pull->redistribute_event = nullptr;
+
+      double max_hp     = 0.0;
+      double current_hp = 0.0;
+
+      auto active_adds = pull->adds_spawner->active_pets();
+      for ( auto add : active_adds )
+      {
+        max_hp += add->resources.initial[ RESOURCE_HEALTH ];
+        current_hp += add->resources.current[ RESOURCE_HEALTH ];
+      }
+
+      double pct = current_hp / max_hp;
+
+      for ( auto add : active_adds )
+      {
+        double new_hp = pct * add->resources.initial[ RESOURCE_HEALTH ];
+        double old_hp = add->resources.current[ RESOURCE_HEALTH ];
+        if ( new_hp > old_hp )
+        {
+          add->resource_gain( RESOURCE_HEALTH, new_hp - old_hp );
+        }
+        else if ( new_hp < old_hp )
+        {
+          add->resource_loss( RESOURCE_HEALTH, old_hp - new_hp );
+        }
+      }
+
+      pull->redistribute_event = make_event<redistribute_event_t>( sim(), pull );
+    }
+  };
+
   player_t* master;
   std::string enemies_str;
   timespan_t delay;
   timespan_t spawn_time;
   int pull;
   bool bloodlust;
+  bool shared_health;
   timespan_t mark_duration;
   bool spawned;
   bool demised;
   event_t* spawn_event;
   event_t* thundering_event;
+  event_t* redistribute_event;
 
   struct spawn_parameter
   {
@@ -444,15 +494,18 @@ struct pull_event_t final : raid_event_t
       spawn_time( 0_s ),
       pull( 0 ),
       bloodlust( false ),
+      shared_health( false ),
       mark_duration( 15_s ),
       spawned( false ),
       spawn_event( nullptr ),
-      thundering_event( nullptr )
+      thundering_event( nullptr ),
+      redistribute_event( nullptr )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
     add_option( opt_int( "pull", pull ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
+    add_option( opt_bool( "shared_health", shared_health ) );
     add_option( opt_timespan( "mark_duration", mark_duration ) );
 
     parse_options( options_str );
@@ -546,6 +599,8 @@ struct pull_event_t final : raid_event_t
 
     timespan_t thundering_timer = thundering_event->remains();
     event_t::cancel(thundering_event);
+
+    event_t::cancel( redistribute_event );
 
     // find the next pull and spawn it
     if ( auto next = next_pull() )
@@ -670,6 +725,7 @@ struct pull_event_t final : raid_event_t
             continue;
 
           p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
         }
       }
       else
@@ -678,6 +734,7 @@ struct pull_event_t final : raid_event_t
         if ( p )
         {
           p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
         }
       }
     }    
@@ -702,6 +759,9 @@ struct pull_event_t final : raid_event_t
       }
     }
 
+    if ( shared_health )
+      redistribute_event = make_event<redistribute_event_t>( *sim, this );
+
     sim->print_log( "Spawned Pull {}: {} mobs with {} total health, {:.1f}s delay from previous",
                     pull, adds.size(), total_health, delay.total_seconds() );
 
@@ -714,6 +774,7 @@ struct pull_event_t final : raid_event_t
 
     spawned = false;
     demised = false;
+    redistribute_event = nullptr;
   }
 };
 

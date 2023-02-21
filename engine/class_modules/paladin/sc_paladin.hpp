@@ -722,6 +722,7 @@ public:
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
+  ground_aoe_event_t* active_boj_cons;
   std::set<ground_aoe_event_t*> all_active_consecrations;
   ground_aoe_event_t* active_hallow_damaging;
   ground_aoe_event_t* active_hallow_healing;
