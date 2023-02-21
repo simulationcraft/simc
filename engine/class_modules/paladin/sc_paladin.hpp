@@ -1677,6 +1677,7 @@ struct judgment_t : public paladin_melee_attack_t
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;
+  double action_multiplier() const override;
 };
 
 struct shield_of_the_righteous_buff_t : public buff_t

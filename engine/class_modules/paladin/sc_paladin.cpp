@@ -1413,6 +1413,15 @@ void judgment_t::execute()
   }
 }
 
+double judgment_t::action_multiplier() const
+{
+  double am = paladin_melee_attack_t::action_multiplier();
+  if ( p()->is_ptr() && p()->talents.justification->ok() )
+    am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
+
+  return am;
+}
+
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t
