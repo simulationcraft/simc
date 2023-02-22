@@ -280,7 +280,7 @@ void destruction( player_t* p )
 
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "call_action_list,name=items" );
-  aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd&active_enemies<5+(talent.cry_havoc&!talent.inferno)" );
+  aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<5+(talent.cry_havoc&!talent.inferno)" );
   aoe->add_action( "rain_of_fire,if=pet.infernal.active" );
   aoe->add_action( "rain_of_fire,if=pet.blasphemy.active" );
   aoe->add_action( "rain_of_fire,if=soul_shard>=(4.5-0.1*active_dot.immolate)" );
@@ -303,7 +303,7 @@ void destruction( player_t* p )
 
   cleave->add_action( "call_action_list,name=items" );
   cleave->add_action( "call_action_list,name=ogcd" );
-  cleave->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd" );
+  cleave->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max" );
   cleave->add_action( "variable,name=pool_soul_shards,value=cooldown.havoc.remains<=10|talent.mayhem" );
   cleave->add_action( "conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate.remains<1.5)|charges=max_charges" );
   cleave->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
