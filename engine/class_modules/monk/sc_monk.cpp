@@ -598,9 +598,9 @@ namespace monk
 
         trigger_storm_earth_and_fire( this );
 
-        if ( p()->current.distance_to_move <= 5 
-          && p()->buff.faeline_stomp->up() 
-          && trigger_faeline_stomp 
+        if ( p()->current.distance_to_move <= 5
+          && p()->buff.faeline_stomp->up()
+          && trigger_faeline_stomp
           && p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
         {
           double reset_value = p()->buff.faeline_stomp->value();
@@ -2693,6 +2693,7 @@ namespace monk
           : monk_melee_attack_t( name, p, s )
         {
           sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
+          
           ww_mastery = true;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
@@ -2760,6 +2761,7 @@ namespace monk
           mh_attack( nullptr ),
           oh_attack( nullptr )
         {
+          may_combo_strike = true;
           cast_during_sck = true;
           affected_by.serenity = false;
           cooldown->hasted = false;
@@ -4846,8 +4848,8 @@ namespace monk
           add_child( damage );
           add_child( heal );
           add_child( ww_damage );
-        } 
-        
+        }
+
         std::vector<player_t *> &target_list() const override
         {
           // Check if target cache is still valid. If not, recalculate it
@@ -9528,7 +9530,7 @@ namespace monk
     {
     }
 
-    void monk_bugreport( report::sc_html_stream &os  )
+    void monk_bugreport( report::sc_html_stream &os )
     {
 
       // Description: Self-explanatory
@@ -9580,7 +9582,7 @@ namespace monk
 
         os << "</table>\n";
       }
-      
+
       os << "</table>\n";
       os << "</div>\n";
       os << "</div>\n";
