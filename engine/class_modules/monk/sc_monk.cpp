@@ -4862,7 +4862,8 @@ namespace monk
 
           if ( !target_cache.list.empty() )
           {
-            // Prioritize enemies / players that do not have fae exposure 
+            // Prioritize enemies / players that do not have fae exposure
+            // the ability does not do this inherently but it is assumed that an observant player would
             range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
             {
               return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
@@ -5787,7 +5788,7 @@ namespace monk
 
           if ( p()->buff.blackout_combo->up() )
           {
-            // Currently, Blackout Combo Celestial Brew is overriding any current Purrifying Chi
+            // Currently, Blackout Combo Celestial Brew is overriding any current Purifying Chi
             if ( p()->bugs )
               p()->buff.purified_chi->expire();
 
@@ -9544,10 +9545,11 @@ namespace monk
 
       // Add bugs / issues with sims here:
       ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
-      ReportIssue( "Blackout Combo Celestial Brew is overriding any current Purrifying Chi", "2023-02-21", true );
+      ReportIssue( "Blackout Combo Celestial Brew is overriding any current Purifying Chi", "2023-02-21", true );
       ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
       ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
+      ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
 
       // =================================================
 
