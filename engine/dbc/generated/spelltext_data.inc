@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.5.48069
-static const std::array<spelltext_data_t, 19265> __spelltext_data { {
+static const std::array<spelltext_data_t, 19266> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11079,6 +11079,7 @@ static const std::array<spelltext_data_t, 19265> __spelltext_data { {
   { 281842, "$@spelldesc281841", 0, 0 },
   { 281843, "$@spelldesc281841", "Mastery increased by $w1. When this effect expires, it will jump to an ally within $281844A1 yds.", 0 },
   { 281844, "$@spelldesc281841", "Mastery increased by $w1.", 0 },
+  { 281871, "$@spelldesc202770", 0, 0 },
   { 281875, "Play a tune of the desert, encouraging the small critters of Vol'dun to accompany you for $d. They happily follow you everywhere you go!", "Creatures of the desert find you enthralling.", 0 },
   { 281954, "Reduces your falling speed for $d.", "Falling speed reduced.", "Racial" },
   { 282131, "Calls forth a Vanquished Tentacle of Yogg-Saron to serve you for $64982d.", 0, 0 },
