@@ -4862,7 +4862,8 @@ namespace monk
 
           if ( !target_cache.list.empty() )
           {
-            // Prioritize enemies / players that do not have fae exposure 
+            // Prioritize enemies / players that do not have fae exposure
+            // the ability does not do this inherently but it is assumed that an observant player would
             range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
             {
               return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
