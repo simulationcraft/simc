@@ -280,19 +280,19 @@ void destruction( player_t* p )
 
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "call_action_list,name=items" );
-  aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd&active_enemies<5+(talent.cry_havoc&!talent.inferno)" );
+  aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<5+(talent.cry_havoc&!talent.inferno)" );
   aoe->add_action( "rain_of_fire,if=pet.infernal.active" );
   aoe->add_action( "rain_of_fire,if=pet.blasphemy.active" );
   aoe->add_action( "rain_of_fire,if=soul_shard>=(4.5-0.1*active_dot.immolate)" );
   aoe->add_action( "chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire" );
   aoe->add_action( "cataclysm" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire" );
+  aoe->add_action( "havoc,target_if=min:dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)" );
   aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=4&!havoc_active&target.time_to_die>8" );
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
   aoe->add_action( "rain_of_fire,if=(debuff.pyrogenics.down|buff.madness_rof.up)&active_enemies<=4" );
-  aoe->add_action( "havoc,target_if=min:dot.immolate.remains+99*(self.target=target)" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=((dot.immolate.remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains))|active_enemies>active_dot.immolate)&target.time_to_die>8" );
   aoe->add_action( "soul_fire,if=buff.backdraft.up" );
@@ -303,7 +303,7 @@ void destruction( player_t* p )
 
   cleave->add_action( "call_action_list,name=items" );
   cleave->add_action( "call_action_list,name=ogcd" );
-  cleave->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd" );
+  cleave->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max" );
   cleave->add_action( "variable,name=pool_soul_shards,value=cooldown.havoc.remains<=10|talent.mayhem" );
   cleave->add_action( "conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate.remains<1.5)|charges=max_charges" );
   cleave->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );

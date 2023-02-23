@@ -598,9 +598,9 @@ namespace monk
 
         trigger_storm_earth_and_fire( this );
 
-        if ( p()->current.distance_to_move <= 5 
-          && p()->buff.faeline_stomp->up() 
-          && trigger_faeline_stomp 
+        if ( p()->current.distance_to_move <= 5
+          && p()->buff.faeline_stomp->up()
+          && trigger_faeline_stomp
           && p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
         {
           double reset_value = p()->buff.faeline_stomp->value();
@@ -2693,6 +2693,7 @@ namespace monk
           : monk_melee_attack_t( name, p, s )
         {
           sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
+          
           ww_mastery = true;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
@@ -2760,6 +2761,7 @@ namespace monk
           mh_attack( nullptr ),
           oh_attack( nullptr )
         {
+          may_combo_strike = true;
           cast_during_sck = true;
           affected_by.serenity = false;
           cooldown->hasted = false;
@@ -4846,8 +4848,8 @@ namespace monk
           add_child( damage );
           add_child( heal );
           add_child( ww_damage );
-        } 
-        
+        }
+
         std::vector<player_t *> &target_list() const override
         {
           // Check if target cache is still valid. If not, recalculate it
@@ -4860,11 +4862,15 @@ namespace monk
             target_cache.is_valid = true;
           }
 
-          // Prioritize enemies / players that do not have fae exposure 
-          range::sort(target_cache.list, [ this ] (player_t *left, player_t *right)
+          if ( !target_cache.list.empty() )
           {
-            return get_td( left )->debuff.fae_exposure->remains() < get_td( right )->debuff.fae_exposure->remains();
-          });
+            // Prioritize enemies / players that do not have fae exposure
+            // the ability does not do this inherently but it is assumed that an observant player would
+            range::sort( target_cache.list, [ this ] ( player_t *left, player_t *right )
+            {
+              return get_td( left )->debuff.fae_exposure->remains().total_millis() < get_td( right )->debuff.fae_exposure->remains().total_millis();
+            } );
+          }
 
           return target_cache.list;
         }
@@ -5784,7 +5790,7 @@ namespace monk
 
           if ( p()->buff.blackout_combo->up() )
           {
-            // Currently, Blackout Combo Celestial Brew is overriding any current Purrifying Chi
+            // Currently, Blackout Combo Celestial Brew is overriding any current Purifying Chi
             if ( p()->bugs )
               p()->buff.purified_chi->expire();
 
@@ -9510,12 +9516,82 @@ namespace monk
   class monk_report_t : public player_report_extension_t
   {
     public:
+
+    struct monk_bug
+    {
+      std::string desc;
+      std::string date;
+      bool match;
+    };
+
+    std::vector<monk_bug *> issues;
+
     monk_report_t( monk_t &player ) : p( player )
     {
     }
 
+    void monk_bugreport( report::sc_html_stream &os )
+    {
+
+      // Description: Self-explanatory
+      // Date: Self-explanatory
+      // Match: True if sim matches in-game behavior
+      auto ReportIssue = [ this ] ( std::string desc, std::string date, bool match = false )
+      {
+        monk_bug *new_issue = new monk_bug;
+        new_issue->desc = desc;
+        new_issue->date = date;
+        new_issue->match = match;
+        issues.push_back( new_issue );
+      };
+
+      // Add bugs / issues with sims here:
+      ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
+      ReportIssue( "Blackout Combo Celestial Brew is overriding any current Purifying Chi", "2023-02-21", true );
+      ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
+      ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
+      ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
+      ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
+
+      // =================================================
+
+      os << "<div class=\"section\">\n";
+      os << "<h2 class=\"toggle\">Known Bugs and Issues</h2>\n";
+      os << "<div class=\"toggle-content hide\">\n";
+
+
+      for ( auto issue : issues )
+      {
+        if ( issue->desc.empty() )
+          continue;
+
+        os << "<h3>" << issue->desc << "</h3>\n";
+
+        os << "<table class=\"sc even\">\n"
+          << "<thead>\n"
+          << "<tr>\n"
+          << "<th class=\"left\">Effective Date</th>\n"
+          << "<th class=\"left\">Sim Matches Game Behavior</th>\n"
+          << "</tr>\n"
+          << "</thead>\n";
+
+        os << "<tr>\n"
+          << "<td class=\"left\"><strong>" << issue->date << "</strong></td>\n"
+          << "<td class=\"left\" colspan=\"5\"><strong>" << ( issue->match ? "YES" : "NO" ) << "</strong></td>\n"
+          << "</tr>\n";
+
+        os << "</table>\n";
+      }
+
+      os << "</table>\n";
+      os << "</div>\n";
+      os << "</div>\n";
+    }
+
     void html_customsection( report::sc_html_stream &os ) override
     {
+      monk_bugreport( os );
+
       // Custom Class Section
       if ( p.specialization() == MONK_BREWMASTER )
       {
