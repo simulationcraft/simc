@@ -30,6 +30,7 @@ st->add_action( "moonfire,target_if=refreshable&remains<2&(target.time_to_die-re
 st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2&(target.time_to_die-remains)>8" );
 st->add_action( "variable,name=cd_condition_st,value=!druid.no_cds&(cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune))" );
 st->add_action( "wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next|fight_remains>10&(target.time_to_die<=2&astral_power.deficit>20|target.time_to_die<=5&buff.primordial_arcanic_pulsar.value>=550)" );
+st->add_action( "starfall,if=variable.cd_condition_st&buff.touch_the_cosmos.up&cooldown.ca_inc.up" );
 st->add_action( "starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up|buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up" );
 st->add_action( "starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up" );
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
