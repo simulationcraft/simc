@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.47967 Live (hotfix 2023-02-07/47967)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-22/48069)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -6503,7 +6503,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Stacks           : 10 maximum
+Stacks           : 5 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
                  : Magic Heal
@@ -6518,7 +6518,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916)
                    Family Flags: 49
 Tooltip          : Next Emerald Blossom's healing  increased by $s1%.
