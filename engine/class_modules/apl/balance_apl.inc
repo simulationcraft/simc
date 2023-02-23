@@ -21,6 +21,7 @@ def->add_action( "potion,if=!druid.no_cds&(buff.ca_inc.remains>=20|variable.no_c
 def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items" );
+def->add_action( "invoke_external_buff,name=power_infusion,if=target.time_to_die>12|fight_remains<20" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
 
