@@ -1332,8 +1332,7 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
 
   if ( p->is_ptr()  && p->talents.seal_of_alacrity->ok())
   {
-    // Prot's base recharge multiplier is .5, so we need to divide by it.
-    cooldown->duration -= timespan_t::from_millis(p->talents.seal_of_alacrity->effectN( 2 ).base_value() / base_recharge_multiplier);
+    cooldown->duration -= timespan_t::from_millis(p->talents.seal_of_alacrity->effectN( 2 ).base_value());
   }
 }
 
