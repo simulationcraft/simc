@@ -241,6 +241,23 @@ namespace monk
         return ab::create_expression( name_str );
       }
 
+      bool usable_moving() const override 
+      {
+        if ( ab::usable_moving() )
+          return true;
+
+        if ( this->execute_time() > timespan_t::zero() )
+          return false;
+
+        if ( this->channeled )
+          return false;
+
+        if ( this->range > 0 && this->range < p()->current.distance_to_move )
+          return false;
+
+        return true;
+      }
+
       bool ready() override
       {
         // Spell data nil or not_found
