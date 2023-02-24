@@ -3533,7 +3533,7 @@ namespace monk
       struct roll_t : public monk_spell_t
       {
         roll_t( monk_t *player, util::string_view options_str )
-          : monk_spell_t( "roll", player, ( player->talent.general.chi_torpedo ? spell_data_t::nil() : player->spec.roll ) )
+          : monk_spell_t( "roll", player, ( player->talent.general.chi_torpedo->ok() ? spell_data_t::not_found() : player->spec.roll ))
         {
           cast_during_sck = true;
 
@@ -3560,7 +3560,7 @@ namespace monk
       struct chi_torpedo_t : public monk_spell_t
       {
         chi_torpedo_t( monk_t *player, util::string_view options_str )
-          : monk_spell_t( "chi_torpedo", player, player->talent.general.chi_torpedo )
+          : monk_spell_t( "chi_torpedo", player, ( player->talent.general.chi_torpedo->ok() ? player->talent.general.chi_torpedo : spell_data_t::not_found() ) )
         {
           parse_options( options_str );
 
