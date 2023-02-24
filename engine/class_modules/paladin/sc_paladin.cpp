@@ -3284,7 +3284,6 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STRENGTH )
   {
     if ( is_ptr() && talents.seal_of_might->ok() )
-      // Currently only gives base str, but they'll fix that for sure. And I have no clue how to get base str in SimC
       m *= 1.0 + talents.seal_of_might->effectN( 1 ).percent();
     if ( buffs.redoubt->up() )
       // Applies to base str, gear str and buffs. So everything basically.
