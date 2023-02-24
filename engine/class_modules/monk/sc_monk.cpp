@@ -2323,6 +2323,11 @@ namespace monk
           }
         }
 
+        bool usable_moving() const override
+        {
+          return true;
+        }
+
         action_state_t *new_state() override
         {
           return new spinning_crane_kick_state_t( this, p()->target );
