@@ -13058,7 +13058,7 @@ void player_t::do_update_movement( double yards )
     }
   }
 
-  current.distance_to_target = current.distance_to_move - base.distance;
+  current.distance_to_target = std::min( 0.0, current.distance_to_move - base.distance );
 }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
