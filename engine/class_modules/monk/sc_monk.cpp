@@ -6655,12 +6655,7 @@ namespace monk
 
   void monk_t::moving()
   {
-    if ( ( executing && !executing->usable_moving() )
-      || ( queueing && !queueing->usable_moving() )
-      || ( channeling && !channeling->usable_moving() ) )
-    {
       player_t::moving();
-    }
   }
 
   // monk_t::create_action ====================================================
@@ -8834,9 +8829,9 @@ namespace monk
       squirm_timer += 1;
 
       // Do not interrupt a cast
-    if ( ( executing && !executing->usable_moving() )
-      || ( queueing && !queueing->usable_moving() )
-      || ( channeling && !channeling->usable_moving() ) )
+    if ( !( executing && !executing->usable_moving() )
+      && !( queueing && !queueing->usable_moving() )
+      && !( channeling && !channeling->usable_moving() ) )
     {
       if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
       {
