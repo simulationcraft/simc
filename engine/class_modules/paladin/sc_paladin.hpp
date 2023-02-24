@@ -1139,6 +1139,7 @@ public:
     }
     if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() )
     {
+      // Buffs handled in holy_power_consumer_t
       if ( p()->is_ptr() )
       {
         // Get base multiplier
@@ -1152,8 +1153,6 @@ public:
         // Multiply by stack count
         bod_mult *= p()->buffs.blessing_of_dawn->stack();
         am *= 1.0 + bod_mult;
-        p()->buffs.blessing_of_dawn->expire();
-        p()->buffs.blessing_of_dusk->trigger();
       }
       else
       {
@@ -1650,6 +1649,12 @@ struct holy_power_consumer_t : public Base
       {
         p->buffs.faiths_armor->trigger();
       }
+    }
+
+    if (p->is_ptr() && p->buffs.blessing_of_dawn->up())
+    {
+      p->buffs.blessing_of_dawn->expire();
+      p->buffs.blessing_of_dusk->trigger();
     }
   }
 
