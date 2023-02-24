@@ -3749,7 +3749,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
     // Fake target distance
     if ( tail == "distance" )
-      return make_ref_expr( "distance", player->base.distance );
+      return make_ref_expr( "distance", player->current.distance_to_target );
 
     // Return target(.n).tail expression if we have a expression target
     if ( expr_target )
