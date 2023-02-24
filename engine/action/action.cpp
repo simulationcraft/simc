@@ -2221,7 +2221,7 @@ bool action_t::usable_moving() const
   if ( channeled )
     return false;
 
-  if ( range > 0 && range <= 5 )
+  if ( sim->distance_targeting_enabled && range > 0 && range < player->current.distance_to_move )
     return false;
 
   return true;
