@@ -215,6 +215,7 @@ struct player_t : public actor_t
     double spell_crit_chance, attack_crit_chance, block_reduction, mastery;
     double skill, skill_debuff, distance;
     double distance_to_move;
+    double distance_to_target;
     double moving_away;
     movement_direction_type movement_direction;
     double armor_coeff;
