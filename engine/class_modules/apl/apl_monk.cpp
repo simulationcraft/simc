@@ -204,6 +204,9 @@ namespace monk_apl
     def->add_action( "variable,op=set,name=rotation_selection,value=4-variable.rotation_selection" );
 
     def->add_action( "auto_attack" );
+    def->add_action( "roll,if=movement.remains>5", "Move to target" );
+    def->add_action( "chi_torpedo,if=movement.remains>5" );
+    def->add_action( "flying_serpent_kick,if=movement.remains>5" );
     def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
     def->add_action( "potion" );
     def->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled" );
@@ -520,6 +523,9 @@ namespace monk_apl
     action_priority_list_t* fallthru = p->get_action_priority_list( "fallthru" );
 
     def->add_action( "auto_attack" );
+    def->add_action( "roll,if=movement.remains>5", "Move to target" );
+    def->add_action( "chi_torpedo,if=movement.remains>5" );
+    def->add_action( "flying_serpent_kick,if=movement.remains>5" );
     def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
     def->add_action(
       "variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))" );
@@ -821,6 +827,9 @@ namespace monk_apl
     pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     pre->add_action( "potion" );
 
+    def->add_action( "roll,if=movement.remains>5", "Move to target" );
+    def->add_action( "chi_torpedo,if=movement.remains>5" );
+    def->add_action( "flying_serpent_kick,if=movement.remains>5" );
     def->add_action( "Tiger Palm" );
   }
 
