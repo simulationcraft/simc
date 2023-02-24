@@ -2296,8 +2296,6 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
       return 0.0;
 
     pull_event_t* next_pull = current_pull->next_pull();
-    if ( !next_pull )
-      return 0.0;
 
     if ( filter == "in" )
     {
