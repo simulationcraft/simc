@@ -566,7 +566,9 @@ class TraitSet(DataSet):
                         # and this can vary build by build with no changes to the underlying data. For 
                         # such cases we temporarily implement a manual override until a more permanent 
                         # solution can be found.
-                        if key == 109860: # new moon
+                        if key == 109859 and self._options.build.patch_level() >= db.dbc.WowVersion(10, 0, 7, 48220).patch_level(): # fury of elune
+                            sel_idx = 200
+                        elif key == 109860 and self._options.build.patch_level() < db.dbc.WowVersion(10, 0, 7, 48220).patch_level(): # new moon
                             sel_idx = 200
                         elif key == 109872: # rattle the stars
                             sel_idx = 200
