@@ -6441,6 +6441,7 @@ void player_t::demise()
   // Arise time has to be set to default value before actions are canceled.
   arise_time               = timespan_t::min();
   current.distance_to_move = 0;
+  current.distance_to_target = 0;
 
   event_t::cancel( readying );
   event_t::cancel( off_gcd );
@@ -13056,6 +13057,8 @@ void player_t::do_update_movement( double yards )
       current.distance_to_move -= yards;
     }
   }
+
+  current.distance_to_target = current.distance_to_move - base.distance;
 }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t,
