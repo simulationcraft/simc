@@ -241,11 +241,6 @@ namespace monk
         return ab::create_expression( name_str );
       }
 
-      double distance_to_target() const
-      {
-        return std::min( 0.0, p()->current.distance_to_move - p()->base.distance );
-      }
-
       bool usable_moving() const override 
       {
         if ( ab::usable_moving() )
@@ -620,7 +615,7 @@ namespace monk
 
         trigger_storm_earth_and_fire( this );
 
-        if ( distance_to_target() <= 5
+        if ( p()->current.distance_to_move <= 5
           && p()->buff.faeline_stomp->up()
           && trigger_faeline_stomp
           && p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
@@ -2948,7 +2943,7 @@ namespace monk
 
         bool ready() override
         {
-          if ( distance_to_target() > 5 )
+          if ( p()->current.distance_to_move > 5 )
             return false;
 
           return ( p()->main_hand_attack->execute_event == nullptr );  // not swinging
