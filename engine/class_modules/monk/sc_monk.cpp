@@ -241,6 +241,28 @@ namespace monk
         return ab::create_expression( name_str );
       }
 
+      double distance_to_target() const
+      {
+        return std::min( 0.0, p()->current.distance_to_move - p()->base.distance );
+      }
+
+      bool usable_moving() const override 
+      {
+        if ( ab::usable_moving() )
+          return true;
+
+        if ( this->execute_time() > timespan_t::zero() )
+          return false;
+
+        if ( this->channeled )
+          return false;
+
+        if ( this->range > 0 && this->range < distance_to_target() )
+          return false;
+
+        return true;
+      }
+
       bool ready() override
       {
         // Spell data nil or not_found
@@ -598,7 +620,7 @@ namespace monk
 
         trigger_storm_earth_and_fire( this );
 
-        if ( p()->current.distance_to_move <= 5
+        if ( distance_to_target() <= 5
           && p()->buff.faeline_stomp->up()
           && trigger_faeline_stomp
           && p()->rng().roll( p()->user_options.faeline_stomp_uptime ) )
@@ -2323,6 +2345,11 @@ namespace monk
           }
         }
 
+        bool usable_moving() const override
+        {
+          return true;
+        }
+
         action_state_t *new_state() override
         {
           return new spinning_crane_kick_state_t( this, p()->target );
@@ -2921,7 +2948,7 @@ namespace monk
 
         bool ready() override
         {
-          if ( p()->current.distance_to_move > 5 )
+          if ( distance_to_target() > 5 )
             return false;
 
           return ( p()->main_hand_attack->execute_event == nullptr );  // not swinging
@@ -3528,7 +3555,7 @@ namespace monk
       struct roll_t : public monk_spell_t
       {
         roll_t( monk_t *player, util::string_view options_str )
-          : monk_spell_t( "roll", player, ( player->talent.general.chi_torpedo ? spell_data_t::nil() : player->spec.roll ) )
+          : monk_spell_t( "roll", player, ( player->talent.general.chi_torpedo->ok() ? spell_data_t::not_found() : player->spec.roll ) )
         {
           cast_during_sck = true;
 
@@ -3555,7 +3582,7 @@ namespace monk
       struct chi_torpedo_t : public monk_spell_t
       {
         chi_torpedo_t( monk_t *player, util::string_view options_str )
-          : monk_spell_t( "chi_torpedo", player, player->talent.general.chi_torpedo )
+          : monk_spell_t( "chi_torpedo", player, ( player->talent.general.chi_torpedo->ok() ? player->talent.general.chi_torpedo : spell_data_t::not_found() ) )
         {
           parse_options( options_str );
 
@@ -6650,12 +6677,7 @@ namespace monk
 
   void monk_t::moving()
   {
-    if ( ( executing && !executing->usable_moving() )
-      || ( queueing && !queueing->usable_moving() )
-      || ( channeling && !channeling->usable_moving() ) )
-    {
       player_t::moving();
-    }
   }
 
   // monk_t::create_action ====================================================
@@ -8829,9 +8851,9 @@ namespace monk
       squirm_timer += 1;
 
       // Do not interrupt a cast
-    if ( ( executing && !executing->usable_moving() )
-      || ( queueing && !queueing->usable_moving() )
-      || ( channeling && !channeling->usable_moving() ) )
+    if ( !( executing && !executing->usable_moving() )
+      && !( queueing && !queueing->usable_moving() )
+      && !( channeling && !channeling->usable_moving() ) )
     {
       if ( user_options.squirm_frequency > 0 && squirm_timer >= user_options.squirm_frequency )
       {
