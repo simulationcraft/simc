@@ -257,7 +257,7 @@ namespace monk
         if ( this->channeled )
           return false;
 
-        if ( this->range > 0 && this->range < distance_to_target() )
+        if ( this->range > 0 && this->range < p()->current.distance_to_move )
           return false;
 
         return true;
