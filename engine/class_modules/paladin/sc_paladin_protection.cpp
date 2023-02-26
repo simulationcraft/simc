@@ -102,7 +102,8 @@ struct avengers_shield_base_t : public paladin_spell_t
     //Turn off chaining if focused enmity
     if ( p->talents.focused_enmity->ok() )
     {
-      aoe += as<int>( p->talents.focused_enmity->effectN( 1 ).base_value() );
+      if (!p->is_ptr())
+        aoe += as<int>( p->talents.focused_enmity->effectN( 1 ).base_value() );
     }
     else
     {
@@ -175,14 +176,16 @@ double recharge_multiplier( const cooldown_t& cd ) const override
     }
     if ( p()->talents.focused_enmity->ok() )
     {
-      m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
+      if ( !p()->is_ptr() )
+        m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
+      else if ( paladin_spell_t::num_targets() == 1 )
+        m *= 1.0 + p()->talents.focused_enmity->effectN( 1 ).percent();
     }
     return m;
   }
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = paladin_spell_t::composite_da_multiplier( state );
-
     if ( state->chain_target == 0 )
     {
       {
@@ -426,6 +429,8 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
     harmful = false;
     may_miss = false;
     cooldown = p->cooldowns.blessing_of_spellwarding; // Needed for shared cooldown with Blessing of Protection
+    if ( p->talents.uthers_counsel->ok() )
+      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
   }
 
   void execute() override
@@ -571,6 +576,10 @@ struct eye_of_tyr_t : public paladin_spell_t
     parse_options( options_str );
     aoe      = -1;
     may_crit = true;
+
+    if ( p->is_ptr() && p->talents.inmost_light->ok() )
+      cooldown->duration = data().cooldown() * ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
+
   }
   void impact(action_state_t* s) override
   {
@@ -581,6 +590,19 @@ struct eye_of_tyr_t : public paladin_spell_t
           ->debuff.eye_of_tyr->trigger( 1, data().effectN( 1 ).percent(), 1.0, p()->talents.eye_of_tyr->duration() );
     }
   }
+
+
+
+  double action_multiplier() const override
+  {
+    double m = paladin_spell_t::action_multiplier();
+    if ( p()->is_ptr() && p()->talents.inmost_light->ok() )
+    {
+      m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
+    }
+    return m;
+  }
+
 };
 
 // Judgment - Protection =================================================================
@@ -1054,9 +1076,7 @@ void paladin_t::trigger_grand_crusader()
 
   if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
   {
-    //Cooldown should be reduced by 3 seconds, but apparently that's nyi on live servers. Still old functionality.
-    //cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
-    cooldowns.judgment->adjust( -( cooldowns.judgment->duration ), true );
+    cooldowns.judgment->adjust( -( talents.crusaders_judgment->effectN( 2 ).time_value() ), true );
   }
 
   if ( talents.inspiring_vanguard->ok() )
@@ -1239,7 +1259,6 @@ void paladin_t::init_spells_protection()
   talents.grand_crusader                 = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Crusader" );
   talents.shining_light                  = find_talent_spell( talent_tree::SPECIALIZATION, "Shining Light" );
   talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
-  talents.improved_lay_on_hands          = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Lay on Hands" );
   talents.inspiring_vanguard             = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Vanguard" );
   talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
   talents.barricade_of_faith             = find_talent_spell( talent_tree::SPECIALIZATION, "Barricade of Faith" );
@@ -1259,7 +1278,6 @@ void paladin_t::init_spells_protection()
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
   talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
-  talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
   talents.bastion_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
@@ -1274,13 +1292,27 @@ void paladin_t::init_spells_protection()
   talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
   talents.faith_in_the_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Faith in the Light" );
   talents.ferren_marcuss_fervor          = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Fervor" );
-  talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
   talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
-  talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
   talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
   talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
-  talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
-  talents.quickened_invocations          = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
+
+  if ( player_t::is_ptr() )
+  {
+    talents.sanctified_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Wrath" );
+    talents.inmost_light     = find_talent_spell( talent_tree::SPECIALIZATION, "Inmost Light" );
+    talents.seal_of_charity  = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
+    talents.tirions_devotion = find_talent_spell( talent_tree::SPECIALIZATION, "Tirion's Devotion" );
+    talents.seal_of_reprisal = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Reprisal" );
+  }
+  else
+  {
+    talents.divine_toll            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
+    talents.improved_lay_on_hands = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Lay on Hands" );
+    talents.divine_resonance      = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
+    talents.quickened_invocations = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
+    talents.faiths_armor           = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
+    talents.strength_of_conviction = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
+  }
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
