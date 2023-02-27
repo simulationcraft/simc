@@ -599,6 +599,7 @@ public:
     proc_t* pulsar;
 
     // Feral
+    proc_t* ashamanes_guidance;
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
     proc_t* predator;
@@ -3243,7 +3244,7 @@ struct berserk_cat_base_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    buff->trigger();
+    buff->extend_duration_or_trigger();
   }
 };
 
@@ -10564,6 +10565,7 @@ void druid_t::init_procs()
   proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
+  proc.ashamanes_guidance   = get_proc( "Ashamane's Guidance" );
   proc.predator             = get_proc( "Predator" );
   proc.predator_wasted      = get_proc( "Predator (Wasted)" );
   proc.primal_claws         = get_proc( "Primal Claws" );
@@ -10700,9 +10702,8 @@ void druid_t::init_special_effects()
 
       void execute( action_t* a, action_state_t* s ) override
       {
-        dbc_proc_callback_t::execute( a , s );
-
-        druid->buff.incarnation_cat->trigger( dur );
+        druid->buff.incarnation_cat->extend_duration_or_trigger( dur );
+        druid->proc.ashamanes_guidance->occur();
       }
     };
 
@@ -10710,8 +10711,7 @@ void druid_t::init_special_effects()
     driver->name_str = "ashamanes_guidance_driver";
     driver->spell_id = spec.ashamanes_guidance->id();
     driver->proc_flags_ = PF_MELEE;
-    driver->ppm_ = -0.85;  // TODO: determine what this is.
-    driver->rppm_scale_ |= RPPM_HASTE;
+    driver->ppm_ = -0.95;
     special_effects.push_back( driver );
 
     auto cb = new ashamanes_guidance_cb_t( this, *driver );

@@ -1,6 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii, socket
+import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii, socket, time
 
 import jenkins
 
@@ -413,16 +413,24 @@ class CASCObject(object):
 		self.options = options
 
 	def get_url(self, url, headers = None):
-		try:
-			r = _S.get(url, headers = headers)
+		attempt = 0
+		maxAttempts = 5
+		while attempt < maxAttempts:
+			r = None
+			try:
+				r = _S.get(url, headers = headers)
 
-			print('Fetching %s ...' % url)
-			if r.status_code not in [200, 206]:
-				self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
-		except Exception as e:
-			self.options.parser.error('Unable to fetch %s: %s' % (url, r.reason))
+				print('Fetching %s ...' % url)
+				if r.status_code not in [200, 206]:
+					self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
+				return r
+			except Exception as e:
+				self.options.parser.error('Unable to fetch %s: %s' % (url, r.reason if r else 'unknown error'))
+				if attempt + 1 < maxAttempts:
+					print('Retrying...')
+					time.sleep(2 ** attempt)
+					attempt += 1
 
-		return r
 
 	def cache_dir(self, path = None):
 		dir = self.options.cache

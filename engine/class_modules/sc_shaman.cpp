@@ -5344,6 +5344,12 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.windspeakers_lava_resurgence->decrement();
       }
     }
+
+    // Rolls on execute and on impact
+    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
+    {
+      p()->buff.power_of_the_maelstrom->trigger();
+    }
   }
 
   double action_multiplier() const override
@@ -5460,7 +5466,7 @@ struct lava_burst_t : public shaman_spell_t
       p()->trigger_deeply_rooted_elements( execute_state );
     }
 
-    // TODO Elemental: double check if this can indeed trigger from all Lava Bursts, or only from NORMAL ones.
+    // Rolls on execute and on impact
     if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
     {
       p()->buff.power_of_the_maelstrom->trigger();
