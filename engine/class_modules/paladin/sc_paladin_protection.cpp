@@ -532,8 +532,9 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     cooldown->hasted  = true;
   }
   
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
+    paladin_melee_attack_t::impact( s );
     if ( p()->talents.aspiration_of_divinity->ok() )
     {
       p()->buffs.aspiration_of_divinity->trigger();
