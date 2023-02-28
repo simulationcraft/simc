@@ -26,6 +26,12 @@ MISTWEAVER:
 - Essence Font - See if the implementation can be corrected to the intended design.
 - Life Cocoon - Double check if the Enveloping Mists and Renewing Mists from Mists of Life proc the mastery or not.
 - Not Modeled:
+zen pulse + talent behind (echoing reverberation) needs to be added
+sheilun + talent behind (shaohao's lessons) needs to be added
+secret infusion (talent) needs to be added
+touch of death for mistweaver (basically copy from ww but without the mastery interaction) needs to be added
+Ancient Concordance + Awakened Faeline (two faeline stomp talents, like faeline harmony esque) needs to be added
+and I guess the ap% of the spells were not updated throughout the buffs, but idk about that one
 
 BREWMASTER:
 */
