@@ -6,7 +6,7 @@
 
 namespace monk_apl
 {
-  std::string potion( const player_t* p )
+  std::string potion( const player_t *p )
   {
     switch ( p->specialization() )
     {
@@ -46,7 +46,7 @@ namespace monk_apl
     }
   }
 
-  std::string flask( const player_t* p )
+  std::string flask( const player_t *p )
   {
     switch ( p->specialization() )
     {
@@ -86,7 +86,7 @@ namespace monk_apl
     }
   }
 
-  std::string food( const player_t* p )
+  std::string food( const player_t *p )
   {
     switch ( p->specialization() )
     {
@@ -126,7 +126,7 @@ namespace monk_apl
     }
   }
 
-  std::string rune( const player_t* p )
+  std::string rune( const player_t *p )
   {
     if ( p->true_level > 60 )
       return "draconic";
@@ -139,7 +139,7 @@ namespace monk_apl
     return "disabled";
   }
 
-  std::string temporary_enchant( const player_t* p )
+  std::string temporary_enchant( const player_t *p )
   {
     switch ( p->specialization() )
     {
@@ -173,20 +173,20 @@ namespace monk_apl
     }
   }
 
-  void brewmaster( player_t* p )
+  void brewmaster( player_t *p )
   {
     std::vector<std::string> racial_actions = p->get_racial_actions();
-    action_priority_list_t* pre             = p->get_action_priority_list( "precombat" );
-    action_priority_list_t* def             = p->get_action_priority_list( "default" );
+    action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
+    action_priority_list_t *def = p->get_action_priority_list( "default" );
 
-    action_priority_list_t* cooldowns_niuzao_woo          = p->get_action_priority_list( "cooldowns_niuzao_woo" );
-    action_priority_list_t* cooldowns_improved_niuzao_woo = p->get_action_priority_list( "cooldowns_improved_niuzao_woo" );
-    action_priority_list_t* cooldowns_improved_niuzao_cta = p->get_action_priority_list( "cooldowns_improved_niuzao_cta" );
+    action_priority_list_t *cooldowns_niuzao_woo = p->get_action_priority_list( "cooldowns_niuzao_woo" );
+    action_priority_list_t *cooldowns_improved_niuzao_woo = p->get_action_priority_list( "cooldowns_improved_niuzao_woo" );
+    action_priority_list_t *cooldowns_improved_niuzao_cta = p->get_action_priority_list( "cooldowns_improved_niuzao_cta" );
 
-    action_priority_list_t* rotation_boc_dfb  = p->get_action_priority_list( "rotation_boc_dfb" );
-    action_priority_list_t* rotation_dfb      = p->get_action_priority_list( "rotation_dfb" );
-    action_priority_list_t* rotation_chp      = p->get_action_priority_list( "rotation_chp" );
-    action_priority_list_t* rotation_fallback = p->get_action_priority_list( "rotation_fallback" );
+    action_priority_list_t *rotation_boc_dfb = p->get_action_priority_list( "rotation_boc_dfb" );
+    action_priority_list_t *rotation_dfb = p->get_action_priority_list( "rotation_dfb" );
+    action_priority_list_t *rotation_chp = p->get_action_priority_list( "rotation_chp" );
+    action_priority_list_t *rotation_fallback = p->get_action_priority_list( "rotation_fallback" );
 
     pre->add_action( "flask" );
     pre->add_action( "food" );
@@ -204,17 +204,19 @@ namespace monk_apl
     def->add_action( "variable,op=set,name=rotation_selection,value=4-variable.rotation_selection" );
 
     def->add_action( "auto_attack" );
+    def->add_action( "roll,if=movement.distance>5", "Move to target" );
+    def->add_action( "chi_torpedo,if=movement.distance>5" );
     def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
     def->add_action( "potion" );
     def->add_action( "summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled" );
     def->add_action( "use_item,slot=trinket1,if=debuff.weapons_of_order_debuff.stack>3|fight_remains<25" );
     def->add_action( "use_item,slot=trinket2,if=debuff.weapons_of_order_debuff.up|fight_remains<15" );
 
-    for ( const auto& racial_action : racial_actions )
-      {
-        if ( racial_action != "arcane_torrent" )
-          def->add_action( racial_action );
-      }
+    for ( const auto &racial_action : racial_actions )
+    {
+      if ( racial_action != "arcane_torrent" )
+        def->add_action( racial_action );
+    }
 
     def->add_action( "call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1" );
     def->add_action( "call_action_list,name=cooldowns_improved_niuzao_cta,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)=2" );
@@ -245,7 +247,7 @@ namespace monk_apl
     // }
 
     cooldowns_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
-                                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
+      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_niuzao_woo->add_action( "weapons_of_order,if=talent.weapons_of_order.enabled" );
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack=4" );
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
@@ -256,7 +258,7 @@ namespace monk_apl
     cooldowns_niuzao_woo->add_action( "purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up" );
 
     cooldowns_improved_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
-                                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
+      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_improved_niuzao_woo->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox" );
     cooldowns_improved_niuzao_woo->add_action( "variable,name=pb_in_window,op=sub,value=1,if=prev.purifying_brew&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05" );
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
@@ -270,7 +272,7 @@ namespace monk_apl
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5" );
 
     cooldowns_improved_niuzao_cta->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
-                                      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
+      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(10+2*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.weapons_of_order" );
     cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox" );
     cooldowns_improved_niuzao_cta->add_action( "variable,name=pb_in_window,op=sub,value=1,if=prev.purifying_brew&(time-action.weapons_of_order.last_used<=10+2*0.05|time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
@@ -338,9 +340,9 @@ namespace monk_apl
     rotation_fallback->add_action( "chi_burst,if=talent.chi_burst.enabled" );
   }
 
-  void mistweaver( player_t* p )
+  void mistweaver( player_t *p )
   {
-    action_priority_list_t* pre = p->get_action_priority_list( "precombat" );
+    action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
 
     // Flask
     pre->add_action( "flask" );
@@ -360,16 +362,16 @@ namespace monk_apl
     pre->add_action( p, "chi_wave" );
 
     std::vector<std::string> racial_actions = p->get_racial_actions();
-    action_priority_list_t* def = p->get_action_priority_list( "default" );
-    action_priority_list_t* st = p->get_action_priority_list( "st" );
-    action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+    action_priority_list_t *def = p->get_action_priority_list( "default" );
+    action_priority_list_t *st = p->get_action_priority_list( "st" );
+    action_priority_list_t *aoe = p->get_action_priority_list( "aoe" );
 
     def->add_action( "auto_attack" );
 
     if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
       def->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str );
 
-    for ( const auto& item : p->items )
+    for ( const auto &item : p->items )
     {
       std::string name_str;
       if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
@@ -383,7 +385,7 @@ namespace monk_apl
       }
     }
 
-    for ( const auto& racial_action : racial_actions )
+    for ( const auto &racial_action : racial_actions )
     {
       def->add_action( racial_action + ",if=target.time_to_die<18" );
     }
@@ -410,23 +412,23 @@ namespace monk_apl
     aoe->add_action( p, "chi_burst" );
   }
 
-  void windwalker( player_t* p )
+  void windwalker( player_t *p )
   {
-    auto monk = debug_cast<monk::monk_t*>( p );
+    auto monk = debug_cast< monk::monk_t * >( p );
 
     //============================================================================
     // On-use Items
     //============================================================================
-    auto _WW_ON_USE = [ monk ] ( const item_t& item )
+    auto _WW_ON_USE = [ monk ] ( const item_t &item )
     {
       //-------------------------------------------
       // Serenity item map
       //-------------------------------------------
       const static std::unordered_map<std::string, std::string> serenity_trinkets {
         // name_str -> APL
-        { "algethar_puzzle_box",",use_off_gcd=1,if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.serenity.up|fight_remains<25" },
-        { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
-        { "manic_grieftorch",",use_off_gcd=1,if=!pet.xuen_the_white_tiger.active&!buff.serenity.up&(trinket.1.cooldown.remains|trinket.2.cooldown.remains|!trinket.1.cooldown.duration|!trinket.2.cooldown.duration)|fight_remains<5" },
+        { "algethar_puzzle_box", ",use_off_gcd=1,if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.serenity.up|fight_remains<25" },
+        { "horn_of_valor", ",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.serenity.up|fight_remains<30" },
+        { "manic_grieftorch", ",use_off_gcd=1,if=!pet.xuen_the_white_tiger.active&!buff.serenity.up&(trinket.1.cooldown.remains|trinket.2.cooldown.remains|!trinket.1.cooldown.duration|!trinket.2.cooldown.duration)|fight_remains<5" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=buff.serenity.remains>10" },
@@ -438,9 +440,9 @@ namespace monk_apl
       //-------------------------------------------
       const static std::unordered_map<std::string, std::string> sef_trinkets {
         // name_str -> APL
-        { "algethar_puzzle_box",",use_off_gcd=1,if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_and_fire.up|fight_remains<25" },
-        { "horn_of_valor",",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
-        { "manic_grieftorch",",use_off_gcd=1,if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up&(trinket.1.cooldown.remains|trinket.2.cooldown.remains|!trinket.1.cooldown.duration|!trinket.2.cooldown.duration)|fight_remains<5" },
+        { "algethar_puzzle_box", ",use_off_gcd=1,if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_and_fire.up|fight_remains<25" },
+        { "horn_of_valor", ",if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up|fight_remains<30" },
+        { "manic_grieftorch", ",use_off_gcd=1,if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up&(trinket.1.cooldown.remains|trinket.2.cooldown.remains|!trinket.1.cooldown.duration|!trinket.2.cooldown.duration)|fight_remains<5" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|cooldown<=60&buff.storm_earth_and_fire.remains>10|!talent.invoke_xuen_the_white_tiger" },
@@ -451,14 +453,17 @@ namespace monk_apl
 
       std::string concat = "";
       auto talent_map = monk->talent.windwalker.serenity->ok() ? serenity_trinkets : sef_trinkets;
-      try { concat = talent_map.at( item.name_str ); }
+      try
+      {
+        concat = talent_map.at( item.name_str );
+      }
       catch ( ... )
       {
         int duration = 0;
 
         for ( auto e : item.parsed.special_effects )
         {
-          duration = (int) floor( e->duration().total_seconds() );
+          duration = ( int )floor( e->duration().total_seconds() );
 
           // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
           // Unless defined in the map above these will be used on cooldown.
@@ -487,7 +492,7 @@ namespace monk_apl
 
     //============================================================================
 
-    action_priority_list_t* pre = p->get_action_priority_list( "precombat" );
+    action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
 
     // Flask
     pre->add_action( "flask" );
@@ -505,21 +510,24 @@ namespace monk_apl
     pre->add_action( "chi_wave" );
 
     std::vector<std::string> racial_actions = p->get_racial_actions();
-    action_priority_list_t* def = p->get_action_priority_list( "default" );
-    action_priority_list_t* opener = p->get_action_priority_list( "opener" );
-    action_priority_list_t* bdb_setup = p->get_action_priority_list( "bdb_setup" );
-    action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-    action_priority_list_t* cd_sef = p->get_action_priority_list( "cd_sef" );
-    action_priority_list_t* cd_serenity = p->get_action_priority_list( "cd_serenity" );
-    action_priority_list_t* serenity = p->get_action_priority_list( "serenity" );
-    action_priority_list_t* heavy_aoe = p->get_action_priority_list( "heavy_aoe" );
-    action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
-    action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
-    action_priority_list_t* st_cleave = p->get_action_priority_list( "st_cleave" );
-    action_priority_list_t* st = p->get_action_priority_list( "st" );
-    action_priority_list_t* fallthru = p->get_action_priority_list( "fallthru" );
+    action_priority_list_t *def = p->get_action_priority_list( "default" );
+    action_priority_list_t *opener = p->get_action_priority_list( "opener" );
+    action_priority_list_t *bdb_setup = p->get_action_priority_list( "bdb_setup" );
+    action_priority_list_t *trinkets = p->get_action_priority_list( "trinkets" );
+    action_priority_list_t *cd_sef = p->get_action_priority_list( "cd_sef" );
+    action_priority_list_t *cd_serenity = p->get_action_priority_list( "cd_serenity" );
+    action_priority_list_t *serenity = p->get_action_priority_list( "serenity" );
+    action_priority_list_t *heavy_aoe = p->get_action_priority_list( "heavy_aoe" );
+    action_priority_list_t *aoe = p->get_action_priority_list( "aoe" );
+    action_priority_list_t *cleave = p->get_action_priority_list( "cleave" );
+    action_priority_list_t *st_cleave = p->get_action_priority_list( "st_cleave" );
+    action_priority_list_t *st = p->get_action_priority_list( "st" );
+    action_priority_list_t *fallthru = p->get_action_priority_list( "fallthru" );
 
     def->add_action( "auto_attack" );
+    def->add_action( "roll,if=movement.distance>5", "Move to target" );
+    def->add_action( "chi_torpedo,if=movement.distance>5" );
+    def->add_action( "flying_serpent_kick,if=movement.distance>5" );
     def->add_action( p, "Spear Hand Strike", "if=target.debuff.casting.react" );
     def->add_action(
       "variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))" );
@@ -529,7 +537,7 @@ namespace monk_apl
     {
       if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
         def->add_action(
-          "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60", "Potion" );
+        "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60", "Potion" );
       else
         def->add_action( "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&fight_remains<=60", "Potion" );
     }
@@ -564,7 +572,7 @@ namespace monk_apl
 
     // Trinkets
 
-    for ( const auto& item : p->items )
+    for ( const auto &item : p->items )
     {
       if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
         trinkets->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
@@ -573,7 +581,7 @@ namespace monk_apl
     // Storm, Earth and Fire Cooldowns
     cd_sef->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Storm, Earth and Fire Cooldowns" );
     cd_sef->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
-                        "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
+      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2)|fight_remains<25" );
     cd_sef->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)&chi>=3" );
 
@@ -584,7 +592,7 @@ namespace monk_apl
 
     cd_sef->add_action( "storm_earth_and_fire,if=fight_remains<20|(cooldown.storm_earth_and_fire.charges=2&cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
-  
+
     cd_sef->add_action( "touch_of_death,target_if=max:target.health,if=fight_style.dungeonroute&combo_strike&target.health<health" );
     cd_sef->add_action( "touch_of_death,cycle_targets=1,if=fight_style.dungeonroute&combo_strike&(target.time_to_die>60|debuff.bonedust_brew_debuff.up|fight_remains<10)" );
     cd_sef->add_action( "touch_of_death,cycle_targets=1,if=!fight_style.dungeonroute&combo_strike" );
@@ -595,22 +603,22 @@ namespace monk_apl
       cd_sef->add_action( "touch_of_karma,if=fight_remains>159|variable.hold_xuen" );
 
     // Storm, Earth and Fire Racials
-    for ( const auto& racial_action : racial_actions )
+    for ( const auto &racial_action : racial_actions )
     {
       if ( racial_action != "arcane_torrent" )
       {
         if ( racial_action == "ancestral_call" )
           cd_sef->add_action( racial_action +
-            ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
+          ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
         else if ( racial_action == "blood_fury" )
           cd_sef->add_action( racial_action +
-            ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
+          ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20" );
         else if ( racial_action == "fireblood" )
           cd_sef->add_action( racial_action +
-            ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10" );
+          ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10" );
         else if ( racial_action == "berserking" )
           cd_sef->add_action( racial_action +
-            ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15" );
+          ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15" );
         else if ( racial_action == "bag_of_tricks" )
           cd_sef->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
         else
@@ -621,7 +629,7 @@ namespace monk_apl
     // Serenity Cooldowns
     cd_serenity->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Serenity Cooldowns" );
     cd_serenity->add_action( "invoke_external_buff,name=power_infusion,if=pet.xuen_the_white_tiger.active",
-                             "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
+      "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=123904/invoke-xuen-the-white-tiger'>Invoke Xuen, the White Tiger</a> is active." );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
     cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25" );
 
@@ -638,7 +646,7 @@ namespace monk_apl
     cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<10" );
 
     // Serenity Racials
-    for ( const auto& racial_action : racial_actions )
+    for ( const auto &racial_action : racial_actions )
     {
       if ( racial_action == "ancestral_call" )
         cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
@@ -691,7 +699,7 @@ namespace monk_apl
     aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
     aoe->add_action( "spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=(combo_strike&chi>5&talent.storm_earth_and_fire|combo_strike&chi>4&talent.serenity)" );
     aoe->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains" );
-    
+
     // 3 Target priority
     cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads", "3 Targets" );
     cleave->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
@@ -711,7 +719,7 @@ namespace monk_apl
     cleave->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
     cleave->add_action( "spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=(combo_strike&chi>5&talent.storm_earth_and_fire|combo_strike&chi>4&talent.serenity)" );
-    
+
     // 2 Target priority
     st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads", "2 Targets" );
     st_cleave->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
@@ -730,7 +738,7 @@ namespace monk_apl
     st_cleave->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains" );
     st_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
     st_cleave->add_action( "spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=(combo_strike&chi>5&talent.storm_earth_and_fire|combo_strike&chi>4&talent.serenity)" );
-    
+
     // 1 Target priority
     st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3", "1 Target" );
     st->add_action( "strike_of_the_windlord,if=talent.thunderfist" );
@@ -746,7 +754,7 @@ namespace monk_apl
     st->add_action( "whirling_dragon_punch" );
     st->add_action( "rushing_jade_wind,if=!buff.rushing_jade_wind.up" );
     st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike" );
-    
+
 
     // Fallthru
     fallthru->add_action( "crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|fight_remains<5)", "Fallthru" );
@@ -810,10 +818,10 @@ namespace monk_apl
     bdb_setup->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies>=2" );
   }
 
-  void no_spec( player_t* p )
+  void no_spec( player_t *p )
   {
-    action_priority_list_t* pre = p->get_action_priority_list( "precombat" );
-    action_priority_list_t* def = p->get_action_priority_list( "default" );
+    action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
+    action_priority_list_t *def = p->get_action_priority_list( "default" );
 
     pre->add_action( "flask" );
     pre->add_action( "food" );
@@ -821,6 +829,8 @@ namespace monk_apl
     pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     pre->add_action( "potion" );
 
+    def->add_action( "roll,if=movement.distance>5", "Move to target" );
+    def->add_action( "chi_torpedo,if=movement.distance>5" );
     def->add_action( "Tiger Palm" );
   }
 

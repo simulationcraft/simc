@@ -4,7 +4,7 @@ race=orc
 spec=shadow
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSIIBh0kWIJAA
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSjgEESRahkAA
 
 flask=phial_of_static_empowerment_3
 
@@ -13,15 +13,17 @@ neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=draconic_hierophants_vestment,id=200324,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=418,gem_id=192948
+wrists=manawracker_bindings,id=134310,bonus_id=1795/6808/4786/3300/6935,gem_id=192948
 hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
 waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
 legs=leggings_of_swirling_runes,id=133610,enchant=frozen_spellthread_3,bonus_id=1795/6808/4786/3300/6935
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant=devotion_of_haste_3,gem_id=192961
 finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,enchant=devotion_of_haste_3,gem_id=192961
-trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-trinket2=desperate_invokers_codex,id=194310,bonus_id=4800/4786/1498
-main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1508/8932,gem_id=192948,crafted_stats=36/49,enchant=devotion_of_haste_3
+trinket1=voidmenders_shadowgem,id=110007,bonus_id=6808/4786/3306
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
 
 save=T29_Priest_Shadow.simc

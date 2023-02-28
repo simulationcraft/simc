@@ -131,12 +131,12 @@ void shadow( player_t* p )
   aoe->add_action( "mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)" );
   aoe->add_action( "mindgames,if=spell_targets.mind_sear<5&dot.devouring_plague.ticking|talent.psychic_link" );
   aoe->add_action( "void_torrent,if=insanity<=35&!talent.psychic_link,target_if=variable.dots_up" );
-  aoe->add_action( "mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.remains>=5,interrupt_if=ticks>=2,interrupt_immediate=1" );
+  aoe->add_action( "mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.remains>=5&talent.idol_of_cthun,interrupt_if=ticks>=2,interrupt_immediate=1", "High priority action for Mind Flay: Insanity to fish for Idol of C'Thun procs" );
   aoe->add_action( "call_action_list,name=filler" );
 
   pl_torrent->add_action( "void_bolt" );
   pl_torrent->add_action( "vampiric_touch,if=remains<=6&cooldown.void_torrent.remains<gcd*2" );
-  pl_torrent->add_action( "devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2&!buff.voidform.up&(spell_targets.mind_sear<=4|!talent.surge_of_darkness&cooldown.mind_blast.full_recharge_time>=3)&!buff.mind_devourer.up" );
+  pl_torrent->add_action( "devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2&!buff.voidform.up&(!talent.mind_sear|spell_targets.mind_sear<=4|!talent.surge_of_darkness&cooldown.mind_blast.full_recharge_time>=3)&!buff.mind_devourer.up", "Use Devouring Plague before Void Torrent cast if Voidform is not active and Mind Devourer is not active and fighting 4 or less targets or less not talented into Mind Sear" );
   pl_torrent->add_action( "mind_sear,if=!variable.dp_cutoff|buff.mind_devourer.up" );
   pl_torrent->add_action( "mind_blast,if=!talent.mindgames|cooldown.mindgames.remains>=3&!prev_gcd.1.mind_blast" );
   pl_torrent->add_action( "void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up" );

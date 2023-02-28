@@ -37,6 +37,9 @@ actions+=/variable,op=set,name=rotation_selection,value=2,if=talent.dragonfire_b
 actions+=/variable,op=set,name=rotation_selection,value=3,if=talent.dragonfire_brew.enabled&talent.salsalabims_strength.enabled&talent.blackout_combo.enabled
 actions+=/variable,op=set,name=rotation_selection,value=4-variable.rotation_selection
 actions+=/auto_attack
+# Move to target
+actions+=/roll,if=movement.distance>5
+actions+=/chi_torpedo,if=movement.distance>5
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/potion
 actions+=/summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled
