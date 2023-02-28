@@ -10081,9 +10081,9 @@ std::string shaman_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case SHAMAN_ELEMENTAL:
-      if ( !talent.improved_flametongue_weapon.ok() )
-        return "main_hand:howling_rune";
-      else
+      // if ( !talent.improved_flametongue_weapon.ok() )
+      //   return "main_hand:howling_rune_3";
+      // else
         return "disabled";
     case SHAMAN_ENHANCEMENT:
       return "disabled";
