@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-22/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -10625,7 +10625,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=830188)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damaging an enemy with Agony increases the damage of your next Drain Life by $s1%. This effect stacks up to $334320u times.
+Description      : Damaging an enemy with Agony increases the damage dealt by your next Drain Life by $s1%. This effect stacks up to $334320u times.
 
 Name             : Inevitable Demise (id=334320) [Spell Family (5)] 
 Class            : Warlock
@@ -13943,7 +13943,7 @@ School           : Fire
 Spell Type       : None
 Duration         : 20 seconds
 Labels           : 1841: Burn to Ashes (387153 effect#1)
-Stacks           : 1 initial, 4 maximum
+Stacks           : 1 initial, 6 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
@@ -15500,7 +15500,7 @@ School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 15 seconds
-Stacks           : 100 maximum
+Stacks           : 75 maximum
 Proc Chance      : 101%
 Attributes       : ........ x....... ........ .....x..   ........ ..x..... ........ ........ 
                  : ..x..... ........ ......x. ........   ........ ........ xx...... ........ 
@@ -16768,6 +16768,7 @@ Description      : Malefic Rapture deals $s1% increased damage to targets suffer
 Name             : Dark Virtuosity (id=405327) [Spell Family (5), Passive] 
 Talent Entry     : Affliction [tree=spec, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#2 [op=mul, values=(1, 2)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16793,7 +16794,7 @@ Description      : Shadow Bolt and Drain Soul deal an additional $s1% damage.
 
 Name             : Kindled Malice (id=405330) [Spell Family (5), Passive] 
 Talent Entry     : Affliction [tree=spec, row=4, col=3, max_rank=2, req_points=0]
-                 : Effect#1 [op=mul, values=(1, 2)]
+                 : Effect#1 [op=set, values=(8, 15)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16825,7 +16826,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : ..x..... ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1054078)  : Apply Aura (6) | Dummy (4)
@@ -16843,6 +16844,7 @@ $damage=${0.574241*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 Name             : Umbral Blaze (id=405798) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Demonology [tree=spec, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(8, 15)]
+                 : Effect#2 [op=set, values=(0, 100)]
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16861,7 +16863,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1054252)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Hand of Gul'dan has a $s1% chance to burn its target for $405802s1 additional Shadowflame damage every $405802t1 sec for $405802d.
+#2 (id=1070728)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2583 (Label) | Target: Self (1)
+                   Affected Spells (Label): Umbral Blaze (405802)
+Description      : Hand of Gul'dan has a $s1% chance to burn its target for ${$405802s1*(1+$s2/100)} additional Shadowflame damage every $405802t1 sec for $405802d.
 
 Name             : Umbral Blaze (id=405802) [Spell Family (5)] 
 Class            : Warlock
@@ -16869,6 +16874,7 @@ School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
+Labels           : 2583: Umbral Blaze (405798 effect#2)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

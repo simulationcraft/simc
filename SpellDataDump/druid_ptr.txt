@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-22/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -19108,7 +19108,7 @@ Description      : Incarnation: Chosen of Elune reduces the Astral Power cost of
 Convoke the Spirits' cooldown is reduced by ${($abs($s4)/120000)*100}% and its duration and number of spells cast is reduced by $s1%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.
 
 Name             : Incarnation: Chosen of Elune (id=394013) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Balance [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100, override="Incarnation: Chosen of Elune" (id=102560)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -20029,7 +20029,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1044988)  : Apply Aura (6) | Proc Trigger Spell (42): Thorns of Iron
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 400223 | Target: Self (1)
-Description      : When you cast Ironfur, also deal Physical damage equal to $s1% of your armor, split among enemies within $r yards. 
+#2 (id=1070880)  : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+Description      : When you cast Ironfur, also deal Physical damage equal to $s1% of your armor, split among enemies within $r yards. Damage reduced above $s2 applications.
 
 Name             : Thorns of Iron (id=400223) [Spell Family (7)] 
 Class            : Druid
