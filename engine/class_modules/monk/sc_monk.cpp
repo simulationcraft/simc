@@ -247,7 +247,7 @@ namespace monk
         return ab::create_expression( name_str );
       }
 
-      bool usable_moving() const override 
+      bool usable_moving() const override
       {
         if ( ab::usable_moving() )
           return true;
@@ -783,7 +783,8 @@ namespace monk
           s->action->id == 338141 || // Charred Passion
           s->action->id == 386959 || // Charred Passion
           s->action->id == 387621 || // Dragonfire Brew
-          s->action->id == 393786    // Chi Surge
+          s->action->id == 393786 || // Chi Surge
+          s->action->id == 325217    // Bonedust Brew
           )
           return;
 
@@ -2721,7 +2722,7 @@ namespace monk
           : monk_melee_attack_t( name, p, s )
         {
           sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
-          
+
           ww_mastery = true;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
