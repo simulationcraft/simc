@@ -160,11 +160,6 @@ struct purge_the_wicked_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.throes_of_pain );
   }
 
-  purge_the_wicked_t( priest_t& p, util::string_view options_str ) : purge_the_wicked_t( p )
-  {
-    parse_options( options_str );
-  }
-
   void trigger( player_t* target )
   {
     background = true;
