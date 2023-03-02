@@ -69,8 +69,11 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges =
-        data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+    if ( priest().specialization() == PRIEST_SHADOW )
+    {
+      cooldown->charges =
+          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+    }
   }
 
   bool insidious_ire_active() const
@@ -1606,7 +1609,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         return expr_t::create_constant( "self_power_infusion", options.self_power_infusion );
       }
 
-      if ( util::str_compare_ci(splits[1], "cthun_last_trigger_attempt") )
+      if ( util::str_compare_ci( splits[ 1 ], "cthun_last_trigger_attempt" ) )
       {
         if ( talents.shadow.idol_of_cthun.ok() )
           // std::min( sim->current_time() - last_trigger, max_interval() ).total_seconds();
@@ -2089,6 +2092,9 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
+
+  // Discipline Talents
+  action.apply_affecting_aura( talents.discipline.dark_indulgence );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
@@ -2378,7 +2384,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
