@@ -160,15 +160,6 @@ struct purge_the_wicked_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.throes_of_pain );
   }
 
-  void trigger( player_t* target )
-  {
-    background = true;
-    player->sim->print_debug( "{} triggered purge_the_wicked on target {}.", priest(), *target );
-
-    set_target( target );
-    execute();
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
