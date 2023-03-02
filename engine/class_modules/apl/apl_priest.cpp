@@ -68,7 +68,7 @@ void shadow( player_t* p )
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.mind_sear>2|spell_targets.vampiric_touch>3" );
   default_->add_action( "run_action_list,name=main" );
 
-  main_variables->add_action( "variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking" );
+  main_variables->add_action( "variable,name=dots_up,op=set,value=(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|action.shadow_crash.in_flight" );
   main_variables->add_action( "variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
   main_variables->add_action( "variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up" );
 
@@ -94,7 +94,7 @@ void shadow( player_t* p )
 
   main->add_action( "call_action_list,name=main_variables" );
   main->add_action( "call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|spell_targets.mind_sear>2)" );
-  main->add_action( "mindbender,if=(variable.dots_up|action.shadow_crash.in_flight)&(fight_remains<30|time_to_die>15)" );
+  main->add_action( "mindbender,if=variable.dots_up&(fight_remains<30|time_to_die>15)" );
   main->add_action( "mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7", "High priority Mind Blast action when using Inescapable Torment" );
   main->add_action( "damnation,target_if=dot.vampiric_touch.refreshable|dot.shadow_word_pain.refreshable" );
   main->add_action( "void_bolt,if=variable.dots_up&insanity<=85" );
