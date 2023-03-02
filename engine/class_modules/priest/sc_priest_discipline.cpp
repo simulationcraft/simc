@@ -160,17 +160,6 @@ struct purge_the_wicked_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.throes_of_pain );
   }
 
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-  }
-
-  timespan_t tick_time( const action_state_t* state ) const override
-  {
-    timespan_t t = priest_spell_t::tick_time( state );
-    return t;
-  }
-
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
