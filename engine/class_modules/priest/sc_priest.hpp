@@ -861,7 +861,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   bool ready() override
   {
-    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.discipline.shadow_covenant->ok() )
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.discipline.shadow_covenant.enabled() )
     {
       if ( school == SCHOOL_HOLY && priest().buffs.shadow_covenant->check() )
       {
