@@ -109,7 +109,6 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
-    propagate_const<buff_t*> spirit_shell;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -300,24 +299,19 @@ public:
     struct
     {
       player_talent_t power_of_the_dark_side;
+      player_talent_t purge_the_wicked;
+      player_talent_t schism;
+      player_talent_t power_word_solace;
+      player_talent_t shadow_covenant;
+      player_talent_t lights_wrath;
     } discipline;
 
     // Shared
     const spell_data_t* shining_force;
 
     // Discipline
-    // T15
     const spell_data_t* castigation;
-    const spell_data_t* schism;
-    // T30
-    const spell_data_t* power_word_solace;
-    // T40
     const spell_data_t* sins_of_the_many;  // assumes 0 atonement targets
-    const spell_data_t* shadow_covenant;   // healing not fully implemented, only dmg/healing buff
-    // T45
-    const spell_data_t* purge_the_wicked;
-    // T50
-    const spell_data_t* spirit_shell;  // not fully implemented
 
     // Holy
     // // T15
@@ -731,7 +725,7 @@ public:
   {
     // using S = const spell_data_t*;
 
-    parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().talents.schism );
+    parse_debuff_effects( []( priest_td_t* t ) { return t->buffs.schism->check(); }, p().talents.discipline.schism );
   }
 
   double cost() const override
@@ -861,7 +855,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   bool ready() override
   {
-    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.shadow_covenant->ok() )
+    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.discipline.shadow_covenant->ok() )
     {
       if ( school == SCHOOL_HOLY && priest().buffs.shadow_covenant->check() )
       {

@@ -132,68 +132,77 @@ struct penance_t final : public priest_spell_t
 
 struct power_word_solace_t final : public priest_spell_t
 {
-  power_word_solace_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "power_word_solace", player, player.talents.power_word_solace )
+  power_word_solace_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "power_word_solace", p, p.talents.discipline.power_word_solace )
   {
     parse_options( options_str );
-
     cooldown->hasted = true;
+    travel_speed     = 0.0;  // DBC has default travel taking 54 seconds
+  }
 
-    travel_speed = 0.0;  // DBC has default travel taking 54seconds.....
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    double amount = data().effectN( 2 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
+    priest().resource_gain( RESOURCE_MANA, amount, priest().gains.power_word_solace );
+  }
+};
+
+// Purge the wicked
+struct purge_the_wicked_t final : public priest_spell_t
+{
+  purge_the_wicked_t( priest_t& p ) : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
+  {
+    may_crit  = true;
+    tick_zero = false;
+
+    // Throes of Pain: Spell Direct and Periodic 3%/5% gain
+    apply_affecting_aura( priest().talents.throes_of_pain );
+  }
+
+  purge_the_wicked_t( priest_t& p, util::string_view options_str ) : purge_the_wicked_t( p )
+  {
+    parse_options( options_str );
+  }
+
+  void trigger( player_t* target )
+  {
+    background = true;
+    player->sim->print_debug( "{} triggered purge_the_wicked on target {}.", priest(), *target );
+
+    set_target( target );
+    execute();
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
 
-    double amount = data().effectN( 2 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
-    priest().resource_gain( RESOURCE_MANA, amount, priest().gains.power_word_solace );
+    if ( result_is_hit( s->result ) )
+    {
+    }
   }
-};
 
-struct purge_the_wicked_t final : public priest_spell_t
-{
-  struct purge_the_wicked_dot_t final : public priest_spell_t
+  timespan_t tick_time( const action_state_t* state ) const override
   {
-    purge_the_wicked_dot_t( priest_t& p )
-      : priest_spell_t( "purge_the_wicked", p, p.talents.purge_the_wicked->effectN( 2 ).trigger() )
-    {
-      may_crit = true;
-      // tick_zero = false;
-      energize_type = action_energize::NONE;  // disable resource generation from spell data
-      background    = true;
+    timespan_t t = priest_spell_t::tick_time( state );
+    return t;
+  }
 
-      apply_affecting_aura( priest().talents.throes_of_pain );
-    }
-
-    void tick( dot_t* d ) override
-    {
-      priest_spell_t::tick( d );
-
-      if ( d->state->result_amount > 0 )
-      {
-        trigger_power_of_the_dark_side();
-      }
-    }
-  };
-
-  purge_the_wicked_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "purge_the_wicked", p, p.talents.purge_the_wicked )
+  void tick( dot_t* d ) override
   {
-    parse_options( options_str );
+    priest_spell_t::tick( d );
 
-    may_crit       = true;
-    energize_type  = action_energize::NONE;  // disable resource generation from spell data
-    execute_action = new purge_the_wicked_dot_t( p );
-
-    apply_affecting_aura( priest().talents.throes_of_pain );
+    if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
+    {
+      trigger_power_of_the_dark_side();
+    }
   }
 };
 
 struct schism_t final : public priest_spell_t
 {
-  schism_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "schism", player, player.talents.schism )
+  schism_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "schism", p, p.talents.discipline.schism )
   {
     parse_options( options_str );
   }
@@ -215,8 +224,8 @@ struct schism_t final : public priest_spell_t
 // Heal allies effect not implemented
 struct shadow_covenant_t final : public priest_spell_t
 {
-  shadow_covenant_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "shadow_covenant", player, player.talents.shadow_covenant )
+  shadow_covenant_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant )
   {
     parse_options( options_str );
   }
@@ -229,22 +238,12 @@ struct shadow_covenant_t final : public priest_spell_t
   }
 };
 
-// Implemented as a dummy effect, without providing absorbs
-struct spirit_shell_t final : public priest_spell_t
+struct lights_wrath_t final : public priest_spell_t
 {
-  spirit_shell_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "spirit_shell", player, player.talents.spirit_shell )
+  lights_wrath_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "lights_wrath", p, p.talents.discipline.lights_wrath )
   {
     parse_options( options_str );
-
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.spirit_shell->trigger();
   }
 };
 
@@ -264,10 +263,9 @@ void priest_t::create_buffs_discipline()
                                ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
                                ->set_duration( talents.sins_of_the_many->duration() );
 
-  buffs.shadow_covenant = make_buff( this, "shadow_covenant", talents.shadow_covenant->effectN( 4 ).trigger() )
-                              ->set_trigger_spell( talents.shadow_covenant );
-
-  buffs.spirit_shell = make_buff( this, "spirit_shell", talents.spirit_shell );
+  buffs.shadow_covenant =
+      make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
+          ->set_trigger_spell( talents.discipline.shadow_covenant );
 }
 
 void priest_t::init_rng_discipline()
@@ -280,21 +278,24 @@ void priest_t::init_spells_discipline()
 
   // Talents
   // Row 2
-  talents.discipline.power_of_the_dark_side = ST( "Power of the Dark Side" );  // TODO: verify this still works
-  // T15
-  talents.castigation = find_talent_spell( "Castigation" );
-  talents.schism      = find_talent_spell( "Schism" );
-  // T30
-  talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
-  // T35
-  talents.shining_force = find_talent_spell( "Shining Force" );
-  // T40
+  talents.discipline.power_of_the_dark_side = ST( "Power of the Dark Side" );
+  // Row 3
+  talents.discipline.schism = ST( "Schism" );
+  // Row 4
+  talents.discipline.power_word_solace = ST( "Power Word: Solace" );
+  // Row 5
+  talents.discipline.purge_the_wicked = ST( "Purge the Wicked" );
+  talents.discipline.shadow_covenant  = ST( "Shadow Covenant" );
+  // Row 6
+  // Row 7
+  // Row 8
+  talents.discipline.lights_wrath = ST( "Light's Wrath" );
+  // Row 9
+  // Row 10
+
+  talents.castigation      = find_talent_spell( "Castigation" );
+  talents.shining_force    = find_talent_spell( "Shining Force" );
   talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
-  talents.shadow_covenant  = find_talent_spell( "Shadow Covenant" );
-  // T45
-  talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
-  // T50
-  talents.spirit_shell = find_talent_spell( "Spirit Shell" );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
@@ -325,9 +326,9 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   {
     return new shadow_covenant_t( *this, options_str );
   }
-  if ( name == "spirit_shell" )
+  if ( name == "lights_wrath" )
   {
-    return new spirit_shell_t( *this, options_str );
+    return new lights_wrath_t( *this, options_str );
   }
 
   return nullptr;
