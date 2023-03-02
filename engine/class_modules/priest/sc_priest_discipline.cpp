@@ -163,10 +163,6 @@ struct purge_the_wicked_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-    }
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
