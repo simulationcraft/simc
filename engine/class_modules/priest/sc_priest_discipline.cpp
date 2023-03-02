@@ -151,8 +151,10 @@ struct power_word_solace_t final : public priest_spell_t
 // Purge the wicked
 struct purge_the_wicked_t final : public priest_spell_t
 {
-  purge_the_wicked_t( priest_t& p ) : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
+  purge_the_wicked_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
   {
+    parse_options( options_str );
     may_crit  = true;
     tick_zero = false;
 
