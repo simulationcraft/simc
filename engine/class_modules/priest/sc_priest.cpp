@@ -1363,7 +1363,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.void_torrent       = target->get_dot( "void_torrent", &p );
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
 
-  buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
+  buffs.schism                   = make_buff( *this, "schism", p.talents.discipline.schism );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
   buffs.echoing_void             = make_buff( *this, "echoing_void", p.find_spell( 373281 ) );
 
