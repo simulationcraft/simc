@@ -298,11 +298,17 @@ public:
 
     struct
     {
+      // Row 1
       player_talent_t power_of_the_dark_side;
-      player_talent_t purge_the_wicked;
+      // Row 3
+      player_talent_t dark_indulgence;
       player_talent_t schism;
+      // Row 4
       player_talent_t power_word_solace;
+      player_talent_t purge_the_wicked;
+      // Row 5
       player_talent_t shadow_covenant;
+      // Row 8
       player_talent_t lights_wrath;
     } discipline;
 
