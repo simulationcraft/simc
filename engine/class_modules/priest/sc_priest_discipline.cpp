@@ -151,25 +151,39 @@ struct power_word_solace_t final : public priest_spell_t
 // Purge the wicked
 struct purge_the_wicked_t final : public priest_spell_t
 {
+  struct purge_the_wicked_dot_t final : public priest_spell_t
+  {
+    // Manually create the dot effect because "ticking" is not present on
+    // primary spell
+    purge_the_wicked_dot_t( priest_t& p )
+      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
+    {
+      may_crit = true;
+      // tick_zero = false;
+      energize_type = action_energize::NONE;  // disable resource generation from spell data
+      background    = true;
+
+      apply_affecting_aura( priest().talents.throes_of_pain );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      priest_spell_t::tick( d );
+
+      if ( d->state->result_amount > 0 )
+      {
+        trigger_power_of_the_dark_side();
+      }
+    }
+  };
+
   purge_the_wicked_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
   {
     parse_options( options_str );
-    may_crit  = true;
-    tick_zero = false;
-
-    // Throes of Pain: Spell Direct and Periodic 3%/5% gain
-    apply_affecting_aura( priest().talents.throes_of_pain );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-
-    if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
-    {
-      trigger_power_of_the_dark_side();
-    }
+    may_crit       = true;
+    tick_zero      = false;
+    execute_action = new purge_the_wicked_dot_t( p );
   }
 };
 
@@ -253,7 +267,8 @@ void priest_t::init_spells_discipline()
   // Row 2
   talents.discipline.power_of_the_dark_side = ST( "Power of the Dark Side" );
   // Row 3
-  talents.discipline.schism = ST( "Schism" );
+  talents.discipline.schism          = ST( "Schism" );
+  talents.discipline.dark_indulgence = ST( "Dark Indulgence" );
   // Row 4
   talents.discipline.power_word_solace = ST( "Power Word: Solace" );
   // Row 5

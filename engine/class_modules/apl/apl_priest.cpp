@@ -209,7 +209,6 @@ void discipline( player_t* p )
   def->add_action( "schism" );
   def->add_action( "mindgames" );
   def->add_action( "mindbender" );
-  def->add_action( "spirit_shell" );
   def->add_action( "purge_the_wicked,if=!ticking" );
   def->add_action( "shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled" );
   def->add_action( "shadow_word_death" );
