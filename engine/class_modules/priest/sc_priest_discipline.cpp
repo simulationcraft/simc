@@ -57,7 +57,7 @@ struct penance_t final : public priest_spell_t
 
     void impact( action_state_t* s ) override
     {
-      priest_spell_t::execute();
+      priest_spell_t::impact( s );
       priest_td_t& td = get_td( s->target );
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.purge_the_wicked->adjust_duration( dot_extension, true );
@@ -154,7 +154,6 @@ struct purge_the_wicked_t final : public priest_spell_t
       : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
     {
       background = true;
-      apply_affecting_aura( priest().talents.discipline.painful_punishment );
       apply_affecting_aura( priest().talents.throes_of_pain );
     }
 
