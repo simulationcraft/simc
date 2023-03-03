@@ -37,28 +37,30 @@ struct pain_suppression_t final : public priest_spell_t
   }
 };
 
-/// Penance damage spell
+// Penance damage spell
 struct penance_t final : public priest_spell_t
 {
   struct penance_tick_t final : public priest_spell_t
   {
-    bool first_tick;
+    timespan_t dot_extension;
 
-    penance_tick_t( priest_t& p, stats_t* stats )
-      : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) ), first_tick( false )
+    penance_tick_t( priest_t& p, stats_t* stats ) : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) )
     {
-      background  = true;
-      dual        = true;
-      direct_tick = true;
-
-      this->stats = stats;
+      background    = true;
+      dual          = true;
+      direct_tick   = true;
+      tick_may_crit = true;
+      may_crit      = true;
+      dot_extension = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
+      this->stats   = stats;
     }
 
-    void execute() override
+    void impact( action_state_t* s ) override
     {
-      priest_spell_t::execute();
-
-      first_tick = false;
+      priest_spell_t::impact( s );
+      priest_td_t& td = get_td( s->target );
+      td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+      td.dots.purge_the_wicked->adjust_duration( dot_extension, true );
     }
 
     bool verify_actor_level() const override
@@ -99,30 +101,23 @@ struct penance_t final : public priest_spell_t
   double bonus_da( const action_state_t* state ) const override
   {
     double d = priest_spell_t::bonus_da( state );
-
     if ( priest().buffs.power_of_the_dark_side->check() )
     {
       d *= 1.0 + priest().buffs.power_of_the_dark_side->data().effectN( 1 ).percent();
     }
-
     return d;
   }
 
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
-
     priest().buffs.power_of_the_dark_side->expire();
   }
 
   void execute() override
   {
-    penance_tick_action->first_tick = true;
-
     priest_spell_t::execute();
-
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
-
     if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
@@ -159,7 +154,6 @@ struct purge_the_wicked_t final : public priest_spell_t
       : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
     {
       background = true;
-
       apply_affecting_aura( priest().talents.throes_of_pain );
     }
 
