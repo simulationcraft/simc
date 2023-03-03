@@ -2421,7 +2421,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     {
       // Bugged as of 3/3/2023, Appears to stop casting every other cast for a period of time between 100% and ~145% haste, between 146-154% haste appears to work as expected, and 155% and above seems to bug again. 
       // Period of time between casts appears to be roughly equal to 2s - (cast time * 2). So if a cast were to take 0.8 seconds, it would cast twice normally, then wait 0.4s before starting to cast again. 
-      // Due to the complex nature of this bug, going to emulate it by slowing down the cast time of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
+      // Due to the complex nature of this bug, going to emulate it by implementing a min gcd of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
       if( dk() -> bugs && i % 2 == 0 && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 1_s ) && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() >= 0.77_s ) )
       {
         min_gcd = 1_s;
