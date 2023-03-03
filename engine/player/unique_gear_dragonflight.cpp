@@ -1190,24 +1190,6 @@ void emerald_coachs_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, *coached );
 }
 
-struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
-{
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
-      return;
-    }
-
-    assert( !td->debuff.grudge );
-    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
-    td->debuff.grudge->reset();
-  }
-};
-
 void erupting_spear_fragment( special_effect_t& effect )
 {
   struct erupting_spear_fragment_t : public generic_aoe_proc_t
@@ -1336,6 +1318,24 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
+{
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.grudge );
+    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
+    td->debuff.grudge->reset();
+  }
+};
+
 void spiteful_storm( special_effect_t& effect )
 {
   struct spiteful_stormbolt_t : public generic_proc_t
@@ -1404,7 +1404,8 @@ void spiteful_storm( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket", effect.player->find_spell( 394864 ) );
-  gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
+  // build 48317: tested to increase damage by 10% per stack, not found in spell data
+  gathering->set_default_value( 0.25 );
   gathering->set_name_reporting( "gathering_storm" );
 
   auto stormbolt = debug_cast<spiteful_stormbolt_t*>(
