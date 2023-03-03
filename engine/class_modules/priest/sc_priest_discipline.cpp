@@ -158,10 +158,7 @@ struct purge_the_wicked_t final : public priest_spell_t
     purge_the_wicked_dot_t( priest_t& p )
       : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
     {
-      may_crit = true;
-      // tick_zero = false;
-      energize_type = action_energize::NONE;  // disable resource generation from spell data
-      background    = true;
+      background = true;
 
       apply_affecting_aura( priest().talents.throes_of_pain );
     }
@@ -181,7 +178,6 @@ struct purge_the_wicked_t final : public priest_spell_t
     : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
   {
     parse_options( options_str );
-    may_crit       = true;
     tick_zero      = false;
     execute_action = new purge_the_wicked_dot_t( p );
   }
