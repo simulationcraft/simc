@@ -1411,7 +1411,7 @@ void spiteful_storm( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket", effect.player->find_spell( 394864 ) );
-  // build 48317: tested to increase damage by 10% per stack, not found in spell data
+  // build 48317: tested to increase damage by 25% per stack, not found in spell data
   gathering->set_default_value( 0.25 );
   gathering->set_name_reporting( "gathering_storm" );
 
