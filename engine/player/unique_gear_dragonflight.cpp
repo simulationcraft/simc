@@ -686,7 +686,14 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
 
     effect.custom_buff = buff;
 
-    new dbc_proc_callback_t( effect.player, effect );
+    auto cb = new dbc_proc_callback_t( effect.player, effect );
+
+    gift->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
 
     effect.player->callbacks.register_callback_execute_function(
         effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
