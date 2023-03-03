@@ -2424,14 +2424,20 @@ struct gargoyle_pet_t : public death_knight_pet_t
       // Due to the complex nature of this bug, going to emulate it by implementing a min gcd of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
       if( dk() -> bugs && i % 2 == 0 && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 1_s ) && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() >= 0.77_s ) )
       {
-        min_gcd = 1_s;
+        min_gcd = 1_s * ( 1 / dk() -> composite_spell_haste() );
       }
       else if ( dk() -> bugs && i % 2 == 0 && dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 0.73_s )
       {
-        min_gcd = 0.73_s;
+        min_gcd = 0.73_s * ( 1 / dk() -> composite_spell_haste() );
       }
       ++i;
       pet_spell_t::execute();
+    }
+
+    void reset() override
+    {
+      pet_spell_t::reset();
+      i = 0;
     }
   };
 
