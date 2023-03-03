@@ -101,7 +101,9 @@ void affliction( player_t* p )
   aoe->add_action( "vile_taint" );
   aoe->add_action( "phantom_singularity" );
   aoe->add_action( "soul_rot" );
+  aoe->add_action( "unstable_affliction,if=remains<5" );
   aoe->add_action( "seed_of_corruption,if=dot.corruption.remains<5" );
+  aoe->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3&talent.doom_blossom");
   aoe->add_action( "agony,target_if=remains<5,if=active_dot.agony<5" );
   aoe->add_action( "summon_darkglare" );
   aoe->add_action( "seed_of_corruption,if=talent.sow_the_seeds" );
