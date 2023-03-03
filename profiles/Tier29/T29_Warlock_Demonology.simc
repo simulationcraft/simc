@@ -5,7 +5,7 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-talents=BoQAAAAAAAAAAAAAAAAAAAAAAgESSkIBSTLg0SSCpFAAAAA0SkEJEQiEJSRLJJHgAAAAAAA
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAggkEJSg0USJItkkQaBAAAAAtEJRCBkIRiU0SSyBIAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -103,16 +103,16 @@ main_hand=stormlashs_last_resort,id=195529,bonus_id=6652/7981/1498/8767,enchant_
 off_hand=scripture_of_primal_devotion,id=195513,bonus_id=6652/7981/1498/8767
 
 # Gear Summary
-# gear_ilvl=418.88
-# gear_stamina=13370
-# gear_intellect=6698
-# gear_crit_rating=2838
-# gear_haste_rating=5854
-# gear_mastery_rating=2028
-# gear_versatility_rating=982
-# gear_speed_rating=375
-# gear_avoidance_rating=200
-# gear_armor=2041
+# gear_ilvl=421.38
+# gear_stamina=13269
+# gear_intellect=7176
+# gear_crit_rating=2355
+# gear_haste_rating=4976
+# gear_mastery_rating=2629
+# gear_versatility_rating=1222
+# gear_speed_rating=250
+# gear_avoidance_rating=325
+# gear_armor=2044
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1
 default_pet=felguard

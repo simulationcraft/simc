@@ -1,4 +1,4 @@
-// Item effects, wow build 10.0.7.47983
+// Item effects, wow build 10.0.7.48295
 static const std::array<item_effect_t, 8314> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8312,7 +8312,7 @@ static const std::array<item_effect_t, 8314> __ptr_item_effect_data { {
   { 173886, 404884, 204025,   0,   1,    0,      -1,      -1 }, // Primordial Stones
   { 173887, 404885, 204027,   0,   1,    0,      -1,      -1 }, // Primordial Stones
   { 173888, 404518, 204029,   0,   1,    0,      -1,      -1 }, // Primordial Stones
-  { 173880, 401678, 204030,   0,   1,    0,      -1,      -1 }, // Wind
+  { 173880, 401678, 204030,   0,   1,    0,      -1,      -1 }, // Wind Sculpted Stone
   { 173655, 403012, 204072,   0,   0,   11,       0,       0 }, // Refreshment
 } };
 

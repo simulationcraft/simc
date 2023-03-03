@@ -1,6 +1,5 @@
-// Spell text, wow build 10.0.5.47967
+// Spell text, wow build 10.0.5.48317
 static const std::array<spelltext_data_t, 19266> __spelltext_data { {
-  {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11080,6 +11079,7 @@ static const std::array<spelltext_data_t, 19266> __spelltext_data { {
   { 281842, "$@spelldesc281841", 0, 0 },
   { 281843, "$@spelldesc281841", "Mastery increased by $w1. When this effect expires, it will jump to an ally within $281844A1 yds.", 0 },
   { 281844, "$@spelldesc281841", "Mastery increased by $w1.", 0 },
+  { 281871, "$@spelldesc202770", 0, 0 },
   { 281875, "Play a tune of the desert, encouraging the small critters of Vol'dun to accompany you for $d. They happily follow you everywhere you go!", "Creatures of the desert find you enthralling.", 0 },
   { 281954, "Reduces your falling speed for $d.", "Falling speed reduced.", "Racial" },
   { 282131, "Calls forth a Vanquished Tentacle of Yogg-Saron to serve you for $64982d.", 0, 0 },
@@ -19268,11 +19268,11 @@ static const std::array<spelltext_data_t, 19266> __spelltext_data { {
   { 404012, "Prepare a treat for your Ruby Whelpling, energizing them for additional training.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.5.47967
+// spelltext hotfix entries, wow build 10.0.5.48317
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.5.47967
+// Spell description variables, wow build 10.0.5.48317
 static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19646,7 +19646,7 @@ static const std::array<spelldesc_vars_data_t, 370> __spelldesc_vars_data { {
   {  400169, "$castigation=$?a193134[${1}][${0}]\r\n$harsh=$?a373183[${$373180s2}][${0}]\r\n$darkside=$?a198069[${1+($198069s1/100)}][${1}]\r\n$balanceofthings=$?a390707[${1+($390707s1/100)}][${1}]\r\n$shadowcov=$?a322105[${1+($322105s1/100)}][${1}]\r\n$penancedamage=${$373130s1*$<shadowcov>*$<darkside>*$<balanceofthings>*(3+$<castigation>+$<harsh>)}\r\n$penancehealing=${$400187s1*$<shadowcov>*$<darkside>*(3+$<castigation>+$<harsh>)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.5.47967
+// spelldesc_vars hotfix entries, wow build 10.0.5.48317
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

@@ -5,7 +5,7 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJShgEESTahkAA
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSjgEESRahkAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -63,7 +63,8 @@ actions.aoe+=/damnation,target_if=dot.vampiric_touch.refreshable&variable.is_vt_
 actions.aoe+=/mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)
 actions.aoe+=/mindgames,if=spell_targets.mind_sear<5&dot.devouring_plague.ticking|talent.psychic_link
 actions.aoe+=/void_torrent,if=insanity<=35&!talent.psychic_link,target_if=variable.dots_up
-actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.remains>=5,interrupt_if=ticks>=2,interrupt_immediate=1
+# High priority action for Mind Flay: Insanity to fish for Idol of C'Thun procs
+actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.remains>=5&talent.idol_of_cthun,interrupt_if=ticks>=2,interrupt_immediate=1
 actions.aoe+=/call_action_list,name=filler
 
 
@@ -118,7 +119,7 @@ actions.filler+=/shadow_word_pain,target_if=min:remains
 
 actions.main=call_action_list,name=main_variables
 actions.main+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|spell_targets.mind_sear>2)
-actions.main+=/mindbender,if=(variable.dots_up|action.shadow_crash.in_flight)&(fight_remains<30|time_to_die>15)
+actions.main+=/mindbender,if=variable.dots_up&(fight_remains<30|time_to_die>15)
 # High priority Mind Blast action when using Inescapable Torment
 actions.main+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7
 actions.main+=/damnation,target_if=dot.vampiric_touch.refreshable|dot.shadow_word_pain.refreshable
@@ -141,13 +142,14 @@ actions.main+=/devouring_plague,if=buff.voidform.up&variable.dots_up&variable.dp
 actions.main+=/void_torrent,if=insanity<=35&!variable.holding_crash,target_if=variable.all_dots_up
 actions.main+=/call_action_list,name=filler
 
-actions.main_variables=variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
+actions.main_variables=variable,name=dots_up,op=set,value=(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|action.shadow_crash.in_flight
 actions.main_variables+=/variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking
 actions.main_variables+=/variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up
 
 actions.pl_torrent=void_bolt
 actions.pl_torrent+=/vampiric_touch,if=remains<=6&cooldown.void_torrent.remains<gcd*2
-actions.pl_torrent+=/devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2&!buff.voidform.up&(spell_targets.mind_sear<=4|!talent.surge_of_darkness&cooldown.mind_blast.full_recharge_time>=3)&!buff.mind_devourer.up
+# Use Devouring Plague before Void Torrent cast if Voidform is not active and Mind Devourer is not active and fighting 4 or less targets or less not talented into Mind Sear
+actions.pl_torrent+=/devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2&!buff.voidform.up&(!talent.mind_sear|spell_targets.mind_sear<=4|!talent.surge_of_darkness&cooldown.mind_blast.full_recharge_time>=3)&!buff.mind_devourer.up
 actions.pl_torrent+=/mind_sear,if=!variable.dp_cutoff|buff.mind_devourer.up
 actions.pl_torrent+=/mind_blast,if=!talent.mindgames|cooldown.mindgames.remains>=3&!prev_gcd.1.mind_blast
 actions.pl_torrent+=/void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up
@@ -166,25 +168,26 @@ neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,gem_
 shoulders=draconic_hierophants_wisdom,id=200329,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=draconic_hierophants_vestment,id=200324,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8802/8793/8932,ilevel=418,gem_id=192948
+wrists=manawracker_bindings,id=134310,bonus_id=1795/6808/4786/3300/6935,gem_id=192948
 hands=draconic_hierophants_grips,id=200326,bonus_id=4800/4786/1498
 waist=sky_saddle_cord,id=193691,bonus_id=6808/4786/1643,gem_id=192948
 legs=leggings_of_swirling_runes,id=133610,bonus_id=1795/6808/4786/3300/6935,enchant=frozen_spellthread_3
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant=devotion_of_haste_3
-finger2=woebearers_band,id=133638,bonus_id=1795/6808/4786/3300/6935,gem_id=192961,enchant=devotion_of_haste_3
-trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-trinket2=desperate_invokers_codex,id=194310,bonus_id=4800/4786/1498
-main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1508/8932,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=36/49
+trinket1=voidmenders_shadowgem,id=110007,bonus_id=6808/4786/3306
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
 
 # Gear Summary
-# gear_ilvl=422.00
-# gear_stamina=13346
-# gear_intellect=7152
-# gear_crit_rating=942
-# gear_haste_rating=5167
-# gear_mastery_rating=4758
-# gear_versatility_rating=392
-# gear_armor=2045
+# gear_ilvl=421.94
+# gear_stamina=13370
+# gear_intellect=7187
+# gear_crit_rating=700
+# gear_haste_rating=5722
+# gear_mastery_rating=4309
+# gear_versatility_rating=512
+# gear_armor=2048
 # set_bonus=tier29_2pc=1
 # set_bonus=tier29_4pc=1

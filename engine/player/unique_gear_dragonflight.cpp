@@ -686,7 +686,14 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
 
     effect.custom_buff = buff;
 
-    new dbc_proc_callback_t( effect.player, effect );
+    auto cb = new dbc_proc_callback_t( effect.player, effect );
+
+    gift->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
 
     effect.player->callbacks.register_callback_execute_function(
         effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
@@ -702,6 +709,8 @@ struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
   bool emberscale;   // no longer shuffles even cards
   bool jetscale;     // no longer shuffles on Ace
   bool sagescale;    // only shuffle on jump NYI
+
+  bool reset = false; // whether to reset the deck on shuffle
 
   DF_darkmoon_deck_t( const special_effect_t& e, std::vector<unsigned> c )
     : darkmoon_spell_deck_t( e, std::move( c ) ),
@@ -721,9 +730,10 @@ struct DF_darkmoon_deck_t : public darkmoon_spell_deck_t
   void shuffle() override
   {
     // NOTE: assumes last card, and thus highest index, is Ace
-    if ( jetscale && top_index == cards.size() - 1 )
+    if ( !reset && jetscale && top_index == cards.size() - 1 )
       return;
 
+    reset = false;
     darkmoon_spell_deck_t::shuffle();
   }
 
@@ -771,6 +781,8 @@ struct DF_darkmoon_proc_t : public darkmoon_deck_proc_t<Base, DF_darkmoon_deck_t
   void execute() override
   {
     base_t::execute();
+
+    base_t::deck->reset = true;
 
     if ( base_t::deck->shuffle_event )
       base_t::deck->shuffle_event->reschedule( base_t::cooldown->base_duration );
@@ -1185,24 +1197,6 @@ void emerald_coachs_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, *coached );
 }
 
-struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
-{
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
-      return;
-    }
-
-    assert( !td->debuff.grudge );
-    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
-    td->debuff.grudge->reset();
-  }
-};
-
 void erupting_spear_fragment( special_effect_t& effect )
 {
   struct erupting_spear_fragment_t : public generic_aoe_proc_t
@@ -1331,6 +1325,24 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
+{
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.grudge );
+    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
+    td->debuff.grudge->reset();
+  }
+};
+
 void spiteful_storm( special_effect_t& effect )
 {
   struct spiteful_stormbolt_t : public generic_proc_t
@@ -1399,7 +1411,8 @@ void spiteful_storm( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket", effect.player->find_spell( 394864 ) );
-  gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
+  // build 48317: tested to increase damage by 25% per stack, not found in spell data
+  gathering->set_default_value( 0.25 );
   gathering->set_name_reporting( "gathering_storm" );
 
   auto stormbolt = debug_cast<spiteful_stormbolt_t*>(

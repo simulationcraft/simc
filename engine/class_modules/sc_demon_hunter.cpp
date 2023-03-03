@@ -2602,12 +2602,16 @@ struct glaive_tempest_t : public demon_hunter_spell_t
 
   void make_ground_aoe_event( glaive_tempest_damage_t* action )
   {
+    // Has one initial period for 2*(6+1) ticks plus hasted duration and tick rate
+    // However, hasted duration is snapshotted on cast, which is likely a bug
+    // This allows it to sometimes tick more or less than the intended 14 times
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( execute_state->target )
       .x( p()->x_position )
       .y( p()->y_position )
-      .pulse_time( 500_ms ) // Not in spell data
-      .duration( data().duration() )
+      .pulse_time( 500_ms )
+      .hasted( ground_aoe_params_t::hasted_with::ATTACK_HASTE )
+      .duration( data().duration() * p()->cache.attack_haste() )
       .action( action ), true );
   }
 

@@ -2036,7 +2036,7 @@ class SpellDataGenerator(DataGenerator):
           ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
-          ( 211547, 1 ),       # Fury of Elune move spell
+          ( 211547, 1 ), ( 281871, 1 ), # Fury of Elune
           ( 106829, 0 ), ( 48629, 0 ), # Bear/Cat form swipe/thrash replacement
           ( 106899, 0 ), ( 106840, 0 ), # Bear/Cat form stampeding roar replacement
           ( 209406, 1 ),       # Oneth's Intuition buff

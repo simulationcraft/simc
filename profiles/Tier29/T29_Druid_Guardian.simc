@@ -29,9 +29,8 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.layered_mane.enabled&talent.reinforced_fur.enabled
-actions.precombat+=/variable,name=Maul_build,value=1,value_else=0,if=!talent.layered_mane.enabled&!talent.reinforced_fur.enabled
-actions.precombat+=/cat_form,if=druid.catweave_bear=1&(cooldown.pause_action.remains|time>30)
+actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
+actions.precombat+=/cat_form,if=(druid.catweave_bear=1&(cooldown.pause_action.remains|time>30))
 actions.precombat+=/moonkin_form,if=(!druid.catweave_bear=1)&(cooldown.pause_action.remains|time>30)
 actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
 actions.precombat+=/prowl,if=druid.catweave_bear=1&(cooldown.pause_action.remains|time>30)
@@ -43,35 +42,34 @@ actions=auto_attack,if=!buff.prowl.up
 actions+=/use_item,slot=trinket1
 actions+=/use_item,slot=trinket2
 actions+=/potion,if=((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))
-actions+=/run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&druid.catweave_bear=1&buff.tooth_and_claw.remains<1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=gcd+0.5)|(buff.cat_form.up&energy>25&druid.catweave_bear=1&buff.tooth_and_claw.remains<1.5)|(buff.heart_of_the_wild.up&energy>90&druid.catweave_bear=1&buff.tooth_and_claw.remains<1.5)
-actions+=/run_action_list,name=owlweave,if=(target.cooldown.pause_action.remains|time>=30)&buff.tooth_and_claw.remains<1.5&((druid.owlweave_bear=1)&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&cooldown.starsurge.up)
+actions+=/run_action_list,name=catweave,if=(target.cooldown.pause_action.remains|time>=30)&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down)&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=2)|(buff.cat_form.up&energy>25&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)|(buff.heart_of_the_wild.up&energy>90&druid.catweave_bear=1&buff.tooth_and_claw.remains>1.5)
 actions+=/run_action_list,name=bear
 
 actions.bear=bear_form,if=!buff.bear_form.up
 actions.bear+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled
 actions.bear+=/moonfire,cycle_targets=1,if=((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<8
-actions.bear+=/barkskin,if=buff.bear_form.up
 actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains
+actions.bear+=/barkskin,if=buff.bear_form.up
 actions.bear+=/convoke_the_spirits
 actions.bear+=/berserk_bear
 actions.bear+=/incarnation
 actions.bear+=/rage_of_the_sleeper,if=buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60|buff.incarnation_guardian_of_ursoc.up|(talent.convoke_the_spirits.enabled)
 actions.bear+=/lunar_beam
 actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
-actions.bear+=/maul,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&variable.Maul_build=1
-actions.bear+=/raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.Maul_build=1
-actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&!cooldown.pause_action.remains&variable.Maul_build=1|rage>90&variable.Maul_build=1
+actions.bear+=/maul,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&active_enemies<=6&variable.If_build=0
+actions.bear+=/raze,if=buff.rage_of_the_sleeper.up&buff.tooth_and_claw.stack>0&variable.If_build=0
+actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.ironfur.up&!cooldown.pause_action.remains&variable.If_build=0|rage>90&variable.If_build=0
 actions.bear+=/ironfur,if=rage>90&variable.If_build=1|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1
-actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=gcd+0.5
+actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=2
 actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3
-actions.bear+=/maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1&!talent.thorns_of_iron.enabled
-actions.bear+=/raze,if=((buff.incarnation.up|buff.berserk_bear.up)&(buff.tooth_and_claw.stack>=2))&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.If_build=0&!talent.thorns_of_iron.enabled
+actions.bear+=/raze,if=((buff.incarnation.up|buff.berserk_bear.up)&(buff.tooth_and_claw.stack>=2))&variable.If_build=0&!talent.thorns_of_iron.enabled
 actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|active_enemies>=5
 actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=11
 actions.bear+=/maul,if=(buff.tooth_and_claw.up&active_enemies<=5)
-actions.bear+=/maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3|active_enemies<4&!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/maul,if=active_enemies<=5&buff.vicious_cycle_maul.stack>=3|active_enemies<4&!talent.vicious_cycle_maul.enabled&variable.If_build=0&!talent.thorns_of_iron.enabled
 actions.bear+=/raze,if=(buff.tooth_and_claw.up)
-actions.bear+=/raze,if=buff.vicious_cycle_maul.stack>=3|!talent.vicious_cycle_maul.enabled&variable.Maul_build=1&!talent.thorns_of_iron.enabled
+actions.bear+=/raze,if=buff.vicious_cycle_maul.stack>=3&variable.If_build=0&!talent.thorns_of_iron.enabled|!talent.vicious_cycle_maul.enabled&variable.If_build=0&!talent.thorns_of_iron.enabled
 actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<90)&active_enemies<11)|((rage<85)&active_enemies<11&talent.soul_of_the_forest.enabled)
 actions.bear+=/thrash_bear,if=active_enemies>1
 actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
@@ -87,19 +85,6 @@ actions.catweave+=/rip,if=dot.rip.refreshable&combo_points>=1
 actions.catweave+=/convoke_the_spirits
 actions.catweave+=/ferocious_bite,if=combo_points>=4&energy>50
 actions.catweave+=/shred,if=combo_points<=5
-
-actions.cconvoke=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up
-actions.cconvoke+=/cat_form,if=!buff.cat_form.up
-actions.cconvoke+=/convoke_the_spirits
-
-actions.oconvoke=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.moonkin_form.up
-actions.oconvoke+=/moonkin_form,if=!buff.moonkin_form.up
-actions.oconvoke+=/convoke_the_spirits
-
-actions.owlweave=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up
-actions.owlweave+=/moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=gcd+1
-actions.owlweave+=/sunfire,if=dot.sunfire.refreshable
-actions.owlweave+=/starsurge
 
 head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
 neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/36

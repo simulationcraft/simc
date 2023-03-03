@@ -7207,7 +7207,7 @@ bool mage_t::trigger_crowd_control( const action_state_t* s, spell_mechanic type
     return s->target->debuffs.casting->check();
 
   if ( action_t::result_is_hit( s->result )
-    && ( s->target->is_add() || s->target->level() < sim->max_player_level + 3 ) )
+    && ( !s->target->is_boss() || s->target->level() < sim->max_player_level + 3 ) )
   {
     if ( type == MECHANIC_ROOT )
       get_target_data( s->target )->debuffs.frozen->trigger( d );

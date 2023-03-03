@@ -115,6 +115,7 @@ public:
     buff_t* avengers_might;
     buff_t* avenging_wrath_might;
     buff_t* seal_of_clarity;
+    buff_t* faiths_armor;
 
     // Holy
     buff_t* divine_protection;
@@ -241,6 +242,7 @@ public:
     cooldown_t* blessing_of_protection; // Blessing of Spellwarding Shared CD
     cooldown_t* blessing_of_spellwarding; // Blessing of Protection Shared CD
     cooldown_t* divine_shield; // Resolute Defender (Prot)
+    cooldown_t* lay_on_hands; // Tirion's Devotion
 
     cooldown_t* holy_shock; // Crusader's Might, Divine Purpose
     cooldown_t* light_of_dawn; // Divine Purpose
@@ -404,6 +406,15 @@ public:
     const spell_data_t* divine_resonance;
     const spell_data_t* relentless_inquisitor;
 
+
+    // PTR
+    const spell_data_t* justification;
+    const spell_data_t* punishment;
+    const spell_data_t* sanctified_plates;
+    const spell_data_t* lightforged_blessing;
+    const spell_data_t* crusaders_reprieve;
+    const spell_data_t* fading_light;
+
     // Holy -- NYI, Not touching for now
     // T15
     const spell_data_t* crusaders_might;
@@ -471,6 +482,12 @@ public:
     const spell_data_t* moment_of_glory;
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* quickened_invocations;
+
+    // PTR
+    const spell_data_t* inmost_light;
+    const spell_data_t* tirions_devotion;
+    const spell_data_t* seal_of_charity;
+    const spell_data_t* quickened_invocation;
 
     // Retribution
     // 0
@@ -616,6 +633,8 @@ public:
   double lucid_dreams_accumulator;
   double lucid_dreams_minor_refund_coeff;
 
+  int holy_power_generators_used;
+
   season next_season;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
@@ -703,6 +722,7 @@ public:
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
+  ground_aoe_event_t* active_boj_cons;
   std::set<ground_aoe_event_t*> all_active_consecrations;
   ground_aoe_event_t* active_hallow_damaging;
   ground_aoe_event_t* active_hallow_healing;
@@ -960,10 +980,13 @@ public:
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 2 ) );
     this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
     this -> affected_by.seal_of_reprisal = this -> data().affected_by( p -> talents.seal_of_reprisal -> effectN( 1 ) );
-    this -> affected_by.seal_of_clarity = this -> data().affected_by( p -> spells.seal_of_clarity_buff -> effectN( 1 ) );
+    this->affected_by.seal_of_clarity  = this->data().affected_by( p->spells.seal_of_clarity_buff->effectN( 1 ) );
+    if ( !p->is_ptr() )
+      this->affected_by.blessing_of_dawn = this->data().affected_by( p->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ) );
+    else
+      this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -1109,19 +1132,37 @@ public:
     {
       am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
-    if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
-    {
-      double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
-      if ( p()->bugs && p()->talents.seal_of_order->ok() )
-      {
-        bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
-      }
-      am *= bod_mult;
-    }
 
-    if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
+    if ( !p()->is_ptr() && affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
     {
       am *= 1.0 + p()->talents.seal_of_order->effectN( 2 ).percent();
+    }
+    if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() )
+    {
+      // Buffs handled in holy_power_consumer_t
+      if ( p()->is_ptr() )
+      {
+        // Get base multiplier
+        double bod_mult  = p()->buffs.blessing_of_dawn->value();
+        // Increase base multiplier by SoO/FL increase
+        if ( p()->talents.seal_of_order->ok() )
+          bod_mult += p()->talents.seal_of_order->effectN( 1 ).percent();
+        // Separating those, in case on of them gets changed. Both do exactly the same to Dawn, though.
+        if ( p()->talents.fading_light->ok() )
+          bod_mult += p()->talents.fading_light->effectN( 1 ).percent();
+        // Multiply by stack count
+        bod_mult *= p()->buffs.blessing_of_dawn->stack();
+        am *= 1.0 + bod_mult;
+      }
+      else
+      {
+        double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
+        if ( p()->bugs && p()->talents.seal_of_order->ok() )
+        {
+          bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
+        }
+        am *= bod_mult;
+      }
     }
 
     return am;
@@ -1460,6 +1501,13 @@ struct holy_power_consumer_t : public Base
       p->cooldowns.divine_shield->adjust( reduction );
     }
 
+    if (p->is_ptr() && p -> talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok())
+    {
+      timespan_t reduction =
+          timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost());
+      p->cooldowns.lay_on_hands->adjust( reduction );
+    }
+
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
     // Cost reduction is still in divine_storm_t
     bool should_continue = true;
@@ -1597,6 +1645,21 @@ struct holy_power_consumer_t : public Base
 
     if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() ))
       p->buffs.seal_of_clarity->trigger();
+
+    if ( p->is_ptr() && p->talents.faiths_armor->ok())
+    {
+      if ( (p->specialization() == PALADIN_RETRIBUTION && is_wog)
+        || (p->specialization() != PALADIN_RETRIBUTION && is_sotr))
+      {
+        p->buffs.faiths_armor->trigger();
+      }
+    }
+
+    if (p->is_ptr() && p->buffs.blessing_of_dawn->up())
+    {
+      p->buffs.blessing_of_dawn->expire();
+      p->buffs.blessing_of_dusk->trigger();
+    }
   }
 
   void consume_resource() override
@@ -1623,6 +1686,7 @@ struct judgment_t : public paladin_melee_attack_t
   proc_types proc_type() const override;
   void impact( action_state_t* s ) override;
   void execute() override;
+  double action_multiplier() const override;
 };
 
 struct shield_of_the_righteous_buff_t : public buff_t

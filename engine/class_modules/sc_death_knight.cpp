@@ -536,6 +536,8 @@ public:
     buff_t* plaguebringer; 
     buff_t* ghoulish_infusion;
     buff_t* commander_of_the_dead_window;
+    buff_t* commander_of_the_dead;
+    buff_t* defile_buff;
 
   } buffs;
 
@@ -877,7 +879,7 @@ public:
       player_talent_t sudden_doom;
       player_talent_t all_will_serve;
       // Row 6
-      player_talent_t pestilent_pustules;
+      player_talent_t pestilent_pustules; // Replaced by Defile in 10.0.7
       player_talent_t bursting_sores;
       player_talent_t ebon_fever;
       player_talent_t unholy_command;
@@ -886,7 +888,7 @@ public:
       player_talent_t improved_death_coil;
       player_talent_t rotten_touch;
       player_talent_t unholy_pact;
-      player_talent_t defile;
+      player_talent_t defile; // Replaces Pestilent Pustules in 10.0.7
       // Row 7
       player_talent_t vile_contagion;
       player_talent_t pestilence;
@@ -952,6 +954,9 @@ public:
     const spell_data_t* festermight_buff;
     const spell_data_t* ghoulish_infusion;
     const spell_data_t* unholy_blight_dot;
+    const spell_data_t* commander_of_the_dead;
+    const spell_data_t* defile_buff;
+    const spell_data_t* ruptured_viscera_chance;
 
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
@@ -1046,10 +1051,11 @@ public:
     proc_t* km_from_t29_4pc_wasted;           // T29 Frost 4PC
 
     // Runic corruption triggered by
-    proc_t* pp_runic_corruption; // from pestilent pustules
+    proc_t* pp_runic_corruption; // from pestilent pustules, remove with 10.0.7
     proc_t* rp_runic_corruption; // from RP spent
     proc_t* sr_runic_corruption; // from soul reaper
     proc_t* al_runic_corruption; // from abomination limb
+    proc_t* fs_runic_corruption; // from feasting strikes
 
     // Festering Wound applied by
     proc_t* fw_festering_strike;
@@ -1058,6 +1064,7 @@ public:
     proc_t* fw_pestilence;
     proc_t* fw_unholy_assault;
     proc_t* fw_vile_contagion;
+    proc_t* fw_ruptured_viscera;
   } procs;
 
   // Death Knight Options
@@ -1697,7 +1704,7 @@ namespace pets {
 
 struct death_knight_pet_t : public pet_t
 {
-  bool use_auto_attack, precombat_spawn;
+  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   double precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
   buff_t* commander_of_the_dead;
 
@@ -1705,7 +1712,7 @@ struct death_knight_pet_t : public pet_t
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0 ),
     spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), 
-    commander_of_the_dead( nullptr )
+    commander_of_the_dead( nullptr ), affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
@@ -1731,6 +1738,18 @@ struct death_knight_pet_t : public pet_t
     // 2021-01-29: The bdk aura is currently set to 0,
     // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
     dk() -> apply_affecting_auras( action );
+  }
+
+  double composite_player_multiplier ( school_e s ) const override
+  {
+    double m = pet_t::composite_player_multiplier( s );
+
+    if ( is_ptr() && affected_by_commander_of_the_dead && dk() -> buffs.commander_of_the_dead -> up() )
+    {
+      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   // Standard Death Knight pet actions
@@ -1985,7 +2004,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
-
     // Army ghouls, apoc ghouls and raise dead ghoul all share the same spawn/travel animation lock
     spawn_travel_duration = 4.5;
     spawn_travel_stddev = 0.1;
@@ -2283,16 +2301,31 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
       aoe = -1;
       background = true;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      pet_spell_t::impact( s );
+      if ( dk() -> is_ptr() && dk() -> rng().roll( dk() -> spell.ruptured_viscera_chance -> effectN( 1 ).percent() ) )
+      {
+        dk() -> trigger_festering_wound( s, 1, dk() -> procs.fw_ruptured_viscera );
+      }
+    }
   };
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
     base_ghoul_pet_t( owner, name, true )
-  { }
+  {
+    if( dk() -> is_ptr() )
+    {
+      affected_by_commander_of_the_dead = true;
+    }
+  }
 
   void arise() override
   {
     base_ghoul_pet_t::arise();
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+
+    if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -2357,7 +2390,9 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   void dismiss( bool expired = false ) override
   {
     if ( !sim -> event_mgr.canceled && dk() -> talent.unholy.ruptured_viscera.ok() )
+    {
       ruptured_viscera -> execute_on_target( target );
+    }
 	  
     pet_t::dismiss( expired );
   }
@@ -2366,7 +2401,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 // ==========================================================================
 // Gargoyle
 // ==========================================================================
-
+int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
@@ -2377,6 +2412,24 @@ struct gargoyle_pet_t : public death_knight_pet_t
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     {
       parse_options( options_str );
+      trigger_gcd = 1.5_s;
+    }
+
+    void execute() override
+    {
+      // Bugged as of 3/3/2023, Appears to stop casting every other cast for a period of time between 100% and ~145% haste, between 146-154% haste appears to work as expected, and 155% and above seems to bug again. 
+      // Period of time between casts appears to be roughly equal to 2s - (cast time * 2). So if a cast were to take 0.8 seconds, it would cast twice normally, then wait 0.4s before starting to cast again. 
+      // Due to the complex nature of this bug, going to emulate it by implementing a min gcd of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
+      if( dk() -> bugs && gargoyle_strike_count % 2 == 0 && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 1_s ) && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() >= 0.77_s ) )
+      {
+        min_gcd = 1_s * ( 1 / dk() -> composite_spell_haste() );
+      }
+      else if ( dk() -> bugs && gargoyle_strike_count % 2 == 0 && dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 0.73_s )
+      {
+        min_gcd = 0.73_s * ( 1 / dk() -> composite_spell_haste() );
+      }
+      pet_spell_t::execute();
+      ++gargoyle_strike_count;
     }
   };
 
@@ -2385,6 +2438,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
 
+    if( dk() -> is_ptr() )
+    {
+        affected_by_commander_of_the_dead = true;
+    }
+
     spawn_travel_duration = 2.9;
     spawn_travel_stddev = 0.2;
   }
@@ -2392,10 +2450,19 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+
+    gargoyle_strike_count = 0;
+
+    if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
+  }
+
+  void reset() override
+  {
+    death_knight_pet_t::reset();
+    gargoyle_strike_count = 0;
   }
 
   void init_base_stats() override
@@ -2906,12 +2973,18 @@ struct magus_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
+
+    if( dk() -> is_ptr() )
+    {
+      affected_by_commander_of_the_dead = true;
+    }
   }
 
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
+
+    if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
@@ -4797,7 +4870,12 @@ struct dark_transformation_t : public death_knight_spell_t
         p() -> buffs.unholy_pact -> trigger();
       }
 
-      if ( p( ) -> talent.unholy.commander_of_the_dead.ok() )
+      if ( p() -> is_ptr() && p() -> talent.unholy.commander_of_the_dead.ok() )
+      {
+        p() -> buffs.commander_of_the_dead -> trigger();
+      }
+
+      else if ( !p() -> is_ptr() && p( ) -> talent.unholy.commander_of_the_dead.ok() )
       {
         if ( p() -> pets.gargoyle )
         {
@@ -4818,6 +4896,7 @@ struct dark_transformation_t : public death_knight_spell_t
         {
           magus -> commander_of_the_dead -> trigger();
         }
+
         p() -> buffs.commander_of_the_dead_window -> trigger();
     }
   }
@@ -4924,6 +5003,11 @@ struct defile_damage_t : public death_and_decay_damage_base_t
     if ( hit_any_target )
     {
       active_defile_multiplier *= defile_tick_multiplier;
+
+      if ( p() -> is_ptr() )
+      {
+        p() -> buffs.defile_buff -> trigger();
+      }
     }
   }
 };
@@ -5176,6 +5260,11 @@ struct death_coil_damage_t : public death_knight_spell_t
     if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
       m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+    }
+
+    if ( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent() * p() -> buffs.sudden_doom -> stack();
     }
 
     return m;
@@ -5610,6 +5699,11 @@ struct epidemic_damage_main_t : public death_knight_spell_t
 
     cam *= soft_cap_multiplier;
 
+    if( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
+    }
+
     return cam;
   }
 };
@@ -5647,6 +5741,10 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
     cam *= soft_cap_multiplier;
 
+    if( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
+    }
     return cam;
   }
 };
@@ -5829,6 +5927,11 @@ struct festering_strike_t : public death_knight_melee_attack_t
       if ( rng().roll( p() -> talent.unholy.feasting_strikes -> effectN( 1 ).percent() ) )
       {
         p() -> replenish_rune( as<unsigned int>( p() -> spell.feasting_strikes_gain -> effectN( 1 ).base_value() ), p() -> gains.feasting_strikes );
+
+        if( p() -> is_ptr() )
+        {
+          p() -> trigger_runic_corruption( p() -> procs.fs_runic_corruption, 0, 1.0, true );
+        }
       }
     }
   }
@@ -8449,6 +8552,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
                  talent.unholy.replenishing_wounds->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
                  gains.replenishing_wounds );
 
+  // Remove with 10.0.7
   if ( talent.unholy.pestilent_pustules.ok() )
   {
     trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n_wounds, true );
@@ -8687,6 +8791,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       // Triggers once per target per player action:
       // Apocalypse is 10% * n wounds burst to proc
       // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
+      // Remove with 10.0.7
       if ( dk -> talent.unholy.pestilent_pustules.ok() )
       {
         dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n, false );
@@ -9441,7 +9546,7 @@ void death_knight_t::init_spells()
   talent.unholy.sudden_doom = find_talent_spell( talent_tree::SPECIALIZATION, "Sudden Doom" );
   talent.unholy.all_will_serve = find_talent_spell( talent_tree::SPECIALIZATION, "All Will Serve" );
   // Row 6
-  talent.unholy.pestilent_pustules = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilent Pustules" );
+  talent.unholy.pestilent_pustules = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilent Pustules" ); // Replaced by Defile in 10.0.7
   talent.unholy.bursting_sores = find_talent_spell( talent_tree::SPECIALIZATION, "Bursting Sores" );
   talent.unholy.ebon_fever = find_talent_spell( talent_tree::SPECIALIZATION, "Ebon Fever" );
   talent.unholy.unholy_command = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Command" );
@@ -9450,7 +9555,7 @@ void death_knight_t::init_spells()
   talent.unholy.improved_death_coil = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Death Coil" );
   talent.unholy.rotten_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Rotten Touch" );
   talent.unholy.unholy_pact = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Pact" );
-  talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
+  talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" ); // Replaces Pestilent Pustules in 10.0.7
   // Row 7
   talent.unholy.vile_contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Contagion" );
   talent.unholy.pestilence = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
@@ -9523,6 +9628,9 @@ void death_knight_t::init_spells()
   spell.festermight_buff           = find_spell( 377591 );
   spell.ghoulish_infusion          = find_spell( 394899 );
   spell.unholy_blight_dot          = find_spell( 115994 );
+  spell.commander_of_the_dead      = find_spell( 390260 );
+  spell.defile_buff                = find_spell( 218100 );
+  spell.ruptured_viscera_chance    = find_spell( 390236 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -9858,18 +9966,21 @@ void death_knight_t::create_buffs()
            -> add_invalidate( CACHE_HASTE )
            -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" );
-
-  buffs.commander_of_the_dead_window -> set_quiet( true );
-  if ( is_ptr() )
+  if( !is_ptr() )
   {
-    buffs.commander_of_the_dead_window -> set_duration( pet_spell.commander_of_the_dead -> duration() );
+    buffs.commander_of_the_dead_window = make_buff( this, "commander_of_the_dead_window" )
+      -> set_quiet( true )
+      -> set_duration( 4_s );
   }
-  else
-  { 
-    buffs.commander_of_the_dead_window -> set_duration ( 4_s );
-  }
+  else if ( is_ptr() )
+  {
+    buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
+    buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+        -> add_invalidate ( CACHE_MASTERY )
+        -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() );
+  }
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9943,9 +10054,10 @@ void death_knight_t::init_procs()
   procs.ready_rune            = get_proc( "Rune ready" );
 
   procs.rp_runic_corruption   = get_proc( "Runic Corruption from Runic Power Spent" );
-  procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" );
+  procs.pp_runic_corruption   = get_proc( "Runic Corruption from Pestilent Pustules" ); // Remove with 10.0.7
   procs.sr_runic_corruption   = get_proc( "Runic Corruption from Soul Reaper" );
   procs.al_runic_corruption   = get_proc( "Runic Corruption from Abomination Limb" );
+  procs.fs_runic_corruption   = get_proc( "Runic Corruption from Feasting Strikes" );
 
   procs.bloodworms            = get_proc( "Bloodworms" );
 
@@ -9955,6 +10067,7 @@ void death_knight_t::init_procs()
   procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
   procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
   procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
+  procs.fw_ruptured_viscera = get_proc( "Festering Wound from Ruptured Viscera" );
 
 }
 

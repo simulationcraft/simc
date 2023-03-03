@@ -21,6 +21,7 @@ def->add_action( "potion,if=!druid.no_cds&(buff.ca_inc.remains>=20|variable.no_c
 def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items" );
+def->add_action( "invoke_external_buff,name=power_infusion,if=target.time_to_die>12|fight_remains<20" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
 
@@ -29,6 +30,7 @@ st->add_action( "moonfire,target_if=refreshable&remains<2&(target.time_to_die-re
 st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2&(target.time_to_die-remains)>8" );
 st->add_action( "variable,name=cd_condition_st,value=!druid.no_cds&(cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune))" );
 st->add_action( "wrath,if=variable.cd_condition_st&set_bonus.tier29_4pc&eclipse.any_next|fight_remains>10&(target.time_to_die<=2&astral_power.deficit>20|target.time_to_die<=5&buff.primordial_arcanic_pulsar.value>=550)" );
+st->add_action( "starfall,if=variable.cd_condition_st&buff.touch_the_cosmos.up&cooldown.ca_inc.up" );
 st->add_action( "starsurge,if=variable.cd_condition_st&buff.touch_the_cosmos.up|buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up" );
 st->add_action( "starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up" );
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
