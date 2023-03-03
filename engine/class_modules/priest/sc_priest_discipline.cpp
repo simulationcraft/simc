@@ -188,6 +188,7 @@ struct schism_t final : public priest_spell_t
   schism_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "schism", p, p.talents.discipline.schism )
   {
     parse_options( options_str );
+    apply_affecting_aura( priest().talents.discipline.malicious_intent );
   }
 
   void impact( action_state_t* s ) override
@@ -242,10 +243,6 @@ void priest_t::create_buffs_discipline()
       make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
           ->set_trigger_spell( talents.discipline.power_of_the_dark_side );
 
-  buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", talents.sins_of_the_many->effectN( 1 ).trigger() )
-                               ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
-                               ->set_duration( talents.sins_of_the_many->duration() );
-
   buffs.shadow_covenant =
       make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
           ->set_trigger_spell( talents.discipline.shadow_covenant );
@@ -266,7 +263,9 @@ void priest_t::init_spells_discipline()
   talents.discipline.schism          = ST( "Schism" );
   talents.discipline.dark_indulgence = ST( "Dark Indulgence" );
   // Row 4
-  talents.discipline.power_word_solace = ST( "Power Word: Solace" );
+  talents.discipline.malicious_intent   = ST( "Malicious Intent" );
+  talents.discipline.power_word_solace  = ST( "Power Word: Solace" );
+  talents.discipline.painful_punishment = ST( "Painful Punishment" );
   // Row 5
   talents.discipline.purge_the_wicked = ST( "Purge the Wicked" );
   talents.discipline.shadow_covenant  = ST( "Shadow Covenant" );
