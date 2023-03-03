@@ -10702,7 +10702,10 @@ void druid_t::init_special_effects()
 
       void execute( action_t* a, action_state_t* s ) override
       {
-        druid->buff.incarnation_cat->extend_duration_or_trigger( dur );
+        if ( druid->buff.incarnation_cat->check() )
+          return;
+
+        druid->buff.incarnation_cat->trigger( dur );
         druid->proc.ashamanes_guidance->occur();
       }
     };
