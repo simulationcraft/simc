@@ -182,7 +182,6 @@ struct schism_t final : public priest_spell_t
   schism_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "schism", p, p.talents.discipline.schism )
   {
     parse_options( options_str );
-    apply_affecting_aura( priest().talents.discipline.malicious_intent );
   }
 
   void impact( action_state_t* s ) override
@@ -194,7 +193,9 @@ struct schism_t final : public priest_spell_t
       priest_td_t& td = get_td( s->target );
 
       // Assumption scamille 2016-07-28: Schism only applied on hit
-      td.buffs.schism->trigger();
+      timespan_t schism_duration =
+          td.buffs.schism->data().duration() + priest().talents.discipline.malicious_intent->effectN( 1 ).time_value();
+      td.buffs.schism->trigger( schism_duration );
     }
   }
 };
