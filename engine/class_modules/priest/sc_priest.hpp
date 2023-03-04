@@ -732,7 +732,7 @@ public:
 
     // Discipline
     parse_buff_effects( p().buffs.shadow_covenant );
-    parse_buff_effects( p().buffs.sins_of_the_many );
+    parse_buff_effects( p().buffs.sins_of_the_many, false, true );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
