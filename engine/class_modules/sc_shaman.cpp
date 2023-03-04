@@ -480,6 +480,9 @@ public:
     proc_t* surge_of_power_flame_shock;
     proc_t* surge_of_power_wasted;
 
+    proc_t* elemental_blast_haste;
+    proc_t* elemental_blast_crit;
+    proc_t* elemental_blast_mastery;
 
     // Enhancement
     proc_t* hot_hand;
@@ -5776,14 +5779,17 @@ void trigger_elemental_blast_proc( shaman_t* p )
   if ( b == 0 )
   {
     p->buff.elemental_blast_crit->trigger();
+    p->proc.elemental_blast_crit->occur();
   }
   else if ( b == 1 )
   {
     p->buff.elemental_blast_haste->trigger();
+    p->proc.elemental_blast_haste->occur();
   }
   else if ( b == 2 )
   {
     p->buff.elemental_blast_mastery->trigger();
+    p->proc.elemental_blast_mastery->occur();
   }
 }
 
@@ -9871,6 +9877,9 @@ void shaman_t::init_procs()
   {
     proc.magma_chamber[ i ] = get_proc( fmt::format( "Magma Chamber {}", i ) );
   }
+  proc.elemental_blast_crit = get_proc( "Elemental Blast: Critical Strike" );
+  proc.elemental_blast_haste = get_proc( "Elemental Blast: Haste" );
+  proc.elemental_blast_mastery = get_proc( "Elemental Blast: Mastery" );
 
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
   proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
