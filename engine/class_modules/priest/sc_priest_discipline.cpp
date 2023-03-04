@@ -37,14 +37,21 @@ struct pain_suppression_t final : public priest_spell_t
   }
 };
 
-// Penance damage spell
-struct penance_t final : public priest_spell_t
+// ==========================================================================
+// Penance & Dark Reprimand
+// Penance:
+// - Base(47540) ? (47758) -> (47666)
+// Dark Reprimand:
+// - Base(373129) -> (373130)
+// ==========================================================================
+struct penance_base_t final : public priest_spell_t
 {
   struct penance_tick_t final : public priest_spell_t
   {
     timespan_t dot_extension;
 
-    penance_tick_t( priest_t& p, stats_t* stats ) : priest_spell_t( "penance_tick", p, p.dbc->spell( 47666 ) )
+    penance_tick_t( util::string_view n, priest_t& p, stats_t* stats, const spell_data_t* s )
+      : priest_spell_t( n, p, s )
     {
       background    = true;
       dual          = true;
@@ -71,16 +78,11 @@ struct penance_t final : public priest_spell_t
   };
 
   penance_tick_t* penance_tick_action;
-  timespan_t manipulation_cdr;
 
-  penance_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) ),
-      penance_tick_action( new penance_tick_t( p, stats ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
-
+  penance_base_t( util::string_view n, priest_t& p, const spell_data_t* s, const spell_data_t* ts,
+                  util::string_view tn )
+    : priest_spell_t( n, p, s ), penance_tick_action( new penance_tick_t( tn, p, stats, ts ) )
   {
-    parse_options( options_str );
-
     may_crit       = false;
     may_miss       = false;
     channeled      = true;
@@ -118,11 +120,48 @@ struct penance_t final : public priest_spell_t
   {
     priest_spell_t::execute();
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
+  }
+};
+
+struct penance_t final : public priest_spell_t
+{
+  timespan_t manipulation_cdr;
+
+  penance_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "penance", p, p.specs.penance ),
+      _base_spell( new penance_base_t( "penance", p, p.specs.penance, p.specs.penance_tick, "penance_tick" ) ),
+      _dark_reprimand_spell( new penance_base_t( "dark_reprimand", p, p.talents.discipline.dark_reprimand,
+                                                 p.talents.discipline.dark_reprimand->effectN( 2 ).trigger(),
+                                                 "dark_reprimand_tick" ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+  {
+    parse_options( options_str );
+
+    add_child( _base_spell );
+  }
+
+  void execute() override
+  {
     if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
+
+    if ( priest().buffs.shadow_covenant->check() )
+    {
+      _dark_reprimand_spell->execute();
+      // TODO: figure out why the cooldown isn't starting automatically
+      priest().cooldowns.penance->start();
+    }
+    else
+    {
+      _base_spell->execute();
+    }
   }
+
+private:
+  propagate_const<action_t*> _base_spell;
+  propagate_const<action_t*> _dark_reprimand_spell;
 };
 
 struct power_word_solace_t final : public priest_spell_t
@@ -264,6 +303,7 @@ void priest_t::init_spells_discipline()
   // Row 5
   talents.discipline.purge_the_wicked = ST( "Purge the Wicked" );
   talents.discipline.shadow_covenant  = ST( "Shadow Covenant" );
+  talents.discipline.dark_reprimand   = find_spell( 373129 );
   // Row 6
   // Row 7
   // Row 8
@@ -274,6 +314,10 @@ void priest_t::init_spells_discipline()
   talents.castigation      = find_talent_spell( "Castigation" );
   talents.shining_force    = find_talent_spell( "Shining Force" );
   talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
+
+  // General Spells
+  specs.penance      = find_spell( 47540 );
+  specs.penance_tick = find_spell( 47666 );  // Not triggered from 47540, only 47758
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

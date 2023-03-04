@@ -1466,6 +1466,7 @@ void priest_t::create_cooldowns()
   cooldowns.void_eruption      = get_cooldown( "void_eruption" );
   cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
   cooldowns.mindgames          = get_cooldown( "mindgames" );
+  cooldowns.penance            = get_cooldown( "penance" );
 }
 
 /** Construct priest gains */
@@ -2384,7 +2385,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }

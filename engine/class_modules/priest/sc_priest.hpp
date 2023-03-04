@@ -310,6 +310,7 @@ public:
       player_talent_t malicious_intent;
       // Row 5
       player_talent_t shadow_covenant;
+      const spell_data_t* dark_reprimand;
       // Row 8
       player_talent_t lights_wrath;
     } discipline;
@@ -340,6 +341,8 @@ public:
 
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
+    const spell_data_t* penance;
+    const spell_data_t* penance_tick;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -386,6 +389,9 @@ public:
     // Holy
     propagate_const<cooldown_t*> holy_word_serenity;
     propagate_const<cooldown_t*> holy_fire;
+
+    // Discipline
+    propagate_const<cooldown_t*> penance;
   } cooldowns;
 
   struct realppm_t
@@ -863,14 +869,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   bool ready() override
   {
-    if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.discipline.shadow_covenant.enabled() )
-    {
-      if ( school == SCHOOL_HOLY && priest().buffs.shadow_covenant->check() )
-      {
-        return false;
-      }
-    }
-
     return base_t::ready();
   }
 
