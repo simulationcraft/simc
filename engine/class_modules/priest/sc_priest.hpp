@@ -304,6 +304,7 @@ public:
       player_talent_t dark_indulgence;
       player_talent_t schism;
       // Row 4
+      player_talent_t painful_punishment;
       player_talent_t power_word_solace;
       player_talent_t purge_the_wicked;
       // Row 5
