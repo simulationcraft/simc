@@ -193,7 +193,9 @@ struct schism_t final : public priest_spell_t
       priest_td_t& td = get_td( s->target );
 
       // Assumption scamille 2016-07-28: Schism only applied on hit
-      td.buffs.schism->trigger();
+      timespan_t schism_duration =
+          td.buffs.schism->data().duration() + priest().talents.discipline.malicious_intent->effectN( 1 ).time_value();
+      td.buffs.schism->trigger( schism_duration );
     }
   }
 };
@@ -236,10 +238,6 @@ void priest_t::create_buffs_discipline()
       make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
           ->set_trigger_spell( talents.discipline.power_of_the_dark_side );
 
-  buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", talents.sins_of_the_many->effectN( 1 ).trigger() )
-                               ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
-                               ->set_duration( talents.sins_of_the_many->duration() );
-
   buffs.shadow_covenant =
       make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
           ->set_trigger_spell( talents.discipline.shadow_covenant );
@@ -260,6 +258,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.schism          = ST( "Schism" );
   talents.discipline.dark_indulgence = ST( "Dark Indulgence" );
   // Row 4
+  talents.discipline.malicious_intent   = ST( "Malicious Intent" );
   talents.discipline.power_word_solace  = ST( "Power Word: Solace" );
   talents.discipline.painful_punishment = ST( "Painful Punishment" );
   // Row 5
