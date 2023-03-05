@@ -919,11 +919,24 @@ public:
     const spell_data_t* coldthirst_gain; // Coldthirst has a unique ID for the gain and cooldown reduction
     const spell_data_t* unholy_strength_buff;
     const spell_data_t* unholy_ground_buff;
+    const spell_data_t* apocalypse_death_debuff;
+    const spell_data_t* apocalypse_famine_debuff;
+    const spell_data_t* apocalypse_war_debuff;
+    const spell_data_t* apocalypse_pestilence_damage;
+    const spell_data_t* razorice_damage;
+    const spell_data_t* death_and_decay_damage;
+    const spell_data_t* death_coil_damage;
+    const spell_data_t* death_strike_heal;
+    const spell_data_t* sacrificial_pact_damage;
+    const spell_data_t* soul_reaper_execute;
+    const spell_data_t* sanguination_cooldown;
+    const spell_data_t* spellwarding_absorb;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
     const spell_data_t* frost_fever;
     const spell_data_t* virulent_plague;
+    const spell_data_t* virulent_erruption;
 
     // Blood
     const spell_data_t* blood_shield;
@@ -935,6 +948,13 @@ public:
     const spell_data_t* heartrend_buff;
     const spell_data_t* preserverence_of_the_ebon_blade_buff;
     const spell_data_t* voracious_buff;
+    const spell_data_t* blood_draw_damage;
+    const spell_data_t* blood_draw_cooldown;
+    const spell_data_t* bonestorm_heal;
+    const spell_data_t* dancing_rune_weapon_buff;
+    const spell_data_t* relish_in_blood_gains;
+    const spell_data_t* leeching_strike_damage;
+    const spell_data_t* shattering_bone_damage;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -948,6 +968,16 @@ public:
     const spell_data_t* bonegrinder_frost_buff;
     const spell_data_t* enduring_strength_buff;
     const spell_data_t* frostwhelps_aid_buff;
+    const spell_data_t* inexorable_assault_damage;
+    const spell_data_t* breath_of_sindragosa_rune_gen;
+    const spell_data_t* cold_heart_damage; 
+    const spell_data_t* chill_streak_damage;
+    const spell_data_t* death_strike_offhand;
+    const spell_data_t* frostwyrms_fury_damage; 
+    const spell_data_t* glacial_advance_damage;
+    const spell_data_t* avalanche_damage;
+    const spell_data_t* frostwhelps_aid_damage;
+    const spell_data_t* enduring_strength_cooldown;
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -965,13 +995,21 @@ public:
     const spell_data_t* commander_of_the_dead;
     const spell_data_t* defile_buff;
     const spell_data_t* ruptured_viscera_chance;
+    const spell_data_t* apocalypse_duration;
+    const spell_data_t* apocalypse_rune_gen;
+    const spell_data_t* unholy_pact_damage;
+    const spell_data_t* dark_transformation_damage;
+    const spell_data_t* defile_damage;
+    const spell_data_t* epidemic_damage;
+    const spell_data_t* bursting_sores_damage;
+    const spell_data_t* festering_wound_damage;
 
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
     const spell_data_t* vigorous_lifeblood_energize; // Rune refund
   } spell;
 
-  // Unholy Pet Abilities
+  // Pet Abilities
   struct pet_spells_t {
     // Raise dead ghoul
     const spell_data_t* ghoul_claw;
@@ -996,6 +1034,9 @@ public:
     const spell_data_t* ghoulish_frenzy;
     // Vile Infusion
     const spell_data_t* vile_infusion;
+    // DRW Spells
+    const spell_data_t* drw_heart_strike;
+    const spell_data_t* drw_heart_strike_rp_gen;
   } pet_spell;
 
   // RPPM
@@ -1310,12 +1351,12 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
-  debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) )  // Effect not implemented
+  debuff.apocalypse_death  = make_buff( *this, "death", p -> spell.apocalypse_death_debuff )  // Effect not implemented
                             -> apply_affecting_aura( p -> talent.unholy_bond );
-  debuff.apocalypse_famine = make_buff( *this, "famine", p -> find_spell( 327092 ) )
+  debuff.apocalypse_famine = make_buff( *this, "famine", p -> spell.apocalypse_famine_debuff )
                             -> set_default_value_from_effect( 1 )
                             -> apply_affecting_aura( p -> talent.unholy_bond );
-  debuff.apocalypse_war    = make_buff( *this, "war", p -> find_spell( 327096 ) )
+  debuff.apocalypse_war    = make_buff( *this, "war", p -> spell.apocalypse_war_debuff )
                             -> set_default_value_from_effect( 1 )
                             -> apply_affecting_aura( p -> talent.unholy_bond );
 
@@ -2039,7 +2080,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 {
   cooldown_t* gnaw_cd; // shared cd between gnaw/monstrous_blow
   gain_t* dark_transformation_gain;
-  buff_t* frenzied_monstrosity;
   buff_t* ghoulish_frenzy;
   buff_t* vile_infusion;
 
@@ -2169,8 +2209,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + dk() -> buffs.dark_transformation -> value();
 
-    m *= 1.0 + frenzied_monstrosity -> value();
-
     m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
 
     m *= 1.0 + vile_infusion -> value();
@@ -2197,8 +2235,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     double haste = base_ghoul_pet_t::composite_melee_speed();
 
     // The default value stores the %damage increase
-    if ( frenzied_monstrosity -> up() )
-      haste *= 1.0 / ( 1.0 + frenzied_monstrosity -> data().effectN( 2 ).percent() );
 
     if ( ghoulish_frenzy -> up() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy -> data().effectN( 2 ).percent() );
@@ -2253,11 +2289,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   void create_buffs() override
   {
     base_ghoul_pet_t::create_buffs();
-
-    // The pet buff has its own data, different from the player buff
-    frenzied_monstrosity = make_buff( this, "frenzied_monstrosity", find_spell ( 334895 ) )
-      -> set_default_value_from_effect( 1 )
-      -> set_duration( 0_s );
 	  
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
       -> set_default_value_from_effect( 1 )
@@ -2686,9 +2717,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     double blood_strike_rp_generation;
 
     heart_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t<melee_attack_t>( p, "heart_strike", p -> dk() -> find_spell( 228645 ) ),
+      drw_action_t<melee_attack_t>( p, "heart_strike", p -> dk() -> pet_spell.drw_heart_strike ),
       // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
-      blood_strike_rp_generation( p -> find_spell( 220890 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+      blood_strike_rp_generation( dk() -> pet_spell.drw_heart_strike_rp_gen -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
       this -> base_multiplier *= 1.0 + dk() -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     }
@@ -2723,8 +2754,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
   struct soul_reaper_execute_t : public drw_action_t<spell_t>
   {
-    soul_reaper_execute_t( util::string_view name, dancing_rune_weapon_pet_t* p ) : 
-      drw_action_t<spell_t>( p, name, p -> dk() -> find_spell( 343295 ) )
+      soul_reaper_execute_t(util::string_view name, dancing_rune_weapon_pet_t* p) :
+          drw_action_t<spell_t>(p, name, p -> dk() -> spell.soul_reaper_execute )
     {
       background = true;
     }
@@ -3611,7 +3642,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 struct razorice_attack_t : public death_knight_melee_attack_t
 {
   razorice_attack_t( death_knight_t* player, util::string_view name ) :
-    death_knight_melee_attack_t( name, player, player -> find_spell( 50401 ) )
+    death_knight_melee_attack_t( name, player, player -> spell.razorice_damage )
   {
     school      = SCHOOL_FROST;
     may_miss    = callbacks = false;
@@ -3634,7 +3665,7 @@ struct razorice_attack_t : public death_knight_melee_attack_t
 struct inexorable_assault_damage_t : public death_knight_spell_t
 {
   inexorable_assault_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 253597 ) )
+    death_knight_spell_t( name, p, p -> spell.inexorable_assault_damage )
   {
     background = true;
   }
@@ -3920,8 +3951,8 @@ struct apocalypse_t : public death_knight_melee_attack_t
 
   apocalypse_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "apocalypse", p, p -> talent.unholy.apocalypse ),
-    summon_duration( p -> find_spell( 221180 ) -> duration() ),
-    rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
+    summon_duration( p -> spell.apocalypse_duration -> duration() ),
+    rune_generation( as<int>( p -> spell.apocalypse_rune_gen -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -4159,11 +4190,11 @@ struct blood_draw_t : public death_knight_spell_t
 {
   double health_threshold;
   blood_draw_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->find_spell( 374606 ) )
+    : death_knight_spell_t( name, p, p -> spell.blood_draw_damage )
   {
     aoe        = -1;
     background = true;
-    cooldown -> duration = p -> find_spell( 374609 ) -> duration();
+    cooldown -> duration = p -> spell.blood_draw_cooldown -> duration();
     // Force set threshold to 100% health, to make the spell proc on cooldown
     health_threshold = 100;
     // TODO make health_threshold configurable
@@ -4231,7 +4262,7 @@ struct blooddrinker_t : public death_knight_spell_t
 struct bonestorm_heal_t : public death_knight_heal_t
 {
   bonestorm_heal_t( util::string_view name, death_knight_t* p ) :
-    death_knight_heal_t( name, p, p -> find_spell( 196545 ) )
+    death_knight_heal_t( name, p, p -> spell.bonestorm_heal )
   {
     background = true;
     target = p;
@@ -4327,7 +4358,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
   breath_of_sindragosa_buff_t( death_knight_t* p ) :
     buff_t( p, "breath_of_sindragosa", p -> talent.frost.breath_of_sindragosa ),
     ticking_cost( 0.0 ), tick_period( p -> talent.frost.breath_of_sindragosa -> effectN( 1 ).period() ),
-    rune_gen( as<int>( p -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
+    rune_gen( as<int>( p -> spell.breath_of_sindragosa_rune_gen -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled by the action
@@ -4451,7 +4482,7 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 struct cold_heart_damage_t : public death_knight_spell_t
 {
   cold_heart_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 281210 ) )
+    death_knight_spell_t( name, p, p -> spell.cold_heart_damage )
   {
     background = true;
   }
@@ -4504,7 +4535,7 @@ struct chill_streak_damage_t : public death_knight_spell_t
   int hit_count;
 
   chill_streak_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "chill_streak_damage", p, p -> find_spell( 204167 ) )
+    death_knight_spell_t( "chill_streak_damage", p, p -> spell.chill_streak_damage )
   {
     background = proc = true;
   }
@@ -4606,7 +4637,7 @@ struct consumption_t : public death_knight_melee_attack_t
 struct dancing_rune_weapon_buff_t : public buff_t
 {
   dancing_rune_weapon_buff_t( death_knight_t* p ) :
-    buff_t( p, "dancing_rune_weapon", p -> find_spell( 81256 ) )
+    buff_t( p, "dancing_rune_weapon", p -> spell.dancing_rune_weapon_buff )
   {
     cooldown -> duration = 0_ms; // Handled by the ability
     base_buff_duration = 0_ms; // Uptime handled by the pet
@@ -4678,7 +4709,7 @@ struct dark_command_t: public death_knight_spell_t
 struct unholy_pact_damage_t : public death_knight_spell_t
 {
   unholy_pact_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 319236 ) )
+    death_knight_spell_t( name, p, p -> spell.unholy_pact_damage )
   {
     background = true;
 
@@ -4723,7 +4754,7 @@ struct unholy_pact_buff_t : public buff_t
 struct dark_transformation_damage_t : public death_knight_spell_t
 {
   dark_transformation_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 344955 ) )
+    death_knight_spell_t( name, p, p -> spell.dark_transformation_damage )
   {
     background = dual = true;
     aoe = as<int>( data().effectN( 2 ).base_value() );
@@ -4854,7 +4885,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
 struct death_and_decay_damage_t : public death_and_decay_damage_base_t
 {
   death_and_decay_damage_t( util::string_view name, death_knight_t* p, const spell_data_t* s = nullptr ) :
-    death_and_decay_damage_base_t( name, p, s == nullptr ? p -> find_spell( 52212 ) : s )
+    death_and_decay_damage_base_t( name, p, s == nullptr ? p -> spell.death_and_decay_damage : s )
   { }
 };
 
@@ -4864,7 +4895,7 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   const double defile_tick_multiplier;
 
   defile_damage_t( util::string_view name, death_knight_t* p ) :
-    death_and_decay_damage_base_t( name, p, p -> find_spell( 156000 ) ),
+    death_and_decay_damage_base_t( name, p, p -> spell.defile_damage ),
     active_defile_multiplier( 1.0 ),
     // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
     // Can't seem to find it anywhere in defile's spelldata
@@ -4898,7 +4929,7 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 struct relish_in_blood_t : public death_knight_heal_t
 {
   relish_in_blood_t( util::string_view name, death_knight_t* p ) :
-    death_knight_heal_t( name, p, p -> find_spell( 317614 ) )
+    death_knight_heal_t( name, p, p -> spell.relish_in_blood_gains )
   {
     background = true;
     target = p;
@@ -5120,7 +5151,7 @@ struct coil_of_devastation_t : public residual_action::residual_periodic_action_
 struct death_coil_damage_t : public death_knight_spell_t
 {
   action_t* coil_of_devastation;
-  death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->find_spell( 47632 ) ), coil_of_devastation( nullptr )
+  death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p -> spell.death_coil_damage ), coil_of_devastation( nullptr )
   {
     background = dual = true;
 
@@ -5284,7 +5315,7 @@ struct death_strike_heal_t : public death_knight_heal_t
   double max_heal_multiplier;
 
   death_strike_heal_t( util::string_view name, death_knight_t* p ) :
-    death_knight_heal_t( name, p, p -> find_spell( 45470 ) ),
+    death_knight_heal_t( name, p, p -> spell.death_strike_heal ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
     interval( timespan_t::from_seconds( p -> talent.death_strike -> effectN( 4 ).base_value() ) ),
     min_heal_multiplier( p -> talent.death_strike -> effectN( 3 ).percent() ),
@@ -5391,7 +5422,7 @@ struct death_strike_heal_t : public death_knight_heal_t
 struct death_strike_offhand_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> find_spell( 66188 ) )
+    death_knight_melee_attack_t( name, p, p -> spell.death_strike_offhand )
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
@@ -5565,7 +5596,7 @@ struct epidemic_damage_main_t : public death_knight_spell_t
 {
   double soft_cap_multiplier;
   epidemic_damage_main_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
+    death_knight_spell_t( name, p, p -> spell.epidemic_damage ),
     soft_cap_multiplier( 1.0 )
   {
     background = true;
@@ -5594,7 +5625,7 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 {
   double soft_cap_multiplier;
   epidemic_damage_aoe_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 212739 ) ),
+    death_knight_spell_t( name, p, p -> spell.epidemic_damage ),
     soft_cap_multiplier( 1.0 )
   {
     background = true;
@@ -5718,7 +5749,7 @@ struct epidemic_t : public death_knight_spell_t
 struct bursting_sores_t : public death_knight_spell_t
 {
   bursting_sores_t( death_knight_t* p ) :
-    death_knight_spell_t( "bursting_sores", p, p -> find_spell( 207267 ) )
+    death_knight_spell_t( "bursting_sores", p, p -> spell.bursting_sores_damage )
   {
     background = true;
     aoe = -1;
@@ -5750,7 +5781,7 @@ struct bursting_sores_t : public death_knight_spell_t
 struct festering_wound_t : public death_knight_spell_t
 {
   festering_wound_t( death_knight_t* p ) :
-    death_knight_spell_t( "festering_wound", p, p -> find_spell( 194311 ) )
+    death_knight_spell_t( "festering_wound", p, p -> spell.festering_wound_damage )
   {
     background = true;
 
@@ -5915,7 +5946,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p,  p -> find_spell( 279303 ) )
+    death_knight_spell_t( name, p,  p -> spell.frostwyrms_fury_damage )
   {
     aoe = -1;
     background = true;
@@ -6045,7 +6076,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 struct glacial_advance_damage_t : public death_knight_spell_t
 {
   glacial_advance_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 195975 ) )
+    death_knight_spell_t( name, p, p -> spell.glacial_advance_damage )
   {
     aoe = -1; // TODO: Fancier targeting .. make it aoe for now
     background = true;
@@ -6135,7 +6166,7 @@ struct leeching_strike_t : public death_knight_heal_t
 {
   action_t* damage;
   leeching_strike_t( util::string_view name, death_knight_t* p ) :
-    death_knight_heal_t( name, p, p -> find_spell( 377633 ) )
+    death_knight_heal_t( name, p, p -> spell.leeching_strike_damage )
   {
     background = true;
     may_crit = callbacks = false;
@@ -6224,7 +6255,7 @@ struct horn_of_winter_t : public death_knight_spell_t
 struct avalanche_t : public death_knight_spell_t
 {
   avalanche_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 207150 ) )
+    death_knight_spell_t( name, p, p -> spell.avalanche_damage )
   {
     aoe = -1;
     background = true;
@@ -6683,7 +6714,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 struct virulent_eruption_t : public death_knight_spell_t
 {
   virulent_eruption_t( death_knight_t* p ) :
-    death_knight_spell_t( "virulent_eruption", p, p -> find_spell( 191685 ) )
+    death_knight_spell_t( "virulent_eruption", p, p -> spell.virulent_erruption )
   {
     background = split_aoe_damage = true;
     aoe = -1;
@@ -6704,7 +6735,7 @@ struct outbreak_t : public death_knight_spell_t
 struct runeforge_apocalypse_pestilence_t : public death_knight_spell_t
 {
   runeforge_apocalypse_pestilence_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 327093 ) )
+    death_knight_spell_t( name, p, p -> spell.apocalypse_pestilence_damage )
     {
       base_dd_multiplier *= 1.0 + p -> talent.unholy_bond -> effectN( 1 ).percent();
     }
@@ -6715,7 +6746,7 @@ struct runeforge_apocalypse_pestilence_t : public death_knight_spell_t
 struct frostwhelps_aid_t : public death_knight_spell_t
 {
   frostwhelps_aid_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p , p -> find_spell( 377245 ) )
+    death_knight_spell_t( name, p , p -> spell.frostwhelps_aid_damage )
   {
     aoe = -1;
     background = true;
@@ -7026,7 +7057,7 @@ struct remorseless_winter_t : public death_knight_spell_t
 struct sacrificial_pact_damage_t : public death_knight_spell_t
 {
   sacrificial_pact_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 327611 ) )
+    death_knight_spell_t( name, p, p -> spell.sacrificial_pact_damage )
   {
     background = true;
     aoe = -1;
@@ -7204,7 +7235,7 @@ struct shattering_bone_t : public death_knight_spell_t
 {
   double boneshield_charges_consumed;
   shattering_bone_t( death_knight_t* p ) :
-    death_knight_spell_t( "shattering bone", p, p -> find_spell( 377642 ) )
+    death_knight_spell_t( "shattering bone", p, p -> spell.shattering_bone_damage )
     {
       background = true;
       aoe = -1;
@@ -7240,7 +7271,7 @@ struct shattering_bone_t : public death_knight_spell_t
 struct soul_reaper_execute_t : public death_knight_spell_t
 {
   soul_reaper_execute_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 343295 ) )
+    death_knight_spell_t( name, p, p -> spell.soul_reaper_execute )
   {
     background = true;
   }
@@ -8131,7 +8162,7 @@ void runeforge::sanguination( special_effect_t& effect )
       tick_pct_heal = data().effectN( 1 ).percent();
       tick_pct_heal *= 1.0 + p() -> talent.unholy_bond -> effectN( 1 ).percent();
       // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
-      cooldown -> duration = effect.player -> find_spell( 326809 ) -> duration();
+      cooldown -> duration = p() -> spell.sanguination_cooldown -> duration();
     }
 
     bool ready() override
@@ -8155,7 +8186,7 @@ void runeforge::spellwarding( special_effect_t& effect )
     double health_percentage;
     spellwarding_absorb_t( util::string_view name, death_knight_t* p, const spell_data_t* data ) :
       absorb_t( name, p, data ),
-      health_percentage( p -> find_spell( 326855 ) -> effectN( 2 ).percent() )
+      health_percentage( p -> spell.spellwarding_absorb -> effectN( 2 ).percent() )
       // The absorb amount is hardcoded in the effect tooltip, the only data is in the runeforging action spell
     {
       target = p;
@@ -9417,20 +9448,33 @@ void death_knight_t::init_spells()
 
   // Generic spells
   // Shared
-  spell.brittle_debuff           = find_spell( 374557 );
-  spell.dnd_buff                 = find_spell( 188290 );
-  spell.razorice_debuff          = find_spell( 51714 );
-  spell.runic_empowerment_gain   = find_spell( 193486 );
-  spell.rune_mastery_buff        = find_spell( 374585 );
-  spell.empower_rune_weapon_main = find_spell( 47568 );
-  spell.coldthirst_gain          = find_spell( 378849 );
-  spell.unholy_strength_buff     = find_spell( 53365 );
-  spell.unholy_ground_buff       = find_spell( 374271 );
+  spell.brittle_debuff               = find_spell( 374557 );
+  spell.dnd_buff                     = find_spell( 188290 );
+  spell.razorice_debuff              = find_spell( 51714 );
+  spell.runic_empowerment_gain       = find_spell( 193486 );
+  spell.rune_mastery_buff            = find_spell( 374585 );
+  spell.empower_rune_weapon_main     = find_spell( 47568 );
+  spell.coldthirst_gain              = find_spell( 378849 );
+  spell.unholy_strength_buff         = find_spell( 53365 );
+  spell.unholy_ground_buff           = find_spell( 374271 );
+  spell.apocalypse_death_debuff      = find_spell( 327095 );
+  spell.apocalypse_famine_debuff     = find_spell( 327092 );
+  spell.apocalypse_war_debuff        = find_spell( 327096 );
+  spell.apocalypse_pestilence_damage = find_spell( 327093 );
+  spell.razorice_damage              = find_spell( 50401 );
+  spell.death_and_decay_damage       = find_spell( 52212 );
+  spell.death_coil_damage            = find_spell( 47632 );
+  spell.death_strike_heal            = find_spell( 45470 );
+  spell.sacrificial_pact_damage      = find_spell( 327611 );
+  spell.soul_reaper_execute          = find_spell( 343295 );
+  spell.sanguination_cooldown        = find_spell( 326809 );
+  spell.spellwarding_absorb          = find_spell( 326855 );
 
   // Diseases
-  spell.blood_plague    = find_spell( 55078 );
-  spell.frost_fever     = find_spell( 55095 );
-  spell.virulent_plague = find_spell( 191587 );
+  spell.blood_plague       = find_spell( 55078 );
+  spell.frost_fever        = find_spell( 55095 );
+  spell.virulent_plague    = find_spell( 191587 );
+  spell.virulent_erruption = find_spell( 191685 );
 
   // Blood
   spell.blood_shield                         = find_spell( 77535 );
@@ -9442,21 +9486,38 @@ void death_knight_t::init_spells()
   spell.heartrend_buff                       = find_spell( 377656 );
   spell.preserverence_of_the_ebon_blade_buff = find_spell( 374748 );
   spell.voracious_buff                       = find_spell( 274009 );
+  spell.blood_draw_damage                    = find_spell( 374606 );
+  spell.blood_draw_cooldown                  = find_spell( 374609 );
+  spell.bonestorm_heal                       = find_spell( 196545 );
+  spell.dancing_rune_weapon_buff             = find_spell( 81256 );
+  spell.relish_in_blood_gains                = find_spell( 317614 );
+  spell.leeching_strike_damage               = find_spell( 377633 );
+  spell.shattering_bone_damage               = find_spell( 377642 );
   // T29 Blood
   spell.vigorous_lifeblood_4pc      = find_spell( 394570 );
   spell.vigorous_lifeblood_energize = find_spell( 394559 );
 
   // Frost
-  spell.murderous_efficiency_gain   = find_spell( 207062 );
-  spell.rage_of_the_frozen_champion = find_spell( 341725 );
-  spell.piercing_chill_debuff       = find_spell( 377359 );
-  spell.runic_empowerment_chance    = find_spell( 81229 );
-  spell.gathering_storm_buff        = find_spell( 211805 );
-  spell.inexorable_assault_buff     = find_spell( 253595 );
-  spell.bonegrinder_crit_buff       = find_spell( 377101 );
-  spell.bonegrinder_frost_buff      = find_spell( 377103 );
-  spell.enduring_strength_buff      = find_spell( 377195 );
-  spell.frostwhelps_aid_buff        = find_spell( 377253 );
+  spell.murderous_efficiency_gain     = find_spell( 207062 );
+  spell.rage_of_the_frozen_champion   = find_spell( 341725 );
+  spell.piercing_chill_debuff         = find_spell( 377359 );
+  spell.runic_empowerment_chance      = find_spell( 81229 );
+  spell.gathering_storm_buff          = find_spell( 211805 );
+  spell.inexorable_assault_buff       = find_spell( 253595 );
+  spell.bonegrinder_crit_buff         = find_spell( 377101 );
+  spell.bonegrinder_frost_buff        = find_spell( 377103 );
+  spell.enduring_strength_buff        = find_spell( 377195 );
+  spell.frostwhelps_aid_buff          = find_spell( 377253 );
+  spell.inexorable_assault_damage     = find_spell( 253597 );
+  spell.breath_of_sindragosa_rune_gen = find_spell( 303753 );
+  spell.cold_heart_damage             = find_spell( 281210 );
+  spell.chill_streak_damage           = find_spell( 204167 );
+  spell.death_strike_offhand          = find_spell( 66188 );
+  spell.frostwyrms_fury_damage        = find_spell( 279303 );
+  spell.glacial_advance_damage        = find_spell( 195975 );
+  spell.avalanche_damage              = find_spell( 207150 );
+  spell.frostwhelps_aid_damage        = find_spell( 377245 );
+  spell.enduring_strength_cooldown    = find_spell( 377192 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -9474,31 +9535,42 @@ void death_knight_t::init_spells()
   spell.commander_of_the_dead      = find_spell( 390260 );
   spell.defile_buff                = find_spell( 218100 );
   spell.ruptured_viscera_chance    = find_spell( 390236 );
+  spell.apocalypse_duration        = find_spell( 221180 );
+  spell.apocalypse_rune_gen        = find_spell( 343758 );
+  spell.unholy_pact_damage         = find_spell( 319236 );
+  spell.dark_transformation_damage = find_spell( 344955 );
+  spell.defile_damage              = find_spell( 156000 );
+  spell.epidemic_damage            = find_spell( 212739 );
+  spell.bursting_sores_damage      = find_spell( 207267 );
+  spell.festering_wound_damage     = find_spell( 194311 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
-  pet_spell.ghoul_claw             = find_spell( 91776 );
-  pet_spell.sweeping_claws         = find_spell( 91778 );
-  pet_spell.gnaw                   = find_spell( 91800 );
-  pet_spell.monstrous_blow         = find_spell( 91797 );
+  pet_spell.ghoul_claw              = find_spell( 91776 );
+  pet_spell.sweeping_claws          = find_spell( 91778 );
+  pet_spell.gnaw                    = find_spell( 91800 );
+  pet_spell.monstrous_blow          = find_spell( 91797 );
   // Army of the dead
-  pet_spell.army_claw              = find_spell( 199373 );
+  pet_spell.army_claw               = find_spell( 199373 );
   // Gargoyle
-  pet_spell.gargoyle_strike        = find_spell( 51963 );
-  pet_spell.dark_empowerment       = find_spell( 211947 );
+  pet_spell.gargoyle_strike         = find_spell( 51963 );
+  pet_spell.dark_empowerment        = find_spell( 211947 );
   // Risen Skulker (all will serve)
-  pet_spell.skulker_shot           = find_spell( 212423 );
+  pet_spell.skulker_shot            = find_spell( 212423 );
   // Magus of the dead (army of the damned)
-  pet_spell.frostbolt        = find_spell( 317792 );
-  pet_spell.shadow_bolt      = find_spell( 317791 );
+  pet_spell.frostbolt               = find_spell( 317792 );
+  pet_spell.shadow_bolt             = find_spell( 317791 );
   // Commander of the Dead Talent
-  pet_spell.commander_of_the_dead = find_spell( 390264 );
+  pet_spell.commander_of_the_dead   = find_spell( 390264 );
   // Ruptured Viscera Talent
-  pet_spell.ruptured_viscera = find_spell( 390220 );
+  pet_spell.ruptured_viscera        = find_spell( 390220 );
   // Ghoulish Frenzy
-  pet_spell.ghoulish_frenzy = find_spell ( 377587 );
+  pet_spell.ghoulish_frenzy         = find_spell ( 377587 );
   // Vile Infusion
-  pet_spell.vile_infusion = find_spell ( 394863 );
+  pet_spell.vile_infusion           = find_spell ( 394863 );
+  // DRW Spells
+  pet_spell.drw_heart_strike        = find_spell( 228645 );
+  pet_spell.drw_heart_strike_rp_gen = find_spell( 220890 );
 
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd -> duration = spell.bone_shield -> internal_cooldown();
@@ -9507,10 +9579,10 @@ void death_knight_t::init_spells()
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
 
   if ( talent.frost.enduring_strength.ok() )
-	cooldown.enduring_strength_icd -> duration = find_spell( 377192 ) -> internal_cooldown();
+	cooldown.enduring_strength_icd -> duration = spell.enduring_strength_cooldown -> internal_cooldown();
 
   if ( talent.frost.inexorable_assault.ok() )
-    cooldown.inexorable_assault_icd -> duration = find_spell( 253595 ) -> internal_cooldown();  // Inexorable Assault buff spell id
+    cooldown.inexorable_assault_icd -> duration = spell.inexorable_assault_buff -> internal_cooldown();  // Inexorable Assault buff spell id
 
   if ( talent.abomination_limb )
   {
