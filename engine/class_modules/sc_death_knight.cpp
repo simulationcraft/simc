@@ -2925,8 +2925,8 @@ struct magus_pet_t : public death_knight_pet_t
     frostbolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
       magus_spell_t( p, "frostbolt", p -> dk() -> pet_spell.frostbolt, options_str )
     {
-      // If the target is immune to slows, frostbolt seems to be used at most every 3 seconds
-      cooldown -> duration = 3_s;
+      // If the target is immune to slows, frostbolt seems to be used at most every 6 seconds
+      cooldown -> duration = dk() -> pet_spell.frostbolt -> duration();
     }
 
     // Frostbolt applies a slowing debuff on non-boss targets
@@ -2964,6 +2964,8 @@ struct magus_pet_t : public death_knight_pet_t
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
+    spawn_travel_duration = 0_s;
+    spawn_travel_stddev = 0_s;
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
   }
@@ -4030,7 +4032,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
   army_of_the_dead_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "army_of_the_dead", p, p -> talent.unholy.army_of_the_dead ),
-    precombat_time( 6.0 ),
+    precombat_time( 2.0 ),
     summon_duration( p -> talent.unholy.army_of_the_dead -> effectN( 1 ).trigger() -> duration() )
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
