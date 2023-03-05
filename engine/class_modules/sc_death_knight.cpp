@@ -3558,8 +3558,8 @@ struct virulent_plague_t : public death_knight_disease_t
     else if ( p->talent.unholy.superstrain.ok() )
     {
       {
-        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague_superstrain", p, true ) );
-        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever_superstrain", p, true ) );
+        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague", p, true ) );
+        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever", p, true ) );
       }
     }
   }
@@ -8966,15 +8966,6 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  haste *= 1.0 / ( 1.0 + buffs.unholy_assault -> check_value() );
-
-  haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
-
-  if ( buffs.bone_shield -> up() && talent.blood.improved_bone_shield.ok() )
-  {
-    haste *= buffs.bone_shield -> value();
-  }
-
   return haste;
 }
 
@@ -8983,15 +8974,6 @@ double death_knight_t::composite_melee_haste() const
 double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
-
-  haste *= 1.0 / ( 1.0 + buffs.unholy_assault -> check_value() );
-
-  haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
-
-  if ( buffs.bone_shield -> up() && talent.blood.improved_bone_shield.ok() )
-  {
-    haste *= buffs.bone_shield -> value();
-  }
 
   return haste;
 }
@@ -9542,6 +9524,7 @@ void death_knight_t::create_buffs()
         -> set_period( spell.empower_rune_weapon_main -> effectN( 1 ).period() )
         -> add_invalidate( CACHE_HASTE )
         -> set_default_value_from_effect( 3 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
         -> set_tick_behavior( buff_tick_behavior::REFRESH )
         -> set_tick_callback( [ this ] ( buff_t* b, int, timespan_t ) 
@@ -9557,7 +9540,8 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
-        -> set_default_value( 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() ) ) // Haste buff
+        -> set_default_value( talent.blood.improved_bone_shield ? 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() ) : 0 ) // Haste buff
+        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
@@ -9755,6 +9739,7 @@ void death_knight_t::create_buffs()
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> add_invalidate( CACHE_STRENGTH )
+      -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
       -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
@@ -9773,6 +9758,7 @@ void death_knight_t::create_buffs()
   buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
           -> set_default_value_from_effect( 1 )
           -> set_cooldown( 0_ms ) // Handled by the action
+          -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           -> add_invalidate( CACHE_HASTE );
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
@@ -10152,10 +10138,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   {
     m *= 1.0 + buffs.pillar_of_frost -> value() + buffs.pillar_of_frost_bonus -> stack_value();
 
-    m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
-
-    m *= 1.0 + buffs.unholy_pact -> value();
-
     if ( talent.might_of_thassarian.ok() )
     {
       m *= 1.0 + talent.might_of_thassarian->effectN( 1 ).percent();
@@ -10282,6 +10264,7 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + ( td->debuff.unholy_blight->up() * talent.unholy.morbidity->effectN(1).percent() );
   }
 
+
   return m;
 }
 
@@ -10360,7 +10343,7 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
       m *= 1.0 + td -> debuff.tightening_grasp -> value();
     }
 
-    if ( talent.unholy.morbidity.ok() )
+    if ( td && talent.unholy.morbidity.ok() )
     {
       m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
       m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
