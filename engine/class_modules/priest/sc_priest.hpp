@@ -732,6 +732,8 @@ public:
 
     // Discipline
     parse_buff_effects( p().buffs.shadow_covenant );
+    // 280398 applies the buff to the correct spells, but does not contain the correct buff value (12% instead of 40%)
+    // So, override to use our provided default_value (40%) instead
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
   }
 

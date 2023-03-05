@@ -284,6 +284,7 @@ void priest_t::create_buffs_discipline()
   // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
   // 280398 applies the damage to the correct spells, but does not contain the correct value (12% instead of 40%).
   // That 12% represents the damage REDUCTION taken from the 40% buff for each attonement that has been applied.
+  // TODO: Add support for atonement reductions
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
 }
