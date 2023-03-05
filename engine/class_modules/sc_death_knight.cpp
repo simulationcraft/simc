@@ -917,6 +917,8 @@ public:
     const spell_data_t* rune_mastery_buff;
     const spell_data_t* empower_rune_weapon_main; // Empower Rune Weapon has a unique ID for the spell itself, with each talent just modifying number of charges. 
     const spell_data_t* coldthirst_gain; // Coldthirst has a unique ID for the gain and cooldown reduction
+    const spell_data_t* unholy_strength_buff;
+    const spell_data_t* unholy_ground_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -928,6 +930,11 @@ public:
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
     const spell_data_t* tightening_grasp_debuff;
+    const spell_data_t* ossuary_buff;
+    const spell_data_t* crimson_scourge_buff;
+    const spell_data_t* heartrend_buff;
+    const spell_data_t* preserverence_of_the_ebon_blade_buff;
+    const spell_data_t* voracious_buff;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -9417,6 +9424,8 @@ void death_knight_t::init_spells()
   spell.rune_mastery_buff        = find_spell( 374585 );
   spell.empower_rune_weapon_main = find_spell( 47568 );
   spell.coldthirst_gain          = find_spell( 378849 );
+  spell.unholy_strength_buff     = find_spell( 53365 );
+  spell.unholy_ground_buff       = find_spell( 374271 );
 
   // Diseases
   spell.blood_plague    = find_spell( 55078 );
@@ -9424,10 +9433,15 @@ void death_knight_t::init_spells()
   spell.virulent_plague = find_spell( 191587 );
 
   // Blood
-  spell.blood_shield        = find_spell( 77535 );
-  spell.bone_shield         = find_spell( 195181 );
-  spell.sanguine_ground     = find_spell( 391459 );
-  spell.tightening_grasp_debuff = find_spell( 374776 );
+  spell.blood_shield                         = find_spell( 77535 );
+  spell.bone_shield                          = find_spell( 195181 );
+  spell.sanguine_ground                      = find_spell( 391459 );
+  spell.tightening_grasp_debuff              = find_spell( 374776 );
+  spell.ossuary_buff                         = find_spell( 219788 );
+  spell.crimson_scourge_buff                 = find_spell( 81141 );
+  spell.heartrend_buff                       = find_spell( 377656 );
+  spell.preserverence_of_the_ebon_blade_buff = find_spell( 374748 );
+  spell.voracious_buff                       = find_spell( 274009 );
   // T29 Blood
   spell.vigorous_lifeblood_4pc      = find_spell( 394570 );
   spell.vigorous_lifeblood_energize = find_spell( 394559 );
@@ -9587,12 +9601,12 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> add_invalidate( CACHE_STRENGTH );
 
-  buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
+  buffs.unholy_strength = make_buff( this, "unholy_strength", spell.unholy_strength_buff )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> apply_affecting_aura( talent.unholy_bond );
 
-  buffs.unholy_ground = make_buff( this, "unholy_ground", find_spell( 374271 ) )
+  buffs.unholy_ground = make_buff( this, "unholy_ground", spell.unholy_ground_buff)
         -> set_default_value_from_effect( 1 )
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
@@ -9635,19 +9649,19 @@ void death_knight_t::create_buffs()
         // The internal cd in spelldata is for stack loss, handled in bone_shield_handler
         -> set_cooldown( 0_ms );
 
-  buffs.ossuary = make_buff( this, "ossuary", find_spell( 219788 ) )
+  buffs.ossuary = make_buff( this, "ossuary", spell.ossuary_buff )
         -> set_default_value_from_effect( 1, 0.1 );
 
   buffs.coagulopathy = make_buff( this, "coagulopathy", talent.blood.coagulopathy -> effectN( 2 ).trigger() )
         -> set_trigger_spell( talent.blood.coagulopathy )
         -> set_default_value_from_effect( 1 );
 
-  buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
+  buffs.crimson_scourge = make_buff( this, "crimson_scourge", spell.crimson_scourge_buff )
         -> set_trigger_spell( talent.blood.crimson_scourge );
 
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
 
-  buffs.heartrend = make_buff( this, "heartrend", find_spell( 377656 ) )
+  buffs.heartrend = make_buff( this, "heartrend", spell.heartrend_buff )
         -> set_default_value( talent.blood.heartrend -> effectN ( 1 ).percent() )
         -> set_chance( 0.10 );  // Sept 20 2022.  Chance was found via testing for 30 mins.  Other people have mentioned the same proc rate.  Not in spelldata.
 
@@ -9655,7 +9669,7 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.blood.hemostasis )
         -> set_default_value_from_effect( 1 );
 
-  buffs.perseverance_of_the_ebon_blade = make_buff( this, "perseverance_of_the_ebon_blade", find_spell( 374748 ) )
+  buffs.perseverance_of_the_ebon_blade = make_buff( this, "perseverance_of_the_ebon_blade", spell.preserverence_of_the_ebon_blade_buff )
         -> set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
         -> set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         -> add_invalidate( CACHE_VERSATILITY );
@@ -9678,7 +9692,7 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         -> add_invalidate( CACHE_HASTE );
 
-  buffs.voracious = make_buff( this, "voracious", find_spell( 274009 ) )
+  buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )
         -> set_trigger_spell( talent.blood.voracious )
         -> add_invalidate( CACHE_LEECH );
 
