@@ -60,6 +60,7 @@ public:
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
+    propagate_const<buff_t*> sins_of_the_many;
   } buffs;
 
   priest_t& priest()
@@ -343,6 +344,7 @@ public:
     const spell_data_t* discipline_priest;  // General discipline data
     const spell_data_t* penance;
     const spell_data_t* penance_tick;
+    const spell_data_t* sins_of_the_many;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -716,7 +718,6 @@ public:
     parse_buff_effects( p().buffs.voidform );
     parse_buff_effects( p().buffs.shadowform );
     parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
-    parse_buff_effects( p().buffs.shadow_covenant );
     parse_buff_effects( p().buffs.mind_devourer );
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
     parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
@@ -728,6 +729,12 @@ public:
     parse_buff_effects( p().buffs.words_of_the_pious );       // Spell Direct amount for Smite and Holy Nova
     parse_buff_effects( p().buffs.gathering_shadows, true );  // Spell Direct amount for Mind Sear (NOT DP)
     parse_buff_effects( p().buffs.devoured_pride );           // Spell Direct and Periodic amount
+
+    // Discipline
+    parse_buff_effects( p().buffs.shadow_covenant );
+    // 280398 applies the buff to the correct spells, but does not contain the correct buff value (12% instead of 40%)
+    // So, override to use our provided default_value (40%) instead
+    parse_buff_effects( p().buffs.sins_of_the_many, false, true );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )

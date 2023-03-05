@@ -2205,6 +2205,10 @@ void priest_t::combat_begin()
   {
     buffs.rhapsody_timer->trigger();
   }
+  if ( specialization() == PRIEST_DISCIPLINE )
+  {
+    buffs.sins_of_the_many->trigger();
+  }
 }
 
 // priest_t::reset ==========================================================
@@ -2385,7 +2389,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
