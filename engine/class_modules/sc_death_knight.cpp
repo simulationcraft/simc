@@ -9692,7 +9692,8 @@ void death_knight_t::create_buffs()
   buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine -> effectN( 1 ).trigger() )
         -> set_chance( 1.0 )
         -> set_default_value_from_effect( 1 )
-        -> set_max_stack( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() );
+        -> set_max_stack( talent.frost.killing_machine.ok() ?
+                   as<unsigned int>( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() ) : 1 );
 
   buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
   buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
