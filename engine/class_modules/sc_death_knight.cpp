@@ -935,6 +935,12 @@ public:
     const spell_data_t* rage_of_the_frozen_champion; // RP generation spell
     const spell_data_t* piercing_chill_debuff;
     const spell_data_t* runic_empowerment_chance;
+    const spell_data_t* gathering_storm_buff;
+    const spell_data_t* inexorable_assault_buff;
+    const spell_data_t* bonegrinder_crit_buff;
+    const spell_data_t* bonegrinder_frost_buff;
+    const spell_data_t* enduring_strength_buff;
+    const spell_data_t* frostwhelps_aid_buff;
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -9431,6 +9437,12 @@ void death_knight_t::init_spells()
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
   spell.piercing_chill_debuff       = find_spell( 377359 );
   spell.runic_empowerment_chance    = find_spell( 81229 );
+  spell.gathering_storm_buff        = find_spell( 211805 );
+  spell.inexorable_assault_buff     = find_spell( 253595 );
+  spell.bonegrinder_crit_buff       = find_spell( 377101 );
+  spell.bonegrinder_frost_buff      = find_spell( 377103 );
+  spell.enduring_strength_buff      = find_spell( 377195 );
+  spell.frostwhelps_aid_buff        = find_spell( 377253 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -9631,7 +9643,7 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect( 1 );
 
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
-    -> set_trigger_spell( talent.blood.crimson_scourge );
+        -> set_trigger_spell( talent.blood.crimson_scourge );
 
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
 
@@ -9677,7 +9689,7 @@ void death_knight_t::create_buffs()
 
   buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
 
-  buffs.gathering_storm = make_buff( this, "gathering_storm", find_spell( 211805 ) )
+  buffs.gathering_storm = make_buff( this, "gathering_storm", spell.gathering_storm_buff )
         -> set_trigger_spell( talent.frost.gathering_storm )
         -> set_default_value_from_effect( 1 );
 
@@ -9687,7 +9699,7 @@ void death_knight_t::create_buffs()
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons );
 
-  buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) );
+  buffs.inexorable_assault = make_buff( this, "inexorable_assault", spell.inexorable_assault_buff );
 
   buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine -> effectN( 1 ).trigger() )
         -> set_chance( 1.0 )
@@ -9704,25 +9716,25 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.frost.rime )
         -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + talent.frost.rage_of_the_frozen_champion -> effectN( 1 ).percent() );
 		
-  buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", find_spell( 377101 ) )
+  buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", spell.bonegrinder_crit_buff )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
         -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
         -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
         -> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
 			  
-  buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", find_spell( 377103 ) )
+  buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", spell.bonegrinder_frost_buff )
         -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
         -> set_schools_from_effect( 1 )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 		
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
-  buffs.enduring_strength = make_buff( this, "enduring_strength", find_spell( 377195 ) )
+  buffs.enduring_strength = make_buff( this, "enduring_strength", spell.enduring_strength_buff )
         -> add_invalidate( CACHE_STRENGTH )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 		
-  buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", find_spell( 377253 ) )
+  buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
         -> add_invalidate ( CACHE_MASTERY )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
