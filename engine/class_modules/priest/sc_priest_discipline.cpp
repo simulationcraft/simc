@@ -279,7 +279,9 @@ void priest_t::create_buffs_discipline()
 
   buffs.shadow_covenant =
       make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
-          ->set_trigger_spell( talents.discipline.shadow_covenant );
+          ->set_trigger_spell( talents.discipline.shadow_covenant )
+          ->modify_duration( talents.discipline.shadow_covenant->duration() +
+                             talents.discipline.embrace_shadow->effectN( 1 ).time_value() );
 
   // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
   // 280398 applies the damage to the correct spells, but does not contain the correct value (12% instead of 40%).
