@@ -60,6 +60,9 @@ struct penance_base_t final : public priest_spell_t
       may_crit      = true;
       dot_extension = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
       this->stats   = stats;
+
+      // This is not found in the affected spells for Shadow Covenant, overriding it manually
+      force_buff_effect( p.buffs.shadow_covenant, 1 );
     }
 
     void impact( action_state_t* s ) override
