@@ -283,6 +283,13 @@ void priest_t::create_buffs_discipline()
   buffs.shadow_covenant =
       make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
           ->set_trigger_spell( talents.discipline.shadow_covenant );
+
+  // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
+  // 280398 applies the damage to the correct spells, but does not contain the correct value (12% instead of 40%).
+  // That 12% represents the damage REDUCTION taken from the 40% buff for each attonement that has been applied.
+  // TODO: Add support for atonement reductions
+  buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
+                               ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
 }
 
 void priest_t::init_rng_discipline()
@@ -314,13 +321,13 @@ void priest_t::init_spells_discipline()
   // Row 9
   // Row 10
 
-  talents.castigation      = find_talent_spell( "Castigation" );
-  talents.shining_force    = find_talent_spell( "Shining Force" );
-  talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );
+  talents.castigation   = find_talent_spell( "Castigation" );
+  talents.shining_force = find_talent_spell( "Shining Force" );
 
   // General Spells
-  specs.penance      = find_spell( 47540 );
-  specs.penance_tick = find_spell( 47666 );  // Not triggered from 47540, only 47758
+  specs.sins_of_the_many = find_spell( 280398 );
+  specs.penance          = find_spell( 47540 );
+  specs.penance_tick     = find_spell( 47666 );  // Not triggered from 47540, only 47758
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )
