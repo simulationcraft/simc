@@ -3856,7 +3856,7 @@ struct auto_attack_t : public death_knight_melee_attack_t
 // Death Knight Abilities
 // ==========================================================================
 
-// Abomination Limb Talent ================================================
+// Abomination Limb =========================================================
 
 struct abomination_limb_damage_t : public death_knight_spell_t
 {
@@ -4633,19 +4633,6 @@ struct consumption_t : public death_knight_melee_attack_t
 };
 
 // Dancing Rune Weapon ======================================================
-
-struct dancing_rune_weapon_buff_t : public buff_t
-{
-  dancing_rune_weapon_buff_t( death_knight_t* p ) :
-    buff_t( p, "dancing_rune_weapon", p -> spell.dancing_rune_weapon_buff )
-  {
-    cooldown -> duration = 0_ms; // Handled by the ability
-    base_buff_duration = 0_ms; // Uptime handled by the pet
-    set_default_value_from_effect_type( A_MOD_PARRY_PERCENT );
-    add_invalidate( CACHE_PARRY );
-  }
-};
-
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   int bone_shield_stack_gain;
@@ -5539,32 +5526,6 @@ struct death_strike_t : public death_knight_melee_attack_t
 };
 
 // Empower Rune Weapon ======================================================
-
-struct empower_rune_weapon_buff_t : public buff_t
-{
-  empower_rune_weapon_buff_t( death_knight_t* p ) :
-
-    buff_t( p, "empower_rune_weapon", p -> spell.empower_rune_weapon_main )
-  {
-    tick_zero = true;
-    cooldown -> duration = 0_ms; // Handled in the action
-    set_period( p -> spell.empower_rune_weapon_main -> effectN( 1 ).period() );
-    set_default_value( p -> spell.empower_rune_weapon_main -> effectN( 3 ).percent());
-    add_invalidate( CACHE_HASTE );
-    set_refresh_behavior( buff_refresh_behavior::EXTEND);
-    set_tick_behavior( buff_tick_behavior::REFRESH );
-
-    set_tick_callback( [ p ]( buff_t* b, int, timespan_t )
-    {
-      p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
-                           p -> gains.empower_rune_weapon );
-      p -> resource_gain( RESOURCE_RUNIC_POWER,
-                          b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p -> gains.empower_rune_weapon );
-    } );
-  }
-};
-
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, util::string_view options_str ) :
@@ -6759,67 +6720,6 @@ struct frostwhelps_aid_t : public death_knight_spell_t
   }
 };
 
-// Ingame it seems to only change Pillar of frost's strength bonus
-// The simc implementation creates a dummy buff to better track the strength increase through stack count
-struct pillar_of_frost_bonus_buff_t : public buff_t
-{
-  pillar_of_frost_bonus_buff_t( death_knight_t* p ) :
-    buff_t( p, "pillar_of_frost_bonus" )
-  {
-    set_max_stack( 99 );
-    set_duration( p -> talent.frost.pillar_of_frost -> duration() );
-    set_default_value( p -> talent.frost.pillar_of_frost -> effectN( 2 ).percent() );
-
-    add_invalidate( CACHE_STRENGTH );
-  }
-};
-
-struct pillar_of_frost_buff_t : public buff_t
-{
-  pillar_of_frost_buff_t( death_knight_t* p ) :
-    buff_t( p, "pillar_of_frost", p -> talent.frost.pillar_of_frost )
-  {
-    cooldown -> duration = 0_ms;
-    set_default_value( p -> talent.frost.pillar_of_frost -> effectN( 1 ).percent() );
-    add_invalidate( CACHE_STRENGTH );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    // Refreshing Pillar of Frost resets the ramping strength bonus and triggers Enduring Strength
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-    if ( p -> buffs.pillar_of_frost -> up() )
-    {
-      p -> buffs.pillar_of_frost_bonus -> expire();
-	  
-      if ( p -> talent.frost.enduring_strength.ok() )
-      {
-        p -> buffs.enduring_strength -> trigger();
-        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
-                                                    p -> buffs.enduring_strength_builder -> stack() );
-        p -> buffs.enduring_strength_builder -> expire();
-      }
-    }
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  void expire_override( int, timespan_t ) override
-  {
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-
-    p -> buffs.pillar_of_frost_bonus -> expire();
-	
-    if ( p -> talent.frost.enduring_strength.ok() )
-    {
-      p -> buffs.enduring_strength -> trigger();
-      p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
-                                                  p -> buffs.enduring_strength_builder -> stack() );
-      p -> buffs.enduring_strength_builder -> expire();
-    }
-  }
-};
-
 struct pillar_of_frost_t : public death_knight_spell_t
 {
   action_t* whelp;
@@ -7900,54 +7800,6 @@ struct rune_tap_t : public death_knight_spell_t
 };
 
 // Vampiric Blood ===========================================================
-
-struct vampiric_blood_buff_t : public buff_t
-{
-  double health_change;
-
-  vampiric_blood_buff_t( death_knight_t* player ) :
-    buff_t( player, "vampiric_blood", player -> talent.blood.vampiric_blood ),
-    health_change( data().effectN( 4 ).percent() )
-  {
-    // Cooldown handled by the action
-    cooldown -> duration = 0_ms;
-    base_buff_duration += player -> talent.blood.improved_vampiric_blood -> effectN( 3 ).time_value();
-    set_default_value_from_effect( 5 );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    buff_t::start( stacks, value, duration );
-
-    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
-    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
-
-    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
-    player -> recalculate_resource_max( RESOURCE_HEALTH );
-    player -> resources.current[ RESOURCE_HEALTH ] *= 1.0 + health_change; // Update health after the maximum is increased
-
-    sim -> print_debug( "{} gains Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}",
-                                  player -> name(), health_change * 100.0,
-                                  old_health, player -> resources.current[ RESOURCE_HEALTH ],
-                                  old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
-  }
-
-  void expire_override( int, timespan_t ) override
-  {
-    double old_health = player -> resources.current[ RESOURCE_HEALTH ];
-    double old_max_health = player -> resources.max[ RESOURCE_HEALTH ];
-
-    player -> resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
-    player -> resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change; // Update health before the maximum is reduced
-    player -> recalculate_resource_max( RESOURCE_HEALTH );
-
-    sim -> print_debug( "{} loses Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}",
-                        player -> name(), health_change * 100.0,
-                        old_health, player -> resources.current[ RESOURCE_HEALTH ],
-                        old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
-  }
-};
-
 struct vampiric_blood_t : public death_knight_spell_t
 {
   vampiric_blood_t( death_knight_t* p, util::string_view options_str ) :
@@ -9684,6 +9536,23 @@ void death_knight_t::create_buffs()
 
   buffs.abomination_limb = new abomination_limb_buff_t( this );
 
+  buffs.empower_rune_weapon = make_buff( this, "empower_rune_weapon", spell.empower_rune_weapon_main )
+        -> set_tick_zero( true )
+        -> set_cooldown( 0_ms )
+        -> set_period( spell.empower_rune_weapon_main -> effectN( 1 ).period() )
+        -> add_invalidate( CACHE_HASTE )
+        -> set_default_value_from_effect( 3 )
+        -> set_refresh_behavior( buff_refresh_behavior::EXTEND )
+        -> set_tick_behavior( buff_tick_behavior::REFRESH )
+        -> set_tick_callback( [ this ] ( buff_t* b, int, timespan_t ) 
+          {
+            replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
+                           gains.empower_rune_weapon );
+            resource_gain( RESOURCE_RUNIC_POWER,
+                          b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                          gains.empower_rune_weapon );
+          } );
+
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
@@ -9731,7 +9600,11 @@ void death_knight_t::create_buffs()
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", spell.crimson_scourge_buff )
         -> set_trigger_spell( talent.blood.crimson_scourge );
 
-  buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
+  buffs.dancing_rune_weapon = make_buff( this, "dancing_rune_weapon", spell.dancing_rune_weapon_buff )
+        -> set_cooldown( 0_ms )
+        -> set_duration( 0_ms )
+        -> set_default_value_from_effect_type( A_MOD_PARRY_PERCENT )
+        -> add_invalidate( CACHE_PARRY );
 
   buffs.heartrend = make_buff( this, "heartrend", spell.heartrend_buff )
         -> set_default_value( talent.blood.heartrend -> effectN ( 1 ).percent() )
@@ -9757,7 +9630,39 @@ void death_knight_t::create_buffs()
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
         -> set_cooldown( 0_ms ); // Handled by the action
 
-  buffs.vampiric_blood = new vampiric_blood_buff_t( this );
+  buffs.vampiric_blood = make_buff( this, "vampiric_blood", talent.blood.vampiric_blood )
+        -> set_cooldown( 0_ms )
+        -> set_duration( talent.blood.vampiric_blood -> duration() + talent.blood.improved_vampiric_blood -> effectN( 3 ).time_value() )
+        -> set_default_value_from_effect( 5 )
+        -> set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
+          {
+            double old_health = resources.current[ RESOURCE_HEALTH ];
+            double old_max_health = resources.max[ RESOURCE_HEALTH ];
+            auto health_change = talent.blood.vampiric_blood -> effectN( 4 ).percent();
+
+            if ( new_ )
+            {
+              resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + health_change;
+              recalculate_resource_max( RESOURCE_HEALTH );
+              resources.current[ RESOURCE_HEALTH ] *= 1.0 + health_change; // Update health after the maximum is increased
+
+              sim -> print_debug( "{} gains Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                                  name(), health_change * 100.0,
+                                  old_health, resources.current[ RESOURCE_HEALTH ],
+                                  old_max_health, resources.max[ RESOURCE_HEALTH ] );
+            }
+            else
+            {
+              resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + health_change;
+              resources.current[ RESOURCE_HEALTH ] /= 1.0 + health_change; // Update health before the maximum is reduced
+              recalculate_resource_max( RESOURCE_HEALTH );
+
+              sim -> print_debug( "{} loses Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}",
+                        name(), health_change * 100.0,
+                        old_health, resources.current[ RESOURCE_HEALTH ],
+                        old_max_health, resources.max[ RESOURCE_HEALTH ] );
+            }
+          } );
 
   buffs.vigorous_lifeblood_4pc = make_buff( this, "vigorous_lifeblood", spell.vigorous_lifeblood_4pc )
         -> set_default_value_from_effect_type( A_HASTE_ALL )
@@ -9772,8 +9677,6 @@ void death_knight_t::create_buffs()
   buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
 
   buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart -> effectN( 1 ).trigger() );
-
-  buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
 
   buffs.gathering_storm = make_buff( this, "gathering_storm", spell.gathering_storm_buff )
         -> set_trigger_spell( talent.frost.gathering_storm )
@@ -9793,8 +9696,29 @@ void death_knight_t::create_buffs()
         -> set_max_stack( talent.frost.killing_machine.ok() ?
                    as<unsigned int>( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() ) : 1 );
 
-  buffs.pillar_of_frost = new pillar_of_frost_buff_t( this );
-  buffs.pillar_of_frost_bonus = new pillar_of_frost_bonus_buff_t( this );
+  buffs.pillar_of_frost = make_buff( this, "pillar_of_frost", talent.frost.pillar_of_frost)
+      ->set_cooldown( 0_ms )
+      ->set_default_value( talent.frost.pillar_of_frost -> effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_STRENGTH )
+      ->set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
+          {
+            if ( !new_ || buffs.pillar_of_frost -> up() )
+            {
+                buffs.pillar_of_frost_bonus -> expire();
+            }
+            if ( !new_ && talent.frost.enduring_strength.ok() )
+            {
+              buffs.enduring_strength -> trigger();
+              buffs.enduring_strength -> extend_duration( this, talent.frost.enduring_strength -> effectN( 2 ).time_value() * buffs.enduring_strength_builder -> stack() );
+              buffs.enduring_strength_builder -> expire();
+            }
+          } );
+
+  buffs.pillar_of_frost_bonus = make_buff( this, "pillar_of_frost_bonus" )
+      ->set_max_stack( 99 )
+      ->set_duration( talent.frost.pillar_of_frost -> duration() )
+      ->set_default_value( talent.frost.pillar_of_frost -> effectN( 2 ).percent() )
+      ->add_invalidate( CACHE_STRENGTH );
 
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
