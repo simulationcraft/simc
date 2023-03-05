@@ -110,6 +110,7 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
+    propagate_const<buff_t*> embrace_shadow;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -312,6 +313,8 @@ public:
       // Row 5
       player_talent_t shadow_covenant;
       const spell_data_t* dark_reprimand;
+      // Row 6
+      player_talent_t embrace_shadow;
       // Row 8
       player_talent_t lights_wrath;
     } discipline;
@@ -735,6 +738,7 @@ public:
     // 280398 applies the buff to the correct spells, but does not contain the correct buff value (12% instead of 40%)
     // So, override to use our provided default_value (40%) instead
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
+    parse_buff_effects( p().buffs.embrace_shadow );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )

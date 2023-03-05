@@ -312,6 +312,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.shadow_covenant  = ST( "Shadow Covenant" );
   talents.discipline.dark_reprimand   = find_spell( 373129 );
   // Row 6
+  talents.discipline.embrace_shadow = ST( "Embrace Shadow" );
   // Row 7
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
