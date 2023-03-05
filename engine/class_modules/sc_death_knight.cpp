@@ -1753,12 +1753,12 @@ namespace pets {
 struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
-  double precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
+  timespan_t precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
-    precombat_spawn( false ), precombat_spawn_adjust( 0 ),
-    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), affected_by_commander_of_the_dead( false )
+    precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
+    spawn_travel_duration( 0_s ), spawn_travel_stddev( 0_s ), affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
@@ -1853,16 +1853,16 @@ struct death_knight_pet_t : public pet_t
     timespan_t execute_time() const override
     {
       death_knight_pet_t* p = debug_cast<death_knight_pet_t*>( player );
-      double mean_duration = p -> spawn_travel_duration;
+      timespan_t mean_duration = p -> spawn_travel_duration;
 
       // Reduce the spawn timer by the precombat time if necessary
       if ( p -> precombat_spawn )
         mean_duration -= p -> precombat_spawn_adjust;
       // Don't bother gaussing null delays
-      if ( mean_duration <= 0 )
+      if ( mean_duration <= 0_s )
         return 0_ms;
 
-      return timespan_t::from_seconds( rng().gauss( mean_duration, p -> spawn_travel_stddev ) );
+      return ( rng().gauss( mean_duration, p -> spawn_travel_stddev ) );
     }
 
     bool ready() override
@@ -1880,7 +1880,7 @@ struct death_knight_pet_t : public pet_t
   void init_action_list() override
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( spawn_travel_duration )
+    if ( spawn_travel_duration >= 0_s )
       def -> add_action( "spawn_travel" );
     if ( use_auto_attack )
       def -> add_action( "auto_attack" );
@@ -2042,8 +2042,8 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   {
     main_hand_weapon.swing_time = 2.0_s;
     // Army ghouls, apoc ghouls and raise dead ghoul all share the same spawn/travel animation lock
-    spawn_travel_duration = 4.5;
-    spawn_travel_stddev = 0.1;
+    spawn_travel_duration = 4.5_s;
+    spawn_travel_stddev = 0.1_s;
   }
 
   attack_t* create_auto_attack() override
@@ -2445,8 +2445,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    spawn_travel_duration = 2.9;
-    spawn_travel_stddev = 0.2;
+    spawn_travel_duration = 2.9_s;
+    spawn_travel_stddev = 0.2_s;
   }
   
   void arise() override
@@ -4054,7 +4054,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( is_precombat )
     {
-      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
+      double MIN_TIME = 1.5; // the player's base unhasted gcd: 1.5s
       double MAX_TIME = 10; // Using 10s as highest value because it's the time to recover the rune cost of AOTD at 0 haste
 
       // Ensure that we're using a positive value
@@ -4090,16 +4090,16 @@ struct army_of_the_dead_t : public death_knight_spell_t
     int n_ghoul = 0;
 
     // There's a 0.5s interval between each ghoul's spawn
-    double const summon_interval = 0.5;
+    timespan_t const summon_interval = p() -> talent.unholy.army_of_the_dead -> effectN( 1 ).period();
 
-    if ( ! p() -> in_combat && precombat_time > 0 )
+    if ( ! p() -> in_combat && precombat_time )
     {
       // The first pet spawns after the interval timer
-      double duration_penalty = precombat_time - summon_interval;
-      while ( duration_penalty >= 0 && n_ghoul < 8 )
+      timespan_t duration_penalty = timespan_t::from_seconds( precombat_time ) - summon_interval;
+      while ( duration_penalty >= 0_s && n_ghoul < 8 )
       {
         // Spawn with a duration penalty, and adjust the spawn/travel delay by the penalty
-        auto pet = p() -> pets.army_ghouls.spawn( summon_duration - timespan_t::from_seconds( duration_penalty ), 1 ).front();
+        auto pet = p() -> pets.army_ghouls.spawn( summon_duration - duration_penalty, 1 ).front();
         pet -> precombat_spawn_adjust = duration_penalty;
         pet -> precombat_spawn = true;
         // For each pet, reduce the duration penalty by the 0.5s interval
@@ -4122,7 +4122,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     // Or if the cast isn't during precombat
     // Summon the rest
     if ( n_ghoul < 8 )
-      make_event<summon_army_event_t>( *sim, p(), n_ghoul, timespan_t::from_seconds( summon_interval ), summon_duration );
+      make_event<summon_army_event_t>( *sim, p(), n_ghoul, summon_interval, summon_duration );
 
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
       p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
@@ -4386,10 +4386,9 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Currently use the player's target which is the first non invulnerable, active enemy found.
       player_t* bos_target = p -> target;
 
-      // On cast, generate two runes and execute damage for no cost
+      // On cast execute damage for no cost
       if ( this -> current_tick == 0 )
       {
-        p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
         bos_damage -> execute_on_target( bos_target );
         return;
       }
@@ -4427,25 +4426,17 @@ struct breath_of_sindragosa_buff_t : public buff_t
       bos_damage -> execute_on_target( bos_target );
 
     } );
+    // Breath regenerates 2 runes on start, and end
+    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    {
+      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
+    } );
   }
 
   // Breath of Sindragosa always ticks every one second, not affected by haste
   timespan_t tick_time() const override
   {
     return tick_period;
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    death_knight_t* p = debug_cast< death_knight_t* >( player );
-
-    if ( ! p -> sim -> event_mgr.canceled )
-    {
-      // BoS generates 2 runes when it expires
-      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
-    }
   }
 };
 
@@ -4726,15 +4717,16 @@ struct unholy_pact_buff_t : public buff_t
     {
       damage -> execute();
     } );
-  }
-
-  // Unholy pact ticks twice on buff expiration, hence the following override
-  // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    damage -> schedule_execute();
-    damage -> schedule_execute();
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    // Unholy pact ticks twice on buff expiration, hence the following override
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/675
+    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    {
+      if ( !new_ )
+      {
+        damage -> execute();
+        damage -> execute();
+      }
+    } );
   }
 };
 
@@ -4756,30 +4748,19 @@ struct dark_transformation_buff_t : public buff_t
   {
     set_default_value_from_effect( 1 );
     cooldown -> duration = 0_ms; // Handled by the player ability
-  }
-
-  // Unlike the player buff, Frenzied Monstrosity follows Dark Trasnformation uptime on the pet
-  // even with effects that increase the buff's duration
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-
-    if ( p -> talent.unholy.ghoulish_frenzy.ok() )
-      debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> trigger();
-
-    if ( p -> talent.unholy.ghoulish_frenzy.ok() )
-      p -> buffs.ghoulish_frenzy -> trigger();
-
-    return buff_t::trigger( s, v, c, d );
-  }
-
-  void expire_override( int, timespan_t ) override
-  {
-    death_knight_t* p = debug_cast<death_knight_t*>( player );
-
-    debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> expire();
-
-    p -> buffs.ghoulish_frenzy -> expire();
+    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    {
+      if ( new_ && p -> talent.unholy.ghoulish_frenzy.ok() )
+      {
+        p -> buffs.ghoulish_frenzy -> trigger();
+        debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> trigger();
+      }
+      else
+      {
+        p -> buffs.ghoulish_frenzy -> expire();
+        debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> expire();
+      }
+    } );
   }
 };
 
@@ -5152,10 +5133,7 @@ struct death_coil_damage_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_da_multiplier( state );
 
-    if ( p() -> talent.unholy.improved_death_coil.ok() )
-    {
-      m *= 1.0 + p() -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
-    }
+    m *= 1.0 + p() -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
 
     if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
@@ -5538,7 +5516,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
 
-    cooldown -> duration = p->spell.empower_rune_weapon_main -> charge_cooldown();
+    cooldown -> duration = p -> spell.empower_rune_weapon_main -> charge_cooldown();
 
     cooldown -> charges = p -> spell.empower_rune_weapon_main -> charges() + p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() + p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value();
   }
@@ -5745,10 +5723,6 @@ struct festering_wound_t : public death_knight_spell_t
     death_knight_spell_t( "festering_wound", p, p -> spell.festering_wound_damage )
   {
     background = true;
-
-    base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
-
-    base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5767,6 +5741,16 @@ struct festering_wound_t : public death_knight_spell_t
           p()->gains.replenishing_wounds, this );
     }
   }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    m *= 1.0 + p() -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct festering_strike_t : public death_knight_melee_attack_t
@@ -5775,11 +5759,6 @@ struct festering_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
   {
     parse_options( options_str );
-
-    if ( p -> talent.unholy.improved_festering_strike -> ok() )
-    {
-      base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -5806,18 +5785,20 @@ struct festering_strike_t : public death_knight_melee_attack_t
     }
   }
 
-    double composite_da_multiplier( const action_state_t* state ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+
+    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
-      double m = death_knight_melee_attack_t::composite_da_multiplier( state );
-
-      if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
-      {
-        m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
-      }
-
-      return m;
+      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
     }
-  };
+     
+    m *= 1.0 + p() -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
+
+    return m;
+  }
+};
 
 // Frostscythe ==============================================================
 
@@ -5939,18 +5920,19 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     weapon = w;
-    base_multiplier *= 1.0 + p -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
     triggers_icecap = true;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
   {
-      double m = death_knight_melee_attack_t::composite_da_multiplier ( state );
+    double m = death_knight_melee_attack_t::composite_da_multiplier ( state );
 
-      if ( p() -> buffs.shattering_blade -> up() )
-      {
-          m *= 1.0 + p() -> talent.frost.shattering_blade -> effectN( 1 ).percent();
-      }
+    if ( p() -> buffs.shattering_blade -> up() )
+    {
+      m *= 1.0 + p() -> talent.frost.shattering_blade -> effectN( 1 ).percent();
+    }
+
+    m *= 1.0 + p() -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
 
     return m;
   }
@@ -6455,17 +6437,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
                                 as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
                                 as<int>( p -> talent.cleaving_strikes -> effectN( 2 ).base_value() );
 
-    base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
-    if ( p -> spec.might_of_the_frozen_wastes -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      base_multiplier *= 1.0 + ( p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() );
-    }
-
-    if ( p -> talent.frost.frigid_executioner.ok() )
-    {
-      base_multiplier *= 1.0 + p -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
-    }
-
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
   }
 
@@ -6488,6 +6459,18 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }    
+
+    m *= 1.0 + p() -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
+
+    if ( p() -> spec.might_of_the_frozen_wastes -> ok() && p() -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      m *= 1.0 + ( p() -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() );
+    }
+
+    if ( p() -> talent.frost.frigid_executioner.ok() )
+    {
+      m *= 1.0 + p() -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
+    }
 
     return m;
   }
@@ -6671,7 +6654,6 @@ struct obliterate_t : public death_knight_melee_attack_t
 };
 
 // Outbreak and Virulent Eruption ===========================================
-
 struct virulent_eruption_t : public death_knight_spell_t
 {
   virulent_eruption_t( death_knight_t* p ) :
@@ -6908,6 +6890,14 @@ struct remorseless_winter_buff_t : public buff_t
       damage -> execute();
     } );
     set_partial_tick( true );
+    set_tick_zero( true );
+    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    {
+      if ( !new_ )
+      {
+        p -> buffs.gathering_storm -> expire();
+      }
+    } );
   }
 
   bool trigger( int s, double v, double c, timespan_t d ) override
@@ -6916,13 +6906,6 @@ struct remorseless_winter_buff_t : public buff_t
     // Move to expire override if necessary
     debug_cast<remorseless_winter_damage_t*>( damage ) -> triggered_biting_cold = false;
     return buff_t::trigger( s, v, c, d );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    debug_cast<death_knight_t*>( player ) -> buffs.gathering_storm -> expire();
   }
 };
 
@@ -8398,7 +8381,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   if ( chance == 0 )
   {
     // If we are using a 1H, km_proc_attempts*0.3
-    // with 2H it looks to be km_proc_attempts*0.7 through testing
+    // with 2H it looks to be km_proc_attempts*1.0 through testing
     double km_proc_chance = 0.13;
     if ( spec.might_of_the_frozen_wastes -> ok() && main_hand_weapon.group() == WEAPON_2H )
     {
