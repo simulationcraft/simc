@@ -535,7 +535,6 @@ public:
     buff_t* ghoulish_frenzy;
     buff_t* plaguebringer; 
     buff_t* ghoulish_infusion;
-    buff_t* commander_of_the_dead_window;
     buff_t* commander_of_the_dead;
     buff_t* defile_buff;
 
@@ -1701,13 +1700,11 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   double precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
-  buff_t* commander_of_the_dead;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0 ),
-    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), 
-    commander_of_the_dead( nullptr ), affected_by_commander_of_the_dead( false )
+    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
@@ -1739,8 +1736,10 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
-
+    if( dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
+    {
+      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
+    }
     return m;
   }
 
@@ -1833,14 +1832,6 @@ struct death_knight_pet_t : public pet_t
       def -> add_action( "auto_attack" );
 
     pet_t::init_action_list();
-  }
-
-  void create_buffs() override
-  {
-    pet_t::create_buffs();
-
-    commander_of_the_dead = make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead )
-        -> set_default_value( dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent() );
   }
 };
 
@@ -2359,18 +2350,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     return base_ghoul_pet_t::create_action( name, options_str );
   }
 
-  double composite_player_multiplier( school_e s ) const override
-  {
-    double m = base_ghoul_pet_t::composite_player_multiplier( s );
-
-    if ( commander_of_the_dead -> up() ) 
-    {
-      m *= 1.0 + commander_of_the_dead -> value();
-    }
-
-    return m;
-  }
-
   void dismiss( bool expired = false ) override
   {
     if ( !sim -> event_mgr.canceled && dk() -> talent.unholy.ruptured_viscera.ok() )
@@ -2451,11 +2430,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     double m = death_knight_pet_t::composite_player_multiplier( s );
 
     m *= 1.0 + dark_empowerment -> stack_value();
-
-    if ( commander_of_the_dead -> up() )
-    {
-      m *= 1.0 + commander_of_the_dead -> value();
-    }
 
     return m;
   }
@@ -2963,19 +2937,6 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
-  }
-
-  
-  double composite_player_multiplier( school_e s ) const override
-  {
-    double m = death_knight_pet_t::composite_player_multiplier( s );
-
-    if ( commander_of_the_dead -> up() ) 
-    {
-      m *= 1.0 + commander_of_the_dead -> value();
-    }
-
-    return m;
   }
 
   // Magus of the dead Action Priority List:
