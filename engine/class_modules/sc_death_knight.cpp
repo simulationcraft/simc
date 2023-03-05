@@ -3588,8 +3588,8 @@ struct virulent_plague_t : public death_knight_disease_t
     else if ( p->talent.unholy.superstrain.ok() )
     {
       {
-        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague_superstrain", p, true ) );
-        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever_superstrain", p, true ) );
+        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague", p, true ) );
+        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever", p, true ) );
       }
     }
   }
