@@ -87,19 +87,12 @@ struct penance_base_t final : public priest_spell_t
                   util::string_view tn )
     : priest_spell_t( n, p, s ), penance_tick_action( new penance_tick_t( tn, p, stats, ts ) )
   {
-    may_crit       = false;
-    may_miss       = false;
-    channeled      = true;
-    tick_zero      = true;
-    dot_duration   = timespan_t::from_seconds( 2.0 );
-    base_tick_time = timespan_t::from_seconds( 1.0 );
-
-    if ( priest().talents.castigation->ok() )
-    {
-      // Add 1 extra millisecond, so we only get 4 ticks instead of an extra tiny 5th tick.
-      base_tick_time = timespan_t::from_seconds( 2.0 / 3 ) + timespan_t::from_millis( 1 );
-    }
-
+    may_crit            = false;
+    may_miss            = false;
+    channeled           = true;
+    tick_zero           = true;
+    dot_duration        = timespan_t::from_seconds( 2.0 );
+    base_tick_time      = timespan_t::from_seconds( 1.0 );
     dynamic_tick_action = true;
     tick_action         = penance_tick_action;
   }
@@ -122,7 +115,19 @@ struct penance_base_t final : public priest_spell_t
 
   void execute() override
   {
+    double base_penance_ticks = 3.0;
+    double castigation_ticks  = priest().talents.discipline.castigation.enabled() ? 1.0 : 0;
+    double harsh_discipline_ticks =
+        priest().talents.discipline.harsh_discipline.enabled() && priest().buffs.harsh_discipline_ready->check() ? 3.0
+                                                                                                                 : 0;
+    // We subtract one tick from the total to account for the initial tick
+    double total_num_ticks = base_penance_ticks + castigation_ticks + harsh_discipline_ticks;
+    base_tick_time         = timespan_t::from_seconds( 2.0 / total_num_ticks );
+    sim->print_debug(
+        "executing penance with {} castigation ticks, {} harsh discipline ticks, {} total ticks, {} base tick time",
+        castigation_ticks, harsh_discipline_ticks, total_num_ticks, base_tick_time );
     priest_spell_t::execute();
+    priest().buffs.harsh_discipline_ready->expire();
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
   }
 };
@@ -183,6 +188,21 @@ struct power_word_solace_t final : public priest_spell_t
     priest_spell_t::impact( s );
     double amount = data().effectN( 2 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
     priest().resource_gain( RESOURCE_MANA, amount, priest().gains.power_word_solace );
+
+    if ( priest().talents.discipline.harsh_discipline.enabled() )
+    {
+      bool not_enough_stacks = priest().buffs.harsh_discipline->stack() + 1 <
+                               priest().talents.discipline.harsh_discipline->effectN( 1 ).base_value();
+      if ( not_enough_stacks )
+      {
+        priest().buffs.harsh_discipline->increment();
+      }
+      else
+      {
+        priest().buffs.harsh_discipline->expire();
+        priest().buffs.harsh_discipline_ready->trigger();
+      }
+    }
   }
 };
 
@@ -307,6 +327,11 @@ void priest_t::create_buffs_discipline()
   // TODO: Add support for atonement reductions
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
+
+  buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline )
+                               ->set_max_stack( talents.discipline.harsh_discipline->effectN( 1 ).base_value() );
+
+  buffs.harsh_discipline_ready = make_buff( this, "harsh_discipline_ready", find_spell( 373183 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -337,13 +362,13 @@ void priest_t::init_spells_discipline()
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   // Row 7
+  talents.discipline.castigation = ST( "Castigation" );
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
   // Row 9
+  talents.discipline.harsh_discipline       = ST( "Harsh Discipline" );
+  talents.discipline.harsh_discipline_ready = find_spell( 373183 );
   // Row 10
-
-  talents.castigation   = find_talent_spell( "Castigation" );
-  talents.shining_force = find_talent_spell( "Shining Force" );
 
   // General Spells
   specs.sins_of_the_many = find_spell( 280398 );

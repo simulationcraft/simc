@@ -141,6 +141,21 @@ public:
 
       priest().buffs.coalescing_shadows->expire();
     }
+
+    if ( priest().talents.discipline.harsh_discipline.enabled() )
+    {
+      bool not_enough_stacks = priest().buffs.harsh_discipline->stack() + 1 <
+                               priest().talents.discipline.harsh_discipline->effectN( 1 ).base_value();
+      if ( not_enough_stacks )
+      {
+        priest().buffs.harsh_discipline->increment();
+      }
+      else
+      {
+        priest().buffs.harsh_discipline->expire();
+        priest().buffs.harsh_discipline_ready->trigger();
+      }
+    }
   }
 
   timespan_t execute_time() const override
@@ -537,6 +552,20 @@ struct smite_t final : public priest_spell_t
       holy_word_chastise_cooldown->adjust( cooldown_base_reduction );
       sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis.", priest(),
                         cooldown_base_reduction );
+    }
+    if ( priest().talents.discipline.harsh_discipline.enabled() )
+    {
+      bool not_enough_stacks = priest().buffs.harsh_discipline->stack() + 1 <
+                               priest().talents.discipline.harsh_discipline->effectN( 1 ).base_value();
+      if ( not_enough_stacks )
+      {
+        priest().buffs.harsh_discipline->increment();
+      }
+      else
+      {
+        priest().buffs.harsh_discipline->expire();
+        priest().buffs.harsh_discipline_ready->trigger();
+      }
     }
   }
 };
