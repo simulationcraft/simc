@@ -583,6 +583,8 @@ struct shadow_word_pain_t final : public priest_spell_t
       dot_duration += priest().talents.shadow.misery->effectN( 2 ).time_value();
     }
 
+    // Discipline: 8% / 15% damage increase
+    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
     // Spell Direct and Periodic 3%/5% gain
     apply_affecting_aura( priest().talents.throes_of_pain );
 
