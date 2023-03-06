@@ -1178,6 +1178,10 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       priest().buffs.words_of_the_pious->trigger();
     }
+    if ( priest().talents.discipline.borrowed_time.enabled() )
+    {
+      priest().buffs.borrowed_time->trigger();
+    }
 
     priest_absorb_t::execute();
   }

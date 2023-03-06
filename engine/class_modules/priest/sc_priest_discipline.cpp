@@ -323,6 +323,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.embrace_shadow      = ST( "Embrace Shadow" );
   talents.discipline.twilight_corruption = ST( "Twilight Corruption" );
   // Row 7
+  talents.discipline.borrowed_time = ST( "Borrowed Time" );
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
   // Row 9
