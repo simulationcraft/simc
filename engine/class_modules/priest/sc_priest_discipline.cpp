@@ -121,7 +121,7 @@ struct penance_base_t final : public priest_spell_t
         priest().talents.discipline.harsh_discipline.enabled() && priest().buffs.harsh_discipline_ready->check() ? 3.0
                                                                                                                  : 0;
     // We subtract one tick from the total to account for the initial tick
-    double total_num_ticks = base_penance_ticks + castigation_ticks + harsh_discipline_ticks;
+    double total_num_ticks = base_penance_ticks + castigation_ticks + harsh_discipline_ticks - 1;
     base_tick_time         = timespan_t::from_seconds( 2.0 / total_num_ticks );
     sim->print_debug(
         "executing penance with {} castigation ticks, {} harsh discipline ticks, {} total ticks, {} base tick time",
