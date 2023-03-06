@@ -1431,7 +1431,7 @@ namespace monk
             am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
           if ( face_palm )
-            am *= 1 + p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
+            am *= p()->talent.brewmaster.face_palm->effectN( 2 ).percent();
 
           if ( counterstrike )
             am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
