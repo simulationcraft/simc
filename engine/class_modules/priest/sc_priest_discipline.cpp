@@ -197,9 +197,12 @@ struct purge_the_wicked_t final : public priest_spell_t
       : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
     {
       background = true;
+      // 3% / 5% damage increase
       apply_affecting_aura( priest().talents.throes_of_pain );
       // 5% damage increase
       apply_affecting_aura( p.talents.discipline.revel_in_purity );
+      // 8% / 15% damage increase
+      apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
     }
 
     void tick( dot_t* d ) override
@@ -219,8 +222,12 @@ struct purge_the_wicked_t final : public priest_spell_t
     parse_options( options_str );
     tick_zero      = false;
     execute_action = new purge_the_wicked_dot_t( p );
+    // 3% / 5% damage increase
+    apply_affecting_aura( priest().talents.throes_of_pain );
     // 5% damage increase
     apply_affecting_aura( priest().talents.discipline.revel_in_purity );
+    // 8% / 15% damage increase
+    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
   }
 };
 
@@ -326,7 +333,8 @@ void priest_t::init_spells_discipline()
   // Row 6
   talents.discipline.embrace_shadow      = ST( "Embrace Shadow" );
   talents.discipline.twilight_corruption = ST( "Twilight Corruption" );
-  talents.discipline.revel_in_purity     = ST( "Revel In Purity" );
+  talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
+  talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   // Row 7
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );

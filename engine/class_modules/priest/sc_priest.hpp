@@ -321,6 +321,7 @@ public:
       player_talent_t embrace_shadow;
       player_talent_t twilight_corruption;
       player_talent_t revel_in_purity;
+      player_talent_t pain_and_suffering;
       // Row 8
       player_talent_t lights_wrath;
     } discipline;
