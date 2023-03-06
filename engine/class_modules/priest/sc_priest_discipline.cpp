@@ -200,6 +200,7 @@ struct purge_the_wicked_t final : public priest_spell_t
       // 3% / 5% damage increase
       apply_affecting_aura( priest().talents.throes_of_pain );
       // 5% damage increase
+      // TODO: Implement the spreading of Purge the Wicked via penance
       apply_affecting_aura( p.talents.discipline.revel_in_purity );
       // 8% / 15% damage increase
       apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
