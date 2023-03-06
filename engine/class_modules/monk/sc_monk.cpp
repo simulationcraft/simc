@@ -1453,7 +1453,7 @@ namespace monk
           // Pre-Execute
           //============
 
-          if ( p()->talent.brewmaster.face_palm->ok() && rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
+          if ( rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
           {
             face_palm = true;
             p()->proc.face_palm->occur();
