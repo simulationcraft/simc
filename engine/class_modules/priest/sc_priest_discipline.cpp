@@ -284,7 +284,7 @@ void priest_t::create_buffs_discipline()
   buffs.shadow_covenant =
       make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
           ->set_default_value( talents.discipline.shadow_covenant->effectN( 4 ).trigger()->effectN( 1 ).percent() +
-                               talents.discipline.twilight_corruption->effectN( 1 ).percent() * 100 )
+                               talents.discipline.twilight_corruption->effectN( 1 ).percent() )
           ->modify_duration( talents.discipline.shadow_covenant->duration() +
                              talents.discipline.embrace_shadow->effectN( 1 ).time_value() )
           ->set_trigger_spell( talents.discipline.shadow_covenant );
