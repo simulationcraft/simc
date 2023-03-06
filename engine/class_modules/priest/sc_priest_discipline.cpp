@@ -123,9 +123,8 @@ struct penance_base_t final : public priest_spell_t
     // We subtract one tick from the total to account for the initial tick
     double total_num_ticks = base_penance_ticks + castigation_ticks + harsh_discipline_ticks - 1;
     base_tick_time         = timespan_t::from_seconds( 2.0 / total_num_ticks );
-    sim->print_debug(
-        "executing penance with {} castigation ticks, {} harsh discipline ticks, {} total ticks, {} base tick time",
-        castigation_ticks, harsh_discipline_ticks, total_num_ticks, base_tick_time );
+    // We make sure there is no additional time at the end due to rounding error that will result in an extra tick
+    dot_duration = base_tick_time * total_num_ticks;
     priest_spell_t::execute();
     priest().buffs.harsh_discipline_ready->expire();
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
