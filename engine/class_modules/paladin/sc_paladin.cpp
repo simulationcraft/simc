@@ -123,6 +123,11 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   if ( p->talents.avenging_wrath_might->ok() )
     crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
 
+  if ( p->is_ptr() && p->talents.divine_wrath->ok() )
+  {
+    base_buff_duration += p->talents.divine_wrath->effectN( 1 ).time_value();
+  }
+
   if ( p->azerite.lights_decree.ok() )
     base_buff_duration += p->spells.lights_decree->effectN( 2 ).time_value();
 
@@ -208,6 +213,11 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
 
   // if ( p->talents.avenging_wrath_2->ok() )
   //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
+
+  if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
+  {
+    cooldown->duration += p->spec.retribution_paladin->effectN( 21 ).time_value();
+  }
 
   cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 }
@@ -370,6 +380,10 @@ struct consecration_t : public paladin_spell_t
     may_miss = harmful = false;
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
+    if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
+    {
+      cooldown->duration += p->spec.retribution_paladin->effectN( 22 ).time_value();
+    }
 
     add_child( damage_tick );
   }
@@ -907,42 +921,45 @@ struct melee_t : public paladin_melee_attack_t
     {
       if ( p()->specialization() == PALADIN_RETRIBUTION )
       {
-        // Check for BoW procs
-        double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
-
-        if ( p()->talents.blade_of_wrath->ok() )
-          aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
-
-        if ( rng().roll( aow_proc_chance ) )
+        if ( p()->talents.art_of_war->ok() )
         {
-          p()->procs.art_of_war->occur();
+          // Check for BoW procs
+          double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
 
-          if ( p()->talents.ashes_to_ashes->ok() )
+          if ( p()->talents.blade_of_wrath->ok() )
+            aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
+
+          if ( rng().roll( aow_proc_chance ) )
           {
-            if ( p()->bugs && p()->buffs.fires_of_justice->up() )
+            p()->procs.art_of_war->occur();
+
+            if ( p()->talents.ashes_to_ashes->ok() )
             {
-              p()->buffs.fires_of_justice->expire();
+              if ( p()->bugs && p()->buffs.fires_of_justice->up() )
+              {
+                p()->buffs.fires_of_justice->expire();
+              }
+
+              p()->buffs.seraphim->extend_duration_or_trigger(
+                timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
+                player
+              );
             }
 
-            p()->buffs.seraphim->extend_duration_or_trigger(
-              timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
-              player
-            );
-          }
-
-          if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
-          {
-            p()->cooldowns.wake_of_ashes->reset( true );
-          }
-          else
-          {
-            if ( p()->talents.blade_of_wrath->ok() )
+            if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
+            {
+              p()->cooldowns.wake_of_ashes->reset( true );
+            }
+            else
+            {
+              if ( p()->talents.blade_of_wrath->ok() )
               p()->buffs.blade_of_wrath->trigger();
 
-            if ( p()->talents.consecrated_blade->ok() )
-              p()->buffs.consecrated_blade->trigger();
+              if ( p()->talents.consecrated_blade->ok() )
+                p()->buffs.consecrated_blade->trigger();
 
-            p()->cooldowns.blade_of_justice->reset( true );
+              p()->cooldowns.blade_of_justice->reset( true );
+            }
           }
         }
 
@@ -1024,9 +1041,14 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p->talents.fires_of_justice->ok() )
+    if ( p->talents.fires_of_justice->ok() && !p->is_ptr() )
     {
       cooldown->duration *= 1.0 + p->talents.fires_of_justice->effectN( 3 ).percent();
+    }
+
+    if ( p->is_ptr() && p->talents.swift_justice->ok() )
+    {
+      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
     }
 
     if ( p->talents.improved_crusader_strike )
@@ -1330,9 +1352,27 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
     base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 3 ).percent();
   }
 
-  if ( p->is_ptr()  && p->talents.seal_of_alacrity->ok())
+  if ( p->is_ptr() )
   {
-    cooldown->duration -= timespan_t::from_millis(p->talents.seal_of_alacrity->effectN( 2 ).base_value());
+    if ( p->talents.seal_of_alacrity->ok() )
+    {
+      cooldown->duration += timespan_t::from_millis( p->talents.seal_of_alacrity->effectN( 2 ).base_value() );
+    }
+
+    if ( p->talents.swift_justice->ok() )
+    {
+      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
+    }
+
+    if ( p->talents.judgment_of_justice->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.judgment_of_justice->effectN( 2 ).percent();
+    }
+
+    if ( p->talents.improved_judgment->ok() )
+    {
+      cooldown->charges += as<int>( p->talents.improved_judgment->effectN( 1 ).base_value() );
+    }
   }
 }
 
@@ -2618,6 +2658,7 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs.art_of_war        = get_proc( "Art of War" );
+  procs.righteous_cause   = get_proc( "Righteous Cause" );
   procs.divine_purpose    = get_proc( "Divine Purpose" );
   procs.fires_of_justice  = get_proc( "Fires of Justice" );
   procs.prot_lucid_dreams = get_proc( "Lucid Dreams SotR" );
@@ -3450,8 +3491,13 @@ double paladin_t::composite_melee_haste() const
 double paladin_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
+
   if ( buffs.zeal->check() )
     s /= 1.0 + buffs.zeal->data().effectN( 1 ).percent();
+
+  if ( is_ptr() && talents.zealots_fervor->ok() )
+    s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();
+
   return s;
 }
 

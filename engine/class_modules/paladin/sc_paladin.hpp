@@ -302,6 +302,7 @@ public:
   struct procs_t
   {
     proc_t* art_of_war;
+    proc_t* righteous_cause;
     proc_t* divine_purpose;
     proc_t* fires_of_justice;
     proc_t* final_reckoning;
@@ -543,6 +544,39 @@ public:
     const spell_data_t* executioners_wrath; // ?
     const spell_data_t* final_reckoning;
     const spell_data_t* vanguards_momentum;
+
+    const spell_data_t* swift_justice;
+    const spell_data_t* light_of_justice;
+    const spell_data_t* judgment_of_justice;
+    const spell_data_t* improved_blade_of_justice;
+    const spell_data_t* righteous_cause;
+
+    const spell_data_t* jurisdiction;
+    const spell_data_t* inquisitors_ire;
+    const spell_data_t* zealots_fervor;
+    const spell_data_t* rush_of_light;
+    const spell_data_t* improved_judgment;
+    const spell_data_t* crusading_strikes;
+    const spell_data_t* templar_strikes;
+    const spell_data_t* divine_wrath;
+    const spell_data_t* divine_hammer;
+    const spell_data_t* penitence;
+    const spell_data_t* blade_of_vengeance;
+    const spell_data_t* vanguard_of_justice;
+    const spell_data_t* heart_of_the_crusader;
+    const spell_data_t* blessed_champion;
+    const spell_data_t* commanding_judgment;
+    const spell_data_t* judge_jury_and_executioner;
+
+    const spell_data_t* adjudication;
+    const spell_data_t* aegis_of_protection;
+    const spell_data_t* divine_retribution;
+    const spell_data_t* blades_of_light;
+    const spell_data_t* burning_crusade;
+    const spell_data_t* physical_presence;
+    const spell_data_t* divine_auxiliary;
+    const spell_data_t* seething_flames;
+    const spell_data_t* searing_light;
   } talents;
 
   struct azerite_t
@@ -633,9 +667,9 @@ public:
   double lucid_dreams_accumulator;
   double lucid_dreams_minor_refund_coeff;
 
-  int holy_power_generators_used;
-
   season next_season;
+
+  int holy_power_generators_used;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 

@@ -29,6 +29,12 @@ namespace buffs {
     if ( paladin -> azerite.lights_decree.ok() )
       base_buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
 
+    if ( paladin -> is_ptr() && paladin -> talents.divine_wrath -> ok() )
+    {
+      base_buff_duration += paladin -> talents.divine_wrath -> effectN( 1 ).time_value();
+    }
+
+
     // let the ability handle the cooldown
     cooldown -> duration = 0_ms;
 
@@ -339,6 +345,14 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       hasted_ticks = false;
       tick_may_crit = false;
+
+      if ( p -> is_ptr() )
+      {
+        if ( p -> talents.jurisdiction -> ok() )
+        {
+          base_multiplier *= 1.0 + p -> talents.jurisdiction -> effectN( 4 ).percent();
+        }
+      }
     }
   };
 
@@ -367,6 +381,24 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     if ( p -> talents.holy_blade -> ok() )
     {
       energize_amount += p -> talents.holy_blade -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
+    }
+
+    if ( p -> is_ptr() )
+    {
+      if ( p -> talents.light_of_justice -> ok() )
+      {
+        cooldown -> duration += timespan_t::from_millis( p -> talents.light_of_justice -> effectN( 1 ).base_value() );
+      }
+
+      if ( p -> talents.improved_blade_of_justice -> ok() )
+      {
+        cooldown->charges += as<int>( p->talents.improved_blade_of_justice->effectN( 1 ).base_value() );
+      }
+
+      if ( p -> talents.jurisdiction -> ok() )
+      {
+        base_multiplier *= 1.0 + p -> talents.jurisdiction -> effectN( 4 ).percent();
+      }
     }
   }
 
@@ -724,6 +756,14 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       echo = new echoed_templars_verdict_t( p );
     }
 
+    if ( p -> is_ptr() )
+    {
+      if ( p -> talents.jurisdiction -> ok() )
+      {
+        base_multiplier *= 1.0 + p -> talents.jurisdiction -> effectN( 4 ).percent();
+      }
+    }
+
     if ( ! is_fv ) {
       callbacks = false;
       may_block = false;
@@ -781,6 +821,18 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       {
         p() -> cooldowns.hammer_of_wrath -> reset( true );
         p() -> buffs.final_verdict -> trigger();
+      }
+    }
+
+    if ( p() -> is_ptr() && !background )
+    {
+      if ( p() -> talents.righteous_cause -> ok() )
+      {
+        if ( rng().roll( p() -> talents.righteous_cause -> proc_chance() ) )
+        {
+          p() -> procs.righteous_cause -> occur();
+          p() -> cooldowns.blade_of_justice -> reset( true );
+        }
       }
     }
   }
@@ -928,6 +980,25 @@ struct judgment_ret_t : public judgment_t
     {
       seal_of_wrath = new seal_of_wrath_t( p );
     }
+
+    if ( p -> is_ptr() )
+    {
+      if ( p -> talents.boundless_judgment -> ok() )
+      {
+        holy_power_generation += p -> talents.boundless_judgment -> effectN( 1 ).base_value();
+      }
+
+      if ( p -> talents.commanding_judgment -> ok() )
+      {
+        aoe = 1 + p -> talents.commanding_judgment -> effectN( 1 ).base_value();
+        base_aoe_multiplier *= 1.0 - p -> talents.commanding_judgment -> effectN( 2 ).percent();
+      }
+
+      if ( p -> talents.judge_jury_and_executioner -> ok() )
+      {
+        base_crit += p -> talents.judge_jury_and_executioner -> effectN( 1 ).percent();
+      }
+    }
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
@@ -960,7 +1031,7 @@ struct judgment_ret_t : public judgment_t
 
   void execute() override
   {
-    if ( p() -> talents.boundless_judgment -> ok() )
+    if ( p() -> talents.boundless_judgment -> ok() && !( p() -> is_ptr() ) )
     {
       if ( rng().roll( p() -> talents.boundless_judgment -> effectN( 1 ).percent() ) )
       {
@@ -1036,6 +1107,29 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
     weapon_multiplier = 0; // why is this needed?
 
     // Healing isn't implemented
+
+    if ( p -> is_ptr() )
+    {
+      if ( p -> talents.jurisdiction -> ok() )
+      {
+        base_multiplier *= 1.0 + p -> talents.jurisdiction -> effectN( 4 ).percent();
+      }
+    }
+  }
+
+
+  void execute() override
+  {
+    holy_power_consumer_t::execute();
+
+    if ( p() -> is_ptr() && p() -> talents.righteous_cause -> ok() )
+    {
+      if ( rng().roll( p() -> talents.righteous_cause -> proc_chance() ) )
+      {
+        p() -> procs.righteous_cause -> occur();
+        p() -> cooldowns.blade_of_justice -> reset( true );
+      }
+    }
   }
 };
 
@@ -1468,6 +1562,19 @@ void paladin_t::init_spells_retribution()
   talents.executioners_wrath          = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Wrath" );
   talents.final_reckoning             = find_talent_spell( talent_tree::SPECIALIZATION, "Final Reckoning" );
   talents.vanguards_momentum          = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard's Momentum" );
+
+  talents.swift_justice               = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Justice" );
+  talents.light_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of Justice" );
+  talents.improved_blade_of_justice   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Blade of Justice" );
+  talents.righteous_cause             = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Cause" );
+  talents.jurisdiction                = find_talent_spell( talent_tree::SPECIALIZATION, "Jurisdiction" ); // TODO: range increase
+  talents.inquisitors_ire             = find_talent_spell( talent_tree::SPECIALIZATION, "Inquisitor's Ire" ); // TODO
+  talents.zealots_fervor              = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Fervor" );
+  talents.rush_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Rush of Light" ); // TODO
+  talents.improved_judgment           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
+  talents.commanding_judgment         = find_talent_spell( talent_tree::SPECIALIZATION, "Commanding Judgment" );
+  talents.judge_jury_and_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Judge, Jury and Executioner" );
+
 
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
