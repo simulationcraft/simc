@@ -110,6 +110,7 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
+    propagate_const<buff_t*> borrowed_time;
 
     // Holy
     propagate_const<buff_t*> apotheosis;

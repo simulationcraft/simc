@@ -295,6 +295,8 @@ void priest_t::create_buffs_discipline()
   // TODO: Add support for atonement reductions
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
+
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
 }
 
 void priest_t::init_rng_discipline()

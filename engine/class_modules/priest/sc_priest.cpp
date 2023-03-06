@@ -1159,6 +1159,7 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
+    apply_affecting_aura( priest().talents.discipline.borrowed_time );
   }
 
   // Manually create the buff so we can reference it with Void Shield
