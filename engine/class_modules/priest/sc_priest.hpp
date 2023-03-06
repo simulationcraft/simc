@@ -316,6 +316,9 @@ public:
       // Row 5
       player_talent_t shadow_covenant;
       const spell_data_t* dark_reprimand;
+      // Row 6
+      player_talent_t embrace_shadow;
+      player_talent_t twilight_corruption;
       // Row 8
       player_talent_t lights_wrath;
     } discipline;
@@ -735,7 +738,7 @@ public:
     parse_buff_effects( p().buffs.devoured_pride );           // Spell Direct and Periodic amount
 
     // Discipline
-    parse_buff_effects( p().buffs.shadow_covenant );
+    parse_buff_effects( p().buffs.shadow_covenant, false, true );
     // 280398 applies the buff to the correct spells, but does not contain the correct buff value (12% instead of 40%)
     // So, override to use our provided default_value (40%) instead
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
