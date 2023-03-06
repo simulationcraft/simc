@@ -62,7 +62,7 @@ struct penance_base_t final : public priest_spell_t
       this->stats   = stats;
 
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
-      force_buff_effect( p.buffs.shadow_covenant, 1 );
+      force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
     }
 
     void impact( action_state_t* s ) override
@@ -282,6 +282,10 @@ void priest_t::create_buffs_discipline()
 
   buffs.shadow_covenant =
       make_buff( this, "shadow_covenant", talents.discipline.shadow_covenant->effectN( 4 ).trigger() )
+          ->set_default_value( talents.discipline.shadow_covenant->effectN( 4 ).trigger()->effectN( 1 ).percent() +
+                               talents.discipline.twilight_corruption->effectN( 1 ).percent() * 100 )
+          ->modify_duration( talents.discipline.shadow_covenant->duration() +
+                             talents.discipline.embrace_shadow->effectN( 1 ).time_value() )
           ->set_trigger_spell( talents.discipline.shadow_covenant );
 
   // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
@@ -315,6 +319,8 @@ void priest_t::init_spells_discipline()
   talents.discipline.shadow_covenant  = ST( "Shadow Covenant" );
   talents.discipline.dark_reprimand   = find_spell( 373129 );
   // Row 6
+  talents.discipline.embrace_shadow      = ST( "Embrace Shadow" );
+  talents.discipline.twilight_corruption = ST( "Twilight Corruption" );
   // Row 7
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
