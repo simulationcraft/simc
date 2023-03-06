@@ -299,28 +299,42 @@ struct divine_star_t final : public priest_spell_t
 {
   divine_star_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "divine_star", p, p.talents.divine_star ),
-      _heal_spell( new divine_star_heal_t( "divine_star_heal", p, p.talents.divine_star_heal ) ),
-      _dmg_spell( new divine_star_spell_t( "divine_star_damage", p, p.talents.divine_star_dmg ) )
+      _heal_spell_holy( new divine_star_heal_t( "divine_star_heal_holy", p, p.talents.divine_star_heal_holy ) ),
+      _dmg_spell_holy( new divine_star_spell_t( "divine_star_damage_holy", p, p.talents.divine_star_dmg_holy ) ),
+      _heal_spell_shadow( new divine_star_heal_t( "divine_star_heal_shadow", p, p.talents.divine_star_heal_shadow ) ),
+      _dmg_spell_shadow( new divine_star_spell_t( "divine_star_damage_shadow", p, p.talents.divine_star_dmg_shadow ) )
   {
     parse_options( options_str );
 
     dot_duration = base_tick_time = timespan_t::zero();
 
-    add_child( _heal_spell );
-    add_child( _dmg_spell );
+    add_child( _heal_spell_holy );
+    add_child( _dmg_spell_holy );
+    add_child( _heal_spell_shadow );
+    add_child( _dmg_spell_shadow );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    _heal_spell->execute();
-    _dmg_spell->execute();
+    if ( priest().specialization() == PRIEST_SHADOW || priest().buffs.shadow_covenant->check() )
+    {
+      _heal_spell_shadow->execute();
+      _dmg_spell_shadow->execute();
+    }
+    else
+    {
+      _heal_spell_holy->execute();
+      _dmg_spell_holy->execute();
+    }
   }
 
 private:
-  action_t* _heal_spell;
-  action_t* _dmg_spell;
+  action_t* _heal_spell_holy;
+  action_t* _dmg_spell_holy;
+  action_t* _heal_spell_shadow;
+  action_t* _dmg_spell_shadow;
 };
 
 // ==========================================================================
@@ -360,26 +374,40 @@ struct halo_t final : public priest_spell_t
 {
   halo_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "halo", p, p.talents.halo ),
-      _heal_spell( new halo_heal_t( "halo_heal", p, p.talents.halo_heal ) ),
-      _dmg_spell( new halo_spell_t( "halo_damage", p, p.talents.halo_dmg ) )
+      _heal_spell_holy( new halo_heal_t( "halo_heal_holy", p, p.talents.halo_heal_holy ) ),
+      _dmg_spell_holy( new halo_spell_t( "halo_damage_holy", p, p.talents.halo_dmg_holy ) ),
+      _heal_spell_shadow( new halo_heal_t( "halo_heal_shadow", p, p.talents.halo_heal_shadow ) ),
+      _dmg_spell_shadow( new halo_spell_t( "halo_damage_shadow", p, p.talents.halo_dmg_shadow ) )
   {
     parse_options( options_str );
 
-    add_child( _heal_spell );
-    add_child( _dmg_spell );
+    add_child( _heal_spell_holy );
+    add_child( _dmg_spell_holy );
+    add_child( _heal_spell_shadow );
+    add_child( _dmg_spell_shadow );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    _heal_spell->execute();
-    _dmg_spell->execute();
+    if ( priest().specialization() == PRIEST_SHADOW || priest().buffs.shadow_covenant->check() )
+    {
+      _heal_spell_shadow->execute();
+      _dmg_spell_shadow->execute();
+    }
+    else
+    {
+      _heal_spell_holy->execute();
+      _dmg_spell_holy->execute();
+    }
   }
 
 private:
-  propagate_const<action_t*> _heal_spell;
-  propagate_const<action_t*> _dmg_spell;
+  propagate_const<action_t*> _heal_spell_holy;
+  propagate_const<action_t*> _dmg_spell_holy;
+  propagate_const<action_t*> _heal_spell_shadow;
+  propagate_const<action_t*> _dmg_spell_shadow;
 };
 
 // ==========================================================================
@@ -1993,11 +2021,15 @@ void priest_t::init_spells()
   talents.angels_mercy               = CT( "Angel's Mercy" );  // NYI
   talents.binding_heals              = CT( "Binding Heals" );  // NYI
   talents.halo                       = CT( "Halo" );
-  talents.halo_heal                  = specialization() == PRIEST_SHADOW ? find_spell( 390971 ) : find_spell( 120692 );
-  talents.halo_dmg                   = specialization() == PRIEST_SHADOW ? find_spell( 390964 ) : find_spell( 120696 );
+  talents.halo_heal_holy             = find_spell( 120692 );
+  talents.halo_dmg_holy              = find_spell( 120696 );
+  talents.halo_heal_shadow           = find_spell( 390971 );
+  talents.halo_dmg_shadow            = find_spell( 390964 );
   talents.divine_star                = CT( "Divine Star" );
-  talents.divine_star_heal           = specialization() == PRIEST_SHADOW ? find_spell( 390981 ) : find_spell( 110745 );
-  talents.divine_star_dmg            = specialization() == PRIEST_SHADOW ? find_spell( 390845 ) : find_spell( 122128 );
+  talents.divine_star_heal_holy      = find_spell( 110745 );
+  talents.divine_star_dmg_holy       = find_spell( 122128 );
+  talents.divine_star_heal_shadow    = find_spell( 390981 );
+  talents.divine_star_dmg_shadow     = find_spell( 390845 );
   talents.translucent_image          = CT( "Translucent Image" );
   talents.mindgames                  = CT( "Mindgames" );
   talents.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
@@ -2389,7 +2421,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
