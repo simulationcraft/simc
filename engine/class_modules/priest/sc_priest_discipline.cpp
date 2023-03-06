@@ -62,6 +62,7 @@ struct penance_base_t final : public priest_spell_t
       this->stats   = stats;
 
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
+      // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
       force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
     }
 
