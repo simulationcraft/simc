@@ -110,6 +110,7 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
+    propagate_const<buff_t*> revel_in_purity;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -319,6 +320,8 @@ public:
       // Row 6
       player_talent_t embrace_shadow;
       player_talent_t twilight_corruption;
+      player_talent_t revel_in_purity;
+      player_talent_t pain_and_suffering;
       // Row 8
       player_talent_t lights_wrath;
     } discipline;
