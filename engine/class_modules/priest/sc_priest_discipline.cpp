@@ -49,8 +49,7 @@ struct penance_damage_t : public priest_spell_t
 {
   timespan_t dot_extension;
 
-  penance_damage_t( priest_t& p, util::string_view n, const spell_data_t* s )
-    : priest_spell_t( n, p, s )
+  penance_damage_t( priest_t& p, util::string_view n, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background = dual = direct_tick = tick_may_crit = may_crit = true;
     dot_extension = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
@@ -73,22 +72,23 @@ struct penance_damage_t : public priest_spell_t
 struct penance_channel_t : public priest_spell_t
 {
   penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s )
-    : priest_spell_t( n, p, s ), 
+    : priest_spell_t( n, p, s ),
       damage( new penance_damage_t( p, "penance_tick", p.specs.penance_tick ) ),
-      shadow_covenant_damage( new penance_damage_t( p, "dark_reprimand_tick", p.talents.discipline.dark_reprimand -> effectN( 2 ).trigger() ) )
+      shadow_covenant_damage( new penance_damage_t( p, "dark_reprimand_tick",
+                                                    p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() ) )
   {
     dual = channeled = tick_zero = dynamic_tick_action = true;
     may_miss = may_crit = false;
 
-    base_tick_time = priest().specs.penance_channel -> effectN( 2 ).period();
-    base_tick_time *= 1.0 + priest().talents.discipline.castigation -> effectN( 1 ).percent();
+    base_tick_time = priest().specs.penance_channel->effectN( 2 ).period();
+    base_tick_time *= 1.0 + priest().talents.discipline.castigation->effectN( 1 ).percent();
 
-    if ( priest().talents.discipline.harsh_discipline.ok() && priest().buffs.harsh_discipline_ready -> up() )
+    if ( priest().talents.discipline.harsh_discipline.ok() && priest().buffs.harsh_discipline_ready->up() )
     {
-      double value =  priest().specs.harsh_discipline_value -> effectN( 1 ).percent();
-      if( priest().talents.discipline.castigation.ok() )
+      double value = priest().specs.harsh_discipline_value->effectN( 1 ).percent();
+      if ( priest().talents.discipline.castigation.ok() )
       {
-        value = value + 0.1; // Appears to take a 10% hit to the reduction with castigation talented
+        value = value + 0.1;  // Appears to take a 10% hit to the reduction with castigation talented
       }
       base_tick_time *= 1.0 + value;
     }
@@ -101,62 +101,64 @@ struct penance_channel_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if( p().buffs.shadow_covenant -> up() )
+    if ( p().buffs.shadow_covenant->up() )
     {
-      shadow_covenant_damage -> execute();
+      shadow_covenant_damage->execute();
     }
     else
     {
-      damage -> execute();
+      damage->execute();
     }
   }
 
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
-    if( priest().buffs.harsh_discipline_ready -> up() )
+    if ( priest().buffs.harsh_discipline_ready->up() )
     {
-      priest().buffs.harsh_discipline_ready -> expire();
+      priest().buffs.harsh_discipline_ready->expire();
     }
   }
-private: 
-    propagate_const<action_t*> damage;
-    propagate_const<action_t*> shadow_covenant_damage;
+
+private:
+  propagate_const<action_t*> damage;
+  propagate_const<action_t*> shadow_covenant_damage;
 };
 
 // Main penance action spell
 struct penance_t : public priest_spell_t
 {
   penance_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "penance", p, p.specs.penance ), 
+    : priest_spell_t( "penance", p, p.specs.penance ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
       shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) )
   {
     parse_options( options_str );
-    cooldown -> duration = p.specs.penance -> cooldown();
-    add_child ( channel );
-    add_child ( shadow_covenant_channel );
+    cooldown->duration = p.specs.penance->cooldown();
+    add_child( channel );
+    add_child( shadow_covenant_channel );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    if( p().buffs.shadow_covenant -> up() )
+    if ( p().buffs.shadow_covenant->up() )
     {
-      shadow_covenant_channel -> execute();
+      shadow_covenant_channel->execute();
     }
     else
     {
-      channel -> execute();
+      channel->execute();
     }
   }
-private: 
-    propagate_const<action_t*> channel;
-    propagate_const<action_t*> shadow_covenant_channel;
+
+private:
+  propagate_const<action_t*> channel;
+  propagate_const<action_t*> shadow_covenant_channel;
 };
 
-//Power Word Solace =========================================================
+// Power Word Solace =========================================================
 struct power_word_solace_t final : public priest_spell_t
 {
   power_word_solace_t( priest_t& p, util::string_view options_str )
@@ -312,16 +314,15 @@ void priest_t::create_buffs_discipline()
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
 
-  buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline)
-      ->set_max_stack( talents.discipline.harsh_discipline -> effectN( 1 ).base_value() )
-      ->set_stack_change_callback( [ this ] ( buff_t*, int, int )
-          {
-            if( buffs.harsh_discipline -> at_max_stacks() )
-            {
-              buffs.harsh_discipline_ready -> trigger();
-              buffs.harsh_discipline -> expire();
-            }
-          } );
+  buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline )
+                               ->set_max_stack( talents.discipline.harsh_discipline->effectN( 1 ).base_value() )
+                               ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+                                 if ( buffs.harsh_discipline->at_max_stacks() )
+                                 {
+                                   buffs.harsh_discipline_ready->trigger();
+                                   buffs.harsh_discipline->expire();
+                                 }
+                               } );
 
   buffs.harsh_discipline_ready = make_buff( this, "harsh_discipline_ready", find_spell( 373183 ) );
 }
@@ -363,10 +364,10 @@ void priest_t::init_spells_discipline()
   // Row 10
 
   // General Spells
-  specs.sins_of_the_many = find_spell( 280398 );
-  specs.penance          = find_spell( 47540 );
-  specs.penance_channel  = find_spell( 47758 );  // Channel spell, triggered by 47540, executes 47666 every tick
-  specs.penance_tick     = find_spell( 47666 );  // Not triggered from 47540, only 47758
+  specs.sins_of_the_many       = find_spell( 280398 );
+  specs.penance                = find_spell( 47540 );
+  specs.penance_channel        = find_spell( 47758 );  // Channel spell, triggered by 47540, executes 47666 every tick
+  specs.penance_tick           = find_spell( 47666 );  // Not triggered from 47540, only 47758
   specs.harsh_discipline_value = find_spell( 373183 );
 }
 
