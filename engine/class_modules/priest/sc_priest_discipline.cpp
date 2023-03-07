@@ -91,8 +91,8 @@ struct penance_base_t final : public priest_spell_t
     may_miss            = false;
     channeled           = true;
     tick_zero           = true;
-    dot_duration        = timespan_t::from_seconds( 2.0 );
-    base_tick_time      = timespan_t::from_seconds( 1.0 );
+    dot_duration        = s->duration();
+    base_tick_time      = s->effectN( 2 ).period();
     dynamic_tick_action = true;
     tick_action         = penance_tick_action;
   }
@@ -120,7 +120,7 @@ struct penance_base_t final : public priest_spell_t
     double harsh_discipline_ticks =
         priest().talents.discipline.harsh_discipline.enabled() && priest().buffs.harsh_discipline_ready->check() ? 3.0
                                                                                                                  : 0;
-    // We subtract one tick from the total to account for the initial tick
+    // We subtract one tick from the total to account for the initial zero tick
     double total_num_ticks = base_penance_ticks + castigation_ticks + harsh_discipline_ticks - 1;
     base_tick_time         = timespan_t::from_seconds( 2.0 / total_num_ticks );
     // We make sure there is no additional time at the end due to rounding error that will result in an extra tick
