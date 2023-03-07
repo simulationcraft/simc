@@ -64,6 +64,7 @@ struct penance_base_t final : public priest_spell_t
       // This is not found in the affected spells for Shadow Covenant, overriding it manually
       // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
       force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
+      apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     }
 
     void impact( action_state_t* s ) override
@@ -142,6 +143,7 @@ struct penance_t final : public priest_spell_t
     parse_options( options_str );
 
     add_child( _base_spell );
+    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   void execute() override
@@ -176,6 +178,7 @@ struct power_word_solace_t final : public priest_spell_t
     parse_options( options_str );
     cooldown->hasted = true;
     travel_speed     = 0.0;  // DBC has default travel taking 54 seconds
+    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   void impact( action_state_t* s ) override
@@ -340,6 +343,7 @@ void priest_t::init_spells_discipline()
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
   // Row 9
+  talents.discipline.blaze_of_light = find_spell( 215768 );
   // Row 10
 
   talents.castigation   = find_talent_spell( "Castigation" );

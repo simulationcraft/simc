@@ -477,6 +477,7 @@ struct smite_t final : public priest_spell_t
     {
       base_multiplier *= 1.0 + smite_rank2->effectN( 1 ).percent();
     }
+    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   timespan_t execute_time() const override
