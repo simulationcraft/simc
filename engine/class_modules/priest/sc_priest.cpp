@@ -144,17 +144,7 @@ public:
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
-      bool not_enough_stacks = priest().buffs.harsh_discipline->stack() + 1 <
-                               priest().talents.discipline.harsh_discipline->effectN( 1 ).base_value();
-      if ( not_enough_stacks )
-      {
-        priest().buffs.harsh_discipline->increment();
-      }
-      else
-      {
-        priest().buffs.harsh_discipline->expire();
-        priest().buffs.harsh_discipline_ready->trigger();
-      }
+      priest().buffs.harsh_discipline->increment();
     }
   }
 
@@ -555,17 +545,7 @@ struct smite_t final : public priest_spell_t
     }
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
-      bool not_enough_stacks = priest().buffs.harsh_discipline->stack() + 1 <
-                               priest().talents.discipline.harsh_discipline->effectN( 1 ).base_value();
-      if ( not_enough_stacks )
-      {
-        priest().buffs.harsh_discipline->increment();
-      }
-      else
-      {
-        priest().buffs.harsh_discipline->expire();
-        priest().buffs.harsh_discipline_ready->trigger();
-      }
+      priest().buffs.harsh_discipline->increment();
     }
   }
 };
