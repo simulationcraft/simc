@@ -59,6 +59,16 @@ struct penance_damage_t : public priest_spell_t
     force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+    if ( priest().buffs.power_of_the_dark_side->check() )
+    {
+      d *= 1.0 + priest().buffs.power_of_the_dark_side->data().effectN( 1 ).percent();
+    }
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -153,7 +163,8 @@ struct penance_t : public priest_spell_t
     }
     if ( p().talents.manipulation.ok() )
     {
-      p().cooldowns.mindgames -> adjust( -timespan_t::from_seconds( p().talents.manipulation -> effectN( 1 ).base_value() / 2 ) );
+      p().cooldowns.mindgames->adjust(
+          -timespan_t::from_seconds( p().talents.manipulation->effectN( 1 ).base_value() / 2 ) );
     }
   }
 
@@ -313,8 +324,13 @@ void priest_t::create_buffs_discipline()
                                ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                                  if ( buffs.harsh_discipline->at_max_stacks() )
                                  {
-                                   buffs.harsh_discipline_ready->trigger();
-                                   buffs.harsh_discipline->expire();
+                                   // The stacks only expire when creating the harsh discipline ready buff, otherwise
+                                   // they persist at max
+                                   if ( !buffs.harsh_discipline_ready->up() )
+                                   {
+                                     buffs.harsh_discipline_ready->trigger();
+                                     buffs.harsh_discipline->expire();
+                                   }
                                  }
                                } );
 
