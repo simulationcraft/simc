@@ -79,57 +79,70 @@ struct penance_damage_t : public priest_spell_t
 };
 
 // Penance channeled spell
-struct penance_channel_t : public priest_spell_t
+struct penance_channel_t final : public priest_spell_t
 {
   penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s )
-    : priest_spell_t( n, p, s ),
+    : priest_spell_t( n, p, s ), 
       damage( new penance_damage_t( p, "penance_tick", p.specs.penance_tick ) ),
-      shadow_covenant_damage( new penance_damage_t( p, "dark_reprimand_tick",
-                                                    p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() ) )
+      shadow_covenant_damage( new penance_damage_t( p, "dark_reprimand_tick", p.talents.discipline.dark_reprimand -> effectN( 2 ).trigger() ) )
   {
-    dual = channeled = tick_zero = dynamic_tick_action = true;
+    dual = channeled = dynamic_tick_action = direct_tick = true;
     may_miss = may_crit = false;
-
-    base_tick_time = priest().specs.penance_channel->effectN( 2 ).period();
-    base_tick_time *= 1.0 + priest().talents.discipline.castigation->effectN( 1 ).percent();
-
-    if ( priest().talents.discipline.harsh_discipline.ok() && priest().buffs.harsh_discipline_ready->up() )
-    {
-      double value = priest().specs.harsh_discipline_value->effectN( 1 ).percent();
-      if ( priest().talents.discipline.castigation.ok() )
-      {
-        value = value + 0.1;  // Appears to take a 10% hit to the reduction with castigation talented
-      }
-      base_tick_time *= 1.0 + value;
-    }
-
     add_child( damage );
     add_child( shadow_covenant_damage );
+
+    if( p.talents.discipline.castigation.ok() )
+    {
+      dot_duration = p.specs.penance_channel -> duration() - 200_ms; // Remove 200ms from the duration with castigation to prevent partial ticks
+    }
   }
 
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
 
-    if ( p().buffs.shadow_covenant->up() )
+    if( p().buffs.shadow_covenant -> up() )
     {
-      shadow_covenant_damage->execute();
+      shadow_covenant_damage -> execute();
     }
     else
     {
-      damage->execute();
+      damage -> execute();
     }
   }
 
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
-    if ( priest().buffs.harsh_discipline_ready->up() )
+    if( priest().buffs.harsh_discipline_ready -> up() )
     {
-      priest().buffs.harsh_discipline_ready->expire();
+      priest().buffs.harsh_discipline_ready -> expire();
     }
   }
 
+  void execute() override
+  {
+    double value = priest().specs.harsh_discipline_value -> effectN( 1 ).percent();
+
+    // For some cursed reason tick_time overrides do not work with this spell. Overriding base tick time in execute instead. 
+    // Ideally someone smarter than me can figure out why. 
+    base_tick_time = priest().specs.penance_channel -> effectN( 2 ).period();
+    base_tick_time *= 1.0 + priest().talents.discipline.castigation -> effectN( 1 ).percent();
+    // When harsh discipline and castigation are not taken together, tick on application to get the proper tick number. 
+
+    // When harsh discipline is talented, and the buff is up, modify the tick time. If castigation is also talented, modify the value and set tick on application to false. 
+    if ( priest().talents.discipline.harsh_discipline.ok() && priest().buffs.harsh_discipline_ready -> up() )
+    {
+      if( priest().talents.discipline.castigation.ok() )
+      {
+        value = value + 0.1; // Appears to take a 10% hit to the reduction with castigation talented
+      }
+      base_tick_time *= 1.0 + value;
+    }
+
+    priest_spell_t::execute();
+  }
+  
 private:
   propagate_const<action_t*> damage;
   propagate_const<action_t*> shadow_covenant_damage;
