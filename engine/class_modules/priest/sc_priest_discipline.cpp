@@ -345,7 +345,7 @@ void priest_t::init_spells_discipline()
   // Row 7
   // Row 8
   talents.discipline.lights_wrath     = ST( "Light's Wrath" );
-  talents.discipline.train_of_thought = ST( "Train of Thought" );
+  talents.discipline.train_of_thought = ST( "Train of Thought" );  // TODO: implement PS:S reduction as well
   // Row 9
   // Row 10
 
