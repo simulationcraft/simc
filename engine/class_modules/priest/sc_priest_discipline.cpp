@@ -90,11 +90,6 @@ struct penance_channel_t final : public priest_spell_t
     may_miss = may_crit = false;
     add_child( damage );
     add_child( shadow_covenant_damage );
-
-    if( p.talents.discipline.castigation.ok() )
-    {
-      dot_duration = p.specs.penance_channel -> duration() - 200_ms; // Remove 200ms from the duration with castigation to prevent partial ticks
-    }
   }
 
   void tick( dot_t* d ) override
@@ -126,7 +121,7 @@ struct penance_channel_t final : public priest_spell_t
 
     // For some cursed reason tick_time overrides do not work with this spell. Overriding base tick time in execute instead. 
     // Ideally someone smarter than me can figure out why. 
-    base_tick_time = priest().specs.penance_channel -> effectN( 2 ).period();
+    base_tick_time = priest().specs.penance_channel -> effectN( 2 ).period(); // increase the base tick time by 1_ms to prevent partial ticks
     base_tick_time *= 1.0 + priest().talents.discipline.castigation -> effectN( 1 ).percent();
     // When harsh discipline and castigation are not taken together, tick on application to get the proper tick number. 
 
@@ -139,6 +134,9 @@ struct penance_channel_t final : public priest_spell_t
       }
       base_tick_time *= 1.0 + value;
     }
+
+    double num_ticks = floor( dot_duration / base_tick_time );
+    dot_duration = num_ticks * base_tick_time;
 
     priest_spell_t::execute();
   }
