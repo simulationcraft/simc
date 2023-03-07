@@ -111,6 +111,8 @@ public:
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
     propagate_const<buff_t*> revel_in_purity;
+    propagate_const<buff_t*> twilight_equilibrium_holy_amp;
+    propagate_const<buff_t*> twilight_equilibrium_shadow_amp;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -324,6 +326,10 @@ public:
       player_talent_t pain_and_suffering;
       // Row 8
       player_talent_t lights_wrath;
+      // Row 10
+      player_talent_t twilight_equilibrium;
+      const spell_data_t* twilight_equilibrium_holy_amp;
+      const spell_data_t* twilight_equilibrium_shadow_amp;
     } discipline;
 
     // Shared

@@ -307,6 +307,12 @@ void priest_t::create_buffs_discipline()
   // TODO: Add support for atonement reductions
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
+
+  buffs.twilight_equilibrium_holy_amp =
+      make_buff( this, "twilight_equilibrium_holy_amp", talents.discipline.twilight_equilibrium_holy_amp );
+  buffs.twilight_equilibrium_shadow_amp =
+      make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp );
+  ;
 }
 
 void priest_t::init_rng_discipline()
@@ -341,6 +347,9 @@ void priest_t::init_spells_discipline()
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
   // Row 9
   // Row 10
+  talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
+  talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
+  talents.discipline.twilight_equilibrium_shadow_amp = find_spell( 390707 );
 
   talents.castigation   = find_talent_spell( "Castigation" );
   talents.shining_force = find_talent_spell( "Shining Force" );
