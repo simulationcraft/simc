@@ -361,8 +361,10 @@ public:
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
     const spell_data_t* penance;
+    const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
     const spell_data_t* sins_of_the_many;
+    const spell_data_t* harsh_discipline_value;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
