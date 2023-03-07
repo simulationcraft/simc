@@ -150,6 +150,10 @@ struct penance_t : public priest_spell_t
     {
       channel -> execute();
     }
+    if ( p().talents.manipulation.ok() )
+    {
+      p().cooldowns.mindgames -> adjust( -timespan_t::from_seconds( p().talents.manipulation -> effectN( 1 ).base_value() / 2 ) );
+    }
   }
 private: 
     propagate_const<action_t*> channel;
