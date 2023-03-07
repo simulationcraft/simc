@@ -91,8 +91,8 @@ struct penance_base_t final : public priest_spell_t
     may_miss            = false;
     channeled           = true;
     tick_zero           = true;
-    dot_duration        = s->duration();
-    base_tick_time      = s->effectN( 2 ).period();
+    dot_duration        = priest().find_spell( 47758 )->duration();
+    base_tick_time      = priest().find_spell( 47758 )->effectN( 2 ).period();
     dynamic_tick_action = true;
     tick_action         = penance_tick_action;
   }
