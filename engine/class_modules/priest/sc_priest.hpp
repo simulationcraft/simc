@@ -111,6 +111,7 @@ public:
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
     propagate_const<buff_t*> revel_in_purity;
+    propagate_const<buff_t*> train_of_thought;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -324,6 +325,7 @@ public:
       player_talent_t pain_and_suffering;
       // Row 8
       player_talent_t lights_wrath;
+      player_talent_t train_of_thought;
     } discipline;
 
     // Shared
