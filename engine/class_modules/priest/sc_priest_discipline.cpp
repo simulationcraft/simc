@@ -310,9 +310,9 @@ void priest_t::create_buffs_discipline()
 
   buffs.twilight_equilibrium_holy_amp =
       make_buff( this, "twilight_equilibrium_holy_amp", talents.discipline.twilight_equilibrium_holy_amp );
+
   buffs.twilight_equilibrium_shadow_amp =
       make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp );
-  ;
 }
 
 void priest_t::init_rng_discipline()

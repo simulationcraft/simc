@@ -61,12 +61,6 @@ public:
     {
       priest().buffs.gathering_shadows->trigger();
     }
-
-    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
-    {
-      priest().buffs.twilight_equilibrium_shadow_amp->expire();
-      priest().buffs.twilight_equilibrium_holy_amp->trigger();
-    }
   }
 
   void reset() override
@@ -506,11 +500,6 @@ struct smite_t final : public priest_spell_t
          ( priest().specialization() == PRIEST_HOLY || priest().specialization() == PRIEST_DISCIPLINE ) )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
-    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
-    {
-      priest().buffs.twilight_equilibrium_holy_amp->expire();
-      priest().buffs.twilight_equilibrium_shadow_amp->trigger();
     }
   }
 

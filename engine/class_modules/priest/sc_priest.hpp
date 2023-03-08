@@ -751,6 +751,8 @@ public:
     // 280398 applies the buff to the correct spells, but does not contain the correct buff value (12% instead of 40%)
     // So, override to use our provided default_value (40%) instead
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
+    parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
+    parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -929,6 +931,19 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
+      }
+    }
+    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
+    {
+      if ( s->action->school == SCHOOL_SHADOW )
+      {
+        priest().buffs.twilight_equilibrium_holy_amp->trigger();
+        priest().buffs.twilight_equilibrium_shadow_amp->expire();
+      }
+      if ( s->action->school == SCHOOL_HOLY )
+      {
+        priest().buffs.twilight_equilibrium_shadow_amp->trigger();
+        priest().buffs.twilight_equilibrium_holy_amp->expire();
       }
     }
   }
