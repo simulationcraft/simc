@@ -144,7 +144,7 @@ public:
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
-      priest().buffs.harsh_discipline->increment();
+      priest().buffs.harsh_discipline->trigger();
     }
   }
 
@@ -545,7 +545,7 @@ struct smite_t final : public priest_spell_t
     }
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
-      priest().buffs.harsh_discipline->increment();
+      priest().buffs.harsh_discipline->trigger();
     }
   }
 };
