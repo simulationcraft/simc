@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-02/48317)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1151,7 +1151,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128879)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48000 | PvP Coefficient: 1.35000 | Radius: 12 yards | Target: Cone Front (104)
+Hotfixed         : PvP Coefficient (1 -> 1.35)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Deals reduced damage to secondary targets.
 
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
@@ -2692,7 +2693,8 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Display Range (126), Not In Spellbook (143), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05550 | PvP Coefficient: 1.35000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.35)
 #2 (id=342380)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -3918,7 +3920,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Kick (205523), Blackout Kick (228649)
+                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Kick (205523), Blackout Kick (228649), Dragonfire Brew (387621)
                    Family Flags: 4, 5, 19
 #17 (id=474893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -6292,7 +6294,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1022297)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Breath of Fire (115181), Breath of Fire (123725)
+                   Affected Spells: Breath of Fire (115181), Breath of Fire (123725), Dragonfire Brew (387621)
                    Family Flags: 19, 125
 Description      : $@spelldesc196736
 Tooltip          : Your next ability is empowered.
@@ -14481,10 +14483,13 @@ Effects          :
 Description      : Expel Harm's healing is increased by up to $s1%, based on your missing health.
 
 Name             : Dragonfire Brew (id=387621) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
 Proc Chance      : 101%
+Affecting spells : Brewmaster Monk (137023 effect#16), Blackout Combo (228563 effect#5)
+Family Flags     : 19
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14496,7 +14501,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022525)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.35000 | Radius: 12 yards | Target: Cone Front (104)
+Hotfixed         : PvP Coefficient (1 -> 1.35)
 Description      : $@spelldesc383994
 
 Name             : Staggering Strikes (id=387624) [Hidden] 

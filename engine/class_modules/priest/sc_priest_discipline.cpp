@@ -186,6 +186,12 @@ struct power_word_solace_t final : public priest_spell_t
     priest_spell_t::impact( s );
     double amount = data().effectN( 2 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
     priest().resource_gain( RESOURCE_MANA, amount, priest().gains.power_word_solace );
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
+      sim->print_debug( "{} adjusted cooldown of Penance by {}.", priest(), train_of_thought_reduction );
+      priest().cooldowns.penance->adjust( train_of_thought_reduction );
+    }
   }
 };
 
@@ -310,6 +316,8 @@ void priest_t::create_buffs_discipline()
   // TODO: Add support for atonement reductions
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
+
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -340,8 +348,10 @@ void priest_t::init_spells_discipline()
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   // Row 7
+  talents.discipline.borrowed_time = ST( "Borrowed Time" );
   // Row 8
-  talents.discipline.lights_wrath = ST( "Light's Wrath" );
+  talents.discipline.lights_wrath     = ST( "Light's Wrath" );
+  talents.discipline.train_of_thought = ST( "Train of Thought" );  // TODO: implement PS:S reduction as well
   // Row 9
   talents.discipline.blaze_of_light = find_spell( 215768 );
   // Row 10
