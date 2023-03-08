@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1235,7 +1235,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128879)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48000 | PvP Coefficient: 1.35000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage. Deals reduced damage to secondary targets.
 
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
@@ -2779,7 +2779,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Display Range (126), Not In Spellbook (143), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=156180)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05550 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05550 | PvP Coefficient: 1.35000 | Target: Enemy (6)
 #2 (id=342380)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -3828,6 +3828,8 @@ Effects          :
                    Family Flags: 3, 11, 13, 25, 29, 30, 31, 32, 38, 40, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 220 | Scaled Value: 220 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=1072297)  : Apply Aura (6) | Modify Ranged Attack Speed% (320)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2594 | Target: Self (1)
 
 Name             : Hunter (id=137014) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter, Monk
@@ -4003,7 +4005,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Kick (205523), Blackout Kick (228649)
+                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Kick (205523), Blackout Kick (228649), Dragonfire Brew (387621)
                    Family Flags: 4, 5, 19
 #17 (id=474893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
@@ -4230,7 +4232,7 @@ Effects          :
                    Affected Spells (Category): Hammer of the Righteous (53595)
 #4 (id=191098)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
 #5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019)
@@ -6358,7 +6360,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1022297)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Breath of Fire (115181), Breath of Fire (123725)
+                   Affected Spells: Breath of Fire (115181), Breath of Fire (123725), Dragonfire Brew (387621)
                    Family Flags: 19, 125
 Description      : $@spelldesc196736
 Tooltip          : Your next ability is empowered.
@@ -14554,6 +14556,8 @@ Class            : Monk
 School           : Fire
 Spell Type       : Magic
 Proc Chance      : 101%
+Affecting spells : Brewmaster Monk (137023 effect#16), Blackout Combo (228563 effect#5)
+Family Flags     : 19
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14565,7 +14569,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022525)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.35000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc383994
 
 Name             : Staggering Strikes (id=387624) [Hidden] 
@@ -15985,7 +15989,7 @@ Description      : Spinning Crane Kick damage increased by $s1%.
 Name             : Rising Star (id=388849) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
-                 : Effect#2 [op=set, values=(6, 12)]
+                 : Effect#2 [op=set, values=(8, 16)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -17615,7 +17619,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), DoT Stacking Rule (103), Suppress Caster Procs (112), Do Not Display Range (126), No Cast Log (128), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=1035869)  : Apply Aura (6) | Unknown(504)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc356705
 Tooltip          : Healing taken from $@auracaster increased by $s1%
 

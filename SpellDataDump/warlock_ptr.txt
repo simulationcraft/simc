@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -603,7 +603,7 @@ Resource         : 3 Soul Shard (7) (id=247)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Ritual of Ruin (364349 effects: #4, #5), Ritual of Ruin (387157 effects: #4, #5), Crashing Chaos (387356 effect#1)
+Affecting spells : Ritual of Ruin (364349 effects: #4, #5), Ritual of Ruin (387157 effect#5), Crashing Chaos (387356 effect#1)
 Family Flags     : 124
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -3367,7 +3367,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Backdraft (117828 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Demonic Synergy (171982 effects: #2, #3), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Wrath of Consumption (387066 effect#1), Ritual of Ruin (387157 effects: #1, #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Immolate (157736 effect#2), Demonic Synergy (171982 effects: #2, #3), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Wrath of Consumption (387066 effect#1), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 45, 49, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14006,10 +14006,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1021762)  : Apply Aura (6) | Ignore Spell Cooldown (383)
+#1 (id=1021762)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858)
-                   Family Flags: 45
 #2 (id=1021763)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
@@ -14018,10 +14016,8 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
-#4 (id=1021765)  : Apply Aura (6) | Ignore Spell Cooldown (383)
+#4 (id=1021765)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rain of Fire (5740)
-                   Family Flags: 124
 #5 (id=1021766)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rain of Fire (5740)

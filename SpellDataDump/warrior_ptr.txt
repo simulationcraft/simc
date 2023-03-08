@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -8923,7 +8923,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 #2 (id=799631)   : Trigger Spell (64): Onslaught
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20 | Trigger Spell: 396718 | Target: Enemy (6)
-Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for $184362d sec.][.]
+Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for $184362d.][.]
 
 |cFFFFFFFFGenerates ${$m1/10} Rage.
 
@@ -15083,9 +15083,9 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x.x... ........ ........ 
+                 : ........ ........ ........ ........   .......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Do Not Consume Aura Stack On Proc (428)
+                 : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1020851)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17175,7 +17175,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1045219)  : Apply Aura (6) | Proc Trigger Spell (42): Skullsplitter
                    Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Trigger Spell: 400322 | Target: Self (1)
-Description      : @spelldesc$260643
+Description      : $@spelldesc$260643
 
 Name             : Skullsplitter (id=400322) [Spell Family (4)] 
 Class            : Warrior
@@ -17195,7 +17195,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1045220)  : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : @spelldesc$260643
+Description      : $@spelldesc$260643
 
 Name             : Improved Overpower (id=400801) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -17268,7 +17268,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1046152)  : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : @spelldesc $400803
+Description      : $@spelldesc400803
 
 Name             : Avatar (id=401150) [Spell Family (4)] 
 Talent Entry     : Protection [tree=class, row=9, col=1, max_rank=1, req_points=20]
