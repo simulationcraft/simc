@@ -112,6 +112,8 @@ public:
     propagate_const<buff_t*> shadow_covenant;
     propagate_const<buff_t*> borrowed_time;
     propagate_const<buff_t*> revel_in_purity;
+    propagate_const<buff_t*> harsh_discipline;
+    propagate_const<buff_t*> harsh_discipline_ready;
     propagate_const<buff_t*> blaze_of_light;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
@@ -327,13 +329,15 @@ public:
       player_talent_t revel_in_purity;
       player_talent_t pain_and_suffering;
       // Row 7
+      player_talent_t castigation;
       player_talent_t borrowed_time;
-
       // Row 8
       player_talent_t lights_wrath;
-      // Row 9
-      const spell_data_t* blaze_of_light;
       player_talent_t train_of_thought;
+      // Row 9
+      player_talent_t harsh_discipline;
+      const spell_data_t* harsh_discipline_ready;
+      const spell_data_t* blaze_of_light;
       // Row 10
       player_talent_t wrath_unleashed;
       const spell_data_t* wrath_unleashed_buff;
@@ -366,8 +370,10 @@ public:
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
     const spell_data_t* penance;
+    const spell_data_t* penance_channel;
     const spell_data_t* penance_tick;
     const spell_data_t* sins_of_the_many;
+    const spell_data_t* harsh_discipline_value;
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
