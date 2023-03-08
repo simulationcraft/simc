@@ -485,6 +485,17 @@ struct smite_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+    if ( priest().buffs.weal_and_woe->check() )
+    {
+      d *= 1.0 +
+           ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
+    }
+    return d;
+  }
+
   timespan_t execute_time() const override
   {
     timespan_t et = priest_spell_t::execute_time();
@@ -551,8 +562,11 @@ struct smite_t final : public priest_spell_t
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
       timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
-      sim->print_debug( "{} adjusted cooldown of Penance by {}.", priest(), train_of_thought_reduction );
       priest().cooldowns.penance->adjust( train_of_thought_reduction );
+    }
+    if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
+    {
+      priest().buffs.weal_and_woe->expire();
     }
   }
 };

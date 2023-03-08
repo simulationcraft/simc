@@ -116,6 +116,7 @@ public:
     propagate_const<buff_t*> harsh_discipline_ready;
     propagate_const<buff_t*> blaze_of_light;
     propagate_const<buff_t*> train_of_thought;
+    propagate_const<buff_t*> weal_and_woe;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -337,6 +338,9 @@ public:
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
       const spell_data_t* blaze_of_light;
+      // Row 10
+      player_talent_t weal_and_woe;
+      const spell_data_t* weal_and_woe_buff;
     } discipline;
 
     // Shared
