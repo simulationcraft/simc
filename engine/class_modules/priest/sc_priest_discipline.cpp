@@ -124,7 +124,9 @@ struct penance_channel_t final : public priest_spell_t
     // For some cursed reason tick_time overrides do not work with this spell. Overriding base tick time in execute
     // instead. Ideally someone smarter than me can figure out why.
     base_tick_time = priest().specs.penance_channel->effectN( 2 ).period();
-    // When harsh discipline and castigation are not taken together, tick on application to get the proper tick number.
+
+    // Modifying base_tick_time when castigation talent is selected
+    base_tick_time *= 1.0 + priest().talents.discipline.castigation->effectN( 1 ).percent();
 
     // When harsh discipline is talented, and the buff is up, modify the tick time. If castigation is also talented,
     // modify the value and set tick on application to false.
@@ -211,7 +213,6 @@ struct power_word_solace_t final : public priest_spell_t
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
       timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
-      sim->print_debug( "{} adjusted cooldown of Penance by {}.", priest(), train_of_thought_reduction );
       priest().cooldowns.penance->adjust( train_of_thought_reduction );
     }
   }
