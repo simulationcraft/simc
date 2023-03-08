@@ -2978,7 +2978,6 @@ namespace monk
 
           aoe = -1;
           reduced_aoe_targets = p.talent.brewmaster.keg_smash->effectN( 7 ).base_value();
-          full_amount_targets = 1;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
           cast_during_sck = true;
@@ -2996,20 +2995,21 @@ namespace monk
           trigger_gcd = timespan_t::from_seconds( 1 );
         }
 
+        double composite_target_multiplier( player_t *target ) const override
+        {
+          double m = monk_melee_attack_t::composite_target_multiplier( target );
+
+          if ( get_td( target )->dots.breath_of_fire->is_ticking() )
+            m *= 1 + p()->talent.brewmaster.scalding_brew->effectN( 1 ).percent();
+
+          return m;
+        }
+
         double action_multiplier() const override
         {
           double am = monk_melee_attack_t::action_multiplier();
 
           am *= 1 + p()->talent.brewmaster.stormstouts_last_keg->effectN( 1 ).percent();
-
-          if ( p()->talent.brewmaster.scalding_brew->ok() )
-          {
-            if ( auto *td = this->get_td( p()->target ) )
-            {
-              if ( td->dots.breath_of_fire->is_ticking() )
-                am *= 1 + p()->talent.brewmaster.scalding_brew->effectN( 1 ).percent();
-            }
-          }
 
           am *= 1 + p()->buff.hit_scheme->check_value();
 
@@ -3018,14 +3018,6 @@ namespace monk
 
         void execute() override
         {
-          if ( p()->talent.brewmaster.scalding_brew->ok() )
-          {
-            if ( auto *td = this->get_td( p()->target ) )
-            {
-              if ( td->dots.breath_of_fire->is_ticking() )
-                p()->proc.keg_smash_scalding_brew->occur();
-            }
-          }
 
           monk_melee_attack_t::execute();
 
@@ -3053,6 +3045,16 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
+
+          if ( p()->talent.brewmaster.scalding_brew->ok() )
+          {
+            if ( auto *td = this->get_td( s->target ) )
+            {
+              if ( td->dots.breath_of_fire->is_ticking() )
+                p()->proc.keg_smash_scalding_brew->occur();
+            }
+          }
+
           monk_melee_attack_t::impact( s );
 
           get_td( s->target )->debuff.keg_smash->trigger();
@@ -3735,8 +3737,6 @@ namespace monk
           background = true;
           tick_may_crit = may_crit = true;
           hasted_ticks = false;
-          reduced_aoe_targets = 1.0;
-          full_amount_targets = 1;
         }
 
         double action_multiplier() const override
@@ -3791,7 +3791,7 @@ namespace monk
           if ( no_bof_hit )
             return 0;
 
-          if ( blackout_combo )
+          if ( p()->bugs && blackout_combo )
             am *= 1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
 
           if ( p()->talent.brewmaster.dragonfire_brew->ok() )
@@ -3842,7 +3842,6 @@ namespace monk
           if ( no_bof_hit == false && td.debuff.keg_smash->up() )
           {
             p()->active_actions.breath_of_fire->target = s->target;
-
             p()->active_actions.breath_of_fire->execute();
           }
         }
@@ -9576,6 +9575,7 @@ namespace monk
       ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
       ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
+      ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
 
       // =================================================
 

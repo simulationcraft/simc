@@ -97,10 +97,13 @@ void devastation( player_t* p )
   aoe->add_action( "firestorm" );
   aoe->add_action( "shattering_star" );
   aoe->add_action( "azure_strike,if=cooldown.dragonrage.remains<gcd.max*6&cooldown.fire_breath.remains<6*gcd.max&cooldown.eternity_surge.remains<6*gcd.max" );
-  aoe->add_action( "pyre,if=talent.volatility" );
+  aoe->add_action( "pyre,if=talent.volatility&buff.charged_blast.stack>=10" );
+  aoe->add_action( "pyre,if=talent.volatility&spell_targets.pyre>=4" ); 
   aoe->add_action( "living_flame,if=buff.burnout.up&buff.leaping_flames.up&!buff.essence_burst.up" );
-  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=4" );
-  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre=3&buff.charged_blast.stack>=10" );
+  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=6" );
+  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=5&buff.charged_blast.stack>=3" );
+  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=4&buff.charged_blast.stack>=12" );
+  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre=3&buff.charged_blast.stack>=16" ); 
   aoe->add_action( "disintegrate,chain=1,if=!talent.shattering_star|cooldown.shattering_star.remains>5|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack" );
   aoe->add_action( "living_flame,if=talent.snapfire&buff.burnout.up" );
   aoe->add_action( "azure_strike" );
