@@ -101,6 +101,7 @@ struct penance_channel_t final : public priest_spell_t
     {
       priest().buffs.weal_and_woe->trigger();
     }
+
     if ( p().buffs.shadow_covenant->up() )
     {
       shadow_covenant_damage->execute();
