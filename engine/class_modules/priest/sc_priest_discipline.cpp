@@ -57,6 +57,7 @@ struct penance_damage_t : public priest_spell_t
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
+    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -156,6 +157,7 @@ struct penance_t : public priest_spell_t
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
+    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     add_child( channel );
     add_child( shadow_covenant_channel );
   }
@@ -193,6 +195,7 @@ struct power_word_solace_t final : public priest_spell_t
     parse_options( options_str );
     cooldown->hasted = true;
     travel_speed     = 0.0;  // DBC has default travel taking 54 seconds
+    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   void impact( action_state_t* s ) override
@@ -204,6 +207,12 @@ struct power_word_solace_t final : public priest_spell_t
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
       priest().buffs.harsh_discipline->increment();
+    }
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
+      sim->print_debug( "{} adjusted cooldown of Penance by {}.", priest(), train_of_thought_reduction );
+      priest().cooldowns.penance->adjust( train_of_thought_reduction );
     }
   }
 };
@@ -346,6 +355,7 @@ void priest_t::create_buffs_discipline()
                                } );
 
   buffs.harsh_discipline_ready = make_buff( this, "harsh_discipline_ready", find_spell( 373183 ) );
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -376,12 +386,15 @@ void priest_t::init_spells_discipline()
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   // Row 7
-  talents.discipline.castigation = ST( "Castigation" );
+  talents.discipline.castigation   = ST( "Castigation" );
+  talents.discipline.borrowed_time = ST( "Borrowed Time" );
   // Row 8
-  talents.discipline.lights_wrath = ST( "Light's Wrath" );
+  talents.discipline.lights_wrath     = ST( "Light's Wrath" );
+  talents.discipline.train_of_thought = ST( "Train of Thought" );  // TODO: implement PS:S reduction as well
   // Row 9
   talents.discipline.harsh_discipline       = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
+  talents.discipline.blaze_of_light         = find_spell( 215768 );
   // Row 10
 
   // General Spells

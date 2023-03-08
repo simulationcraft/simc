@@ -110,9 +110,12 @@ public:
     propagate_const<buff_t*> power_of_the_dark_side;
     propagate_const<buff_t*> sins_of_the_many;
     propagate_const<buff_t*> shadow_covenant;
+    propagate_const<buff_t*> borrowed_time;
     propagate_const<buff_t*> revel_in_purity;
     propagate_const<buff_t*> harsh_discipline;
     propagate_const<buff_t*> harsh_discipline_ready;
+    propagate_const<buff_t*> blaze_of_light;
+    propagate_const<buff_t*> train_of_thought;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -326,12 +329,14 @@ public:
       player_talent_t pain_and_suffering;
       // Row 7
       player_talent_t castigation;
+      player_talent_t borrowed_time;
       // Row 8
       player_talent_t lights_wrath;
+      player_talent_t train_of_thought;
       // Row 9
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
-
+      const spell_data_t* blaze_of_light;
     } discipline;
 
     // Shared
