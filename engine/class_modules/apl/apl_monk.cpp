@@ -571,7 +571,8 @@ namespace monk_apl
 
 
     // Trinkets
-
+    
+    trinkets->add_action( "use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)", "Trinkets" );
     for ( const auto &item : p->items )
     {
       if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
