@@ -112,6 +112,7 @@ public:
     propagate_const<buff_t*> shadow_covenant;
     propagate_const<buff_t*> borrowed_time;
     propagate_const<buff_t*> revel_in_purity;
+    propagate_const<buff_t*> train_of_thought;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -328,6 +329,7 @@ public:
 
       // Row 8
       player_talent_t lights_wrath;
+      player_talent_t train_of_thought;
     } discipline;
 
     // Shared

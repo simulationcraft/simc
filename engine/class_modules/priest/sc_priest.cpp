@@ -538,6 +538,12 @@ struct smite_t final : public priest_spell_t
       sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis.", priest(),
                         cooldown_base_reduction );
     }
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
+      sim->print_debug( "{} adjusted cooldown of Penance by {}.", priest(), train_of_thought_reduction );
+      priest().cooldowns.penance->adjust( train_of_thought_reduction );
+    }
   }
 };
 
