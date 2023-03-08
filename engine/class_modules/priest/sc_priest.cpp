@@ -480,6 +480,16 @@ struct smite_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+    if ( priest().buffs.wrath_unleashed->check() )
+    {
+      d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
+    }
+    return d;
+  }
+
   timespan_t execute_time() const override
   {
     timespan_t et = priest_spell_t::execute_time();
