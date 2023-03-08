@@ -307,6 +307,8 @@ void priest_t::create_buffs_discipline()
   // TODO: Add support for atonement reductions
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
+
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -337,6 +339,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   // Row 7
+  talents.discipline.borrowed_time = ST( "Borrowed Time" );
   // Row 8
   talents.discipline.lights_wrath = ST( "Light's Wrath" );
   // Row 9
