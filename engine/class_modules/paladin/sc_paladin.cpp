@@ -898,6 +898,14 @@ struct melee_t : public paladin_melee_attack_t
       seal_of_the_crusader = new seal_of_the_crusader_t( p );
       add_child( seal_of_the_crusader );
     }
+
+    if ( p->talents.heart_of_the_crusader->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 1 ).percent();
+
+      // This seems likely to be a bug; the tooltip does not match the spell data
+      base_crit += 1.0 + p->talents.heart_of_the_crusader->effectN( 2 ).percent();
+    }
   }
 
   timespan_t execute_time() const override
@@ -1067,6 +1075,12 @@ struct crusader_strike_t : public paladin_melee_attack_t
       {
         aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
         base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+      }
+
+      if ( p->talents.heart_of_the_crusader->ok() )
+      {
+        crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+        base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
       }
     }
   }
@@ -2054,6 +2068,19 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 2 ).percent();
     }
+
+    if ( p->is_ptr() )
+    {
+      if ( p->talents.vengeful_wrath->ok() )
+      {
+        base_crit = p->talents.vengeful_wrath->effectN( 1 ).percent();
+      }
+
+      if ( p->talents.adjudication->ok() )
+      {
+        add_child( p->active.background_blessed_hammer );
+      }
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -2140,12 +2167,23 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       p()->buffs.vanguards_momentum->trigger();
     }
 
-    if ( p()->is_ptr() && p()->talents.vanguards_momentum->ok() )
+    if ( p()->is_ptr() )
     {
-      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() )
+      if ( p()->talents.vanguards_momentum->ok() )
       {
-        // technically this is in spell 403081 for some reason
-        p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
+        if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() )
+        {
+          // technically this is in spell 403081 for some reason
+          p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
+        }
+      }
+
+      if ( p()->talents.adjudication->ok() )
+      {
+        if ( s->result == RESULT_CRIT )
+        {
+          p()->active.background_blessed_hammer->schedule_execute();
+        }
       }
     }
   }
@@ -3352,6 +3390,15 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     if ( buffs.vanguards_momentum_legendary->up() )
     {
       m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
+    }
+  }
+
+  // This also seems likely to be a bug: the spelldata says Fire, but the tooltip says Radiant
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    if ( is_ptr() && talents.burning_crusade->ok() )
+    {
+      m *= 1.0 + talents.burning_crusade->effectN( 2 ).percent();
     }
   }
 

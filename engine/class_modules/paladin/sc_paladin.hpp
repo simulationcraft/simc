@@ -96,6 +96,7 @@ public:
     action_t* incandescence;
     action_t* empyrean_legacy;
     action_t* es_explosion;
+    action_t* background_blessed_hammer;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -406,6 +407,7 @@ public:
     const spell_data_t* sanctified_wrath;
     const spell_data_t* seraphim;
     const spell_data_t* zealots_paragon;
+    const spell_data_t* vengeful_wrath;
 
 
     // Shared
@@ -1027,11 +1029,34 @@ public:
     else
       this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
 
-    if ( p->is_ptr() && p->talents.penitence->ok() )
+    if ( p->is_ptr() )
     {
-      if ( this->data().affected_by( p->talents.penitence->effectN( 1 ) ) || this->data().affected_by( p->talents.penitence->effectN( 2 ) ) )
+      if ( p->talents.penitence->ok() )
       {
-        ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
+        if ( this->data().affected_by( p->talents.penitence->effectN( 1 ) ) || this->data().affected_by( p->talents.penitence->effectN( 2 ) ) )
+        {
+          ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
+        }
+      }
+
+      if ( p->talents.adjudication->ok() && this->data().affected_by( p->talents.adjudication->effectN( 1 ) ) )
+      {
+        ab::crit_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
+      }
+
+      if ( p->talents.vanguard_of_justice->ok() && this->data().affected_by( p->talents.vanguard_of_justice->effectN( 2 ) ) )
+      {
+        ab::base_multiplier *= 1.0 + p->talents.vanguard_of_justice->effectN( 2 ).percent();
+      }
+
+      if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
+      {
+        ab::school = SCHOOL_HOLYSTRIKE;
+      }
+
+      if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
+      {
+        ab::school = SCHOOL_RADIANT;
       }
     }
   }
@@ -1453,6 +1478,11 @@ struct holy_power_consumer_t : public Base
     }
 
     double c = ab::cost();
+
+    if ( ab::p() -> is_ptr() && ab::p() -> talents.vanguard_of_justice -> ok() )
+    {
+      c += ab::p() -> talents.vanguard_of_justice -> effectN( 1 ).base_value();
+    }
 
     if ( ab::p() -> buffs.fires_of_justice -> check() )
     {

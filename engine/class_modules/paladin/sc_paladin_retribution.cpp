@@ -1197,6 +1197,11 @@ struct shield_of_vengeance_t : public paladin_absorb_t
   void execute() override
   {
     double shield_amount = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
+    if ( p() -> is_ptr() && p() -> talents.aegis_of_protection -> ok() )
+    {
+      shield_amount *= 1.0 + p() -> talents.aegis_of_protection -> effectN( 2 ).percent();
+    }
+
     paladin_absorb_t::execute();
     p() -> buffs.shield_of_vengeance -> trigger( 1, shield_amount );
   }
@@ -1438,6 +1443,14 @@ struct divine_hammer_t : public paladin_spell_t
   }
 };
 
+struct adjudication_blessed_hammer_t : public paladin_melee_attack_t
+{
+  adjudication_blessed_hammer_t( paladin_t* p ) : paladin_melee_attack_t( "blessed_hammer", p, p -> find_spell( 404139 ) )
+  {
+    background = true;
+  }
+};
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1490,6 +1503,11 @@ void paladin_t::create_ret_actions()
   else
   {
     active.es_explosion = nullptr;
+  }
+
+  if ( is_ptr() && talents.adjudication->ok() )
+  {
+    active.background_blessed_hammer = new adjudication_blessed_hammer_t( this );
   }
 
   if ( specialization() == PALADIN_RETRIBUTION )
@@ -1650,14 +1668,24 @@ void paladin_t::init_spells_retribution()
   talents.improved_blade_of_justice   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Blade of Justice" );
   talents.righteous_cause             = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Cause" );
   talents.jurisdiction                = find_talent_spell( talent_tree::SPECIALIZATION, "Jurisdiction" ); // TODO: range increase
-  talents.inquisitors_ire             = find_talent_spell( talent_tree::SPECIALIZATION, "Inquisitor's Ire" ); // TODO
+  talents.inquisitors_ire             = find_talent_spell( talent_tree::SPECIALIZATION, "Inquisitor's Ire" );
   talents.zealots_fervor              = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Fervor" );
   talents.rush_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Rush of Light" );
   talents.improved_judgment           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
   talents.blessed_champion            = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Champion" );
   talents.judge_jury_and_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Judge, Jury and Executioner" );
   talents.penitence                   = find_talent_spell( talent_tree::SPECIALIZATION, "Penitence" );
+  talents.adjudication                = find_talent_spell( talent_tree::SPECIALIZATION, "Adjudication" );
+  talents.heart_of_the_crusader       = find_talent_spell( talent_tree::SPECIALIZATION, "Heart of the Crusader" );
+  talents.divine_hammer               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Hammer" );
+  talents.blade_of_vengeance          = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Vengeance" );
+  talents.vanguard_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard of Justice" );
+  talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" );
+  talents.aegis_of_protection         = find_talent_spell( talent_tree::SPECIALIZATION, "Aegis of Protection" );
+  talents.burning_crusade             = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Crusade" );
+  talents.blades_of_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Blades of Light" );
 
+  talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
   mastery.hand_of_light = find_mastery_spell( PALADIN_RETRIBUTION );
