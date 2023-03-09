@@ -955,7 +955,7 @@ struct melee_t : public paladin_melee_attack_t
               if ( p()->talents.blade_of_wrath->ok() )
               p()->buffs.blade_of_wrath->trigger();
 
-              if ( p()->talents.consecrated_blade->ok() )
+              if ( p()->talents.consecrated_blade->ok() && !p()->is_ptr() )
                 p()->buffs.consecrated_blade->trigger();
 
               p()->cooldowns.blade_of_justice->reset( true );
@@ -1403,7 +1403,14 @@ void judgment_t::impact( action_state_t* s )
   if ( result_is_hit( s->result ) )
   {
       if ( p()->talents.greater_judgment->ok() )
-        td( s->target )->debuff.judgment->trigger();
+      {
+        int num_stacks = 1;
+        if ( p()->is_ptr() && p()->talents.highlords_judgment->ok() )
+        {
+          num_stacks += p()->talents.highlords_judgment->effectN( 1 ).base_value();
+        }
+        td( s->target )->debuff.judgment->trigger( num_stacks );
+      }
 
     int amount = 25;
       if ( p()->is_ptr() )
@@ -2332,7 +2339,15 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
 {
   debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
   debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
+
   debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
+  if ( paladin->is_ptr() && paladin->talents.highlords_judgment->ok() )
+  {
+    debuff.judgment = debuff.judgment
+                      ->set_max_stack( 1 + paladin->talents.highlords_judgment->effectN( 1 ).base_value() )
+                      ->modify_duration( timespan_t::from_millis( paladin->talents.highlords_judgment->effectN( 3 ).base_value() ) );
+  }
+
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
   debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                 ->set_cooldown( 0_ms );  // handled by ability

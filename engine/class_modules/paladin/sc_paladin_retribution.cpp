@@ -399,6 +399,13 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       {
         base_multiplier *= 1.0 + p -> talents.jurisdiction -> effectN( 4 ).percent();
       }
+
+      if ( p -> talents.blade_of_vengeance -> ok() )
+      {
+        attack_power_mod.direct = p -> find_spell( 404358 ) -> effectN( 1 ).ap_coeff();
+        aoe = -1;
+        reduced_aoe_targets = 5;
+      }
     }
   }
 
@@ -433,6 +440,11 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     {
       p() -> active.background_cons -> schedule_execute();
       p() -> buffs.consecrated_blade -> expire();
+    }
+
+    if ( p() -> is_ptr() && p() -> talents.consecrated_blade -> ok() )
+    {
+      p() -> active.background_cons -> schedule_execute();
     }
   }
 
@@ -1382,6 +1394,50 @@ struct exorcism_t : public paladin_spell_t
   }
 };
 
+struct divine_hammer_tick_t : public paladin_melee_attack_t
+{
+  divine_hammer_tick_t( paladin_t* p )
+    : paladin_melee_attack_t( "divine_hammer_tick", p, p -> find_spell( 198137 ) )
+  {
+    aoe         = -1;
+    reduced_aoe_targets = 8; // does not appear to have a spelldata equivalent
+    dual        = true;
+    direct_tick = true;
+    background  = true;
+    may_crit    = true;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( target );
+
+    paladin_td_t* td = p()->get_target_data( target );
+    if ( td->debuff.sanctify->up() )
+      m *= 1.0 + td->debuff.sanctify->data().effectN( 1 ).percent();
+
+    return m;
+  }
+};
+
+struct divine_hammer_t : public paladin_spell_t
+{
+  divine_hammer_t( paladin_t* p, util::string_view options_str )
+    : paladin_spell_t( "divine_hammer", p, p->talents.divine_hammer )
+  {
+    parse_options( options_str );
+
+    if ( !p->is_ptr() || !p->talents.divine_hammer->ok() )
+      background = true;
+
+    may_miss       = false;
+    tick_may_crit  = true;
+    // TODO: verify
+    tick_zero      = true;
+
+    tick_action = new divine_hammer_tick_t( p );
+  }
+};
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1454,8 +1510,16 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
-  if ( name == "radiant_decree"            ) return new radiant_decree_t           ( this, options_str );
-  if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
+
+  if ( is_ptr() )
+  {
+    if ( name == "divine_hammer" ) return new divine_hammer_t( this, options_str );
+  }
+  else
+  {
+    if ( name == "radiant_decree" ) return new radiant_decree_t( this, options_str );
+    if ( name == "exorcism" ) return new exorcism_t( this, options_str );
+  }
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
