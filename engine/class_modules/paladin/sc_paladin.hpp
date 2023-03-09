@@ -171,6 +171,10 @@ public:
     buff_t* relentless_inquisitor_azerite;
     buff_t* vanguards_momentum;
 
+    buff_t* rush_of_light;
+    buff_t* inquisitors_ire;
+    buff_t* inquisitors_ire_driver;
+
     // Covenants
     buff_t* vanquishers_hammer;
 
@@ -213,6 +217,7 @@ public:
     gain_t* hp_sanctification;
     gain_t* hp_inner_grace;
     gain_t* hp_divine_toll;
+    gain_t* hp_vm;
   } gains;
 
   // Spec Passives
@@ -228,6 +233,7 @@ public:
     const spell_data_t* retribution_paladin;
     const spell_data_t* word_of_glory_2;
     const spell_data_t* holy_shock_2;
+    const spell_data_t* improved_crusader_strike;
   } spec;
 
   // Cooldowns
@@ -565,7 +571,6 @@ public:
     const spell_data_t* vanguard_of_justice;
     const spell_data_t* heart_of_the_crusader;
     const spell_data_t* blessed_champion;
-    const spell_data_t* commanding_judgment;
     const spell_data_t* judge_jury_and_executioner;
 
     const spell_data_t* adjudication;
@@ -1021,6 +1026,14 @@ public:
       this->affected_by.blessing_of_dawn = this->data().affected_by( p->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ) );
     else
       this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
+
+    if ( p->is_ptr() && p->talents.penitence->ok() )
+    {
+      if ( this->data().affected_by( p->talents.penitence->effectN( 1 ) ) || this->data().affected_by( p->talents.penitence->effectN( 2 ) ) )
+      {
+        ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
+      }
+    }
   }
 
   paladin_t* p()
@@ -1457,10 +1470,24 @@ struct holy_power_consumer_t : public Base
     return std::max( c, 0.0 );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    paladin_t* p = ab::p();
+    ab::impact( s );
+
+    if ( p->is_ptr() )
+    {
+      if ( p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
+      {
+        p->buffs.rush_of_light->trigger();
+      }
+    }
+  }
+
   void execute() override
   {
     //p variable just to make this look neater
-    paladin_t* p = this -> p();
+    paladin_t* p = ab::p();
 
     ab::execute();
 

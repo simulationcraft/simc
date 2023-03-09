@@ -557,6 +557,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     if ( p() -> buffs.empyrean_power -> up() )
       am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
 
+    if ( p() -> is_ptr() && p() -> buffs.inquisitors_ire -> up() )
+      am *= 1.0 + p() -> buffs.inquisitors_ire -> check_stack_value();
+
     return am;
   }
 
@@ -574,6 +577,9 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     {
       tempest -> schedule_execute();
     }
+
+    if ( p() -> is_ptr() && p() -> buffs.inquisitors_ire -> up() )
+      p() -> buffs.inquisitors_ire -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -988,10 +994,10 @@ struct judgment_ret_t : public judgment_t
         holy_power_generation += p -> talents.boundless_judgment -> effectN( 1 ).base_value();
       }
 
-      if ( p -> talents.commanding_judgment -> ok() )
+      if ( p -> talents.blessed_champion -> ok() )
       {
-        aoe = 1 + p -> talents.commanding_judgment -> effectN( 1 ).base_value();
-        base_aoe_multiplier *= 1.0 - p -> talents.commanding_judgment -> effectN( 2 ).percent();
+        aoe = 1 + p -> talents.blessed_champion -> effectN( 4 ).base_value();
+        base_aoe_multiplier *= 1.0 - p -> talents.blessed_champion -> effectN( 3 ).percent();
       }
 
       if ( p -> talents.judge_jury_and_executioner -> ok() )
@@ -1479,6 +1485,17 @@ void paladin_t::create_buffs_retribution()
 
   buffs.sealed_verdict = make_buff( this, "sealed_verdict", find_spell( 387643 ) );
   buffs.consecrated_blade = make_buff( this, "consecrated_blade", find_spell( 382522 ) );
+  buffs.rush_of_light = make_buff( this, "rush_of_light", find_spell( 407065 ) )
+    -> add_invalidate( CACHE_HASTE )
+    -> set_default_value( talents.rush_of_light->effectN( 1 ).percent() );
+
+  buffs.inquisitors_ire = make_buff( this, "inquisitors_ire", find_spell( 403976 ) )
+                            -> set_default_value( find_spell( 403976 ) -> effectN( 1 ).percent() );
+  buffs.inquisitors_ire_driver = make_buff( this, "inquisitors_ire_driver", find_spell( 403975 ) )
+                                  -> set_period( find_spell( 403975 ) -> effectN( 1 ).period() )
+                                  -> set_quiet( true )
+                                  -> set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.inquisitors_ire -> trigger(); })
+                                  -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
@@ -1565,16 +1582,17 @@ void paladin_t::init_spells_retribution()
 
   talents.swift_justice               = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Justice" );
   talents.light_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of Justice" );
+  talents.judgment_of_justice         = find_talent_spell( talent_tree::SPECIALIZATION, "Judgment of Justice");
   talents.improved_blade_of_justice   = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Blade of Justice" );
   talents.righteous_cause             = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Cause" );
   talents.jurisdiction                = find_talent_spell( talent_tree::SPECIALIZATION, "Jurisdiction" ); // TODO: range increase
   talents.inquisitors_ire             = find_talent_spell( talent_tree::SPECIALIZATION, "Inquisitor's Ire" ); // TODO
   talents.zealots_fervor              = find_talent_spell( talent_tree::SPECIALIZATION, "Zealot's Fervor" );
-  talents.rush_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Rush of Light" ); // TODO
+  talents.rush_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Rush of Light" );
   talents.improved_judgment           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Judgment" );
-  talents.commanding_judgment         = find_talent_spell( talent_tree::SPECIALIZATION, "Commanding Judgment" );
+  talents.blessed_champion            = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Champion" );
   talents.judge_jury_and_executioner  = find_talent_spell( talent_tree::SPECIALIZATION, "Judge, Jury and Executioner" );
-
+  talents.penitence                   = find_talent_spell( talent_tree::SPECIALIZATION, "Penitence" );
 
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
@@ -1584,6 +1602,7 @@ void paladin_t::init_spells_retribution()
   {
     spec.judgment_3 = find_specialization_spell( 315867 );
     spec.judgment_4 = find_specialization_spell( 231663 );
+    spec.improved_crusader_strike = find_specialization_spell( 383254 );
 
     spells.judgment_debuff = find_spell( 197277 );
   }
