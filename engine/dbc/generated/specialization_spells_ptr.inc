@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.0.7.48295
-static const std::array<specialization_spell_entry_t, 360> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.0.7.48439
+static const std::array<specialization_spell_entry_t, 361> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -75,6 +75,7 @@ static const std::array<specialization_spell_entry_t, 360> __ptr_specialization_
   {  2,   70, 267316,      0, "Mastery: Hand of Light"            , 0 },
   {  2,   70, 315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   70, 342348,      0, "Crusader Strike"                   , "Rank 2" },
+  {  2,   70, 383254,      0, "Improved Crusader Strike"          , 0 },
   {  2,   70, 403876,      0, "Divine Protection"                 , 0 },
   {  2,   70, 404752,      0, "Instrument of Retribution"         , 0 },
   {  3,  253,  53270,      0, "Exotic Beasts"                     , 0 },

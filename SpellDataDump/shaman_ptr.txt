@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -4677,7 +4677,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 61245 | Misc Value 2: 0xd4f | Target: Unknown(87)
 Description      : Summons a totem at the target location that gathers electrical energy from the surrounding air and explodes after $s2 sec, stunning all enemies within $118905A1 yards for $118905d.
 
-Name             : Gust of Wind (id=192063) 
+Name             : Gust of Wind (id=192063) [Spell Family (11)] 
 Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Shaman
 School           : Nature
@@ -4686,6 +4686,7 @@ GCD              : 1.5 seconds
 Cooldown         : 30 seconds
 Labels           : 1783: Go with the Flow (381678 effect#2)
                  : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
+Family Flags     : 17
 Attributes       : ........ ........ ..x..... .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14379,7 +14380,7 @@ Effects          :
 #1 (id=1012631)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Stream (5672), Healing Surge (8004), Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Restorative Mists (114083), Windlash (114089), Windlash Off-Hand (114093), Healing Tide (114942), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Wellspring (197995), Wellspring (197997), Downpour (207778), Lightning Bolt Overload (214816), Restorative Mists (294020), Earth Shock Overload (381725), Poison Cleansing (383014), Poison Cleansing (403922)
-                   Family Flags: 0, 1, 7, 8, 10, 13, 17, 20, 33, 45, 51, 63, 68, 70, 80, 85, 87, 94, 96, 97, 98, 106, 108, 110
+                   Family Flags: 0, 1, 7, 8, 10, 13, 20, 33, 45, 51, 63, 68, 70, 80, 85, 87, 94, 96, 97, 98, 106, 108, 110
 #2 (id=1015761)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 1679 (Label) | Target: Self (1)
                    Affected Spells (Label): Unleash Life (73685), Lightning Lasso (305485), Ascendance (344548), Earth Shock Overload (381725), Earthliving Weapon (382024)
