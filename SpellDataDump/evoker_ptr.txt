@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-28/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1677,8 +1677,6 @@ Duration         : 15 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ......x. x....x.. ........   ........ ........ ........ ........   
-                 : Magic Heal, Magic Hostile Spell, Helpful Periodic
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1826,7 +1824,7 @@ Description      : Rewind $?s376210[${$s3/2}%][$s3%] of damage taken in the last
 
 Healing increased by $s4% when not in a raid.
 Tooltip          : Rewinding the last $s2 sec of damage.
-Variables        : $min=${$SP*0.4*($d/$t1)}
+Variables        : $min=${$SP*0.4*(($d/$t1)+1)}
 
 Name             : Obsidian Scales (desc=Black) (id=363916) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
@@ -3690,7 +3688,7 @@ Description      : $@spelldesc372233
 Name             : Terror of the Skies (desc=Black) (id=372245) [Spell Family (224)] 
 Class            : Evoker
 School           : Fire
-Spell Type       : None
+Spell Type       : Melee
 Range            : 100 yards
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
@@ -3817,15 +3815,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), DoT Stacking Rule (103), Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
+                 : Do Not Sheath (18), DoT Stacking Rule (103), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=998368)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Friend (21) -> Self (1)
-Tooltip          : Sharing $s1% of healing to an ally.
+Tooltip          : Sharing $w1% of healing to an ally.
 
 Name             : Lifebind (id=373270) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=7, col=2, max_rank=1, req_points=8]
@@ -6515,9 +6513,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1022092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)

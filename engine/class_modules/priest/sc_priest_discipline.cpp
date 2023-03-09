@@ -97,6 +97,10 @@ struct penance_channel_t final : public priest_spell_t
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
+    if ( priest().talents.discipline.weal_and_woe.enabled() )
+    {
+      priest().buffs.weal_and_woe->trigger();
+    }
 
     if ( p().buffs.shadow_covenant->up() )
     {
@@ -207,6 +211,11 @@ struct power_word_solace_t final : public priest_spell_t
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
     }
+    if ( priest().buffs.weal_and_woe->check() )
+    {
+      d *= 1.0 +
+           ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
+    }
     return d;
   }
 
@@ -224,6 +233,10 @@ struct power_word_solace_t final : public priest_spell_t
     {
       timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
       priest().cooldowns.penance->adjust( train_of_thought_reduction );
+    }
+    if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
+    {
+      priest().buffs.weal_and_woe->expire();
     }
   }
 };
@@ -376,9 +389,12 @@ void priest_t::create_buffs_discipline()
                                } );
 
   buffs.harsh_discipline_ready = make_buff( this, "harsh_discipline_ready", find_spell( 373183 ) );
+
   buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
 
   buffs.wrath_unleashed = make_buff( this, "wrath_unleashed", talents.discipline.wrath_unleashed_buff );
+
+  buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
 }
 
 void priest_t::init_rng_discipline()
@@ -421,6 +437,8 @@ void priest_t::init_spells_discipline()
   // Row 10
   talents.discipline.wrath_unleashed      = ST( "Wrath Unleashed" );
   talents.discipline.wrath_unleashed_buff = find_spell( 390782 );
+  talents.discipline.weal_and_woe         = ST( "Weal and Woe" );
+  talents.discipline.weal_and_woe_buff    = find_spell( 390787 );
 
   // General Spells
   specs.sins_of_the_many       = find_spell( 280398 );

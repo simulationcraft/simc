@@ -492,6 +492,11 @@ struct smite_t final : public priest_spell_t
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
     }
+    if ( priest().buffs.weal_and_woe->check() )
+    {
+      d *= 1.0 +
+           ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
+    }
     return d;
   }
 
@@ -561,8 +566,11 @@ struct smite_t final : public priest_spell_t
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
       timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
-      sim->print_debug( "{} adjusted cooldown of Penance by {}.", priest(), train_of_thought_reduction );
       priest().cooldowns.penance->adjust( train_of_thought_reduction );
+    }
+    if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
+    {
+      priest().buffs.weal_and_woe->expire();
     }
   }
 };

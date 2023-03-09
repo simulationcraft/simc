@@ -117,6 +117,7 @@ public:
     propagate_const<buff_t*> blaze_of_light;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
+    propagate_const<buff_t*> weal_and_woe;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -341,6 +342,8 @@ public:
       // Row 10
       player_talent_t wrath_unleashed;
       const spell_data_t* wrath_unleashed_buff;
+      player_talent_t weal_and_woe;
+      const spell_data_t* weal_and_woe_buff;
     } discipline;
 
     // Shared
