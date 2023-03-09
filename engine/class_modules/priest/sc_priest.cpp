@@ -488,6 +488,10 @@ struct smite_t final : public priest_spell_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( s );
+    if ( priest().buffs.wrath_unleashed->check() )
+    {
+      d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
+    }
     if ( priest().buffs.weal_and_woe->check() )
     {
       d *= 1.0 +

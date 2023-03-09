@@ -207,6 +207,10 @@ struct power_word_solace_t final : public priest_spell_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( s );
+    if ( priest().buffs.wrath_unleashed->check() )
+    {
+      d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
+    }
     if ( priest().buffs.weal_and_woe->check() )
     {
       d *= 1.0 +
@@ -329,6 +333,16 @@ struct lights_wrath_t final : public priest_spell_t
     : priest_spell_t( "lights_wrath", p, p.talents.discipline.lights_wrath )
   {
     parse_options( options_str );
+    apply_affecting_aura( priest().talents.discipline.wrath_unleashed );
+  }
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().talents.discipline.wrath_unleashed.enabled() )
+    {
+      priest().buffs.wrath_unleashed->trigger();
+    }
   }
 };
 
@@ -378,6 +392,8 @@ void priest_t::create_buffs_discipline()
 
   buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
 
+  buffs.wrath_unleashed = make_buff( this, "wrath_unleashed", talents.discipline.wrath_unleashed_buff );
+
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
 }
 
@@ -419,8 +435,10 @@ void priest_t::init_spells_discipline()
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
   talents.discipline.blaze_of_light         = find_spell( 215768 );
   // Row 10
-  talents.discipline.weal_and_woe      = ST( "Weal and Woe" );
-  talents.discipline.weal_and_woe_buff = find_spell( 390787 );
+  talents.discipline.wrath_unleashed      = ST( "Wrath Unleashed" );
+  talents.discipline.wrath_unleashed_buff = find_spell( 390782 );
+  talents.discipline.weal_and_woe         = ST( "Weal and Woe" );
+  talents.discipline.weal_and_woe_buff    = find_spell( 390787 );
 
   // General Spells
   specs.sins_of_the_many       = find_spell( 280398 );
