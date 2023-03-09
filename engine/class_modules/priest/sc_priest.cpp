@@ -19,6 +19,33 @@ namespace actions
 {
 namespace spells
 {
+struct expiation_t final : public priest_spell_t
+{
+  timespan_t consume_time;
+
+  expiation_t( priest_t& p )
+    : priest_spell_t( "expiation", p, p.talents.discipline.expiation ),
+      consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+  {
+    background = dual = true;
+
+    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
+    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_td_t& td = get_td( s->target );
+    dot_t* dot =
+        priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
+
+    auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
+    base_dd_min = base_dd_max = dot_damage;
+    priest_spell_t::impact( s );
+    dot->adjust_duration( -consume_time );
+  }
+};
 // ==========================================================================
 // Mind Blast
 // ==========================================================================
@@ -41,6 +68,7 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
+    apply_affecting_aura( priest().talents.discipline.expiation );
   }
 
   void execute() override
@@ -92,7 +120,6 @@ public:
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
-
     return m;
   }
 
@@ -145,6 +172,15 @@ public:
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
       priest().buffs.harsh_discipline->trigger();
+    }
+    if ( priest().talents.discipline.expiation.enabled() )
+    {
+      if ( priest().talents.discipline.expiation.enabled() )
+      {
+        impact_action = priest().background_actions.expiation;  // new expiation_t( priest() );
+        add_child( impact_action );
+        impact_action->execute_on_target( s->target );
+      }
     }
   }
 

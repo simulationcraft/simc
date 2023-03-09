@@ -32,6 +32,7 @@ struct echoing_void_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
+struct expiation_t;
 }  // namespace actions::spells
 
 /**
@@ -338,6 +339,7 @@ public:
       player_talent_t lights_wrath;
       player_talent_t train_of_thought;
       // Row 9
+      player_talent_t expiation;
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
       const spell_data_t* blaze_of_light;
@@ -511,6 +513,7 @@ public:
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
     propagate_const<actions::spells::pain_of_death_t*> pain_of_death;
+    propagate_const<actions::spells::expiation_t*> expiation;
   } background_actions;
 
   // Items
