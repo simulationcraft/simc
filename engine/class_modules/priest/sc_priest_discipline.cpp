@@ -373,6 +373,12 @@ void priest_t::create_buffs_discipline()
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", specs.sins_of_the_many )
                                ->set_default_value( find_spell( 280391 )->effectN( 1 ).percent() );
 
+  buffs.twilight_equilibrium_holy_amp =
+      make_buff( this, "twilight_equilibrium_holy_amp", talents.discipline.twilight_equilibrium_holy_amp );
+
+  buffs.twilight_equilibrium_shadow_amp =
+      make_buff( this, "twilight_equilibrium_shadow_amp", talents.discipline.twilight_equilibrium_shadow_amp );
+
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline )
                                ->set_max_stack( talents.discipline.harsh_discipline->effectN( 1 ).base_value() )
                                ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
@@ -435,10 +441,13 @@ void priest_t::init_spells_discipline()
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
   talents.discipline.blaze_of_light         = find_spell( 215768 );
   // Row 10
-  talents.discipline.wrath_unleashed      = ST( "Wrath Unleashed" );
-  talents.discipline.wrath_unleashed_buff = find_spell( 390782 );
-  talents.discipline.weal_and_woe         = ST( "Weal and Woe" );
-  talents.discipline.weal_and_woe_buff    = find_spell( 390787 );
+  talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
+  talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
+  talents.discipline.twilight_equilibrium_shadow_amp = find_spell( 390707 );
+  talents.discipline.weal_and_woe                    = ST( "Weal and Woe" );
+  talents.discipline.weal_and_woe_buff               = find_spell( 390787 );
+  talents.discipline.wrath_unleashed                 = ST( "Wrath Unleashed" );
+  talents.discipline.wrath_unleashed_buff            = find_spell( 390782 );
 
   // General Spells
   specs.sins_of_the_many       = find_spell( 280398 );
