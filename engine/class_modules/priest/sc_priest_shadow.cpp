@@ -1101,6 +1101,11 @@ struct devouring_plague_t final : public priest_spell_t
     {
       devouring_plague_heal->trigger( s->result_amount );
 
+      if ( priest().is_ptr() )
+      {
+        priest().trigger_psychic_link( s );
+      }
+
       priest().refresh_insidious_ire_buff( s );
     }
 
@@ -1118,6 +1123,11 @@ struct devouring_plague_t final : public priest_spell_t
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       devouring_plague_heal->trigger( d->state->result_amount );
+
+      if ( priest().is_ptr() )
+      {
+        priest().trigger_psychic_link( d->state );
+      }
 
       if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
@@ -1634,6 +1644,10 @@ struct psychic_link_t final : public priest_spell_t
       _pl_mind_flay( new psychic_link_base_t( "psychic_link_mind_flay", p, p.talents.shadow.psychic_link ) ),
       _pl_mind_flay_insanity(
           new psychic_link_base_t( "psychic_link_mind_flay_insanity", p, p.talents.shadow.psychic_link ) ),
+      _pl_mind_spike_insanity(
+          new psychic_link_base_t( "psychic_link_mind_spike_insanity", p, p.talents.shadow.psychic_link ) ),
+      _pl_devouring_plague(
+          new psychic_link_base_t( "psychic_link_devouring_plague", p, p.talents.shadow.psychic_link ) ),
       _pl_mindgames( new psychic_link_base_t( "psychic_link_mindgames", p, p.talents.shadow.psychic_link ) ),
       _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) )
@@ -1647,6 +1661,8 @@ struct psychic_link_t final : public priest_spell_t
     add_child( _pl_mind_spike );
     add_child( _pl_mind_flay );
     add_child( _pl_mind_flay_insanity );
+    add_child( _pl_mind_spike_insanity );
+    add_child( _pl_devouring_plague );
     add_child( _pl_mindgames );
     add_child( _pl_void_bolt );
     add_child( _pl_void_torrent );
@@ -1669,6 +1685,14 @@ struct psychic_link_t final : public priest_spell_t
     else if ( action_name == "mind_flay_insanity" )
     {
       _pl_mind_flay_insanity->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "mind_spike_insanity" )
+    {
+      _pl_mind_spike_insanity->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "devouring_plague" )
+    {
+      _pl_devouring_plague->trigger( target, original_amount, action_name );
     }
     else if ( action_name == "mindgames" )
     {
@@ -1693,6 +1717,8 @@ private:
   propagate_const<psychic_link_base_t*> _pl_mind_spike;
   propagate_const<psychic_link_base_t*> _pl_mind_flay;
   propagate_const<psychic_link_base_t*> _pl_mind_flay_insanity;
+  propagate_const<psychic_link_base_t*> _pl_mind_spike_insanity;
+  propagate_const<psychic_link_base_t*> _pl_devouring_plague;
   propagate_const<psychic_link_base_t*> _pl_mindgames;
   propagate_const<psychic_link_base_t*> _pl_void_bolt;
   propagate_const<psychic_link_base_t*> _pl_void_torrent;
