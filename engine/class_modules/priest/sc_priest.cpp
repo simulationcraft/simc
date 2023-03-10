@@ -2187,6 +2187,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
+  action.apply_affecting_aura( talents.shadow.mastermind );
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
