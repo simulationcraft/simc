@@ -261,6 +261,7 @@ public:
       const spell_data_t* coalescing_shadows_dot_buff;
       player_talent_t mind_sear;
       player_talent_t mind_spike;
+      player_talent_t thought_harvester;
       // Row 5
       player_talent_t puppet_master;
       player_talent_t mental_decay;
@@ -271,10 +272,12 @@ public:
       player_talent_t surge_of_darkness;
       const spell_data_t* surge_of_darkness_buff;
       // Row 6
+      player_talent_t whispering_shadows;
       player_talent_t harnessed_shadows;
       player_talent_t shadowy_insight;
       player_talent_t ancient_madness;
       player_talent_t shadow_crash;
+      player_talent_t voidtouched;
       player_talent_t mind_melt;
       // Row 7
       player_talent_t maddening_touch;
@@ -282,8 +285,10 @@ public:
       player_talent_t dark_evangelism;
       player_talent_t auspicious_spirits;
       player_talent_t tormented_spirits;
+      player_talent_t phantasmal_pathogen;
       player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
+      player_talent_t minds_eye;
       // Row 8
       player_talent_t mindbender;
       player_talent_t deathspeaker;
@@ -295,6 +300,7 @@ public:
       // Row 9
       player_talent_t inescapable_torment;
       player_talent_t screams_of_the_void;
+      player_talent_t mastermind;
       player_talent_t pain_of_death;
       player_talent_t mind_devourer;
       player_talent_t insidious_ire;

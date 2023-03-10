@@ -2248,6 +2248,10 @@ void priest_t::init_spells_shadow()
   talents.shadow.coalescing_shadows_dot_buff = find_spell( 391244 );
   talents.shadow.mind_sear                   = ST( "Mind Sear" );
   talents.shadow.mind_spike                  = ST( "Mind Spike" );
+  // Row 4 10.1 PTR
+  talents.shadow.thought_harvester = ST( "Thought Harvester" );
+  // Psychic Link
+  // Encroaching Shadows
   // Row 5
   talents.shadow.puppet_master          = ST( "Puppet Master" );
   talents.shadow.mental_decay           = ST( "Mental Decay" );
@@ -2263,6 +2267,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.ancient_madness   = ST( "Ancient Madness" );  // TODO: add point scaling
   talents.shadow.shadow_crash      = ST( "Shadow Crash" );
   talents.shadow.mind_melt         = ST( "Mind Melt" );
+  // Row 6 10.1 PTR
+  talents.shadow.whispering_shadows = ST( "Whispering Shadows" );
+  // Shadowy Insight
+  // Ancient Madness
+  talents.shadow.voidtouched        = ST( "Voidtouched" );
+  // Mind Melt
   // Row 7
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
@@ -2271,6 +2281,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.tormented_spirits        = ST( "Tormented Spirits" );
   talents.shadow.psychic_link             = ST( "Psychic Link" );
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );
+  // Row 7 10.1 PTR
+  // Maddening Touch
+  // Dark Evangelism
+  // Mind Devourer
+  talents.shadow.phantasmal_pathogen = ST( "Phantasmal Pathogen" );
+  talents.shadow.minds_eye           = ST( " Mind's Eye" );
   // Row 8
   talents.shadow.mindbender               = ST( "Mindbender" );
   talents.shadow.deathspeaker             = ST( "Deathspeaker" );
@@ -2279,6 +2295,11 @@ void priest_t::init_spells_shadow()
   talents.shadow.encroaching_shadows      = ST( "Encroaching Shadows" );
   talents.shadow.damnation                = ST( "Damnation" );
   talents.shadow.void_torrent             = ST( "Void Torrent" );
+  // Row 8 10.1 PTR
+  // Bender
+  // MFI
+  // AS
+  // VTor
   // Row 9
   talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
@@ -2286,6 +2307,13 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_devourer       = ST( "Mind Devourer" );
   talents.shadow.insidious_ire       = ST( "Insidious Ire" );  // TODO: check values
   talents.shadow.malediction         = ST( "Malediction" );
+  // Row 9 10.1 PTR
+  // Inescapable Torment
+  talents.shadow.mastermind = ST( "Mastermind" );
+  // Screams of the Void
+  // Tormented Spirits
+  // Insidious Ire
+  // Malediction
   // Row 10
   talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
   // TODO: Implement Stunned/Feared/Enraged Y'shaarj
