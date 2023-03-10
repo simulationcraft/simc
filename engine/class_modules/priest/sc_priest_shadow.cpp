@@ -1633,6 +1633,26 @@ struct void_torrent_t final : public priest_spell_t
     }
   }
 
+  bool insidious_ire_active() const
+  {
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
+
+    return priest().buffs.insidious_ire->check();
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_ta_multiplier( s );
+
+    if ( insidious_ire_active() && priest().is_ptr() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
