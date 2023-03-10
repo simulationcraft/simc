@@ -139,6 +139,7 @@ public:
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
     propagate_const<buff_t*> thing_from_beyond;
+    propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
     propagate_const<buff_t*> dark_evangelism;

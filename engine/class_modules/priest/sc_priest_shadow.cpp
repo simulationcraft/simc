@@ -1182,11 +1182,16 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.dark_reveries->trigger();
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+    if ( priest().talents.shadow.void_eruption.enabled() &&
          priest().buffs.voidform->up() )
     {
       priest().buffs.voidform->extend_duration(
           &priest(), timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() ) );
+    }
+
+    if ( priest().is_ptr() && priest().talents.shadow.screams_of_the_void.enabled() )
+    {
+      priest().buffs.screams_of_the_void->trigger();
     }
   }
 
@@ -2248,6 +2253,8 @@ void priest_t::create_buffs_shadow()
 
   buffs.thing_from_beyond = make_buff( this, "thing_from_beyond", find_spell( 373277 ) );
 
+  buffs.screams_of_the_void = make_buff( this, "screams_of_the_void", find_spell( 393919 ) );
+
   buffs.idol_of_yoggsaron =
       make_buff( this, "idol_of_yoggsaron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
           ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
@@ -2645,10 +2652,13 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
 
 bool priest_t::is_screams_of_the_void_up( player_t* target, const unsigned int spell_id ) const
 {
-  priest_td_t* td = get_target_data( target );
-
   if ( talents.shadow.screams_of_the_void.enabled() )
   {
+    if ( buffs.screams_of_the_void->check() )
+      return true;
+
+    priest_td_t* td = get_target_data( target );
+
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1038
     if ( spell_id == dot_spells.shadow_word_pain->id() &&
          ( td->dots.mind_flay->is_ticking() || td->dots.mind_flay_insanity->is_ticking() ) &&
