@@ -366,8 +366,8 @@ public:
     action_t* denizen_of_the_dream;      // placeholder action
     action_t* orbit_breaker;
     action_t* shooting_stars;
-    action_t* starfall_cosmos;           // free starfall from 4t29
-    action_t* starsurge_cosmos;          // free starsurge fromm 4t29
+    action_t* starfall_cosmos;           // free starfall from 4t29 TODO remove in 10.1
+    action_t* starsurge_cosmos;          // free starsurge fromm 4t29 TODO remove in 10.1
     action_t* starfall_starweaver;       // free starfall from starweaver's warp
     action_t* starsurge_starweaver;      // free starsurge from starweaver's weft
     action_t* sundered_firmament;
@@ -719,6 +719,7 @@ public:
     player_talent_t waning_twilight;
     player_talent_t warrior_of_elune;
     player_talent_t wild_mushroom;
+    player_talent_t wild_surges;
 
     // Feral
     player_talent_t apex_predators_craving;
@@ -2442,6 +2443,20 @@ public:
         p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
       } );
     }
+  }
+
+  void post_execute()
+  {
+    if ( p()->is_ptr() )
+      p()->buff.touch_the_cosmos->expire();
+
+    p()->buff.gathering_starstuff->trigger();
+
+    if ( is_free_proc() )
+      return;
+
+    p()->buff.starlord->trigger();
+    p()->buff.rattled_stars->trigger();
   }
 };
 
@@ -7493,33 +7508,33 @@ struct starfall_t : public astral_power_spender_t
     if ( p()->buff.touch_the_cosmos->check() )
       p()->buff.touch_the_cosmos_starfall->trigger();
 
-    p()->buff.gathering_starstuff->trigger();
+    post_execute();
 
-    if ( is_free_proc() )
-      return;
-
-    p()->buff.starlord->trigger();
-    p()->buff.rattled_stars->trigger();
-    p()->buff.starweavers_weft->trigger();
+    if ( !is_free_proc() )
+      p()->buff.starweavers_weft->trigger();
   }
 };
 
 // Starfire =============================================================
 struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral_embrace_t<druid_spell_t>>>
 {
-  double aoe_base = 0.0;
-  double aoe_mod_mult = 0.0;
-  double aoe_mod_flat = 0.0;
+  double aoe_base;
+  double aoe_mod_flat;
   double smolder_mul;
+  double sotf_mul;
+  unsigned sotf_cap;
 
   starfire_t( druid_t* p, std::string_view opt )
-    : base_t( "starfire", p, p->talent.starfire, opt ), smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+    : base_t( "starfire", p, p->talent.starfire, opt ),
+      aoe_base( data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent() ),
+      aoe_mod_flat( p->spec.eclipse_lunar->effectN( 2 ).percent() +
+                    p->talent.umbral_intensity->effectN( 1 ).percent() ),
+      smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
+      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
+      sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
   {
     aoe = -1;
-
-    aoe_base = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
-    aoe_mod_mult = p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent();
-    aoe_mod_flat = p->spec.eclipse_lunar->effectN( 2 ).percent() + p->talent.umbral_intensity->effectN( 1 ).percent();
+    energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -7534,13 +7549,33 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
       energize_type = action_energize::NONE;
   }
 
+  double sotf_multiplier( const action_state_t* s ) const
+  {
+    auto mul = 1.0;
+
+    if ( sotf_mul && p()->buff.eclipse_lunar->check() && s->n_targets > 1 && p()->is_ptr() )
+      mul += sotf_mul * std::min( sotf_cap, s->n_targets - 1 );
+
+    return mul;
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    double e = base_t::composite_energize_amount( s );
+    auto e = base_t::composite_energize_amount( s );
 
+    e *= sotf_multiplier( s );
     e *= 1.0 + p()->buff.warrior_of_elune->check_value();
 
     return e;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = base_t::composite_da_multiplier( s );
+
+    da *= sotf_multiplier( s );
+
+    return da;
   }
 
   void execute() override
@@ -7581,10 +7616,17 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
 
     if ( s->chain_target )
     {
-      if ( p()->buff.eclipse_lunar->check() )
-        cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + aoe_mod_mult );
+      if ( !p()->is_ptr() )
+      {
+        if ( p()->buff.eclipse_lunar->check() )
+          cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + sotf_mul );
+        else
+          cam *= aoe_base;
+      }
       else
-        cam *= aoe_base;
+      {
+        cam *= aoe_base + p()->buff.eclipse_lunar->check() ? aoe_mod_flat : 0.0;
+      }
     }
 
     return cam;
@@ -7702,16 +7744,13 @@ struct starsurge_t : public astral_power_spender_t
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
 
-    p()->buff.gathering_starstuff->trigger();
+    post_execute();
 
-    if ( is_free_proc() )
-      return;
-
-    p()->buff.starlord->trigger();
-    p()->buff.rattled_stars->trigger();
-    p()->buff.starweavers_warp->trigger();
-
-    p()->eclipse_handler.cast_starsurge();
+    if ( !is_free_proc() )
+    {
+      p()->buff.starweavers_warp->trigger();
+      p()->eclipse_handler.cast_starsurge();
+    }
   }
 };
 
@@ -7726,6 +7765,14 @@ struct stellar_flare_t : public druid_mixin_t<trigger_shooting_stars_t<trigger_w
     : base_t( n, p, s, opt )
   {
     dot_name = "stellar_flare";
+  }
+
+  void tick( dot_t* d ) override
+  {
+    if ( p()->is_ptr() )
+      druid_spell_t::tick( d );
+    else
+      base_t::tick( d );
   }
 };
 
@@ -7754,13 +7801,7 @@ struct sunfire_t : public druid_spell_t
     damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
 
-    if ( p->spec.astral_power->ok() )
-    {
-      energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-    }
-    else
-      energize_type = action_energize::NONE;
+    energize_amount += p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   bool has_amount_result() const override { return damage->has_amount_result(); }
@@ -8081,8 +8122,8 @@ struct wrath_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral_em
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
-    if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
-      energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    energize_amount += p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ) +
+                       p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     init_umbral_embrace( p->spec.eclipse_lunar, &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg );
     init_astral_smolder( p->buff.eclipse_lunar, &druid_td_t::dots_t::moonfire );
@@ -9275,6 +9316,7 @@ void druid_t::init_spells()
   talent.waning_twilight                = ST( "Waning Twilight" );
   talent.warrior_of_elune               = ST( "Warrior of Elune" );
   talent.wild_mushroom                  = ST( "Wild Mushroom" );
+  talent.wild_surges                    = ST( "Wild Surges" );
 
   // Feral
   sim->print_debug( "Initializing feral talents..." );
@@ -10116,7 +10158,7 @@ void druid_t::create_actions()
   if ( talent.shooting_stars.ok() )
     active.shooting_stars = get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
-  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
+  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) && !is_ptr() )
   {
     if ( talent.starsurge.ok() )
     {
@@ -12423,6 +12465,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.power_of_goldrinn );
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
+  action.apply_affecting_aura( talent.wild_surges );
   
   // Feral
   action.apply_affecting_aura( spec.ashamanes_guidance );
