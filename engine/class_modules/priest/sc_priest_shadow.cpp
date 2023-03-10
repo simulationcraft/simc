@@ -2336,7 +2336,8 @@ void priest_t::create_buffs_shadow()
 
   buffs.thing_from_beyond = make_buff( this, "thing_from_beyond", find_spell( 373277 ) );
 
-  buffs.screams_of_the_void = make_buff( this, "screams_of_the_void", find_spell( 393919 ) );
+  buffs.screams_of_the_void = make_buff( this, "screams_of_the_void", find_spell( 393919 ) )
+                                  ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buffs.idol_of_yoggsaron =
       make_buff( this, "idol_of_yoggsaron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
