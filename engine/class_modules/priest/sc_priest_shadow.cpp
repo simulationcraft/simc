@@ -190,9 +190,10 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
-        priest().buffs.voidform->up() )
+         priest().buffs.voidform->up() )
     {
-        priest().buffs.voidform->extend_duration( &priest(), timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() / 2 ) );
+      priest().buffs.voidform->extend_duration(
+          &priest(), timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() / 2 ) );
     }
 
     double insanity_after_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
@@ -301,7 +302,8 @@ struct mind_flay_base_t : public priest_spell_t
 
 struct mind_flay_insanity_t final : public mind_flay_base_t
 {
-  mind_flay_insanity_t( priest_t& p, util::string_view options_str ) : mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell )
+  mind_flay_insanity_t( priest_t& p, util::string_view options_str )
+    : mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell )
   {
     parse_options( options_str );
   }
@@ -315,7 +317,7 @@ struct mind_flay_insanity_t final : public mind_flay_base_t
   bool ready() override
   {
     if ( !priest().buffs.mind_flay_insanity->check() )
-        return false;
+      return false;
 
     return mind_flay_base_t::ready();
   }
@@ -323,8 +325,7 @@ struct mind_flay_insanity_t final : public mind_flay_base_t
 
 struct mind_flay_t final : public mind_flay_base_t
 {
-  mind_flay_t( priest_t& p, util::string_view options_str )
-    : mind_flay_base_t( "mind_flay", p, p.specs.mind_flay )
+  mind_flay_t( priest_t& p, util::string_view options_str ) : mind_flay_base_t( "mind_flay", p, p.specs.mind_flay )
   {
     parse_options( options_str );
   }
@@ -1198,8 +1199,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.dark_reveries->trigger();
     }
 
-    if ( priest().talents.shadow.void_eruption.enabled() &&
-         priest().buffs.voidform->up() )
+    if ( priest().talents.shadow.void_eruption.enabled() && priest().buffs.voidform->up() )
     {
       priest().buffs.voidform->extend_duration(
           &priest(), timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() ) );
@@ -1942,7 +1942,8 @@ struct shadow_crash_t final : public priest_spell_t
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) + priest().talents.shadow.whispering_shadows->effectN( 1 ).resource( RESOURCE_INSANITY )),
+      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) +
+                     priest().talents.shadow.whispering_shadows->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) )
   {
     parse_options( options_str );
@@ -2379,7 +2380,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.whispering_shadows = ST( "Whispering Shadows" );
   // Shadowy Insight
   // Ancient Madness
-  talents.shadow.voidtouched        = ST( "Voidtouched" );
+  talents.shadow.voidtouched = ST( "Voidtouched" );
   // Mind Melt
   // Row 7
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
@@ -2451,7 +2452,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new mind_flay_t( *this, options_str );
   }
-
   if ( name == "mind_flay_insanity" )
   {
     return new mind_flay_insanity_t( *this, options_str );
