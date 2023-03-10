@@ -900,18 +900,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
-  timespan_t vf_extension = 0_s;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
-
-    if ( priest().talents.shadow.void_eruption.enabled() )
-    {
-      vf_extension = timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() ) /
-                     priest().talents.shadow.void_eruption->effectN( 4 ).base_value();
-    }
   }
 
   bool usable_moving() const override
@@ -926,18 +919,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void consume_resource() override
   {
-    if ( current_resource() == RESOURCE_INSANITY )
-      extend_vf( base_cost() );
     base_t::consume_resource();
-  }
-
-  void extend_vf( double insanity )
-  {
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
-         priest().buffs.voidform->up() )
-    {
-      priest().buffs.voidform->extend_duration( &priest(), vf_extension * insanity );
-    }
   }
 
   void last_tick( dot_t* d ) override

@@ -1974,7 +1974,7 @@ void priest_t::init_base_stats()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    resources.base[ RESOURCE_INSANITY ] = 100.0;
+    resources.base[ RESOURCE_INSANITY ] = 100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
   }
 
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment->effectN( 1 ).percent();

@@ -191,6 +191,12 @@ struct mind_sear_t final : public priest_spell_t
       priest().buffs.dark_reveries->trigger();
     }
 
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+        priest().buffs.voidform->up() )
+    {
+        priest().buffs.voidform->extend_duration( &priest(), timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() / 2 ) );
+    }
+
     double insanity_after_tick = player->resources.current[ RESOURCE_INSANITY ] - cost_per_tick( RESOURCE_INSANITY );
 
     // Mind Sear will only ever consume 25 Insanity, no partial amounts
@@ -1042,6 +1048,8 @@ struct devouring_plague_t final : public priest_spell_t
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
   {
     parse_options( options_str );
+
+    apply_affecting_aura( p.talents.shadow.voidtouched );
   }
 
   action_state_t* new_state() override
@@ -1154,6 +1162,13 @@ struct devouring_plague_t final : public priest_spell_t
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B4 ) )
     {
       priest().buffs.dark_reveries->trigger();
+    }
+
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+         priest().buffs.voidform->up() )
+    {
+      priest().buffs.voidform->extend_duration(
+          &priest(), timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() ) );
     }
   }
 
