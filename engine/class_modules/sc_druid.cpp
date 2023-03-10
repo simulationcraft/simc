@@ -4240,6 +4240,7 @@ struct thrash_cat_t : public cat_attack_t
     if ( p->is_ptr() )
     {
       impact_action = p->get_secondary_action_n<thrash_cat_dot_t>( name_str + "_dot" );
+      impact_action->stats = stats;
     }
     else
     {
@@ -4870,7 +4871,6 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     thrash_bear_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_bear_dot )
     {
       dual = background = true;
-      aoe = -1;
 
       dot_name = "thrash_bear";
 
@@ -4902,8 +4902,6 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     }
   };
 
-  action_t* dot;
-
   thrash_bear_t( druid_t* p, std::string_view opt )
     : thrash_bear_t( p, "thrash_bear", p->apply_override( p->talent.thrash, p->spec.bear_form_override ), opt )
   {}
@@ -4912,10 +4910,8 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     : base_t( n, p, s, opt )
   {
     aoe = -1;
-
-    dot = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
-    dot->stats = stats;
-    dot->radius = radius;
+    impact_action = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
+    impact_action->stats = stats;
 
     dot_name = "thrash_bear";
 
@@ -4923,14 +4919,9 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
       name_str_reporting = "thrash";
   }
 
-  bool has_amount_result() const override { return dot->has_amount_result(); }
-
   void execute() override
   {
     base_t::execute();
-
-    dot->target = target;
-    dot->schedule_execute();
 
     if ( p()->talent.flashing_claws.ok() && rng().roll( p()->talent.flashing_claws->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_flashing->execute_on_target( target ); } );
