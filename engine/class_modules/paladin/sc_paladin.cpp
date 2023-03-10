@@ -123,6 +123,11 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   if ( p->talents.avenging_wrath_might->ok() )
     crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
 
+  if ( p->is_ptr() && p->talents.divine_wrath->ok() )
+  {
+    base_buff_duration += p->talents.divine_wrath->effectN( 1 ).time_value();
+  }
+
   if ( p->azerite.lights_decree.ok() )
     base_buff_duration += p->spells.lights_decree->effectN( 2 ).time_value();
 
@@ -208,6 +213,11 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
 
   // if ( p->talents.avenging_wrath_2->ok() )
   //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
+
+  if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
+  {
+    cooldown->duration += p->spec.retribution_paladin->effectN( 21 ).time_value();
+  }
 
   cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 }
@@ -370,6 +380,10 @@ struct consecration_t : public paladin_spell_t
     may_miss = harmful = false;
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
+    if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
+    {
+      cooldown->duration += p->spec.retribution_paladin->effectN( 22 ).time_value();
+    }
 
     add_child( damage_tick );
   }
@@ -884,6 +898,14 @@ struct melee_t : public paladin_melee_attack_t
       seal_of_the_crusader = new seal_of_the_crusader_t( p );
       add_child( seal_of_the_crusader );
     }
+
+    if ( p->talents.heart_of_the_crusader->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 1 ).percent();
+
+      // This seems likely to be a bug; the tooltip does not match the spell data
+      base_crit += 1.0 + p->talents.heart_of_the_crusader->effectN( 2 ).percent();
+    }
   }
 
   timespan_t execute_time() const override
@@ -907,42 +929,45 @@ struct melee_t : public paladin_melee_attack_t
     {
       if ( p()->specialization() == PALADIN_RETRIBUTION )
       {
-        // Check for BoW procs
-        double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
-
-        if ( p()->talents.blade_of_wrath->ok() )
-          aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
-
-        if ( rng().roll( aow_proc_chance ) )
+        if ( p()->talents.art_of_war->ok() )
         {
-          p()->procs.art_of_war->occur();
+          // Check for BoW procs
+          double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
 
-          if ( p()->talents.ashes_to_ashes->ok() )
+          if ( p()->talents.blade_of_wrath->ok() )
+            aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
+
+          if ( rng().roll( aow_proc_chance ) )
           {
-            if ( p()->bugs && p()->buffs.fires_of_justice->up() )
+            p()->procs.art_of_war->occur();
+
+            if ( p()->talents.ashes_to_ashes->ok() )
             {
-              p()->buffs.fires_of_justice->expire();
+              if ( p()->bugs && p()->buffs.fires_of_justice->up() )
+              {
+                p()->buffs.fires_of_justice->expire();
+              }
+
+              p()->buffs.seraphim->extend_duration_or_trigger(
+                timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
+                player
+              );
             }
 
-            p()->buffs.seraphim->extend_duration_or_trigger(
-              timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
-              player
-            );
-          }
-
-          if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
-          {
-            p()->cooldowns.wake_of_ashes->reset( true );
-          }
-          else
-          {
-            if ( p()->talents.blade_of_wrath->ok() )
+            if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
+            {
+              p()->cooldowns.wake_of_ashes->reset( true );
+            }
+            else
+            {
+              if ( p()->talents.blade_of_wrath->ok() )
               p()->buffs.blade_of_wrath->trigger();
 
-            if ( p()->talents.consecrated_blade->ok() )
-              p()->buffs.consecrated_blade->trigger();
+              if ( p()->talents.consecrated_blade->ok() && !p()->is_ptr() )
+                p()->buffs.consecrated_blade->trigger();
 
-            p()->cooldowns.blade_of_justice->reset( true );
+              p()->cooldowns.blade_of_justice->reset( true );
+            }
           }
         }
 
@@ -1024,14 +1049,39 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p->talents.fires_of_justice->ok() )
+    if ( p->talents.fires_of_justice->ok() && !p->is_ptr() )
     {
       cooldown->duration *= 1.0 + p->talents.fires_of_justice->effectN( 3 ).percent();
     }
 
-    if ( p->talents.improved_crusader_strike )
+    if ( p->talents.improved_crusader_strike->ok() && !p->is_ptr() )
     {
       cooldown->charges += as<int>( p->talents.improved_crusader_strike->effectN( 1 ).base_value() );
+    }
+
+    if ( p->is_ptr() )
+    {
+      if ( p->talents.swift_justice->ok() )
+      {
+        cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
+      }
+
+      if ( p->spec.improved_crusader_strike )
+      {
+        cooldown->charges += as<int>( p->spec.improved_crusader_strike->effectN( 1 ).base_value() );
+      }
+
+      if ( p->talents.blessed_champion->ok() )
+      {
+        aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
+        base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+      }
+
+      if ( p->talents.heart_of_the_crusader->ok() )
+      {
+        crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+        base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
+      }
     }
   }
 
@@ -1084,18 +1134,18 @@ struct crusader_strike_t : public paladin_melee_attack_t
         vc->set_target( s->target );
         vc->schedule_execute();
       }
-
-      if ( p()->specialization() == PALADIN_RETRIBUTION )
-      {
-        p()->resource_gain( RESOURCE_HOLY_POWER, p()->spec.retribution_paladin->effectN( 14 ).base_value(),
-                            p()->gains.hp_cs );
-      }
     }
   }
 
   void execute() override
   {
     paladin_melee_attack_t::execute();
+
+    if ( p()->specialization() == PALADIN_RETRIBUTION )
+    {
+      p()->resource_gain( RESOURCE_HOLY_POWER, p()->spec.retribution_paladin->effectN( 14 ).base_value(),
+                          p()->gains.hp_cs );
+    }
 
     p()->trigger_grand_crusader();
 
@@ -1104,6 +1154,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       p()->t29_4p_prot();
     }
   }
+
   double cost() const override
   {
     if ( has_crusader_2 )
@@ -1330,9 +1381,27 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
     base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 3 ).percent();
   }
 
-  if ( p->is_ptr()  && p->talents.seal_of_alacrity->ok())
+  if ( p->is_ptr() )
   {
-    cooldown->duration -= timespan_t::from_millis(p->talents.seal_of_alacrity->effectN( 2 ).base_value());
+    if ( p->talents.seal_of_alacrity->ok() )
+    {
+      cooldown->duration += timespan_t::from_millis( p->talents.seal_of_alacrity->effectN( 2 ).base_value() );
+    }
+
+    if ( p->talents.swift_justice->ok() )
+    {
+      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
+    }
+
+    if ( p->talents.judgment_of_justice->ok() )
+    {
+      base_multiplier *= 1.0 + p->talents.judgment_of_justice->effectN( 2 ).percent();
+    }
+
+    if ( p->talents.improved_judgment->ok() )
+    {
+      cooldown->charges += as<int>( p->talents.improved_judgment->effectN( 1 ).base_value() );
+    }
   }
 }
 
@@ -1348,7 +1417,14 @@ void judgment_t::impact( action_state_t* s )
   if ( result_is_hit( s->result ) )
   {
       if ( p()->talents.greater_judgment->ok() )
-        td( s->target )->debuff.judgment->trigger();
+      {
+        int num_stacks = 1;
+        if ( p()->is_ptr() && p()->talents.highlords_judgment->ok() )
+        {
+          num_stacks += p()->talents.highlords_judgment->effectN( 1 ).base_value();
+        }
+        td( s->target )->debuff.judgment->trigger( num_stacks );
+      }
 
     int amount = 25;
       if ( p()->is_ptr() )
@@ -1415,8 +1491,16 @@ void judgment_t::execute()
 double judgment_t::action_multiplier() const
 {
   double am = paladin_melee_attack_t::action_multiplier();
-  if ( p()->is_ptr() && p()->talents.justification->ok() )
-    am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
+
+  // these can both likely be moved to base_multiplier in the constructor
+  if ( p()->is_ptr() )
+  {
+    if ( p()->talents.justification->ok() )
+      am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
+
+    if ( p()->talents.judgment_of_justice->ok() )
+      am *= 1.0 + p()->talents.judgment_of_justice->effectN( 2 ).percent();
+  }
 
   return am;
 }
@@ -1964,14 +2048,38 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       cooldown->charges += as<int>( p->legendary.vanguards_momentum->effectN( 1 ).base_value() );
     }
 
-    if ( p->talents.vanguards_momentum->ok() )
+    if ( p->talents.vanguards_momentum->ok() && !p->is_ptr() )
     {
       cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 3 ).base_value() );
+    }
+
+    if ( p->is_ptr() && p->talents.vanguards_momentum->ok() )
+    {
+      cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 1 ).base_value() );
+
+      if ( p->bugs )
+      {
+        // this is not documented in the tooltip but the spelldata sure shows it
+        base_multiplier *= 1.0 + p->talents.vanguards_momentum->effectN( 3 ).percent();
+      }
     }
 
     if ( p->talents.zealots_paragon->ok() )
     {
       base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 2 ).percent();
+    }
+
+    if ( p->is_ptr() )
+    {
+      if ( p->talents.vengeful_wrath->ok() )
+      {
+        base_crit = p->talents.vengeful_wrath->effectN( 1 ).percent();
+      }
+
+      if ( p->talents.adjudication->ok() )
+      {
+        add_child( p->active.background_blessed_hammer );
+      }
     }
   }
 
@@ -2037,6 +2145,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       {
         p()->buffs.crusade->extend_duration( p(), extension );
       }
+
       if ( p() ->buffs.sentinel->up())
       {
         p()->buffs.sentinel->extend_duration( p(), extension );
@@ -2053,9 +2162,29 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       p()->buffs.vanguards_momentum_legendary->trigger();
     }
 
-    if ( p()->talents.vanguards_momentum->ok() )
+    if ( !p()->is_ptr() && p()->talents.vanguards_momentum->ok() )
     {
       p()->buffs.vanguards_momentum->trigger();
+    }
+
+    if ( p()->is_ptr() )
+    {
+      if ( p()->talents.vanguards_momentum->ok() )
+      {
+        if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() )
+        {
+          // technically this is in spell 403081 for some reason
+          p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
+        }
+      }
+
+      if ( p()->talents.adjudication->ok() )
+      {
+        if ( s->result == RESULT_CRIT )
+        {
+          p()->active.background_blessed_hammer->schedule_execute();
+        }
+      }
     }
   }
 
@@ -2248,7 +2377,15 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
 {
   debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
   debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
+
   debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
+  if ( paladin->is_ptr() && paladin->talents.highlords_judgment->ok() )
+  {
+    debuff.judgment = debuff.judgment
+                      ->set_max_stack( 1 + paladin->talents.highlords_judgment->effectN( 1 ).base_value() )
+                      ->modify_duration( timespan_t::from_millis( paladin->talents.highlords_judgment->effectN( 3 ).base_value() ) );
+  }
+
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
   debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                 ->set_cooldown( 0_ms );  // handled by ability
@@ -2609,6 +2746,7 @@ void paladin_t::init_gains()
   gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
   gains.hp_sanctification          = get_gain( "sanctification" );
   gains.hp_divine_toll             = get_gain( "divine_toll" );
+  gains.hp_vm                      = get_gain( "vanguards_momentum" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -2618,6 +2756,7 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs.art_of_war        = get_proc( "Art of War" );
+  procs.righteous_cause   = get_proc( "Righteous Cause" );
   procs.divine_purpose    = get_proc( "Divine Purpose" );
   procs.fires_of_justice  = get_proc( "Fires of Justice" );
   procs.prot_lucid_dreams = get_proc( "Lucid Dreams SotR" );
@@ -3254,6 +3393,15 @@ double paladin_t::composite_player_multiplier( school_e school ) const
     }
   }
 
+  // This also seems likely to be a bug: the spelldata says Fire, but the tooltip says Radiant
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    if ( is_ptr() && talents.burning_crusade->ok() )
+    {
+      m *= 1.0 + talents.burning_crusade->effectN( 2 ).percent();
+    }
+  }
+
   return m;
 }
 
@@ -3450,8 +3598,13 @@ double paladin_t::composite_melee_haste() const
 double paladin_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
+
   if ( buffs.zeal->check() )
     s /= 1.0 + buffs.zeal->data().effectN( 1 ).percent();
+
+  if ( is_ptr() && talents.zealots_fervor->ok() )
+    s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();
+
   return s;
 }
 
@@ -3966,6 +4119,11 @@ void paladin_t::combat_begin()
   if ( talents.inner_grace->ok() )
   {
     buffs.inner_grace->trigger();
+  }
+
+  if ( is_ptr() && talents.inquisitors_ire->ok() )
+  {
+    buffs.inquisitors_ire_driver->trigger();
   }
 }
 

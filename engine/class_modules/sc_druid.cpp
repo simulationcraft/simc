@@ -4321,11 +4321,13 @@ struct brambles_pulse_t : public bear_attack_t
 // Bristling Fur Spell ======================================================
 struct bristling_fur_t : public bear_attack_t
 {
-  bristling_fur_t( druid_t* player, std::string_view opt )
-    : bear_attack_t( "bristling_fur", player, player->talent.bristling_fur, opt )
+  bristling_fur_t( druid_t* p, std::string_view opt )
+    : bear_attack_t( "bristling_fur", p, p->talent.bristling_fur, opt )
   {
-    harmful     = false;
-    use_off_gcd = true;
+    harmful = false;
+
+    if ( p->is_ptr() )
+      gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
   void execute() override
@@ -10702,7 +10704,10 @@ void druid_t::init_special_effects()
 
       void execute( action_t* a, action_state_t* s ) override
       {
-        druid->buff.incarnation_cat->extend_duration_or_trigger( dur );
+        if ( druid->buff.incarnation_cat->check() )
+          return;
+
+        druid->buff.incarnation_cat->trigger( dur );
         druid->proc.ashamanes_guidance->occur();
       }
     };

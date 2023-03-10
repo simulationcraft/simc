@@ -245,7 +245,7 @@ struct corruption_t : public warlock_spell_t
           p()->procs.harvester_of_souls->occur();
         }
 
-        if ( p()->talents.doom_blossom->ok() )
+        if ( p()->talents.doom_blossom->ok() && td( d->state->target )->dots_unstable_affliction->is_ticking() )
         {
           if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
           {

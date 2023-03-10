@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48069 Live (hotfix 2023-02-22/48069)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -711,7 +711,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 7
 Range            : 5 yards
-Duration         : 4 seconds
+Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
 Category Cooldown: 15 seconds
@@ -1085,7 +1085,8 @@ Spell Type       : None
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692: Vanguard (71 effect#4), Ararat's Bloodmirrors (248117 effect#2)
+Category         : 1692: Vanguard (71 effect#4), Rebound (213915 effect#2), Ararat's Bloodmirrors (248117 effect#2)
+Labels           : 2590: Rebound (213915 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........   ........ ........ ........ ........   
@@ -1106,7 +1107,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=280400)   : Trigger Spell (64): Spell Reflection
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 385391
-Description      : Raise your $?c3[shield][weapon], reflecting the first spell cast on you, and reduce magic damage you take by $385391s1% for $d.
+Description      : Raise your $?c3[shield][weapon], reflecting $?a213915[the next $213915s3 spells cast][the first spell cast] on you, and reduce magic damage you take by $385391s1% for $d.
 Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
@@ -1116,6 +1117,7 @@ Spell Type       : Melee
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
+Duration         : 8 seconds
 Requires armor   : Shield 
 Cooldown         : 9 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Shield Block (132404 effects: #2, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Heavy Repercussions (203177 effect#2), Kakushan's Stormscale Gauntlets (207844 effects: #1, #3), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), The Wall (335239 effect#2), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Outburst (364010 effects: #1, #3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Unnerving Focus (384043 effect#4), Impenetrable Wall (384072 effect#2), Brace For Impact (386029 effect#1), Violent Outburst (386478 effects: #1, #3), Crushing Force (390642 effects: #1, #2), Honed Reflexes (391271 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9)
@@ -1136,6 +1138,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 #3 (id=1013582)  : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
+#4 (id=1070347)  : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Slams the target with your shield, causing $s1 Physical damage.$?s231834[
 
 Devastate, Thunder Clap, Revenge, and Execute have a $231834s1% chance to reset the cooldown of Shield Slam.][]
@@ -3383,7 +3388,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Combat Feedback When Usable (137), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=230085)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.46049 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.46049 | PvP Coefficient: 1.10000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -3560,7 +3565,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Off-Hand Weapon (120), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267757)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68244 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68244 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3585,7 +3590,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267761)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.39809 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.39809 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3702,7 +3707,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=299580)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3820,12 +3825,14 @@ Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1
 Name             : Thunderstruck (desc=PvP Talent) (id=199042) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
-Spell Type       : Melee
+Spell Type       : Magic
 Spell Level      : 1
 Range            : 8 yards
-Duration         : 1 seconds
-Proc Chance      : 101%
+Duration         : 4 seconds
+Proc Chance      : 100%
 Mechanic         : Root
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3837,11 +3844,11 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Always Show Ground Texture (190), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=292904)   : Apply Aura (6) | Root (455)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
 
-Name             : Thunderstruck (desc=PvP Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
+Name             : Thunderstruck (desc=PvP Talent) (id=199045) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -3857,7 +3864,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=292907)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Thunder Clap roots all targets for $199042d.
+Description      : Thunder Clap roots all targets it damages for $199042d.
 
 Name             : Whirlwind (id=199658) [Spell Family (4)] 
 Class            : Warrior
@@ -4017,7 +4024,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296642)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51183 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51183 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -4042,7 +4049,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Off-Hand Weapon (120), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296644)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90992 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90992 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -4458,7 +4465,6 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 45 seconds
-Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4511,7 +4517,6 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
 Category         : 891
-Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -4735,7 +4740,6 @@ Spell Type       : Melee
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4815,8 +4819,15 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
                    Affected Spells: Spell Reflection (23920), Spell Reflection (335255), Spell Reflection (385391)
                    Family Flags: 33
-Description      : Reflecting spells causes them to deal $s1% extra damage back to the attacker.
-Tooltip          : Reflecting spells causes them to deal $s1% extra damage back to the attacker.
+#2 (id=1071390)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Misc Value: 1692 | Target: Self (1)
+                   Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
+#3 (id=1071391)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 2590 (Label) | Target: Self (1)
+                   Affected Spells (Label): Spell Reflection (23920)
+Description      : Spell Reflection reflects the next $s3 incoming spells cast on you and reflected spells deal $s1% extra damage to the attacker.
+
+Spell Reflection's cooldown is increased by ${$s2/1000} sec.
 
 Name             : Trauma (id=215537) [Spell Family (4)] 
 Class            : Warrior
@@ -8156,7 +8167,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), No Attack Miss (249), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=738696)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.29720 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.29720 | PvP Coefficient: 1.10000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Execute (id=281000) [Spell Family (4)] 
@@ -8923,7 +8934,7 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 #2 (id=799631)   : Trigger Spell (64): Onslaught
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20 | Trigger Spell: 396718 | Target: Enemy (6)
-Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for $184362d sec.][.]
+Description      : Brutally attack an enemy for $396718s1 Physical damage$?s388933[ and become Enraged for $184362d.][.]
 
 |cFFFFFFFFGenerates ${$m1/10} Rage.
 
@@ -10435,7 +10446,7 @@ Max Targets      : 1
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692: Vanguard (71 effect#4), Ararat's Bloodmirrors (248117 effect#2)
+Category         : 1692: Vanguard (71 effect#4), Rebound (213915 effect#2), Ararat's Bloodmirrors (248117 effect#2)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........   ........ ........ ........ ........   
@@ -13121,6 +13132,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1016060)  : Unknown(293)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1672 | Target: Self (1)
+Description      : $@spelldesc383877
 
 Name             : Hack and Slash (id=383877) [Spell Family (4), Passive] 
 Talent Entry     : Fury [tree=spec, row=6, col=5, max_rank=1, req_points=8]
@@ -15082,9 +15094,9 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x.x... ........ ........ 
+                 : ........ ........ ........ ........   .......x ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Do Not Consume Aura Stack On Proc (428)
+                 : Aura Is Debuff (26), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1020851)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15183,7 +15195,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21500 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Description      : @spelldesc772
+Description      : $@spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Storm Wall (id=388807) [Spell Family (4), Passive, Hidden] 
@@ -16620,7 +16632,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=1033410)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17250 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Description      : @spelldesc772
+Description      : $@spelldesc394062
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Strike Vulnerabilities (id=394173) [Spell Family (4)] 
@@ -17057,7 +17069,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=1039589)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Mechanic: Bleed | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : @spelldesc384318
+Description      : $@spelldesc384318
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Improved Execute (id=397708) [Spell Family (4), Passive] 
@@ -17174,7 +17186,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1045219)  : Apply Aura (6) | Proc Trigger Spell (42): Skullsplitter
                    Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Trigger Spell: 400322 | Target: Self (1)
-Description      : @spelldesc$260643
+Description      : $@spelldesc$260643
 
 Name             : Skullsplitter (id=400322) [Spell Family (4)] 
 Class            : Warrior
@@ -17194,7 +17206,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1045220)  : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : @spelldesc$260643
+Description      : $@spelldesc$260643
 
 Name             : Improved Overpower (id=400801) [Spell Family (4), Passive] 
 Class            : Warrior
@@ -17267,7 +17279,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1046152)  : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : @spelldesc $400803
+Description      : $@spelldesc400803
 
 Name             : Avatar (id=401150) [Spell Family (4)] 
 Talent Entry     : Protection [tree=class, row=9, col=1, max_rank=1, req_points=20]
@@ -17321,5 +17333,90 @@ Description      : Transform into a colossus for $d, causing you to deal $s1% in
 
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Tooltip          : Damage done increased by $s1%.
+
+Name             : Calm the Wolf (desc=Racial) (id=406087) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Triggered by     : Calm the Wolf (406088)
+Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... .x...... ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ......x. ........ .....x.x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x...... ....x... ........   ........ ........ ........ .x..x... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 406088 | Scaled Value: 406088 | PvP Coefficient: 1.00000 | Misc Value: 406087 | Target: Self (1)
+Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
+
+Name             : Calm the Wolf (desc=Racial) (id=406088) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx...... ........ 
+                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1054763)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406087 | Target: Self (1)
+#2 (id=1054764)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406090 | Target: Self (1)
+Description      : While active, you automatically assume your human form when you leave combat.
+
+Activate to disable this effect.
+
+Name             : Calm the Wolf (desc=Racial) (id=406090) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Calm the Wolf (406088)
+Attributes       : .......x ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1054766)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Calm the Wolf (desc=Racial Passive) (id=406096) [Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1054784)  : Apply Aura (6) | Unknown(352)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Enables Worgen to switch between Worgen and Human forms.
 
 
