@@ -487,6 +487,20 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     }
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = priest_spell_t::composite_target_multiplier( t );
+
+    if ( priest().talents.shadow.phantasmal_pathogen.enabled() )
+    {
+      const priest_td_t* td = priest().find_target_data( t );
+      if ( td->dots.devouring_plague->is_ticking() )
+        m *= 1 + priest().talents.shadow.phantasmal_pathogen->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1048,6 +1062,7 @@ struct devouring_plague_t final : public priest_spell_t
     parse_options( options_str );
 
     apply_affecting_aura( p.talents.shadow.voidtouched );
+    apply_affecting_aura( p.talents.shadow.minds_eye );
   }
 
   action_state_t* new_state() override
