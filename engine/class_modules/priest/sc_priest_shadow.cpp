@@ -211,11 +211,14 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 // Mind Flay
 // ==========================================================================
-struct mind_flay_base_t final : public priest_spell_t
+struct mind_flay_base_t : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
+  timespan_t manipulation_cdr;
 
-  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
+  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
+    : priest_spell_t( n, p, s ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     affected_by_shadow_weaving = true;
     may_crit                   = false;
@@ -274,21 +277,15 @@ struct mind_flay_base_t final : public priest_spell_t
       priest().procs.mind_flay_insanity_wasted->occur();
     }
   }
-};
 
-struct mind_flay_t final : public priest_spell_t
-{
-  timespan_t manipulation_cdr;
-
-  mind_flay_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
-      _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
-      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+  bool ready() override
   {
-    parse_options( options_str );
+    if ( priest().is_ptr() && priest().talents.shadow.mind_spike.enabled() )
+    {
+      return false;
+    }
 
-    add_child( _base_spell );
+    return priest_spell_t::ready();
   }
 
   void execute() override
@@ -298,20 +295,39 @@ struct mind_flay_t final : public priest_spell_t
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
 
-    if ( priest().buffs.mind_flay_insanity->check() )
-    {
-      _insanity_spell->execute();
-      priest().buffs.mind_flay_insanity->expire();
-    }
-    else
-    {
-      _base_spell->execute();
-    }
+    priest_spell_t::execute();
+  }
+};
+
+struct mind_flay_insanity_t final : public mind_flay_base_t
+{
+  mind_flay_insanity_t( priest_t& p, util::string_view options_str ) : mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell )
+  {
+    parse_options( options_str );
   }
 
-private:
-  propagate_const<action_t*> _base_spell;
-  propagate_const<action_t*> _insanity_spell;
+  void execute() override
+  {
+    mind_flay_base_t::execute();
+    priest().buffs.mind_flay_insanity->expire();
+  }
+
+  bool ready() override
+  {
+    if ( !priest().buffs.mind_flay_insanity->check() )
+        return false;
+
+    return mind_flay_base_t::ready();
+  }
+};
+
+struct mind_flay_t final : public mind_flay_base_t
+{
+  mind_flay_t( priest_t& p, util::string_view options_str )
+    : mind_flay_base_t( "mind_flay", p, p.specs.mind_flay )
+  {
+    parse_options( options_str );
+  }
 };
 
 // ==========================================================================
