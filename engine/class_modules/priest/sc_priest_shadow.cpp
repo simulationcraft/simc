@@ -397,6 +397,11 @@ struct mind_spike_base_t : public priest_spell_t
         td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
         td.dots.vampiric_touch->adjust_duration( dot_extension, true );
       }
+
+      if ( priest().is_ptr() )
+      {
+        priest().trigger_idol_of_cthun( s );
+      }
     }
   }
 
@@ -1718,6 +1723,12 @@ struct void_torrent_t final : public priest_spell_t
     {
       priest().trigger_psychic_link( d->state );
     }
+
+    if ( priest().is_ptr() )
+    {
+      priest().trigger_idol_of_cthun( d->state );
+    }
+
   }
 
   bool insidious_ire_active() const
