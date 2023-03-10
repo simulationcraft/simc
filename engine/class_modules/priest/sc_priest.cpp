@@ -1549,14 +1549,16 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
-  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
-  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
-  cooldowns.mindgames          = get_cooldown( "mindgames" );
-  cooldowns.penance            = get_cooldown( "penance" );
+  cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
+  cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
+  cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
+  cooldowns.mindgames                     = get_cooldown( "mindgames" );
+  cooldowns.penance                       = get_cooldown( "penance" );
+  cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
+  cooldowns.maddening_touch_icd->duration = 1_s;
 }
 
 /** Construct priest gains */

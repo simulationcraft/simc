@@ -434,6 +434,7 @@ public:
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> void_eruption;
+    propagate_const<cooldown_t*> maddening_touch_icd;
 
     // Holy
     propagate_const<cooldown_t*> holy_word_serenity;

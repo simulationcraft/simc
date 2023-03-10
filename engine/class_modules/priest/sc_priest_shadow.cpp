@@ -1012,6 +1012,8 @@ struct vampiric_touch_t final : public priest_spell_t
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
     }
+
+    apply_affecting_aura( priest().talents.shadow.maddening_touch );
   }
 
   vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
@@ -1078,13 +1080,25 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
-      if ( priest().talents.shadow.maddening_touch.enabled() &&
-           rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
+      if ( priest().talents.shadow.maddening_touch.enabled() )
       {
-        priest().generate_insanity(
-            priest().talents.shadow.maddening_touch_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
-            priest().gains.insanity_maddening_touch, d->state->action );
+        // TODO: 10.1 Proc Chance is not in Spell Data
+        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() &&
+             rng().roll( 0.5 ) )
+        {
+          priest().generate_insanity(
+              priest().talents.shadow.maddening_touch_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
+              priest().gains.insanity_maddening_touch, d->state->action );
+          priest().cooldowns.maddening_touch_icd->start();
+        }
+        else if ( rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
+        {
+          priest().generate_insanity(
+              priest().talents.shadow.maddening_touch_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
+              priest().gains.insanity_maddening_touch, d->state->action );
+        }
       }
+      
 
       priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_vt );
       vampiric_touch_heal->trigger( d->state->result_amount );
@@ -2474,7 +2488,7 @@ void priest_t::init_spells_shadow()
   // Dark Evangelism
   // Mind Devourer
   talents.shadow.phantasmal_pathogen = ST( "Phantasmal Pathogen" );
-  talents.shadow.minds_eye           = ST( " Mind's Eye" );
+  talents.shadow.minds_eye           = ST( "Mind's Eye" );
   // Row 8
   talents.shadow.mindbender               = ST( "Mindbender" );
   talents.shadow.deathspeaker             = ST( "Deathspeaker" );
