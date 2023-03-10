@@ -7531,7 +7531,7 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
                     p->talent.umbral_intensity->effectN( 1 ).percent() ),
       smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
-      sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
+      sotf_cap( p->is_ptr() ? as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) : 0 )
   {
     aoe = -1;
     energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
