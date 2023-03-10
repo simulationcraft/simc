@@ -214,11 +214,6 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
   // if ( p->talents.avenging_wrath_2->ok() )
   //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
-  if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
-  {
-    cooldown->duration += p->spec.retribution_paladin->effectN( 21 ).time_value();
-  }
-
   cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 }
 
@@ -380,10 +375,6 @@ struct consecration_t : public paladin_spell_t
     may_miss = harmful = false;
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
-    if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
-    {
-      cooldown->duration += p->spec.retribution_paladin->effectN( 22 ).time_value();
-    }
 
     add_child( damage_tick );
   }
