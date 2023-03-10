@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48480
-static const std::array<spelltext_data_t, 19586> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19589> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16294,6 +16294,7 @@ static const std::array<spelltext_data_t, 19586> __ptr_spelltext_data { {
   { 373202, "Mind Blast has a $s1% chance to make your next Devouring Plague cost no Insanity and deal $373204s2% additional damage.", 0, 0 },
   { 373204, "$@spelldesc373202", "Your next Devouring Plague costs 0 Insanity and deals $w2% additional damage.", 0 },
   { 373212, "While you have Shadow Word: Pain, Devouring Plague, and Vampiric Touch active on the same target, your Mind Blast and Void Torrent deal $s1% more damage.\r\n", 0, 0 },
+  { 373213, "$@spelldesc342415", "Increases the damage done by Mind Blast and Void Torrent by $s1%.", 0 },
   { 373218, "Increases your Leech by $s1%.", 0, 0 },
   { 373221, "Reduces the cooldown of Void Torrent by ${$abs($s1/1000)} sec.", 0, 0 },
   { 373223, "Shadow Word: Death deals $s1% less damage to you.", 0, 0 },
@@ -18451,6 +18452,7 @@ static const std::array<spelltext_data_t, 19586> __ptr_spelltext_data { {
   { 391209, "Prayer of Healing heals for $s1% more to the most injured ally it affects.", 0, 0 },
   { 391215, "$@spelldesc388108", "Critical strike chance increased by $s1%.", 0 },
   { 391228, "Vampiric Touch deals $s1% additional damage and has a chance to generate ${$s2/100} Insanity each time it deals damage.", 0, 0 },
+  { 391232, "$@spelldesc391228", 0, 0 },
   { 391233, "Prayer of Mending heals $s1% more for each bounce remaining.", 0, 0 },
   { 391235, "Increases the initial damage of Devouring Plague by $s1%.", 0, 0 },
   { 391270, "Cooldown of Raging Blow and Pummel reduced by ${$s2/-1000}.1 sec.", 0, 0 },
@@ -19554,6 +19556,7 @@ static const std::array<spelltext_data_t, 19586> __ptr_spelltext_data { {
   { 407430, "Increases your Devouring Plague damage by $s2% and increases your maximum Insanity by ${$s1/100}.", 0, 0 },
   { 407466, "Blasts the target for $s1 Shadowfrost damage.\r\n\r\n|cFFFFFFFFGenerates ${$s2/100} Insanity.|r", 0, 0 },
   { 407467, "Divine Storm heals you for $s1% of your maximum health.", 0, 0 },
+  { 407468, "$@spelldesc391399", "Mind Spike is temporarily empowered.", 0 },
   { 407469, "Shadow Apparitions deal $s1% increased damage to targets affected by your Devouring Plague.", 0, 0 },
   { 407470, "Reduces the Insanity cost of Devouring Plague by ${$s1/-100}.", 0, 0 },
   { 407478, "Calls down a explosion of Holy Fire dealing $s2 Radiant damage to all nearby enemies and leaving a Consecration in its wake. \r\n", 0, 0 },
