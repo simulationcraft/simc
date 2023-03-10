@@ -1070,6 +1070,11 @@ struct devouring_plague_t final : public priest_spell_t
       m *= 1 + priest().buffs.gathering_shadows->check_stack_value();
     }
 
+    if ( priest().is_ptr() && priest().buffs.mind_devourer->check() )
+    {
+      m *= 1 + priest().buffs.mind_devourer->data().effectN( 2 ).percent();
+    }
+
     return m;
   }
 
@@ -1527,6 +1532,11 @@ struct mind_spike_t final : public priest_spell_t
     if ( priest().talents.shadow.mind_melt.enabled() )
     {
       priest().buffs.mind_melt->trigger();
+    }
+
+    if ( priest().talents.shadow.dark_evangelism.enabled() && priest().is_ptr() )
+    {
+      priest().buffs.dark_evangelism->trigger();
     }
   }
 };
