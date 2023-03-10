@@ -3731,11 +3731,11 @@ void elemental_lariat( special_effect_t& effect )
   if ( !gem_mask )
     return;
 
-  if ( !effect.player->is_ptr() )
-    gem_count = 0;
-
   auto val = effect.driver()->effectN( 1 ).average( effect.item );
-  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() + gem_count );
+  auto dur = effect.player->is_ptr()
+                 ? timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() +
+                                             effect.driver()->effectN( 2 ).base_value() * gem_count )
+                 : timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
   auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
