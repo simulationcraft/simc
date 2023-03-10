@@ -3423,6 +3423,7 @@ struct feral_frenzy_t : public cat_attack_t
       dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
       dot_name = "feral_frenzy_tick";
+      berserk_cp = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
     }
 
     action_state_t* new_state() override
