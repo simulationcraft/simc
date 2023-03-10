@@ -1623,6 +1623,9 @@ class SpellDataGenerator(DataGenerator):
             ( 390981, 0 ),          # Divine Star Heal Spell
             ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
             ( 373281, 0 ),          # Idol of N'Zoth Echoing Void debuff
+            ( 373213, 0 ),          # Insidious Ire Buff
+            ( 407468, 0 ),          # Mind Spike Insanity Buff
+            ( 391232, 0 ),          # Maddening Touch Insanity
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
