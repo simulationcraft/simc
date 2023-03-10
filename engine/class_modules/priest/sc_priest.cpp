@@ -68,7 +68,6 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
-    apply_affecting_aura( priest().talents.discipline.expiation );
   }
 
   void execute() override
@@ -119,6 +118,10 @@ public:
     if ( insidious_ire_active() )
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
+    }
+    if ( priest().talents.discipline.expiation.enabled() )
+    {
+      m *= 1 + priest().talents.discipline.expiation->effectN( 1 ).percent();
     }
     return m;
   }
@@ -173,14 +176,12 @@ public:
     {
       priest().buffs.harsh_discipline->trigger();
     }
+
     if ( priest().talents.discipline.expiation.enabled() )
     {
-      if ( priest().talents.discipline.expiation.enabled() )
-      {
-        impact_action = priest().background_actions.expiation;  // new expiation_t( priest() );
-        add_child( impact_action );
-        impact_action->execute_on_target( s->target );
-      }
+      impact_action = new expiation_t( priest() );
+      add_child( impact_action );
+      impact_action->execute_on_target( s->target );
     }
   }
 
