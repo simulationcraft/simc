@@ -3709,7 +3709,8 @@ void elemental_lariat( special_effect_t& effect )
     { "Steady Nozdorite",       FROST_GEM },
   };
 
-  unsigned gems = 0;
+  unsigned gem_mask = 0;
+  unsigned gem_count = 0;
   for ( const auto& item : effect.player->items )
   {
     for ( auto gem_id : item.parsed.gem_id )
@@ -3719,21 +3720,27 @@ void elemental_lariat( special_effect_t& effect )
         auto n = effect.player->dbc->item( gem_id ).name;
         auto it = range::find( gem_types, n, &gem_name_type::first );
         if ( it != std::end( gem_types ) )
-          gems |= ( *it ).second;
+        {
+          gem_mask |= ( *it ).second;
+          gem_count++;
+        }
       }
     }
   }
 
-  if ( !gems )
+  if ( !gem_mask )
     return;
 
+  if ( !effect.player->is_ptr() )
+    gem_count = 0;
+
   auto val = effect.driver()->effectN( 1 ).average( effect.item );
-  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() + gem_count );
   auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
-  auto add_buff = [ &effect, cb, gems, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
-    if ( gems & type )
+  auto add_buff = [ &effect, cb, gem_mask, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
+    if ( gem_mask & type )
     {
       auto name = "elemental_lariat__empowered_" + suf;
       auto buff = buff_t::find( effect.player, name );
