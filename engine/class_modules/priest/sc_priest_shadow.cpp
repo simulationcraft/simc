@@ -266,19 +266,6 @@ struct mind_flay_base_t : public priest_spell_t
     }
   }
 
-  void last_tick( dot_t* d ) override
-  {
-    priest_spell_t::last_tick( d );
-
-    // Track when the APL/sim cancels MF:I before you get all ticks off
-    if ( this->id == 391403 && d->current_tick < d->num_ticks() )
-    {
-      player->sim->print_debug( "{} ended {} at {} tick. total ticks={}", priest(), d->name_str, d->current_tick,
-                                d->num_ticks() );
-      priest().procs.mind_flay_insanity_wasted->occur();
-    }
-  }
-
   bool ready() override
   {
     if ( priest().is_ptr() && priest().talents.shadow.mind_spike.enabled() )
@@ -311,7 +298,20 @@ struct mind_flay_insanity_t final : public mind_flay_base_t
   void execute() override
   {
     mind_flay_base_t::execute();
-    priest().buffs.mind_flay_insanity->expire();
+    priest().buffs.mind_flay_insanity->decrement();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    // Track when the APL/sim cancels MF:I before you get all ticks off
+    if ( d->current_tick < d->num_ticks() )
+    {
+      player->sim->print_debug( "{} ended {} at {} tick. total ticks={}", priest(), d->name_str, d->current_tick,
+                                d->num_ticks() );
+      priest().procs.mind_flay_insanity_wasted->occur();
+    }
   }
 
   bool ready() override
@@ -328,6 +328,127 @@ struct mind_flay_t final : public mind_flay_base_t
   mind_flay_t( priest_t& p, util::string_view options_str ) : mind_flay_base_t( "mind_flay", p, p.specs.mind_flay )
   {
     parse_options( options_str );
+  }
+
+  bool ready() override
+  {
+    if ( priest().buffs.mind_flay_insanity->check() )
+      return false;
+
+    return mind_flay_base_t::ready();
+  }
+};
+
+// ==========================================================================
+// Mind Spike
+// ==========================================================================
+struct mind_spike_base_t : public priest_spell_t
+{
+  timespan_t manipulation_cdr;
+
+  mind_spike_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
+    : priest_spell_t( n, p, s ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+
+  {
+    affected_by_shadow_weaving = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.shadow.surge_of_darkness && priest().buffs.surge_of_darkness->check() )
+    {
+      m *= 1 + priest().talents.shadow.surge_of_darkness_buff->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      priest().trigger_psychic_link( s );
+
+      if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
+      {
+        priest().generate_insanity(
+            priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_whispers_of_the_damned, s->action );
+      }
+
+      if ( priest().talents.shadow.surge_of_darkness.enabled() )
+      {
+        priest().buffs.surge_of_darkness->decrement();
+      }
+
+      priest().buffs.coalescing_shadows->expire();
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
+    if ( priest().talents.shadow.mind_melt.enabled() )
+    {
+      priest().buffs.mind_melt->trigger();
+    }
+
+    if ( priest().talents.shadow.dark_evangelism.enabled() && priest().is_ptr() )
+    {
+      priest().buffs.dark_evangelism->trigger();
+    }
+  }
+};
+
+struct mind_spike_t final : public mind_spike_base_t
+{
+  mind_spike_t( priest_t& p, util::string_view options_str )
+    : mind_spike_base_t( "mind_spike", p, p.talents.shadow.mind_spike )
+  {
+    parse_options( options_str );
+  }
+
+  bool ready() override
+  {
+    if ( priest().buffs.mind_spike_insanity->check() )
+      return false;
+
+    return mind_spike_base_t::ready();
+  }
+};
+
+struct mind_spike_insanity_t final : public mind_spike_base_t
+{
+  mind_spike_insanity_t( priest_t& p, util::string_view options_str )
+    : mind_spike_base_t( "mind_spike_insanity", p, p.talents.shadow.mind_spike_insanity_spell )
+  {
+    parse_options( options_str );
+  }
+
+  
+  void execute() override
+  {
+    mind_spike_base_t::execute();
+    priest().buffs.mind_spike_insanity->decrement();
+  }
+
+  bool ready() override
+  {
+    if ( !priest().buffs.mind_spike_insanity->check() )
+      return false;
+
+    return mind_spike_base_t::ready();
   }
 };
 
@@ -1189,6 +1310,14 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.mind_flay_insanity->trigger();
     }
 
+    if ( priest().talents.shadow.surge_of_insanity.enabled() )
+    {
+      if ( priest().talents.shadow.mind_spike.enabled() )
+        priest().buffs.mind_spike_insanity->trigger();
+      else
+        priest().buffs.mind_flay_insanity->trigger();
+    }
+
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T29, B2 ) )
     {
       priest().buffs.gathering_shadows->expire();
@@ -1501,79 +1630,6 @@ struct dark_void_t final : public priest_spell_t
 
     child_swp->target = s->target;
     child_swp->execute();
-  }
-};
-
-// ==========================================================================
-// Mind Spike
-// ==========================================================================
-struct mind_spike_t final : public priest_spell_t
-{
-  timespan_t manipulation_cdr;
-
-  mind_spike_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_spike", p, p.talents.shadow.mind_spike ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
-
-  {
-    parse_options( options_str );
-    affected_by_shadow_weaving = true;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_spell_t::composite_da_multiplier( s );
-
-    if ( priest().talents.shadow.surge_of_darkness && priest().buffs.surge_of_darkness->check() )
-    {
-      m *= 1 + priest().talents.shadow.surge_of_darkness_buff->effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      priest().trigger_psychic_link( s );
-
-      if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
-      {
-        priest().generate_insanity(
-            priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
-            priest().gains.insanity_whispers_of_the_damned, s->action );
-      }
-
-      if ( priest().talents.shadow.surge_of_darkness.enabled() )
-      {
-        priest().buffs.surge_of_darkness->decrement();
-      }
-
-      priest().buffs.coalescing_shadows->expire();
-    }
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest().talents.manipulation.enabled() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
-
-    if ( priest().talents.shadow.mind_melt.enabled() )
-    {
-      priest().buffs.mind_melt->trigger();
-    }
-
-    if ( priest().talents.shadow.dark_evangelism.enabled() && priest().is_ptr() )
-    {
-      priest().buffs.dark_evangelism->trigger();
-    }
   }
 };
 
@@ -2305,8 +2361,9 @@ void priest_t::create_buffs_shadow()
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
 
-  buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) )
-                                 ->set_default_value( talents.shadow.mind_flay_insanity->effectN( 1 ).percent() );
+  buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
+
+  buffs.mind_spike_insanity = make_buff( this, "mind_spike_insanity", find_spell( 407468 ) );
 
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() );
 
@@ -2406,7 +2463,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_torrent             = ST( "Void Torrent" );
   // Row 8 10.1 PTR
   // Bender
-  // MFI
+  talents.shadow.surge_of_insanity         = ST( "Surge of Insanity" );
+  talents.shadow.mind_spike_insanity_spell = find_spell( 391401 );
   // AS
   // VTor
   // Row 9
@@ -2519,6 +2577,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "mind_spike" )
   {
     return new mind_spike_t( *this, options_str );
+  }
+  if ( name == "mind_spike_insanity" )
+  {
+    return new mind_spike_insanity_t( *this, options_str );
   }
   if ( name == "dark_ascension" )
   {

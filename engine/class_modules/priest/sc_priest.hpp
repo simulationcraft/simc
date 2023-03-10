@@ -146,6 +146,7 @@ public:
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> mind_flay_insanity;
+    propagate_const<buff_t*> mind_spike_insanity;
     propagate_const<buff_t*> deathspeaker;
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
@@ -295,6 +296,8 @@ public:
       player_talent_t deathspeaker;
       player_talent_t mind_flay_insanity;
       const spell_data_t* mind_flay_insanity_spell;
+      player_talent_t surge_of_insanity;
+      const spell_data_t* mind_spike_insanity_spell;
       player_talent_t encroaching_shadows;
       player_talent_t damnation;
       player_talent_t void_torrent;
