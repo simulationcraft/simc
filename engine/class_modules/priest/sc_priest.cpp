@@ -41,6 +41,11 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
+
+    
+    cooldown->charges = data().charges() + p.is_ptr()
+                            ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
+                            : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
   }
 
   void execute() override
@@ -71,8 +76,9 @@ public:
     // buffs up.
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      cooldown->charges =
-          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+      cooldown->charges = data().charges() + priest().is_ptr()
+                              ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
+                              : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
   }
 
@@ -176,15 +182,18 @@ public:
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.shadowy_insight->up() )
     {
-      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
-      if ( priest().buffs.mind_melt->check() == 1 )
+      if ( !priest().is_ptr() )
       {
-        priest().procs.mind_melt_waste->occur();
-      }
-      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
-      if ( priest().buffs.mind_melt->check() != 2 )
-      {
-        priest().buffs.shadowy_insight->decrement();
+        // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+        if ( priest().buffs.mind_melt->check() == 1 )
+        {
+          priest().procs.mind_melt_waste->occur();
+        }
+        // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+        if ( priest().buffs.mind_melt->check() != 2 )
+        {
+          priest().buffs.shadowy_insight->decrement();
+        }
       }
     }
     else
@@ -1025,6 +1034,14 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         priest_td_t& td = get_td( s->target );
         td.buffs.death_and_madness_debuff->trigger();
+      }
+
+      if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr())
+      {
+        if ( result_is_hit( s->result ) )
+        {
+          priest().trigger_psychic_link( s );
+        }
       }
     }
   }
@@ -1957,7 +1974,7 @@ void priest_t::init_base_stats()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    resources.base[ RESOURCE_INSANITY ] = 100.0;
+    resources.base[ RESOURCE_INSANITY ] = 100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
   }
 
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment->effectN( 1 ).percent();
@@ -2170,6 +2187,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
+  action.apply_affecting_aura( talents.shadow.mastermind );
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );

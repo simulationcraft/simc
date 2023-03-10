@@ -2101,6 +2101,7 @@ class SpellDataGenerator(DataGenerator):
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
           ( 393617, 2 ), # Primal Claws energize
+          ( 405191, 2 ), # Overflowing Power
           # Guardian
           ( 370602, 3 ), # Elune's Favored heal
           ( 372505, 3 ), # Ursoc's Fury absorb
