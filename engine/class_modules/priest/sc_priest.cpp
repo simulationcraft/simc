@@ -76,7 +76,7 @@ public:
     // buffs up.
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      cooldown->charges = data().charges() + p.is_ptr()
+      cooldown->charges = data().charges() + priest().is_ptr()
                               ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
                               : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
