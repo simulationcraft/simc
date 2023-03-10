@@ -1233,8 +1233,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     if ( !( p -> talents.wake_of_ashes -> ok() ) || ( p -> talents.radiant_decree -> ok() && ! p -> is_ptr() ) )
       background = true;
 
-    printf("Initializing wake with background: %d\n", background);
-
     may_crit = true;
     full_amount_targets = 1;
     reduced_aoe_targets = 1.0;
