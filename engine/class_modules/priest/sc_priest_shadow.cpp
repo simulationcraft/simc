@@ -387,6 +387,16 @@ struct mind_spike_base_t : public priest_spell_t
       }
 
       priest().buffs.coalescing_shadows->expire();
+
+      if ( priest().is_ptr() && priest().talents.shadow.mental_decay.enabled() )
+      {
+        timespan_t dot_extension =
+            timespan_t::from_seconds( priest().talents.shadow.mental_decay->effectN( 2 ).base_value() );
+        priest_td_t& td = get_td( s->target );
+
+        td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+        td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+      }
     }
   }
 
