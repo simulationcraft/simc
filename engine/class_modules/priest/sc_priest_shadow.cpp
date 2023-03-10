@@ -2451,6 +2451,11 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   {
     return new mind_flay_t( *this, options_str );
   }
+
+  if ( name == "mind_flay_insanity" )
+  {
+    return new mind_flay_insanity_t( *this, options_str );
+  }
   if ( name == "void_bolt" )
   {
     return new void_bolt_t( *this, options_str );
