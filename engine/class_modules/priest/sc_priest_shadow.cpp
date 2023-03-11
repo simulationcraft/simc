@@ -628,7 +628,7 @@ struct shadowy_apparition_state_t : public action_state_t
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, "source_crit={}, number_spawned={}", source_crit, number_spawned );
+    fmt::print( s, " source_crit={}, number_spawned={}", source_crit, number_spawned );
     return s;
   }
 
@@ -777,20 +777,30 @@ public:
     return static_cast<const state_t*>( s );
   }
 
+  void impact( action_state_t* s ) override
+  {
+    auto state = impact_action->get_state( s );
+    impact_action->snapshot_state( state, impact_action->amount_type( state ) );
+    impact_action->schedule_execute( state );
+  }
+
   /** Trigger a shadowy apparition */
   void trigger( player_t* target, proc_t* proc, bool _gets_crit_mod, int vts )
   {
     player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}. crit_mod={}, vts_active={}",
                               priest(), *target, proc->name(), _gets_crit_mod, vts );
 
-    state_t* s = cast_state( get_state( pre_execute_state ) );
+    state_t* s = cast_state( get_state() );
+
+    snapshot_state( s, amount_type( s ) );
 
     s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
-
+    s->target         = target;
+    
     proc->occur();
-    set_target( target );
-    execute();
+
+    schedule_execute( s );
 
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1081
     if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug &&
@@ -1158,13 +1168,14 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       if ( priest().talents.shadow.maddening_touch.enabled() )
       {
-        // TODO: 10.1 Proc Chance is not in Spell Data
-        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() && rng().roll( 0.5 ) )
+        // TODO: 10.1 Proc Chance is not in Spell Data, this is a massive guess.
+        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() &&
+             rng().roll( 0.25 / sqrt( priest().get_active_dots( internal_id ) ) ) )
         {
-          priest().generate_insanity(
-              priest().talents.shadow.maddening_touch_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
-              priest().gains.insanity_maddening_touch, d->state->action );
           priest().cooldowns.maddening_touch_icd->start();
+          priest().generate_insanity(
+              priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
+              priest().gains.insanity_maddening_touch, d->state->action );
         }
         else if ( rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
         {
