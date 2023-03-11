@@ -119,10 +119,6 @@ public:
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
-    if ( priest().talents.discipline.expiation.enabled() )
-    {
-      m *= 1 + priest().talents.discipline.expiation->effectN( 1 ).percent();
-    }
     return m;
   }
 
@@ -170,18 +166,17 @@ public:
       }
 
       priest().buffs.coalescing_shadows->expire();
+      if ( priest().talents.discipline.expiation.enabled() )
+      {
+        impact_action = new expiation_t( priest() );
+        add_child( impact_action );
+        impact_action->execute_on_target( s->target );
+      }
     }
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
       priest().buffs.harsh_discipline->trigger();
-    }
-
-    if ( priest().talents.discipline.expiation.enabled() )
-    {
-      impact_action = new expiation_t( priest() );
-      add_child( impact_action );
-      impact_action->execute_on_target( s->target );
     }
   }
 
@@ -1062,6 +1057,13 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         priest_td_t& td = get_td( s->target );
         td.buffs.death_and_madness_debuff->trigger();
+      }
+
+      if ( priest().talents.discipline.expiation.enabled() )
+      {
+        impact_action = new expiation_t( priest() );
+        add_child( impact_action );
+        impact_action->execute_on_target( s->target );
       }
     }
   }
@@ -2210,6 +2212,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
+  action.apply_affecting_aura( talents.discipline.expiation );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
