@@ -221,6 +221,7 @@ public:
     gain_t* hp_divine_toll;
     gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
+    gain_t* hp_divine_auxiliary;
   } gains;
 
   // Spec Passives
@@ -583,7 +584,7 @@ public:
     const spell_data_t* divine_retribution;
     const spell_data_t* blades_of_light;
     const spell_data_t* burning_crusade;
-    const spell_data_t* physical_presence;
+    const spell_data_t* divine_arbiter;
     const spell_data_t* divine_auxiliary;
     const spell_data_t* seething_flames;
     const spell_data_t* searing_light;
@@ -866,6 +867,11 @@ struct execution_sentence_debuff_t : public buff_t
     // unclear if this is intended
     if ( p->talents.executioners_wrath->ok() && !( p->bugs ) )
       accum_percent = p->talents.executioners_wrath->effectN( 2 ).percent();
+
+    if ( p->is_ptr() && p->talents.executioners_will->ok() )
+    {
+      modify_duration( timespan_t::from_millis( p->talents.executioners_will->effectN( 1 ).base_value() ) );
+    }
   }
 
   void reset() override
@@ -1136,7 +1142,7 @@ public:
           td -> debuff.reckoning -> expire();
       }
 
-      if ( ab::harmful )
+      if ( ab::harmful && ! p() -> is_ptr() )
       {
         if ( p() -> talents.final_reckoning -> ok() && p() -> cooldowns.final_reckoning -> up() )
         {
@@ -1149,7 +1155,6 @@ public:
           }
         }
       }
-
 
       paladin_td_t* td = this -> td( s -> target );
       if ( td -> debuff.reckoning -> up() )

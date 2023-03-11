@@ -284,7 +284,7 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
     parse_options( options_str );
 
     // disable if not talented
-    if ( ! ( p -> talents.execution_sentence -> ok() ) )
+    if ( p -> is_ptr() || ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
 
     // Spelldata doesn't seem to have this
@@ -315,6 +315,58 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
   void impact( action_state_t* s) override
   {
     holy_power_consumer_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> debuff.execution_sentence -> trigger();
+    }
+  }
+};
+
+struct ptr_execution_sentence_t : public paladin_melee_attack_t
+{
+  ptr_execution_sentence_t( paladin_t* p, util::string_view options_str ) :
+    paladin_melee_attack_t( "execution_sentence", p, p -> talents.execution_sentence )
+  {
+    parse_options( options_str );
+
+    // disable if not talented
+    if ( ! ( p -> talents.execution_sentence -> ok() && p -> is_ptr() ) )
+      background = true;
+
+    // Spelldata doesn't seem to have this
+    hasted_gcd = true;
+
+    // ... this appears to be true for the base damage only,
+    // and is not automatically obtained from spell data.
+    affected_by.hand_of_light = true;
+
+    // unclear why this is needed...
+    cooldown -> duration = data().cooldown();
+  }
+
+  void init() override
+  {
+    paladin_melee_attack_t::init();
+    snapshot_flags |= STATE_TARGET_NO_PET | STATE_MUL_TA | STATE_MUL_DA;
+    update_flags &= ~STATE_TARGET;
+    update_flags |= STATE_MUL_TA | STATE_MUL_DA;
+  }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p()->talents.divine_auxiliary->ok() )
+    {
+      p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.divine_auxiliary->effectN( 1 ).base_value(),
+                            p()->gains.hp_divine_auxiliary );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -898,7 +950,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
 
     paladin_td_t* tgt = td( s -> target );
-    if ( p() -> talents.executioners_will -> ok() && tgt -> debuff.execution_sentence -> up() )
+    if ( p() -> talents.executioners_will -> ok() && tgt -> debuff.execution_sentence -> up() && !p() -> is_ptr())
     {
       tgt -> debuff.execution_sentence -> do_will_extension();
     }
@@ -951,6 +1003,19 @@ struct final_reckoning_t : public paladin_spell_t
 
     if ( ! ( p -> talents.final_reckoning -> ok() ) )
       background = true;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    if ( p() -> is_ptr() )
+    {
+      if ( p()->talents.divine_auxiliary->ok() )
+      {
+        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.divine_auxiliary->effectN( 1 ).base_value(),
+                              p()->gains.hp_divine_auxiliary );
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1547,7 +1612,7 @@ void paladin_t::create_ret_actions()
     active.zeal = new zeal_t( this );
   }
 
-  if ( talents.final_reckoning->ok() )
+  if ( talents.final_reckoning->ok() && !is_ptr() )
   {
     active.reckoning = new reckoning_t( this );
   }
@@ -1591,7 +1656,6 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
-  if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
@@ -1603,16 +1667,18 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( is_ptr() )
   {
     if ( name == "divine_hammer" ) return new divine_hammer_t( this, options_str );
+    if ( name == "execution_sentence" ) return new ptr_execution_sentence_t( this, options_str );
   }
   else
   {
     if ( name == "radiant_decree" ) return new radiant_decree_t( this, options_str );
     if ( name == "exorcism" ) return new exorcism_t( this, options_str );
+    if ( name == "execution_sentence" ) return new execution_sentence_t( this, options_str );
   }
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
-    if ( name == "judgment") return new judgment_ret_t( this, "judgment", options_str );
+    if ( name == "judgment" ) return new judgment_ret_t( this, "judgment", options_str );
   }
 
   return nullptr;

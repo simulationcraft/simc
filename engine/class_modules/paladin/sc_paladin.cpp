@@ -2445,8 +2445,14 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   }
 
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
+
   debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                 ->set_cooldown( 0_ms );  // handled by ability
+  if ( paladin->is_ptr() && paladin->talents.executioners_will->ok() )
+  {
+    debuff.final_reckoning = debuff.final_reckoning->modify_duration( timespan_t::from_millis( paladin->talents.executioners_will->effectN( 1 ).base_value() ) );
+  }
+
   debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
   debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                                 ->set_default_value( paladin->conduit.vengeful_shock.percent() );
@@ -2804,6 +2810,7 @@ void paladin_t::init_gains()
   gains.hp_divine_toll             = get_gain( "divine_toll" );
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
+  gains.hp_divine_auxiliary        = get_gain( "divine_auxiliary" );
 }
 
 // paladin_t::init_procs ====================================================
