@@ -349,7 +349,6 @@ struct mind_spike_base_t : public priest_spell_t
   mind_spike_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
     : priest_spell_t( n, p, s ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
-
   {
     affected_by_shadow_weaving = true;
   }
@@ -2585,7 +2584,7 @@ void priest_t::init_spells_shadow()
   // Row 8 10.1 PTR
   // Bender
   talents.shadow.surge_of_insanity         = ST( "Surge of Insanity" );
-  talents.shadow.mind_spike_insanity_spell = find_spell( 391401 );
+  talents.shadow.mind_spike_insanity_spell = find_spell( 407466 );
   // AS
   // VTor
   // Row 9
