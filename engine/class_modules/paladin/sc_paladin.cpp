@@ -30,7 +30,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     beacon_target( nullptr ),
     lucid_dreams_accumulator( 0.0 ),
     next_season( SUMMER ),
-    holy_power_generators_used( 0 )
+    holy_power_generators_used( 0 ),
+    melee_swing_count( 0 )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
@@ -73,6 +74,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
   cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
+
+  cooldowns.consecrated_blade_icd = get_cooldown( "consecrated_blade_icd" );
+  cooldowns.consecrated_blade_icd->duration = timespan_t::from_seconds( 10 );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -865,12 +869,59 @@ struct seal_of_the_crusader_t : public paladin_spell_t
   }
 };
 
+struct crusading_strike_t : public paladin_melee_attack_t
+{
+  crusading_strike_t( paladin_t* p )
+    : paladin_melee_attack_t( "crusading_strike", p, p -> find_spell( 408385 ) )
+  {
+    background = true;
+    trigger_gcd = 0_ms;
+
+    if ( p->talents.blessed_champion->ok() )
+    {
+      aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
+      base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+    }
+
+    if ( p->talents.heart_of_the_crusader->ok() )
+    {
+      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
+    }
+  }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+    p()->melee_swing_count++;
+    if ( p()->melee_swing_count % as<int>( p()->talents.crusading_strikes->effectN( 3 ).base_value() ) == 0 )
+    {
+      p()->resource_gain(
+        RESOURCE_HOLY_POWER,
+        as<int>( p()->talents.crusading_strikes->effectN( 4 ).base_value() ),
+        p()->gains.hp_crusading_strikes
+      );
+    }
+
+    if ( p()->talents.empyrean_power->ok() )
+    {
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 2 ).percent() ) )
+      {
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
+      }
+    }
+  }
+};
+
 struct melee_t : public paladin_melee_attack_t
 {
   bool first;
   seal_of_the_crusader_t* seal_of_the_crusader;
+  crusading_strike_t* crusading_strike;
+
   melee_t( paladin_t* p )
-    : paladin_melee_attack_t( "melee", p, spell_data_t::nil() ), first( true ), seal_of_the_crusader( nullptr )
+    : paladin_melee_attack_t( "melee", p, spell_data_t::nil() ), first( true ), seal_of_the_crusader( nullptr ), crusading_strike( nullptr )
   {
     school            = SCHOOL_PHYSICAL;
     special           = false;
@@ -881,6 +932,14 @@ struct melee_t : public paladin_melee_attack_t
     trigger_gcd       = 0_ms;
     base_execute_time = p->main_hand_weapon.swing_time;
     weapon_multiplier = 1.0;
+
+    if ( p->is_ptr() && p->talents.crusading_strikes->ok() )
+    {
+      crusading_strike = new crusading_strike_t( p );
+      add_child( crusading_strike );
+      impact_action = crusading_strike;
+      weapon_multiplier = 0.0;
+    }
 
     affected_by.avenging_wrath = affected_by.crusade = affected_by.blessing_of_dawn = true;
 
@@ -986,10 +1045,13 @@ struct melee_t : public paladin_melee_attack_t
         vc->schedule_execute();
       }
 
-      if ( p()->is_ptr() && p()->talents.seal_of_the_crusader->ok() )
+      if ( p()->is_ptr() )
       {
-        seal_of_the_crusader->target = execute_state->target;
-        seal_of_the_crusader->schedule_execute();
+        if ( p()->talents.seal_of_the_crusader->ok() )
+        {
+          seal_of_the_crusader->target = execute_state->target;
+          seal_of_the_crusader->schedule_execute();
+        }
       }
     }
   }
@@ -1072,6 +1134,11 @@ struct crusader_strike_t : public paladin_melee_attack_t
       {
         crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
         base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
+      }
+
+      if ( p->talents.crusading_strikes->ok() || p->talents.templar_strikes->ok() )
+      {
+        background = true;
       }
     }
   }
@@ -2378,8 +2445,14 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   }
 
   debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
+
   debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                 ->set_cooldown( 0_ms );  // handled by ability
+  if ( paladin->is_ptr() && paladin->talents.executioners_will->ok() )
+  {
+    debuff.final_reckoning = debuff.final_reckoning->modify_duration( timespan_t::from_millis( paladin->talents.executioners_will->effectN( 1 ).base_value() ) );
+  }
+
   debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
   debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                                 ->set_default_value( paladin->conduit.vengeful_shock.percent() );
@@ -2709,6 +2782,8 @@ void paladin_t::reset()
   active_aura         = nullptr;
 
   next_season = SUMMER;
+  holy_power_generators_used = 0;
+  melee_swing_count = 0;
 }
 
 // paladin_t::init_gains ====================================================
@@ -2734,6 +2809,8 @@ void paladin_t::init_gains()
   gains.hp_sanctification          = get_gain( "sanctification" );
   gains.hp_divine_toll             = get_gain( "divine_toll" );
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
+  gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
+  gains.hp_divine_auxiliary        = get_gain( "divine_auxiliary" );
 }
 
 // paladin_t::init_procs ====================================================

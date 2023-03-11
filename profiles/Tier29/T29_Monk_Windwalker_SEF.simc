@@ -253,7 +253,9 @@ actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remai
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 actions.st_cleave+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=(combo_strike&chi>5&talent.storm_earth_and_fire|combo_strike&chi>4&talent.serenity)
 
-actions.trinkets=use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger|fight_remains<6
+# Trinkets
+actions.trinkets=use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)
+actions.trinkets+=/use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger|fight_remains<6
 actions.trinkets+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up&(trinket.1.cooldown.remains|trinket.2.cooldown.remains|!trinket.1.cooldown.duration|!trinket.2.cooldown.duration)|fight_remains<5
 
 head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991

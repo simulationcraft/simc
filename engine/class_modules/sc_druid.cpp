@@ -1932,8 +1932,6 @@ public:
 
     // Feral
     parse_buff_effects( p()->buff.apex_predators_craving );
-    parse_buff_effects( p()->buff.berserk_cat );
-    parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, true, true );
     parse_buff_effects( p()->buff.sharpened_claws );
@@ -2843,6 +2841,7 @@ public:
     bool tigers_fury;
     bool bloodtalons;
     bool clearcasting;
+    bool berserk;
   } snapshots;
 
   snapshot_counter_t* bt_counter = nullptr;
@@ -2874,6 +2873,9 @@ public:
 
       snapshots.clearcasting =
           parse_persistent_buff_effects( p->buff.clearcasting_cat, 0U, false, p->talent.moment_of_clarity );
+
+      snapshots.berserk =
+          parse_persistent_buff_effects( p->buff.b_inc_cat, 0U, false );
 
       parse_passive_effects( p->mastery.razor_claws );
     }
@@ -11003,7 +11005,13 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
   auto over = amount - actual;
 
   if ( is_ptr() && r == RESOURCE_COMBO_POINT && g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
+  {
+    auto avail = std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
+    if ( avail > 0 )
+      g->overflow[ r ] -= avail;
+
     buff.overflowing_power->trigger( over );
+  }
 
   return actual;
 }

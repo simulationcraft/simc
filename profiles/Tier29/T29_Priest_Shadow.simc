@@ -64,7 +64,7 @@ actions.aoe+=/mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldow
 actions.aoe+=/mindgames,if=spell_targets.mind_sear<5&dot.devouring_plague.ticking|talent.psychic_link
 actions.aoe+=/void_torrent,if=insanity<=35&!talent.psychic_link,target_if=variable.dots_up
 # High priority action for Mind Flay: Insanity to fish for Idol of C'Thun procs
-actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.remains>=5&talent.idol_of_cthun,interrupt_if=ticks>=2,interrupt_immediate=1
+actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&buff.surge_of_darkness.remains>=5&talent.idol_of_cthun&buff.surge_of_darkness.stack<=2,interrupt_if=ticks>=2,interrupt_immediate=1
 actions.aoe+=/call_action_list,name=filler
 
 

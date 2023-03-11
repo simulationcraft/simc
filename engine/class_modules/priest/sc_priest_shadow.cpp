@@ -212,14 +212,11 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 // Mind Flay
 // ==========================================================================
-struct mind_flay_base_t : public priest_spell_t
+struct mind_flay_base_t final : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
-  timespan_t manipulation_cdr;
 
-  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s )
-    : priest_spell_t( n, p, s ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
     may_crit                   = false;
@@ -266,6 +263,53 @@ struct mind_flay_base_t : public priest_spell_t
     }
   }
 
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    // Track when the APL/sim cancels MF:I before you get all ticks off
+    if ( this->id == 391403 && d->current_tick < d->num_ticks() )
+    {
+      player->sim->print_debug( "{} ended {} at {} tick. total ticks={}", priest(), d->name_str, d->current_tick,
+                                d->num_ticks() );
+      priest().procs.mind_flay_insanity_wasted->occur();
+    }
+  }
+};
+
+struct mind_flay_t final : public priest_spell_t
+{
+  timespan_t manipulation_cdr;
+
+  mind_flay_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
+      _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
+      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+  {
+    parse_options( options_str );
+
+    add_child( _base_spell );
+  }
+
+  void execute() override
+  {
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
+    if ( priest().buffs.mind_flay_insanity->check() )
+    {
+      _insanity_spell->execute();
+      priest().buffs.mind_flay_insanity->expire();
+    }
+    else
+    {
+      _base_spell->execute();
+    }
+  }
+
   bool ready() override
   {
     if ( priest().is_ptr() && priest().talents.shadow.mind_spike.enabled() )
@@ -276,67 +320,10 @@ struct mind_flay_base_t : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-  void execute() override
-  {
-    if ( priest().talents.manipulation.enabled() )
-    {
-      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-    }
 
-    priest_spell_t::execute();
-  }
-};
-
-struct mind_flay_insanity_t final : public mind_flay_base_t
-{
-  mind_flay_insanity_t( priest_t& p, util::string_view options_str )
-    : mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell )
-  {
-    parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    mind_flay_base_t::execute();
-    priest().buffs.mind_flay_insanity->decrement();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    priest_spell_t::last_tick( d );
-
-    // Track when the APL/sim cancels MF:I before you get all ticks off
-    if ( d->current_tick < d->num_ticks() )
-    {
-      player->sim->print_debug( "{} ended {} at {} tick. total ticks={}", priest(), d->name_str, d->current_tick,
-                                d->num_ticks() );
-      priest().procs.mind_flay_insanity_wasted->occur();
-    }
-  }
-
-  bool ready() override
-  {
-    if ( !priest().buffs.mind_flay_insanity->check() )
-      return false;
-
-    return mind_flay_base_t::ready();
-  }
-};
-
-struct mind_flay_t final : public mind_flay_base_t
-{
-  mind_flay_t( priest_t& p, util::string_view options_str ) : mind_flay_base_t( "mind_flay", p, p.specs.mind_flay )
-  {
-    parse_options( options_str );
-  }
-
-  bool ready() override
-  {
-    if ( priest().buffs.mind_flay_insanity->check() )
-      return false;
-
-    return mind_flay_base_t::ready();
-  }
+private:
+  propagate_const<action_t*> _base_spell;
+  propagate_const<action_t*> _insanity_spell;
 };
 
 // ==========================================================================
@@ -1616,6 +1603,10 @@ struct dark_ascension_t final : public priest_spell_t
     parse_options( options_str );
 
     may_miss = false;
+
+    // Turn off the dummy periodic effect
+    base_td_multiplier = 0;
+    dot_duration       = timespan_t::from_seconds( 0 );
   }
 
   void execute() override
@@ -2641,10 +2632,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "mind_flay" )
   {
     return new mind_flay_t( *this, options_str );
-  }
-  if ( name == "mind_flay_insanity" )
-  {
-    return new mind_flay_insanity_t( *this, options_str );
   }
   if ( name == "void_bolt" )
   {
