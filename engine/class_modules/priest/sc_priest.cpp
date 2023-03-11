@@ -19,6 +19,10 @@ namespace actions
 {
 namespace spells
 {
+
+// ==========================================================================
+// Expiation
+// ==========================================================================
 struct expiation_t final : public priest_spell_t
 {
   timespan_t consume_time;
