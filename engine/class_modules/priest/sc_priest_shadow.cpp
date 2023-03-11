@@ -635,7 +635,7 @@ struct shadowy_apparition_state_t : public action_state_t
   void initialize() override
   {
     action_state_t::initialize();
-    source_crit = 1.0;
+    source_crit    = 1.0;
     number_spawned = 1.0;
   }
 
@@ -699,8 +699,7 @@ public:
       return m;
     }
 
-    
-  action_state_t* new_state() override
+    action_state_t* new_state() override
     {
       return new state_t( this, target );
     }
@@ -738,7 +737,7 @@ public:
           }
         }
       }
-      
+
       if ( priest().talents.shadow.puppet_master.enabled() && rng().roll( coalescing_shadows_chance ) )
       {
         priest().buffs.coalescing_shadows->trigger();
@@ -781,12 +780,12 @@ public:
   /** Trigger a shadowy apparition */
   void trigger( player_t* target, proc_t* proc, bool _gets_crit_mod, int vts )
   {
-    player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}. crit_mod={}, vts_active={}", priest(), *target,
-                              proc->name(), _gets_crit_mod, vts );
+    player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}. crit_mod={}, vts_active={}",
+                              priest(), *target, proc->name(), _gets_crit_mod, vts );
 
     state_t* s = cast_state( get_state( pre_execute_state ) );
 
-    s->source_crit = _gets_crit_mod ? 2.0 : 1.0;
+    s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
 
     proc->occur();
@@ -2305,18 +2304,17 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
     this->reactable = true;
 
     // Create a stack change callback to adjust the number of Mind Blast charges.
-    set_stack_change_callback(
-        [ this ]( buff_t*, int old, int cur ) { 
-            if ( priest().is_ptr() )
-            {
-              if ( cur > old )
-                priest().cooldowns.mind_blast->reset( true );
-            }
-            else
-            {
-              priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); 
-            }
-        } );
+    set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+      if ( priest().is_ptr() )
+      {
+        if ( cur > old )
+          priest().cooldowns.mind_blast->reset( true );
+      }
+      else
+      {
+        priest().cooldowns.mind_blast->adjust_max_charges( cur - old );
+      }
+    } );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -2357,8 +2355,11 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
     set_period( timespan_t::from_seconds( 1 ) );
     set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
 
-    set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
-    set_max_stack( 20 );                                 // 20/20;
+    if ( p.is_ptr() )
+      set_default_value( data().effectN( 2 ).percent() / 10 );  // 0.5%/1%
+    else
+      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
+    set_max_stack( 20 );                                   // 20/20;
   }
 };
 
