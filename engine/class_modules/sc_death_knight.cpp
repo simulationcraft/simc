@@ -8960,7 +8960,7 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  if( buffs.bone_shield -> up() )
+  if( buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
   {
     haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() );
   }
@@ -8974,7 +8974,7 @@ double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
-  if( buffs.bone_shield -> up() )
+  if( buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
   {
     haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() );
   }
@@ -9548,7 +9548,6 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
-        -> set_default_value( talent.blood.improved_bone_shield ? spell.bone_shield -> effectN( 4 ).percent() : 0.0 ) // Haste buff
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
