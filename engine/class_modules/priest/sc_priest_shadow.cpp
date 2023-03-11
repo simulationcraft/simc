@@ -1616,6 +1616,10 @@ struct dark_ascension_t final : public priest_spell_t
     parse_options( options_str );
 
     may_miss = false;
+
+    // Turn off the dummy periodic effect
+    base_td_multiplier = 0;
+    dot_duration       = timespan_t::from_seconds( 0 );
   }
 
   void execute() override
