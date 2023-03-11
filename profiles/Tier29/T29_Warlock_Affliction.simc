@@ -71,7 +71,9 @@ actions.aoe+=/haunt
 actions.aoe+=/vile_taint
 actions.aoe+=/phantom_singularity
 actions.aoe+=/soul_rot
+actions.aoe+=/unstable_affliction,if=remains<5
 actions.aoe+=/seed_of_corruption,if=dot.corruption.remains<5
+actions.aoe+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3&talent.doom_blossom
 actions.aoe+=/agony,target_if=remains<5,if=active_dot.agony<5
 actions.aoe+=/summon_darkglare
 actions.aoe+=/seed_of_corruption,if=talent.sow_the_seeds
