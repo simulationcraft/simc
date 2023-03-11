@@ -797,7 +797,7 @@ public:
     s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
     s->target         = target;
-    
+
     proc->occur();
 
     schedule_execute( s );
@@ -806,7 +806,7 @@ public:
     if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug &&
          !priest().is_ptr() )
     {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, execute_state->action );
+      priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
   }
 };
