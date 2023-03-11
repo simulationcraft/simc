@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.0.7.48076
-static const std::array<gem_property_data_t, 2083> __ptr_gem_property_data { {
+// Gem properties, wow build 10.1.0.48480
+static const std::array<gem_property_data_t, 2084> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2067,21 +2067,22 @@ static const std::array<gem_property_data_t, 2083> __ptr_gem_property_data { {
   { 4041,  6766, 0x02000000 }, // |C0000D1FFFreezing Ice Stone
   { 4042,  6767, 0x02000000 }, // |C0000D1FFCold Frost Stone
   { 4043,  6768, 0x02000000 }, // |C0000D1FFExuding Steam Stone
-  { 4044,  6769, 0x02000000 }, // |C00C942FDSparkling Mana Stone
-  { 4045,  6770, 0x02000000 }, // |C00B84EFFSwirling Mojo Stone
+  { 4044,  6769, 0x02000000 }, // |C00E97DFFSparkling Mana Stone
+  { 4045,  6770, 0x02000000 }, // |C00834FFFSwirling Mojo Stone
   { 4046,  6771, 0x02000000 },
   { 4047,  6772, 0x02000000 },
-  { 4048,  6773, 0x02000000 }, // |C00C942FDHumming Arcane Stone
-  { 4049,  6774, 0x02000000 }, // |C00C942FDHarmonic Music Stone
+  { 4048,  6773, 0x02000000 }, // |C00E97DFFHumming Arcane Stone
+  { 4049,  6774, 0x02000000 }, // |C00E97DFFHarmonic Music Stone
   { 4050,  6775, 0x02000000 }, // |C0040C040Wild Spirit Stone
   { 4051,  6776, 0x02000000 }, // |C00FF516CNecromantic Death Stone
   { 4052,  6777, 0x02000000 }, // |C0040C040Pestilent Plague Stone
   { 4053,  6778, 0x02000000 },
   { 4054,  6779, 0x02000000 },
-  { 4055,  6780, 0x02000000 }, // |C00C942FDObscure Pastel Stone
+  { 4055,  6780, 0x02000000 }, // |C00E97DFFObscure Pastel Stone
   { 4056,  6781, 0x02000000 },
   { 4057,  6782, 0x02000000 }, // |C00FF516CDesirous Blood Stone
   { 4058,  6783, 0x02000000 },
-  { 4059,  6784, 0x02000000 }, // |C00B84EFFProphetic Twilight Stone
+  { 4059,  6784, 0x02000000 }, // |C00834FFFProphetic Twilight Stone
+  { 4060,  6831, 0x01000000 }, // $spell@spelldesc407949
 } };
 

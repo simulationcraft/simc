@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.7.48076
-static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
+// Active class spells, wow build 10.1.0.48480
+static const std::array<active_class_spell_t, 270> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -148,7 +148,6 @@ static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   {  7,    0,   6196,      0, "Far Sight"                          },
   {  7,    0,   8004,      0, "Healing Surge"                      },
   {  7,    0,  32182,      0, "Heroism"                            },
-  {  7,    0,  52127,      0, "Water Shield"                       },
   {  7,    0,  73899,      0, "Primal Strike"                      },
   {  7,    0, 114074,      0, "Lava Beam"                          },
   {  7,    0, 188196,      0, "Lightning Bolt"                     },
@@ -273,7 +272,7 @@ static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.7.48076
+// Pet active spells, wow build 10.1.0.48480
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

@@ -686,7 +686,14 @@ custom_cb_t idol_of_the_aspects( std::string_view type )
 
     effect.custom_buff = buff;
 
-    new dbc_proc_callback_t( effect.player, effect );
+    auto cb = new dbc_proc_callback_t( effect.player, effect );
+
+    gift->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
 
     effect.player->callbacks.register_callback_execute_function(
         effect.driver()->id(), [ buff, gems ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
@@ -1190,24 +1197,6 @@ void emerald_coachs_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, *coached );
 }
 
-struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
-{
-  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
-
-  void operator()( actor_target_data_t* td ) const override
-  {
-    if ( !find_effect( td->source ) )
-    {
-      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
-      return;
-    }
-
-    assert( !td->debuff.grudge );
-    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
-    td->debuff.grudge->reset();
-  }
-};
-
 void erupting_spear_fragment( special_effect_t& effect )
 {
   struct erupting_spear_fragment_t : public generic_aoe_proc_t
@@ -1336,6 +1325,24 @@ void shikaari_huntress_arrowhead( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+struct spiteful_storm_initializer_t : public item_targetdata_initializer_t
+{
+  spiteful_storm_initializer_t() : item_targetdata_initializer_t( 377466 ) {}
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.grudge = make_buff( *td, "grudge" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.grudge );
+    td->debuff.grudge = make_buff( *td, "grudge", td->source->find_spell( 382428 ) );
+    td->debuff.grudge->reset();
+  }
+};
+
 void spiteful_storm( special_effect_t& effect )
 {
   struct spiteful_stormbolt_t : public generic_proc_t
@@ -1404,7 +1411,8 @@ void spiteful_storm( special_effect_t& effect )
   auto cb = new dbc_proc_callback_t( effect.player, effect );
 
   auto gathering = create_buff<buff_t>( effect.player, "gathering_storm_trinket", effect.player->find_spell( 394864 ) );
-  gathering->set_default_value( 0.1 );  // increases damage by 10% per stack, value from testing, not found in spell data
+  // build 48317: tested to increase damage by 25% per stack, not found in spell data
+  gathering->set_default_value( 0.25 );
   gathering->set_name_reporting( "gathering_storm" );
 
   auto stormbolt = debug_cast<spiteful_stormbolt_t*>(
@@ -3701,8 +3709,8 @@ void elemental_lariat( special_effect_t& effect )
     { "Steady Nozdorite",       FROST_GEM },
   };
 
-  // TODO: does having more of a type increase the chances of getting that buff?
-  unsigned gems = 0;
+  unsigned gem_mask = 0;
+  unsigned gem_count = 0;
   for ( const auto& item : effect.player->items )
   {
     for ( auto gem_id : item.parsed.gem_id )
@@ -3712,20 +3720,27 @@ void elemental_lariat( special_effect_t& effect )
         auto n = effect.player->dbc->item( gem_id ).name;
         auto it = range::find( gem_types, n, &gem_name_type::first );
         if ( it != std::end( gem_types ) )
-          gems |= ( *it ).second;
+        {
+          gem_mask |= ( *it ).second;
+          gem_count++;
+        }
       }
     }
   }
 
-  if ( !gems )
+  if ( !gem_mask )
     return;
 
   auto val = effect.driver()->effectN( 1 ).average( effect.item );
-  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto dur = effect.player->is_ptr()
+                 ? timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() +
+                                             effect.driver()->effectN( 2 ).base_value() * gem_count )
+                 : timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
-  auto add_buff = [ &effect, gems, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
-    if ( gems & type )
+  auto add_buff = [ &effect, cb, gem_mask, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
+    if ( gem_mask & type )
     {
       auto name = "elemental_lariat__empowered_" + suf;
       auto buff = buff_t::find( effect.player, name );
@@ -3733,7 +3748,16 @@ void elemental_lariat( special_effect_t& effect )
       {
         buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( id ) )
           ->add_stat( stat, val )
-          ->set_duration( dur );
+          ->set_duration( dur )
+          // TODO: confirm the driver is disabled while the buff is up. alternatively it could be:
+          // 1) proc triggers but is ignore while buff is up
+          // 2) proc does not trigger but builds blp while buff is up
+          ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+            if ( new_ )
+              cb->deactivate();
+            else
+              cb->activate();
+          } );
       }
       buffs.push_back( buff );
     }
@@ -3744,11 +3768,8 @@ void elemental_lariat( special_effect_t& effect )
   add_buff( FIRE_GEM, "flame", 375335, STAT_CRIT_RATING );
   add_buff( FROST_GEM, "frost", 375343, STAT_VERSATILITY_RATING );
 
-  new dbc_proc_callback_t( effect.player, effect );
-
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        range::for_each( buffs, []( buff_t* b ) { b->expire(); } );
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
 }

@@ -569,6 +569,7 @@
   },
   "ItemBonusListGroupEntry": {
     "fields": [
+      { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_item_bonus_list_group", "ref": "ItemBonusListGroup"  },
       { "data_type": "i", "field": "id_item_bonus_list" },
       { "data_type": "i", "field": "id_item_level_selector", "ref": "ItemLevelSelector" },

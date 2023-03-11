@@ -691,6 +691,8 @@ enum school_e
   SCHOOL_MAX
 };
 
+const school_e SCHOOL_RADIANT = SCHOOL_HOLYFIRE;
+
 enum school_mask_e
 {
   SCHOOL_MASK_PHYSICAL = 0x01,
@@ -1057,6 +1059,7 @@ enum scale_metric_e
   SCALE_METRIC_TMI,
   SCALE_METRIC_ETMI,
   SCALE_METRIC_DEATHS,
+  SCALE_METRIC_TIME,
   SCALE_METRIC_MAX
 };
 

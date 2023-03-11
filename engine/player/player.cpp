@@ -12815,6 +12815,8 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       return { metric, q->collected_data.effective_theck_meloree_index };
     case SCALE_METRIC_DEATHS:
       return { metric, q->collected_data.deaths };
+    case SCALE_METRIC_TIME:
+      return { metric, q->collected_data.fight_length };
     default:
       if ( q->primary_role() == ROLE_TANK )
         return { SCALE_METRIC_DTPS, q->collected_data.dtps };

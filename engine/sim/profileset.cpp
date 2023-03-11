@@ -1007,6 +1007,7 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
     case SCALE_METRIC_TMI:       return collect( d.theck_meloree_index );
     case SCALE_METRIC_ETMI:      return collect( d.effective_theck_meloree_index );
     case SCALE_METRIC_DEATHS:    return collect( d.deaths );
+    case SCALE_METRIC_TIME:      return collect( d.fight_length );
     case SCALE_METRIC_HAPS:
     {
       auto hps = collect( d.hps );

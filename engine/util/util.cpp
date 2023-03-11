@@ -1844,6 +1844,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "Theck-Meloree-Index";
     case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
+    case SCALE_METRIC_TIME:      return "Fight Length";
     default:                     return "Unknown";
   }
 }
@@ -1867,6 +1868,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "tmi";
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
+    case SCALE_METRIC_TIME:      return "time";
     default:                     return "unknown";
   }
 }

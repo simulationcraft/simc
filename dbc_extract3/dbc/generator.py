@@ -1612,6 +1612,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
             ( 393685, 0 ),          # Priest Shadow Class Set 4-set
             ( 394963, 0 ),          # Dark Reveries T29 4-set buff
+            ( 377355, 0 ),          # Idol of C'thun Duration
             ( 377358, 5 ),          # Idol of C'thun Insanity values
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
@@ -1623,6 +1624,9 @@ class SpellDataGenerator(DataGenerator):
             ( 390981, 0 ),          # Divine Star Heal Spell
             ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
             ( 373281, 0 ),          # Idol of N'Zoth Echoing Void debuff
+            ( 373213, 0 ),          # Insidious Ire Buff
+            ( 407468, 0 ),          # Mind Spike Insanity Buff
+            ( 391232, 0 ),          # Maddening Touch Insanity
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -2036,7 +2040,7 @@ class SpellDataGenerator(DataGenerator):
           ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
-          ( 211547, 1 ),       # Fury of Elune move spell
+          ( 211547, 1 ), ( 281871, 1 ), # Fury of Elune
           ( 106829, 0 ), ( 48629, 0 ), # Bear/Cat form swipe/thrash replacement
           ( 106899, 0 ), ( 106840, 0 ), # Bear/Cat form stampeding roar replacement
           ( 209406, 1 ),       # Oneth's Intuition buff
@@ -2098,6 +2102,7 @@ class SpellDataGenerator(DataGenerator):
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
           ( 393617, 2 ), # Primal Claws energize
+          ( 405191, 2 ), # Overflowing Power
           # Guardian
           ( 370602, 3 ), # Elune's Favored heal
           ( 372505, 3 ), # Ursoc's Fury absorb
