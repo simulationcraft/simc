@@ -76,8 +76,6 @@ public:
     cooldown->charges = data().charges() + p.is_ptr()
                             ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
                             : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
-
-    apply_affecting_aura( p.talents.shadow.thought_harvester );
   }
 
   void execute() override
@@ -98,9 +96,6 @@ public:
     {
       priest().buffs.gathering_shadows->trigger();
     }
-
-    if ( priest().is_ptr() && priest().buffs.shadowy_insight->check() )
-      priest().buffs.shadowy_insight->decrement();
   }
 
   void reset() override
@@ -109,10 +104,11 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    if ( priest().specialization() == PRIEST_SHADOW && !priest().is_ptr() )
+    if ( priest().specialization() == PRIEST_SHADOW )
     {
-      cooldown->charges =
-          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+      cooldown->charges = data().charges() + priest().is_ptr()
+                              ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
+                              : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
   }
 
@@ -203,27 +199,36 @@ public:
     return priest_spell_t::execute_time();
   }
 
+  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
+  {
+    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
+    if ( priest().buffs.voidform->check() )
+    {
+      cd += priest().buffs.voidform->data().effectN( 6 ).time_value();
+    }
+    return cd;
+  }
+
   // Called as a part of action execute
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
     // Decrementing a stack of shadowy insight will consume a max charge. Consuming a max charge loses you a current
     // charge. Therefore update_ready needs to not be called in that case.
-    if ( priest().buffs.shadowy_insight->up() && !priest().is_ptr() )
+    if ( priest().buffs.shadowy_insight->up() )
     {
-      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
-      if ( priest().buffs.mind_melt->check() == 1 )
+      if ( !priest().is_ptr() )
       {
-        priest().procs.mind_melt_waste->occur();
-      }
-      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
-      if ( priest().buffs.mind_melt->check() == 2 )
-      {
-        priest_spell_t::update_ready( cd_duration );
-      }
-      else
-      {
-        priest().buffs.shadowy_insight->decrement();
+        // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+        if ( priest().buffs.mind_melt->check() == 1 )
+        {
+          priest().procs.mind_melt_waste->occur();
+        }
+        // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+        if ( priest().buffs.mind_melt->check() != 2 )
+        {
+          priest().buffs.shadowy_insight->decrement();
+        }
       }
     }
     else
@@ -1072,7 +1077,6 @@ struct shadow_word_death_t final : public priest_spell_t
         add_child( impact_action );
         impact_action->execute_on_target( s->target );
       }
-
       if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
       {
         if ( result_is_hit( s->result ) )
