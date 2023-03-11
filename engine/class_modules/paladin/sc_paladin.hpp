@@ -219,6 +219,7 @@ public:
     gain_t* hp_inner_grace;
     gain_t* hp_divine_toll;
     gain_t* hp_vm;
+    gain_t* hp_crusading_strikes;
   } gains;
 
   // Spec Passives
@@ -677,6 +678,7 @@ public:
   season next_season;
 
   int holy_power_generators_used;
+  int melee_swing_count;
 
   paladin_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN );
 
