@@ -9549,7 +9549,7 @@ void death_knight_t::create_buffs()
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
         -> add_invalidate( CACHE_HASTE )
-        -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )\
+        -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
             {
