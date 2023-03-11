@@ -1428,6 +1428,97 @@ struct adjudication_blessed_hammer_t : public paladin_melee_attack_t
   }
 };
 
+struct base_templar_strike_t : public paladin_melee_attack_t
+{
+  base_templar_strike_t( util::string_view n, paladin_t* p, util::string_view options_str, const spell_data_t* s )
+    : paladin_melee_attack_t( n, p, s )
+  {
+    parse_options( options_str );
+
+    if ( !p->is_ptr() || !p->talents.templar_strikes->ok() )
+      background = true;
+
+    if ( p->talents.swift_justice->ok() )
+    {
+      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
+    }
+
+    if ( p->spec.improved_crusader_strike )
+    {
+      cooldown->charges += as<int>( p->spec.improved_crusader_strike->effectN( 1 ).base_value() );
+    }
+
+    if ( p->talents.blessed_champion->ok() )
+    {
+      aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
+      base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+    }
+
+    if ( p->talents.heart_of_the_crusader->ok() )
+    {
+      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( p()->talents.empyrean_power->ok() )
+      {
+        if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
+        {
+          p()->procs.empyrean_power->occur();
+          p()->buffs.empyrean_power->trigger();
+        }
+      }
+    }
+  }
+};
+
+struct templar_strike_t : public base_templar_strike_t
+{
+  templar_strike_t( paladin_t* p, util::string_view options_str )
+    : base_templar_strike_t( "templar_strike", p, options_str, p->find_spell( 407480 ) )
+  { }
+
+  void execute() override
+  {
+    base_templar_strike_t::execute();
+    p()->buffs.templar_strikes->trigger();
+  }
+
+  bool ready() override
+  {
+    bool orig = paladin_melee_attack_t::ready();
+    return orig && !(p()->buffs.templar_strikes->up());
+  }
+};
+
+struct templar_slash_t : public base_templar_strike_t
+{
+  templar_slash_t( paladin_t* p, util::string_view options_str )
+    : base_templar_strike_t( "templar_slash", p, options_str, p->find_spell( 406647 ) )
+  {
+    base_crit = 1.0;
+  }
+
+  void execute() override
+  {
+    base_templar_strike_t::execute();
+    p()->buffs.templar_strikes->expire();
+  }
+
+  bool ready() override
+  {
+    bool orig = paladin_melee_attack_t::ready();
+    return orig && p()->buffs.templar_strikes->up();
+  }
+};
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1505,6 +1596,8 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
+  if ( name == "templar_strike"            ) return new templar_strike_t           ( this, options_str );
+  if ( name == "templar_slash"             ) return new templar_slash_t           ( this, options_str );
 
   if ( is_ptr() )
   {
@@ -1555,6 +1648,8 @@ void paladin_t::create_buffs_retribution()
                                   -> set_quiet( true )
                                   -> set_tick_callback([this](buff_t*, int, const timespan_t&) { buffs.inquisitors_ire -> trigger(); })
                                   -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+
+  buffs.templar_strikes = make_buff( this, "templar_strikes", find_spell( 406648 ) );
 
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
@@ -1663,6 +1758,7 @@ void paladin_t::init_spells_retribution()
   talents.burning_crusade             = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Crusade" );
   talents.blades_of_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Blades of Light" );
   talents.crusading_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Crusading Strikes" );
+  talents.templar_strikes             = find_talent_spell( talent_tree::SPECIALIZATION, "Templar Strikes" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells

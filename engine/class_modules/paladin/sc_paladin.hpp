@@ -175,6 +175,7 @@ public:
     buff_t* rush_of_light;
     buff_t* inquisitors_ire;
     buff_t* inquisitors_ire_driver;
+    buff_t* templar_strikes;
 
     // Covenants
     buff_t* vanquishers_hammer;
