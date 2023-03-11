@@ -366,8 +366,8 @@ public:
     action_t* denizen_of_the_dream;      // placeholder action
     action_t* orbit_breaker;
     action_t* shooting_stars;
-    action_t* starfall_cosmos;           // free starfall from 4t29
-    action_t* starsurge_cosmos;          // free starsurge fromm 4t29
+    action_t* starfall_cosmos;           // free starfall from 4t29 TODO remove in 10.1
+    action_t* starsurge_cosmos;          // free starsurge fromm 4t29 TODO remove in 10.1
     action_t* starfall_starweaver;       // free starfall from starweaver's warp
     action_t* starsurge_starweaver;      // free starsurge from starweaver's weft
     action_t* sundered_firmament;
@@ -376,6 +376,7 @@ public:
     // Feral
     action_t* ferocious_bite_apex;       // free bite from apex predator's crazing
     action_t* frenzied_assault;
+    action_t* thrashing_claws;
 
     // Guardian
     action_t* after_the_wildfire_heal;
@@ -488,6 +489,7 @@ public:
     buff_t* frantic_momentum;
     buff_t* incarnation_cat;
     buff_t* incarnation_cat_prowl;
+    buff_t* overflowing_power;
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
     buff_t* sabertooth;
@@ -564,13 +566,14 @@ public:
     gain_t* stellar_innervation;
 
     // Feral (Cat)
-    gain_t* berserk;
+    gain_t* berserk;  // TODO remove in 10.1
     gain_t* cats_curiosity;
     gain_t* energy_refund;
-    gain_t* tigers_tenacity;
     gain_t* incessant_hunter;
+    gain_t* overflowing_power;
     gain_t* primal_claws;
     gain_t* primal_fury;
+    gain_t* tigers_tenacity;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -719,6 +722,7 @@ public:
     player_talent_t waning_twilight;
     player_talent_t warrior_of_elune;
     player_talent_t wild_mushroom;
+    player_talent_t wild_surges;
 
     // Feral
     player_talent_t apex_predators_craving;
@@ -756,6 +760,7 @@ public:
     player_talent_t sudden_ambush;
     player_talent_t taste_for_blood;
     player_talent_t tear_open_wounds;
+    player_talent_t thrashing_claws;
     player_talent_t tigers_fury;
     player_talent_t tigers_tenacity;
     player_talent_t tireless_energy;
@@ -894,6 +899,7 @@ public:
     // Class
     const spell_data_t* sunfire_dmg;
     const spell_data_t* thrash_bear_dot;
+    const spell_data_t* thrash_cat_dot;
 
     // Multi-Spec
     const spell_data_t* adaptive_swarm_damage;
@@ -1047,7 +1053,7 @@ public:
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
   double resource_regen_per_second( resource_e ) const override;
-  //double resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
+  double resource_gain( resource_e, double, gain_t*, action_t* a = nullptr ) override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage( school_e, result_amount_type, action_state_t* ) override;
   void assess_damage_imminent_pre_absorb( school_e, result_amount_type, action_state_t* ) override;
@@ -1539,6 +1545,15 @@ struct berserk_cat_buff_t : public druid_buff_t
 
     if ( inc )
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+
+    if ( p->is_ptr() )
+    {
+      auto cp = s->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+      auto gain = p->get_gain( n );
+      set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
+        player->resource_gain( RESOURCE_COMBO_POINT, cp, gain );
+      } );
+    }
   }
 };
 
@@ -1917,6 +1932,7 @@ public:
 
     // Feral
     parse_buff_effects( p()->buff.apex_predators_craving );
+    parse_buff_effects( p()->buff.berserk_cat );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
     parse_buff_effects( p()->buff.sabertooth, true, true );
@@ -2443,6 +2459,20 @@ public:
       } );
     }
   }
+
+  void post_execute()
+  {
+    if ( p()->is_ptr() )
+      p()->buff.touch_the_cosmos->expire();
+
+    p()->buff.gathering_starstuff->trigger();
+
+    if ( is_free_proc() )
+      return;
+
+    p()->buff.starlord->trigger();
+    p()->buff.rattled_stars->trigger();
+  }
 };
 
 template <typename BASE>
@@ -2818,12 +2848,14 @@ public:
   snapshot_counter_t* bt_counter = nullptr;
   snapshot_counter_t* tf_counter = nullptr;
 
+  double berserk_cp;
   double primal_claws_cp;
   double primal_fury_cp;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
     : base_t( n, p, s ),
       snapshots(),
+      berserk_cp( p->spec.berserk_cat->effectN( 2 ).base_value() ),
       primal_claws_cp( p->talent.primal_claws->effectN( 2 ).base_value() ),
       primal_fury_cp( p->talent.primal_fury->effectN( 1 ).trigger()->effectN( 1 ).base_value() )
   {
@@ -2852,6 +2884,19 @@ public:
     // Make sure we call all for accurate benefit tracking. Berserk/Incarn/Sudden Assault handled in shred_t & rake_t -
     // move here if buff while stealthed becomes more widespread
     return p()->buff.prowl->up() || p()->buffs.shadowmeld->up();
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    auto ea = base_t::composite_energize_amount( s );
+
+    if ( p()->is_ptr() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
+         p()->buff.b_inc_cat->check() )
+    {
+      ea += berserk_cp;
+    }
+
+    return ea;
   }
 
   void consume_resource() override
@@ -2978,7 +3023,7 @@ public:
         attack_critical = true;
 
       if ( p()->talent.berserk_frenzy->ok() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
-           ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
+           p()->buff.b_inc_cat->check() )
       {
         trigger_berserk_frenzy( s->target, s );
       }
@@ -3103,14 +3148,14 @@ protected:
   using state_t = druid_action_state_t<Data>;
 
 public:
-  double berserk_cp = 0.0;
+  double berserk_finisher = 0.0;  // TODO remove in 10.1
   bool consumes_combo_points = true;
 
   combo_point_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
     : cat_attack_t( n, p, s, opt )
   {
-    if ( p->talent.berserk.ok() )
-      berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+    if ( p->talent.berserk.ok() && !p->is_ptr() )
+      berserk_finisher = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
   }
 
   action_state_t* new_state() override
@@ -3210,10 +3255,10 @@ public:
 
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
 
-      if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
-           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
+      if ( ( !p()->is_ptr() && p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) &&
+           berserk_finisher && rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
       {
-        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_finisher, p()->gain.berserk );
       }
     }
 
@@ -3223,9 +3268,27 @@ public:
       p()->buff.tigers_tenacity->decrement();
     }
   }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
+  }
 };
 
 typedef combo_point_spender_t<> cat_finisher_t;
+
+template <typename BASE>
+struct trigger_thrashing_claws_t : public BASE
+{
+  trigger_thrashing_claws_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
+    : BASE( n, p, s, o )
+  {
+    if ( p->talent.thrashing_claws.ok() )
+      BASE::impact_action = p->active.thrashing_claws;
+  }
+};
 
 // Berserk (Cat) ==============================================================
 struct berserk_cat_base_t : public cat_attack_t
@@ -3278,12 +3341,12 @@ struct incarnation_cat_t : public berserk_cat_base_t
 };
 
 // Brutal Slash =============================================================
-struct brutal_slash_t : public cat_attack_t
+struct brutal_slash_t : public druid_mixin_t<trigger_thrashing_claws_t<cat_attack_t>>
 {
   double berserk_swipe_cp;
 
   brutal_slash_t( druid_t* p, std::string_view opt )
-    : cat_attack_t( "brutal_slash", p, p->talent.brutal_slash, opt ),
+    : base_t( "brutal_slash", p, p->talent.brutal_slash, opt ),
       berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
   {
     aoe = -1;
@@ -3300,7 +3363,7 @@ struct brutal_slash_t : public cat_attack_t
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    auto ea = cat_attack_t::composite_energize_amount( s );
+    auto ea = base_t::composite_energize_amount( s );
 
     if ( p()->buff.b_inc_cat->check() )
       ea += berserk_swipe_cp;
@@ -3310,7 +3373,7 @@ struct brutal_slash_t : public cat_attack_t
 
   void execute() override
   {
-    cat_attack_t::execute();
+    base_t::execute();
 
     p()->buff.bt_brutal_slash->trigger();
   }
@@ -3360,6 +3423,7 @@ struct feral_frenzy_t : public cat_attack_t
       dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
       dot_name = "feral_frenzy_tick";
+      berserk_cp = 0;  // feral frenzy does not count as a cp generator for berserk extra cp
     }
 
     action_state_t* new_state() override
@@ -4009,7 +4073,7 @@ struct primal_wrath_t : public cat_finisher_t
 };
 
 // Shred ====================================================================
-struct shred_t : public cat_attack_t
+struct shred_t : public druid_mixin_t<trigger_thrashing_claws_t<cat_attack_t>>
 {
   double stealth_mul;
   double stealth_cp;
@@ -4017,10 +4081,11 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, std::string_view opt ) : shred_t( p, "shred", opt ) {}
 
   shred_t( druid_t* p, std::string_view n, std::string_view opt )
-    : cat_attack_t( n, p, p->find_class_spell( "Shred" ), opt ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
+    : base_t( n, p, p->find_class_spell( "Shred" ), opt ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
   {
-    if ( p->talent.merciless_claws.ok() )
-      bleed_mul = p->talent.merciless_claws->effectN( 2 ).percent();
+    // TODO adjust if it becomes possible to take both
+    bleed_mul = std::max( p->talent.merciless_claws->effectN( 2 ).percent(),
+                          p->talent.thrashing_claws->effectN( 1 ).percent() );
 
     if ( p->talent.pouncing_strikes.ok() )
     {
@@ -4031,12 +4096,12 @@ struct shred_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() || cat_attack_t::stealthed();
+    return p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() || base_t::stealthed();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    double e = cat_attack_t::composite_energize_amount( s );
+    double e = base_t::composite_energize_amount( s );
 
     if ( stealthed() || p()->buff.sudden_ambush->check() )
       e += stealth_cp;
@@ -4046,7 +4111,7 @@ struct shred_t : public cat_attack_t
 
   void execute() override
   {
-    cat_attack_t::execute();
+    base_t::execute();
 
     if ( hit_any_target )
     {
@@ -4059,7 +4124,7 @@ struct shred_t : public cat_attack_t
 
   double composite_crit_chance_multiplier() const override
   {
-    double cm = cat_attack_t::composite_crit_chance_multiplier();
+    double cm = base_t::composite_crit_chance_multiplier();
 
     if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
       cm *= 2.0;
@@ -4069,7 +4134,7 @@ struct shred_t : public cat_attack_t
 
   double action_multiplier() const override
   {
-    double m = cat_attack_t::action_multiplier();
+    double m = base_t::action_multiplier();
 
     if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
       m *= 1.0 + stealth_mul;
@@ -4079,13 +4144,10 @@ struct shred_t : public cat_attack_t
 };
 
 // Swipe (Cat) ====================================================================
-struct swipe_cat_t : public cat_attack_t
+struct swipe_cat_t : public druid_mixin_t<trigger_thrashing_claws_t<cat_attack_t>>
 {
-  double berserk_swipe_cp;
-
   swipe_cat_t( druid_t* p, std::string_view opt )
-    : cat_attack_t( "swipe_cat", p, p->apply_override( p->spec.swipe, p->spec.cat_form_override ), opt ),
-      berserk_swipe_cp( p->spec.berserk_cat->effectN( 2 ).base_value() )
+    : base_t( "swipe_cat", p, p->apply_override( p->spec.swipe, p->spec.cat_form_override ), opt )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 4 ).base_value();
@@ -4099,22 +4161,22 @@ struct swipe_cat_t : public cat_attack_t
 
   bool ready() override
   {
-    return p()->talent.brutal_slash.ok() ? false : cat_attack_t::ready();
+    return p()->talent.brutal_slash.ok() ? false : base_t::ready();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    auto ea = cat_attack_t::composite_energize_amount( s );
+    auto ea = base_t::composite_energize_amount( s );
 
-    if ( p()->buff.b_inc_cat->check() )
-      ea += berserk_swipe_cp;
+    if ( !p()->is_ptr() && p()->buff.b_inc_cat->check() )
+      ea += berserk_cp;
 
     return ea;
   }
 
   void execute() override
   {
-    cat_attack_t::execute();
+    base_t::execute();
 
     p()->buff.bt_swipe->trigger();
   }
@@ -4143,27 +4205,13 @@ struct tigers_fury_t : public cat_attack_t
 };
 
 // Thrash (Cat) =============================================================
-struct thrash_cat_t : public druid_mixin_t<trigger_waning_twilight_t<cat_attack_t>>
+struct thrash_cat_dot_t : public druid_mixin_t<trigger_waning_twilight_t<cat_attack_t>>
 {
-  thrash_cat_t( druid_t* p, std::string_view opt )
-    : thrash_cat_t( p, "thrash_cat", p->apply_override( p->talent.thrash, p->spec.cat_form_override ), opt )
-  {}
-
-  thrash_cat_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : base_t( n, p, s, opt )
+  thrash_cat_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_cat_dot )
   {
-    aoe    = -1;
-    radius = data().effectN( 1 ).resource();
-
-    // For some reason this is in a different spell
-    energize_amount   = p->find_spell( 211141 )->effectN( 1 ).base_value();
-    energize_resource = RESOURCE_COMBO_POINT;
-    energize_type     = action_energize::ON_HIT;
+    dual = background = true;
 
     dot_name = "thrash_cat";
-
-    if ( p->specialization() == DRUID_FERAL )
-      name_str_reporting = "thrash";
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -4177,10 +4225,63 @@ struct thrash_cat_t : public druid_mixin_t<trigger_waning_twilight_t<cat_attack_
 
     base_t::trigger_dot( s );
   }
+};
+
+struct thrash_cat_t : public cat_attack_t
+{
+  thrash_cat_t( druid_t* p, std::string_view opt )
+    : thrash_cat_t( p, "thrash_cat", p->apply_override( p->talent.thrash, p->spec.cat_form_override ), opt )
+  {}
+
+  thrash_cat_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : cat_attack_t( n, p, s, opt )
+  {
+    aoe = -1;
+
+    if ( p->is_ptr() )
+    {
+      impact_action = p->get_secondary_action_n<thrash_cat_dot_t>( name_str + "_dot" );
+      impact_action->stats = stats;
+    }
+    else
+    {
+      energize_amount = p->find_spell( 211141 )->effectN( 1 ).base_value();
+      energize_resource = RESOURCE_COMBO_POINT;
+      energize_type = action_energize::ON_HIT;
+    }
+
+    dot_name = "thrash_cat";
+
+    if ( p->specialization() == DRUID_FERAL )
+      name_str_reporting = "thrash";
+  }
+
+  bool has_amount_result() const override
+  {
+    if ( !p()->is_ptr() )
+      return cat_attack_t::has_amount_result();
+    else
+      return impact_action->has_amount_result();
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    if ( p()->is_ptr() )
+      return;
+
+    // cat thrash is not applied if existing bear thrash has longer duration
+    auto thrash_bear = td( s->target )->dots.thrash_bear;
+    if ( thrash_bear->remains() > composite_dot_duration( s ) )
+      return;
+
+    thrash_bear->cancel();
+
+    cat_attack_t::trigger_dot( s );
+  }
 
   void execute() override
   {
-    base_t::execute();
+    cat_attack_t::execute();
 
     p()->buff.bt_thrash->trigger();
   }
@@ -4771,7 +4872,6 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     thrash_bear_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_bear_dot )
     {
       dual = background = true;
-      aoe = -1;
 
       dot_name = "thrash_bear";
 
@@ -4803,8 +4903,6 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     }
   };
 
-  action_t* dot;
-
   thrash_bear_t( druid_t* p, std::string_view opt )
     : thrash_bear_t( p, "thrash_bear", p->apply_override( p->talent.thrash, p->spec.bear_form_override ), opt )
   {}
@@ -4813,10 +4911,8 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
     : base_t( n, p, s, opt )
   {
     aoe = -1;
-
-    dot = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
-    dot->stats = stats;
-    dot->radius = radius;
+    impact_action = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
+    impact_action->stats = stats;
 
     dot_name = "thrash_bear";
 
@@ -4824,14 +4920,9 @@ struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
       name_str_reporting = "thrash";
   }
 
-  bool has_amount_result() const override { return dot->has_amount_result(); }
-
   void execute() override
   {
     base_t::execute();
-
-    dot->target = target;
-    dot->schedule_execute();
 
     if ( p()->talent.flashing_claws.ok() && rng().roll( p()->talent.flashing_claws->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_flashing->execute_on_target( target ); } );
@@ -7493,33 +7584,33 @@ struct starfall_t : public astral_power_spender_t
     if ( p()->buff.touch_the_cosmos->check() )
       p()->buff.touch_the_cosmos_starfall->trigger();
 
-    p()->buff.gathering_starstuff->trigger();
+    post_execute();
 
-    if ( is_free_proc() )
-      return;
-
-    p()->buff.starlord->trigger();
-    p()->buff.rattled_stars->trigger();
-    p()->buff.starweavers_weft->trigger();
+    if ( !is_free_proc() )
+      p()->buff.starweavers_weft->trigger();
   }
 };
 
 // Starfire =============================================================
 struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral_embrace_t<druid_spell_t>>>
 {
-  double aoe_base = 0.0;
-  double aoe_mod_mult = 0.0;
-  double aoe_mod_flat = 0.0;
+  double aoe_base;
+  double aoe_mod_flat;
   double smolder_mul;
+  double sotf_mul;
+  unsigned sotf_cap;
 
   starfire_t( druid_t* p, std::string_view opt )
-    : base_t( "starfire", p, p->talent.starfire, opt ), smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() )
+    : base_t( "starfire", p, p->talent.starfire, opt ),
+      aoe_base( data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent() ),
+      aoe_mod_flat( p->spec.eclipse_lunar->effectN( 2 ).percent() +
+                    p->talent.umbral_intensity->effectN( 1 ).percent() ),
+      smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
+      sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
+      sotf_cap( p->is_ptr() ? as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) : 0 )
   {
     aoe = -1;
-
-    aoe_base = data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent();
-    aoe_mod_mult = p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent();
-    aoe_mod_flat = p->spec.eclipse_lunar->effectN( 2 ).percent() + p->talent.umbral_intensity->effectN( 1 ).percent();
+    energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -7534,13 +7625,33 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
       energize_type = action_energize::NONE;
   }
 
+  double sotf_multiplier( const action_state_t* s ) const
+  {
+    auto mul = 1.0;
+
+    if ( sotf_mul && p()->buff.eclipse_lunar->check() && s->n_targets > 1 && p()->is_ptr() )
+      mul += sotf_mul * std::min( sotf_cap, s->n_targets - 1 );
+
+    return mul;
+  }
+
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    double e = base_t::composite_energize_amount( s );
+    auto e = base_t::composite_energize_amount( s );
 
+    e *= sotf_multiplier( s );
     e *= 1.0 + p()->buff.warrior_of_elune->check_value();
 
     return e;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = base_t::composite_da_multiplier( s );
+
+    da *= sotf_multiplier( s );
+
+    return da;
   }
 
   void execute() override
@@ -7581,10 +7692,17 @@ struct starfire_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral
 
     if ( s->chain_target )
     {
-      if ( p()->buff.eclipse_lunar->check() )
-        cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + aoe_mod_mult );
+      if ( !p()->is_ptr() )
+      {
+        if ( p()->buff.eclipse_lunar->check() )
+          cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + sotf_mul );
+        else
+          cam *= aoe_base;
+      }
       else
-        cam *= aoe_base;
+      {
+        cam *= aoe_base + p()->buff.eclipse_lunar->check() ? aoe_mod_flat : 0.0;
+      }
     }
 
     return cam;
@@ -7702,16 +7820,13 @@ struct starsurge_t : public astral_power_spender_t
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
 
-    p()->buff.gathering_starstuff->trigger();
+    post_execute();
 
-    if ( is_free_proc() )
-      return;
-
-    p()->buff.starlord->trigger();
-    p()->buff.rattled_stars->trigger();
-    p()->buff.starweavers_warp->trigger();
-
-    p()->eclipse_handler.cast_starsurge();
+    if ( !is_free_proc() )
+    {
+      p()->buff.starweavers_warp->trigger();
+      p()->eclipse_handler.cast_starsurge();
+    }
   }
 };
 
@@ -7726,6 +7841,14 @@ struct stellar_flare_t : public druid_mixin_t<trigger_shooting_stars_t<trigger_w
     : base_t( n, p, s, opt )
   {
     dot_name = "stellar_flare";
+  }
+
+  void tick( dot_t* d ) override
+  {
+    if ( p()->is_ptr() )
+      druid_spell_t::tick( d );
+    else
+      base_t::tick( d );
   }
 };
 
@@ -7754,13 +7877,7 @@ struct sunfire_t : public druid_spell_t
     damage = p->get_secondary_action<sunfire_damage_t>( "sunfire_dmg" );
     damage->stats = stats;
 
-    if ( p->spec.astral_power->ok() )
-    {
-      energize_resource = RESOURCE_ASTRAL_POWER;
-      energize_amount = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
-    }
-    else
-      energize_type = action_energize::NONE;
+    energize_amount += p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
   bool has_amount_result() const override { return damage->has_amount_result(); }
@@ -8081,8 +8198,8 @@ struct wrath_t : public druid_mixin_t<trigger_astral_smolder_t<consume_umbral_em
   {
     form_mask = NO_FORM | MOONKIN_FORM;
 
-    if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
-      energize_amount = p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    energize_amount += p->spec.astral_power->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER ) +
+                       p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
 
     init_umbral_embrace( p->spec.eclipse_lunar, &druid_td_t::dots_t::moonfire, p->spec.moonfire_dmg );
     init_astral_smolder( p->buff.eclipse_lunar, &druid_td_t::dots_t::moonfire );
@@ -9275,6 +9392,7 @@ void druid_t::init_spells()
   talent.waning_twilight                = ST( "Waning Twilight" );
   talent.warrior_of_elune               = ST( "Warrior of Elune" );
   talent.wild_mushroom                  = ST( "Wild Mushroom" );
+  talent.wild_surges                    = ST( "Wild Surges" );
 
   // Feral
   sim->print_debug( "Initializing feral talents..." );
@@ -9313,6 +9431,7 @@ void druid_t::init_spells()
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
   talent.tear_open_wounds               = ST( "Tear Open Wounds" );
+  talent.thrashing_claws                = ST( "Thrashing Claws" );
   talent.tigers_fury                    = ST( "Tiger's Fury" );
   talent.tigers_tenacity                = ST( "Tiger's Tenacity" );
   talent.tireless_energy                = ST( "Tireless Energy" );
@@ -9438,6 +9557,7 @@ void druid_t::init_spells()
   // Class Abilities
   spec.sunfire_dmg              = check( talent.sunfire, 164815 );
   spec.thrash_bear_dot          = check( talent.thrash, 192090 );
+  spec.thrash_cat_dot           = find_spell( 405233 );
 
   // Multi-Spec Abilities
   spec.adaptive_swarm_damage    = check( talent.adaptive_swarm, 391889 );
@@ -9918,6 +10038,9 @@ void druid_t::create_buffs()
       make_buff( this, "incarnation_avatar_of_ashamane_prowl", talent.incarnation_cat->effectN( 2 ).trigger() )
           ->set_name_reporting( "Prowl" );
 
+  buff.overflowing_power = make_buff( this, "overflowing_power", find_spell( 405189 ) )
+    ->set_trigger_spell( talent.berserk );
+
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_trigger_spell( talent.predatory_swiftness );
 
@@ -10048,7 +10171,6 @@ void druid_t::create_buffs()
         active.yseras_gift->schedule_execute();
       } );
 
-  // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
   buff.b_inc_cat  = talent.incarnation_cat.ok()     ? buff.incarnation_cat     : buff.berserk_cat;
   buff.b_inc_bear = talent.incarnation_bear.ok()    ? buff.incarnation_bear    : buff.berserk_bear;
   buff.ca_inc     = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
@@ -10116,7 +10238,7 @@ void druid_t::create_actions()
   if ( talent.shooting_stars.ok() )
     active.shooting_stars = get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
-  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
+  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) && !is_ptr() )
   {
     if ( talent.starsurge.ok() )
     {
@@ -10183,6 +10305,14 @@ void druid_t::create_actions()
 
   if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
+
+  if ( talent.thrashing_claws.ok() )
+  {
+    auto tc = get_secondary_action_n<thrash_cat_dot_t>( "thrashing_claws" );
+    tc->s_data_reporting = talent.thrashing_claws;
+    tc->aoe = 0;
+    active.thrashing_claws = tc;
+  }
 
   // Guardian
   if ( talent.after_the_wildfire.ok() )
@@ -10526,12 +10656,13 @@ void druid_t::init_gains()
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    gain.energy_refund       = get_gain( "Energy Refund" );
-    gain.primal_claws        = get_gain( "Primal Claws" );
-    gain.primal_fury         = get_gain( "Primal Fury" );
     gain.berserk             = get_gain( "Berserk" );
     gain.cats_curiosity      = get_gain( "Cat's Curiosity" );
+    gain.energy_refund       = get_gain( "Energy Refund" );
     gain.incessant_hunter    = get_gain( "Incessant Hunter" );
+    gain.overflowing_power   = get_gain( "Overflowing Power" );
+    gain.primal_claws        = get_gain( "Primal Claws" );
+    gain.primal_fury         = get_gain( "Primal Fury" );
     gain.tigers_tenacity     = get_gain( "Tiger's Tenacity" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
@@ -10864,6 +10995,17 @@ double druid_t::resource_regen_per_second( resource_e r ) const
   }
 
   return reg;
+}
+
+double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t* a )
+{
+  auto actual = player_t::resource_gain( r, amount, g, a );
+  auto over = amount - actual;
+
+  if ( is_ptr() && r == RESOURCE_COMBO_POINT && g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
+    buff.overflowing_power->trigger( over );
+
+  return actual;
 }
 
 // druid_t::available =======================================================
@@ -12423,6 +12565,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.power_of_goldrinn );
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
+  action.apply_affecting_aura( talent.wild_surges );
   
   // Feral
   action.apply_affecting_aura( spec.ashamanes_guidance );

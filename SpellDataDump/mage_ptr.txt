@@ -373,7 +373,7 @@ Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=161)
 Spell Level      : 7
 Range            : 40 yards
-Duration         : 6 seconds
+Duration         : 5 seconds
 Cooldown         : 24 seconds
 Category         : 88
 Category Cooldown: 24 seconds
@@ -524,7 +524,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.34450 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.34450 | PvP Coefficient: 1.05000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -889,7 +889,8 @@ Resource         : 21% Base Mana (0) (id=1203)
 Spell Level      : 39
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Arcane Mage (137021 effect#5), Kleptomania (198100 effects: #1, #2, #3), Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
+Affecting spells : Arcane Mage (137021 effect#5), Kleptomania (198100 effect#1), Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
+Triggered by     : Kleptomania (198100)
 Family Flags     : 36
 Attributes       : ........ ........ x.x..... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2312,6 +2313,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1960 | Target: Self (1)
 #8 (id=1034673)  : Apply Aura (6) | Unknown(307)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2363 | Target: Self (1)
+#9 (id=1056103)  : Apply Aura (6) | Unknown(307)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2574 | Target: Self (1)
 Description      : Makes your next Mage spell with a cast time shorter than $s2 sec castable while moving. Unaffected by the global cooldown and castable while casting.
 Tooltip          : Able to move while casting spells.
 
@@ -2871,7 +2874,7 @@ Effects          :
 #2 (id=239967)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=255562)   : Apply Aura (6) | Unknown(448)
-                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=255745)   : Apply Aura (6) | Unknown(119)
@@ -4073,7 +4076,6 @@ Velocity         : 50 yards/sec
 Travel Delay     : 0.1 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1633: Call of the Sun King (343222 effect#1), Fiery Rush (363508 effect#2), Fiery Rush (383637 effect#2)
-Labels           : 203: Thundercharge (204366 effect#5)
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4137,33 +4139,36 @@ Tooltip          : Increases the mana cost of Arcane Blast by $36032w2%$?{$w5<0}
 
 Increases the number of targets hit by Arcane Barrage for 50% damage by $36032w3.
 
-Name             : Kleptomania (desc=PvP Talent) (id=198100) [Spell Family (3), Passive, Hidden] 
+Name             : Kleptomania (desc=PvP Talent) (id=198100) [Spell Family (3)] 
 Class            : Mage
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+School           : Arcane
+Spell Type       : Magic
+Resource         : 20% Base Mana (0) (id=266003)
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 4 seconds
+Cooldown         : 20 seconds
+Attributes       : ........ ........ x....... .....x..   ..x....x ..x..... ........ ..x.xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ .x...x.. ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Immunities (29), Is Channelled (34), No Reflection (39), No Threat (42), Require All Targets (58), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=291149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#1 (id=291149)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Spellsteal (30449)
                    Family Flags: 36
-#2 (id=291150)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 30000 | Scaled Value: 30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Spellsteal (30449)
-                   Family Flags: 36
-#3 (id=885036)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Spellsteal (30449)
-                   Family Flags: 36
-Description      : Spellsteal steals all spells from the target, now has a ${$m2/1000} sec cooldown and costs $s3% more mana.
+#2 (id=291150)   : Apply Aura (6) | Periodic Trigger Spell (23): Spellsteal every 0.5 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 30449 | Target: Enemy (6)
+#3 (id=1070210)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Unleash a flurry of disruptive magic onto your target, stealing a beneficial magic effect every ${$t2}.1 sec for $d.
+
+Castable while moving, but movement speed is reduced by $s3% while channeling.
 
 Name             : Crushing Jets (desc=PvP Talent) (id=198146) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -5171,7 +5176,6 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5310,7 +5314,6 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Labels           : 203: Thundercharge (204366 effect#5)
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -15335,5 +15338,90 @@ Effects          :
                    Family Flags: 47
 Description      : $@spelldesc393654
 Tooltip          : Arcane Barrage critical strike chance increased by $s1%.
+
+Name             : Calm the Wolf (desc=Racial) (id=406087) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Triggered by     : Calm the Wolf (406088)
+Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... .x...... ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ......x. ........ .....x.x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x...... ....x... ........   ........ ........ ........ .x..x... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 406088 | Scaled Value: 406088 | PvP Coefficient: 1.00000 | Misc Value: 406087 | Target: Self (1)
+Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
+
+Name             : Calm the Wolf (desc=Racial) (id=406088) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx...... ........ 
+                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1054763)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406087 | Target: Self (1)
+#2 (id=1054764)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406090 | Target: Self (1)
+Description      : While active, you automatically assume your human form when you leave combat.
+
+Activate to disable this effect.
+
+Name             : Calm the Wolf (desc=Racial) (id=406090) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Calm the Wolf (406088)
+Attributes       : .......x ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1054766)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Calm the Wolf (desc=Racial Passive) (id=406096) [Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1054784)  : Apply Aura (6) | Unknown(352)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Enables Worgen to switch between Worgen and Human forms.
 
 

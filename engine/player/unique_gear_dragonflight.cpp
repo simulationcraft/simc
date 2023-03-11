@@ -3709,8 +3709,8 @@ void elemental_lariat( special_effect_t& effect )
     { "Steady Nozdorite",       FROST_GEM },
   };
 
-  // TODO: does having more of a type increase the chances of getting that buff?
-  unsigned gems = 0;
+  unsigned gem_mask = 0;
+  unsigned gem_count = 0;
   for ( const auto& item : effect.player->items )
   {
     for ( auto gem_id : item.parsed.gem_id )
@@ -3720,20 +3720,27 @@ void elemental_lariat( special_effect_t& effect )
         auto n = effect.player->dbc->item( gem_id ).name;
         auto it = range::find( gem_types, n, &gem_name_type::first );
         if ( it != std::end( gem_types ) )
-          gems |= ( *it ).second;
+        {
+          gem_mask |= ( *it ).second;
+          gem_count++;
+        }
       }
     }
   }
 
-  if ( !gems )
+  if ( !gem_mask )
     return;
 
   auto val = effect.driver()->effectN( 1 ).average( effect.item );
-  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto dur = effect.player->is_ptr()
+                 ? timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() +
+                                             effect.driver()->effectN( 2 ).base_value() * gem_count )
+                 : timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
-  auto add_buff = [ &effect, gems, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
-    if ( gems & type )
+  auto add_buff = [ &effect, cb, gem_mask, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
+    if ( gem_mask & type )
     {
       auto name = "elemental_lariat__empowered_" + suf;
       auto buff = buff_t::find( effect.player, name );
@@ -3741,7 +3748,16 @@ void elemental_lariat( special_effect_t& effect )
       {
         buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( id ) )
           ->add_stat( stat, val )
-          ->set_duration( dur );
+          ->set_duration( dur )
+          // TODO: confirm the driver is disabled while the buff is up. alternatively it could be:
+          // 1) proc triggers but is ignore while buff is up
+          // 2) proc does not trigger but builds blp while buff is up
+          ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+            if ( new_ )
+              cb->deactivate();
+            else
+              cb->activate();
+          } );
       }
       buffs.push_back( buff );
     }
@@ -3752,11 +3768,8 @@ void elemental_lariat( special_effect_t& effect )
   add_buff( FIRE_GEM, "flame", 375335, STAT_CRIT_RATING );
   add_buff( FROST_GEM, "frost", 375343, STAT_VERSATILITY_RATING );
 
-  new dbc_proc_callback_t( effect.player, effect );
-
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        range::for_each( buffs, []( buff_t* b ) { b->expire(); } );
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
 }

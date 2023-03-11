@@ -1213,7 +1213,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 struct truths_wake_t : public paladin_spell_t
 {
   truths_wake_t( paladin_t* p, util::string_view name ) :
-    paladin_spell_t( name, p, p -> find_spell( 383351 ) )
+    paladin_spell_t( name, p, p -> is_ptr() ? p -> find_spell( 403695 ) : p -> find_spell( 383351 ) )
   {
     hasted_ticks = false;
     tick_may_crit = false;
@@ -1222,28 +1222,15 @@ struct truths_wake_t : public paladin_spell_t
 
 struct wake_of_ashes_t : public paladin_spell_t
 {
-  struct truths_wake_conduit_t : public paladin_spell_t
-  {
-    truths_wake_conduit_t( paladin_t* p ) :
-      paladin_spell_t( "truths_wake_conduit", p, p -> find_spell( 339376 ) )
-    {
-      hasted_ticks = false;
-      tick_may_crit = false;
-    }
-  };
-
-
-  truths_wake_conduit_t* truths_wake_conduit;
   truths_wake_t* truths_wake;
 
   wake_of_ashes_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "wake_of_ashes", p, p -> talents.wake_of_ashes ),
-    truths_wake_conduit( nullptr ),
     truths_wake( nullptr )
   {
     parse_options( options_str );
 
-    if ( p -> talents.radiant_decree -> ok() ||  !( p -> talents.wake_of_ashes -> ok() ) )
+    if ( !( p -> talents.wake_of_ashes -> ok() ) || ( p -> talents.radiant_decree -> ok() && ! p -> is_ptr() ) )
       background = true;
 
     may_crit = true;
@@ -1251,12 +1238,6 @@ struct wake_of_ashes_t : public paladin_spell_t
     reduced_aoe_targets = 1.0;
 
     aoe = -1;
-
-    if ( p -> conduit.truths_wake -> ok() )
-    {
-      truths_wake_conduit = new truths_wake_conduit_t( p );
-      add_child( truths_wake_conduit );
-    }
 
     if ( p -> talents.truths_wake -> ok() )
     {
@@ -1271,18 +1252,14 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> conduit.truths_wake -> ok() )
-      {
-        double truths_wake_mul = p() -> conduit.truths_wake.percent() / p() -> conduit.truths_wake -> effectN( 2 ).base_value();
-        truths_wake_conduit -> base_td = s -> result_amount * truths_wake_mul;
-        truths_wake_conduit -> set_target( s -> target );
-        truths_wake_conduit -> execute();
-      }
-
       if ( p() -> talents.truths_wake -> ok() )
       {
-        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent() / p() -> talents.truths_wake -> effectN( 2 ).base_value();
-        truths_wake -> base_td = s -> result_amount * truths_wake_mul;
+        if ( ! p() -> is_ptr() )
+        {
+          double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent() / p() -> talents.truths_wake -> effectN( 2 ).base_value();
+          truths_wake -> base_td = s -> result_amount * truths_wake_mul;
+        }
+
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();
       }
@@ -1661,6 +1638,7 @@ void paladin_t::init_spells_retribution()
   talents.executioners_wrath          = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Wrath" );
   talents.final_reckoning             = find_talent_spell( talent_tree::SPECIALIZATION, "Final Reckoning" );
   talents.vanguards_momentum          = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard's Momentum" );
+  talents.divine_wrath                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Wrath" );
 
   talents.swift_justice               = find_talent_spell( talent_tree::SPECIALIZATION, "Swift Justice" );
   talents.light_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of Justice" );
