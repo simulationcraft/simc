@@ -899,6 +899,15 @@ struct crusading_strike_t : public paladin_melee_attack_t
         p()->gains.hp_crusading_strikes
       );
     }
+
+    if ( p()->talents.empyrean_power->ok() )
+    {
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 2 ).percent() ) )
+      {
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
+      }
+    }
   }
 };
 
