@@ -442,9 +442,10 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       p() -> buffs.consecrated_blade -> expire();
     }
 
-    if ( p() -> is_ptr() && p() -> talents.consecrated_blade -> ok() )
+    if ( p() -> is_ptr() && p() -> talents.consecrated_blade -> ok() && p() -> cooldowns.consecrated_blade_icd -> up() )
     {
       p() -> active.background_cons -> schedule_execute();
+      p() -> cooldowns.consecrated_blade_icd -> start();
     }
   }
 

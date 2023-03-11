@@ -274,6 +274,7 @@ public:
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
 
     cooldown_t* ret_aura_icd;
+    cooldown_t* consecrated_blade_icd;
   } cooldowns;
 
   // Passives
