@@ -1612,6 +1612,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
             ( 393685, 0 ),          # Priest Shadow Class Set 4-set
             ( 394963, 0 ),          # Dark Reveries T29 4-set buff
+            ( 377355, 0 ),          # Idol of C'thun Duration
             ( 377358, 5 ),          # Idol of C'thun Insanity values
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
