@@ -81,6 +81,7 @@ public:
       child_expiation             = new expiation_t( priest() );
       child_expiation->background = true;
     }
+
     apply_affecting_aura( p.talents.shadow.thought_harvester );
   }
 
