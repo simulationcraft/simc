@@ -156,10 +156,15 @@ private:
 // Main penance action spell
 struct penance_t : public priest_spell_t
 {
+  timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) )
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() )
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
@@ -180,10 +185,13 @@ struct penance_t : public priest_spell_t
     {
       channel->execute();
     }
-    if ( p().talents.manipulation.ok() )
+    if ( priest().talents.manipulation.enabled() )
     {
-      p().cooldowns.mindgames->adjust(
-          -timespan_t::from_seconds( p().talents.manipulation->effectN( 1 ).base_value() / 2 ) );
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
     }
   }
 
@@ -195,8 +203,15 @@ private:
 // Power Word Solace =========================================================
 struct power_word_solace_t final : public priest_spell_t
 {
+  timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+  timespan_t train_of_thought_cdr;
+
   power_word_solace_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "power_word_solace", p, p.talents.discipline.power_word_solace )
+    : priest_spell_t( "power_word_solace", p, p.talents.discipline.power_word_solace ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() )
   {
     parse_options( options_str );
     cooldown->hasted = true;
@@ -219,6 +234,22 @@ struct power_word_solace_t final : public priest_spell_t
     return d;
   }
 
+  void execute() override
+  {
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+    }
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      priest().cooldowns.penance->adjust( train_of_thought_cdr );
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -228,11 +259,6 @@ struct power_word_solace_t final : public priest_spell_t
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
       priest().buffs.harsh_discipline->increment();
-    }
-    if ( priest().talents.discipline.train_of_thought.enabled() )
-    {
-      timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
-      priest().cooldowns.penance->adjust( train_of_thought_reduction );
     }
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
@@ -381,7 +407,7 @@ void priest_t::create_buffs_discipline()
 
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline )
                                ->set_max_stack( talents.discipline.harsh_discipline.enabled()
-                                                    ? talents.discipline.harsh_discipline->effectN( 1 ).base_value() 
+                                                    ? talents.discipline.harsh_discipline->effectN( 1 ).base_value()
                                                     : 999 )
                                ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                                  if ( buffs.harsh_discipline->at_max_stacks() )
@@ -451,6 +477,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.weal_and_woe_buff               = find_spell( 390787 );
   talents.discipline.wrath_unleashed                 = ST( "Wrath Unleashed" );
   talents.discipline.wrath_unleashed_buff            = find_spell( 390782 );
+  talents.discipline.void_summoner                   = ST( "Void Summoner" );
 
   // General Spells
   specs.sins_of_the_many       = find_spell( 280398 );

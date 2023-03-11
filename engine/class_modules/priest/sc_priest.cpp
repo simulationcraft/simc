@@ -58,6 +58,7 @@ struct mind_blast_t final : public priest_spell_t
 private:
   double mind_blast_insanity;
   timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
   propagate_const<expiation_t*> child_expiation;
 
 public:
@@ -65,6 +66,7 @@ public:
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       child_expiation( nullptr )
   {
     parse_options( options_str );
@@ -79,7 +81,6 @@ public:
       child_expiation             = new expiation_t( priest() );
       child_expiation->background = true;
     }
-
     apply_affecting_aura( p.talents.shadow.thought_harvester );
   }
 
@@ -87,9 +88,14 @@ public:
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.manipulation.enabled() && priest().specialization() == PRIEST_SHADOW )
+    if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
     }
 
     if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
@@ -510,6 +516,8 @@ struct smite_t final : public priest_spell_t
   const spell_data_t* smite_rank2;
   propagate_const<cooldown_t*> holy_word_chastise_cooldown;
   timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+  timespan_t train_of_thought_cdr;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
@@ -517,7 +525,9 @@ struct smite_t final : public priest_spell_t
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
       smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) ),
       holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() )
   {
     parse_options( options_str );
     if ( smite_rank2->ok() )
@@ -559,10 +569,19 @@ struct smite_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.manipulation.enabled() &&
-         ( priest().specialization() == PRIEST_HOLY || priest().specialization() == PRIEST_DISCIPLINE ) )
+    if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+    }
+
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
   }
 
@@ -605,11 +624,7 @@ struct smite_t final : public priest_spell_t
     {
       priest().buffs.harsh_discipline->trigger();
     }
-    if ( priest().talents.discipline.train_of_thought.enabled() )
-    {
-      timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
-      priest().cooldowns.penance->adjust( train_of_thought_reduction );
-    }
+
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
       priest().buffs.weal_and_woe->expire();
@@ -1602,6 +1617,7 @@ void priest_t::create_cooldowns()
   cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
   cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
   cooldowns.mindgames                     = get_cooldown( "mindgames" );
+  cooldowns.mindbender                    = get_cooldown( "mindbender" );
   cooldowns.penance                       = get_cooldown( "penance" );
   cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
   cooldowns.maddening_touch_icd->duration = 1_s;
