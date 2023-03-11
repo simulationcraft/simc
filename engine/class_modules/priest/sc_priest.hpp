@@ -140,14 +140,12 @@ public:
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
     propagate_const<buff_t*> thing_from_beyond;
-    propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> mind_flay_insanity;
-    propagate_const<buff_t*> mind_spike_insanity;
     propagate_const<buff_t*> deathspeaker;
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
@@ -264,7 +262,6 @@ public:
       const spell_data_t* coalescing_shadows_dot_buff;
       player_talent_t mind_sear;
       player_talent_t mind_spike;
-      player_talent_t thought_harvester;
       // Row 5
       player_talent_t puppet_master;
       player_talent_t mental_decay;
@@ -275,12 +272,10 @@ public:
       player_talent_t surge_of_darkness;
       const spell_data_t* surge_of_darkness_buff;
       // Row 6
-      player_talent_t whispering_shadows;
       player_talent_t harnessed_shadows;
       player_talent_t shadowy_insight;
       player_talent_t ancient_madness;
       player_talent_t shadow_crash;
-      player_talent_t voidtouched;
       player_talent_t mind_melt;
       // Row 7
       player_talent_t maddening_touch;
@@ -288,24 +283,19 @@ public:
       player_talent_t dark_evangelism;
       player_talent_t auspicious_spirits;
       player_talent_t tormented_spirits;
-      player_talent_t phantasmal_pathogen;
       player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
-      player_talent_t minds_eye;
       // Row 8
       player_talent_t mindbender;
       player_talent_t deathspeaker;
       player_talent_t mind_flay_insanity;
       const spell_data_t* mind_flay_insanity_spell;
-      player_talent_t surge_of_insanity;
-      const spell_data_t* mind_spike_insanity_spell;
       player_talent_t encroaching_shadows;
       player_talent_t damnation;
       player_talent_t void_torrent;
       // Row 9
       player_talent_t inescapable_torment;
       player_talent_t screams_of_the_void;
-      player_talent_t mastermind;
       player_talent_t pain_of_death;
       player_talent_t mind_devourer;
       player_talent_t insidious_ire;
@@ -436,7 +426,6 @@ public:
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_blast;
     propagate_const<cooldown_t*> void_eruption;
-    propagate_const<cooldown_t*> maddening_touch_icd;
 
     // Holy
     propagate_const<cooldown_t*> holy_word_serenity;
@@ -908,11 +897,18 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
+  timespan_t vf_extension = 0_s;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
+
+    if ( priest().talents.shadow.void_eruption.enabled() )
+    {
+      vf_extension = timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() ) /
+                     priest().talents.shadow.void_eruption->effectN( 4 ).base_value();
+    }
   }
 
   bool usable_moving() const override
@@ -927,7 +923,18 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void consume_resource() override
   {
+    if ( current_resource() == RESOURCE_INSANITY )
+      extend_vf( base_cost() );
     base_t::consume_resource();
+  }
+
+  void extend_vf( double insanity )
+  {
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+         priest().buffs.voidform->up() )
+    {
+      priest().buffs.voidform->extend_duration( &priest(), vf_extension * insanity );
+    }
   }
 
   void last_tick( dot_t* d ) override

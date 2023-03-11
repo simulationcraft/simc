@@ -72,10 +72,6 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
-
-    cooldown->charges = data().charges() + p.is_ptr()
-                            ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
-                            : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
   }
 
   void execute() override
@@ -106,9 +102,8 @@ public:
     // buffs up.
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      cooldown->charges = data().charges() + priest().is_ptr()
-                              ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
-                              : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+      cooldown->charges =
+          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
   }
 
@@ -217,18 +212,15 @@ public:
     // charge. Therefore update_ready needs to not be called in that case.
     if ( priest().buffs.shadowy_insight->up() )
     {
-      if ( !priest().is_ptr() )
+      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+      if ( priest().buffs.mind_melt->check() == 1 )
       {
-        // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
-        if ( priest().buffs.mind_melt->check() == 1 )
-        {
-          priest().procs.mind_melt_waste->occur();
-        }
-        // Mind Melt at 2 stacks gets consumed over Shadowy Insight
-        if ( priest().buffs.mind_melt->check() != 2 )
-        {
-          priest().buffs.shadowy_insight->decrement();
-        }
+        priest().procs.mind_melt_waste->occur();
+      }
+      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+      if ( priest().buffs.mind_melt->check() != 2 )
+      {
+        priest().buffs.shadowy_insight->decrement();
       }
     }
     else
@@ -1077,262 +1069,256 @@ struct shadow_word_death_t final : public priest_spell_t
         add_child( impact_action );
         impact_action->execute_on_target( s->target );
       }
-      if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
-      {
-        if ( result_is_hit( s->result ) )
-        {
-          priest().trigger_psychic_link( s );
-        }
-      }
     }
-  };
+  }
+};
 
-  // ==========================================================================
-  // Holy Nova
-  // TODO: Add Improved Holy Nova for Holy/Discipline
-  // ==========================================================================
-  struct holy_nova_t final : public priest_spell_t
+// ==========================================================================
+// Holy Nova
+// TODO: Add Improved Holy Nova for Holy/Discipline
+// ==========================================================================
+struct holy_nova_t final : public priest_spell_t
+{
+  holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
   {
-    holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
-    {
-      parse_options( options_str );
-      aoe = -1;
-    }
+    parse_options( options_str );
+    aoe = -1;
+  }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = priest_spell_t::composite_da_multiplier( s );
-
-      if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
-      {
-        m *= 1 + ( priest().talents.rhapsody_buff->effectN( 1 ).percent() * priest().buffs.rhapsody->current_stack );
-      }
-
-      return m;
-    }
-
-    void execute() override
-    {
-      priest_spell_t::execute();
-
-      if ( priest().talents.rhapsody )
-      {
-        priest().buffs.rhapsody_timer->trigger();
-      }
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      priest_spell_t::impact( s );
-
-      if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
-      {
-        priest().buffs.rhapsody->expire();
-      }
-    }
-  };
-
-  // ==========================================================================
-  // Psychic Scream
-  // ==========================================================================
-  struct psychic_scream_t final : public priest_spell_t
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    psychic_scream_t( priest_t& p, util::string_view options_str )
-      : priest_spell_t( "psychic_scream", p, p.specs.psychic_scream )
-    {
-      parse_options( options_str );
-      aoe      = 5;
-      may_miss = may_crit   = false;
-      ignore_false_positive = true;
+    double m = priest_spell_t::composite_da_multiplier( s );
 
-      // CD reduction
-      apply_affecting_aura( p.talents.psychic_voice );
+    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
+    {
+      m *= 1 + ( priest().talents.rhapsody_buff->effectN( 1 ).percent() * priest().buffs.rhapsody->current_stack );
     }
-  };
+
+    return m;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.rhapsody )
+    {
+      priest().buffs.rhapsody_timer->trigger();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
+    {
+      priest().buffs.rhapsody->expire();
+    }
+  }
+};
+
+// ==========================================================================
+// Psychic Scream
+// ==========================================================================
+struct psychic_scream_t final : public priest_spell_t
+{
+  psychic_scream_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "psychic_scream", p, p.specs.psychic_scream )
+  {
+    parse_options( options_str );
+    aoe      = 5;
+    may_miss = may_crit   = false;
+    ignore_false_positive = true;
+
+    // CD reduction
+    apply_affecting_aura( p.talents.psychic_voice );
+  }
+};
 
 }  // namespace spells
 
 namespace heals
 {
-  // ==========================================================================
-  // Flash Heal
-  // ==========================================================================
-  struct flash_heal_t final : public priest_heal_t
+// ==========================================================================
+// Flash Heal
+// ==========================================================================
+struct flash_heal_t final : public priest_heal_t
+{
+  flash_heal_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
   {
-    flash_heal_t( priest_t& p, util::string_view options_str )
-      : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
-    {
-      parse_options( options_str );
-      harmful = false;
+    parse_options( options_str );
+    harmful = false;
 
-      apply_affecting_aura( priest().talents.improved_flash_heal );
-    }
+    apply_affecting_aura( priest().talents.improved_flash_heal );
+  }
 
-    timespan_t execute_time() const override
-    {
-      timespan_t et = priest_heal_t::execute_time();
-
-      if ( priest().talents.unwavering_will.enabled() &&
-           priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
-      {
-        et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
-      }
-
-      return et;
-    }
-
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = priest_heal_t::composite_da_multiplier( s );
-
-      // Value is stored as an int rather than a typical percent
-      m *= 1 + ( priest().buffs.from_darkness_comes_light->check_stack_value() / 100 );
-
-      return m;
-    }
-
-    void execute() override
-    {
-      priest_heal_t::execute();
-
-      priest().buffs.protective_light->trigger();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      priest_heal_t::impact( s );
-
-      priest().adjust_holy_word_serenity_cooldown();
-      priest().buffs.from_darkness_comes_light->expire();
-    }
-  };
-
-  // ==========================================================================
-  // Desperate Prayer
-  // TODO: add Light's Inspiration HoT
-  // ==========================================================================
-  struct desperate_prayer_t final : public priest_heal_t
+  timespan_t execute_time() const override
   {
-    desperate_prayer_t( priest_t& p, util::string_view options_str )
-      : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
+    timespan_t et = priest_heal_t::execute_time();
+
+    if ( priest().talents.unwavering_will.enabled() &&
+         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
     {
-      parse_options( options_str );
-      harmful  = false;
-      may_crit = false;
-
-      // does not seem to proc anything other than heal specific actions
-      callbacks = false;
-
-      // This is parsed as a HoT, disabling that manually
-      base_td_multiplier = 0.0;
-      dot_duration       = timespan_t::from_seconds( 0 );
+      et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
     }
 
-    void execute() override
-    {
-      priest().buffs.desperate_prayer->trigger();
+    return et;
+  }
 
-      priest_heal_t::execute();
-    }
-  };
-
-  // ==========================================================================
-  // Power Word: Shield
-  // TODO: add Rapture and Weal and Woe bonuses
-  // ==========================================================================
-  struct power_word_shield_t final : public priest_absorb_t
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double insanity;
+    double m = priest_heal_t::composite_da_multiplier( s );
 
-    power_word_shield_t( priest_t& p, util::string_view options_str )
-      : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
-        insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
-    {
-      parse_options( options_str );
-      spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
-      apply_affecting_aura( priest().talents.discipline.borrowed_time );
-    }
+    // Value is stored as an int rather than a typical percent
+    m *= 1 + ( priest().buffs.from_darkness_comes_light->check_stack_value() / 100 );
 
-    // Manually create the buff so we can reference it with Void Shield
-    absorb_buff_t* create_buff( const action_state_t* ) override
-    {
-      return priest().buffs.power_word_shield;
-    }
+    return m;
+  }
 
-    void execute() override
-    {
-      if ( priest().specs.hallucinations->ok() )
-      {
-        priest().generate_insanity( insanity, priest().gains.hallucinations_power_word_shield, nullptr );
-      }
-
-      if ( priest().talents.words_of_the_pious.enabled() )
-      {
-        priest().buffs.words_of_the_pious->trigger();
-      }
-      if ( priest().talents.discipline.borrowed_time.enabled() )
-      {
-        priest().buffs.borrowed_time->trigger();
-      }
-
-      priest_absorb_t::execute();
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      priest_absorb_t::impact( s );
-
-      if ( priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
-      {
-        s->target->buffs.body_and_soul->trigger();
-      }
-    }
-  };
-
-  // ==========================================================================
-  // Power Word: Life
-  // ==========================================================================
-  struct power_word_life_t final : public priest_heal_t
+  void execute() override
   {
-    double execute_percent;
-    double execute_modifier;
+    priest_heal_t::execute();
 
-    power_word_life_t( priest_t& p, util::string_view options_str )
-      : priest_heal_t( "power_word_life", p, p.talents.power_word_life ),
-        execute_percent( data().effectN( 2 ).base_value() ),
-        execute_modifier( data().effectN( 3 ).percent() )
+    priest().buffs.protective_light->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    priest().adjust_holy_word_serenity_cooldown();
+    priest().buffs.from_darkness_comes_light->expire();
+  }
+};
+
+// ==========================================================================
+// Desperate Prayer
+// TODO: add Light's Inspiration HoT
+// ==========================================================================
+struct desperate_prayer_t final : public priest_heal_t
+{
+  desperate_prayer_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "desperate_prayer", p, p.find_class_spell( "Desperate Prayer" ) )
+  {
+    parse_options( options_str );
+    harmful  = false;
+    may_crit = false;
+
+    // does not seem to proc anything other than heal specific actions
+    callbacks = false;
+
+    // This is parsed as a HoT, disabling that manually
+    base_td_multiplier = 0.0;
+    dot_duration       = timespan_t::from_seconds( 0 );
+  }
+
+  void execute() override
+  {
+    priest().buffs.desperate_prayer->trigger();
+
+    priest_heal_t::execute();
+  }
+};
+
+// ==========================================================================
+// Power Word: Shield
+// TODO: add Rapture and Weal and Woe bonuses
+// ==========================================================================
+struct power_word_shield_t final : public priest_absorb_t
+{
+  double insanity;
+
+  power_word_shield_t( priest_t& p, util::string_view options_str )
+    : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
+      insanity( priest().specs.hallucinations->effectN( 1 ).resource() )
+  {
+    parse_options( options_str );
+    spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
+    apply_affecting_aura( priest().talents.discipline.borrowed_time );
+  }
+
+  // Manually create the buff so we can reference it with Void Shield
+  absorb_buff_t* create_buff( const action_state_t* ) override
+  {
+    return priest().buffs.power_word_shield;
+  }
+
+  void execute() override
+  {
+    if ( priest().specs.hallucinations->ok() )
     {
-      parse_options( options_str );
-      harmful = false;
+      priest().generate_insanity( insanity, priest().gains.hallucinations_power_word_shield, nullptr );
     }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
+    if ( priest().talents.words_of_the_pious.enabled() )
     {
-      double m = priest_heal_t::composite_da_multiplier( s );
+      priest().buffs.words_of_the_pious->trigger();
+    }
+    if ( priest().talents.discipline.borrowed_time.enabled() )
+    {
+      priest().buffs.borrowed_time->trigger();
+    }
 
-      if ( s->target->health_percentage() < execute_percent )
+    priest_absorb_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_absorb_t::impact( s );
+
+    if ( priest().talents.body_and_soul->ok() && s->target->buffs.body_and_soul )
+    {
+      s->target->buffs.body_and_soul->trigger();
+    }
+  }
+};
+
+// ==========================================================================
+// Power Word: Life
+// ==========================================================================
+struct power_word_life_t final : public priest_heal_t
+{
+  double execute_percent;
+  double execute_modifier;
+
+  power_word_life_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "power_word_life", p, p.talents.power_word_life ),
+      execute_percent( data().effectN( 2 ).base_value() ),
+      execute_modifier( data().effectN( 3 ).percent() )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_heal_t::composite_da_multiplier( s );
+
+    if ( s->target->health_percentage() < execute_percent )
+    {
+      if ( sim->debug )
       {
-        if ( sim->debug )
-        {
-          sim->print_debug( "{} below {}% HP. Increasing {} healing by {}", s->target->name_str, execute_percent, *this,
-                            execute_modifier );
-        }
-        m *= 1 + execute_modifier;
+        sim->print_debug( "{} below {}% HP. Increasing {} healing by {}", s->target->name_str, execute_percent, *this,
+                          execute_modifier );
       }
-
-      return m;
+      m *= 1 + execute_modifier;
     }
 
-    void execute() override
+    return m;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( target->health_percentage() <= execute_percent )
     {
-      priest_heal_t::execute();
-
-      if ( target->health_percentage() <= execute_percent )
-      {
-        cooldown->adjust( timespan_t::from_seconds( data().effectN( 4 ).base_value() ) );
-      }
+      cooldown->adjust( timespan_t::from_seconds( data().effectN( 4 ).base_value() ) );
     }
-  };
+  }
+};
 
 }  // namespace heals
 
@@ -1589,16 +1575,14 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
-  cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
-  cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
-  cooldowns.mindgames                     = get_cooldown( "mindgames" );
-  cooldowns.penance                       = get_cooldown( "penance" );
-  cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
-  cooldowns.maddening_touch_icd->duration = 1_s;
+  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
+  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
+  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
+  cooldowns.mindgames          = get_cooldown( "mindgames" );
+  cooldowns.penance            = get_cooldown( "penance" );
 }
 
 /** Construct priest gains */
@@ -2016,8 +2000,7 @@ void priest_t::init_base_stats()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    resources.base[ RESOURCE_INSANITY ] =
-        100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
+    resources.base[ RESOURCE_INSANITY ] = 100.0;
   }
 
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment->effectN( 1 ).percent();
@@ -2230,7 +2213,6 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
-  action.apply_affecting_aura( talents.shadow.mastermind );
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
@@ -2438,41 +2420,24 @@ void priest_t::arise()
 // Idol of C'Thun Talent Trigger
 void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
-  if ( !talents.shadow.idol_of_cthun.enabled() )
-    return;
-
   auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
   auto mind_flay_id          = specs.mind_flay->id();
   auto mind_flay_insanity_id = 391403U;
   auto action_id             = s->action->id;
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
 
   if ( rppm.idol_of_cthun->trigger() )
   {
-    if ( is_ptr() )
+    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
     {
-      if ( s->action->target_list().size() > 2 )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
-      else
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
     }
-    else
+    else if ( action_id == mind_sear_id )
     {
-      if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
-      else if ( action_id == mind_sear_id )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
   }
 }

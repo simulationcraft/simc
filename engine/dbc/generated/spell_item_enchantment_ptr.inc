@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 10.1.0.48480
-static const std::array<item_enchantment_data_t, 4627> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 10.0.7.48439
+static const std::array<item_enchantment_data_t, 4612> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4579,8 +4579,7 @@ static const std::array<item_enchantment_data_t, 4627> __ptr_spell_item_ench_dat
   { 6696,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2096,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 6697,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2537,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 6698,      0, -7,  61,  70, 26, 0,   0,   0, {   5,   0,   0 }, {   12,    0,    0 }, {     38,      0,      0 }, {  0.2978,  0.0000,  0.0000 },      0, "Weighted: +$k1 Attack Power |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 6699,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "10.0 FX Testing - Enchant Visualt - Storm SK" },
-  { 6721,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 398623, "10.0.5 - Generic - Storm - Weapon Enchant - High - SK" },
+  { 6721,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 400122, "10.0.5 - Generic - Storm - Weapon Enchant - High - SK" },
   { 6722, 204030, -4,   0,   0, 0, 0,   0,   0, {   3,  14,   0 }, {    0,    0,    0 }, { 401678,  62821,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "|C0040C040Wind Sculpted Stone"     },
   { 6755, 204000, -4,   0,   0, 0, 0,   0,   0, {   3,  14,   0 }, {    0,    0,    0 }, { 402928,  62821,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "|C0040C040Storm Infused Stone"     },
   { 6756, 204001, -4,   0,   0, 0, 0,   0,   0, {   3,  14,   0 }, {    0,    0,    0 }, { 402929,  62821,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "|C0040C040Echoing Thunder Stone"   },
@@ -4613,19 +4612,5 @@ static const std::array<item_enchantment_data_t, 4627> __ptr_spell_item_ench_dat
   { 6783,      0, -4,   0,   0, 0, 0,   0,   0, {   3,  14,   0 }, {    0,    0,    0 }, { 402958,  62821,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
   { 6784, 204029, -4,   0,   0, 0, 0,   0,   0, {   3,  14,   0 }, {    0,    0,    0 }, { 402959,  62821,      0 }, { 500.0000,  0.0000,  0.0000 },      0, "|C00834FFFProphetic Twilight Stone" },
   { 6786,      0,  0,   0,  70, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Storm"                      },
-  { 6818,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "10.1 FX Testing - Enchant Visualt - Shadow Flame SK" },
-  { 6819,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405658,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Illusory Adornment: Spores"        },
-  { 6820,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405658,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Illusory Adornment: Spores"        },
-  { 6821,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405658,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Illusory Adornment: Spores"        },
-  { 6822,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405727,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Spore Tender |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 6823,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405728,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Spore Tender |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 6824,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405729,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Spore Tender |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 6825,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405764,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Shadowflame Wreathe |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 6826,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405765,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Shadowflame Wreathe |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 6827,      0,  0,  60,  70, 180, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 405766,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Shadowflame Wreathe |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 6828,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {     71,     40,      0 }, {  0.2250,  0.1050,  0.0000 }, 406295, "Lambent Armor Kit |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 6829,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {     71,     40,      0 }, {  0.2830,  0.1320,  0.0000 }, 406298, "Lambent Armor Kit |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 6830,      0, -7,  61,  70, 200, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {     71,     40,      0 }, {  0.3420,  0.1590,  0.0000 }, 406299, "Lambent Armor Kit |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 6831,      0,  0,   0,  60, 0, 0,   0,   0, {   7,   0,   0 }, {    0,    0,    0 }, { 407949,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "$spell@spelldesc407949"            },
 } };
 

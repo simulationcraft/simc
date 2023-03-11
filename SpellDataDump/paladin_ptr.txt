@@ -936,9 +936,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x..x.... ..x..... ........ ........ 
+                 : ........ ........ ........ ........   x....... ..x..... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419), Nameplate Enemy Debuffs (426)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=21607)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66310 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
@@ -952,10 +952,9 @@ Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage
 
 Shields you for $209388d, absorbing $209389s1% as much damage as it dealt.][]$?a378285[
 
-Deals $<dmg> additional damage to all enemies within $378286A1 yds of each target hit.][]
+Deals $378286s1 additional damage to all enemies within $378286A1 yds of each target hit.][]
 
 Tooltip          : Silenced.
-Variables        : $dmg=${$378286s1*(1+($378285s2/100))}
 
 Name             : Crusader Aura (id=32223) [Spell Family (10)] 
 Class            : Paladin
@@ -1696,7 +1695,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 2.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 1.75000 | Target: Friend (21)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2148,13 +2147,10 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 27
 Range            : 5 yards
-Duration         : 3 seconds
+Duration         : 4 seconds
 Cooldown         : 15 seconds
 Category         : 88
 Category Cooldown: 15 seconds
-Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
 Affecting spells : Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#5), Crusader's Reprieve (403042 effect#2)
 Family Flags     : 84
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ...x.... 
@@ -2169,8 +2165,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=102188)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Interrupt | Target: Enemy (6)
-#2 (id=1070937)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Sanctuary (id=105805) [Spell Family (10), Passive, Hidden] 
@@ -2327,7 +2321,7 @@ Description      : Reduces the cooldown of your Divine Shield, $?s184662[Shield 
 
 Name             : Light's Hammer (id=114158) [Spell Family (10)] 
 Talent Entry     : Holy [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
-Class            : Paladin, Druid
+Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
 Spell Type       : Magic
@@ -2472,7 +2466,7 @@ Effects          :
 Description      : $@spelldesc114165
 
 Name             : Light's Hammer (id=114918) [Spell Family (10)] 
-Class            : Paladin, Druid
+Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Nature
 Spell Type       : Magic
@@ -2493,7 +2487,7 @@ Effects          :
 Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
 
 Name             : Light's Hammer (id=114919) [Spell Family (10)] 
-Class            : Paladin, Druid
+Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
 Spell Type       : Magic
@@ -2534,29 +2528,29 @@ Effects          :
 Description      : You may store an additional $s1 Holy Power beyond the maximum of 3. No ability ever consumes more than 3 Holy Power.
 
 Name             : Blinding Light (id=115750) [Spell Family (10)] 
+Hotfixed         : Learn Level (1 -> 0), Attributes, Spell Type (1 -> 0), Required Level (1 -> 0)
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Holy
-Spell Type       : Magic
+Spell Type       : None
 Resource         : 6% Base Mana (0) (id=5750)
-Spell Level      : 1
 GCD              : 1.5 seconds
-Duration         : 6 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Family Flags     : 75
-Attributes       : ........ ........ x.x.x... ......x.   ...x...x ........ ..x..... ....x... 
-                 : ........ ........ ........ ........   ........ ........ x....... ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... .......x ........   ........ ........ ........ ......x. 
+Attributes       : ........ ........ ..x.x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), Prevents Anim (50), No Aura Icon (60), Suppress Caster Procs (112), Can Proc From Procs (122), No Aura Log (202), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
+                 : Do Not Sheath (18), Cancels Auto Attack Combat (20), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=129792)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=129792)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (6 -> 3), Sub Type (4 -> 0), Base Value (20 -> 0)
 Description      : Emits dazzling light in all directions, blinding enemies within $105421A1 yds, causing them to wander disoriented for $105421d. Non-Holy damage will break the disorient effect.
 
 Name             : Fire From the Heavens (id=115995) [Spell Family (10), Hidden] 
@@ -2580,7 +2574,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 
 Name             : Arcing Light (id=119952) [Spell Family (10)] 
-Class            : Paladin, Druid
+Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
 Spell Type       : Magic
@@ -2626,7 +2620,7 @@ Description      : Allows you a moment of peace as you kneel in quiet contemplat
 Tooltip          : Pondering the nature of the Light.
 
 Name             : Light's Hammer (desc=Talent) (id=122773) [Spell Family (10)] 
-Class            : Paladin, Druid
+Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -2734,7 +2728,7 @@ Effects          :
 #2 (id=239967)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=255562)   : Apply Aura (6) | Unknown(448)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=255745)   : Apply Aura (6) | Unknown(119)
@@ -4578,6 +4572,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 30 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4657,6 +4652,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 60 seconds
+Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12149,7 +12145,7 @@ Effects          :
 #2 (id=1020936)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Avenger's Shield is imbued with holy fire, causing it to deal $<dmg> Holy damage to all enemies within $378286A1 yards of each target hit.
-Variables        : $dmg=${$378286s1*(1+($378285s2/100))}
+Variables        : $dmg=${$378286s1*(1+($s2/100))}
 
 Name             : Tyr's Enforcer (id=378286) [Spell Family (10)] 
 Class            : Paladin
@@ -17179,91 +17175,6 @@ Effects          :
 Description      : Your auto attacks have a $h% chance to reset the cooldown of Blade of Justice.
 
 
-Name             : Calm the Wolf (desc=Racial) (id=406087) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Race             : Worgen (0x200000)
-School           : Physical
-Spell Type       : None
-GCD              : 1.5 seconds
-Duration         : Aura (infinite)
-Triggered by     : Calm the Wolf (406088)
-Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... .x...... ....x... 
-                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ......x. ........ .....x.x ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ .x...... ....x... ........   ........ ........ ........ .x..x... 
-                 : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 406088 | Scaled Value: 406088 | PvP Coefficient: 1.00000 | Misc Value: 406087 | Target: Self (1)
-Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
-
-Name             : Calm the Wolf (desc=Racial) (id=406088) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Race             : Worgen (0x200000)
-School           : Physical
-Spell Type       : None
-GCD              : 1.5 seconds
-Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
-                 : x....... ........ ........ ....x...   ........ ........ xx...... ........ 
-                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=1054763)  : Cancel Aura (164)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406087 | Target: Self (1)
-#2 (id=1054764)  : Cancel Aura (164)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406090 | Target: Self (1)
-Description      : While active, you automatically assume your human form when you leave combat.
-
-Activate to disable this effect.
-
-Name             : Calm the Wolf (desc=Racial) (id=406090) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Race             : Worgen (0x200000)
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Triggered by     : Calm the Wolf (406088)
-Attributes       : .......x ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
-                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
-Effects          :
-#1 (id=1054766)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
-Name             : Calm the Wolf (desc=Racial Passive) (id=406096) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
-Race             : Worgen (0x200000)
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
-Effects          :
-#1 (id=1054784)  : Apply Aura (6) | Unknown(352)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Enables Worgen to switch between Worgen and Human forms.
-
 Name             : Faith's Armor (id=406101) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=8, col=7, max_rank=1, req_points=20]
 Class            : Paladin
@@ -17765,27 +17676,6 @@ Variables        : $mult=${($min($pl-1,19)*6+96)/210}
 $pvp=$?a134735[${1.3}][${1}]}
 $retribution=$?a137027[${1.00*$<pvp>}][${1}]
 $damage=${$s1*$<retribution>}
-
-Name             : Light's Hammer (id=407992) [Passive] 
-Class            : Paladin
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071857)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc114158
 
 Name             : Judgment of Justice (id=408383) [Spell Family (10)] 
 Class            : Paladin

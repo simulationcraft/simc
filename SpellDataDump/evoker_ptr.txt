@@ -147,7 +147,7 @@ Effects          :
 #2 (id=239967)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=255562)   : Apply Aura (6) | Unknown(448)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=255745)   : Apply Aura (6) | Unknown(119)
@@ -489,8 +489,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=885733)   : Apply Aura (6) | Periodic Damage (3): firestorm every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.15000 | PvP Coefficient: 1.20000 | Radius: 3 - 6 yards | Target: Unknown(78) -> AOE enemy (instant) (16)
-#2 (id=1054052)  : Trigger Spell (64): Imminent Destruction
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 405652 | Target: Unknown(87)
 Description      : $@spelldesc357210
 Tooltip          : Suffering $w1 Volcanic damage every $t1 sec.
 
@@ -611,7 +609,7 @@ Duration         : 2.5 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#10)
+Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 25
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -911,7 +909,7 @@ Duration         : 2.5 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Causality (375778 effect#1), Flow State (390148 effect#10)
+Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 15
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -919,9 +917,9 @@ Attributes       : ........ ........ x....... ........   ......x. ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416), Do Not Allow "Disable Movement Interrupt" (443)
+                 : Not Shapeshifted (16), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Force Display Castbar (155), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Do Not Allow "Disable Movement Interrupt" (443)
 Effects          :
 #1 (id=891596)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -958,7 +956,7 @@ Range            : 100 yards
 Duration         : 2 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2, #12, #13), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1), Imminent Destruction (405652 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2, #12, #13), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Heat Wave (375725 effects: #1, #2), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1)
 Triggered by     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -967,9 +965,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
+                 : ........ ........ ........ ........   .......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=891597)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.13400 | PvP Coefficient: 0.70000 | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone Front (104)
@@ -1061,9 +1059,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
+                 : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332)
 Effects          :
 #1 (id=891602)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.05000 | PvP Coefficient: 1.15000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -1181,7 +1179,8 @@ GCD              : 0.5 seconds
 Duration         : 2.5 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Affecting spells : Tip the Scales (370553 effects: #1, #2), Causality (375778 effect#1)
+Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
+Triggered by     : Causality (375778)
 Family Flags     : 16
 Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
@@ -1214,7 +1213,7 @@ Range            : 100 yards
 GCD              : 1.5 seconds
 Velocity         : 36 yards/sec
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1), Imminent Destruction (405652 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Evoker Devastation Class Set 2pc (393642 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2123,7 +2122,7 @@ Duration         : 2.5 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Spiritual Clarity (376150 effect#1), Flow State (390148 effect#10)
+Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1), Flow State (390148 effect#10)
 Family Flags     : 30
 Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
@@ -2304,7 +2303,7 @@ Velocity         : 50 yards/sec
 Cooldown         : 20 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Hover (358267 effect#5), Snapfire (370818 effect#1), Raging Inferno (405659 effect#1)
+Affecting spells : Hover (358267 effect#5), Snapfire (370818 effect#1)
 Triggered by     : Snapfire (370818)
 Family Flags     : 2, 32
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -2513,10 +2512,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=915548)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1054417)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Pyre reduces the remaining cooldown of Fire Breath and Eternity Surge by $s1 sec, or $s2 sec if it was affected by Essence Burst.
+Description      : Consuming Essence Burst reduces the remaining cooldown of Fire Breath by $s1 sec.
 
 Name             : Power Nexus (id=369908) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=4, col=2, max_rank=1, req_points=0]
@@ -2841,8 +2838,7 @@ Tooltip          : About to be picked up!
 
 Name             : Imminent Destruction (id=370781) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=9, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
-                 : Effect#2 [op=set, values=(-20, -40)]
+                 : Effect#1 [op=set, values=(-10, -20)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -2852,20 +2848,19 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982303)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2558 (Label) | Target: Self (1)
-                   Affected Spells (Label): Imminent Destruction (405652)
-#2 (id=1054054)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Deep Breath causes your empower spells to reach maximum level in $s2% less time, and enemies struck by it take $s1% more damage from your empower spells for $405652d.
+#1 (id=982303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Dream Breath (355936), Fire Breath (357208), Eternity Surge (359073), Spiritbloom (367226), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731)
+                   Family Flags: 15, 16, 25, 30
+Description      : Empower spells reach maximum level in $s1% less time.
 
 Name             : Snapfire (id=370783) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Devastation [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -2980,11 +2975,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982388)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469)
                    Family Flags: 52
 #2 (id=982389)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Living Flame (361469), Living Flame (361500), Living Flame (361509)
                    Family Flags: 7
 Description      : Living Flame deals $s2% increased damage and healing, but its cast time is increased by ${$s1/1000}.1 sec.
@@ -3134,7 +3129,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982460)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
 #2 (id=982461)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
@@ -4107,7 +4102,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
-Duration         : 18 seconds
+Duration         : 14 seconds
 Cooldown         : 120 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
@@ -4645,32 +4640,31 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1002393)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While channeling Disintegrate, Fire Breath and Eternity Surge cool down $375778s1% faster.
+#1 (id=1002393)  : Apply Aura (6) | Proc Trigger Spell (42): Causality
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 375778 | Target: Self (1)
+Description      : Essence abilities reduce the remaining cooldown of Eternity Surge by ${$375778s1/-1000} sec.
 
 Name             : Causality (id=375778) [Spell Family (224)] 
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
-Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Triggered by     : Causality (375777)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ........ ..x..... ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), Allow Cast While Casting (135), Do Not Display Duration (170), Haste Affects Duration (273), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+                 : Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1002394)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Fire Breath (357208), Eternity Surge (359073), Fire Breath (382266), Eternity Surge (382411)
-                   Family Flags: 15, 16
+#1 (id=1002394)  : Reduce Remaining Cooldown (290)
+                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Trigger Spell: 359073 | Target: Self (1)
+#2 (id=1018203)  : Reduce Remaining Cooldown (290)
+                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Trigger Spell: 382411 | Target: Self (1)
 Description      : $@spelldesc359073
-Tooltip          : Fire Breath and Eternity Surge are cooling down $375778s1% faster.
 
 Name             : Font of Magic (id=375783) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=8, col=4, max_rank=1, req_points=20]
@@ -4736,7 +4730,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002416)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting an empower spell extends the duration of Dragonrage by ${$s1/1000} sec.
 
 Name             : Burnout (id=375801) [Spell Family (224), Passive] 
@@ -5775,7 +5769,7 @@ Duration         : 3.25 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Causality (375778 effect#1), Flow State (390148 effect#10)
+Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 15
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5862,7 +5856,8 @@ GCD              : 0.5 seconds
 Duration         : 3.25 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Affecting spells : Tip the Scales (370553 effects: #1, #2), Causality (375778 effect#1)
+Affecting spells : Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1)
+Triggered by     : Causality (375778)
 Family Flags     : 16
 Attributes       : ........ ........ x....... .....x..   ..x..... ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
@@ -5899,7 +5894,7 @@ Duration         : 3.25 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Flow State (390148 effect#10)
+Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Flow State (390148 effect#10)
 Family Flags     : 25
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5946,7 +5941,7 @@ Duration         : 3.25 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Spiritual Clarity (376150 effect#1), Flow State (390148 effect#10)
+Affecting spells : Temporal Compression (362877 effect#1), Tip the Scales (370553 effects: #1, #2), Imminent Destruction (370781 effect#1), Spiritual Clarity (376150 effect#1), Flow State (390148 effect#10)
 Family Flags     : 30
 Attributes       : ........ ........ x....... .....x..   ..x...x. ..x..... ........ .x..xx.. 
                  : ........ x....... ........ ........   ........ ........ ..x..... ........ 
@@ -6635,7 +6630,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1041802)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1216 | Target: Self (1)
-                   Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Imminent Destruction (405652), Raging Inferno (405659), Oppressing Roar (406971)
+                   Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Oppressing Roar (406971)
 #3 (id=1041803)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1948 | Target: Self (1)
                    Affected Spells (Category): Hover (358267), Verdant Embrace (360995)
@@ -6656,14 +6651,14 @@ Effects          :
                    Affected Spells (Label): Tail Swipe (368970)
 #9 (id=1041809)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 1216 (Label) | Target: Self (1)
-                   Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Imminent Destruction (405652), Raging Inferno (405659), Oppressing Roar (406971)
+                   Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Oppressing Roar (406971)
 #10 (id=1041836)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Dream Breath (355936), Fire Breath (357208), Spiritbloom (367226), Fire Breath (382266), Dream Breath (382614), Spiritbloom (382731)
                    Family Flags: 15, 25, 30
 #11 (id=1041837)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cast Time (10)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 10 | Misc Value 2: 1216 (Label) | Target: Self (1)
-                   Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Imminent Destruction (405652), Raging Inferno (405659), Oppressing Roar (406971)
+                   Affected Spells (Label): Quell (351338), Evoker (353167), Deep Breath (353759), Azure Strike (355627), Landslide (355689), Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Devastation Evoker (356809), Preservation Evoker (356810), Initial Evoker (356816), Disintegrate (356995), Time Dilation (357170), Fire Breath (357208), Fire Breath (357209), Deep Breath (357210), Pyre (357211), Pyre (357212), Hover (358267), Hover (358268), Landslide (358385), Eternity Surge (359073), Eternity Surge (359077), [DNT] Activate GCD (359115), Essence Burst (359565), Essence Burst (359618), Fluttering Seedlings (359793), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Mass Return (361178), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361469), Living Flame (361500), Living Flame (361509), Essence Burst (361519), Temporal Compression (362874), Temporal Compression (362877), Azure Strike (362969), Mastery: Giantkiller (362980), Dream Flight (363502), Mastery: Life-Binder (363510), Rewind (363534), Obsidian Scales (363916), Blessing of the Bronze (364342), Echo (364343), Emerald Blossom (365261), Improved Emerald Blossom (365262), Expunge (365585), Aerial Mastery (365933), Ruby Embers (365937), Reversion (366155), Mail Specialization (366524), Spiritbloom (367226), Spiritbloom (367230), Time of Need (368412), Time of Need (368415), Unravel (368432), Time of Need (368435), Heavy Wingbeats (368838), Firestorm (368847), Volatility (369089), Essence Burst (369297), Essence Burst (369299), Firestorm (369372), Firestorm (369374), Eye of Infinity (369375), Source of Magic (369459), Feed the Flames (369846), Power Nexus (369908), Protracted Talons (369909), Natural Convergence (369913), Leaping Flames (369939), Ancient Flame (369990), Field of Dreams (370062), Shattering Star (370452), Charged Blast (370454), Charged Blast (370455), Stasis (370537), Tip the Scales (370553), Rescue (370665), Imminent Destruction (370781), Snapfire (370783), Snapfire (370818), Everburning Flame (370819), Scintillation (370821), Engulfing Blaze (370837), Power Swell (370839), Empath (370840), Spellweaver's Dominance (370845), Iridescence (370867), Bountiful Bloom (370886), Twin Guardian (370888), Twin Guardian (370889), Permeating Chill (370897), Permeating Chill (370898), Leaping Flames (370901), Leaping Flames (370917), Dense Energy (370962), Emerald Communion (370984), Imposing Presence (371016), Terror of the Skies (371032), Lay Waste (371034), Honed Aggression (371038), Renewing Breath (371257), Punctuality (371270), Life-Giver's Flame (371426), Recall (371806), Cycle of Life (371832), Cycle of Life (371871), Cycle of Life (371879), Oppressing Roar (372048), Energy Loop (372233), Energy Loop (372234), Terror of the Skies (372245), Scarlet Adaptation (372469), Scarlet Adaptation (372470), Time Lord (372527), Source of Magic (372571), Lifebind (373267), Lifebind (373270), Call of Ysera (373834), Call of Ysera (373835), Temporal Anomaly (373861), Zephyr (374227), Cauterizing Flame (374251), Overawe (374346), Renewing Blaze (374348), Renewing Blaze (374349), Time Spiral (374968), Dragonrage (375087), Dragonrage (375088), Time Spiral (375226), Obsidian Bulwark (375406), Clobbering Sweep (375443), Blast Furnace (375510), Extended Flight (375517), Innate Magic (375520), Forger of Mountains (375528), Exuberance (375542), Inherent Resistance (375544), Enkindled (375554), Tailwind (375556), Lush Growth (375561), Foci of Life (375574), Fire Within (375577), Ancient Flame (375583), Arcane Intensity (375618), Azure Essence Burst (375721), Essence Attunement (375722), Heat Wave (375725), Eternity's Span (375757), Causality (375777), Causality (375778), Font of Magic (375783), Hoarded Power (375796), Animosity (375797), Burnout (375801), Burnout (375802), Empath (376138), Spiritual Clarity (376150), Instinctive Arcana (376164), Draconic Legacy (376166), Lifeforce Mender (376179), Just in Time (376204), Delay Harm (376207), Erasure (376210), Resonating Sphere (376236), Nozdormu's Teachings (376237), Grace Period (376239), Timeless Magic (376240), Power Swell (376850), Ruby Essence Burst (376872), Tyranny (376888), Attuned to the Dream (376930), Dreamwalker (377082), Rush of Vitality (377086), Rush of Vitality (377088), Spark of Insight (377099), Exhilarating Burst (377100), Exhilarating Burst (377102), Tailwind (378105), Golden Hour (378196), Principles of Soaring (381451), Blessing of the Bronze (381732), Blessing of the Bronze (381741), Blessing of the Bronze (381746), Blessing of the Bronze (381748), Blessing of the Bronze (381749), Blessing of the Bronze (381750), Blessing of the Bronze (381751), Blessing of the Bronze (381752), Blessing of the Bronze (381753), Blessing of the Bronze (381754), Blessing of the Bronze (381756), Blessing of the Bronze (381757), Blessing of the Bronze (381758), Permeating Chill (381773), Ouroboros (381921), Temporal Artificer (381922), Fire Breath (382266), Eternity Surge (382411), Dream Breath (382614), Spiritbloom (382731), Flow State (385696), Titanic Wrath (386272), Catalyze (386283), Focusing Iris (386336), Arcane Vigor (386342), Onyx Legacy (386348), Iridescence: Red (386353), Iridescence: Blue (386399), Inner Radiance (386405), Boon of the Covenants (387168), Boon of the Covenants (387169), Grandiose Boon (387198), Spark of Savagery (387201), Intense Awakening (387202), Bronze Acceleration (387222), Primal Fortitude (387225), Inherent Resistance (387227), Circle of Life (387228), Graceful Stride (387240), Natural Weapons (387267), Legacy of Coldarra (387270), Walloping Blow (387341), Ouroboros (387350), Unity (387431), Panacea (387761), Panacea (387763), Regenerative Magic (387787), Flow State (390148), Fury of the Aspects (390386), Pyre (393568), Tempered Scales (396571), Eye of Infinity (397565), Titanic Wrath (397870), Iridescence: Blue (399370), Energizing Flame (400006), Oppressing Roar (406971)
 Description      : $@spelldesc385696
 Tooltip          : Time is moving $w1% faster.
 
@@ -7000,56 +6995,6 @@ Effects          :
 #1 (id=1050035)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Flap back, reducing forward movement.
-
-Name             : Imminent Destruction (id=405652) [Spell Family (224)] 
-Class            : Evoker
-School           : Firestorm
-Spell Type       : Magic
-Range            : 100 yards
-Duration         : 15 seconds
-Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-                 : 2558: Imminent Destruction (370781 effect#1)
-Triggered by     : Deep Breath (353759)
-Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Effects          :
-#1 (id=1054051)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
-                   Affected Spells: Fire Breath (357209), Eternity Surge (359077), Full Belly (377087)
-                   Family Flags: 18, 35
-Description      : $@spelldesc370781
-Tooltip          : Taking $w1% increased damage from $@auracaster's empower spells.
-
-Name             : Raging Inferno (id=405659) [Spell Family (224), Passive] 
-Talent Entry     : Devastation [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
-Class            : Evoker
-School           : Fire
-Spell Type       : None
-Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1054061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Firestorm (368847)
-                   Family Flags: 32, 64
-#2 (id=1054086)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Firestorm's radius is increased by $s1%, and Pyre deals $s2% increased damage to enemies within your Firestorm.
 
 Name             : Oppressing Roar (desc=Black) (id=406971) [Spell Family (224)] 
 Class            : Evoker

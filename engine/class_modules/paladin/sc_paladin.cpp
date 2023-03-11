@@ -214,6 +214,11 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
   // if ( p->talents.avenging_wrath_2->ok() )
   //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
+  if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
+  {
+    cooldown->duration += p->spec.retribution_paladin->effectN( 21 ).time_value();
+  }
+
   cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 }
 
@@ -364,7 +369,7 @@ struct consecration_t : public paladin_spell_t
   double precombat_time;
 
   consecration_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "consecration", p, p->find_spell( 26573 ) ),
+    : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
       damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
       precombat_time( 2.0 )
   {
@@ -375,12 +380,16 @@ struct consecration_t : public paladin_spell_t
     may_miss = harmful = false;
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
+    if ( p->is_ptr() && p->specialization() == PALADIN_RETRIBUTION )
+    {
+      cooldown->duration += p->spec.retribution_paladin->effectN( 22 ).time_value();
+    }
 
     add_child( damage_tick );
   }
 
   consecration_t( paladin_t* p )
-    : paladin_spell_t( "background_consecration", p, p->find_spell( 26573 ) ),
+    : paladin_spell_t( "background_consecration", p, p->find_spell( "Consecration" ) ),
       damage_tick( new consecration_tick_t( "background_consecration_tick", p ) )
   {
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
@@ -2496,7 +2505,11 @@ void paladin_t::create_actions()
   if ( legendary.the_magistrates_judgment->ok() )
     cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
 
-  active.background_cons = new consecration_t( this );
+  if ( talents.consecrated_blade->ok() )
+  {
+    active.background_cons = new consecration_t( this );
+  }
+
 
   player_t::create_actions();
 }
