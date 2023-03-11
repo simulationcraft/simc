@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48480
-static const std::array<spelltext_data_t, 19590> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19591> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16539,6 +16539,7 @@ static const std::array<spelltext_data_t, 19590> __ptr_spelltext_data { {
   { 377253, "$@spelldesc377226", "Grants ${$s1*$mas}% Mastery.", 0 },
   { 377349, "Mind Flay, Mind Spike, and Void Torrent have a chance to spawn a Void Tendril that channels Mind Flay or Void Lasher that channels Mind Sear at your target.\r\n\r\n$@spellicon193473 $@spellname193473\r\n$@spelldesc193473\r\n\r\n$@spellicon394976$@spellname394976\r\n$@spelldesc394976", 0, 0 },
   { 377351, "Enemies suffer $377359s1% increased damage from Chill Streak each time they are struck by it.", 0, 0 },
+  { 377355, "$@spelldesc377349", 0, 0 },
   { 377358, "Your Void Tendril or Void Lasher Generates ${$s1/100} Insanity periodically.", 0, 0 },
   { 377359, "$@spelldesc377351\r\n", "Damage taken from $@auracaster's Chill Streak increased by $s1%.", 0 },
   { 377360, "If an interrupt is used on you while you are not casting, gain $377362s16% Haste and become immune to crowd control, interrupt, and cast pushback effects for $377362d.", 0, 0 },
