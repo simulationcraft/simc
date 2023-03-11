@@ -1470,6 +1470,34 @@ Description      : You attempt to finish off a wounded target, dealing $s1 Physi
 
 Kill Shot deals $343248s1% increased critical damage.][]
 
+Name             : Roar of Sacrifice (id=53480) [Spell Family (9)] 
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8, select_idx=200]
+Class            : Hunter
+School           : Nature
+Spell Type       : Magic
+Range            : 40 yards
+Duration         : 12 seconds
+Cooldown         : 60 seconds
+Proc Chance      : 100%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
+Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ......x. ........   ...x.... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), No Threat (42), Include In Advanced Combat Log (72), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Stunned By Horror Mechanic (342), Do Not Log on Learn (355), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=46148)    : Apply Aura (6) | Modify Attacker Crit Chance (197)
+                   Base Value: -10000 | Scaled Value: -10000 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+#2 (id=46149)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
+Description      : Instructs your pet to protect a friendly target from critical strikes, making attacks against that target unable to be critical strikes, but $s2% of all damage taken by that target is also taken by the pet.  Lasts $d.
+Tooltip          : Immune to critical strikes, but damage transferred to the Hunter's pet.
+
 Name             : Master's Call (id=54216) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -3974,11 +4002,11 @@ Attributes       : .x..x... ........ x...x... ........   ........ ........ .....
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ .......x ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), No Attack Dodge (247), Allow Class Ability Procs (416)
+                 : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Cancels Auto Attack Combat (20), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), No Attack Dodge (247), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=271387)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05273 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
@@ -3991,7 +4019,7 @@ Effects          :
 Description      : Fires an explosion of bolts at all enemies in front of you, knocking them back, snaring them by $s4% for $d, and dealing $s1 Physical damage.$?s378771[
 
 When you fall below $378771s1% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every $385646d.][]
-Tooltip          : Movement speed reduced by $s4%.
+Tooltip          : Movement speed reduced by $w4%.
 
 Name             : Freezing Trap (id=187650) [Spell Family (9)] 
 Class            : Hunter
@@ -4156,8 +4184,6 @@ Reduces the remaining cooldown on Wildfire Bomb by $<cdr> sec for each target hi
 Variables        : $cdr=${$s2/1000}
 
 Name             : Legacy of the Windrunners (id=190852) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(3, 6)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4257,7 +4283,7 @@ Attributes       : .x...... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Range (126), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Next modal spell requires same unit target (304), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=280170)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc190852
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive, Hidden] 
@@ -4390,7 +4416,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Can Proc From Procs (122), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=283921)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283922)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
@@ -4399,7 +4425,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
-Description      : Fire off a Cobra Shot at your current target and $s1 other $Lenemy:enemies; near your current target. For the next $d, your Cobra Shot will fire at $s1 extra $Ltarget:targets; and Cobra Shot Focus cost reduced by $s2.$?s389654[
+Description      : Fire off a Cobra Shot at your current target and $s1 other $Lenemy:enemies; near your current target. For the next $d, your Cobra Shot will fire at $s1 extra $Ltarget:targets; and Cobra Shot Focus cost is reduced by $s2.$?s389654[
 
 Each temporary beast summoned reduces the cooldown of Aspect of the Wild by ${$389654m1/1000}.1 sec.][]$?s389660[
 
@@ -4903,8 +4929,7 @@ Description      : Furiously strikes all enemies in front of you, dealing ${$203
 Kill Command cooldown resets reduce the cooldown of Fury of the Eagle by ${$m2/1000}.1 sec$?s385718[ and Fury of the Eagle critical strikes reduce the cooldown of Wildfire Bomb and Flanking Strike by ${$m1/1000}.1 sec][].
 
 Name             : Bullseye (id=204089) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=8, col=4, max_rank=2, req_points=20]
-                 : Effect#2 [op=set, values=(15, 30)]
+Talent Entry     : Marksmanship [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4925,7 +4950,7 @@ Effects          :
 #1 (id=301189)   : Apply Aura (6) | Proc Trigger Spell (42): Bullseye
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 204090 | Target: Self (1)
 #2 (id=1007209)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Bullseye (204090)
                    Family Flags: 51
 Description      : When your abilities damage a target below $s1% health, you gain $204090s1% increased critical strike chance for $204090d, stacking up to $s2 times.
@@ -4967,7 +4992,6 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
-Labels           : 203: Thundercharge (204366 effect#5)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
@@ -5948,6 +5972,7 @@ Duration         : 20 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
+Triggered by     : Bombardment (405804)
 Family Flags     : 88
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6689,7 +6714,6 @@ Effects          :
 Description      : Rapid Fire's damage is increased by $s1%, and Rapid Fire also causes your next Aimed Shot to cast $s3% faster.
 
 Name             : Lethal Shots (id=260393) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -13648,9 +13672,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 361582 | Target: Self (1)
 Description      : You sound the call of the wild, summoning $s1 of your active pets for $d. During this time, a random pet from your stable will appear every $t2 sec to assault your target for $361582d.$?s378442[
 
-While Call of the Wild is active, Barbed Shot has a $378442h% chance to gain a charge any time Focus is spent.][]$?s378739[
-
-While Call of the Wild is active, Barbed Shot affects all of your summoned pets.][]
+While Call of the Wild is active, Barbed Shot has a $378442h% chance to gain a charge any time Focus is spent.][]
 Tooltip          : Summoning 1 of your active pets every $t2 sec. Each pet summoned lasts for $361582d.
 
 Name             : Coordinated Assault (id=360952) [Spell Family (9)] 
@@ -14531,28 +14553,6 @@ Effects          :
 Description      : While Call of the Wild is active, Barbed Shot has a $h% chance to gain a charge any time Focus is spent.
 
 
-Name             : Bloody Frenzy (id=378739) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
-Class            : Hunter
-School           : Nature
-Spell Type       : None
-GCD              : 1.5 seconds
-Cooldown         : 120 seconds
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1007161)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Call of the Wild is active, Barbed Shot affects all of your summoned pets.
-
-
 Name             : Killer Command (id=378740) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
@@ -14823,7 +14823,6 @@ Effects          :
 Description      : $@spelldesc378771
 
 Name             : Bombardment (id=378880) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14991,6 +14990,9 @@ Talent Entry     : Survival [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
+                 : White Melee
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -15007,7 +15009,11 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Counter Shot (147362), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Muzzle (187707), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Wing Clip (195645), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106, 115, 125
-Description      : Increases the range of your melee attacks and abilities by $s1 yds.
+#3 (id=1072484)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases the range of your melee attacks and abilities by $s1 yds.
+
+Auto-attacks reduce the cooldown of Wildfire Bombs by ${$m3/1000}.1 sec.
 
 Name             : Explosives Expert (id=378937) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Survival [tree=spec, row=9, col=4, max_rank=2, req_points=20]
@@ -15267,7 +15273,7 @@ Effects          :
 Description      : When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $388998s1% increased damage, and shred up to $388998s2 targets near your Kill Shot target for $388998s3% of the damage dealt by Kill Shot over $385638d.
 
 Name             : Hunter's Avoidance (id=384799) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15425,9 +15431,9 @@ Effects          :
 Description      : Kill Command generates $s1 additional Focus.
 
 Name             : Ruthless Marauder (id=385718) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=10, col=1, max_rank=3, req_points=20]
-                 : Effect#1 [op=set, values=(15, 30, 45)]
-                 : Effect#3 [op=set, values=(500, 1000, 1500)]
+Talent Entry     : Survival [tree=spec, row=10, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(15, 45)]
+                 : Effect#3 [op=set, values=(750, 1500)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15980,7 +15986,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1026021)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each temporary beast summoned reduces the cooldown of Aspect of the Wild by ${$m1/1000}.1 sec.
 
 Name             : Snake Bite (id=389660) [Spell Family (9), Passive] 
@@ -16001,7 +16007,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1026044)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Aspect of the Wild (193530), Master Handler (389654)
                    Family Flags: 77
 Description      : While Aspect of the Wild is active, Cobra Shot deals $s1% increased damage.
@@ -16909,5 +16915,208 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1715 | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
 Description      : Aimed Shot and Rapid Fire cooldown reduced by $s1%.
+
+Name             : Bombardment (id=405804) [Spell Family (9), Passive] 
+Talent Entry     : Marksmanship [tree=spec, row=7, col=2, max_rank=1, req_points=8]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Proc Chance      : 101%
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
+                 : Yellow Ranged
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1054261)  : Apply Aura (6) | Proc Trigger Spell (42): Trick Shots
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Trigger Spell: 257622 | Target: Self (1)
+Description      : Kill Shot now grants the Trick Shots effect.
+
+Name             : Calm the Wolf (desc=Racial) (id=406087) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Triggered by     : Calm the Wolf (406088)
+Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... .x...... ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ......x. ........ .....x.x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ .x...... ....x... ........   ........ ........ ........ .x..x... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=1054762)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 406088 | Scaled Value: 406088 | PvP Coefficient: 1.00000 | Misc Value: 406087 | Target: Self (1)
+Description      : Activate to control your worgen instincts and automatically assume human form when you leave combat.
+
+Name             : Calm the Wolf (desc=Racial) (id=406088) 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Attributes       : ........ ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx...... ........ 
+                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1054763)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406087 | Target: Self (1)
+#2 (id=1054764)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406090 | Target: Self (1)
+Description      : While active, you automatically assume your human form when you leave combat.
+
+Activate to disable this effect.
+
+Name             : Calm the Wolf (desc=Racial) (id=406090) [Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Triggered by     : Calm the Wolf (406088)
+Attributes       : .......x ........ .......x .....x..   ...x...x ..x..... ........ ....x... 
+                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1054766)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Calm the Wolf (desc=Racial Passive) (id=406096) [Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
+Race             : Worgen (0x200000)
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1054784)  : Apply Aura (6) | Unknown(352)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Enables Worgen to switch between Worgen and Human forms.
+
+Name             : Legacy of the Windrunners (id=406425) [Spell Family (9), Passive] 
+Talent Entry     : Marksmanship [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(2, 4)]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
+                 : Yellow Ranged
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1055357)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1055402)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1055403)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1055404)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Aimed Shot coalesces $s1 extra Wind $LArrow:Arrows; that also shoot your target for $191043s1 Physical damage.
+
+Every $s2 Wind Arrows fired generates $s3 Focus and grants $s4 $Lcharge:charges; of Aimed Shot.
+
+Modifiers to Aimed Shot damage also increase the damage of Wind Arrows.
+
+Name             : In the Rhythm (id=407404) [Spell Family (9), Passive, Hidden] 
+Talent Entry     : Marksmanship [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1070830)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When Rapid Fire fully finishes channeling, gain $407405s1% haste for $407405d.
+
+Name             : In the Rhythm (id=407405) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1070831)  : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc407404
+Tooltip          : Haste increased by $s1%.
+
+Name             : Bloody Frenzy (id=407412) [Spell Family (9), Passive, Hidden] 
+Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+GCD              : 1.5 seconds
+Cooldown         : 120 seconds
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Effects          :
+#1 (id=1070840)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While Call of the Wild is active, your pets have the effects of Beast Cleave, and Cobra Shot applies Serpent Sting to any target hit.
 
 
