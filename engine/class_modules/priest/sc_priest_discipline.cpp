@@ -439,6 +439,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.lights_wrath     = ST( "Light's Wrath" );
   talents.discipline.train_of_thought = ST( "Train of Thought" );  // TODO: implement PS:S reduction as well
   // Row 9
+  talents.discipline.expiation              = ST( "Expiation" );
   talents.discipline.harsh_discipline       = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
   talents.discipline.blaze_of_light         = find_spell( 215768 );

@@ -19,6 +19,37 @@ namespace actions
 {
 namespace spells
 {
+
+// ==========================================================================
+// Expiation
+// ==========================================================================
+struct expiation_t final : public priest_spell_t
+{
+  timespan_t consume_time;
+
+  expiation_t( priest_t& p )
+    : priest_spell_t( "expiation", p, p.talents.discipline.expiation ),
+      consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+  {
+    background = dual = true;
+
+    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
+    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_td_t& td = get_td( s->target );
+    dot_t* dot =
+        priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
+
+    auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
+    base_dd_min = base_dd_max = dot_damage;
+    priest_spell_t::impact( s );
+    dot->adjust_duration( -consume_time );
+  }
+};
 // ==========================================================================
 // Mind Blast
 // ==========================================================================
@@ -27,12 +58,14 @@ struct mind_blast_t final : public priest_spell_t
 private:
   double mind_blast_insanity;
   timespan_t manipulation_cdr;
+  propagate_const<expiation_t*> child_expiation;
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      child_expiation( nullptr )
   {
     parse_options( options_str );
 
@@ -41,6 +74,11 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
+    if ( priest().talents.discipline.expiation.enabled() )
+    {
+      child_expiation             = new expiation_t( priest() );
+      child_expiation->background = true;
+    }
 
     apply_affecting_aura( p.talents.shadow.thought_harvester );
   }
@@ -76,7 +114,8 @@ public:
     // buffs up.
     if ( priest().specialization() == PRIEST_SHADOW && !priest().is_ptr() )
     {
-      cooldown->charges = data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+      cooldown->charges =
+          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
   }
 
@@ -96,7 +135,6 @@ public:
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
-
     return m;
   }
 
@@ -144,6 +182,12 @@ public:
       }
 
       priest().buffs.coalescing_shadows->expire();
+
+      if ( child_expiation )
+      {
+        child_expiation->target = s->target;
+        child_expiation->execute();
+      }
     }
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
@@ -935,12 +979,14 @@ struct shadow_word_death_t final : public priest_spell_t
   double execute_percent;
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
+  propagate_const<expiation_t*> child_expiation;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
+      child_expiation( nullptr )
   {
     parse_options( options_str );
 
@@ -951,6 +997,11 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( !priest().bugs )
     {
       cooldown->hasted = true;
+    }
+    if ( priest().talents.discipline.expiation.enabled() )
+    {
+      child_expiation             = new expiation_t( priest() );
+      child_expiation->background = true;
     }
 
     // 13%/25% damage increase
@@ -1031,6 +1082,12 @@ struct shadow_word_death_t final : public priest_spell_t
         {
           priest().trigger_psychic_link( s );
         }
+      }
+
+      if ( child_expiation )
+      {
+        child_expiation->target = s->target;
+        child_expiation->execute();
       }
     }
   }
@@ -2183,6 +2240,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
+  action.apply_affecting_aura( talents.discipline.expiation );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
