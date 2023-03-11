@@ -879,7 +879,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest().is_screams_of_the_void_up( state->target, id ) )
     {
-      t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
+      t *= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 2 ).percent() );
     }
 
     return t;
@@ -1144,7 +1144,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest().is_screams_of_the_void_up( state->target, id ) )
     {
-      t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
+      t *= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 2 ).percent() );
     }
 
     return t;
