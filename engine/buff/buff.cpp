@@ -3001,7 +3001,16 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
   }
   manual_stats_added = true;
 
-  stats.emplace_back( s, a, c );
+  auto it = range::find( stats, s, &buff_stat_t::stat );
+  if ( it != stats.end() )
+  {
+    it->amount += a;
+    it->check_func = std::move( c );
+  }
+  else
+  {
+    stats.emplace_back( s, a, c );
+  }
 
   return this;
 }
