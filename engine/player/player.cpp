@@ -4180,7 +4180,7 @@ double player_t::composite_melee_speed() const
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
 
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->check() )
+  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
     h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   return h;

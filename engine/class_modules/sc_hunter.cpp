@@ -2698,6 +2698,16 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
     p() -> buffs.focusing_aim -> trigger();
   }
+
+  double action_multiplier() const override
+  {
+    double am = auto_attack_base_t::action_multiplier();
+
+    if ( player -> buffs.heavens_nemesis && player -> buffs.heavens_nemesis -> data().effectN( 1 ).subtype() != A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+      am *= 1 + player -> buffs.heavens_nemesis -> stack_value();
+
+    return am;
+  }
 };
 
 //==============================
