@@ -1604,6 +1604,14 @@ struct searing_light_t : public paladin_spell_t
     background = true;
     reduced_aoe_targets = 8;
   }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p()->active.searing_light_cons->set_target( execute_state->target );
+    p()->active.searing_light_cons->execute();
+  }
 };
 
 void paladin_t::trigger_es_explosion( player_t* target )

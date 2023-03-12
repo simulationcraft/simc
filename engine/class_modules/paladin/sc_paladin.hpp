@@ -29,6 +29,12 @@ enum season : unsigned int {
   NUM_SEASONS = 4,
 };
 
+enum consecration_source : unsigned int {
+  HARDCAST = 0,
+  BLADE_OF_JUSTICE = 1,
+  SEARING_LIGHT = 2,
+};
+
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
@@ -99,6 +105,7 @@ public:
     action_t* background_blessed_hammer;
     action_t* divine_arbiter;
     action_t* searing_light;
+    action_t* searing_light_cons;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -773,6 +780,7 @@ public:
 
   ground_aoe_event_t* active_consecration;
   ground_aoe_event_t* active_boj_cons;
+  ground_aoe_event_t* active_searing_light_cons;
   std::set<ground_aoe_event_t*> all_active_consecrations;
   ground_aoe_event_t* active_hallow_damaging;
   ground_aoe_event_t* active_hallow_healing;

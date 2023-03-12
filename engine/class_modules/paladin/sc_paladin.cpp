@@ -35,6 +35,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 {
   active_consecration = nullptr;
   active_boj_cons = nullptr;
+  active_searing_light_cons = nullptr;
   all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
@@ -367,12 +368,14 @@ struct consecration_t : public paladin_spell_t
 {
   consecration_tick_t* damage_tick;
   ground_aoe_params_t cons_params;
+  consecration_source source_type;
 
   double precombat_time;
 
   consecration_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "consecration", p, p->find_spell( 26573 ) ),
       damage_tick( new consecration_tick_t( "consecration_tick", p ) ),
+      source_type( HARDCAST ),
       precombat_time( 2.0 )
   {
     add_option( opt_float( "precombat_time", precombat_time ) );
@@ -389,9 +392,10 @@ struct consecration_t : public paladin_spell_t
     add_child( damage_tick );
   }
 
-  consecration_t( paladin_t* p )
-    : paladin_spell_t( "background_consecration", p, p->find_spell( 26573 ) ),
-      damage_tick( new consecration_tick_t( "background_consecration_tick", p ) )
+  consecration_t( paladin_t* p, util::string_view source_name, consecration_source source )
+    : paladin_spell_t( std::string(source_name) + "_consecration", p, p->find_spell( 26573 ) ),
+      damage_tick( new consecration_tick_t( std::string(source_name) + "_consecration_tick", p ) ),
+      source_type( source )
   {
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
     may_miss = harmful = false;
@@ -450,18 +454,22 @@ struct consecration_t : public paladin_spell_t
                         switch ( type )
                         {
                           case ground_aoe_params_t::EVENT_CREATED:
-                            if ( ! background ) {
+                            if ( source_type == HARDCAST ) {
                               p()->active_consecration = event;
-                            } else {
+                            } else if ( source_type == BLADE_OF_JUSTICE ) {
                               p()->active_boj_cons = event;
+                            } else if ( source_type == SEARING_LIGHT ) {
+                              p()->active_searing_light_cons = event;
                             }
                             p()->all_active_consecrations.insert(event);
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
-                            if ( ! background ) {
+                            if ( source_type == HARDCAST ) {
                               p()->active_consecration = nullptr;
-                            } else {
+                            } else if ( source_type == BLADE_OF_JUSTICE ) {
                               p()->active_boj_cons = nullptr;
+                            } else if ( source_type == SEARING_LIGHT ) {
+                              p()->active_searing_light_cons = nullptr;
                             }
                             p()->all_active_consecrations.erase(event);
                             break;
@@ -474,11 +482,14 @@ struct consecration_t : public paladin_spell_t
   void execute() override
   {
     // If this is an active Cons, cancel the current consecration if it exists
-    if ( !background && p()->active_consecration != nullptr )
+    if ( source_type == HARDCAST && p()->active_consecration != nullptr )
       event_t::cancel( p()->active_consecration );
     // or if it's a boj-triggered Cons, cancel the previous BoJ-triggered cons
-    else if ( background && p()->active_boj_cons != nullptr )
+    else if ( source_type == BLADE_OF_JUSTICE && p()->active_boj_cons != nullptr )
       event_t::cancel( p()->active_boj_cons );
+    // or if it's a searing light-triggered Cons, cancel the previous searing light-triggered cons
+    else if ( source_type == SEARING_LIGHT && p()->active_searing_light_cons != nullptr )
+      event_t::cancel( p()->active_searing_light_cons );
 
     paladin_spell_t::execute();
 
@@ -2572,7 +2583,8 @@ void paladin_t::create_actions()
   if ( legendary.the_magistrates_judgment->ok() )
     cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
 
-  active.background_cons = new consecration_t( this );
+  active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
+  active.searing_light_cons = new consecration_t( this, "searing_light", SEARING_LIGHT );
 
   player_t::create_actions();
 }
@@ -2779,6 +2791,7 @@ void paladin_t::reset()
 
   active_consecration = nullptr;
   active_boj_cons = nullptr;
+  active_searing_light_cons = nullptr;
   all_active_consecrations.clear();
   active_hallow_damaging       = nullptr;
   active_hallow_healing     = nullptr;
