@@ -1559,8 +1559,6 @@ double judgment_t::action_multiplier() const
     if ( p()->talents.justification->ok() )
       am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
 
-    if ( p()->talents.judgment_of_justice->ok() )
-      am *= 1.0 + p()->talents.judgment_of_justice->effectN( 2 ).percent();
   }
 
   return am;
