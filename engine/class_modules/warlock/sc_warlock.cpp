@@ -1666,6 +1666,9 @@ void warlock_t::init_spells()
   talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
   talents.demonic_synergy = find_spell( 171982 );
 
+  talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
+  talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
+
   talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
   talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
@@ -2314,6 +2317,12 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
+
+  action.apply_affecting_aura( talents.socrethars_guile );
+  action.apply_affecting_aura( talents.sargerei_technique );
+  action.apply_affecting_aura( talents.dark_virtuosity );
+  action.apply_affecting_aura( talents.kindled_malice );
+
 }
 
 struct warlock_module_t : public module_t

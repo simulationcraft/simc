@@ -190,6 +190,8 @@ public:
     player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
     player_talent_t grimoire_of_synergy; // Note: Does not trigger when using Grimoire of Sacrifice
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
+    player_talent_t socrethars_guile;
+    player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
     player_talent_t grim_feast; // Faster Drain Life
     player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
@@ -229,6 +231,8 @@ public:
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t harvester_of_souls;
+    player_talent_t dark_virtuosity;
+    player_talent_t kindled_malice;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
     player_talent_t writhe_in_agony;
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
