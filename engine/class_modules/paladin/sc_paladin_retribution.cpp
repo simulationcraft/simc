@@ -1287,6 +1287,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     {
       shield_amount *= 1.0 + p() -> talents.aegis_of_protection -> effectN( 2 ).percent();
     }
+    shield_amount *= 1.0 + p() -> composite_heal_versatility();
 
     paladin_absorb_t::execute();
     p() -> buffs.shield_of_vengeance -> trigger( 1, shield_amount );
