@@ -97,6 +97,7 @@ public:
     action_t* empyrean_legacy;
     action_t* es_explosion;
     action_t* background_blessed_hammer;
+    action_t* divine_arbiter;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -197,6 +198,7 @@ public:
     buff_t* empyrean_legacy_cooldown;
     buff_t* aspiration_of_divinity;
     buff_t* relentless_inquisitor;
+    buff_t* divine_arbiter;
   } buffs;
 
   // Gains
@@ -987,7 +989,7 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost, seal_of_clarity; // Shared
-    bool crusade, hand_of_light, final_reckoning, reckoning, ret_t29_2p, ret_t29_4p; // Ret
+    bool crusade, hand_of_light, final_reckoning, reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader; // Holy
     bool bastion_of_light, sentinel; // Prot
   } affected_by;
@@ -1068,6 +1070,18 @@ public:
       {
         ab::school = SCHOOL_RADIANT;
       }
+
+      if ( p->talents.divine_arbiter->ok() )
+      {
+        int label = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
+        this->affected_by.divine_arbiter = this->data().affected_by_label( label );
+        if ( this->affected_by.divine_arbiter )
+          ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
+      }
+      else
+      {
+        this->affected_by.divine_arbiter = false;
+      }
     }
   }
 
@@ -1112,6 +1126,16 @@ public:
     {
       p() -> active.judgment_of_light -> execute();
       td ( s -> target ) -> debuff.judgment_of_light -> decrement();
+    }
+  }
+
+  void execute() override
+  {
+    ab::execute();
+
+    if ( this->affected_by.divine_arbiter && p()->talents.divine_arbiter->ok() )
+    {
+      p()->buffs.divine_arbiter->trigger( 1 );
     }
   }
 

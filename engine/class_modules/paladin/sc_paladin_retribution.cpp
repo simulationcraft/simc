@@ -954,6 +954,13 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       tgt -> debuff.execution_sentence -> do_will_extension();
     }
+
+    if ( p()->is_ptr() && p()->buffs.divine_arbiter->stack() == as<int>( p()->buffs.divine_arbiter->data().effectN( 2 ).base_value() ) )
+    {
+      p()->active.divine_arbiter->set_target( s->target );
+      p()->active.divine_arbiter->schedule_execute();
+      p()->buffs.divine_arbiter->expire();
+    }
   }
 
   double action_multiplier() const override
@@ -1213,6 +1220,19 @@ struct justicars_vengeance_t : public holy_power_consumer_t<paladin_melee_attack
         p() -> procs.righteous_cause -> occur();
         p() -> cooldowns.blade_of_justice -> reset( true );
       }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    if ( p()->is_ptr() && p()->buffs.divine_arbiter->stack() == as<int>( p()->buffs.divine_arbiter->data().effectN( 2 ).base_value() ) )
+    {
+      printf("Using divine arbiter!\n");
+      p()->active.divine_arbiter->set_target( s->target );
+      p()->active.divine_arbiter->schedule_execute();
+      p()->buffs.divine_arbiter->expire();
     }
   }
 };
@@ -1585,6 +1605,15 @@ struct templar_slash_t : public base_templar_strike_t
   }
 };
 
+struct divine_arbiter_t : public paladin_spell_t
+{
+  divine_arbiter_t( paladin_t* p )
+    : paladin_spell_t( "divine_arbiter", p, p->find_spell( 406983 ) )
+  {
+    background = true;
+  }
+};
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1639,9 +1668,17 @@ void paladin_t::create_ret_actions()
     active.es_explosion = nullptr;
   }
 
-  if ( is_ptr() && talents.adjudication->ok() )
+  if ( is_ptr() )
   {
-    active.background_blessed_hammer = new adjudication_blessed_hammer_t( this );
+    if ( talents.adjudication->ok() )
+    {
+      active.background_blessed_hammer = new adjudication_blessed_hammer_t( this );
+    }
+
+    if ( talents.divine_arbiter->ok() )
+    {
+      active.divine_arbiter = new divine_arbiter_t( this );
+    }
   }
 
   if ( specialization() == PALADIN_RETRIBUTION )
@@ -1717,6 +1754,8 @@ void paladin_t::create_buffs_retribution()
                                   -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   buffs.templar_strikes = make_buff( this, "templar_strikes", find_spell( 406648 ) );
+  buffs.divine_arbiter = make_buff( this, "divine_arbiter", find_spell( 406975 ) )
+                          -> set_max_stack( as<int>( find_spell( 406975 )->effectN( 2 ).base_value() ) );
 
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
@@ -1826,6 +1865,7 @@ void paladin_t::init_spells_retribution()
   talents.blades_of_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Blades of Light" );
   talents.crusading_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Crusading Strikes" );
   talents.templar_strikes             = find_talent_spell( talent_tree::SPECIALIZATION, "Templar Strikes" );
+  talents.divine_arbiter              = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Arbiter" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
