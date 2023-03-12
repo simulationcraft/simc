@@ -59,6 +59,7 @@ struct evoker_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* shattering_star;
+    buff_t* imminent_destruction;
   } debuffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -148,6 +149,8 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
     propagate_const<buff_t*> fury_of_the_aspects;
+    propagate_const<buff_t*> causality;
+    propagate_const<buff_t*> imminent_destruction;
 
     // Preservation
   } buff;
@@ -246,6 +249,7 @@ struct evoker_t : public player_t
     player_talent_t charged_blast;
     player_talent_t shattering_star;
     player_talent_t snapfire;  // row 8
+    player_talent_t raging_inferno;
     player_talent_t font_of_magic;
     player_talent_t onyx_legacy;
     player_talent_t spellweavers_dominance;
@@ -501,6 +505,12 @@ public:
     parse_buff_effects( p()->buff.essence_burst );
     parse_buff_effects( p()->buff.snapfire );
     parse_buff_effects( p()->buff.tip_the_scales );
+
+    if ( p()->is_ptr() )
+    {
+      parse_buff_effects( p()->buff.imminent_destruction, p()->talent.imminent_destruction );
+      parse_buff_effects( p()->buff.causality );
+    }
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -514,6 +524,12 @@ public:
 
     parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
+
+    if ( p()->is_ptr() )
+    {
+      parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.imminent_destruction->check(); },
+                            p()->debuffs.imminent_destruction, p()->talent.imminent_destruction );
+    }
   }
 
   double cost() const override
@@ -850,7 +866,8 @@ struct empowered_charge_spell_t : public empowered_base_t
     dot_duration = base_tick_time = base_empower_duration =
         base_time_to_empower( static_cast<empower_e>( empower_to ) );
 
-    apply_affecting_aura( p->talent.imminent_destruction );
+    if ( !p->is_ptr() )
+      apply_affecting_aura( p->talent.imminent_destruction );
   }
 
   template <typename T>
@@ -1007,12 +1024,14 @@ struct empowered_charge_spell_t : public empowered_base_t
 struct essence_spell_t : public evoker_spell_t
 {
   timespan_t ftf_dur;
+  timespan_t ftf_dur_eb;
   double hoarded_pct;
   double titanic_mul;
 
   essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
     : evoker_spell_t( n, p, s, o ),
       ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
+      ftf_dur_eb( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 2 ).base_value() ) ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
       titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() )
   {
@@ -1030,7 +1049,7 @@ struct essence_spell_t : public evoker_spell_t
       if ( !rng().roll( hoarded_pct ) )
         p()->buff.essence_burst->decrement();
 
-      if ( p()->talent.feed_the_flames.ok() )
+      if ( p()->talent.feed_the_flames.ok() && !p()->is_ptr() )
         p()->cooldown.fire_breath->adjust( ftf_dur );
     }
   }
@@ -1219,6 +1238,26 @@ struct deep_breath_t : public evoker_spell_t
     {
       return p()->talent.tyranny.ok();
     }
+
+    void impact( action_state_t* s )
+    {
+      evoker_spell_t::impact( s );
+      if ( p()->is_ptr() )
+      {
+        auto td = p()->get_target_data( s->target );
+        td->debuffs.imminent_destruction->trigger();
+      }
+    }
+
+    void execute() override
+    {
+      evoker_spell_t::execute();
+
+      if ( p()->is_ptr() )
+      {
+        p()->buff.imminent_destruction->trigger();
+      }
+    }
   };
 
   action_t* damage;
@@ -1280,6 +1319,9 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.iridescence_blue->check() )
       p()->buff.iridescence_blue_disintegrate->trigger( num_ticks );
 
+    if ( p()->is_ptr() && p()->talent.causality->ok() )
+      p()->buff.causality->trigger();
+
     essence_spell_t::execute();
   }
 
@@ -1293,6 +1335,13 @@ struct disintegrate_t : public essence_spell_t
     ta *= 1.0 + p()->buff.iridescence_blue_disintegrate->check_value();
 
     return ta;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    essence_spell_t::last_tick( d );
+
+    p()->buff.causality->expire();
   }
 
   void tick( dot_t* d ) override
@@ -1725,6 +1774,23 @@ struct pyre_t : public essence_spell_t
     return damage->has_amount_result();
   }
 
+  void consume_resource() override
+  {
+    if ( base_cost() && !proc && p()->is_ptr() && p()->talent.feed_the_flames.ok() )
+    {
+      if ( p()->buff.essence_burst->up() )
+      {
+        p()->cooldown.fire_breath->adjust( ftf_dur_eb );
+      }
+      else
+      {
+        p()->cooldown.fire_breath->adjust( ftf_dur );
+      }
+    }
+
+    essence_spell_t::consume_resource();
+  }
+
   void execute() override
   {
     essence_spell_t::execute();
@@ -1832,6 +1898,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
                                 ->set_cooldown( 0_ms )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
+
+  debuffs.imminent_destruction = make_buff( this, "imminent_destruction", evoker->find_spell( 405652 ) );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -2225,6 +2293,9 @@ void evoker_t::create_buffs()
                         if ( new_ )
                           cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
                       } );
+
+
+  buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 405651 ) );
 
   buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
                                  ->set_default_value_from_effect( 1 )
