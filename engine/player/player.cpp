@@ -1691,7 +1691,41 @@ void player_t::parse_temporary_enchants()
   auto split = util::string_split<util::string_view>( tench_str, "/" );
   for ( const auto& token : split )
   {
-    auto token_split = util::string_split<util::string_view>( token, ":" );
+    std::string expr_str, options_str, value_str;
+    std::unique_ptr<expr_t> if_expr;
+    std::vector<std::unique_ptr<option_t>> options;
+
+    options.emplace_back( opt_string( "if", expr_str ) );
+
+    auto cut_pt = token.find_first_of( ',' );
+    if ( cut_pt != std::string::npos )
+    {
+      options_str = token.substr( cut_pt + 1 );
+      value_str = token.substr( 0, cut_pt );
+    }
+    else
+    {
+      value_str = token;
+    }
+
+    try
+    {
+      opts::parse( sim, value_str, options, options_str );
+
+      if ( !expr_str.empty() )
+      {
+        if_expr = expr_t::parse( this, expr_str, false );
+      }
+    }
+    catch ( const std::exception& e )
+    {
+      sim->error( "Player {} Unable to parse temporary enchant string str '{}': {}",
+        name(), token, e.what() );
+      sim->cancel();
+      return;
+    }
+
+    auto token_split = util::string_split<util::string_view>( value_str, ":" );
     if ( token_split.size() != 2 )
     {
       sim->error( "Player {} invalid temporary enchant token {}, format is 'slot:name'",
@@ -1706,7 +1740,8 @@ void player_t::parse_temporary_enchants()
     if ( it != std::string_view::npos )
     {
       auto rank_str = token_split[ 1 ].substr( it + 1 );
-      auto parsed_rank = util::to_unsigned_ignore_error( rank_str, std::numeric_limits<unsigned>::max() );
+      auto parsed_rank = util::to_unsigned_ignore_error( rank_str,
+                                                        std::numeric_limits<unsigned>::max() );
 
       if ( parsed_rank != std::numeric_limits<unsigned>::max() )
       {
@@ -1723,7 +1758,7 @@ void player_t::parse_temporary_enchants()
       continue;
     }
 
-    items[ slot ].parsed.temporary_enchant_id = enchant.enchant_id;
+    items[ slot ].parsed.temporary_enchants.emplace_back( enchant.enchant_id, if_expr );
   }
 }
 

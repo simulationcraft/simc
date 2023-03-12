@@ -1571,31 +1571,6 @@ struct position_event_t : public raid_event_t
   }
 };
 
-std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, util::string_view expr_str )
-{
-  if ( expr_str.empty() )
-    return nullptr;
-
-  auto tokens = expression::parse_tokens( nullptr, expr_str );
-
-  if ( player.sim->debug )
-    expression::print_tokens( tokens, player.sim );
-
-  if ( !expression::convert_to_rpn( tokens ) )
-  {
-    player.sim->error( "{}: Unable to convert expression {} into RPN\n", player.name(), expr_str );
-    return nullptr;
-  }
-
-  if ( player.sim->debug )
-    expression::print_tokens( tokens, player.sim );
-
-  if ( auto e = expression::build_player_expression_tree( player, tokens, false ) )
-    return e;
-
-  throw std::invalid_argument( "No player expression found" );
-}
-
 raid_event_t* get_next_raid_event( const std::vector<raid_event_t*>& matching_events )
 {
   raid_event_t* result     = nullptr;
@@ -1795,7 +1770,7 @@ void raid_event_t::start()
     {
       try
       {
-        expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+        expr_uptr = expr_t::parse( p, player_if_expr_str, false );
       }
       catch ( const std::exception& e )
       {
