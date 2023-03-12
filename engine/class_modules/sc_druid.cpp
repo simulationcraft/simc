@@ -1555,6 +1555,13 @@ struct berserk_cat_buff_t : public druid_buff_t
       } );
     }
   }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p()->buff.overflowing_power->expire();
+  }
 };
 
 // Bloodtalons Tracking Buff ================================================
@@ -3811,7 +3818,10 @@ struct rake_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() || cat_attack_t::stealthed();
+    if ( p()->is_ptr() )
+      return cat_attack_t::stealthed();
+
+    return p()->buff.b_inc_cat->check() || cat_attack_t::stealthed();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -4098,7 +4108,10 @@ struct shred_t : public druid_mixin_t<trigger_thrashing_claws_t<cat_attack_t>>
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() || base_t::stealthed();
+    if ( p()->is_ptr() )
+      return base_t::stealthed();
+
+    return p()->buff.b_inc_cat->check() || base_t::stealthed();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -11037,7 +11050,7 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
     if ( avail > 0 )
       g->overflow[ r ] -= avail;
 
-    buff.overflowing_power->trigger( over );
+    buff.overflowing_power->trigger( as<int>( over ) );
   }
 
   return actual;
