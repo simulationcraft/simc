@@ -1042,7 +1042,7 @@ struct essence_spell_t : public evoker_spell_t
   essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
     : evoker_spell_t( n, p, s, o ),
       ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
-      ftf_dur_eb( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 2 ).base_value() ) ),
+      ftf_dur_eb( -timespan_t::from_seconds( p->is_ptr() ? p->talent.feed_the_flames->effectN( 2 ).base_value() : 0 ) ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
       titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() )
   {
@@ -1746,7 +1746,9 @@ struct pyre_t : public essence_spell_t
       dual = true;
       aoe  = -1;
 
-      target_multiplier_dotdebuffs.emplace_back( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
+      if ( p->is_ptr() && p->talent.raging_inferno->ok() )
+        target_multiplier_dotdebuffs.emplace_back(
+            []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
                                                  p->talent.raging_inferno->effectN( 2 ).percent(), false );
     }
 
