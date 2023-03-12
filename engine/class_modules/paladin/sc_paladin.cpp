@@ -957,7 +957,7 @@ struct melee_t : public paladin_melee_attack_t
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 1 ).percent();
 
       // This seems likely to be a bug; the tooltip does not match the spell data
-      base_crit += 1.0 + p->talents.heart_of_the_crusader->effectN( 2 ).percent();
+      base_crit += p->talents.heart_of_the_crusader->effectN( 2 ).percent();
     }
   }
 
@@ -1558,7 +1558,6 @@ double judgment_t::action_multiplier() const
   {
     if ( p()->talents.justification->ok() )
       am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
-
   }
 
   return am;
