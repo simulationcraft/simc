@@ -60,6 +60,7 @@ struct evoker_td_t : public actor_target_data_t
   {
     buff_t* shattering_star;
     buff_t* imminent_destruction;
+    buff_t* in_firestorm;
   } debuffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -1381,6 +1382,8 @@ struct firestorm_t : public evoker_spell_t
     {
       dual = ground_aoe = true;
       aoe               = -1;
+
+      apply_affecting_aura( p->talent.raging_inferno );
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -1407,13 +1410,32 @@ struct firestorm_t : public evoker_spell_t
   {
     evoker_spell_t::impact( s );
 
-    make_event<ground_aoe_event_t>( *sim, p(),
-                                    ground_aoe_params_t()
-                                        .target( s->target )
-                                        .pulse_time( 2_s )  // from text description, not in spell data. TODO: confirm
-                                        .duration( data().effectN( 1 ).trigger()->duration() )
-                                        .action( damage ),
-                                    true );
+    make_event<ground_aoe_event_t>(
+        *sim, p(),
+        ground_aoe_params_t()
+            .target( s->target )
+            .pulse_time( 2_s )  // from text description, not in spell data. TODO: confirm
+            .duration( data().effectN( 1 ).trigger()->duration() )
+            .action( damage )
+            .state_callback( [ this ]( ground_aoe_params_t::state_type s, ground_aoe_event_t* e ) {
+              if ( s == ground_aoe_params_t::state_type::EVENT_CREATED )
+              {
+                for ( player_t* t : e->params->action()->target_list() )
+                {
+                  auto td = p()->get_target_data( t );
+                  td->debuffs.in_firestorm->increment();
+                }
+              }
+              else if ( s == ground_aoe_params_t::state_type::EVENT_STOPPED )
+              {
+                for ( player_t* t : e->params->action()->target_list() )
+                {
+                  auto td = p()->get_target_data( t );
+                  td->debuffs.in_firestorm->decrement();
+                }
+              }
+            } ),
+        true );
 
     p()->buff.snapfire->expire();
   }
@@ -1714,6 +1736,9 @@ struct pyre_t : public essence_spell_t
     {
       dual = true;
       aoe  = -1;
+
+      target_multiplier_dotdebuffs.emplace_back( []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
+                                                 p->talent.raging_inferno->effectN( 2 ).percent(), false );
     }
 
     action_state_t* new_state() override
@@ -1901,6 +1926,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
   debuffs.imminent_destruction = make_buff( *this, "imminent_destruction", evoker->talent.imminent_destruction_debuff );
+
+  debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -2156,6 +2183,7 @@ void evoker_t::init_spells()
   talent.charged_blast               = ST( "Charged Blast" );
   talent.shattering_star             = ST( "Shattering Star" );
   talent.snapfire                    = ST( "Snapfire" );  // Row 8
+  talent.raging_inferno              = ST( "raging_inferno" );
   talent.font_of_magic               = ST( "Font of Magic" );
   talent.onyx_legacy                 = ST( "Onyx Legacy" );
   talent.spellweavers_dominance      = ST( "Spellweaver's Dominance" );
