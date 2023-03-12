@@ -3,10 +3,8 @@
 // Contact: https://github.com/orgs/simulationcraft/teams/priest/members
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
-#include "action/action_state.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
-#include "util/generic.hpp"
 
 #include "simulationcraft.hpp"
 
