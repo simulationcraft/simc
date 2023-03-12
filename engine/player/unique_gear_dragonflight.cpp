@@ -4043,23 +4043,20 @@ void horizon_striders_garments( special_effect_t& effect )
   if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 ) )
     return;
 
-  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
+  auto set_driver_id =
+      effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
 
-  if (effect.driver()->id() == set_driver_id)
+  if ( effect.driver()->id() == set_driver_id )
   {
     effect.proc_flags2_ = PF2_CRIT;
 
-    new dbc_proc_callback_t(effect.player, effect);
+    new dbc_proc_callback_t( effect.player, effect );
   }
   else
   {
-    auto buff = debug_cast<stat_buff_t*>(buff_t::find(effect.player, effect.name()));
-    if (!buff)
-    {
-      buff = create_buff<stat_buff_t>(effect.player, effect.player->find_spell(377143));
-    }
-    buff->add_stat(STAT_HASTE_RATING, effect.driver()->effectN(1).average(effect.item));
-    auto driver = unique_gear::find_special_effect(effect.player, set_driver_id);
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 377143 ) )
+                    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+    auto driver = unique_gear::find_special_effect( effect.player, set_driver_id );
     driver->custom_buff = buff;
   }
 }
