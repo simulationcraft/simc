@@ -493,14 +493,6 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       expurgation->execute();
     }
 
-    if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-    {
-      action_t* vc    = p()->active.virtuous_command_conduit;
-      vc->base_dd_min = vc->base_dd_max = state->result_amount * p()->conduit.virtuous_command.percent();
-      vc->set_target( state->target );
-      vc->schedule_execute();
-    }
-
     if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
     {
       action_t* vc    = p()->active.virtuous_command;
@@ -644,28 +636,6 @@ struct echoed_spell_event_t : public event_t
 
 struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  struct echoed_templars_verdict_conduit_t : public paladin_melee_attack_t
-  {
-    echoed_templars_verdict_conduit_t( paladin_t *p ) :
-      paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 339538 ) )
-    {
-      base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
-      background = true;
-      may_crit = false;
-
-      // spell data please
-      aoe = 0;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = paladin_melee_attack_t::action_multiplier();
-      if ( p() -> buffs.righteous_verdict -> check() )
-        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
-      return am;
-    }
-  };
-
   struct echoed_templars_verdict_t : public paladin_melee_attack_t
   {
     echoed_templars_verdict_t( paladin_t *p ) :
@@ -693,12 +663,10 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   struct templars_verdict_damage_t : public paladin_melee_attack_t
   {
     echoed_templars_verdict_t* echo;
-    echoed_templars_verdict_conduit_t* echo_conduit;
 
-    templars_verdict_damage_t( paladin_t *p, echoed_templars_verdict_t* e, echoed_templars_verdict_conduit_t* ec ) :
+    templars_verdict_damage_t( paladin_t *p, echoed_templars_verdict_t* e ) :
       paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) ),
-      echo( e ),
-      echo_conduit( ec )
+      echo( e )
     {
       dual = background = true;
 
@@ -710,29 +678,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       paladin_melee_attack_t::impact( s );
 
-      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-      {
-        action_t* vc    = p()->active.virtuous_command_conduit;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
-        vc->set_target( s->target );
-        vc->schedule_execute();
-      }
-
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
         vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( s->target );
         vc->schedule_execute();
-      }
-
-      if ( p() -> conduit.templars_vindication -> ok() )
-      {
-        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-        {
-          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo_conduit, timespan_t::from_millis( 600 ), s -> result_amount );
-        }
       }
 
       if ( p() -> talents.templars_vindication -> ok() )
@@ -755,7 +706,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   };
 
   echoed_templars_verdict_t* echo;
-  echoed_templars_verdict_conduit_t* echo_conduit;
   bool is_fv;
 
   templars_verdict_t( paladin_t* p, util::string_view options_str ) :
@@ -764,7 +714,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p,
       ( p -> talents.final_verdict -> ok() ) ? ( p -> find_spell( 383328 ) ) : ( p -> legendary.final_verdict -> ok() ? ( p -> find_spell( 336872 ) ) : ( p -> find_specialization_spell( "Templar's Verdict" ) ) ) ),
     echo( nullptr ),
-    echo_conduit( nullptr ),
     is_fv( p -> legendary.final_verdict -> ok() || p -> talents.final_verdict -> ok() )
   {
     parse_options( options_str );
@@ -775,11 +724,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     // wtf is happening in spell data?
     aoe = 0;
-
-    if ( p -> conduit.templars_vindication -> ok() )
-    {
-      echo_conduit = new echoed_templars_verdict_conduit_t( p );
-    }
 
     if ( p -> talents.templars_vindication -> ok() )
     {
@@ -798,7 +742,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       callbacks = false;
       may_block = false;
 
-      impact_action = new templars_verdict_damage_t( p, echo, echo_conduit );
+      impact_action = new templars_verdict_damage_t( p, echo );
       impact_action -> stats = stats;
 
       // Okay, when did this get reset to 1?
@@ -873,29 +817,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( is_fv )
     {
-      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-      {
-        action_t* vc    = p()->active.virtuous_command_conduit;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
-        vc->set_target( s->target );
-        vc->schedule_execute();
-      }
-
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
         vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( s->target );
         vc->schedule_execute();
-      }
-
-      if ( p() -> conduit.templars_vindication -> ok() )
-      {
-        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-        {
-          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo_conduit, timespan_t::from_millis( 600 ), s -> result_amount );
-        }
       }
 
       if ( p() -> talents.templars_vindication -> ok() )

@@ -136,11 +136,6 @@ struct avengers_shield_base_t : public paladin_spell_t
           1, std::min( p()->buffs.bulwark_of_order_absorb->value() + new_absorb, max_absorb ) );
     }
 
-    if ( p() -> conduit.vengeful_shock -> ok() )
-    {
-      td( s -> target ) -> debuff.vengeful_shock -> trigger();
-    }
-
     if ( p() -> legendary.bulwark_of_righteous_fury -> ok() && !p() -> talents.bulwark_of_righteous_fury -> ok() )
       p() -> buffs.bulwark_of_righteous_fury -> trigger();
 
@@ -469,9 +464,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     use_off_gcd = true;
     trigger_gcd = 0_ms;
     cooldown = p -> cooldowns.guardian_of_ancient_kings;
-
-    if ( p -> conduit.royal_decree -> ok() )
-      cooldown -> duration += p -> conduit.royal_decree.time_value();
   }
 
   void execute() override
@@ -822,16 +814,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> buffs.redoubt -> trigger();
     }
 
-    // As of 2020-11-07 Resolute Defender now always provides its CDR.
-    if ( p() -> conduit.resolute_defender -> ok() )
-    {
-      p() -> cooldowns.ardent_defender -> adjust( -1.0_s * p() -> conduit.resolute_defender.value() );
-      if ( p() -> buffs.ardent_defender -> up() )
-        p() -> buffs.ardent_defender -> extend_duration( p(),
-          p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
-        );
-    }
-
     if ( !background )
     {
       if ( p() -> buffs.shining_light_free -> up() || p() -> buffs.shining_light_stacks -> at_max_stacks() )
@@ -844,14 +826,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     p() -> buffs.bulwark_of_righteous_fury -> expire();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = holy_power_consumer_t::composite_target_multiplier( t );
-    if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
-      ctm *= 1.0 + p() -> conduit.punish_the_guilty.percent();
-    return ctm;
   }
 
   double action_multiplier() const override
@@ -1159,12 +1133,7 @@ void paladin_t::create_buffs_protection()
       make_buff( this, "ardent_defender", find_spell( 31850 ) )
         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
-        -> set_cooldown( 0_ms )
-        -> set_stack_change_callback( [ this ] ( buff_t*, int /*old*/, int curr )
-        {
-          if ( curr == 1 && conduit.royal_decree -> ok() )
-            this -> buffs.royal_decree -> trigger();
-        } );
+        -> set_cooldown( 0_ms );
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
@@ -1186,8 +1155,6 @@ void paladin_t::create_buffs_protection()
   buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 386652 ) )
                                         ->set_default_value( find_spell( 386652 )->effectN( 1 ).percent() );
-  buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
-        -> set_absorb_source( get_stats( "shielding_words" ) );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
   // Kind of lazy way to make sure that SL only triggers for prot. That spelldata doesn't have to be used anywhere else so /shrug
     -> set_trigger_spell( find_specialization_spell( "Shining Light" ) )

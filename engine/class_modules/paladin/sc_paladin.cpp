@@ -281,7 +281,6 @@ struct golden_path_t : public paladin_heal_t
   golden_path_t( paladin_t* p ) : paladin_heal_t( "golden_path", p, p->find_spell( 339119 ) )
   {
     background = true;
-    base_multiplier *= p->conduit.golden_path.percent();
   }
 };
 
@@ -310,8 +309,6 @@ struct consecration_tick_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p()->conduit.golden_path->ok() && p()->standing_in_consecration() )
-      heal_tick->execute();
 
     if ( p()->talents.sanctification->ok() )
     {
@@ -1036,14 +1033,6 @@ struct melee_t : public paladin_melee_attack_t
         }
       }
 
-      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-      {
-        action_t* vc    = p()->active.virtuous_command_conduit;
-        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->conduit.virtuous_command.percent();
-        vc->set_target( execute_state->target );
-        vc->schedule_execute();
-      }
-
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
@@ -1184,14 +1173,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p()->buffs.aspiration_of_divinity->trigger();
       }
 
-      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-      {
-        action_t* vc    = p()->active.virtuous_command_conduit;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
-        vc->set_target( s->target );
-        vc->schedule_execute();
-      }
-
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
@@ -1316,10 +1297,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
   void impact( action_state_t* s ) override
   {
     holy_power_consumer_t::impact( s );
-    if ( p()->conduit.shielding_words->ok() && s->result_amount > 0 )
-    {
-      p()->buffs.shielding_words->trigger( 1, s->result_amount * p()->conduit.shielding_words.percent() );
-    }
+
     if ( p() ->talents.light_of_the_titans->ok())
     {
       light_of_the_titans->execute();
@@ -1524,9 +1502,6 @@ void judgment_t::execute()
     }
   }
 
-  if ( p()->conduit.virtuous_command->ok() )
-    p()->buffs.virtuous_command_conduit->trigger();
-
   if ( p()->talents.zealots_paragon->ok() )
   {
     auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
@@ -1634,14 +1609,11 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
     parse_options( options_str );
 
     hasted_gcd = true;  // also not in spelldata for some reason?
-    base_multiplier *= 1.0 + p->conduit.righteous_might.percent();
 
     if ( p->specialization() == PALADIN_PROTECTION )
     {
       add_child( p->find_action( "shield_of_the_righteous_vanquishers_hammer" ) );
     }
-    if ( p->conduit.righteous_might->ok() )
-      r_m_heal = new righteous_might_t( p );
     if ( p->legendary.duty_bound_gavel->ok() )
       cooldown -> charges += as<int>( p->legendary.duty_bound_gavel->effectN( 1 ).base_value() );
   }
@@ -1651,12 +1623,6 @@ struct vanquishers_hammer_t : public paladin_melee_attack_t
     paladin_melee_attack_t::impact( s );
 
     p()->buffs.vanquishers_hammer->trigger( 1 + p()->legendary.duty_bound_gavel->ok() * as<int>( p() -> legendary.duty_bound_gavel -> effectN( 1 ).base_value() ) );
-
-    if ( p()->conduit.righteous_might->ok() )
-    {
-      r_m_heal->base_dd_min = r_m_heal->base_dd_max = s->result_amount;
-      r_m_heal->execute();
-    }
   }
 };
 
@@ -1692,21 +1658,6 @@ struct divine_toll_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    if ( p()->conduit.ringing_clarity->ok() && !p()->talents.divine_toll->ok() )
-    {
-      for ( int hits = 0; hits < p()->conduit.ringing_clarity->effectN( 2 ).base_value(); hits++ )
-      {
-        if ( rng().roll( p()->conduit.ringing_clarity.percent() ) )
-        {
-          paladin_t* pal   = p();
-          player_t* target = this->target;
-          make_event( *sim, timespan_t::from_millis( 200 * ( hits + 1 ) ), [ target, pal ] {
-            pal->active.divine_toll->set_target( target );
-            pal->active.divine_toll->schedule_execute();
-          } );
-        }
-      }
-    }
 
     if ( !p()->talents.divine_toll->ok() && p()->legendary.divine_resonance->ok() )
     {
@@ -1719,31 +1670,10 @@ struct divine_toll_t : public paladin_spell_t
   }
 };
 
-struct hallowed_discernment_tick_t : public paladin_spell_t
-{
-  double aoe_multiplier;
-  hallowed_discernment_tick_t( paladin_t* p ) : paladin_spell_t( "hallowed_discernment", p, p->find_spell( 340203 ) )
-  {
-    base_multiplier *= p->conduit.hallowed_discernment.percent();
-    background = true;
-  }
-};
-
-struct hallowed_discernment_heal_tick_t : public paladin_heal_t
-{
-  hallowed_discernment_heal_tick_t( paladin_t* p )
-    : paladin_heal_t( "hallowed_discernment_heal", p, p->find_spell( 340214 ) )
-  {
-    base_multiplier *= p->conduit.hallowed_discernment.percent();
-    background = true;
-  }
-};
-
 struct ashen_hallow_tick_t : public paladin_spell_t
 {
-  hallowed_discernment_tick_t* hd_damage_tick;
-  ashen_hallow_tick_t( paladin_t* p, hallowed_discernment_tick_t* hallowed_discernment )
-    : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) ), hd_damage_tick( hallowed_discernment )
+  ashen_hallow_tick_t( paladin_t* p )
+    : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) )
   {
     aoe         = -1;
     reduced_aoe_targets = p->covenant.venthyr->effectN( 2 ).base_value();
@@ -1753,41 +1683,13 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     may_crit    = true;
     ground_aoe  = true;
   }
-
-  void execute() override
-  {
-    // To Do: Check if the initial tick affects the target picked, if not then move this down
-    paladin_spell_t::execute();
-
-    if ( p()->conduit.hallowed_discernment->ok() )
-    {
-      std::vector<player_t*> targets = target_list();
-      // Hallowed Discernment selects the lowest health target to impact. In this
-      // sim if all targets have a set hp then use that to select the target,
-      // otherwise select based on % hp.
-      bool use_actual_hp =
-          std::all_of( targets.begin(), targets.end(), []( player_t* t ) { return t->max_health() > 0; } );
-      // Find the lowest health target
-      player_t* lowest_hp_target =
-          *std::min_element( targets.begin(), targets.end(), [ use_actual_hp ]( player_t* lhs, player_t* rhs ) {
-            if ( use_actual_hp )
-              return lhs->current_health() < rhs->current_health();
-            return lhs->health_percentage() < rhs->health_percentage();
-          } );
-      hd_damage_tick->set_target( lowest_hp_target );
-      // Damage is calculated independently of Ashen Hallow. ie. they crit separately
-      hd_damage_tick->execute();
-    }
-  }
 };
 
 // Heal aoe cap not implemented. Hallowed Discernment target selection not implemented.
 struct ashen_hallow_heal_tick_t : public paladin_heal_t
 {
-  hallowed_discernment_heal_tick_t* hd_heal_tick;
   ashen_hallow_heal_tick_t( paladin_t* p )
-    : paladin_heal_t( "ashen_hallow_heal_tick", p, p->find_spell( 317223 ) ),
-      hd_heal_tick( new hallowed_discernment_heal_tick_t( p ) )
+    : paladin_heal_t( "ashen_hallow_heal_tick", p, p->find_spell( 317223 ) )
   {
     aoe         = -1;
     dual        = true;
@@ -1795,22 +1697,12 @@ struct ashen_hallow_heal_tick_t : public paladin_heal_t
     background  = true;
     ground_aoe  = true;
   }
-
-  void execute() override
-  {
-    paladin_heal_t::execute();
-    if ( p()->conduit.hallowed_discernment->ok() )
-    {
-      hd_heal_tick->execute();
-    }
-  }
 };
 
 struct ashen_hallow_t : public paladin_spell_t
 {
   ashen_hallow_tick_t* damage_tick;
   ashen_hallow_heal_tick_t* heal_tick;
-  hallowed_discernment_tick_t* hd_damage;
 
   ashen_hallow_t( paladin_t* p, util::string_view options_str )
     : paladin_spell_t( "ashen_hallow", p, p->covenant.venthyr )
@@ -1820,15 +1712,10 @@ struct ashen_hallow_t : public paladin_spell_t
     dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
     may_miss     = false;
 
-    hd_damage   = new hallowed_discernment_tick_t( p );
-    damage_tick = new ashen_hallow_tick_t( p, hd_damage );
+    damage_tick = new ashen_hallow_tick_t( p );
     heal_tick   = new ashen_hallow_heal_tick_t( p );
 
     add_child( damage_tick );
-    if ( p->conduit.hallowed_discernment->ok() )
-    {
-      add_child( hd_damage );
-    }
   }
 
   void execute() override
@@ -1945,7 +1832,7 @@ struct blessing_of_summer_t : public paladin_spell_t
 
   blessing_of_summer_t( paladin_t* p )
     : paladin_spell_t( "blessing_of_summer", p, p->find_spell( 328620 ) ),
-      buff_duration( data().duration() * ( 1.0 + p->conduit.the_long_summer.percent() ) )
+      buff_duration( data().duration() )
   {
     harmful = false;
 
@@ -2458,8 +2345,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   }
 
   debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
-  debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
-                                ->set_default_value( paladin->conduit.vengeful_shock.percent() );
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
   debuff.eye_of_tyr            = make_buff( *this, "eye_of_tyr", paladin->find_spell( 387174 ) )
                                 ->set_cooldown( 0_ms );
@@ -2536,15 +2421,6 @@ void paladin_t::create_actions()
     active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
     active.seasons[ WINTER ] = new blessing_of_winter_t( this );
     active.seasons[ SPRING ] = new blessing_of_spring_t( this );
-  }
-
-  if ( conduit.virtuous_command->ok() )
-  {
-    active.virtuous_command_conduit = new virtuous_command_t( this, 339669 );
-  }
-  else
-  {
-    active.virtuous_command_conduit = nullptr;
   }
 
   if ( talents.virtuous_command->ok() )
@@ -2920,8 +2796,6 @@ void paladin_t::create_buffs()
   buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
                                        ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
-  buffs.virtuous_command_conduit =
-      make_buff( this, "virtuous_command_conduit", find_spell( 339664 ) );
   buffs.virtuous_command =
       make_buff( this, "virtuous_command", find_spell( 383307 ) );
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
@@ -3250,24 +3124,6 @@ void paladin_t::init_spells()
   covenant.night_fae = find_covenant_spell( "Blessing of Summer" );
 
   spells.ashen_hallow_how = find_spell( 330382 );
-
-  // Conduits
-  // TODO: non-damage conduits
-  conduit.ringing_clarity      = find_conduit_spell( "Ringing Clarity" );
-  conduit.vengeful_shock       = find_conduit_spell( "Vengeful Shock" );
-  conduit.focused_light        = find_conduit_spell( "Focused Light" );
-  conduit.expurgation          = find_conduit_spell( "Expurgation" );
-  conduit.templars_vindication = find_conduit_spell( "Templar's Vindication" );
-  conduit.the_long_summer      = find_conduit_spell( "The Long Summer" );
-  conduit.truths_wake          = find_conduit_spell( "Truth's Wake" );
-  conduit.virtuous_command     = find_conduit_spell( "Virtuous Command" );
-  conduit.righteous_might      = find_conduit_spell( "Righteous Might" );
-  conduit.hallowed_discernment = find_conduit_spell( "Hallowed Discernment" );  // TODO: implement
-  conduit.punish_the_guilty    = find_conduit_spell( "Punish the Guilty" );
-  conduit.resolute_defender    = find_conduit_spell( "Resolute Defender" );
-  conduit.shielding_words      = find_conduit_spell( "Shielding Words" );
-  conduit.golden_path          = find_conduit_spell( "Golden Path" );
-  conduit.royal_decree         = find_conduit_spell( "Royal Decree" );
 }
 
 // paladin_t::primary_role ==================================================
@@ -3541,10 +3397,6 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
 {
   paladin_td_t* td = get_target_data( target );
   double cptm      = player_t::composite_player_target_multiplier( target, school );
-  if ( dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.vengeful_shock->up() )
-  {
-    cptm *= 1.0 + td->debuff.vengeful_shock->value();
-  }
   if (!paladin_t::is_ptr() && dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
   {
     cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();

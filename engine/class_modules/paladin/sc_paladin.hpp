@@ -53,7 +53,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* blessed_hammer;
     buff_t* final_reckoning;
     buff_t* reckoning;
-    buff_t* vengeful_shock;
     buff_t* seal_of_the_crusader;
     buff_t* sanctify;
     buff_t* eye_of_tyr;
@@ -105,9 +104,6 @@ public:
     action_t* divine_arbiter;
     action_t* searing_light;
     action_t* searing_light_cons;
-
-    // Conduit stuff
-    action_t* virtuous_command_conduit;
   } active;
 
   // Buffs
@@ -145,7 +141,6 @@ public:
     buff_t* redoubt;
     buff_t* shield_of_the_righteous;
     buff_t* moment_of_glory;
-    buff_t* shielding_words;
     buff_t* shining_light_stacks;
     buff_t* shining_light_free;
     buff_t* royal_decree;
@@ -193,7 +188,6 @@ public:
     buff_t* relentless_inquisitor_legendary;
     buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
-    buff_t* virtuous_command_conduit;
     buff_t* reign_of_ancient_kings;
     buff_t* equinox;
     buff_t* divine_resonance;
@@ -593,24 +587,6 @@ public:
     const spell_data_t* seething_flames;
     const spell_data_t* searing_light;
   } talents;
-
-  struct conduits_t {
-    conduit_data_t ringing_clarity;
-    conduit_data_t vengeful_shock;
-    conduit_data_t focused_light;
-    conduit_data_t expurgation;
-    conduit_data_t templars_vindication;
-    conduit_data_t the_long_summer;
-    conduit_data_t truths_wake;
-    conduit_data_t virtuous_command;
-    conduit_data_t righteous_might;
-    conduit_data_t hallowed_discernment;
-    conduit_data_t punish_the_guilty;
-    conduit_data_t resolute_defender;
-    conduit_data_t shielding_words;
-    conduit_data_t golden_path;
-    conduit_data_t royal_decree;
-  } conduit;
 
   struct convenants_t {
     const spell_data_t* kyrian;
