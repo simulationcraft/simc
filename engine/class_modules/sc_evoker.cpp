@@ -1418,7 +1418,7 @@ struct firestorm_t : public evoker_spell_t
             .duration( data().effectN( 1 ).trigger()->duration() )
             .action( damage )
             .state_callback( [ this ]( ground_aoe_params_t::state_type s, ground_aoe_event_t* e ) {
-              if ( s == ground_aoe_params_t::state_type::EVENT_CREATED )
+              if ( s == ground_aoe_params_t::state_type::EVENT_STARTED )
               {
                 for ( player_t* t : e->params->action()->target_list() )
                 {
