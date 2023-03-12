@@ -5,6 +5,7 @@
 // ==========================================================================
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
+#include "util/generic.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -33,6 +34,52 @@ struct pain_suppression_t final : public priest_spell_t
     priest_spell_t::execute();
 
     target->buffs.pain_suppression->trigger();
+  }
+};
+
+// Purge the wicked
+struct purge_the_wicked_t final : public priest_spell_t
+{
+  struct purge_the_wicked_dot_t final : public priest_spell_t
+  {
+    // Manually create the dot effect because "ticking" is not present on
+    // primary spell
+    purge_the_wicked_dot_t( priest_t& p )
+      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
+    {
+      background = true;
+      // 3% / 5% damage increase
+      apply_affecting_aura( priest().talents.throes_of_pain );
+      // 5% damage increase
+      // TODO: Implement the spreading of Purge the Wicked via penance
+      apply_affecting_aura( p.talents.discipline.revel_in_purity );
+      // 8% / 15% damage increase
+      apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      priest_spell_t::tick( d );
+
+      if ( d->state->result_amount > 0 )
+      {
+        trigger_power_of_the_dark_side();
+      }
+    }
+  };
+
+  purge_the_wicked_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
+  {
+    parse_options( options_str );
+    tick_zero      = false;
+    execute_action = new purge_the_wicked_dot_t( p );
+    // 3% / 5% damage increase
+    apply_affecting_aura( priest().talents.throes_of_pain );
+    // 5% damage increase
+    apply_affecting_aura( priest().talents.discipline.revel_in_purity );
+    // 8% / 15% damage increase
+    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
   }
 };
 
@@ -241,7 +288,8 @@ struct penance_t : public priest_spell_t
 
     sim->print_debug( "{} selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
 
-    range::for_each( targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->trigger( target ); } );
+    range::for_each(
+        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
   }
 
   void execute() override
@@ -323,58 +371,6 @@ struct power_word_solace_t final : public priest_spell_t
     {
       priest().buffs.weal_and_woe->expire();
     }
-  }
-};
-
-// Purge the wicked
-struct purge_the_wicked_t final : public priest_spell_t
-{
-  struct purge_the_wicked_dot_t final : public priest_spell_t
-  {
-    // Manually create the dot effect because "ticking" is not present on
-    // primary spell
-    purge_the_wicked_dot_t( priest_t& p )
-      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
-    {
-      background = true;
-      // 3% / 5% damage increase
-      apply_affecting_aura( priest().talents.throes_of_pain );
-      // 5% damage increase
-      // TODO: Implement the spreading of Purge the Wicked via penance
-      apply_affecting_aura( p.talents.discipline.revel_in_purity );
-      // 8% / 15% damage increase
-      apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
-    }
-
-    void tick( dot_t* d ) override
-    {
-      priest_spell_t::tick( d );
-
-      if ( d->state->result_amount > 0 )
-      {
-        trigger_power_of_the_dark_side();
-      }
-    }
-  };
-
-  purge_the_wicked_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
-  {
-    parse_options( options_str );
-    tick_zero      = false;
-    execute_action = new purge_the_wicked_dot_t( p );
-    // 3% / 5% damage increase
-    apply_affecting_aura( priest().talents.throes_of_pain );
-    // 5% damage increase
-    apply_affecting_aura( priest().talents.discipline.revel_in_purity );
-    // 8% / 15% damage increase
-    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
-  }
-
-  void trigger( player_t* target )
-  {
-    set_target( target );
-    execute();
   }
 };
 
