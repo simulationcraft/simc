@@ -1293,6 +1293,8 @@ struct seething_flames_t : public paladin_spell_t
     paladin_spell_t( name, p, p -> find_spell( spell_id ) )
   {
     background = true;
+    full_amount_targets = 1;
+    reduced_aoe_targets = 1.0;
   }
 };
 
@@ -1333,10 +1335,11 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     may_crit = true;
 
-    // TODO: figure out how much seething actually reduces the multiplier on aoe
-    //  also has this formula changed on PTR?
-    full_amount_targets = 1;
-    reduced_aoe_targets = 1.0;
+    if ( ! p -> is_ptr() || p -> talents.seething_flames -> ok() )
+    {
+      full_amount_targets = 1;
+      reduced_aoe_targets = 1.0;
+    }
 
     aoe = -1;
 
