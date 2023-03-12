@@ -257,6 +257,7 @@ struct evoker_t : public player_t
     player_talent_t arcane_vigor;
     player_talent_t burnout;  // row 9
     player_talent_t imminent_destruction;
+    const spell_data_t* imminent_destruction_debuff;
     player_talent_t scintillation;
     player_talent_t power_swell;
     player_talent_t feed_the_flames;  // row 10
@@ -528,7 +529,7 @@ public:
     if ( p()->is_ptr() )
     {
       parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.imminent_destruction->check(); },
-                            p()->debuffs.imminent_destruction, p()->talent.imminent_destruction );
+                            p()->talent.imminent_destruction_debuff, p()->talent.imminent_destruction );
     }
   }
 
@@ -1899,7 +1900,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->set_cooldown( 0_ms )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
-  debuffs.imminent_destruction = make_buff( this, "imminent_destruction", evoker->find_spell( 405652 ) );
+  debuffs.imminent_destruction = make_buff( *this, "imminent_destruction", evoker->talent.imminent_destruction_debuff );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -2128,46 +2129,47 @@ void evoker_t::init_spells()
   talent.leaping_flames       = CT( "Leaping Flames" );  // Row 9
   talent.aerial_mastery       = CT( "Aerial Mastery" );
   // Devastation Traits
-  talent.pyre                   = ST( "Pyre" );                // Row 1
-  talent.ruby_essence_burst     = ST( "Ruby Essence Burst" );  // Row 2
-  talent.azure_essence_burst    = ST( "Azure Essence Burst" );
-  talent.dense_energy           = ST( "Dense Energy" );  // Row 3
-  talent.imposing_presence      = ST( "Imposing Presence" );
-  talent.eternity_surge         = ST( "Eternity Surge" );
-  talent.volatility             = ST( "Volatility" );  // Row 4
-  talent.power_nexus            = ST( "Power Nexus" );
-  talent.dragonrage             = ST( "Dragonrage" );
-  talent.lay_waste              = ST( "Lay Waste" );
-  talent.arcane_intensity       = ST( "Arcane Intensity" );
-  talent.ruby_embers            = ST( "Ruby Embers" );  // Row 5
-  talent.engulfing_blaze        = ST( "Engulfing Blaze" );
-  talent.animosity              = ST( "Animosity" );
-  talent.essence_attunement     = ST( "Essence Attunement" );
-  talent.firestorm              = ST( "Firestorm" );  // Row 6
-  talent.heat_wave              = ST( "Heat Wave" );
-  talent.titanic_wrath          = ST( "Titanic Wrath" );
-  talent.honed_aggression       = ST( "Honed Aggression" );
-  talent.eternitys_span         = ST( "Eternity's Span" );
-  talent.eye_of_infinity        = ST( "Eye of Infinity" );
-  talent.causality              = ST( "Causality" );
-  talent.catalyze               = ST( "Catalyze" );  // Row 7
-  talent.tyranny                = ST( "Tyranny" );
-  talent.charged_blast          = ST( "Charged Blast" );
-  talent.shattering_star        = ST( "Shattering Star" );
-  talent.snapfire               = ST( "Snapfire" );  // Row 8
-  talent.font_of_magic          = ST( "Font of Magic" );
-  talent.onyx_legacy            = ST( "Onyx Legacy" );
-  talent.spellweavers_dominance = ST( "Spellweaver's Dominance" );
-  talent.focusing_iris          = ST( "Focusing Iris" );
-  talent.arcane_vigor           = ST( "Arcane Vigor" );
-  talent.burnout                = ST( "Burnout" );  // Row 9
-  talent.imminent_destruction   = ST( "Imminent Destruction" );
-  talent.scintillation          = ST( "Scintillation" );
-  talent.power_swell            = ST( "Power Swell" );
-  talent.feed_the_flames        = ST( "Feed the Flames" );  // Row 10
-  talent.everburning_flame      = ST( "Everburning Flame" );
-  talent.hoarded_power          = ST( "Hoarded Power" );
-  talent.iridescence            = ST( "Iridescence" );
+  talent.pyre                        = ST( "Pyre" );                // Row 1
+  talent.ruby_essence_burst          = ST( "Ruby Essence Burst" );  // Row 2
+  talent.azure_essence_burst         = ST( "Azure Essence Burst" );
+  talent.dense_energy                = ST( "Dense Energy" );  // Row 3
+  talent.imposing_presence           = ST( "Imposing Presence" );
+  talent.eternity_surge              = ST( "Eternity Surge" );
+  talent.volatility                  = ST( "Volatility" );  // Row 4
+  talent.power_nexus                 = ST( "Power Nexus" );
+  talent.dragonrage                  = ST( "Dragonrage" );
+  talent.lay_waste                   = ST( "Lay Waste" );
+  talent.arcane_intensity            = ST( "Arcane Intensity" );
+  talent.ruby_embers                 = ST( "Ruby Embers" );  // Row 5
+  talent.engulfing_blaze             = ST( "Engulfing Blaze" );
+  talent.animosity                   = ST( "Animosity" );
+  talent.essence_attunement          = ST( "Essence Attunement" );
+  talent.firestorm                   = ST( "Firestorm" );  // Row 6
+  talent.heat_wave                   = ST( "Heat Wave" );
+  talent.titanic_wrath               = ST( "Titanic Wrath" );
+  talent.honed_aggression            = ST( "Honed Aggression" );
+  talent.eternitys_span              = ST( "Eternity's Span" );
+  talent.eye_of_infinity             = ST( "Eye of Infinity" );
+  talent.causality                   = ST( "Causality" );
+  talent.catalyze                    = ST( "Catalyze" );  // Row 7
+  talent.tyranny                     = ST( "Tyranny" );
+  talent.charged_blast               = ST( "Charged Blast" );
+  talent.shattering_star             = ST( "Shattering Star" );
+  talent.snapfire                    = ST( "Snapfire" );  // Row 8
+  talent.font_of_magic               = ST( "Font of Magic" );
+  talent.onyx_legacy                 = ST( "Onyx Legacy" );
+  talent.spellweavers_dominance      = ST( "Spellweaver's Dominance" );
+  talent.focusing_iris               = ST( "Focusing Iris" );
+  talent.arcane_vigor                = ST( "Arcane Vigor" );
+  talent.burnout                     = ST( "Burnout" );  // Row 9
+  talent.imminent_destruction        = ST( "Imminent Destruction" );
+  talent.imminent_destruction_debuff = find_spell( 405652 );
+  talent.scintillation               = ST( "Scintillation" );
+  talent.power_swell                 = ST( "Power Swell" );
+  talent.feed_the_flames             = ST( "Feed the Flames" );  // Row 10
+  talent.everburning_flame           = ST( "Everburning Flame" );
+  talent.hoarded_power               = ST( "Hoarded Power" );
+  talent.iridescence                 = ST( "Iridescence" );
   // Preservation Traits
 
   // Evoker Specialization Spells
