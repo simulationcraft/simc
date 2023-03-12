@@ -1171,7 +1171,7 @@ public:
       {
         paladin_td_t* td = this -> td( s -> target );
         if ( td -> debuff.judgment -> up() )
-          td -> debuff.judgment -> expire();
+          td -> debuff.judgment -> decrement();
       }
 
       if ( affected_by.reckoning )
