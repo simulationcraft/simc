@@ -28,7 +28,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     talents( talents_t() ),
     options( options_t() ),
     beacon_target( nullptr ),
-    lucid_dreams_accumulator( 0.0 ),
     next_season( SUMMER ),
     holy_power_generators_used( 0 ),
     melee_swing_count( 0 )
@@ -136,9 +135,6 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
     base_buff_duration += p->talents.divine_wrath->effectN( 1 ).time_value();
   }
 
-  if ( p->azerite.lights_decree.ok() )
-    base_buff_duration += p->spells.lights_decree->effectN( 2 ).time_value();
-
   // let the ability handle the cooldown
   cooldown->duration = 0_ms;
 
@@ -221,8 +217,6 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
 
   // if ( p->talents.avenging_wrath_2->ok() )
   //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
-
-  cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
 }
 
 void avenging_wrath_t::execute()
@@ -230,10 +224,6 @@ void avenging_wrath_t::execute()
   paladin_spell_t::execute();
 
   p()->buffs.avenging_wrath->trigger();
-
-  if ( p()->azerite.avengers_might.ok() )
-    p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
-                                        p()->buffs.avenging_wrath->buff_duration() );
 
   // Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
   // if ( p()->talents.avenging_wrath_might->ok() )
@@ -2540,11 +2530,6 @@ void paladin_t::create_actions()
         timespan_t::from_seconds( talents.judgment_of_light->effectN( 1 ).base_value() );
   }
 
-  if ( azerite.lights_decree.enabled() )
-  {
-    active.lights_decree = new lights_decree_t( this );
-  }
-
   if ( covenant.night_fae->ok() )
   {
     active.seasons[ SUMMER ] = new blessing_of_summer_t( this );
@@ -2668,73 +2653,6 @@ void paladin_t::trigger_forbearance( player_t* target )
   buff->trigger();
 }
 
-void paladin_t::trigger_memory_of_lucid_dreams( double cost )
-{
-  if ( !azerite_essence.memory_of_lucid_dreams.enabled() )
-    return;
-
-  if ( cost <= 0 )
-    return;
-
-  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
-  {
-    if ( !rng().roll( options.proc_chance_ret_memory_of_lucid_dreams ) )
-      return;
-
-    double total_gain = lucid_dreams_accumulator + cost * lucid_dreams_minor_refund_coeff;
-
-    // mserrano note: apparently when you get a proc on a 1-holy-power spender, if it did proc,
-    // you always get 1 holy power instead of alternating between 0 and 1. This is based on
-    // Skeletor's PTR testing; should revisit this periodically.
-    if ( cost == 1 && total_gain < 1 )
-    {
-      total_gain = 1;
-    }
-
-    double real_gain = floor( total_gain );
-
-    lucid_dreams_accumulator = total_gain - real_gain;
-
-    resource_gain( RESOURCE_HOLY_POWER, real_gain, gains.hp_memory_of_lucid_dreams );
-  }
-
-  if ( azerite_essence.memory_of_lucid_dreams.rank() >= 3 )
-    player_t::buffs.lucid_dreams->trigger();
-}
-
-// TODO?: holy specifics
-void paladin_t::vision_of_perfection_proc()
-{
-  auto vision              = azerite_essence.vision_of_perfection;
-  double vision_multiplier = vision.spell( 1U, essence_type::MAJOR )->effectN( 1 ).percent() +
-                             vision.spell( 2U, essence_spell::UPGRADE, essence_type::MAJOR )->effectN( 1 ).percent();
-  if ( vision_multiplier <= 0 )
-    return;
-
-  buff_t* main_buff = buffs.avenging_wrath;
-  if ( talents.crusade->ok() )
-    main_buff = buffs.crusade;
-
-  // Light's Decree's duration increase to AW doesn't affect the VoP proc
-  // We use the duration from spelldata rather than buff -> buff_duration
-  timespan_t trigger_duration = vision_multiplier * main_buff->data().duration();
-
-  if ( main_buff->check() )
-  {
-    main_buff->extend_duration( this, trigger_duration );
-
-    if ( azerite.avengers_might.enabled() )
-      buffs.avengers_might->extend_duration( this, trigger_duration );
-  }
-  else
-  {
-    main_buff->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
-
-    if ( azerite.avengers_might.enabled() )
-      buffs.avengers_might->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, trigger_duration );
-  }
-}
-
 int paladin_t::get_local_enemies( double distance ) const
 {
   int num_nearby = 0;
@@ -2821,7 +2739,6 @@ void paladin_t::init_gains()
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
   gains.judgment                   = get_gain( "judgment" );
   gains.hp_cs                      = get_gain( "crusader_strike" );
-  gains.hp_memory_of_lucid_dreams  = get_gain( "memory_of_lucid_dreams" );
   gains.hp_sanctification          = get_gain( "sanctification" );
   gains.hp_divine_toll             = get_gain( "divine_toll" );
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
@@ -2839,7 +2756,6 @@ void paladin_t::init_procs()
   procs.righteous_cause   = get_proc( "Righteous Cause" );
   procs.divine_purpose    = get_proc( "Divine Purpose" );
   procs.fires_of_justice  = get_proc( "Fires of Justice" );
-  procs.prot_lucid_dreams = get_proc( "Lucid Dreams SotR" );
   procs.final_reckoning   = get_proc( "Final Reckoning" );
   procs.empyrean_power    = get_proc( "Empyrean Power" );
 
@@ -2912,8 +2828,6 @@ void paladin_t::create_buffs()
                                     ->set_default_value_from_effect(1)
                                     ->set_max_stack(5); // Buff has no stacks, but can have up to 5 different values.
 
-  buffs.avengers_might = make_buff<stat_buff_t>( this, "avengers_might", find_spell( 272903 ) )
-                             ->add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
   buffs.seraphim = make_buff( this, "seraphim", spells.seraphim_buff )
                        ->add_invalidate( CACHE_CRIT_CHANCE )
                        ->add_invalidate( CACHE_HASTE )
@@ -3306,16 +3220,6 @@ void paladin_t::init_spells()
   spells.divine_purpose_buff    = find_spell( 223819 );
   spells.seal_of_clarity_buff   = find_spell( 384810 );
   spells.seraphim_buff          = find_spell( 152262 );
-
-  // Shared Azerite traits
-  azerite.avengers_might        = find_azerite_spell( "Avenger's Might" );
-  azerite.grace_of_the_justicar = find_azerite_spell( "Grace of the Justicar" );
-
-  // Essences
-  azerite_essence.memory_of_lucid_dreams = find_azerite_essence( "Memory of Lucid Dreams" );
-  lucid_dreams_minor_refund_coeff =
-      azerite_essence.memory_of_lucid_dreams.spell( 1U, essence_type::MINOR )->effectN( 1 ).percent();
-  azerite_essence.vision_of_perfection = find_azerite_essence( "Vision of Perfection" );
 
   // Shadowlands legendaries
   legendary.vanguards_momentum            = find_runeforge_legendary( "Vanguard's Momentum" );
@@ -3950,14 +3854,6 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 {
   if ( resource_type == RESOURCE_HOLY_POWER )
   {
-    if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
-    {
-      if ( player_t::buffs.memory_of_lucid_dreams->up() )
-      {
-        amount *= 1.0 + player_t::buffs.memory_of_lucid_dreams->data().effectN( 1 ).percent();
-      }
-    }
-
     if ( buffs.holy_avenger->up() )
     {
       amount *= 1.0 + buffs.holy_avenger->data().effectN( 1 ).percent();
@@ -4160,10 +4056,6 @@ void paladin_t::create_options()
 {
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
-  add_option(
-      opt_float( "proc_chance_ret_memory_of_lucid_dreams", options.proc_chance_ret_memory_of_lucid_dreams, 0.0, 1.0 ) );
-  add_option( opt_float( "proc_chance_prot_memory_of_lucid_dreams", options.proc_chance_prot_memory_of_lucid_dreams,
-                         0.0, 1.0 ) );
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
 
   player_t::create_options();
@@ -4190,8 +4082,6 @@ void paladin_t::combat_begin()
   {
     resource_loss( RESOURCE_HOLY_POWER, hp_overflow );
   }
-
-  lucid_dreams_accumulator = 0;
 
   // evidently it resets to summer on combat start
   next_season = SUMMER;
@@ -4608,7 +4498,6 @@ struct paladin_module_t : public module_t
 
   void static_init() const override
   {
-    unique_gear::register_special_effect( 286390, empyrean_power );
   }
 
   void init( player_t* p ) const override

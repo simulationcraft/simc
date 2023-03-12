@@ -80,7 +80,6 @@ public:
     action_t* reckoning;
 
     action_t* inner_light_damage;
-    action_t* lights_decree;
     action_t* sanctified_wrath;
     action_t* virtuous_command;
     action_t* create_aw_expression;
@@ -122,7 +121,6 @@ public:
     buff_t* devotion_aura;
     buff_t* retribution_aura;
     buff_t* blessing_of_protection;
-    buff_t* avengers_might;
     buff_t* avenging_wrath_might;
     buff_t* seal_of_clarity;
     buff_t* faiths_armor;
@@ -177,8 +175,6 @@ public:
     buff_t* virtuous_command;
 
     buff_t* empyrean_power;
-    buff_t* empyrean_power_azerite;
-    buff_t* relentless_inquisitor_azerite;
     buff_t* vanguards_momentum;
 
     buff_t* rush_of_light;
@@ -225,7 +221,6 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* judgment;
     gain_t* hp_cs;
-    gain_t* hp_memory_of_lucid_dreams;
     gain_t* hp_sanctification;
     gain_t* hp_inner_grace;
     gain_t* hp_divine_toll;
@@ -328,7 +323,6 @@ public:
     proc_t* divine_purpose;
     proc_t* fires_of_justice;
     proc_t* final_reckoning;
-    proc_t* prot_lucid_dreams;
     proc_t* empyrean_power;
 
     proc_t* as_grand_crusader;
@@ -349,7 +343,6 @@ public:
     const spell_data_t* sotr_buff;
 
     const spell_data_t* reckoning;
-    const spell_data_t* lights_decree;
     const spell_data_t* sanctified_wrath_damage;
 
     const spell_data_t* judgment_2;
@@ -601,30 +594,6 @@ public:
     const spell_data_t* searing_light;
   } talents;
 
-  struct azerite_t
-  {
-    // Shared
-    azerite_power_t avengers_might;
-    azerite_power_t grace_of_the_justicar; // Healing, NYI
-
-    // Holy
-
-    // Protection
-    azerite_power_t bulwark_of_light; // Defensive, NYI
-    azerite_power_t inner_light;
-
-    // Retribution
-    azerite_power_t empyrean_power;
-    azerite_power_t expurgation;
-    azerite_power_t lights_decree;
-    azerite_power_t relentless_inquisitor;
-  } azerite;
-
-  struct {
-    azerite_essence_t memory_of_lucid_dreams;
-    azerite_essence_t vision_of_perfection;
-  } azerite_essence;
-
   struct conduits_t {
     conduit_data_t ringing_clarity;
     conduit_data_t vengeful_shock;
@@ -679,15 +648,10 @@ public:
   // Paladin options
   struct options_t
   {
-    double proc_chance_ret_memory_of_lucid_dreams = 0.15;
-    double proc_chance_prot_memory_of_lucid_dreams = 0.15;
     bool fake_sov = true;
     double proc_chance_ret_aura_sera = 0.10;
   } options;
   player_t* beacon_target;
-
-  double lucid_dreams_accumulator;
-  double lucid_dreams_minor_refund_coeff;
 
   season next_season;
 
@@ -771,8 +735,6 @@ public:
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
-  void         trigger_memory_of_lucid_dreams( double cost );
-  virtual void vision_of_perfection_proc() override;
 
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
@@ -1461,25 +1423,6 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
 };
 
 // holy power consumption
-// TODO(mserrano): figure out the right way to organize this longer term
-struct lights_decree_t : public paladin_spell_t
-{
-  int last_holy_power_cost;
-
-  lights_decree_t( paladin_t* p ) :
-    paladin_spell_t( "lights_decree", p, p -> find_spell( 286232 ) ),
-    last_holy_power_cost( 0 )
-  {
-    base_dd_min = base_dd_max = p -> azerite.lights_decree.value();
-    aoe = -1;
-    background = may_crit = true;
-  }
-
-  double action_multiplier() const override
-  {
-    return paladin_spell_t::action_multiplier() * last_holy_power_cost;
-  }
-};
 
 struct sanctified_wrath_t : public paladin_spell_t
 {
@@ -1527,7 +1470,7 @@ struct holy_power_consumer_t : public Base
       return 0.0;
     }
 
-    if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power_azerite -> check() || ab::p() -> buffs.empyrean_power -> check() ) ) ||
+    if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power -> check() ) ) ||
          ( ab::affected_by.divine_purpose_cost && ab::p() -> buffs.divine_purpose -> check() ) )
     {
       return 0.0;
@@ -1605,9 +1548,6 @@ struct holy_power_consumer_t : public Base
       num_hopo_spent = 0;
     }
 
-    if ( p -> azerite.relentless_inquisitor.ok() )
-      p -> buffs.relentless_inquisitor_azerite -> trigger( num_hopo_spent );
-
     if ( p -> legendary.relentless_inquisitor -> ok() )
       p -> buffs.relentless_inquisitor_legendary -> trigger();
 
@@ -1660,12 +1600,6 @@ struct holy_power_consumer_t : public Base
     bool should_continue = true;
     if ( is_divine_storm && p -> bugs )
     {
-      if ( p -> buffs.empyrean_power_azerite -> up() )
-      {
-        p -> buffs.empyrean_power_azerite -> expire();
-        should_continue = false;
-      }
-
       if ( p -> buffs.empyrean_power -> up() )
       {
         p -> buffs.empyrean_power -> expire();
@@ -1674,12 +1608,7 @@ struct holy_power_consumer_t : public Base
     }
     else if ( is_divine_storm )
     {
-      if ( p -> buffs.empyrean_power_azerite -> up() )
-      {
-        p -> buffs.empyrean_power_azerite -> expire();
-        should_continue = false;
-      }
-      else if ( p -> buffs.empyrean_power -> up() )
+      if ( p -> buffs.empyrean_power -> up() )
       {
         p -> buffs.empyrean_power -> expire();
         should_continue = false;
@@ -1754,13 +1683,6 @@ struct holy_power_consumer_t : public Base
 
     if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )
     {
-      if ( p -> azerite.lights_decree.ok() )
-      {
-        lights_decree_t* ld = debug_cast<lights_decree_t*>( p -> active.lights_decree );
-        ld -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
-        ld -> execute();
-      }
-
       if ( p -> specialization() == PALADIN_RETRIBUTION && p -> talents.sanctified_wrath -> ok() )
       {
         sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p -> active.sanctified_wrath );
@@ -1806,16 +1728,6 @@ struct holy_power_consumer_t : public Base
     {
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();
-    }
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
-
-    if ( ab::current_resource() == RESOURCE_HOLY_POWER)
-    {
-      ab::p() -> trigger_memory_of_lucid_dreams( ab::last_resource_cost );
     }
   }
 };

@@ -24,11 +24,7 @@ namespace buffs {
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
-    // increase duration if we have Light's Decree
     auto* paladin = static_cast<paladin_t*>( p );
-    if ( paladin -> azerite.lights_decree.ok() )
-      base_buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
-
     if ( paladin -> is_ptr() && paladin -> talents.divine_wrath -> ok() )
     {
       base_buff_duration += paladin -> talents.divine_wrath -> effectN( 1 ).time_value();
@@ -77,8 +73,6 @@ struct crusade_t : public paladin_spell_t
 
     if ( ! ( p -> talents.crusade -> ok() ) )
       background = true;
-
-    cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -91,9 +85,6 @@ struct crusade_t : public paladin_spell_t
       p() -> buffs.crusade -> expire();
 
     p() -> buffs.crusade -> trigger();
-
-    if ( p() -> azerite.avengers_might.ok() )
-      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration() );
   }
 };
 
@@ -581,18 +572,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       tempest = new divine_storm_tempest_t( p );
       add_child( tempest );
     }
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = holy_power_consumer_t::bonus_da( s );
-
-    if ( p() -> buffs.empyrean_power_azerite -> up() )
-    {
-      b += p() -> azerite.empyrean_power.value();
-    }
-
-    return b;
   }
 
   double action_multiplier() const override
@@ -1812,14 +1791,8 @@ void paladin_t::create_buffs_retribution()
   buffs.templar_strikes = make_buff( this, "templar_strikes", find_spell( 406648 ) );
   buffs.divine_arbiter = make_buff( this, "divine_arbiter", find_spell( 406975 ) )
                           -> set_max_stack( as<int>( find_spell( 406975 )->effectN( 2 ).base_value() ) );
-
-  // Azerite
-  buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
-                       -> set_default_value( azerite.empyrean_power.value() );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
                           ->set_trigger_spell(talents.empyrean_power);
-  buffs.relentless_inquisitor_azerite = make_buff<stat_buff_t>(this, "relentless_inquisitor_azerite", find_spell( 279204 ) )
-                              -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 
   // legendaries
   buffs.vanguards_momentum_legendary = make_buff( this, "vanguards_momentum_legendary", find_spell( 345046 ) )
@@ -1942,45 +1915,9 @@ void paladin_t::init_spells_retribution()
 
   passives.boundless_conviction = find_spell( 115675 );
 
-  spells.lights_decree = find_spell( 286231 );
   spells.reckoning = find_spell( 343724 );
   spells.sanctified_wrath_damage = find_spell( 326731 );
   spells.crusade = find_spell( 231895 );
-
-  // Azerite traits
-  azerite.expurgation           = find_azerite_spell( "Expurgation" );
-  azerite.relentless_inquisitor = find_azerite_spell( "Relentless Inquisitor" );
-  azerite.empyrean_power        = find_azerite_spell( "Empyrean Power" );
-  azerite.lights_decree         = find_azerite_spell( "Light's Decree" );
-}
-
-void empyrean_power( special_effect_t& effect )
-{
-  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
-  if ( !power.enabled() )
-    return;
-
-  const spell_data_t* driver = effect.player -> find_spell( 286392 );
-
-  buff_t* buff = buff_t::find( effect.player, "empyrean_power" );
-
-  effect.custom_buff = buff;
-  effect.spell_id = driver -> id();
-
-  struct empyrean_power_cb_t : public dbc_proc_callback_t
-  {
-    empyrean_power_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.player, effect )
-    { }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      if ( proc_buff )
-        proc_buff -> trigger();
-    }
-  };
-
-  new empyrean_power_cb_t( effect );
 }
 
 // Action Priority List Generation

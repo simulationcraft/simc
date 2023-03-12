@@ -822,11 +822,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> buffs.redoubt -> trigger();
     }
 
-    if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
-    {
-      p() -> trigger_memory_of_lucid_dreams( 1.0 );
-    }
-
     // As of 2020-11-07 Resolute Defender now always provides its CDR.
     if ( p() -> conduit.resolute_defender -> ok() )
     {
@@ -849,18 +844,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     p() -> buffs.bulwark_of_righteous_fury -> expire();
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = holy_power_consumer_t::recharge_multiplier( cd );
-
-    if ( p() -> player_t::buffs.memory_of_lucid_dreams -> check() )
-    {
-      rm /= 1.0 + p() -> player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
-    }
-
-    return rm;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1234,10 +1217,6 @@ void paladin_t::create_buffs_protection()
   buffs.sentinel = new buffs::sentinel_buff_t( this );
   buffs.sentinel_decay = new buffs::sentinel_decay_buff_t( this );
 
-
-  if ( specialization() == PALADIN_PROTECTION )
-    player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
-    { this -> cooldowns.shield_of_the_righteous -> adjust_recharge_multiplier(); } );
   buffs.ally_of_the_light = make_buff( this, "ally_of_the_light", find_spell( 394714 ) )
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_VERSATILITY );
