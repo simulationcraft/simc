@@ -3261,6 +3261,7 @@ absorb_buff_t::absorb_buff_t( actor_pair_t q, util::string_view name, const spel
     absorb_source(),
     absorb_gain(),
     high_priority( false ),
+    cumulative( false ),
     eligibility()
 {
   assert( player && "Absorb Buffs only supported for player!" );
@@ -3279,6 +3280,14 @@ void absorb_buff_t::start( int stacks, double value, timespan_t duration )
           "Attempting to add absorb buff to absorb_buffs list twice" );
 
   player->absorb_buff_list.push_back( this );
+}
+
+void absorb_buff_t::refresh( int stacks, double value, timespan_t duration )
+{
+  if ( cumulative )
+    value += current_value;
+
+  buff_t::refresh( stacks, value, duration );
 }
 
 void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -3370,6 +3379,12 @@ absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
   eligibility = std::move(e);
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
+  return this;
+}
+
+absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
+{
+  cumulative = c;
   return this;
 }
 
