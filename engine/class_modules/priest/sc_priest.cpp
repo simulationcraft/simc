@@ -2218,6 +2218,7 @@ void priest_t::init_background_actions()
   background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
 
   init_background_actions_shadow();
+  init_background_actions_discipline();
 }
 
 void priest_t::do_dynamic_regen( bool forced )

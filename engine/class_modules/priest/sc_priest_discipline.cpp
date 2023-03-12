@@ -194,7 +194,7 @@ struct penance_t : public priest_spell_t
     return tmp.size() ? util::string_join( tmp, delim ) : "none";
   }
 
-  void spread_purge_the_wicked( const action_state_t* state ) const
+  void spread_purge_the_wicked( const action_state_t* state, priest_t& p ) const
   {
     // Exit if PTW isn't ticking
     if ( !td( state->target )->dots.purge_the_wicked->is_ticking() )
@@ -246,10 +246,7 @@ struct penance_t : public priest_spell_t
 
     sim->print_debug( "{} selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
 
-    range::for_each( targets, [ & ]( player_t* target ) {
-      spread_ptw->set_target( target );
-      spread_ptw->execute();
-    } );
+    range::for_each( targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->trigger( target ); } );
   }
 
   void execute() override
@@ -268,6 +265,15 @@ struct penance_t : public priest_spell_t
     {
       p().cooldowns.mindgames->adjust(
           -timespan_t::from_seconds( p().talents.manipulation->effectN( 1 ).base_value() / 2 ) );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    if ( p().talents.discipline.purge_the_wicked.enabled() )
+    {
+      sim->print_debug( "starting PTW spread" );
+      spread_purge_the_wicked( state, p() );
     }
   }
 
@@ -368,6 +374,12 @@ struct purge_the_wicked_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.discipline.revel_in_purity );
     // 8% / 15% damage increase
     apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
+  }
+
+  void trigger( player_t* target )
+  {
+    set_target( target );
+    execute();
   }
 };
 
@@ -491,6 +503,14 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
+}
+
+void priest_t::init_background_actions_discipline()
+{
+  if ( talents.discipline.purge_the_wicked.enabled() )
+  {
+    background_actions.purge_the_wicked = new actions::spells::purge_the_wicked_t( *this, "purge_the_wicked" );
+  }
 }
 
 void priest_t::init_spells_discipline()
