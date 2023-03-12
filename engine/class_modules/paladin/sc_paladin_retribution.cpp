@@ -379,17 +379,6 @@ struct ptr_execution_sentence_t : public paladin_melee_attack_t
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-
-  struct conduit_expurgation_t : public paladin_spell_t
-  {
-    conduit_expurgation_t( paladin_t* p ):
-      paladin_spell_t( "expurgation", p, p -> find_spell( 344067 ) )
-    {
-      hasted_ticks = false;
-      tick_may_crit = false;
-    }
-  };
-
   struct expurgation_t : public paladin_spell_t
   {
     expurgation_t( paladin_t* p ):
@@ -408,21 +397,13 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
-  conduit_expurgation_t* conduit_expurgation;
   expurgation_t* expurgation;
 
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p -> talents.blade_of_justice ),
-    conduit_expurgation( nullptr ),
     expurgation( nullptr )
   {
     parse_options( options_str );
-
-    if ( p -> conduit.expurgation -> ok() )
-    {
-      conduit_expurgation = new conduit_expurgation_t( p );
-      add_child( conduit_expurgation );
-    }
 
     if ( p -> talents.expurgation -> ok() )
     {
@@ -505,7 +486,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( state );
 
-    if ( state -> result == RESULT_CRIT )
+    if ( state -> result == RESULT_CRIT && !p() -> is_ptr() )
     {
       if ( p() -> talents.expurgation -> ok() )
       {
@@ -513,13 +494,12 @@ struct blade_of_justice_t : public paladin_melee_attack_t
         expurgation -> set_target( state -> target );
         expurgation -> execute();
       }
+    }
 
-      if ( p() -> conduit.expurgation -> ok() )
-      {
-        conduit_expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
-        conduit_expurgation -> set_target( state -> target );
-        conduit_expurgation -> execute();
-      }
+    if ( p()->is_ptr() && p()->talents.expurgation->ok() )
+    {
+      expurgation->set_target( state->target );
+      expurgation->execute();
     }
 
     if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
