@@ -2481,7 +2481,7 @@ void priest_t::create_buffs_shadow()
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 1 ).trigger() )
+  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1  ).trigger() )
                         ->set_default_value_from_effect( 1 );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
