@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48480
-static const std::array<spelltext_data_t, 19591> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19592> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19464,6 +19464,7 @@ static const std::array<spelltext_data_t, 19591> __ptr_spelltext_data { {
   { 405607, "Increases the critical strike chance of Judgment $s1%.\r\n\r\n", 0, 0 },
   { 405639, "Increases the chance to find a Sealed Scroll from treasures and encounters while exploring the Forbidden Reach for $D. Effect consumed on loot.", "Increased chance to find a Sealed Scroll from treasures and encounters while exploring the Forbidden Reach. Effect consumed on loot.", 0 },
   { 405650, "Temporarily imbues shoulders with an illusion of spores for $ecd.", 0, 0 },
+  { 405651, "$@spelldesc370781", "Empower spells reach maximum level in $s1% less time.", 0 },
   { 405652, "$@spelldesc370781", "Taking $w1% increased damage from $@auracaster's empower spells.", 0 },
   { 405659, "Firestorm's radius is increased by $s1%, and Pyre deals $s2% increased damage to enemies within your Firestorm.", 0, 0 },
   { 405669, "Create a Primordial Stone from the Fire family.", 0, 0 },

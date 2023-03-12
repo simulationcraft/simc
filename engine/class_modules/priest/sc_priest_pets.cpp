@@ -821,6 +821,11 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
     affected_by_shadow_weaving = true;
 
+    if ( p.o().is_ptr() )
+    {
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
+
     // BUG: The damage this is dealing is not following spell data
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
     if ( p.o().bugs )

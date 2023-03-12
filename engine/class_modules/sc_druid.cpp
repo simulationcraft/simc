@@ -1555,6 +1555,14 @@ struct berserk_cat_buff_t : public druid_buff_t
       } );
     }
   }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
+    p()->buff.overflowing_power->expire();
+  }
 };
 
 // Bloodtalons Tracking Buff ================================================
@@ -3276,6 +3284,7 @@ public:
     cat_attack_t::execute();
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
+    p()->buff.overflowing_power->expire();
   }
 };
 
@@ -3811,7 +3820,10 @@ struct rake_t : public cat_attack_t
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() || cat_attack_t::stealthed();
+    if ( p()->is_ptr() )
+      return cat_attack_t::stealthed();
+
+    return p()->buff.b_inc_cat->check() || cat_attack_t::stealthed();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -4098,7 +4110,10 @@ struct shred_t : public druid_mixin_t<trigger_thrashing_claws_t<cat_attack_t>>
 
   bool stealthed() const override
   {
-    return p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() || base_t::stealthed();
+    if ( p()->is_ptr() )
+      return base_t::stealthed();
+
+    return p()->buff.b_inc_cat->check() || base_t::stealthed();
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -4347,6 +4362,43 @@ public:
 
     if ( p()->talent.ursocs_guidance.ok() && p()->talent.incarnation_bear.ok() )
       p()->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( last_resource_cost / -ug_cdr ) );
+  }
+};
+
+template <typename BASE>
+struct trigger_ursocs_fury_t : public BASE
+{
+private:
+  druid_t* p_;
+  double cap = 0.3;  // not in spell data
+  double mul;
+
+public:
+  trigger_ursocs_fury_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
+    : BASE( n, p, s, o ), p_( p ), mul( p->talent.ursocs_fury->effectN( 1 ).percent() )
+  {}
+
+  void trigger_ursocs_fury( const action_state_t* s )
+  {
+    if ( !s->result_amount )
+      return;
+
+    p_->buff.ursocs_fury->trigger( 1, s->result_amount * ( 1.0 + mul ) );
+    p_->buff.ursocs_fury->current_value = std::min( p_->buff.ursocs_fury->current_value, cap * p_->max_health() );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+
+    trigger_ursocs_fury( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    BASE::tick( d );
+
+    trigger_ursocs_fury( d->state );
   }
 };
 
@@ -4651,15 +4703,11 @@ struct mangle_t : public bear_attack_t
 };
 
 // Maul =====================================================================
-struct maul_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
+struct maul_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>
 {
-  double ursocs_fury_mul;
-
   maul_t( druid_t* p, std::string_view opt ) : maul_t( p, "maul", opt ) {}
 
-  maul_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_mixin_t( n, p, p->talent.maul, opt ), ursocs_fury_mul( p->talent.ursocs_fury->effectN( 1 ).percent() )
-  {}
+  maul_t( druid_t* p, std::string_view n, std::string_view opt ) : druid_mixin_t( n, p, p->talent.maul, opt ) {}
 
   bool ready() override
   {
@@ -4675,8 +4723,6 @@ struct maul_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
 
     if ( p()->buff.tooth_and_claw->check() )
       td( s->target )->debuff.tooth_and_claw->trigger();
-
-    p()->buff.ursocs_fury->trigger( 1, s->result_amount * ( 1.0 + ursocs_fury_mul ) );
   }
 
   void execute() override
@@ -4770,14 +4816,11 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Raze =====================================================================
-struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
+struct raze_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>
 {
-  double ursocs_fury_mul;
-
   raze_t( druid_t* p, std::string_view opt ) : raze_t( p, "raze", opt ) {}
 
-  raze_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_mixin_t( n, p, p->talent.raze, opt ), ursocs_fury_mul( p->talent.ursocs_fury->effectN( 1 ).percent() )
+  raze_t( druid_t* p, std::string_view n, std::string_view opt ) : druid_mixin_t( n, p, p->talent.raze, opt )
   {
     aoe = -1;  // actually a frontal cone
     reduced_aoe_targets = 5.0;  // PTR not in spell data
@@ -4797,8 +4840,6 @@ struct raze_t : public druid_mixin_t<trigger_gore_t<rage_spender_t>>
 
     if ( p()->buff.tooth_and_claw->check() )
       td( s->target )->debuff.tooth_and_claw->trigger();
-
-    p()->buff.ursocs_fury->trigger( 1, s->result_amount * ( 1.0 + ursocs_fury_mul ) );
   }
 
   void execute() override
@@ -4865,9 +4906,9 @@ struct thorns_of_iron_t : public bear_attack_t
 };
 
 // Thrash (Bear) ============================================================
-struct thrash_bear_t : public druid_mixin_t<trigger_gore_t<bear_attack_t>>
+struct thrash_bear_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>
 {
-  struct thrash_bear_dot_t : public druid_mixin_t<trigger_waning_twilight_t<bear_attack_t>>
+  struct thrash_bear_dot_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_waning_twilight_t<bear_attack_t>>>
   {
     double bf_energize = 0.0;
 
@@ -10125,6 +10166,7 @@ void druid_t::create_buffs()
     ->set_chance( talent.tooth_and_claw->effectN( 1 ).percent() );
 
   buff.ursocs_fury = make_buff<absorb_buff_t>( this, "ursocs_fury", find_spell( 372505 ) )
+    ->set_cumulative( true )
     ->set_trigger_spell( talent.ursocs_fury );
 
   buff.vicious_cycle_mangle = make_buff( this, "vicious_cycle_mangle", find_spell( 372019) )
@@ -11010,7 +11052,7 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
     if ( avail > 0 )
       g->overflow[ r ] -= avail;
 
-    buff.overflowing_power->trigger( over );
+    buff.overflowing_power->trigger( as<int>( over ) );
   }
 
   return actual;

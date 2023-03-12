@@ -2166,9 +2166,10 @@ class SpellDataGenerator(DataGenerator):
           ( 361519, 0 ), # Essence Burst
           # Devastation
           ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
-          ( 375802, 1 ), # Burnout buff
-          ( 376850, 1 ), # Power Swell buff
+          ( 375802, 1 ),  # Burnout buff
+          ( 376850, 1 ),  # Power Swell buff
           ( 397870, 1 ),  # Titanic Wrath
+          ( 405651, 1 ),  # Imminent Destruction Player Buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),

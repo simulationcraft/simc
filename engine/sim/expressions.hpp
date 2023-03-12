@@ -138,6 +138,12 @@ public:
 
   static std::unique_ptr<expr_t> parse( action_t*, util::string_view expr_str,
                         bool optimize = false );
+  /// Player-scope expression generation. Functions as above; however, action-based
+  /// expressions will not be parsed by this function.
+  static std::unique_ptr<expr_t> parse( player_t* player, util::string_view expr_str,
+                        bool optimize = false );
+
+
   template<class T>
   static std::unique_ptr<expr_t> create_constant( util::string_view name, T value );
 
