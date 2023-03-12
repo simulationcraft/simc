@@ -3509,8 +3509,10 @@ void neltharax( special_effect_t& effect )
 {
   auto buff =
     create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
-      ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_ATTACK_SPEED );
+      ->set_default_value_from_effect( 1 );
+  
+  if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+    buff->add_invalidate( CACHE_ATTACK_SPEED );
 
   effect.player -> buffs.heavens_nemesis = buff;
 
