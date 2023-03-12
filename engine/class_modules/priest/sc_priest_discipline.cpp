@@ -5,7 +5,6 @@
 // ==========================================================================
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
-#include "util/generic.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -204,14 +203,14 @@ struct penance_t : public priest_spell_t
 {
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
-  int max_spread_targets;
+  unsigned max_spread_targets;
 
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
-      max_spread_targets( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() )
+      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) )
   {
     cooldown->duration = p.specs.penance->cooldown();
     apply_affecting_aura( priest().talents.discipline.blaze_of_light );
@@ -286,7 +285,7 @@ struct penance_t : public priest_spell_t
       move_random_target( has_ptw_targets, targets );
     }
 
-    sim->print_debug( "{} selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
+    sim->print_debug( "{} PTW spread selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
 
     range::for_each(
         targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
@@ -315,7 +314,6 @@ struct penance_t : public priest_spell_t
   {
     if ( p().talents.discipline.purge_the_wicked.enabled() )
     {
-      sim->print_debug( "starting PTW spread" );
       spread_purge_the_wicked( state, p() );
     }
   }
@@ -500,7 +498,7 @@ void priest_t::init_background_actions_discipline()
 {
   if ( talents.discipline.purge_the_wicked.enabled() )
   {
-    background_actions.purge_the_wicked = new actions::spells::purge_the_wicked_t( *this, "purge_the_wicked" );
+    background_actions.purge_the_wicked = new actions::spells::purge_the_wicked_t( *this, "" );
   }
 }
 
