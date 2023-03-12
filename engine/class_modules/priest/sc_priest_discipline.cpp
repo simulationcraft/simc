@@ -158,17 +158,14 @@ struct penance_t : public priest_spell_t
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   int max_spread_targets;
-  propagate_const<purge_the_wicked_t*> spread_ptw;
 
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      max_spread_targets( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ),
-      spread_ptw( new purge_the_wicked_t( p, "purge_the_wicked" ) )
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
+      max_spread_targets( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() )
   {
-    parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
     apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     add_child( channel );
