@@ -511,7 +511,6 @@ public:
     if ( p()->is_ptr() )
     {
       parse_buff_effects( p()->buff.imminent_destruction, p()->talent.imminent_destruction );
-      parse_buff_effects( p()->buff.causality );
     }
   }
 
@@ -990,6 +989,16 @@ struct empowered_charge_spell_t : public empowered_base_t
     stats = orig_stat;
 
     stats->iteration_total_execute_time += d->time_to_tick();
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = empowered_base_t::recharge_rate_multiplier( cd );
+
+    if ( &cd == cooldown )
+      m /= 1.0 + p()->buff.causality->check_value();
+
+    return m;
   }
 
   void last_tick( dot_t* d ) override
@@ -2327,7 +2336,12 @@ void evoker_t::create_buffs()
 
   buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 405651 ) );
 
-  buff.causality = make_buff( this, "causality", find_spell( 375778 ) );
+  buff.causality = make_buff( this, "causality", find_spell( 375778 ) )
+                       ->set_default_value_from_effect( 1, 0.01 )
+                       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+                         cooldown.eternity_surge->adjust_recharge_multiplier();
+                         cooldown.fire_breath->adjust_recharge_multiplier();
+                       } );
 
   buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
                                  ->set_default_value_from_effect( 1 )
