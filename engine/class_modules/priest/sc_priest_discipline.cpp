@@ -3,9 +3,10 @@
 // Contact: https://github.com/orgs/simulationcraft/teams/priest/members
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
-
+#include "action/action_state.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
+#include "util/generic.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -156,16 +157,99 @@ private:
 // Main penance action spell
 struct penance_t : public priest_spell_t
 {
+  timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+  int max_spread_targets;
+  propagate_const<purge_the_wicked_t*> spread_ptw;
+
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) )
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      max_spread_targets( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ),
+      spread_ptw( new purge_the_wicked_t( p, "purge_the_wicked" ) )
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
     apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     add_child( channel );
     add_child( shadow_covenant_channel );
+  }
+
+  void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
+  {
+    auto idx = static_cast<unsigned>( rng().range( 0, in.size() ) );
+    out.push_back( in[ idx ] );
+    in.erase( in.begin() + idx );
+  }
+
+  static std::string actor_list_str( const std::vector<player_t*>& actors, util::string_view delim = ", " )
+  {
+    static const auto transform_fn = []( player_t* t ) { return t->name(); };
+    std::vector<const char*> tmp;
+
+    range::transform( actors, std::back_inserter( tmp ), transform_fn );
+
+    return tmp.size() ? util::string_join( tmp, delim ) : "none";
+  }
+
+  void spread_purge_the_wicked( const action_state_t* state ) const
+  {
+    // Exit if PTW isn't ticking
+    if ( !td( state->target )->dots.purge_the_wicked->is_ticking() )
+    {
+      return;
+    }
+    // Exit if there 1 or fewer targets
+    if ( target_list().size() <= 1 )
+    {
+      return;
+    }
+    // Targets to spread PTW to
+    std::vector<player_t*> targets;
+
+    // Targets without PTW
+    std::vector<player_t*> no_ptw_targets,
+        // Targets that already have PTW
+        has_ptw_targets;
+
+    // Categorize all available targets (within 8 yards of the main target) based on presence of PTW
+    range::for_each( target_list(), [ & ]( player_t* t ) {
+      // Ignore main target
+      if ( t == state->target )
+      {
+        return;
+      }
+
+      if ( !td( t )->dots.purge_the_wicked->is_ticking() )
+      {
+        no_ptw_targets.push_back( t );
+      }
+      else if ( td( t )->dots.purge_the_wicked->is_ticking() )
+      {
+        has_ptw_targets.push_back( t );
+      }
+    } );
+
+    // 1) Randomly select targets without PTW, unless there already are the maximum number of targets with PTW up.
+    while ( no_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( no_ptw_targets, targets );
+    }
+
+    // 2) Randomly select targets that already have PTW on them
+    while ( has_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( has_ptw_targets, targets );
+    }
+
+    sim->print_debug( "{} selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
+
+    range::for_each( targets, [ & ]( player_t* target ) {
+      spread_ptw->set_target( target );
+      spread_ptw->execute();
+    } );
   }
 
   void execute() override
@@ -381,7 +465,7 @@ void priest_t::create_buffs_discipline()
 
   buffs.harsh_discipline = make_buff( this, "harsh_discipline", talents.discipline.harsh_discipline )
                                ->set_max_stack( talents.discipline.harsh_discipline.enabled()
-                                                    ? talents.discipline.harsh_discipline->effectN( 1 ).base_value() 
+                                                    ? talents.discipline.harsh_discipline->effectN( 1 ).base_value()
                                                     : 999 )
                                ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                                  if ( buffs.harsh_discipline->at_max_stacks() )
