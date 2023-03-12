@@ -89,7 +89,8 @@ public:
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.manipulation.enabled() )
+    if ( priest().talents.manipulation.enabled() &&
+         ( priest().specialization() == PRIEST_SHADOW || priest().specialization() == PRIEST_DISCIPLINE ) )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
@@ -570,7 +571,8 @@ struct smite_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.manipulation.enabled() )
+    if ( priest().talents.manipulation.enabled() &&
+         ( priest().specialization() == PRIEST_HOLY || priest().specialization() == PRIEST_DISCIPLINE ) )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
