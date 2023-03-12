@@ -1560,6 +1560,7 @@ struct berserk_cat_buff_t : public druid_buff_t
   {
     base_t::expire_override( s, d );
 
+    p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
   }
 };
@@ -3283,6 +3284,7 @@ public:
     cat_attack_t::execute();
 
     p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.overflowing_power->check(), p()->gain.overflowing_power );
+    p()->buff.overflowing_power->expire();
   }
 };
 
