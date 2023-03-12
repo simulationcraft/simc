@@ -652,7 +652,7 @@ public:
   {
     ab::execute();
 
-    if ( p()->talent.causality.ok() && current_resource() == RESOURCE_ESSENCE )
+    if ( p()->talent.causality.ok() && current_resource() == RESOURCE_ESSENCE && !p()->is_ptr() )
     {
       p()->cooldown.eternity_surge->adjust( p()->talent.causality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
     }
@@ -2298,6 +2298,8 @@ void evoker_t::create_buffs()
 
 
   buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 405651 ) );
+
+  buff.causality = make_buff( this, "causality", find_spell( 375778 ) );
 
   buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
                                  ->set_default_value_from_effect( 1 )
