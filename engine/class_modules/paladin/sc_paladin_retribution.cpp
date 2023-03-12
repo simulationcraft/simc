@@ -1287,9 +1287,40 @@ struct truths_wake_t : public paladin_spell_t
   }
 };
 
+struct seething_flames_t : public paladin_spell_t
+{
+  seething_flames_t( paladin_t* p, util::string_view name, int spell_id ) :
+    paladin_spell_t( name, p, p -> find_spell( spell_id ) )
+  {
+    background = true;
+  }
+};
+
+struct seething_flames_event_t : public event_t
+{
+  seething_flames_t* action;
+  paladin_t* paladin;
+  player_t* target;
+
+  seething_flames_event_t( paladin_t* p, player_t* tgt, seething_flames_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), action( spell ), paladin( p ), target( tgt )
+  {
+  }
+
+  const char* name() const override
+  { return "seething_flames_delay"; }
+
+  void execute() override
+  {
+    action -> set_target( target );
+    action -> schedule_execute();
+  }
+};
+
 struct wake_of_ashes_t : public paladin_spell_t
 {
   truths_wake_t* truths_wake;
+  seething_flames_t* seething_flames[2];
 
   wake_of_ashes_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "wake_of_ashes", p, p -> talents.wake_of_ashes ),
@@ -1301,6 +1332,9 @@ struct wake_of_ashes_t : public paladin_spell_t
       background = true;
 
     may_crit = true;
+
+    // TODO: figure out how much seething actually reduces the multiplier on aoe
+    //  also has this formula changed on PTR?
     full_amount_targets = 1;
     reduced_aoe_targets = 1.0;
 
@@ -1310,6 +1344,12 @@ struct wake_of_ashes_t : public paladin_spell_t
     {
       truths_wake = new truths_wake_t( p, "truths_wake_woa" );
       add_child( truths_wake );
+    }
+
+    if ( p -> talents.seething_flames -> ok() )
+    {
+      seething_flames[0] = new seething_flames_t( p, "seething_flames_0", 405345 );
+      seething_flames[1] = new seething_flames_t( p, "seething_flames_1", 405350 );
     }
   }
 
@@ -1329,6 +1369,14 @@ struct wake_of_ashes_t : public paladin_spell_t
 
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();
+      }
+    }
+
+    if ( p() -> talents.seething_flames -> ok() )
+    {
+      for ( int i = 0; i < as<int>( p() -> talents.seething_flames -> effectN( 1 ).base_value() ); i++ )
+      {
+        make_event<seething_flames_event_t>( *sim, p(), execute_state -> target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
       }
     }
   }
