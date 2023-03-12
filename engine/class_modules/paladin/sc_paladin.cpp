@@ -78,6 +78,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.consecrated_blade_icd = get_cooldown( "consecrated_blade_icd" );
   cooldowns.consecrated_blade_icd->duration = timespan_t::from_seconds( 10 );
 
+  cooldowns.searing_light_icd = get_cooldown( "searing_light_icd" );
+  cooldowns.searing_light_icd->duration = timespan_t::from_seconds( 15 );
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }

@@ -98,6 +98,7 @@ public:
     action_t* es_explosion;
     action_t* background_blessed_hammer;
     action_t* divine_arbiter;
+    action_t* searing_light;
 
     // Conduit stuff
     action_t* virtuous_command_conduit;
@@ -278,6 +279,7 @@ public:
 
     cooldown_t* ret_aura_icd;
     cooldown_t* consecrated_blade_icd;
+    cooldown_t* searing_light_icd;
   } cooldowns;
 
   // Passives
@@ -1133,9 +1135,22 @@ public:
   {
     ab::execute();
 
-    if ( this->affected_by.divine_arbiter && p()->talents.divine_arbiter->ok() )
+    if ( p()->is_ptr() )
     {
-      p()->buffs.divine_arbiter->trigger( 1 );
+      if ( this->affected_by.divine_arbiter && p()->talents.divine_arbiter->ok() )
+      {
+        p()->buffs.divine_arbiter->trigger( 1 );
+      }
+
+      if ( ab::get_school() == SCHOOL_RADIANT && p()->talents.searing_light->ok() )
+      {
+        if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
+        {
+          p()->active.searing_light->set_target( ab::execute_state->target );
+          p()->active.searing_light->schedule_execute();
+          p()->cooldowns.searing_light_icd->start();
+        }
+      }
     }
   }
 

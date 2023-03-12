@@ -1614,6 +1614,17 @@ struct divine_arbiter_t : public paladin_spell_t
   }
 };
 
+// TODO: drop the Consecrate
+struct searing_light_t : public paladin_spell_t
+{
+  searing_light_t( paladin_t* p )
+    : paladin_spell_t( "searing_light", p, p->find_spell( 407478 ) )
+  {
+    background = true;
+    reduced_aoe_targets = 8;
+  }
+};
+
 void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
@@ -1678,6 +1689,11 @@ void paladin_t::create_ret_actions()
     if ( talents.divine_arbiter->ok() )
     {
       active.divine_arbiter = new divine_arbiter_t( this );
+    }
+
+    if ( talents.searing_light->ok() )
+    {
+      active.searing_light = new searing_light_t( this );
     }
   }
 
@@ -1866,6 +1882,7 @@ void paladin_t::init_spells_retribution()
   talents.crusading_strikes           = find_talent_spell( talent_tree::SPECIALIZATION, "Crusading Strikes" );
   talents.templar_strikes             = find_talent_spell( talent_tree::SPECIALIZATION, "Templar Strikes" );
   talents.divine_arbiter              = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Arbiter" );
+  talents.searing_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Light" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
