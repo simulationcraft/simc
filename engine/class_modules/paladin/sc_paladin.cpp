@@ -373,7 +373,7 @@ struct consecration_t : public paladin_spell_t
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
 
-    if ( p->is_ptr() && p->talents.divine_hammer->ok() )
+    if ( p->is_ptr() && ( p->talents.divine_hammer->ok() || p->talents.consecrated_blade->ok() ) )
       background = true;
 
     add_child( damage_tick );

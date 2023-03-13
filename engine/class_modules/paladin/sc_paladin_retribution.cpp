@@ -1199,7 +1199,7 @@ struct seething_flames_t : public paladin_spell_t
   {
     background = true;
     // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
-    base_aoe_multiplier = 0.33;
+    base_aoe_multiplier *= 0.33;
   }
 };
 
