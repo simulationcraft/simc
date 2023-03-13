@@ -3426,6 +3426,9 @@ double paladin_t::composite_melee_haste() const
   if ( talents.seal_of_alacrity->ok() )
     h /= 1.0 + talents.seal_of_alacrity->effectN( 1 ).percent();
 
+  if ( is_ptr() && buffs.rush_of_light->ok() )
+    h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
+
   return h;
 }
 
@@ -3464,6 +3467,9 @@ double paladin_t::composite_spell_haste() const
 
   if ( talents.seal_of_alacrity->ok() )
     h /= 1.0 + talents.seal_of_alacrity->effectN( 1 ).percent();
+
+  if ( is_ptr() && buffs.rush_of_light->ok() )
+    h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
 
   return h;
 }
