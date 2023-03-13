@@ -998,9 +998,13 @@ public:
     {
       if ( p->talents.penitence->ok() )
       {
-        if ( this->data().affected_by( p->talents.penitence->effectN( 1 ) ) || this->data().affected_by( p->talents.penitence->effectN( 2 ) ) )
+        if ( this->data().affected_by_label( p->talents.penitence->effectN( 1 ).misc_value2() ) )
         {
           ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
+        }
+        else if ( this->data().affected_by_label( p->talents.penitence->effectN( 2 ).misc_value2() ) )
+        {
+          ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 2 ).percent();
         }
       }
 

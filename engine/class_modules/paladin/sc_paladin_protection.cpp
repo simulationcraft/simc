@@ -45,7 +45,8 @@ namespace paladin {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     add_invalidate( CACHE_MASTERY );
-  };
+  }
+
   sentinel_decay_buff_t::sentinel_decay_buff_t( paladin_t* p ) : buff_t( p, "sentinel_decay" )
   {
     if ( !p->talents.sentinel->ok() )
@@ -54,7 +55,7 @@ namespace paladin {
     }
     set_refresh_behavior( buff_refresh_behavior::NONE );
     cooldown->duration = p->spells.sentinel->effectN( 10 ).period();
-  };
+  }
   }  // namespace buffs
 
 // Ardent Defender (Protection) ===============================================
@@ -523,7 +524,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     cooldown->charges = 2;
     cooldown->hasted  = true;
   }
-  
+
   void impact( action_state_t* s ) override
   {
     paladin_melee_attack_t::impact( s );
