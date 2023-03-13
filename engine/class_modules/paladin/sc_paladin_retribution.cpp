@@ -1188,8 +1188,7 @@ struct truths_wake_t : public paladin_spell_t
   truths_wake_t( paladin_t* p, util::string_view name ) :
     paladin_spell_t( name, p, p -> is_ptr() ? p -> find_spell( 403695 ) : p -> find_spell( 383351 ) )
   {
-    hasted_ticks = false;
-    tick_may_crit = false;
+    hasted_ticks = tick_may_crit = !( p -> is_ptr() );
   }
 };
 
