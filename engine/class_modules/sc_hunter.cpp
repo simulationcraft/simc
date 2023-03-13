@@ -4388,6 +4388,16 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     may_glance         = true;
     may_crit           = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    auto_attack_base_t::impact( s );
+
+    if( p() -> is_ptr() && p() -> talents.lunge.ok() )
+    {
+      p() -> cooldowns.wildfire_bomb -> adjust( -timespan_t::from_millis( p() -> talents.lunge -> effectN( 3 ).base_value() ) );
+    }
+  }
 };
 
 // Internal Bleeding (Wildfire Infusion) ===============================================
