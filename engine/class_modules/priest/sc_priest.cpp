@@ -19,6 +19,37 @@ namespace actions
 {
 namespace spells
 {
+
+// ==========================================================================
+// Expiation
+// ==========================================================================
+struct expiation_t final : public priest_spell_t
+{
+  timespan_t consume_time;
+
+  expiation_t( priest_t& p )
+    : priest_spell_t( "expiation", p, p.talents.discipline.expiation ),
+      consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
+  {
+    background = dual = true;
+
+    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
+    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_td_t& td = get_td( s->target );
+    dot_t* dot =
+        priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
+
+    auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
+    base_dd_min = base_dd_max = dot_damage;
+    priest_spell_t::impact( s );
+    dot->adjust_duration( -consume_time );
+  }
+};
 // ==========================================================================
 // Mind Blast
 // ==========================================================================
@@ -27,12 +58,16 @@ struct mind_blast_t final : public priest_spell_t
 private:
   double mind_blast_insanity;
   timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+  propagate_const<expiation_t*> child_expiation;
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 9 ).resource( RESOURCE_INSANITY ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      child_expiation( nullptr )
   {
     parse_options( options_str );
 
@@ -41,20 +76,28 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
+    if ( priest().talents.discipline.expiation.enabled() )
+    {
+      child_expiation             = new expiation_t( priest() );
+      child_expiation->background = true;
+    }
 
-    
-    cooldown->charges = data().charges() + p.is_ptr()
-                            ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
-                            : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+    apply_affecting_aura( p.talents.shadow.thought_harvester );
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    if ( priest().talents.manipulation.enabled() && priest().specialization() == PRIEST_SHADOW )
+    if ( priest().talents.manipulation.enabled() &&
+         ( priest().specialization() == PRIEST_SHADOW || priest().specialization() == PRIEST_DISCIPLINE ) )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
+
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
     }
 
     if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
@@ -66,6 +109,9 @@ public:
     {
       priest().buffs.gathering_shadows->trigger();
     }
+
+    if ( priest().is_ptr() && priest().buffs.shadowy_insight->check() )
+      priest().buffs.shadowy_insight->decrement();
   }
 
   void reset() override
@@ -74,11 +120,10 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    if ( priest().specialization() == PRIEST_SHADOW )
+    if ( priest().specialization() == PRIEST_SHADOW && !priest().is_ptr() )
     {
-      cooldown->charges = data().charges() + priest().is_ptr()
-                              ? as<int>( priest().talents.shadow.thought_harvester->effectN( 1 ).base_value() )
-                              : as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+      cooldown->charges =
+          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
   }
 
@@ -98,7 +143,6 @@ public:
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
-
     return m;
   }
 
@@ -146,6 +190,12 @@ public:
       }
 
       priest().buffs.coalescing_shadows->expire();
+
+      if ( child_expiation )
+      {
+        child_expiation->target = s->target;
+        child_expiation->execute();
+      }
     }
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
@@ -164,36 +214,27 @@ public:
     return priest_spell_t::execute_time();
   }
 
-  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
-  {
-    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
-    if ( priest().buffs.voidform->check() )
-    {
-      cd += priest().buffs.voidform->data().effectN( 6 ).time_value();
-    }
-    return cd;
-  }
-
   // Called as a part of action execute
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
     // Decrementing a stack of shadowy insight will consume a max charge. Consuming a max charge loses you a current
     // charge. Therefore update_ready needs to not be called in that case.
-    if ( priest().buffs.shadowy_insight->up() )
+    if ( priest().buffs.shadowy_insight->up() && !priest().is_ptr() )
     {
-      if ( !priest().is_ptr() )
+      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
+      if ( priest().buffs.mind_melt->check() == 1 )
       {
-        // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
-        if ( priest().buffs.mind_melt->check() == 1 )
-        {
-          priest().procs.mind_melt_waste->occur();
-        }
-        // Mind Melt at 2 stacks gets consumed over Shadowy Insight
-        if ( priest().buffs.mind_melt->check() != 2 )
-        {
-          priest().buffs.shadowy_insight->decrement();
-        }
+        priest().procs.mind_melt_waste->occur();
+      }
+      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
+      if ( priest().buffs.mind_melt->check() == 2 )
+      {
+        priest_spell_t::update_ready( cd_duration );
+      }
+      else
+      {
+        priest().buffs.shadowy_insight->decrement();
       }
     }
     else
@@ -477,6 +518,8 @@ struct smite_t final : public priest_spell_t
   const spell_data_t* smite_rank2;
   propagate_const<cooldown_t*> holy_word_chastise_cooldown;
   timespan_t manipulation_cdr;
+  timespan_t void_summoner_cdr;
+  timespan_t train_of_thought_cdr;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
@@ -484,7 +527,9 @@ struct smite_t final : public priest_spell_t
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
       smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) ),
       holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() )
   {
     parse_options( options_str );
     if ( smite_rank2->ok() )
@@ -531,6 +576,16 @@ struct smite_t final : public priest_spell_t
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
+
+    if ( priest().talents.discipline.void_summoner.enabled() )
+    {
+      priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+    }
+
+    if ( priest().talents.discipline.train_of_thought.enabled() )
+    {
+      priest().cooldowns.penance->adjust( train_of_thought_cdr );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -572,11 +627,7 @@ struct smite_t final : public priest_spell_t
     {
       priest().buffs.harsh_discipline->trigger();
     }
-    if ( priest().talents.discipline.train_of_thought.enabled() )
-    {
-      timespan_t train_of_thought_reduction = priest().talents.discipline.train_of_thought->effectN( 2 ).time_value();
-      priest().cooldowns.penance->adjust( train_of_thought_reduction );
-    }
+
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
       priest().buffs.weal_and_woe->expire();
@@ -946,12 +997,14 @@ struct shadow_word_death_t final : public priest_spell_t
   double execute_percent;
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
+  propagate_const<expiation_t*> child_expiation;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
-      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
+      child_expiation( nullptr )
   {
     parse_options( options_str );
 
@@ -962,6 +1015,11 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( !priest().bugs )
     {
       cooldown->hasted = true;
+    }
+    if ( priest().talents.discipline.expiation.enabled() )
+    {
+      child_expiation             = new expiation_t( priest() );
+      child_expiation->background = true;
     }
 
     // 13%/25% damage increase
@@ -1036,12 +1094,18 @@ struct shadow_word_death_t final : public priest_spell_t
         td.buffs.death_and_madness_debuff->trigger();
       }
 
-      if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr())
+      if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
       {
         if ( result_is_hit( s->result ) )
         {
           priest().trigger_psychic_link( s );
         }
+      }
+
+      if ( child_expiation )
+      {
+        child_expiation->target = s->target;
+        child_expiation->execute();
       }
     }
   }
@@ -1549,14 +1613,17 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 /** Construct priest cooldowns */
 void priest_t::create_cooldowns()
 {
-  cooldowns.holy_fire          = get_cooldown( "holy_fire" );
-  cooldowns.holy_word_serenity = get_cooldown( "holy_word_serenity" );
-  cooldowns.void_bolt          = get_cooldown( "void_bolt" );
-  cooldowns.mind_blast         = get_cooldown( "mind_blast" );
-  cooldowns.void_eruption      = get_cooldown( "void_eruption" );
-  cooldowns.shadow_word_death  = get_cooldown( "shadow_word_death" );
-  cooldowns.mindgames          = get_cooldown( "mindgames" );
-  cooldowns.penance            = get_cooldown( "penance" );
+  cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
+  cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
+  cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
+  cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
+  cooldowns.shadow_word_death             = get_cooldown( "shadow_word_death" );
+  cooldowns.mindgames                     = get_cooldown( "mindgames" );
+  cooldowns.mindbender                    = get_cooldown( "mindbender" );
+  cooldowns.penance                       = get_cooldown( "penance" );
+  cooldowns.maddening_touch_icd           = get_cooldown( "maddening_touch_icd" );
+  cooldowns.maddening_touch_icd->duration = 1_s;
 }
 
 /** Construct priest gains */
@@ -1974,7 +2041,8 @@ void priest_t::init_base_stats()
 
   if ( specialization() == PRIEST_SHADOW )
   {
-    resources.base[ RESOURCE_INSANITY ] = 100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
+    resources.base[ RESOURCE_INSANITY ] =
+        100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
   }
 
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment->effectN( 1 ).percent();
@@ -2191,6 +2259,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
+  action.apply_affecting_aura( talents.discipline.expiation );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
@@ -2394,24 +2463,41 @@ void priest_t::arise()
 // Idol of C'Thun Talent Trigger
 void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
+
   auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
   auto mind_flay_id          = specs.mind_flay->id();
   auto mind_flay_insanity_id = 391403U;
   auto action_id             = s->action->id;
-  if ( !talents.shadow.idol_of_cthun.enabled() )
-    return;
 
   if ( rppm.idol_of_cthun->trigger() )
   {
-    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
+    if ( is_ptr() )
     {
-      procs.void_tendril->occur();
-      auto spawned_pets = pets.void_tendril.spawn();
+      if ( s->action->target_list().size() > 2 )
+      {
+        procs.void_lasher->occur();
+        auto spawned_pets = pets.void_lasher.spawn();
+      }
+      else
+      {
+        procs.void_tendril->occur();
+        auto spawned_pets = pets.void_tendril.spawn();
+      }
     }
-    else if ( action_id == mind_sear_id )
+    else
     {
-      procs.void_lasher->occur();
-      auto spawned_pets = pets.void_lasher.spawn();
+      if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
+      {
+        procs.void_tendril->occur();
+        auto spawned_pets = pets.void_tendril.spawn();
+      }
+      else if ( action_id == mind_sear_id )
+      {
+        procs.void_lasher->occur();
+        auto spawned_pets = pets.void_lasher.spawn();
+      }
     }
   }
 }

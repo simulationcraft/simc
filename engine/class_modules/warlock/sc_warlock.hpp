@@ -13,6 +13,7 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_10_0_7,
   VERSION_10_0_5,
   VERSION_10_0_0,
   VERSION_ANY
@@ -123,6 +124,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
+    const spell_data_t* xavian_teachings;  // Seperate Spell (Learned automatically). Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -189,6 +191,8 @@ public:
     player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
     player_talent_t grimoire_of_synergy; // Note: Does not trigger when using Grimoire of Sacrifice
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
+    player_talent_t socrethars_guile;
+    player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
     player_talent_t grim_feast; // Faster Drain Life
     player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
@@ -228,6 +232,8 @@ public:
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t harvester_of_souls;
+    player_talent_t dark_virtuosity;
+    player_talent_t kindled_malice;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
     player_talent_t writhe_in_agony;
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
@@ -638,6 +644,7 @@ public:
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_10_0_5_data;
+  const spell_data_t* version_10_0_7_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

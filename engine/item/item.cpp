@@ -74,7 +74,6 @@ size_t parsed_item_data_t::add_effect( const item_effect_t& effect )
 item_t::parsed_input_t::parsed_input_t()
   : item_level( 0 ),
     enchant_id( 0 ),
-    temporary_enchant_id( 0 ),
     addon_id( 0 ),
     armor( 0 ),
     azerite_level( 0 ),
@@ -136,6 +135,33 @@ bool item_t::has_scaling_stat_bonus_id() const
   }
 
   return false;
+}
+
+// item_t::evaluate_temporary_enchants =====================================
+
+void item_t::evaluate_temporary_enchants()
+{
+  range::for_each( parsed.temporary_enchants, []( auto& entry ) {
+    if ( entry.active() )
+    {
+      entry.select();
+    }
+  } );
+}
+
+// item_t::selected_temporary_enchant ======================================
+
+unsigned item_t::selected_temporary_enchant() const
+{
+  for ( const auto& entry : parsed.temporary_enchants )
+  {
+    if ( entry.selected )
+    {
+      return entry.id;
+    }
+  }
+
+  return 0;
 }
 
 // item_t::socket_color_match ==============================================
@@ -433,7 +459,7 @@ void sc_format_to( const item_t& item, fmt::format_context::iterator out )
   else if ( ! item.parsed.encoded_enchant.empty() )
     fmt::format_to( out, " enchant={{ {} }}", item.parsed.encoded_enchant );
 
-  if ( item.parsed.temporary_enchant_id > 0 )
+  if ( item.selected_temporary_enchant() > 0 )
   {
     if ( !item.parsed.temp_enchant_stats.empty() )
     {
@@ -443,7 +469,7 @@ void sc_format_to( const item_t& item, fmt::format_context::iterator out )
     else
     {
       const auto& temp_enchant = temporary_enchant_entry_t::find_by_enchant_id(
-          item.parsed.temporary_enchant_id, item.player->dbc->ptr );
+          item.selected_temporary_enchant(), item.player->dbc->ptr );
       fmt::format_to( out, " temporary_enchant={{ {} }}", temp_enchant.tokenized_name );
     }
   }
@@ -2169,6 +2195,9 @@ void item_t::init_special_effects()
     return;
   }
 
+  // Select the used temporary enchant for this slot
+  evaluate_temporary_enchants();
+
   special_effect_t proxy_effect( this );
 
   // Enchant
@@ -2181,7 +2210,7 @@ void item_t::init_special_effects()
   enchant::initialize_item_enchant( *this, parsed.addon_stats,
         SPECIAL_EFFECT_SOURCE_ADDON, addon_data );
 
-  const auto& temp_enchant_data = player->dbc->item_enchantment( parsed.temporary_enchant_id );
+  const auto& temp_enchant_data = player->dbc->item_enchantment( selected_temporary_enchant() );
   enchant::initialize_item_enchant( *this, parsed.temp_enchant_stats,
         SPECIAL_EFFECT_SOURCE_TEMPORARY_ENCHANT, temp_enchant_data );
 

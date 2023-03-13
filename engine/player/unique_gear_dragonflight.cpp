@@ -3509,8 +3509,10 @@ void neltharax( special_effect_t& effect )
 {
   auto buff =
     create_buff<buff_t>( effect.player, "heavens_nemesis", effect.player->find_spell( 397118 ) )
-      ->set_default_value_from_effect( 1 )
-      ->add_invalidate( CACHE_ATTACK_SPEED );
+      ->set_default_value_from_effect( 1 );
+  
+  if ( buff->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+    buff->add_invalidate( CACHE_ATTACK_SPEED );
 
   effect.player -> buffs.heavens_nemesis = buff;
 
@@ -3709,7 +3711,8 @@ void elemental_lariat( special_effect_t& effect )
     { "Steady Nozdorite",       FROST_GEM },
   };
 
-  unsigned gems = 0;
+  unsigned gem_mask = 0;
+  unsigned gem_count = 0;
   for ( const auto& item : effect.player->items )
   {
     for ( auto gem_id : item.parsed.gem_id )
@@ -3719,21 +3722,27 @@ void elemental_lariat( special_effect_t& effect )
         auto n = effect.player->dbc->item( gem_id ).name;
         auto it = range::find( gem_types, n, &gem_name_type::first );
         if ( it != std::end( gem_types ) )
-          gems |= ( *it ).second;
+        {
+          gem_mask |= ( *it ).second;
+          gem_count++;
+        }
       }
     }
   }
 
-  if ( !gems )
+  if ( !gem_mask )
     return;
 
   auto val = effect.driver()->effectN( 1 ).average( effect.item );
-  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto dur = effect.player->is_ptr()
+                 ? timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() +
+                                             effect.driver()->effectN( 2 ).base_value() * gem_count )
+                 : timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
   auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
-  auto add_buff = [ &effect, cb, gems, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
-    if ( gems & type )
+  auto add_buff = [ &effect, cb, gem_mask, val, dur, &buffs ]( gem_type_e type, std::string suf, unsigned id, stat_e stat ) {
+    if ( gem_mask & type )
     {
       auto name = "elemental_lariat__empowered_" + suf;
       auto buff = buff_t::find( effect.player, name );
@@ -4036,23 +4045,20 @@ void horizon_striders_garments( special_effect_t& effect )
   if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 ) )
     return;
 
-  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
+  auto set_driver_id =
+      effect.player->sets->set( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 )->id();
 
-  if (effect.driver()->id() == set_driver_id)
+  if ( effect.driver()->id() == set_driver_id )
   {
     effect.proc_flags2_ = PF2_CRIT;
 
-    new dbc_proc_callback_t(effect.player, effect);
+    new dbc_proc_callback_t( effect.player, effect );
   }
   else
   {
-    auto buff = debug_cast<stat_buff_t*>(buff_t::find(effect.player, effect.name()));
-    if (!buff)
-    {
-      buff = create_buff<stat_buff_t>(effect.player, effect.player->find_spell(377143));
-    }
-    buff->add_stat(STAT_HASTE_RATING, effect.driver()->effectN(1).average(effect.item));
-    auto driver = unique_gear::find_special_effect(effect.player, set_driver_id);
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 377143 ) )
+                    ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+    auto driver = unique_gear::find_special_effect( effect.player, set_driver_id );
     driver->custom_buff = buff;
   }
 }

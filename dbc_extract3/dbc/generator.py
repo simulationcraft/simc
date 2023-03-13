@@ -1612,6 +1612,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
             ( 393685, 0 ),          # Priest Shadow Class Set 4-set
             ( 394963, 0 ),          # Dark Reveries T29 4-set buff
+            ( 377355, 0 ),          # Idol of C'thun Duration
             ( 377358, 5 ),          # Idol of C'thun Insanity values
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
@@ -2165,9 +2166,10 @@ class SpellDataGenerator(DataGenerator):
           ( 361519, 0 ), # Essence Burst
           # Devastation
           ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
-          ( 375802, 1 ), # Burnout buff
-          ( 376850, 1 ), # Power Swell buff
+          ( 375802, 1 ),  # Burnout buff
+          ( 376850, 1 ),  # Power Swell buff
           ( 397870, 1 ),  # Titanic Wrath
+          ( 405651, 1 ),  # Imminent Destruction Player Buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),

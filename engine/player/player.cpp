@@ -1691,7 +1691,41 @@ void player_t::parse_temporary_enchants()
   auto split = util::string_split<util::string_view>( tench_str, "/" );
   for ( const auto& token : split )
   {
-    auto token_split = util::string_split<util::string_view>( token, ":" );
+    std::string expr_str, options_str, value_str;
+    std::unique_ptr<expr_t> if_expr;
+    std::vector<std::unique_ptr<option_t>> options;
+
+    options.emplace_back( opt_string( "if", expr_str ) );
+
+    auto cut_pt = token.find_first_of( ',' );
+    if ( cut_pt != std::string::npos )
+    {
+      options_str = token.substr( cut_pt + 1 );
+      value_str = token.substr( 0, cut_pt );
+    }
+    else
+    {
+      value_str = token;
+    }
+
+    try
+    {
+      opts::parse( sim, value_str, options, options_str );
+
+      if ( !expr_str.empty() )
+      {
+        if_expr = expr_t::parse( this, expr_str, false );
+      }
+    }
+    catch ( const std::exception& e )
+    {
+      sim->error( "Player {} Unable to parse temporary enchant string str '{}': {}",
+        name(), token, e.what() );
+      sim->cancel();
+      return;
+    }
+
+    auto token_split = util::string_split<util::string_view>( value_str, ":" );
     if ( token_split.size() != 2 )
     {
       sim->error( "Player {} invalid temporary enchant token {}, format is 'slot:name'",
@@ -1706,7 +1740,8 @@ void player_t::parse_temporary_enchants()
     if ( it != std::string_view::npos )
     {
       auto rank_str = token_split[ 1 ].substr( it + 1 );
-      auto parsed_rank = util::to_unsigned_ignore_error( rank_str, std::numeric_limits<unsigned>::max() );
+      auto parsed_rank = util::to_unsigned_ignore_error( rank_str,
+                                                        std::numeric_limits<unsigned>::max() );
 
       if ( parsed_rank != std::numeric_limits<unsigned>::max() )
       {
@@ -1723,7 +1758,7 @@ void player_t::parse_temporary_enchants()
       continue;
     }
 
-    items[ slot ].parsed.temporary_enchant_id = enchant.enchant_id;
+    items[ slot ].parsed.temporary_enchants.emplace_back( enchant.enchant_id, if_expr );
   }
 }
 
@@ -3315,7 +3350,7 @@ void player_t::init_actions()
         have_off_gcd_actions = true;
 
         auto it = range::find_if( off_gcd_cd, [action]( std::pair<const cooldown_t*, const cooldown_t*> cds ) {
-          return cds.first == action->cooldown && cds.second == action->internal_cooldown; } 
+          return cds.first == action->cooldown && cds.second == action->internal_cooldown; }
         );
 
         if ( it == off_gcd_cd.end() )
@@ -4145,7 +4180,7 @@ double player_t::composite_melee_speed() const
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
 
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->check() )
+  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
     h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   return h;
@@ -5476,7 +5511,7 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
-  if ( buffs.windfury_totem )
+  if ( buffs.windfury_totem && may_benefit_from_windfury_totem() )
   {
     buffs.windfury_totem->trigger();
   }
@@ -8297,7 +8332,7 @@ struct shadowmeld_t : public racial_spell_t
     racial_spell_t::execute();
 
     player->buffs.shadowmeld->trigger();
-    
+
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
   }
@@ -12831,7 +12866,7 @@ bool player_t::requires_data_collection() const
 {
   if ( active_during_iteration )
     return true;
-  
+
   for ( const auto* pet : pet_list )
   {
     if ( pet->requires_data_collection() )
