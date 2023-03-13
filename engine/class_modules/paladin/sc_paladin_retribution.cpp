@@ -1285,6 +1285,11 @@ struct wake_of_ashes_t : public paladin_spell_t
         truths_wake -> execute();
       }
     }
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
 
     if ( p() -> talents.seething_flames -> ok() )
     {
