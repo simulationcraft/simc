@@ -118,7 +118,6 @@ public:
     propagate_const<buff_t*> twilight_equilibrium_shadow_amp;
     propagate_const<buff_t*> harsh_discipline;
     propagate_const<buff_t*> harsh_discipline_ready;
-    propagate_const<buff_t*> blaze_of_light;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
@@ -353,7 +352,7 @@ public:
       player_talent_t expiation;
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
-      const spell_data_t* blaze_of_light;
+      player_talent_t blaze_of_light;
       // Row 10
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;

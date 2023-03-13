@@ -513,18 +513,11 @@ struct smite_t final : public priest_spell_t
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
-      holy_fire_rank2( priest().find_rank_spell( "Holy Fire", "Rank 2" ) ),
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
-      smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) ),
       holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
-    if ( smite_rank2->ok() )
-    {
-      base_multiplier *= 1.0 + smite_rank2->effectN( 1 ).percent();
-    }
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -533,11 +526,22 @@ struct smite_t final : public priest_spell_t
     if ( priest().buffs.wrath_unleashed->check() )
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
+      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath unleashed",
+                        priest().buffs.wrath_unleashed->data().effectN( 1 ).percent(), d );
     }
     if ( priest().buffs.weal_and_woe->check() )
     {
       d *= 1.0 +
            ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
+      sim->print_debug(
+          "Smite damage modified by {} (new total: {}), from weal and woe",
+          priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack, d );
+    }
+    if ( priest().talents.discipline.blaze_of_light.enabled() )
+    {
+      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
+      sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze of light",
+                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
   }
@@ -569,16 +573,6 @@ struct smite_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    if ( holy_fire_rank2->ok() && s->result_amount > 0 )
-    {
-      double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
-      if ( rng().roll( hf_proc_chance ) )
-      {
-        sim->print_debug( "{} reset holy fire cooldown, using smite.", priest() );
-        priest().cooldowns.holy_fire->reset( true );
-      }
-    }
-
     sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent.", priest() );
     auto cooldown_base_reduction = -timespan_t::from_seconds( holy_word_chastise->effectN( 2 ).base_value() );
     if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )

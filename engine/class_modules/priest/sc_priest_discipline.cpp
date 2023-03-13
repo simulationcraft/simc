@@ -102,7 +102,6 @@ struct penance_damage_t : public priest_spell_t
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -111,6 +110,12 @@ struct penance_damage_t : public priest_spell_t
     if ( priest().buffs.power_of_the_dark_side->check() )
     {
       d *= 1.0 + priest().buffs.power_of_the_dark_side->data().effectN( 1 ).percent();
+    }
+    if ( priest().talents.discipline.blaze_of_light.enabled() )
+    {
+      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
+      sim->print_debug( "Penance damage modified by {} (new total: {}), from blaze of light",
+                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
   }
@@ -214,7 +219,6 @@ struct penance_t : public priest_spell_t
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     add_child( channel );
     add_child( shadow_covenant_channel );
   }
@@ -333,7 +337,6 @@ struct power_word_solace_t final : public priest_spell_t
     parse_options( options_str );
     cooldown->hasted = true;
     travel_speed     = 0.0;  // DBC has default travel taking 54 seconds
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -347,6 +350,12 @@ struct power_word_solace_t final : public priest_spell_t
     {
       d *= 1.0 +
            ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
+    }
+    if ( priest().talents.discipline.blaze_of_light.enabled() )
+    {
+      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
+      sim->print_debug( "Power Word: Solace damage modified by {} (new total: {}), from blaze of light",
+                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
   }
@@ -536,7 +545,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.expiation              = ST( "Expiation" );
   talents.discipline.harsh_discipline       = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
-  talents.discipline.blaze_of_light         = find_spell( 215768 );
+  talents.discipline.blaze_of_light         = ST( "Blaze of Light" );
   // Row 10
   talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
   talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
