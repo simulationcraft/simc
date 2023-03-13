@@ -1198,8 +1198,8 @@ struct seething_flames_t : public paladin_spell_t
     paladin_spell_t( name, p, p -> find_spell( spell_id ) )
   {
     background = true;
-    full_amount_targets = 1;
-    reduced_aoe_targets = 1.0;
+    // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
+    base_aoe_multiplier = 0.33;
   }
 };
 
@@ -1240,10 +1240,16 @@ struct wake_of_ashes_t : public paladin_spell_t
 
     may_crit = true;
 
-    if ( ! p -> is_ptr() || p -> talents.seething_flames -> ok() )
+    if ( ! p -> is_ptr() )
     {
       full_amount_targets = 1;
       reduced_aoe_targets = 1.0;
+    }
+
+    if ( p -> talents.seething_flames -> ok() )
+    {
+      // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
+      base_aoe_multiplier *= 0.33;
     }
 
     aoe = -1;
