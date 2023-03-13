@@ -286,10 +286,24 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    if ( p->talents.xavian_teachings->ok() && !seed_action )
+    if ( !seed_action )
     {
-      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
-      base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+      if ( p->min_version_check( VERSION_10_0_7 ) )
+      {
+        if ( p->warlock_base.xavian_teachings->ok() )
+        {
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // It uses this effect in base spell for damage
+          base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
+        }
+      }
+      else
+      {
+        if ( p->talents.xavian_teachings->ok() )
+        {
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Talent uses this effect in base spell for damage
+          base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+        }
+      }
     }
   }
 
@@ -1621,6 +1635,7 @@ void warlock_t::init_spells()
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
+  warlock_base.xavian_teachings   = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
   warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 

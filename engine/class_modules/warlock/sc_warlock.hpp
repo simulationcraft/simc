@@ -124,6 +124,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
+    const spell_data_t* xavian_teachings;  // Seperate Spell (Learned automatically). Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
