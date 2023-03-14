@@ -528,7 +528,7 @@ void priest_t::create_buffs_discipline()
 
   buffs.harsh_discipline_ready = make_buff( this, "harsh_discipline_ready", find_spell( 373183 ) );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) );
 
   buffs.wrath_unleashed = make_buff( this, "wrath_unleashed", talents.discipline.wrath_unleashed_buff );
 
