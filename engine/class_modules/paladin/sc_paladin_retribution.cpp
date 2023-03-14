@@ -24,11 +24,7 @@ namespace buffs {
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
-    // increase duration if we have Light's Decree
     auto* paladin = static_cast<paladin_t*>( p );
-    if ( paladin -> azerite.lights_decree.ok() )
-      base_buff_duration += paladin -> spells.lights_decree -> effectN( 2 ).time_value();
-
     if ( paladin -> is_ptr() && paladin -> talents.divine_wrath -> ok() )
     {
       base_buff_duration += paladin -> talents.divine_wrath -> effectN( 1 ).time_value();
@@ -77,8 +73,6 @@ struct crusade_t : public paladin_spell_t
 
     if ( ! ( p -> talents.crusade -> ok() ) )
       background = true;
-
-    cooldown -> duration *= 1.0 + azerite::vision_of_perfection_cdr( p -> azerite_essence.vision_of_perfection );
   }
 
   void execute() override
@@ -91,9 +85,6 @@ struct crusade_t : public paladin_spell_t
       p() -> buffs.crusade -> expire();
 
     p() -> buffs.crusade -> trigger();
-
-    if ( p() -> azerite.avengers_might.ok() )
-      p() -> buffs.avengers_might -> trigger( 1, p() -> buffs.avengers_might -> default_value, -1.0, p() -> buffs.crusade -> buff_duration() );
   }
 };
 
@@ -379,17 +370,6 @@ struct ptr_execution_sentence_t : public paladin_melee_attack_t
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-
-  struct conduit_expurgation_t : public paladin_spell_t
-  {
-    conduit_expurgation_t( paladin_t* p ):
-      paladin_spell_t( "expurgation", p, p -> find_spell( 344067 ) )
-    {
-      hasted_ticks = false;
-      tick_may_crit = false;
-    }
-  };
-
   struct expurgation_t : public paladin_spell_t
   {
     expurgation_t( paladin_t* p ):
@@ -408,21 +388,13 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
-  conduit_expurgation_t* conduit_expurgation;
   expurgation_t* expurgation;
 
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
     paladin_melee_attack_t( "blade_of_justice", p, p -> talents.blade_of_justice ),
-    conduit_expurgation( nullptr ),
     expurgation( nullptr )
   {
     parse_options( options_str );
-
-    if ( p -> conduit.expurgation -> ok() )
-    {
-      conduit_expurgation = new conduit_expurgation_t( p );
-      add_child( conduit_expurgation );
-    }
 
     if ( p -> talents.expurgation -> ok() )
     {
@@ -505,7 +477,7 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( state );
 
-    if ( state -> result == RESULT_CRIT )
+    if ( state -> result == RESULT_CRIT && !p() -> is_ptr() )
     {
       if ( p() -> talents.expurgation -> ok() )
       {
@@ -513,21 +485,12 @@ struct blade_of_justice_t : public paladin_melee_attack_t
         expurgation -> set_target( state -> target );
         expurgation -> execute();
       }
-
-      if ( p() -> conduit.expurgation -> ok() )
-      {
-        conduit_expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
-        conduit_expurgation -> set_target( state -> target );
-        conduit_expurgation -> execute();
-      }
     }
 
-    if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
+    if ( p()->is_ptr() && p()->talents.expurgation->ok() )
     {
-      action_t* vc    = p()->active.virtuous_command_conduit;
-      vc->base_dd_min = vc->base_dd_max = state->result_amount * p()->conduit.virtuous_command.percent();
-      vc->set_target( state->target );
-      vc->schedule_execute();
+      expurgation->set_target( state->target );
+      expurgation->execute();
     }
 
     if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
@@ -603,18 +566,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     }
   }
 
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = holy_power_consumer_t::bonus_da( s );
-
-    if ( p() -> buffs.empyrean_power_azerite -> up() )
-    {
-      b += p() -> azerite.empyrean_power.value();
-    }
-
-    return b;
-  }
-
   double action_multiplier() const override
   {
     double am = holy_power_consumer_t::action_multiplier();
@@ -685,28 +636,6 @@ struct echoed_spell_event_t : public event_t
 
 struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
-  struct echoed_templars_verdict_conduit_t : public paladin_melee_attack_t
-  {
-    echoed_templars_verdict_conduit_t( paladin_t *p ) :
-      paladin_melee_attack_t( "echoed_verdict", p, p -> find_spell( 339538 ) )
-    {
-      base_multiplier *= p -> conduit.templars_vindication -> effectN( 2 ).percent();
-      background = true;
-      may_crit = false;
-
-      // spell data please
-      aoe = 0;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = paladin_melee_attack_t::action_multiplier();
-      if ( p() -> buffs.righteous_verdict -> check() )
-        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
-      return am;
-    }
-  };
-
   struct echoed_templars_verdict_t : public paladin_melee_attack_t
   {
     echoed_templars_verdict_t( paladin_t *p ) :
@@ -734,12 +663,10 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   struct templars_verdict_damage_t : public paladin_melee_attack_t
   {
     echoed_templars_verdict_t* echo;
-    echoed_templars_verdict_conduit_t* echo_conduit;
 
-    templars_verdict_damage_t( paladin_t *p, echoed_templars_verdict_t* e, echoed_templars_verdict_conduit_t* ec ) :
+    templars_verdict_damage_t( paladin_t *p, echoed_templars_verdict_t* e ) :
       paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) ),
-      echo( e ),
-      echo_conduit( ec )
+      echo( e )
     {
       dual = background = true;
 
@@ -751,29 +678,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       paladin_melee_attack_t::impact( s );
 
-      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-      {
-        action_t* vc    = p()->active.virtuous_command_conduit;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
-        vc->set_target( s->target );
-        vc->schedule_execute();
-      }
-
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
         vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( s->target );
         vc->schedule_execute();
-      }
-
-      if ( p() -> conduit.templars_vindication -> ok() )
-      {
-        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-        {
-          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo_conduit, timespan_t::from_millis( 600 ), s -> result_amount );
-        }
       }
 
       if ( p() -> talents.templars_vindication -> ok() )
@@ -796,7 +706,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
   };
 
   echoed_templars_verdict_t* echo;
-  echoed_templars_verdict_conduit_t* echo_conduit;
   bool is_fv;
 
   templars_verdict_t( paladin_t* p, util::string_view options_str ) :
@@ -805,7 +714,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p,
       ( p -> talents.final_verdict -> ok() ) ? ( p -> find_spell( 383328 ) ) : ( p -> legendary.final_verdict -> ok() ? ( p -> find_spell( 336872 ) ) : ( p -> find_specialization_spell( "Templar's Verdict" ) ) ) ),
     echo( nullptr ),
-    echo_conduit( nullptr ),
     is_fv( p -> legendary.final_verdict -> ok() || p -> talents.final_verdict -> ok() )
   {
     parse_options( options_str );
@@ -816,11 +724,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     // wtf is happening in spell data?
     aoe = 0;
-
-    if ( p -> conduit.templars_vindication -> ok() )
-    {
-      echo_conduit = new echoed_templars_verdict_conduit_t( p );
-    }
 
     if ( p -> talents.templars_vindication -> ok() )
     {
@@ -839,7 +742,7 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       callbacks = false;
       may_block = false;
 
-      impact_action = new templars_verdict_damage_t( p, echo, echo_conduit );
+      impact_action = new templars_verdict_damage_t( p, echo );
       impact_action -> stats = stats;
 
       // Okay, when did this get reset to 1?
@@ -914,29 +817,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( is_fv )
     {
-      if ( p()->buffs.virtuous_command_conduit->up() && p()->active.virtuous_command_conduit )
-      {
-        action_t* vc    = p()->active.virtuous_command_conduit;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->conduit.virtuous_command.percent();
-        vc->set_target( s->target );
-        vc->schedule_execute();
-      }
-
       if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
       {
         action_t* vc    = p()->active.virtuous_command;
         vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
         vc->set_target( s->target );
         vc->schedule_execute();
-      }
-
-      if ( p() -> conduit.templars_vindication -> ok() )
-      {
-        if ( rng().roll( p() -> conduit.templars_vindication.percent() ) )
-        {
-          // TODO(mserrano): figure out if 600ms is still correct; there does appear to be some delay
-          make_event<echoed_spell_event_t>( *sim, p(), execute_state -> target, echo_conduit, timespan_t::from_millis( 600 ), s -> result_amount );
-        }
       }
 
       if ( p() -> talents.templars_vindication -> ok() )
@@ -1111,6 +997,21 @@ struct judgment_ret_t : public judgment_t
     if ( p -> talents.seal_of_wrath -> ok() )
     {
       seal_of_wrath = new seal_of_wrath_t( p );
+    }
+
+    if ( p -> is_ptr() )
+    {
+      if ( p -> talents.boundless_judgment -> ok() )
+      {
+        holy_power_generation += p -> talents.boundless_judgment -> effectN( 1 ).base_value();
+      }
+
+      // we don't do the blessed champion stuff here; DT judgments do not seem to cleave
+
+      if ( p -> talents.judge_jury_and_executioner -> ok() )
+      {
+        base_crit += p -> talents.judge_jury_and_executioner -> effectN( 1 ).percent();
+      }
     }
   }
 
@@ -1287,6 +1188,7 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     {
       shield_amount *= 1.0 + p() -> talents.aegis_of_protection -> effectN( 2 ).percent();
     }
+    shield_amount *= 1.0 + p() -> composite_heal_versatility();
 
     paladin_absorb_t::execute();
     p() -> buffs.shield_of_vengeance -> trigger( 1, shield_amount );
@@ -1301,14 +1203,46 @@ struct truths_wake_t : public paladin_spell_t
   truths_wake_t( paladin_t* p, util::string_view name ) :
     paladin_spell_t( name, p, p -> is_ptr() ? p -> find_spell( 403695 ) : p -> find_spell( 383351 ) )
   {
-    hasted_ticks = false;
-    tick_may_crit = false;
+    hasted_ticks = tick_may_crit = ( p -> is_ptr() );
+  }
+};
+
+struct seething_flames_t : public paladin_spell_t
+{
+  seething_flames_t( paladin_t* p, util::string_view name, int spell_id ) :
+    paladin_spell_t( name, p, p -> find_spell( spell_id ) )
+  {
+    background = true;
+    // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
+    base_aoe_multiplier *= 0.33;
+  }
+};
+
+struct seething_flames_event_t : public event_t
+{
+  seething_flames_t* action;
+  paladin_t* paladin;
+  player_t* target;
+
+  seething_flames_event_t( paladin_t* p, player_t* tgt, seething_flames_t* spell, timespan_t delay ) :
+    event_t( *p, delay ), action( spell ), paladin( p ), target( tgt )
+  {
+  }
+
+  const char* name() const override
+  { return "seething_flames_delay"; }
+
+  void execute() override
+  {
+    action -> set_target( target );
+    action -> schedule_execute();
   }
 };
 
 struct wake_of_ashes_t : public paladin_spell_t
 {
   truths_wake_t* truths_wake;
+  seething_flames_t* seething_flames[2];
 
   wake_of_ashes_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "wake_of_ashes", p, p -> talents.wake_of_ashes ),
@@ -1320,8 +1254,18 @@ struct wake_of_ashes_t : public paladin_spell_t
       background = true;
 
     may_crit = true;
-    full_amount_targets = 1;
-    reduced_aoe_targets = 1.0;
+
+    if ( ! p -> is_ptr() )
+    {
+      full_amount_targets = 1;
+      reduced_aoe_targets = 1.0;
+    }
+
+    if ( p -> talents.seething_flames -> ok() )
+    {
+      // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
+      base_aoe_multiplier *= 0.33;
+    }
 
     aoe = -1;
 
@@ -1329,6 +1273,12 @@ struct wake_of_ashes_t : public paladin_spell_t
     {
       truths_wake = new truths_wake_t( p, "truths_wake_woa" );
       add_child( truths_wake );
+    }
+
+    if ( p -> talents.seething_flames -> ok() )
+    {
+      seething_flames[0] = new seething_flames_t( p, "seething_flames_0", 405345 );
+      seething_flames[1] = new seething_flames_t( p, "seething_flames_1", 405350 );
     }
   }
 
@@ -1348,6 +1298,19 @@ struct wake_of_ashes_t : public paladin_spell_t
 
         truths_wake -> set_target( s -> target );
         truths_wake -> execute();
+      }
+    }
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    if ( p() -> talents.seething_flames -> ok() )
+    {
+      for ( int i = 0; i < as<int>( p() -> talents.seething_flames -> effectN( 1 ).base_value() ); i++ )
+      {
+        make_event<seething_flames_event_t>( *sim, p(), execute_state -> target, seething_flames[i], timespan_t::from_millis( 500 * (i + 1) ) );
       }
     }
   }
@@ -1611,6 +1574,11 @@ struct divine_arbiter_t : public paladin_spell_t
     : paladin_spell_t( "divine_arbiter", p, p->find_spell( 406983 ) )
   {
     background = true;
+
+    // force effect 1 to be used for the direct ratios
+    parse_effect_data( data().effectN( 1 ) );
+    // but compute the aoe multiplier from the 2nd effect
+    base_aoe_multiplier *= data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
   }
 };
 
@@ -1622,6 +1590,14 @@ struct searing_light_t : public paladin_spell_t
   {
     background = true;
     reduced_aoe_targets = 8;
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p()->active.searing_light_cons->set_target( execute_state->target );
+    p()->active.searing_light_cons->execute();
   }
 };
 
@@ -1772,14 +1748,8 @@ void paladin_t::create_buffs_retribution()
   buffs.templar_strikes = make_buff( this, "templar_strikes", find_spell( 406648 ) );
   buffs.divine_arbiter = make_buff( this, "divine_arbiter", find_spell( 406975 ) )
                           -> set_max_stack( as<int>( find_spell( 406975 )->effectN( 2 ).base_value() ) );
-
-  // Azerite
-  buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
-                       -> set_default_value( azerite.empyrean_power.value() );
   buffs.empyrean_power = make_buff( this, "empyrean_power", find_spell( 326733 ) )
                           ->set_trigger_spell(talents.empyrean_power);
-  buffs.relentless_inquisitor_azerite = make_buff<stat_buff_t>(this, "relentless_inquisitor_azerite", find_spell( 279204 ) )
-                              -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 
   // legendaries
   buffs.vanguards_momentum_legendary = make_buff( this, "vanguards_momentum_legendary", find_spell( 345046 ) )
@@ -1883,6 +1853,8 @@ void paladin_t::init_spells_retribution()
   talents.templar_strikes             = find_talent_spell( talent_tree::SPECIALIZATION, "Templar Strikes" );
   talents.divine_arbiter              = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Arbiter" );
   talents.searing_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Light" );
+  talents.divine_auxiliary            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Auxiliary" );
+  talents.seething_flames             = find_talent_spell( talent_tree::SPECIALIZATION, "Seething Flames" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
@@ -1900,45 +1872,9 @@ void paladin_t::init_spells_retribution()
 
   passives.boundless_conviction = find_spell( 115675 );
 
-  spells.lights_decree = find_spell( 286231 );
   spells.reckoning = find_spell( 343724 );
   spells.sanctified_wrath_damage = find_spell( 326731 );
   spells.crusade = find_spell( 231895 );
-
-  // Azerite traits
-  azerite.expurgation           = find_azerite_spell( "Expurgation" );
-  azerite.relentless_inquisitor = find_azerite_spell( "Relentless Inquisitor" );
-  azerite.empyrean_power        = find_azerite_spell( "Empyrean Power" );
-  azerite.lights_decree         = find_azerite_spell( "Light's Decree" );
-}
-
-void empyrean_power( special_effect_t& effect )
-{
-  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
-  if ( !power.enabled() )
-    return;
-
-  const spell_data_t* driver = effect.player -> find_spell( 286392 );
-
-  buff_t* buff = buff_t::find( effect.player, "empyrean_power" );
-
-  effect.custom_buff = buff;
-  effect.spell_id = driver -> id();
-
-  struct empyrean_power_cb_t : public dbc_proc_callback_t
-  {
-    empyrean_power_cb_t( const special_effect_t& effect ) :
-      dbc_proc_callback_t( effect.player, effect )
-    { }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      if ( proc_buff )
-        proc_buff -> trigger();
-    }
-  };
-
-  new empyrean_power_cb_t( effect );
 }
 
 // Action Priority List Generation
