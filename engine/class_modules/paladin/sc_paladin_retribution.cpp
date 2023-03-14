@@ -998,6 +998,21 @@ struct judgment_ret_t : public judgment_t
     {
       seal_of_wrath = new seal_of_wrath_t( p );
     }
+
+    if ( p -> is_ptr() )
+    {
+      if ( p -> talents.boundless_judgment -> ok() )
+      {
+        holy_power_generation += p -> talents.boundless_judgment -> effectN( 1 ).base_value();
+      }
+
+      // we don't do the blessed champion stuff here; DT judgments do not seem to cleave
+
+      if ( p -> talents.judge_jury_and_executioner -> ok() )
+      {
+        base_crit += p -> talents.judge_jury_and_executioner -> effectN( 1 ).percent();
+      }
+    }
   }
 
   void init() override
@@ -1559,6 +1574,11 @@ struct divine_arbiter_t : public paladin_spell_t
     : paladin_spell_t( "divine_arbiter", p, p->find_spell( 406983 ) )
   {
     background = true;
+
+    // force effect 1 to be used for the direct ratios
+    parse_effect_data( data().effectN( 1 ) );
+    // but compute the aoe multiplier from the 2nd effect
+    base_aoe_multiplier *= data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
   }
 };
 
