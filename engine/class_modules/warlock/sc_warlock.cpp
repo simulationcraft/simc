@@ -286,10 +286,24 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    if ( p->talents.xavian_teachings->ok() && !seed_action )
+    if ( !seed_action )
     {
-      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
-      base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+      if ( p->min_version_check( VERSION_10_0_7 ) )
+      {
+        if ( p->warlock_base.xavian_teachings->ok() )
+        {
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // It uses this effect in base spell for damage
+          base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
+        }
+      }
+      else
+      {
+        if ( p->talents.xavian_teachings->ok() )
+        {
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Talent uses this effect in base spell for damage
+          base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+        }
+      }
     }
   }
 
@@ -1621,6 +1635,7 @@ void warlock_t::init_spells()
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
+  warlock_base.xavian_teachings   = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
   warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
@@ -1666,6 +1681,9 @@ void warlock_t::init_spells()
   talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
   talents.demonic_synergy = find_spell( 171982 );
 
+  talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
+  talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
+
   talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
   talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
@@ -1684,6 +1702,7 @@ void warlock_t::init_spells()
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
 
   version_10_0_5_data = find_spell( 399668 ); // For 10.0.5 version checking, new Focused Malignancy talent data
+  version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
 }
 
 void warlock_t::init_rng()
@@ -2053,6 +2072,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_0_7:
+      return !( version_10_0_7_data == spell_data_t::not_found() );
     case VERSION_10_0_5:
       return !( version_10_0_5_data == spell_data_t::not_found() );
     case VERSION_10_0_0:
@@ -2311,6 +2332,12 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
+
+  action.apply_affecting_aura( talents.socrethars_guile );
+  action.apply_affecting_aura( talents.sargerei_technique );
+  action.apply_affecting_aura( talents.dark_virtuosity );
+  action.apply_affecting_aura( talents.kindled_malice );
+
 }
 
 struct warlock_module_t : public module_t

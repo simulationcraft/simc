@@ -361,6 +361,7 @@ public:
       const spell_data_t* wrath_unleashed_buff;
       player_talent_t weal_and_woe;
       const spell_data_t* weal_and_woe_buff;
+      player_talent_t void_summoner;
     } discipline;
 
     // Shared
@@ -431,6 +432,7 @@ public:
     // Shared
     propagate_const<cooldown_t*> shadow_word_death;
     propagate_const<cooldown_t*> mindgames;
+    propagate_const<cooldown_t*> mindbender;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -776,22 +778,27 @@ public:
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
     parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
     if ( p().is_ptr() )
+    {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+    }
     else
+    {
       parse_buff_effects( p().buffs.mind_melt );  // Mind Blast instant cast and Crit increase
+    }
     // TODO: check why we cant use_default=true to get the value correct
     parse_buff_effects( p().buffs.dark_ascension );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.words_of_the_pious );       // Spell Direct amount for Smite and Holy Nova
-    parse_buff_effects( p().buffs.gathering_shadows, true );  // Spell Direct amount for Mind Sear (NOT DP)
-    parse_buff_effects( p().buffs.devoured_pride );           // Spell Direct and Periodic amount
+    parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.gathering_shadows,
+                        true );                      // Spell Direct amount for Mind Sear (NOT DP)
+    parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
 
     // Discipline
     parse_buff_effects( p().buffs.shadow_covenant, false, true );
-    // 280398 applies the buff to the correct spells, but does not contain the correct buff value (12% instead of 40%)
-    // So, override to use our provided default_value (40%) instead
+    // 280398 applies the buff to the correct spells, but does not contain the correct buff value
+    // (12% instead of 40%) So, override to use our provided default_value (40%) instead
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
     parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
     parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );

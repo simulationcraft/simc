@@ -3350,7 +3350,7 @@ void player_t::init_actions()
         have_off_gcd_actions = true;
 
         auto it = range::find_if( off_gcd_cd, [action]( std::pair<const cooldown_t*, const cooldown_t*> cds ) {
-          return cds.first == action->cooldown && cds.second == action->internal_cooldown; } 
+          return cds.first == action->cooldown && cds.second == action->internal_cooldown; }
         );
 
         if ( it == off_gcd_cd.end() )
@@ -5511,7 +5511,7 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
-  if ( buffs.windfury_totem )
+  if ( buffs.windfury_totem && may_benefit_from_windfury_totem() )
   {
     buffs.windfury_totem->trigger();
   }
@@ -8332,7 +8332,7 @@ struct shadowmeld_t : public racial_spell_t
     racial_spell_t::execute();
 
     player->buffs.shadowmeld->trigger();
-    
+
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
   }
@@ -12866,7 +12866,7 @@ bool player_t::requires_data_collection() const
 {
   if ( active_during_iteration )
     return true;
-  
+
   for ( const auto* pet : pet_list )
   {
     if ( pet->requires_data_collection() )

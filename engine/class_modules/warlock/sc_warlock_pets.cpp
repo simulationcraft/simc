@@ -2220,15 +2220,22 @@ struct eye_beam_t : public warlock_pet_spell_t
     grim_reach = new grim_reach_t( p );
   }
 
-  double action_multiplier() const override
+  double composite_target_multiplier( player_t* target ) const
   {
-    double m = warlock_pet_spell_t::action_multiplier();
+    double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
     double dots = 0.0;
 
-    for ( player_t* target : sim->target_non_sleeping_list )
+    if ( p()->o()->min_version_check( VERSION_10_0_7 ) )
     {
       dots += p()->o()->get_target_data( target )->count_affliction_dots();
+    }
+    else
+    {
+      for ( player_t* t : sim->target_non_sleeping_list )
+      {
+        dots += p()->o()->get_target_data( t )->count_affliction_dots();
+      }
     }
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
