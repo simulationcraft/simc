@@ -45,7 +45,8 @@ namespace paladin {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
     add_invalidate( CACHE_MASTERY );
-  };
+  }
+
   sentinel_decay_buff_t::sentinel_decay_buff_t( paladin_t* p ) : buff_t( p, "sentinel_decay" )
   {
     if ( !p->talents.sentinel->ok() )
@@ -54,7 +55,7 @@ namespace paladin {
     }
     set_refresh_behavior( buff_refresh_behavior::NONE );
     cooldown->duration = p->spells.sentinel->effectN( 10 ).period();
-  };
+  }
   }  // namespace buffs
 
 // Ardent Defender (Protection) ===============================================
@@ -134,11 +135,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       double new_absorb = s->result_amount * p()->talents.bulwark_of_order->effectN( 1 ).percent();
       p()->buffs.bulwark_of_order_absorb->trigger(
           1, std::min( p()->buffs.bulwark_of_order_absorb->value() + new_absorb, max_absorb ) );
-    }
-
-    if ( p() -> conduit.vengeful_shock -> ok() )
-    {
-      td( s -> target ) -> debuff.vengeful_shock -> trigger();
     }
 
     if ( p() -> legendary.bulwark_of_righteous_fury -> ok() && !p() -> talents.bulwark_of_righteous_fury -> ok() )
@@ -469,9 +465,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     use_off_gcd = true;
     trigger_gcd = 0_ms;
     cooldown = p -> cooldowns.guardian_of_ancient_kings;
-
-    if ( p -> conduit.royal_decree -> ok() )
-      cooldown -> duration += p -> conduit.royal_decree.time_value();
   }
 
   void execute() override
@@ -531,9 +524,10 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     cooldown->charges = 2;
     cooldown->hasted  = true;
   }
-  
-  void impact( action_state_t* s )
+
+  void impact( action_state_t* s ) override
   {
+    paladin_melee_attack_t::impact( s );
     if ( p()->talents.aspiration_of_divinity->ok() )
     {
       p()->buffs.aspiration_of_divinity->trigger();
@@ -821,21 +815,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
       p() -> buffs.redoubt -> trigger();
     }
 
-    if ( p() -> azerite_essence.memory_of_lucid_dreams.enabled() )
-    {
-      p() -> trigger_memory_of_lucid_dreams( 1.0 );
-    }
-
-    // As of 2020-11-07 Resolute Defender now always provides its CDR.
-    if ( p() -> conduit.resolute_defender -> ok() )
-    {
-      p() -> cooldowns.ardent_defender -> adjust( -1.0_s * p() -> conduit.resolute_defender.value() );
-      if ( p() -> buffs.ardent_defender -> up() )
-        p() -> buffs.ardent_defender -> extend_duration( p(),
-          p() -> conduit.resolute_defender -> effectN( 2 ).percent() * p() -> buffs.ardent_defender -> buff_duration()
-        );
-    }
-
     if ( !background )
     {
       if ( p() -> buffs.shining_light_free -> up() || p() -> buffs.shining_light_stacks -> at_max_stacks() )
@@ -848,26 +827,6 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
 
     p() -> buffs.bulwark_of_righteous_fury -> expire();
-  }
-
-  double recharge_multiplier( const cooldown_t& cd ) const override
-  {
-    double rm = holy_power_consumer_t::recharge_multiplier( cd );
-
-    if ( p() -> player_t::buffs.memory_of_lucid_dreams -> check() )
-    {
-      rm /= 1.0 + p() -> player_t::buffs.memory_of_lucid_dreams -> data().effectN( 1 ).percent();
-    }
-
-    return rm;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = holy_power_consumer_t::composite_target_multiplier( t );
-    if ( td( t ) -> debuff.judgment -> up() && p() -> conduit.punish_the_guilty -> ok() )
-      ctm *= 1.0 + p() -> conduit.punish_the_guilty.percent();
-    return ctm;
   }
 
   double action_multiplier() const override
@@ -1175,12 +1134,7 @@ void paladin_t::create_buffs_protection()
       make_buff( this, "ardent_defender", find_spell( 31850 ) )
         -> set_cooldown( 0_ms ); // handled by the ability
   buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
-        -> set_cooldown( 0_ms )
-        -> set_stack_change_callback( [ this ] ( buff_t*, int /*old*/, int curr )
-        {
-          if ( curr == 1 && conduit.royal_decree -> ok() )
-            this -> buffs.royal_decree -> trigger();
-        } );
+        -> set_cooldown( 0_ms );
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
@@ -1202,8 +1156,6 @@ void paladin_t::create_buffs_protection()
   buffs.bastion_of_light = make_buff( this, "bastion_of_light", talents.bastion_of_light);
   buffs.bulwark_of_righteous_fury = make_buff( this, "bulwark_of_righteous_fury", find_spell( 386652 ) )
                                         ->set_default_value( find_spell( 386652 )->effectN( 1 ).percent() );
-  buffs.shielding_words = make_buff<absorb_buff_t>( this, "shielding_words", conduit.shielding_words )
-        -> set_absorb_source( get_stats( "shielding_words" ) );
   buffs.shining_light_stacks = make_buff( this, "shining_light_stacks", find_spell( 182104 ) )
   // Kind of lazy way to make sure that SL only triggers for prot. That spelldata doesn't have to be used anywhere else so /shrug
     -> set_trigger_spell( find_specialization_spell( "Shining Light" ) )
@@ -1233,10 +1185,6 @@ void paladin_t::create_buffs_protection()
   buffs.sentinel = new buffs::sentinel_buff_t( this );
   buffs.sentinel_decay = new buffs::sentinel_decay_buff_t( this );
 
-
-  if ( specialization() == PALADIN_PROTECTION )
-    player_t::buffs.memory_of_lucid_dreams -> set_stack_change_callback( [ this ]( buff_t*, int, int )
-    { this -> cooldowns.shield_of_the_righteous -> adjust_recharge_multiplier(); } );
   buffs.ally_of_the_light = make_buff( this, "ally_of_the_light", find_spell( 394714 ) )
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_VERSATILITY );

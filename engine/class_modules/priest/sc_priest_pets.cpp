@@ -423,7 +423,13 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
-    npc_id           = 19668;
+
+    // Empirically tested to match 3/10/2023, actual value not available in spell data
+    if ( owner.specialization() == PRIEST_DISCIPLINE )
+    {
+      direct_power_mod = 0.445;
+    }
+    npc_id = 19668;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -459,7 +465,13 @@ struct mindbender_pet_t final : public base_fiend_pet_t
       power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
-    npc_id           = 62982;
+
+    // Empirically tested to match 3/10/2023, actual value not available in spell data
+    if ( owner.specialization() == PRIEST_DISCIPLINE )
+    {
+      direct_power_mod = 0.326;
+    }
+    npc_id = 62982;
 
     main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
     main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
@@ -720,7 +732,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 
     // BUG: This talent is cursed
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    if ( p.o().bugs )
+    if ( p.o().bugs && !p.o().is_ptr())
     {
       if ( p.o().level() == 70 )
       {
@@ -808,6 +820,11 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
     affected_by_shadow_weaving = true;
+
+    if ( p.o().is_ptr() )
+    {
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
 
     // BUG: The damage this is dealing is not following spell data
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029

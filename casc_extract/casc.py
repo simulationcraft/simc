@@ -80,7 +80,7 @@ class BLTEChunk(object):
 			dc = zlib.decompressobj()
 			uncompressed_data = dc.decompress(data[1:])
 			if len(dc.unused_data) > 0:
-				sys.stderr.write('Unused %d bytes of compressed data in chunk%d' % (
+				sys.stderr.write('Unused %d bytes of compressed data in chunk%d\n' % (
 					len(dc.unused_data), self.id))
 				return False
 
@@ -418,16 +418,16 @@ class CASCObject(object):
 		while attempt < maxAttempts:
 			r = None
 			try:
+				sys.stdout.write('Fetching %s ...\n' % url)
 				r = _S.get(url, headers = headers)
 
-				print('Fetching %s ...' % url)
 				if r.status_code not in [200, 206]:
 					self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
 				return r
 			except Exception as e:
-				self.options.parser.error('Unable to fetch %s: %s' % (url, r.reason if r else 'unknown error'))
+				sys.stderr.write('Unable to fetch %s (attempt %s): %s\n' % (url, attempt, r.reason if r else 'unknown error'))
 				if attempt + 1 < maxAttempts:
-					print('Retrying...')
+					sys.stdout.write('Retrying %s ...\n' % url)
 					time.sleep(2 ** attempt)
 					attempt += 1
 
@@ -637,7 +637,7 @@ class CDNIndex(CASCObject):
 			self.builds.append(BuildCfg(handle))
 
 	def open_archives(self):
-		sys.stdout.write('Parsing CDN index files ... ')
+		sys.stdout.write('Parsing CDN index files ... \n')
 
 		index_cache = self.cache_dir('index')
 		for idx in range(0, len(self.archives)):
@@ -883,7 +883,7 @@ class CASCEncodingFile(CASCObject):
 			if md5str != self.build.encoding_file():
 				data = self.__bootstrap()
 
-		sys.stdout.write('Parsing encoding file %s ... ' % self.build.encoding_file())
+		sys.stdout.write('Parsing encoding file %s ... \n' % self.build.encoding_file())
 
 		offset = 0
 		fsize = os.stat(self.encoding_path()).st_size
@@ -1231,10 +1231,10 @@ class CASCRootFile(CASCObject):
 			if md5str != self.build.root_file():
 				data = self.__bootstrap()
 
-		sys.stdout.write('Parsing root file %s ... ' % self.build.root_file())
+		sys.stdout.write('Parsing root file %s ... \n' % self.build.root_file())
 
 		if len(data) < 4:
-			sys.stdout.write('Root file too small (%d bytes)' % len(data))
+			sys.stdout.write('Root file too small (%d bytes)\n' % len(data))
 			return False
 
 		if data[:4] == b'TSFM':

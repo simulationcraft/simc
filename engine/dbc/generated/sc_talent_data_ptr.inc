@@ -1,5 +1,5 @@
-// 576 talents, wow build 10.0.7.48220
-static std::array<talent_data_t, 576> __ptr_talent_data { {
+// 574 talents, wow build 10.1.0.48480
+static std::array<talent_data_t, 574> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -356,11 +356,9 @@ static std::array<talent_data_t, 576> __ptr_talent_data { {
   { "Felblade"                          , 22416, 0x00, 0x0800,  577,   2,   0,  232893,       0,  0 },
   { "Blood Frenzy"                      , 22418, 0x00, 0x0400,  104,   1,   0,  203962,       0,  0 },
   { "Brambles"                          , 22419, 0x00, 0x0400,  104,   0,   0,  203953,       0,  0 },
-  { "Bristling Fur"                     , 22420, 0x00, 0x0400,  104,   2,   0,  155835,       0,  0 },
   { "Incarnation: Tree of Life"         , 22421, 0x00, 0x0400,  105,   2,   4,   33891,       0,  0 },
   { "Overgrowth"                        , 22422, 0x00, 0x0400,  105,   2,   5,  203651,       0,  0 },
   { "Earthwarden"                       , 22423, 0x00, 0x0400,  104,   0,   5,  203974,       0,  0 },
-  { "Pulverize"                         , 22425, 0x00, 0x0400,  104,   2,   6,   80313,       0,  0 },
   { "Rend and Tear"                     , 22426, 0x00, 0x0400,  104,   0,   6,  204053,       0,  0 },
   { "Tooth and Claw"                    , 22427, 0x00, 0x0400,  104,   1,   6,  135288,       0,  0 },
   { "Holy Shield"                       , 22428, 0x00, 0x0002,   66,   0,   0,  152261,       0,  0 },

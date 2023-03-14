@@ -2401,7 +2401,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 // ==========================================================================
 // Gargoyle
 // ==========================================================================
-
+int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
@@ -2412,6 +2412,24 @@ struct gargoyle_pet_t : public death_knight_pet_t
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     {
       parse_options( options_str );
+      trigger_gcd = 1.5_s;
+    }
+
+    void execute() override
+    {
+      // Bugged as of 3/3/2023, Appears to stop casting every other cast for a period of time between 100% and ~145% haste, between 146-154% haste appears to work as expected, and 155% and above seems to bug again. 
+      // Period of time between casts appears to be roughly equal to 2s - (cast time * 2). So if a cast were to take 0.8 seconds, it would cast twice normally, then wait 0.4s before starting to cast again. 
+      // Due to the complex nature of this bug, going to emulate it by implementing a min gcd of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
+      if( dk() -> bugs && gargoyle_strike_count % 2 == 0 && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 1_s ) && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() >= 0.77_s ) )
+      {
+        min_gcd = 1_s * ( 1 / dk() -> composite_spell_haste() );
+      }
+      else if ( dk() -> bugs && gargoyle_strike_count % 2 == 0 && dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 0.73_s )
+      {
+        min_gcd = 0.73_s * ( 1 / dk() -> composite_spell_haste() );
+      }
+      pet_spell_t::execute();
+      ++gargoyle_strike_count;
     }
   };
 
@@ -2433,10 +2451,18 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
 
+    gargoyle_strike_count = 0;
+
     if ( !dk() -> is_ptr() && dk() -> talent.unholy.commander_of_the_dead.ok() && dk() -> buffs.commander_of_the_dead_window -> up() )
     {
       commander_of_the_dead -> trigger();
     }
+  }
+
+  void reset() override
+  {
+    death_knight_pet_t::reset();
+    gargoyle_strike_count = 0;
   }
 
   void init_base_stats() override
@@ -3562,8 +3588,8 @@ struct virulent_plague_t : public death_knight_disease_t
     else if ( p->talent.unholy.superstrain.ok() )
     {
       {
-        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague_superstrain", p, true ) );
-        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever_superstrain", p, true ) );
+        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague", p, true ) );
+        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever", p, true ) );
       }
     }
   }

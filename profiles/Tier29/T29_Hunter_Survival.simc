@@ -12,7 +12,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:primal_whetstone_3
+temporary_enchant=main_hand:howling_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -125,9 +125,8 @@ main_hand=backdraft_cleaver,id=193755,bonus_id=6808/4786/1643,enchant=sophic_dev
 # gear_ilvl=421.87
 # gear_agility=5423
 # gear_stamina=13360
-# gear_attack_power=135
 # gear_crit_rating=3706
-# gear_haste_rating=4124
+# gear_haste_rating=4434
 # gear_mastery_rating=1991
 # gear_versatility_rating=1130
 # gear_armor=4834

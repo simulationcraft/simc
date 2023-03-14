@@ -890,6 +890,10 @@ void warlock_t::init_spells_affliction()
   talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
   talents.shadow_embrace_debuff = find_spell( 32390 );
 
+  talents.dark_virtuosity = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Virtuosity" ); // Should be ID 405327
+
+  talents.kindled_malice = find_talent_spell( talent_tree::SPECIALIZATION, "Kindled Malice" );  // Should be ID 405330
+
   talents.harvester_of_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Harvester of Souls" ); // Should be ID 201424
   talents.harvester_of_souls_dmg = find_spell( 218615 ); // Damage and projectile data
 

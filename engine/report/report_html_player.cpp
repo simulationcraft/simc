@@ -1305,10 +1305,10 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
     }
 
-    if ( item.parsed.temporary_enchant_id > 0 )
+    if ( item.selected_temporary_enchant() > 0 )
     {
       const auto& temp_enchant = temporary_enchant_entry_t::find_by_enchant_id(
-          item.parsed.temporary_enchant_id, item.player->dbc->ptr );
+          item.selected_temporary_enchant(), item.player->dbc->ptr );
       const auto spell = item.player->find_spell( temp_enchant.spell_id );
       item_sim_desc += ", temporary_enchant: ";
       item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, spell, item );
