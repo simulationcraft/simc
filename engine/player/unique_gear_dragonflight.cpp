@@ -4212,7 +4212,7 @@ enum primordial_stone_drivers_e
   NECROMANTIC_DEATH_STONE  = 402951, // NYI
   PESTILENT_PLAGUE_STONE   = 402952, // NYI
   OBSCURE_PASTEL_STONE     = 402955, // NYI
-  DESIROUS_BLOOD_STONE     = 402957, // NYI
+  DESIROUS_BLOOD_STONE     = 402957,
   PROPHETIC_TWILIGHT_STONE = 402959, // NYI
 };
 
@@ -4445,6 +4445,17 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
+// TODO: Healing?
+struct desirous_blood_stone_t : public damage_stone_t
+{
+  desirous_blood_stone_t( const special_effect_t& e ) :
+    damage_stone_t( e, "desirous_blood_stone", 404911 )
+  {
+    auto driver = e.player->find_spell( DESIROUS_BLOOD_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4471,7 +4482,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
     case PESTILENT_PLAGUE_STONE:
       return nullptr;
     case DESIROUS_BLOOD_STONE:
-      return nullptr;
+      return new desirous_blood_stone_t( effect );
 
     // healing stones
     case DELUGING_WATER_STONE:
@@ -4589,6 +4600,13 @@ void freezing_ice_stone( special_effect_t& effect )
 void storm_infused_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, STORM_INFUSED_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void desirous_blood_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, DESIROUS_BLOOD_STONE );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4723,6 +4741,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::FLAME_LICKED_STONE,    primordial_stones::flame_licked_stone );
   register_special_effect( primordial_stones::FREEZING_ICE_STONE,    primordial_stones::freezing_ice_stone );
   register_special_effect( primordial_stones::STORM_INFUSED_STONE,   primordial_stones::storm_infused_stone );
+  register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,  primordial_stones::desirous_blood_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,    DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
