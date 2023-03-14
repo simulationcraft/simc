@@ -4190,7 +4190,7 @@ namespace primordial_stones
 enum primordial_stone_drivers_e
 {
   WIND_SCULPTED_STONE      = 401678, // NYI (buffs speed)
-  STORM_INFUSED_STONE      = 402928, // NYI
+  STORM_INFUSED_STONE      = 402928,
   ECHOING_THUNDER_STONE    = 402929,
   FLAME_LICKED_STONE       = 402930,
   RAGING_MAGMA_STONE       = 402931, // NYI (tanks only, requires getting hit)
@@ -4435,6 +4435,16 @@ struct freezing_ice_stone_t : public damage_stone_t
   }
 };
 
+struct storm_infused_stone_t : public damage_stone_t
+{
+  storm_infused_stone_t( const special_effect_t& e ) :
+    damage_stone_t( e, "storm_infused_stone", 403087 )
+  {
+    auto driver = e.player->find_spell( STORM_INFUSED_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4447,7 +4457,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
   {
     // damage stones
     case STORM_INFUSED_STONE:
-      return nullptr;
+      return new storm_infused_stone_t( effect );
     case ECHOING_THUNDER_STONE:
       return new uncontainable_charge_t( effect );
     case FLAME_LICKED_STONE:
@@ -4572,6 +4582,13 @@ void flame_licked_stone( special_effect_t& effect )
 void freezing_ice_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, FREEZING_ICE_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void storm_infused_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, STORM_INFUSED_STONE );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4705,6 +4722,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::ECHOING_THUNDER_STONE, primordial_stones::echoing_thunder_stone );
   register_special_effect( primordial_stones::FLAME_LICKED_STONE,    primordial_stones::flame_licked_stone );
   register_special_effect( primordial_stones::FREEZING_ICE_STONE,    primordial_stones::freezing_ice_stone );
+  register_special_effect( primordial_stones::STORM_INFUSED_STONE,   primordial_stones::storm_infused_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,    DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
