@@ -347,7 +347,6 @@ struct power_word_solace_t final : public priest_spell_t
   {
     parse_options( options_str );
     cooldown->hasted = true;
-    travel_speed     = 0.0;  // DBC has default travel taking 54 seconds
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -356,11 +355,16 @@ struct power_word_solace_t final : public priest_spell_t
     if ( priest().buffs.wrath_unleashed->check() )
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
+      sim->print_debug( "Power Word: Solace damage modified by {} (new total: {}), from blaze of light",
+                        priest().buffs.wrath_unleashed->data().effectN( 1 ).percent() );
     }
     if ( priest().buffs.weal_and_woe->check() )
     {
       d *= 1.0 +
            ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
+      sim->print_debug(
+          "Power Word: Solace damage modified by {} (new total: {}), from blaze of light",
+          priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
     }
     if ( priest().talents.discipline.blaze_of_light.enabled() )
     {
@@ -383,6 +387,7 @@ struct power_word_solace_t final : public priest_spell_t
     }
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
+      sim->print_debug( "Train of thought reducing by {}", train_of_thought_cdr );
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
   }
@@ -395,7 +400,7 @@ struct power_word_solace_t final : public priest_spell_t
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
-      priest().buffs.harsh_discipline->increment();
+      priest().buffs.harsh_discipline->trigger();
     }
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
