@@ -902,7 +902,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( s->result_amount > 0 )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
@@ -951,7 +951,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( result_is_hit( s->result ) )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
