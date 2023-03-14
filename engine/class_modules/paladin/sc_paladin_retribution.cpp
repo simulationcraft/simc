@@ -1574,6 +1574,11 @@ struct divine_arbiter_t : public paladin_spell_t
     : paladin_spell_t( "divine_arbiter", p, p->find_spell( 406983 ) )
   {
     background = true;
+
+    // force effect 1 to be used for the direct ratios
+    parse_effect_data( data().effectN( 1 ) );
+    // but compute the aoe multiplier from the 2nd effect
+    base_aoe_multiplier *= data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
   }
 };
 
