@@ -203,6 +203,7 @@ SPELL_LABEL_WHITELIST = [
   1305, # Shards of Domination (Blood)
   1306, # Shards of Domination (Frost)
   1307, # Shards of Domination (Unholy)
+  2513, # Primordial Stones
 ]
 
 ACTIVE_SPELL_WHITELIST = [
