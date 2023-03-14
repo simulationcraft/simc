@@ -4210,7 +4210,7 @@ enum primordial_stone_drivers_e
   HARMONIC_MUSIC_STONE     = 402948, // NYI (buffs tertiary stats)
   WILD_SPIRIT_STONE        = 402949, // NYI
   NECROMANTIC_DEATH_STONE  = 402951, // NYI
-  PESTILENT_PLAGUE_STONE   = 402952, // NYI
+  PESTILENT_PLAGUE_STONE   = 402952,
   OBSCURE_PASTEL_STONE     = 402955, // NYI
   DESIROUS_BLOOD_STONE     = 402957,
   PROPHETIC_TWILIGHT_STONE = 402959, // NYI
@@ -4456,6 +4456,53 @@ struct desirous_blood_stone_t : public damage_stone_t
   }
 };
 
+// TODO: Is this damage fully uncapped?
+struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
+{
+  pestilent_plague_stone_aoe_t( const special_effect_t& e ) :
+    generic_aoe_proc_t( e, "pestilent_plague_stone_aoe", 405221 )
+  {
+    auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
+    base_td = driver->effectN( 1 ).average( e.item );
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    generic_aoe_proc_t::available_targets( tl );
+
+    // Remove the main target, this only hits everything else in range.
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+
+    return tl.size();
+  }
+};
+
+struct pestilent_plague_stone_t : public damage_stone_t
+{
+  timespan_t aoe_delay;
+  action_t* aoe_damage;
+
+  pestilent_plague_stone_t( const special_effect_t& e ) :
+    damage_stone_t( e, "pestilent_plague_stone", 405220 )
+  {
+    auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
+    base_td = driver->effectN( 1 ).average( e.item );
+    aoe_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
+    aoe_damage = create_proc_action<pestilent_plague_stone_aoe_t>( "pestilent_plague_stone_aoe", e );
+    add_child( aoe_damage );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    damage_stone_t::impact( s );
+
+    if ( result_is_hit( s->result ) && aoe_damage )
+    {
+      make_event( *sim, aoe_delay, [ s, this ]() { aoe_damage->execute_on_target( s->target ); } );
+    }
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4480,7 +4527,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
     case HUMMING_ARCANE_STONE:
       return nullptr;
     case PESTILENT_PLAGUE_STONE:
-      return nullptr;
+      return new pestilent_plague_stone_t( effect );
     case DESIROUS_BLOOD_STONE:
       return new desirous_blood_stone_t( effect );
 
@@ -4607,6 +4654,13 @@ void storm_infused_stone( special_effect_t& effect )
 void desirous_blood_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, DESIROUS_BLOOD_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void pestilent_plague_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, PESTILENT_PLAGUE_STONE );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4737,12 +4791,13 @@ void register_special_effects()
   register_special_effect( { 389987, 389498, 391117 }, sets::raging_tempests );
 
   // Primordial Stones
-  register_special_effect( primordial_stones::ECHOING_THUNDER_STONE, primordial_stones::echoing_thunder_stone );
-  register_special_effect( primordial_stones::FLAME_LICKED_STONE,    primordial_stones::flame_licked_stone );
-  register_special_effect( primordial_stones::FREEZING_ICE_STONE,    primordial_stones::freezing_ice_stone );
-  register_special_effect( primordial_stones::STORM_INFUSED_STONE,   primordial_stones::storm_infused_stone );
-  register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,  primordial_stones::desirous_blood_stone );
-  register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,    DISABLED_EFFECT ); // Necessary for other gems to find the driver.
+  register_special_effect( primordial_stones::ECHOING_THUNDER_STONE,  primordial_stones::echoing_thunder_stone );
+  register_special_effect( primordial_stones::FLAME_LICKED_STONE,     primordial_stones::flame_licked_stone );
+  register_special_effect( primordial_stones::FREEZING_ICE_STONE,     primordial_stones::freezing_ice_stone );
+  register_special_effect( primordial_stones::STORM_INFUSED_STONE,    primordial_stones::storm_infused_stone );
+  register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,   primordial_stones::desirous_blood_stone );
+  register_special_effect( primordial_stones::PESTILENT_PLAGUE_STONE, primordial_stones::pestilent_plague_stone );
+  register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,     DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
