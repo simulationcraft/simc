@@ -213,10 +213,10 @@ struct penance_t : public priest_spell_t
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() )
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) )
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
@@ -427,21 +427,34 @@ struct schism_t final : public priest_spell_t
   }
 };
 
-// Heal allies effect not implemented
 struct shadow_covenant_t final : public priest_spell_t
 {
   shadow_covenant_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant )
+    : priest_spell_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant ),
+      heal( new shadow_covenant_heal_t( p ) )
   {
     parse_options( options_str );
+    add_child( heal );
   }
+
+  struct shadow_covenant_heal_t final : public priest_heal_t
+  {
+    shadow_covenant_heal_t( priest_t& p ) : priest_heal_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant )
+    {
+      background = true;
+      harmful    = false;
+    }
+  };
 
   void execute() override
   {
     priest_spell_t::execute();
-
+    heal->execute();
     priest().buffs.shadow_covenant->trigger();
   }
+
+private:
+  propagate_const<action_t*> heal;
 };
 
 struct lights_wrath_t final : public priest_spell_t
