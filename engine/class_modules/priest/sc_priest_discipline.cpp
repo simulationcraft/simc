@@ -355,28 +355,22 @@ struct power_word_solace_t final : public priest_spell_t
     if ( priest().buffs.wrath_unleashed->check() )
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
-      sim->print_debug( "Power Word: Solace damage modified by {} (new total: {}), from blaze of light",
-                        priest().buffs.wrath_unleashed->data().effectN( 1 ).percent() );
     }
     if ( priest().buffs.weal_and_woe->check() )
     {
       d *= 1.0 +
            ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
-      sim->print_debug(
-          "Power Word: Solace damage modified by {} (new total: {}), from blaze of light",
-          priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
     }
     if ( priest().talents.discipline.blaze_of_light.enabled() )
     {
       d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
-      sim->print_debug( "Power Word: Solace damage modified by {} (new total: {}), from blaze of light",
-                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
   }
 
   void execute() override
   {
+    priest_spell_t::execute();
     if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
@@ -387,7 +381,6 @@ struct power_word_solace_t final : public priest_spell_t
     }
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
-      sim->print_debug( "Train of thought reducing by {}", train_of_thought_cdr );
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
   }
