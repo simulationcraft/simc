@@ -32,6 +32,10 @@ struct expiation_t final : public priest_spell_t
       consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
     background = dual = true;
+    may_crit          = false;
+    tick_may_crit     = false;
+    // Spell data has this listed as physical, but in-game it's shadow
+    school = SCHOOL_SHADOW;
 
     // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
     // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
@@ -45,6 +49,7 @@ struct expiation_t final : public priest_spell_t
         priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
 
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
+    sim->print_debug( "Expiation consumed {} seconds, dealing {}", consume_time, dot_damage );
     base_dd_min = base_dd_max = dot_damage;
     priest_spell_t::impact( s );
     dot->adjust_duration( -consume_time );
