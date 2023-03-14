@@ -1388,6 +1388,7 @@ class SpellDataGenerator(DataGenerator):
          389581, # Emerald Coach's Whistle
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
+         405209, # Humming Arcane Stone
         ),
 
         # Warrior:

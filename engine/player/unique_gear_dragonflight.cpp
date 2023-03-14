@@ -4206,7 +4206,7 @@ enum primordial_stone_drivers_e
   EXUDING_STEAM_STONE      = 402942, // NYI (procs on receiving heals)
   SPARKLING_MANA_STONE     = 402943, // NYI (restores mana)
   SWIRLING_MOJO_STONE      = 402944, // NYI (requires creature deaths, gives the player an item to activate its buff)
-  HUMMING_ARCANE_STONE     = 402947, // NYI
+  HUMMING_ARCANE_STONE     = 402947,
   HARMONIC_MUSIC_STONE     = 402948, // NYI (buffs tertiary stats)
   WILD_SPIRIT_STONE        = 402949, // NYI
   NECROMANTIC_DEATH_STONE  = 402951, // NYI
@@ -4503,6 +4503,48 @@ struct pestilent_plague_stone_t : public damage_stone_t
   }
 };
 
+struct humming_arcane_stone_damage_t : public generic_proc_t
+{
+  humming_arcane_stone_damage_t( const special_effect_t& e ) :
+    generic_proc_t( e, "humming_arcane_stone_damage", 405209 )
+  {
+    auto driver = e.player->find_spell( HUMMING_ARCANE_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
+  }
+};
+
+struct humming_arcane_stone_t : public damage_stone_t
+{
+  size_t num_families;
+  action_t* damage;
+
+  humming_arcane_stone_t( const special_effect_t& e ) :
+    damage_stone_t( e, "humming_arcane_stone", 405206 )
+  {
+    damage = create_proc_action<humming_arcane_stone_damage_t>( "humming_arcane_stone_damage", e );
+    add_child( damage );
+
+    std::set<primordial_stone_family_e> stone_families;
+    for ( const auto se : e.item->parsed.special_effects )
+    {
+      if ( se->type == SPECIAL_EFFECT_EQUIP && se->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
+      {
+        stone_families.insert( get_stone_family( *se ) );
+      }
+    }
+
+    num_families = stone_families.size();
+  }
+
+  void execute() override
+  {
+    damage_stone_t::execute();
+
+    for ( size_t i = 0; i < num_families; i++ )
+      damage->execute_on_target( target );
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4525,7 +4567,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
     case FREEZING_ICE_STONE:
       return new freezing_ice_stone_t( effect );
     case HUMMING_ARCANE_STONE:
-      return nullptr;
+      return new humming_arcane_stone_t( effect );
     case PESTILENT_PLAGUE_STONE:
       return new pestilent_plague_stone_t( effect );
     case DESIROUS_BLOOD_STONE:
@@ -4664,6 +4706,13 @@ void pestilent_plague_stone( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void humming_arcane_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, HUMMING_ARCANE_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }
 
 void register_special_effects()
@@ -4797,6 +4846,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::STORM_INFUSED_STONE,    primordial_stones::storm_infused_stone );
   register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,   primordial_stones::desirous_blood_stone );
   register_special_effect( primordial_stones::PESTILENT_PLAGUE_STONE, primordial_stones::pestilent_plague_stone );
+  register_special_effect( primordial_stones::HUMMING_ARCANE_STONE,   primordial_stones::humming_arcane_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,     DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
