@@ -10431,7 +10431,7 @@ double death_knight_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
-  m += 1.0 + buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
+  m += buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
 
   return m;
 }
