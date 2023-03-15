@@ -542,8 +542,8 @@ public:
   // Pets
   struct priest_pets_t
   {
-    propagate_const<pet_t*> shadowfiend;
-    propagate_const<pet_t*> mindbender;
+    spawner::pet_spawner_t<pet_t, priest_t> shadowfiend;
+    spawner::pet_spawner_t<pet_t, priest_t> mindbender;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
@@ -592,7 +592,6 @@ public:
   void create_options() override;
   std::string create_profile( save_e ) override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override

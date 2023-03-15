@@ -2523,39 +2523,42 @@ void priest_t::create_buffs_shadow()
 
 
   // TODO: Wire up spell data, split into helper function.
-  buffs.t30_4pc = make_buff( this, "t30_4pc_tracker" )
-                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-                      ->set_max_stack( 500 )
-                      ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
-                        if ( cur >= 400 )
-                        {
-                          make_event( b->sim, [ this, b ] {
-                            b->decrement( 400 );
+  buffs.t30_4pc =
+      make_buff( this, "t30_4pc_tracker" )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+          ->set_max_stack( 500 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+            if ( cur >= 400 )
+            {
+              make_event( b->sim, [ this, b ] {
+                b->decrement( 400 );
 
-                            if ( talents.shadow.mindbender.enabled() )
-                            {
-                              auto duration = 5_s;
+                auto duration = 5_s;
 
-                              if ( talents.shadow.idol_of_yshaarj.enabled() )
-                              {
-                                // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-                                if ( target->health_percentage() >= 80.0 )
-                                {
-                                  buffs.devoured_pride->trigger();
-                                }
-                                else
-                                {
-                                  duration += timespan_t::from_seconds(
-                                      talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-                                  procs.idol_of_yshaarj_extra_duration->occur();
-                                }
-                              }
-
-                              pets.mindbender->summon( duration );
-                            }
-                          } );
-                        }
-                      } );
+                if ( talents.shadow.idol_of_yshaarj.enabled() )
+                {
+                  // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
+                  if ( target->health_percentage() >= 80.0 )
+                  {
+                    buffs.devoured_pride->trigger();
+                  }
+                  else
+                  {
+                    duration += timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+                    procs.idol_of_yshaarj_extra_duration->occur();
+                  }
+                }
+                if ( talents.shadow.mindbender.enabled() )
+                {
+                  pets.mindbender.spawn( duration );
+                }
+                else
+                {
+                  pets.shadowfiend.spawn( duration );
+                }
+              } );
+            }
+          } );
 }
 
 void priest_t::init_rng_shadow()

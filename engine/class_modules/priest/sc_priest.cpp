@@ -664,17 +664,6 @@ struct power_infusion_t final : public priest_spell_t
     if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess->ok() )
     {
       player->buffs.power_infusion->trigger();
-
-      if ( priest().options.power_infusion_fiend && priest().options.self_power_infusion &&
-           priest().talents.twins_of_the_sun_priestess->ok() )
-      {
-        pet_t* current_pet =
-            priest().talents.shadow.mindbender.enabled() ? priest().pets.mindbender : priest().pets.shadowfiend;
-        if ( current_pet && !current_pet->is_sleeping() )
-        {
-          current_pet->buffs.power_infusion->trigger();
-        }
-      }
     }
   }
 };
@@ -793,73 +782,26 @@ struct mindgames_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Summon Pet
-// ==========================================================================
-/// Priest Pet Summon Base Spell
-struct summon_pet_t : public priest_spell_t
-{
-  timespan_t summoning_duration;
-  std::string pet_name;
-  propagate_const<pet_t*> pet;
-
-public:
-  summon_pet_t( util::string_view n, priest_t& p, const spell_data_t* sd = spell_data_t::nil() )
-    : priest_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( n ), pet( nullptr )
-  {
-    harmful = false;
-  }
-
-  void init_finished() override
-  {
-    pet = player->find_pet( pet_name );
-
-    priest_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    if ( pet->is_sleeping() )
-    {
-      pet->summon( summoning_duration );
-    }
-    else
-    {
-      auto new_duration = pet->expiration->remains();
-      new_duration += summoning_duration;
-      pet->expiration->reschedule( new_duration );
-    }
-
-    priest_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !pet )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
-};
-
-// ==========================================================================
 // Summon Shadowfiend
 // ==========================================================================
-struct summon_shadowfiend_t final : public summon_pet_t
+struct summon_shadowfiend_t final : public priest_spell_t
 {
   timespan_t default_duration;
 
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p, p.talents.shadowfiend )
+    : priest_spell_t( "shadowfiend", p, p.talents.shadowfiend )
   {
     parse_options( options_str );
     harmful          = false;
-    default_duration = summoning_duration = data().duration();
+    default_duration = data().duration();
   }
 
   void execute() override
   {
+    priest_spell_t::execute();
+
+    auto duration = default_duration;
+
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
       // Health Percentage not in spelldata
@@ -869,14 +811,12 @@ struct summon_shadowfiend_t final : public summon_pet_t
       }
       else
       {
-        summoning_duration +=
+        duration +=
             timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
       }
     }
 
-    summon_pet_t::execute();
-
-    summoning_duration = default_duration;
+    priest().pets.shadowfiend.spawn( duration );
   }
 };
 
@@ -886,20 +826,24 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
-struct summon_mindbender_t final : public summon_pet_t
+struct summon_mindbender_t final : public priest_spell_t
 {
   timespan_t default_duration;
 
   summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "mindbender", p, p.talents.shadow.mindbender )
+    : priest_spell_t( "mindbender", p, p.talents.shadow.mindbender )
   {
     parse_options( options_str );
     harmful          = false;
-    default_duration = summoning_duration = data().duration();
+    default_duration = data().duration();
   }
 
   void execute() override
   {
+
+    priest_spell_t::execute();
+
+    auto duration = default_duration;
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
       // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
@@ -909,15 +853,13 @@ struct summon_mindbender_t final : public summon_pet_t
       }
       else
       {
-        summoning_duration +=
+        duration +=
             timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
         priest().procs.idol_of_yshaarj_extra_duration->occur();
       }
     }
 
-    summon_pet_t::execute();
-
-    summoning_duration = default_duration;
+    priest().pets.mindbender.spawn( duration );
   }
 };
 
@@ -2047,16 +1989,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
 void priest_t::create_pets()
 {
   base_t::create_pets();
-
-  if ( find_action( "shadowfiend" ) && talents.shadowfiend.enabled() && !talents.shadow.mindbender.enabled() )
-  {
-    pets.shadowfiend = create_pet( "shadowfiend" );
-  }
-
-  if ( ( find_action( "shadowfiend" ) || find_action( "mindbender" ) ) && talents.shadow.mindbender.enabled() )
-  {
-    pets.mindbender = create_pet( "mindbender" );
-  }
 }
 
 void priest_t::init_base_stats()
