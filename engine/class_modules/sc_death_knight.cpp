@@ -3531,7 +3531,12 @@ struct frost_fever_t : public death_knight_disease_t
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= 1 + (p -> talent.unholy.superstrain -> effectN( 2 ).percent());
+      base_multiplier *= 1.0 + ( p -> talent.unholy.superstrain -> effectN( 2 ).percent() );
+
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> spell.frost_t30_2pc -> effectN( 2 ).percent();
+    }
   }
 
   timespan_t tick_time ( const action_state_t* ) const override
@@ -3572,18 +3577,6 @@ struct frost_fever_t : public death_knight_disease_t
     {
       get_td( d->target ) -> debuff.brittle -> trigger();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_disease_t::action_multiplier();
-
-    if ( p ()->sets->has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
-    {
-      m *= 1.0 + p ()->spell.frost_t30_2pc->effectN ( 2 ).percent ();
-    }
-
-    return m;
   }
 };
 
@@ -5294,7 +5287,7 @@ struct death_coil_damage_t : public death_knight_spell_t
       m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent() * p() -> buffs.sudden_doom -> stack();
     }
 
-    if ( p() -> options.t30_2pc )
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
       m *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();
     }
@@ -5364,7 +5357,7 @@ struct death_coil_t : public death_knight_spell_t
       get_td( target ) -> debuff.rotten_touch -> trigger();
     }
 
-    if ( p()->options.t30_2pc )
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
       p() -> buffs.unholy_t30_2pc_stacking -> trigger();
 
@@ -5372,7 +5365,7 @@ struct death_coil_t : public death_knight_spell_t
       {
         p() -> buffs.unholy_t30_2pc_stacking -> trigger();
         
-        if( p() -> options.t30_4pc && p() -> buffs.unholy_t30_2pc_mastery -> up() )
+        if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.unholy_t30_2pc_mastery -> up() )
         {
           p() -> buffs.unholy_t30_4pc_mastery -> trigger();
         }
@@ -5751,7 +5744,7 @@ struct epidemic_damage_main_t : public death_knight_spell_t
       cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
     }
 
-    if( p() -> options.t30_2pc )
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
       cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
     }
@@ -5798,7 +5791,7 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
       cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
     }
 
-    if( p() -> options.t30_2pc )
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
       cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
     }
@@ -5860,7 +5853,7 @@ struct epidemic_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
-    if ( p()->options.t30_2pc )
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
       p() -> buffs.unholy_t30_2pc_stacking -> trigger();
 
@@ -5868,7 +5861,7 @@ struct epidemic_t : public death_knight_spell_t
       {
         p() -> buffs.unholy_t30_2pc_stacking -> trigger();
         
-        if( p() -> options.t30_4pc && p() -> buffs.unholy_t30_2pc_mastery -> up() )
+        if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.unholy_t30_2pc_mastery -> up() )
         {
           p() -> buffs.unholy_t30_4pc_mastery -> trigger();
         }
@@ -6105,9 +6098,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
 };
 
 // Frostwyrm's Fury =========================================================
-
-
-
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( util::string_view name, death_knight_t* p ) :
@@ -6115,29 +6105,23 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
   {
     aoe = -1;
     background = true;
+    cooldown -> duration = 0_ms; // handled by the actions
   }
 };
 
 struct wrath_of_the_frostwyrm_buff_t : public buff_t
 {
   action_t* fwf;
-  wrath_of_the_frostwyrm_buff_t ( death_knight_t* p ) : buff_t ( p, "wrath_of_the_frostwyrm", p -> find_spell ( 408368 ) ), fwf ( nullptr )
+  wrath_of_the_frostwyrm_buff_t ( death_knight_t* p ) : buff_t ( p, "wrath_of_the_frostwyrm", p -> find_spell ( 408368 ) ), 
+      fwf ( get_action<frostwyrms_fury_damage_t> ( "frostwyrms_fury", p ) )
   {
-    fwf = get_action<frostwyrms_fury_damage_t> ( "frostwyrms_fury", p );
     cooldown->duration = 0_ms;
+    expire_at_max_stack = true;
   }
 
-  bool trigger ( int stacks, double value, double chance, timespan_t duration ) override
+  void expire_override( int, timespan_t ) override
   {
-    bool r = buff_t::trigger ( stacks, value, chance, duration );
-    sim->print_debug ( "stacks={} value={} max={} for wrath of the frostwyrm",
-      stack (), value, max_stack () );
-    if ( stack () == max_stack () )
-    {
-      expire ();
-      fwf->execute ();
-    }
-    return r;
+    fwf -> execute();
   }
 };
 
@@ -8554,8 +8538,6 @@ void death_knight_t::create_options()
   add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent ) );
-  add_option( opt_bool("deathknight.t30_2pc", options.t30_2pc ) );
-  add_option( opt_bool("deathknight.t30_4pc", options.t30_4pc ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
