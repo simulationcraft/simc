@@ -6880,7 +6880,7 @@ struct moonfire_t : public druid_spell_t
       if ( p->spec.astral_power->ok() )
       {
         energize_resource = RESOURCE_ASTRAL_POWER;
-        energize_type = action_energize::PER_HIT;
+        energize_type = !p->is_ptr() ? action_energize::PER_HIT : action_energize::ON_HIT;
         energize_amount = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
       }
       else
@@ -6978,17 +6978,15 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack_moonfire->expire();
         }
 
+        auto rage = p()->buff.galactic_guardian->check_value();
+        if ( !p()->is_ptr() )
+          rage *= num_targets_hit;
+
+        p()->resource_gain( RESOURCE_RAGE, rage, gain );
+
         if ( !is_free() )
           p()->buff.galactic_guardian->expire();
       }
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      base_t::impact( s );
-
-      if ( result_is_hit( s->result ) )
-        p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->check_value(), gain );
     }
 
     void trigger_dot( action_state_t* s ) override
