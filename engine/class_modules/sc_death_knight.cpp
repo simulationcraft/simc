@@ -1168,6 +1168,7 @@ public:
   double    composite_melee_crit_chance() const override;
   double    composite_spell_crit_chance() const override;
   double    composite_crit_avoidance() const override;
+  double    composite_mastery_value() const override;
   void      combat_begin() override;
   void      activate() override;
   void      reset() override;
@@ -10099,12 +10100,12 @@ void death_knight_t::create_buffs()
           } );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "death_dealer_4pc", spell.unholy_t30_4pc_mastery )
-      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() )
-      -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
+      -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-      -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).base_value() )
-      -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+      -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).percent() )
+      -> add_invalidate( CACHE_MASTERY );
 
 }
 
@@ -10734,6 +10735,17 @@ double death_knight_t::composite_crit_avoidance() const
   c += spec.blood_death_knight -> effectN( 8 ).percent();
 
   return c;
+}
+
+// death_knight_t::composite_mastery_value ===================================
+// Additive, post spec mastery modifiers. 
+double death_knight_t::composite_mastery_value() const
+{
+  double m = player_t::composite_mastery_value();
+
+  m += buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
+
+  return m;
 }
 
 // death_knight_t::combat_begin =============================================
