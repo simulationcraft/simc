@@ -532,6 +532,9 @@ void priest_t::create_buffs_discipline()
   buffs.wrath_unleashed = make_buff( this, "wrath_unleashed", talents.discipline.wrath_unleashed_buff );
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
+
+  // Discipline T29 2-piece bonus
+  buffs.light_weaving = make_buff( this, "light_weaving", find_spell( 394609 ) );
 }
 
 void priest_t::init_rng_discipline()

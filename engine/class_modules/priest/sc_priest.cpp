@@ -1279,6 +1279,10 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       s->target->buffs.body_and_soul->trigger();
     }
+    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T29, B2 ) )
+    {
+      priest().buffs.light_weaving->trigger();
+    }
   }
 };
 
@@ -2229,6 +2233,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
+  action.apply_affecting_aura( talents.discipline.expiation );
   action.apply_affecting_aura( talents.discipline.expiation );
 }
 

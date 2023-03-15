@@ -156,6 +156,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
+    propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> t30_4pc;
   } buffs;
 
@@ -783,7 +784,7 @@ public:
     {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
-      
+
       parse_buff_effects( p().buffs.deathspeaker );
     }
     else
@@ -806,6 +807,7 @@ public:
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
     parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
     parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
+    parse_buff_effects( p().buffs.light_weaving );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
