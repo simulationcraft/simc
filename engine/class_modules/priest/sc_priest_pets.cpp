@@ -1036,9 +1036,9 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
-spawner::pet_spawner_t<pet_t, priest_t> get_current_main_pet( priest_t& priest )
+spawner::pet_spawner_t<pet_t, priest_t>* get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  return priest.talents.shadow.mindbender.enabled() ? &priest.pets.mindbender : &priest.pets.shadowfiend;
 }
 
 }  // namespace
@@ -1050,7 +1050,7 @@ void priest_t::trigger_inescapable_torment( player_t* target )
 {
   auto current_pets = get_current_main_pet( *this );
 
-  for ( auto a_pet : current_pets.active_pets() )
+  for ( auto a_pet : current_pets->active_pets() )
   {
     auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
     if ( pet && !pet->is_sleeping() )
@@ -1080,7 +1080,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       // pet.fiend.X refers to either shadowfiend or mindbender
       auto pets = get_current_main_pet( *this );
 
-      auto expr = pets.create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      auto expr = pets->create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;
