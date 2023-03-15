@@ -408,7 +408,7 @@ struct base_fiend_pet_t : public priest_pet_t
   void demise() override
   {
     priest_pet_t::demise();
-    o().buffs.devoured_pride->cancel();
+    o().buffs.devoured_pride->decrement();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;

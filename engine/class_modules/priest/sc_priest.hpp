@@ -157,6 +157,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
+    propagate_const<buff_t*> t30_4pc;
   } buffs;
 
   // Talents
@@ -947,6 +948,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void consume_resource() override
   {
     base_t::consume_resource();
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && resource_current == RESOURCE_INSANITY )
+    {
+      priest().buffs.t30_4pc->trigger( last_resource_cost );
+    }
   }
 
   void last_tick( dot_t* d ) override

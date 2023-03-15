@@ -2486,7 +2486,8 @@ void priest_t::create_buffs_shadow()
   buffs.devoured_pride = make_buff( this, "devoured_pride", talents.shadow.devoured_pride )
                              ->set_duration( timespan_t::zero() )
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             ->set_max_stack( 5 );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1  ).trigger() )
                         ->set_default_value_from_effect( 1 );
@@ -2519,6 +2520,42 @@ void priest_t::create_buffs_shadow()
       make_buff<stat_buff_t>( this, "dark_reveries", sets->set( PRIEST_SHADOW, T29, B4 )->effectN( 1 ).trigger() )
           ->add_invalidate( CACHE_HASTE )
           ->set_default_value_from_effect( 1 );
+
+
+  // TODO: Wire up spell data, split into helper function.
+  buffs.t30_4pc = make_buff( this, "t30_4pc_tracker" )
+                      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                      ->set_max_stack( 500 )
+                      ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+                        if ( cur >= 400 )
+                        {
+                          make_event( b->sim, [ this, b ] {
+                            b->decrement( 400 );
+
+                            if ( talents.shadow.mindbender.enabled() )
+                            {
+                              auto duration = 5_s;
+
+                              if ( talents.shadow.idol_of_yshaarj.enabled() )
+                              {
+                                // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
+                                if ( target->health_percentage() >= 80.0 )
+                                {
+                                  buffs.devoured_pride->trigger();
+                                }
+                                else
+                                {
+                                  duration += timespan_t::from_seconds(
+                                      talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+                                  procs.idol_of_yshaarj_extra_duration->occur();
+                                }
+                              }
+
+                              pets.mindbender->summon( duration );
+                            }
+                          } );
+                        }
+                      } );
 }
 
 void priest_t::init_rng_shadow()
