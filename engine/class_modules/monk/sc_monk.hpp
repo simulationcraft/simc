@@ -93,6 +93,7 @@ public:
   {
     // Brewmaster
     propagate_const<buff_t*> keg_smash;
+    propagate_const<buff_t*> exploding_keg;
 
     // Windwalker
     propagate_const<buff_t*> flying_serpent_kick;
