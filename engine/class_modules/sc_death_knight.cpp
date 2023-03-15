@@ -523,6 +523,7 @@ public:
     buff_t* enduring_strength;
     buff_t* frostwhelps_aid;
     buff_t* shattering_blade;
+    buff_t* wrath_of_the_frostwyrm; // T30 4pc
 
     // Unholy
     buff_t* dark_transformation;
@@ -575,6 +576,7 @@ public:
     cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     cooldown_t* enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
     cooldown_t* pillar_of_frost;
+    cooldown_t* frostwyrms_fury;
     // Unholy
     cooldown_t* apocalypse;
     cooldown_t* army_of_the_dead;
@@ -941,6 +943,9 @@ public:
     const spell_data_t* piercing_chill_debuff;
     const spell_data_t* runic_empowerment_chance;
 
+    const spell_data_t* frost_t30_2pc; // TODO rename when blizz gives it a name
+    const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
+
     // Unholy
     const spell_data_t* runic_corruption; // buff
     const spell_data_t* runic_corruption_chance;
@@ -1120,6 +1125,7 @@ public:
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
     cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
+    cooldown.frostwyrms_fury          = get_cooldown( "frostwyrms_fury_driver" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -3557,6 +3563,18 @@ struct frost_fever_t : public death_knight_disease_t
     {
       get_td( d->target ) -> debuff.brittle -> trigger();
     }
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_disease_t::action_multiplier();
+
+    if ( p ()->sets->has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      m *= 1.0 + p ()->spell.frost_t30_2pc->effectN ( 2 ).percent ();
+    }
+
+    return m;
   }
 };
 
@@ -6034,6 +6052,21 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
 // Frostwyrm's Fury =========================================================
 
+struct wrath_of_the_frostwyrm_buff_t : public buff_t
+{
+  wrath_of_the_frostwyrm_buff_t( death_knight_t* p ) : buff_t( p, "wrath_of_the_frostwyrm", p -> find_spell ( 408368 ) )
+  {
+    
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    sim->print_debug ( "stacks={} value={} for wrath of the frostwyrm",
+      stacks, value);
+    return buff_t::trigger( stacks, value, chance, duration);
+  }
+};
+
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
   frostwyrms_fury_damage_t( util::string_view name, death_knight_t* p ) :
@@ -6411,6 +6444,11 @@ struct howling_blast_t : public death_knight_spell_t
       m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> talent.frost.improved_rime -> effectN( 1 ).percent();
     }
 
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) ) 
+    {
+      m *= 1.0 + p() -> spell.frost_t30_2pc -> effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -6487,6 +6525,16 @@ struct howling_blast_t : public death_knight_spell_t
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                             p() -> gains.rage_of_the_frozen_champion );
+    }
+
+    if ( p() -> buffs.rime -> check() &&  p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      p() -> cooldown.frostwyrms_fury -> adjust( timespan_t::from_millis( -p() -> spell.frost_t30_2pc -> effectN( 3 ).base_value() ) );
+
+      if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
+      {
+        p() -> buffs.wrath_of_the_frostwyrm -> trigger();
+      }
     }
 
     p() -> buffs.rime -> decrement();
@@ -9614,6 +9662,9 @@ void death_knight_t::init_spells()
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
   spell.piercing_chill_debuff       = find_spell( 377359 );
   spell.runic_empowerment_chance    = find_spell( 81229 );
+  // T30 Frost
+  spell.frost_t30_2pc = find_spell( 405501 );
+  spell.frost_t30_4pc = find_spell( 405502 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -9920,6 +9971,8 @@ void death_knight_t::create_buffs()
       -> add_invalidate( CACHE_STRENGTH )
       -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
+
+  buffs.wrath_of_the_frostwyrm = new wrath_of_the_frostwyrm_buff_t( this );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
