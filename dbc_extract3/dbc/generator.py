@@ -1697,6 +1697,7 @@ class SpellDataGenerator(DataGenerator):
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
+          ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
         ),
 
         # Shaman:
