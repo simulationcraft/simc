@@ -1022,6 +1022,13 @@ struct shadow_word_death_t final : public priest_spell_t
       child_expiation->background = true;
     }
 
+    if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+    {
+      energize_type     = action_energize::ON_CAST;
+      energize_resource = RESOURCE_INSANITY;
+      energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
+    }
+
     // 13%/25% damage increase
     apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
@@ -1112,6 +1119,11 @@ struct shadow_word_death_t final : public priest_spell_t
         {
           priest().trigger_psychic_link( s );
         }
+      }
+
+      if ( priest().talents.shadow.psychic_link.enabled() )
+      {
+        priest().trigger_psychic_link( s );
       }
 
       if ( child_expiation )

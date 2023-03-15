@@ -1896,7 +1896,8 @@ struct psychic_link_t final : public priest_spell_t
           new psychic_link_base_t( "psychic_link_devouring_plague", p, p.talents.shadow.psychic_link ) ),
       _pl_mindgames( new psychic_link_base_t( "psychic_link_mindgames", p, p.talents.shadow.psychic_link ) ),
       _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
-      _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) )
+      _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
+          _pl_shadow_word_death( new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -1952,6 +1953,10 @@ struct psychic_link_t final : public priest_spell_t
     {
       _pl_void_torrent->trigger( target, original_amount, action_name );
     }
+    else if ( action_name == "shadow_word_death" )
+    {
+      _pl_shadow_word_death->trigger( target, original_amount, action_name );
+    }
     else
     {
       player->sim->print_debug( "{} tried to trigger psychic_link from unknown action {}.", priest(), action_name );
@@ -1968,6 +1973,7 @@ private:
   propagate_const<psychic_link_base_t*> _pl_mindgames;
   propagate_const<psychic_link_base_t*> _pl_void_bolt;
   propagate_const<psychic_link_base_t*> _pl_void_torrent;
+  propagate_const<psychic_link_base_t*> _pl_shadow_word_death;
 };
 
 // ==========================================================================
