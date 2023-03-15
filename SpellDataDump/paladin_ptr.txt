@@ -2818,7 +2818,7 @@ Effects          :
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
 #5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
-                   Affected Spells (Category): Blessed Hammer (204019)
+                   Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
 #6 (id=260670)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
@@ -12061,7 +12061,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1004691)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Crusader Strike (35395), Hammer of the Righteous (53595), Hammer of the Righteous (88263), Blessed Hammer (204019), Blessed Hammer (204301), Blessed Hammers (404139)
+                   Affected Spells: Crusader Strike (35395), Hammer of the Righteous (53595), Hammer of the Righteous (88263), Blessed Hammer (204019), Blessed Hammer (204301), Blessed Hammers (404139), Blessed Hammers (404140)
                    Family Flags: 33, 47, 50, 83, 117
 Description      : Your $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] deals $s1% increased damage.
 
@@ -13465,7 +13465,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 #3 (id=1018270)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Crusader Strike (35395), Hammer of the Righteous (53595), Blade of Justice (184575), Judgment (197277), Blessed Hammer (204019), Blessed Hammer (204301), Judgment (214222), Bestow Faith (223306), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Divine Toll (304971), Divine Toll (375576), Expurgation (383344), Radiant Decree (383469), Divine Resonance (386731), Divine Resonance (387896), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Templar Strike (407480)
+                   Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Crusader Strike (35395), Hammer of the Righteous (53595), Blade of Justice (184575), Judgment (197277), Blessed Hammer (204019), Blessed Hammer (204301), Judgment (214222), Bestow Faith (223306), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Divine Toll (304971), Divine Toll (375576), Expurgation (383344), Radiant Decree (383469), Divine Resonance (386731), Divine Resonance (387896), Truth's Wake (403695), Blessed Hammers (404139), Blessed Hammers (404140), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Templar Strike (407480)
                    Family Flags: 21, 23, 33, 39, 47, 50, 68, 70, 92, 97, 117, 126
 #4 (id=1034388)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
@@ -13475,7 +13475,7 @@ Effects          :
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #6 (id=1034408)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
-                   Affected Spells (Category): Blessed Hammer (204019)
+                   Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
 #7 (id=1034409)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
@@ -13484,7 +13484,7 @@ Effects          :
                    Affected Spells (Category): Hammer of Wrath (24275)
 #9 (id=1072265)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Crusader Strike (35395), Hammer of the Righteous (53595), Judgment (197277), Blessed Hammer (204019), Judgment (214222), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Radiant Decree (383469), Truth's Wake (403695), Wake of Ashes (405345), Wake of Ashes (405350)
+                   Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Crusader Strike (35395), Hammer of the Righteous (53595), Judgment (197277), Blessed Hammer (204019), Judgment (214222), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Radiant Decree (383469), Truth's Wake (403695), Blessed Hammers (404140), Wake of Ashes (405345), Wake of Ashes (405350)
                    Family Flags: 21, 23, 33, 39, 47, 48, 50, 68
 #10 (id=1072477)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
@@ -16676,6 +16676,32 @@ Effects          :
 #1 (id=1051518)  : School Damage (2): holystrike
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holystrike damage to enemies.
+
+Name             : Blessed Hammers (id=404140) [Spell Family (10)] 
+Class            : Paladin
+School           : Holystrike
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : 5 seconds
+Charges          : 3 (6 seconds cooldown)
+Category         : 1659: Paladin (137026 effect#5), Blessing of Dusk (385126 effect#6)
+Affecting spells : Seal of Reprisal (377053 effect#1), Blessing of Dusk (385126 effects: #3, #9)
+Family Flags     : 33
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), No Aura Log (202), Bypass Visibility Check (320), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1051520)  : Create Area Trigger (179)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 28221 | Target: Custom (18)
+Description      : Throws a Blessed Hammer that spirals outward, dealing $404139s1 Holy damage to enemies.
+
+|cFFFFFFFFGenerates $s2 Holy Power.
 
 Name             : Divine Arbiter (id=404306) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Retribution [tree=spec, row=10, col=1, max_rank=1, req_points=20]
