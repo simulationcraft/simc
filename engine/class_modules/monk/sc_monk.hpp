@@ -28,6 +28,7 @@ struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
 struct fury_of_xuen_pet_t;
+//struct shadowflame_monk_t;
 }
 
 struct monk_t;
@@ -92,8 +93,8 @@ public:
   struct
   {
     // Brewmaster
-    propagate_const<buff_t*> exploding_keg;
     propagate_const<buff_t*> keg_smash;
+    propagate_const<buff_t*> exploding_keg;
 
     // Windwalker
     propagate_const<buff_t*> flying_serpent_kick;
@@ -299,6 +300,7 @@ public:
     propagate_const<buff_t*> charred_passions;
     propagate_const<buff_t*> counterstrike;
     propagate_const<buff_t*> elusive_brawler;
+    propagate_const<buff_t*> exploding_keg;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
     propagate_const<buff_t*> graceful_exit;
@@ -914,6 +916,7 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> shadowflame_monk;
 
     pet_t* bron;
 
@@ -1064,6 +1067,7 @@ public:
 
   void bonedust_brew_assessor( action_state_t* );
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability, bool combo_strike );
+  void trigger_shadowflame_monk( action_state_t *s );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
