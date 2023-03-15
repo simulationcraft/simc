@@ -1388,6 +1388,7 @@ class SpellDataGenerator(DataGenerator):
          389581, # Emerald Coach's Whistle
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
+         405209, # Humming Arcane Stone
         ),
 
         # Warrior:
@@ -3643,6 +3644,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'raging_tempests',
             'bonuses': [ 1521, 1523, 1524, 1525 ],
             'tier'   : 29
+        },
+        {
+            'name'   : 'tier30',
+            'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
+            'tier'   : 30
         }
     ]
 

@@ -4745,3 +4745,5 @@ bonus_id={ 9402 }, ilevel_adjust={ 3 }
 bonus_id={ 9403 }, ilevel_adjust={ 6 }
 bonus_id={ 9404 }, ilevel_adjust={ 9 }
 bonus_id={ 9405 }, ilevel_adjust={ 13 }
+bonus_id={ 9406 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 372 @plvl 70 }
+bonus_id={ 9407 }, quality={ rare }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }

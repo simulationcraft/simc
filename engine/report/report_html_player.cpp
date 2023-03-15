@@ -1397,6 +1397,24 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       }
     }
 
+    if ( !item.parsed.gem_color.empty() && range::find( item.parsed.gem_color, SOCKET_COLOR_PRIMORDIAL ) != item.parsed.gem_color.end() )
+    {
+      item_sim_desc += ", primordial_stones: { ";
+      bool first = true;
+      for ( const auto e : item.parsed.special_effects )
+      {
+        if ( !e->driver() || !e->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
+          continue;
+
+        if ( !first )
+          item_sim_desc += ", ";
+
+        item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, e->driver(), item );
+        first = false;
+      }
+      item_sim_desc += " }";
+    }
+
     {
       std::stringstream s;
       for ( const item_effect_t& effect : item.parsed.data.effects )

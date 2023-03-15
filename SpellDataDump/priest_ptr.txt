@@ -992,10 +992,10 @@ Resource         : 0.5% Base Mana (0) (id=215322)
 Spell Level      : 14
 Range            : 40 yards
 GCD              : 1.5 seconds
-Charges          : 1 (20 seconds cooldown)
-Category         : 1169: Kiss of Death (336133 effect#2)
+Charges          : 1 (10 seconds cooldown)
+Category         : 1169: Kiss of Death (336133 effect#2), Deathspeaker (392511 effect#3)
 Stance Mask      : 0x08000000
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #5), Discipline Priest (137032 effects: #6, #12, #13), Shadow Priest (137033 effects: #1, #2, #15, #20), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#1), Light Weaving (394609 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #5), Discipline Priest (137032 effects: #6, #12, #13), Shadow Priest (137033 effects: #1, #2, #15, #20, #23), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Zeks Exterminatus (236546 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392511 effect#2), Light Weaving (394609 effect#1)
 Family Flags     : 33, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1013,9 +1013,15 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=340366)   : Server Side Script (77)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. If the target is not killed by Shadow Word: Death, the caster takes damage equal to the damage inflicted upon the target.
+#4 (id=1073582)  : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
+Description      : A word of dark binding that inflicts $s1 Shadow damage to the target. If the target is not killed by Shadow Word: Death, the caster takes damage equal to the damage inflicted upon the target.$?A364675[
 
-$?A364675[Damage increased by ${$s3+$364675s2}% to targets below ${$s2+$364675s1}% health.][Damage increased by $s3% to targets below $s2% health.]$?c3[][]
+Damage increased by ${$s3+$364675s2}% to targets below ${$s2+$364675s1}% health.][
+
+Damage increased by $s3% to targets below $s2% health.]$?c3[][]$?s137033[
+
+|cFFFFFFFFGenerates ${$s4/100} Insanity.|r][]
 
 Name             : Shadow Word: Death (id=32409) [Spell Family (6)] 
 Class            : Priest
@@ -3658,6 +3664,10 @@ Effects          :
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Mind Blast (8092)
                    Family Flags: 13
+#23 (id=1073588)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
+                   Family Flags: 33
 
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -4129,7 +4139,7 @@ Tooltip          : Healed whenever $@auracaster damages an enemy.
 Name             : Power Word: Radiance (id=194509) [Spell Family (6)] 
 Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Priest
-School           : Holy
+School           : Holyfire
 Spell Type       : Magic
 Resource         : 5.5% Base Mana (0) (id=10498)
 Spell Level      : 23
@@ -4139,7 +4149,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1690: Light's Promise (322115 effect#1), Bright Pupil (390684 effect#1)
 Stance Mask      : 0x80000000
-Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Shining Radiance (337778 effect#1), Enduring Luminescence (390685 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1)
+Affecting spells : Renew (139 effect#2), Rapid Healing (24546 effect#2), Holy Priest (137031 effects: #1, #2), Discipline Priest (137032 effects: #1, #2), Enduring Luminescence (278643 effect#2), Enduring Luminescence (279245 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Shining Radiance (337778 effect#1), Enduring Luminescence (390685 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1)
 Family Flags     : 22, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4649,9 +4659,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your damaging single target spells deal $s1% of their damage to all other targets afflicted by your Vampiric Touch within $199486A2 yards.
+Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
-Does not apply to damage from Shadow Word: Pain and Vampiric Touch.
+Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
 
 Name             : Psychic Link (id=199486) 
 Class            : Priest
@@ -5143,7 +5153,7 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Travel Time      : 1.5 seconds
-Cooldown         : 30 seconds
+Cooldown         : 20 seconds
 Affecting spells : Dark Ascension (391109 effect#1), Whispering Shadows (406777 effect#1)
 Family Flags     : 31
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5186,7 +5196,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303255)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.10375 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.63113 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
@@ -5866,60 +5876,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2075 | Target: Self (1)
                    Affected Spells (Category): Holy Word: Sanctify (34861)
 Description      : Holy Word: Serenity and Holy Word: Sanctify gain an additional charge.
-
-Name             : Zeks Exterminatus (id=236545) [Spell Family (6), Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Req. Max Level   : 49
-Proc Chance      : 101%
-Real PPM         : 1.5 (Haste multiplier)
-Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell, Periodic
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ....x...   ........ .x...... ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Aura Points On Client (268), Not in Battleground (284), Not In Arena (297), Spellcast Override In Spellbook (310), Check Required Target Aura By Caster (382)
-Effects          :
-#1 (id=357785)   : Apply Aura (6) | Proc Trigger Spell (42): Zeks Exterminatus
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 236546 | Target: Self (1)
-Description      : Your Shadow Word: Pain damage has a chance to increase the damage of your next Shadow Word: Death by $236546s2% and make it usable on any target, regardless of health level.
-
-Name             : Zeks Exterminatus (id=236546) [Spell Family (6)] 
-Class            : Priest
-School           : Shadow
-Spell Type       : None
-Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
-Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell, Periodic
-Triggered by     : Zeks Exterminatus (236545)
-Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), No Immunities (29), No Threat (42), Floating Combat Text On Cast (198)
-Effects          :
-#1 (id=357786)   : Apply Aura (6) | Unknown(262)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
-                   Family Flags: 33
-#2 (id=357787)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
-                   Family Flags: 33
-Description      : $@spelldesc236545
-Tooltip          : Shadow Word: Death deals $s2% increased damage and can be used on any target.
 
 Name             : Lenience (id=238063) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=0]
@@ -9037,7 +8993,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=810232)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 322098 | Target: Self (1)
-Description      : If your Shadow Word: Death fails to kill a target at or below $s2% health, its cooldown is reset. Cannot occur more than once every $390628d. $?c3[ If a target dies within $322098d after being struck by your Shadow Word: Death, you gain ${$321973s1*$321973t1*$321973d/100} Insanity over $321973d.][]
+Description      : If your Shadow Word: Death fails to kill a target at or below $s2% health, its cooldown is reset. Cannot occur more than once every $390628d. $?c3[ If a target dies within $322098d after being struck by your Shadow Word: Death, you gain ${$321973s1/100} Insanity.][]
 
 Name             : Prayer Circle (id=321377) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
@@ -9093,7 +9049,6 @@ Name             : Death and Madness (id=321973) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
-Duration         : 4 seconds
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -9104,10 +9059,9 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=810033)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
-                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 13 | Target: Self (1)
+#1 (id=810033)   : Energize Power (30)
+                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc321291
-Tooltip          : ${$m1/100} Insanity generated every $t1 sec.
 
 Name             : Death and Madness (id=322098) [Spell Family (6)] 
 Class            : Priest
@@ -9129,7 +9083,7 @@ Effects          :
 #1 (id=810231)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc321291
-Tooltip          : If the target dies within $d, the Priest gains $321291m2 Insanity.
+Tooltip          : If the target dies within $d, the Priest gains ${$321973s1/100} Insanity.
 
 Name             : Shadow Covenant (id=322105) [Spell Family (6)] 
 Class            : Priest
@@ -9770,7 +9724,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Category         : 691
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#1), Encroaching Shadows (391235 effect#1), Voidtouched (407430 effects: #2, #3), Mind's Eye (407470 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effect#1), Voidtouched (407430 effects: #2, #3), Mind's Eye (407470 effect#1), Distorted Reality (409044 effects: #2, #3, #4, #5)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9783,9 +9737,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=832086)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.88704 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 1.55231 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=832087)   : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.73726 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.73726 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=832088)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=832089)   : Dummy (3)
@@ -9965,7 +9919,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
-Affecting spells : Holy Priest (137031 effect#5), Discipline Priest (137032 effect#6), Shadow Priest (137033 effects: #15, #20), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Dark Ascension (391109 effect#1), Light Weaving (394609 effect#1)
+Affecting spells : Holy Priest (137031 effect#5), Discipline Priest (137032 effect#6), Shadow Priest (137033 effects: #15, #20, #23), Zeks Exterminatus (236546 effects: #1, #2), Shadow Covenant (322105 effect#1), Kiss of Death (336133 effect#1), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Dark Ascension (391109 effect#1), Mastermind (391151 effects: #1, #2), Deathspeaker (392511 effect#2), Light Weaving (394609 effect#1)
 Family Flags     : 33
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
@@ -10831,7 +10785,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=841564)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Voidform and Dark Ascension increase your critical strike chance by $s1% for $194249d, reducing by ${$s3/10}.1% every sec.
+Description      : Voidform and Dark Ascension increase your critical strike chance by $s1% for $194249d, reducing by ${$s2/10}.1% every sec.
 
 Name             : Unfurling Darkness (id=341273) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=5, col=4, max_rank=1, req_points=8]
@@ -13844,7 +13798,7 @@ Effects          :
                    Affected Spells (Label): Screams of the Void (393919)
 #3 (id=1071104)  : Dummy (3)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Devouring Plague causes your Shadow Word: Pain and Vampiric Touch to deal damage $s1% faster for $393919d.
+Description      : Devouring Plague causes your Shadow Word: Pain and Vampiric Touch to deal damage $s1% faster on all targets for $393919d.
 
 Name             : Shadowy Insight (id=375888) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=6, col=2, max_rank=1, req_points=8]
@@ -14275,7 +14229,7 @@ Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 50000 yards
-Duration         : 20 seconds
+Duration         : 10 seconds
 Attributes       : ........ x....... ........ ...x....   ........ ..x..... ........ ....x... 
                  : ..x..... ........ ........ ........   ........ .x...... xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -14514,7 +14468,11 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
                    Family Flags: 22
-Description      : Power Word: Radiance applies Atonement at an additional $s1% of its normal duration.
+#2 (id=1073099)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Power Word: Radiance (194509)
+                   Family Flags: 22
+Description      : Reduces the cast time of Power Word: Radiance by $s2% and causes it to apply Atonement at an additional $s1% of its normal duration.
 
 Name             : Painful Punishment (id=390686) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Discipline [tree=spec, row=4, col=4, max_rank=1, req_points=0]
@@ -15659,13 +15617,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028467)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Spike (73510), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466)
-                   Family Flags: 13, 70, 80
+                   Affected Spells: Mind Blast (8092), Mind Flay (15407), Shadow Word: Death (32379), Mind Spike (73510), Painbreaker Psalm (336167), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466)
+                   Family Flags: 13, 33, 70, 80
 #2 (id=1028468)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Mind Blast (8092), Mind Flay (15407), Mind Spike (73510), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466)
-                   Family Flags: 13, 70, 80
-Description      : Increases the critical strike chance of Mind Blast, Mind Spike, and Mind Flay by $s1% and increases their critical strike damage by $s2%.
+                   Affected Spells: Mind Blast (8092), Mind Flay (15407), Shadow Word: Death (32379), Mind Spike (73510), Painbreaker Psalm (336167), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466)
+                   Family Flags: 13, 33, 70, 80
+Description      : Increases the critical strike chance of Mind Blast, Mind Spike, Mind Flay, and Shadow Word: Death by $s1% and increases their critical strike damage by $s2%.
 
 Name             : Holy Mending (id=391154) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=200]
@@ -15859,27 +15817,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Prayer of Mending heals $s1% more for each bounce remaining.
 
-Name             : Encroaching Shadows (id=391235) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=4, col=3, max_rank=1, req_points=0]
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Effects          :
-#1 (id=1028597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Devouring Plague (335467)
-                   Family Flags: 87
-Description      : Increases the initial damage of Devouring Plague by $s1%.
-
 Name             : Tormented Spirits (id=391284) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
@@ -16043,7 +15980,7 @@ Effects          :
 Description      : After your Prayer of Mending heals $s1 times, gain Apotheosis for $s2 sec.
 
 Name             : Surge of Insanity (id=391399) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Shadow [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -16133,12 +16070,12 @@ Description      : Assaults the target's mind with Shadow energy, causing $o1 Sh
 Tooltip          : Movement speed slowed by $s2% and taking Shadow damage every $t1 sec.
 
 Name             : Deathspeaker (id=392507) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=0]
+Talent Entry     : Shadow [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 1.5 (Haste multiplier)
+Real PPM         : 2.25 (Haste multiplier)
 Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -16153,7 +16090,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1030772)  : Apply Aura (6) | Proc Trigger Spell (42): Deathspeaker
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Trigger Spell: 392511 | Target: Self (1)
-Description      : Your Shadow Word: Pain damage has a chance to reset the cooldown of Shadow Word: Death and enable $s1% additional damage regardless of the target's health.
+Description      : Your Shadow Word: Pain damage has a chance to reset the cooldown of Shadow Word: Death, increase its damage by $392511s2%, and always deal $s1% increased damage regardless of the target's health.
 
 Name             : Deathspeaker (id=392511) [Spell Family (6)] 
 Class            : Priest
@@ -16162,8 +16099,8 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell, Periodic
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Triggered by     : Deathspeaker (392507)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16177,8 +16114,17 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
 Effects          :
 #1 (id=1030778)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc236545
-Tooltip          : Next Shadow Word: Death deals full damage regardless of health.
+#2 (id=1073679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
+                   Family Flags: 33
+#3 (id=1073695)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
+                   Affected Spells (Category): Shadow Word: Death (32379)
+#4 (id=1073716)  : Apply Aura (6) | Unknown(500)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
+Description      : $@spelldesc392507
+Tooltip          : Shadow Word: Death damage increased by $s2% and your next Shadow Word: Death deals full damage regardless of health.
 
 Name             : Apotheosis (id=392941) [Passive] 
 Class            : Priest
@@ -16760,6 +16706,108 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc392988
 
+Name             : Priest Discipline 10.1 Class Set 2pc (id=405551) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053889)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Priest Discipline 10.1 Class Set 4pc (id=405553) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053891)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Priest Holy 10.1 Class Set 2pc (id=405554) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053892)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Priest Holy 10.1 Class Set 4pc (id=405556) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053894)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Priest Shadow 10.1 Class Set 2pc (id=405557) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053895)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Priest Shadow 10.1 Class Set 4pc (id=405558) [Spell Family (6), Passive, Hidden] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053896)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+
 Name             : Shadowy Apparition (id=405746) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
@@ -17038,13 +17086,10 @@ Effects          :
 Description      : Shadow Apparitions deal $s1% increased damage to targets affected by your Devouring Plague.
 
 Name             : Mind's Eye (id=407470) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17120,5 +17165,40 @@ Effects          :
 #1 (id=1071745)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc122121
+
+Name             : Distorted Reality (id=409044) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=200]
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1073575)  : Dummy (3)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1073576)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+#3 (id=1073577)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+#4 (id=1073578)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+#5 (id=1073579)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+Description      : Increases the damage of Devouring Plague by $s3%, but Devouring Plague deals its damage over $s1 sec and its Insanity cost is increased by ${$s5/100}.
 
 
