@@ -33,6 +33,7 @@ struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
 struct expiation_t;
+struct purge_the_wicked_t;
 }  // namespace actions::spells
 
 /**
@@ -528,6 +529,7 @@ public:
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
     propagate_const<actions::spells::pain_of_death_t*> pain_of_death;
     propagate_const<actions::spells::expiation_t*> expiation;
+    propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
   } background_actions;
 
   // Items
@@ -637,6 +639,7 @@ private:
   void init_rng_discipline();
 
   void init_background_actions_shadow();
+  void init_background_actions_discipline();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
   action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 
@@ -657,6 +660,7 @@ public:
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
   void trigger_psychic_link( action_state_t* );
+  void trigger_purge_the_wicked_spread( action_state_t* );
   void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
