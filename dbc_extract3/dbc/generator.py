@@ -1389,6 +1389,8 @@ class SpellDataGenerator(DataGenerator):
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
          405209, # Humming Arcane Stone
+         # 10.1.0
+         408791, # Ashkandur
         ),
 
         # Warrior:
