@@ -3891,6 +3891,25 @@ void player_t::create_buffs()
         ->set_duration( sim->max_time * 3 )
         ->set_chance( as<double>( sim->overrides.windfury_totem ) );
 
+      buffs.retribution_aura = make_buff<buff_t>( this, "retribution_aura", find_spell( 183435 ) )
+        ->set_period( 1_s )
+        ->set_tick_callback(
+          [this]( buff_t* b, int, timespan_t ) {
+            if ( b->player == this) {
+             if ( rng().roll( sim->retribution_aura_proc_per_tick ) )
+             {
+               // cooldown handled by the buff
+               buffs.retribution_aura_proc->trigger();
+             }
+           }
+          } );
+
+      buffs.retribution_aura_proc = make_buff<buff_t>( this, "retribution_aura_proc", find_spell( 404996 ) )
+                                ->set_default_value( find_spell( 404996 )->effectN( 1 ).percent() )
+                                ->set_cooldown( 30_s )
+                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+
       // 9.0 class buffs
       buffs.focus_magic = make_buff( this, "focus_magic", find_spell( 321358 ) )
         ->set_default_value_from_effect( 1 )
@@ -4821,6 +4840,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.mark_of_lightning && buffs.mark_of_lightning->check() )
     m *= 1.0 + buffs.mark_of_lightning->check_value();
 
+  if ( is_ptr() )
+    m *= 1.0 + buffs.retribution_aura_proc->check_value();
+
   return m;
 }
 
@@ -5514,6 +5536,11 @@ void player_t::combat_begin()
   if ( buffs.windfury_totem && may_benefit_from_windfury_totem() )
   {
     buffs.windfury_totem->trigger();
+  }
+
+  if ( sim->overrides.retribution_aura && buffs.retribution_aura )
+  {
+    buffs.retribution_aura->trigger();
   }
 
   // Trigger registered combat-begin functions

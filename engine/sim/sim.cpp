@@ -1479,7 +1479,7 @@ sim_t::sim_t() :
   progressbar_type( 0 ),
   armory_retries( 3 ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
-  target_adds( 0 ), desired_targets( 1 ), 
+  target_adds( 0 ), desired_targets( 1 ),
   dbc(new dbc_t()),
   dbc_override( std::make_unique<dbc_override_t>() ),
   timewalk( -1 ),
@@ -1500,6 +1500,7 @@ sim_t::sim_t() :
   _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
   average_range( true ), average_gauss( false ),
   fight_style(), add_waves( 0 ), overrides( overrides_t() ),
+  retribution_aura_proc_per_tick( 0.15 ), // arbitrarily pick 15%
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
   azerite_status( azerite_control::DISABLED_ALL ),
@@ -2233,11 +2234,11 @@ void sim_t::init_fight_style()
     case FIGHT_STYLE_PATCHWERK:
       raid_events_str.clear();
       break;
-    
+
     case FIGHT_STYLE_CASTING_PATCHWERK:
       raid_events_str += "/casting,cooldown=500,duration=500";
       break;
-    
+
     case FIGHT_STYLE_HECTIC_ADD_CLEAVE:
     {
       // Phase 1 - Adds and move into position to fight adds
@@ -2259,7 +2260,7 @@ void sim_t::init_fight_style()
                                       first2, cooldown2 );
     }
     break;
-    
+
     case FIGHT_STYLE_DUNGEON_SLICE:
       //Based on the Hero Dungeon setup
       desired_targets = 1;
@@ -2274,7 +2275,7 @@ void sim_t::init_fight_style()
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
       break;
-    
+
     case FIGHT_STYLE_DUNGEON_ROUTE:
       // To be used in conjunction with "pull" raid events for a simulated dungeon run.
       range::for_each( target_list, []( player_t* t ) {
@@ -2285,7 +2286,7 @@ void sim_t::init_fight_style()
       // Bloodlust is handled by an option on each pull raid event.
       overrides.bloodlust = 0;
       break;
-    
+
     case FIGHT_STYLE_CLEAVE_ADD:
     {
       auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
@@ -2296,16 +2297,16 @@ void sim_t::init_fight_style()
                                       first_and_duration, cooldown, first_and_duration, last );
     }
     break;
-    
+
     case FIGHT_STYLE_LIGHT_MOVEMENT:
       raid_events_str += "/movement,players_only=1,cooldown=40,cooldown_stddev=10,distance=15,distance_min=10,distance_max=20,first=15";
       break;
-    
+
     case FIGHT_STYLE_HEAVY_MOVEMENT:
       raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
       raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
       break;
-    
+
     case FIGHT_STYLE_BEASTLORD:
     {
       deprecated = true;
@@ -2328,7 +2329,7 @@ void sim_t::init_fight_style()
                                       beast_last );
     }
     break;
-    
+
     case FIGHT_STYLE_HELTER_SKELTER:
       deprecated = true;
       raid_events_str += "/casting,cooldown=30,duration=3,first=15";
@@ -2336,7 +2337,7 @@ void sim_t::init_fight_style()
       raid_events_str += "/stun,cooldown=60,duration=2";
       raid_events_str += "/invulnerable,cooldown=120,duration=3";
       break;
-    
+
     case FIGHT_STYLE_ULTRAXION:
       deprecated = true;
       max_time = timespan_t::from_seconds( 366.0 );
@@ -2353,7 +2354,7 @@ void sim_t::init_fight_style()
       raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
       raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
       break;
-    
+
     default:
       fight_style = FIGHT_STYLE_PATCHWERK;
       break;
@@ -3248,6 +3249,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.mark_of_the_wild        = optimal_raid;
   overrides.power_word_fortitude    = optimal_raid;
   overrides.windfury_totem          = optimal_raid;
+  overrides.retribution_aura        = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
@@ -3508,6 +3510,8 @@ void sim_t::create_options()
   add_option( opt_int( "override.mark_of_the_wild", overrides.mark_of_the_wild ) );
   add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
   add_option( opt_int( "override.windfury_totem", overrides.windfury_totem ) );
+  add_option( opt_int( "override.retribution_aura", overrides.retribution_aura ) );
+  add_option( opt_float( "override.retribution_aura_proc_per_tick", retribution_aura_proc_per_tick, 0.0, 1.0 ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
