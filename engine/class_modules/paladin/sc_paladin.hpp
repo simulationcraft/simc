@@ -950,6 +950,7 @@ public:
   // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
+  bool searing_light_disabled;
 
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
@@ -957,7 +958,8 @@ public:
     track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
     cd_waste( nullptr ),
     affected_by( affected_by_t() ),
-    hasted_cd( false ), hasted_gcd( false )
+    hasted_cd( false ), hasted_gcd( false ),
+    searing_light_disabled( false )
   {
     // Spec aura damage increase
     if ( p -> specialization() == PALADIN_RETRIBUTION )
@@ -1097,13 +1099,13 @@ public:
         p()->buffs.divine_arbiter->trigger( 1 );
       }
 
-      if ( ab::get_school() == SCHOOL_RADIANT && p()->talents.searing_light->ok() )
+      if ( ab::get_school() == SCHOOL_RADIANT && !searing_light_disabled && p()->talents.searing_light->ok() )
       {
         if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
         {
+          p()->cooldowns.searing_light_icd->start();
           p()->active.searing_light->set_target( ab::execute_state->target );
           p()->active.searing_light->schedule_execute();
-          p()->cooldowns.searing_light_icd->start();
         }
       }
     }

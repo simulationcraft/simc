@@ -1469,11 +1469,58 @@ struct divine_hammer_t : public paladin_spell_t
   }
 };
 
-struct adjudication_blessed_hammer_t : public paladin_melee_attack_t
+struct adjudication_blessed_hammer_tick_t : public paladin_spell_t
 {
-  adjudication_blessed_hammer_t( paladin_t* p ) : paladin_melee_attack_t( "blessed_hammer", p, p -> find_spell( 404139 ) )
+  adjudication_blessed_hammer_tick_t( paladin_t* p )
+    : paladin_spell_t( "blessed_hammer_tick", p, p -> find_spell( 404139 ) )
+  {
+    aoe = -1;
+    background = dual = direct_tick = true;
+    callbacks = false;
+    radius = 9.0;
+    may_crit = true;
+  }
+};
+
+struct adjudication_blessed_hammer_t : public paladin_spell_t
+{
+  adjudication_blessed_hammer_tick_t* hammer;
+  // TODO: make this configurable
+  double num_strikes;
+
+  adjudication_blessed_hammer_t( paladin_t* p )
+    : paladin_spell_t( "blessed_hammer", p, /* p -> find_spell( 404140 ) */ spell_data_t::nil() ),
+      hammer( new adjudication_blessed_hammer_tick_t( p ) ), num_strikes( 2 )
   {
     background = true;
+
+    dot_duration = 0_ms;
+    base_tick_time = 0_ms;
+    may_miss = false;
+    tick_may_crit = true;
+
+    add_child( hammer );
+  }
+
+  void execute() override
+  {
+    paladin_spell_t::execute();
+    timespan_t initial_delay = num_strikes < 3 ? data().duration() * 0.25 : 0_ms;
+    // Let strikes be a decimal rather than int, and roll a random number to decide
+    // hits each time.
+    int roll_strikes = static_cast<int>(floor(num_strikes));
+    if ( num_strikes - roll_strikes != 0 && rng().roll( num_strikes - roll_strikes ))
+      roll_strikes += 1;
+    if (roll_strikes > 0)
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+          .target( execute_state -> target )
+          // spawn at feet of player
+          .x( execute_state -> action -> player -> x_position )
+          .y( execute_state -> action -> player -> y_position )
+          .pulse_time( /* TODO: replace with data().duration() */ timespan_t::from_seconds( 5 ) / roll_strikes )
+          .n_pulses( roll_strikes )
+          .start_time( sim -> current_time() + initial_delay )
+          .action( hammer ), true );
   }
 };
 
@@ -1486,6 +1533,9 @@ struct base_templar_strike_t : public paladin_melee_attack_t
 
     if ( !p->is_ptr() || !p->talents.templar_strikes->ok() )
       background = true;
+
+    // This might be a bug?
+    searing_light_disabled = true;
 
     if ( p->talents.swift_justice->ok() )
     {

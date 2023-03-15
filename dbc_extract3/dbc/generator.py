@@ -1388,6 +1388,7 @@ class SpellDataGenerator(DataGenerator):
          389581, # Emerald Coach's Whistle
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
+         405209, # Humming Arcane Stone
         ),
 
         # Warrior:
@@ -1457,6 +1458,7 @@ class SpellDataGenerator(DataGenerator):
             ( 387178, 0 ),          # Empyrean Legacy buff
             ( 224239, 0 ),          # Tempest divine storm
             ( 384810, 0 ),          # Seal of Clarity buff
+            ( 404140, 0 ),          # Blessed Hammers for Adjudication
         ),
 
         # Hunter:
@@ -1567,7 +1569,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394757, 0 ),          # Flagellation talent damage spell
             ( 394758, 0 ),          # Flagellation talent persist buff
             ( 385948, 0 ), ( 385949, 0 ), ( 385951, 0 ), # Finality talent buffs
-            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells 
+            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
@@ -3643,6 +3645,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'raging_tempests',
             'bonuses': [ 1521, 1523, 1524, 1525 ],
             'tier'   : 29
+        },
+        {
+            'name'   : 'tier30',
+            'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
+            'tier'   : 30
         }
     ]
 
