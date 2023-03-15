@@ -19,7 +19,6 @@ namespace actions
 {
 namespace spells
 {
-
 // ==========================================================================
 // Expiation
 // ==========================================================================
@@ -1497,7 +1496,16 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
     {
       sim->print_debug( "{} death_and_madness insanity gain buff triggered", priest() );
 
-      priest().buffs.death_and_madness_buff->trigger();
+      if ( priest().is_ptr() )
+      {
+        priest().generate_insanity(
+            priest().talents.death_and_madness_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_death_and_madness, nullptr );
+      }
+      else
+      {
+        priest().buffs.death_and_madness_buff->trigger();
+      }
     }
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -2594,7 +2602,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
