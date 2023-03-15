@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48537
-static const std::array<spelltext_data_t, 19664> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19665> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19610,6 +19610,7 @@ static const std::array<spelltext_data_t, 19664> __ptr_spelltext_data { {
   { 408310, "$@spelldesc405511", 0, 0 },
   { 408340, "$@spelldesc405512", "Agility increased by $w1%.", 0 },
   { 408356, "$@spelldesc405500", "Strength increased by $w1%.", 0 },
+  { 408368, "$@spelldesc405502", "A Frostwyrm is approaching.", 0 },
   { 408375, "$@spelldesc405503", "Death incarnate approaches.", 0 },
   { 408376, "$@spelldesc405503", "Mastery increased by $s1%.", 0 },
   { 408377, "$@spelldesc405503", 0, 0 },
