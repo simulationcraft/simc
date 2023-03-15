@@ -675,6 +675,7 @@ namespace monk
         if ( get_td( s->target )->debuff.bonedust_brew->up() )
           p()->bonedust_brew_assessor( s );
 
+        p()->trigger_shadowflame_monk( s );
       }
 
       void tick( dot_t *dot ) override
@@ -2918,10 +2919,25 @@ namespace monk
         {
           monk_melee_attack_t::impact( s );
 
-          if ( p()->buff.thunderfist->up() )
+          if ( result_is_hit( s->result ) )
           {
-            p()->passive_actions.thunderfist->target = s->target;
-            p()->passive_actions.thunderfist->schedule_execute();
+
+            if ( p()->buff.thunderfist->up() )
+            {
+              p()->passive_actions.thunderfist->target = s->target;
+              p()->passive_actions.thunderfist->schedule_execute();
+            }
+
+            //if ( p()->specialization() == MONK_WINDWALKER && p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) )
+            if ( true ) // debug
+            {
+              // Placeholders until spelldata is acquired from Blizzard
+              double spawn_chance = 0.1;
+              double duration = 12;
+
+              if ( rng().roll( spawn_chance ) )
+                p()->pets.shadowflame_monk.spawn( timespan_t::from_seconds( duration ), 1 );
+            }
           }
         }
       };
@@ -2974,6 +2990,7 @@ namespace monk
           if ( player->off_hand_attack )
             p()->off_hand_attack->schedule_execute();
         }
+
       };
 
       // ==========================================================================
