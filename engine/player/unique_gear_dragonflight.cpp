@@ -3579,6 +3579,18 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+// Ashkandur
+// 408790 Driver/Damage Value
+void ashkandur( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect, "ashkandur_fall_of_the_brotherhood", effect.driver() -> id() );
+  damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage -> set_school( SCHOOL_SHADOWFLAME );
+
+  effect.execute_action = damage;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -4812,7 +4824,7 @@ void register_special_effects()
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
   register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
   register_special_effect( 394928, items::neltharax );               // Neltharax, Enemy of the Sky
-
+  register_special_effect( 408790, items::ashkandur );               // Ashkandur, Fall of the Brotherhood
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
