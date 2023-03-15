@@ -112,8 +112,10 @@ struct avengers_shield_base_t : public paladin_spell_t
   {
     parse_options( options_str );
     {
+      if ( p->tier_sets.hearthfire_sentinels_authority_2pc->ok() )
+      {
       heartfire = new heartfire_t( p );
-     // add_child( heartfire );
+      }
     }
     if ( ! p -> has_shield_equipped() )
     {
@@ -146,6 +148,13 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       p()->trigger_tyrs_enforcer(s);
     }
+    if (p()->tier_sets.hearthfire_sentinels_authority_2pc->ok())
+    {
+      residual_action::trigger(
+          heartfire, s->target,
+          s->result_amount * p()->tier_sets.hearthfire_sentinels_authority_2pc->effectN( 2 ).percent() );
+    }
+
 
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
@@ -657,7 +666,7 @@ struct judgment_prot_t : public judgment_t
         hopo += sw_holy_power;
       if( hopo > 0 )
         p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
-      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B2 ) && s->result == RESULT_CRIT )
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
           p()->trigger_grand_crusader();
     }
   }
@@ -1215,6 +1224,7 @@ void paladin_t::create_buffs_protection()
   buffs.deflecting_light = make_buff( this, "deflecting_light", find_spell( 394727 ) )
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
+  buffs.heartfire = make_buff( this, "heartfire", find_spell( 408461 ) );
 }
 
 void paladin_t::init_spells_protection()
@@ -1313,7 +1323,7 @@ void paladin_t::init_spells_protection()
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
 
-  tier_sets.hearthfire_sentinels_authority_2pc = find_spell( 405547 );
+  tier_sets.hearthfire_sentinels_authority_2pc = find_spell( 408399 );
   tier_sets.hearthfire_sentinels_authority_4pc = find_spell( 405548 );
   spells.sentinel = find_spell( 389539 );
 }
