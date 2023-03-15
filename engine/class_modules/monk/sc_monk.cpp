@@ -668,7 +668,8 @@ namespace monk
           p()->proc.bountiful_brew_proc->occur();
         }
 
-        trigger_exploding_keg_proc( s );
+        if ( get_td( s->target )->debuff.exploding_keg->up() )
+          trigger_exploding_keg_proc( s );
 
         p()->trigger_empowered_tiger_lightning( s, true );
 
@@ -680,8 +681,14 @@ namespace monk
       {
         ab::tick( dot );
 
-        if ( !ab::result_is_miss( dot->state->result ) && get_td( dot->state->target )->debuff.bonedust_brew->up() )
-          p()->bonedust_brew_assessor( dot->state );
+        if ( !ab::result_is_miss( dot->state->result ) )
+        {
+          if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
+            p()->bonedust_brew_assessor( dot->state );
+
+          if ( get_td( dot->state->target )->debuff.exploding_keg->up() )
+            trigger_exploding_keg_proc( dot->state );
+        }
       }
 
       void last_tick( dot_t *dot ) override
@@ -774,6 +781,9 @@ namespace monk
         if ( p()->specialization() != MONK_BREWMASTER )
           return;
 
+        if ( !s->action->harmful )
+          return;
+
         // Blacklist spells
         if ( s->action->id == 388867 || // Exploding Keg Proc
           s->action->id == 124255 || // Stagger
@@ -788,11 +798,8 @@ namespace monk
           )
           return;
 
-        if ( p()->buff.exploding_keg->up() && s->action->harmful )
-        {
-          p()->active_actions.exploding_keg->target = s->target;
-          p()->active_actions.exploding_keg->execute();
-        }
+        p()->active_actions.exploding_keg->target = s->target;
+        p()->active_actions.exploding_keg->execute();
       }
     };
 
@@ -3923,13 +3930,6 @@ namespace monk
           add_child( p.active_actions.exploding_keg );
         }
 
-        void execute() override
-        {
-          p()->buff.exploding_keg->trigger();
-
-          monk_spell_t::execute();
-        }
-
         timespan_t travel_time() const override
         {
           // Always has the same time to land regardless of distance, probably represented there.
@@ -3945,6 +3945,13 @@ namespace monk
           }
 
           return monk_spell_t::target_ready( candidate_target );
+        }
+
+        void impact( action_state_t *s ) override
+        {
+          monk_spell_t::impact( s );
+
+          get_td( s->target )->debuff.exploding_keg->trigger();
         }
       };
 
@@ -5322,8 +5329,6 @@ namespace monk
         {
           double am = monk_heal_t::action_multiplier();
 
-          am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
-
           return am;
         }
 
@@ -5346,18 +5351,11 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
-          double health_difference =
-            p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
-
-          if ( p()->talent.general.strength_of_spirit->ok() )
-          {
-            double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-            s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
-          }
 
           monk_heal_t::impact( s );
 
           double result = s->result_total;
+          double health_difference = p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
 
           result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
@@ -5392,6 +5390,14 @@ namespace monk
               p()->buff.gift_of_the_ox->decrement();
             }
           }
+
+          if ( p()->talent.general.strength_of_spirit->ok() )
+          {
+            double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
+            s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
+          }
+
+          result *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
 
           dmg->base_dd_min = result;
           dmg->base_dd_max = result;
@@ -6555,6 +6561,10 @@ namespace monk
       ->set_cooldown( timespan_t::zero() )
       ->set_default_value_from_effect( 3 );
 
+    debuff.exploding_keg = make_buff( *this, "exploding_keg_debuff", p->talent.brewmaster.exploding_keg )
+      ->set_trigger_spell( p->talent.brewmaster.exploding_keg )
+      ->set_cooldown( timespan_t::zero() );
+
   // Covenant Abilities
     debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
       ->set_trigger_spell( p->shared.bonedust_brew )
@@ -7698,9 +7708,6 @@ namespace monk
 
     buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
       ->add_invalidate( CACHE_DODGE );
-
-    buff.exploding_keg = make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )
-      ->set_default_value_from_effect( 2 );
 
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
