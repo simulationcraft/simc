@@ -304,6 +304,7 @@ struct consecration_tick_t : public paladin_spell_t
     background  = true;
     may_crit    = true;
     ground_aoe  = true;
+    searing_light_disabled = true;
   }
 
   void execute() override

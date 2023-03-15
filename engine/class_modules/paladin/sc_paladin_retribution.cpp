@@ -1487,6 +1487,9 @@ struct base_templar_strike_t : public paladin_melee_attack_t
     if ( !p->is_ptr() || !p->talents.templar_strikes->ok() )
       background = true;
 
+    // This might be a bug?
+    searing_light_disabled = true;
+
     if ( p->talents.swift_justice->ok() )
     {
       cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
