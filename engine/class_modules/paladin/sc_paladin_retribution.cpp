@@ -378,6 +378,8 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       hasted_ticks = false;
       tick_may_crit = false;
 
+      searing_light_disabled = true;
+
       if ( p -> is_ptr() )
       {
         if ( p -> talents.jurisdiction -> ok() )
