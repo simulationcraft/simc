@@ -543,7 +543,7 @@ struct smite_t final : public priest_spell_t
     if ( priest().buffs.wrath_unleashed->check() )
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath unleashed",
+      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath_unleashed",
                         priest().buffs.wrath_unleashed->data().effectN( 1 ).percent(), d );
     }
     if ( priest().buffs.weal_and_woe->check() )
