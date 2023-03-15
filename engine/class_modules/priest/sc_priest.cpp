@@ -142,6 +142,11 @@ public:
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
+
+    if ( priest().sets->has_set_bonus(PRIEST_SHADOW, T30, B2) && priest().buffs.shadowy_insight->check() )
+    {
+      m *= 1 + 0.6;
+    }
     return m;
   }
 
@@ -186,6 +191,11 @@ public:
         priest().generate_insanity(
             priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
             priest().gains.insanity_whispers_of_the_damned, s->action );
+      }
+
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
+      {
+        priest().generate_insanity( 4, priest().gains.insanity_t30_2pc, s->action );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -1676,6 +1686,7 @@ void priest_t::create_gains()
   gains.insanity_dark_void               = get_gain( "Dark Void" );
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
   gains.insanity_whispers_of_the_damned  = get_gain( "Whispers of the Damned" );
+  gains.insanity_t30_2pc                 = get_gain( "Insanity Gained from T30 2PC" );
 }
 
 /** Construct priest procs */

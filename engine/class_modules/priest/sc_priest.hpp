@@ -474,6 +474,7 @@ public:
     propagate_const<gain_t*> insanity_dark_void;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_whispers_of_the_damned;
+    propagate_const<gain_t*> insanity_t30_2pc;
   } gains;
 
   // Benefits
