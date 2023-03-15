@@ -1842,6 +1842,73 @@ public:
     }
 };
 
+// ==========================================================================
+// Shadowflame Monk
+// ==========================================================================
+struct shadowflame_monk_t : public monk_pet_t
+{
+  private:
+
+  struct shadowflame_damage_t : public pet_spell_t
+  {
+    shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
+      : pet_spell_t( "shadowflame_damage", p, source_action->s_data )
+    {      
+      may_crit = true;
+      merge_report = false;
+
+      school = SCHOOL_SHADOWFLAME;
+    }
+  };
+
+  public:
+
+  int attack_counter;
+
+  shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true ),
+    attack_counter( 0 )
+  {
+    owner_coeff.ap_from_ap = 1.00;
+  }
+
+  void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+    // TODO: Is there a limit?
+    monk_pet_t::summon( duration );
+  }
+
+  void trigger_attack( shadowflame_monk_t *monk, action_state_t *s )
+  {
+    if ( s->result_amount <= 0 )
+      return;
+
+    switch ( s->action->id )
+    {
+      // TODO: Blacklist
+      case 0:
+      case 1:
+        return;
+
+      default:
+        break;
+    }
+
+    shadowflame_damage_t *damage_event = new shadowflame_damage_t( monk, s->action );
+    double damage_modifier = 0.4; // Placeholder until spell data acquired from Blizzard
+    double damage = s->result_amount * damage_modifier;
+    damage_event->base_dd_min = s->result_amount;
+    damage_event->base_dd_max = s->result_amount;
+    damage_event->target = s->target;
+    damage_event->execute();
+
+    attack_counter++;
+
+    if ( attack_counter == 3 )
+      this->dismiss();
+
+  }
+};
+
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
@@ -1852,7 +1919,8 @@ monk_t::pets_t::pets_t( monk_t* p )
     chiji( "chiji_the_red_crane", p, []( monk_t* p ) { return new pets::chiji_pet_t( p ); } ),
     white_tiger_statue( "white_tiger_statue", p, []( monk_t* p ) { return new pets::white_tiger_statue_t( p ); } ),
     fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t* p ) { return new pets::fury_of_xuen_pet_t( p ); }),
-    call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } )
+    call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
+    shadowflame_monk( "shadowflame_monk", p, []( monk_t* p ) { return new pets::shadowflame_monk_t( p ); } )
 {
 }
 
@@ -1891,6 +1959,19 @@ void monk_t::create_pets()
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
     pets.sef[ (int)sef_pet_e::SEF_EARTH ] =
         new pets::storm_earth_and_fire_pet_t( "earth_spirit", this, true, WEAPON_MACE );
+  }
+}
+
+void monk_t::trigger_shadowflame_monk( action_state_t *s )
+{
+  for ( int i = 0; i <= pets.shadowflame_monk.max_pets(); i++ )
+  {
+    auto shadowflame_monk = ( pets::shadowflame_monk_t * )pets.shadowflame_monk.active_pet( i );
+
+    if ( !shadowflame_monk )
+      break;
+
+    shadowflame_monk->trigger_attack( shadowflame_monk, s );
   }
 }
 
