@@ -10040,7 +10040,7 @@ void druid_t::create_buffs()
   buff.orbit_breaker = make_buff( this, "orbit_breaker" )
     ->set_quiet( true )
     ->set_trigger_spell( talent.orbit_breaker )
-    ->set_max_stack( std::min( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
+    ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
     ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
