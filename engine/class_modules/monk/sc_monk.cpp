@@ -3950,11 +3950,17 @@ namespace monk
           return monk_spell_t::target_ready( candidate_target );
         }
 
+        void execute() override
+        {
+          monk_spell_t::execute();
+
+          // Buff occurs after the keg finishes travelling 
+          p()->buff.exploding_keg->trigger();
+        }
+
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
-
-          p()->buff.exploding_keg->trigger(); // Buff occurs after impact when the keg finishes travelling 
 
           get_td( s->target )->debuff.exploding_keg->trigger();
         }
