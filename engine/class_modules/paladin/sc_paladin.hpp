@@ -35,15 +35,6 @@ enum consecration_source : unsigned int {
   SEARING_LIGHT = 2,
 };
 
-template<typename Action, typename Actor, typename... Args> action_t* get_action( util::string_view name, Actor* actor,
-                                                                                 Args&&... args )
-{
-  action_t* a = actor->find_action( name );
-  if ( !a )
-    a = new Action( name, actor, std::forward<Args>( args )... );
-  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
-  return a;
-}
 
 // ==========================================================================
 // Paladin Target Data

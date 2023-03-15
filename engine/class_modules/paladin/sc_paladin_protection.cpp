@@ -88,11 +88,14 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
 {
-  heartfire_t( util::string_view name, paladin_t* p, util::string_view options_str )
-      : residual_action::residual_periodic_action_t<paladin_spell_t>(name, p, p->find_spell(408461))
+  heartfire_t( paladin_t* p ) : base_t( "heartfire", p, p->find_spell( 408461 ) )
   {
     background = true;
     may_miss = may_crit = false;
+    dot_duration        = timespan_t::from_seconds( 4 );
+    base_tick_time      = timespan_t::from_seconds( 2 );
+    tick_zero           = false;
+    hasted_ticks        = false;
   }
 };
 
@@ -103,14 +106,14 @@ struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_
 // Specific interactions with Selfcast, Divine Resonance and Divine Toll should be put under the other structs.
 struct avengers_shield_base_t : public paladin_spell_t
 {
-  action_t* heartfire;
+  heartfire_t* heartfire;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
     : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ), heartfire(nullptr)
   {
     parse_options( options_str );
-    if ( p->talents.avengers_shield->ok() )
     {
-      heartfire = get_action<heartfire_t>( "heartfire", p );
+      heartfire = new heartfire_t( p );
+     // add_child( heartfire );
     }
     if ( ! p -> has_shield_equipped() )
     {
