@@ -6052,20 +6052,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
 // Frostwyrm's Fury =========================================================
 
-struct wrath_of_the_frostwyrm_buff_t : public buff_t
-{
-  wrath_of_the_frostwyrm_buff_t( death_knight_t* p ) : buff_t( p, "wrath_of_the_frostwyrm", p -> find_spell ( 408368 ) )
-  {
-    
-  }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    sim->print_debug ( "stacks={} value={} for wrath of the frostwyrm",
-      stacks, value);
-    return buff_t::trigger( stacks, value, chance, duration);
-  }
-};
 
 struct frostwyrms_fury_damage_t : public death_knight_spell_t
 {
@@ -6074,6 +6061,29 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
   {
     aoe = -1;
     background = true;
+  }
+};
+
+struct wrath_of_the_frostwyrm_buff_t : public buff_t
+{
+  action_t* fwf;
+  wrath_of_the_frostwyrm_buff_t ( death_knight_t* p ) : buff_t ( p, "wrath_of_the_frostwyrm", p -> find_spell ( 408368 ) ), fwf ( nullptr )
+  {
+    fwf = get_action<frostwyrms_fury_damage_t> ( "frostwyrms_fury", p );
+    cooldown->duration = 0_ms;
+  }
+
+  bool trigger ( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    bool r = buff_t::trigger ( stacks, value, chance, duration );
+    sim->print_debug ( "stacks={} value={} max={} for wrath of the frostwyrm",
+      stack (), value, max_stack () );
+    if ( stack () == max_stack () )
+    {
+      expire ();
+      fwf->execute ();
+    }
+    return r;
   }
 };
 
