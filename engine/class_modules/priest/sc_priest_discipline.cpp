@@ -3,7 +3,6 @@
 // Contact: https://github.com/orgs/simulationcraft/teams/priest/members
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
-
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
 
@@ -34,6 +33,52 @@ struct pain_suppression_t final : public priest_spell_t
     priest_spell_t::execute();
 
     target->buffs.pain_suppression->trigger();
+  }
+};
+
+// Purge the wicked
+struct purge_the_wicked_t final : public priest_spell_t
+{
+  struct purge_the_wicked_dot_t final : public priest_spell_t
+  {
+    // Manually create the dot effect because "ticking" is not present on
+    // primary spell
+    purge_the_wicked_dot_t( priest_t& p )
+      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
+    {
+      background = true;
+      // 3% / 5% damage increase
+      apply_affecting_aura( priest().talents.throes_of_pain );
+      // 5% damage increase
+      // TODO: Implement the spreading of Purge the Wicked via penance
+      apply_affecting_aura( p.talents.discipline.revel_in_purity );
+      // 8% / 15% damage increase
+      apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
+    }
+
+    void tick( dot_t* d ) override
+    {
+      priest_spell_t::tick( d );
+
+      if ( d->state->result_amount > 0 )
+      {
+        trigger_power_of_the_dark_side();
+      }
+    }
+  };
+
+  purge_the_wicked_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
+  {
+    parse_options( options_str );
+    tick_zero      = false;
+    execute_action = new purge_the_wicked_dot_t( p );
+    // 3% / 5% damage increase
+    apply_affecting_aura( priest().talents.throes_of_pain );
+    // 5% damage increase
+    apply_affecting_aura( priest().talents.discipline.revel_in_purity );
+    // 8% / 15% damage increase
+    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
   }
 };
 
@@ -158,12 +203,14 @@ struct penance_t : public priest_spell_t
 {
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
+  unsigned max_spread_targets;
 
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
       shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() )
   {
     parse_options( options_str );
@@ -171,6 +218,79 @@ struct penance_t : public priest_spell_t
     apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     add_child( channel );
     add_child( shadow_covenant_channel );
+  }
+
+  void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
+  {
+    auto idx = static_cast<unsigned>( rng().range( 0, in.size() ) );
+    out.push_back( in[ idx ] );
+    in.erase( in.begin() + idx );
+  }
+
+  static std::string actor_list_str( const std::vector<player_t*>& actors, util::string_view delim = ", " )
+  {
+    static const auto transform_fn = []( player_t* t ) { return t->name(); };
+    std::vector<const char*> tmp;
+
+    range::transform( actors, std::back_inserter( tmp ), transform_fn );
+
+    return tmp.size() ? util::string_join( tmp, delim ) : "none";
+  }
+
+  void spread_purge_the_wicked( const action_state_t* state, priest_t& p ) const
+  {
+    // Exit if PTW isn't ticking
+    if ( !td( state->target )->dots.purge_the_wicked->is_ticking() )
+    {
+      return;
+    }
+    // Exit if there 1 or fewer targets
+    if ( target_list().size() <= 1 )
+    {
+      return;
+    }
+    // Targets to spread PTW to
+    std::vector<player_t*> targets;
+
+    // Targets without PTW
+    std::vector<player_t*> no_ptw_targets,
+        // Targets that already have PTW
+        has_ptw_targets;
+
+    // Categorize all available targets (within 8 yards of the main target) based on presence of PTW
+    range::for_each( target_list(), [ & ]( player_t* t ) {
+      // Ignore main target
+      if ( t == state->target )
+      {
+        return;
+      }
+
+      if ( !td( t )->dots.purge_the_wicked->is_ticking() )
+      {
+        no_ptw_targets.push_back( t );
+      }
+      else if ( td( t )->dots.purge_the_wicked->is_ticking() )
+      {
+        has_ptw_targets.push_back( t );
+      }
+    } );
+
+    // 1) Randomly select targets without PTW, unless there already are the maximum number of targets with PTW up.
+    while ( no_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( no_ptw_targets, targets );
+    }
+
+    // 2) Randomly select targets that already have PTW on them
+    while ( has_ptw_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( has_ptw_targets, targets );
+    }
+
+    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
+
+    range::for_each(
+        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
   }
 
   void execute() override
@@ -192,6 +312,14 @@ struct penance_t : public priest_spell_t
     if ( priest().talents.discipline.void_summoner.enabled() )
     {
       priest().cooldowns.mindbender->adjust( void_summoner_cdr );
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    if ( p().talents.discipline.purge_the_wicked.enabled() )
+    {
+      spread_purge_the_wicked( state, p() );
     }
   }
 
@@ -264,52 +392,6 @@ struct power_word_solace_t final : public priest_spell_t
     {
       priest().buffs.weal_and_woe->expire();
     }
-  }
-};
-
-// Purge the wicked
-struct purge_the_wicked_t final : public priest_spell_t
-{
-  struct purge_the_wicked_dot_t final : public priest_spell_t
-  {
-    // Manually create the dot effect because "ticking" is not present on
-    // primary spell
-    purge_the_wicked_dot_t( priest_t& p )
-      : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
-    {
-      background = true;
-      // 3% / 5% damage increase
-      apply_affecting_aura( priest().talents.throes_of_pain );
-      // 5% damage increase
-      // TODO: Implement the spreading of Purge the Wicked via penance
-      apply_affecting_aura( p.talents.discipline.revel_in_purity );
-      // 8% / 15% damage increase
-      apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
-    }
-
-    void tick( dot_t* d ) override
-    {
-      priest_spell_t::tick( d );
-
-      if ( d->state->result_amount > 0 )
-      {
-        trigger_power_of_the_dark_side();
-      }
-    }
-  };
-
-  purge_the_wicked_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked )
-  {
-    parse_options( options_str );
-    tick_zero      = false;
-    execute_action = new purge_the_wicked_dot_t( p );
-    // 3% / 5% damage increase
-    apply_affecting_aura( priest().talents.throes_of_pain );
-    // 5% damage increase
-    apply_affecting_aura( priest().talents.discipline.revel_in_purity );
-    // 8% / 15% damage increase
-    apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
   }
 };
 
@@ -433,6 +515,14 @@ void priest_t::create_buffs_discipline()
 
 void priest_t::init_rng_discipline()
 {
+}
+
+void priest_t::init_background_actions_discipline()
+{
+  if ( talents.discipline.purge_the_wicked.enabled() )
+  {
+    background_actions.purge_the_wicked = new actions::spells::purge_the_wicked_t( *this, "" );
+  }
 }
 
 void priest_t::init_spells_discipline()
