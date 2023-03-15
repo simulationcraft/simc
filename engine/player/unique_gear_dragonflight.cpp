@@ -3581,11 +3581,11 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 
 // Ashkandur
 // 408790 Driver/Damage Value
+// 408791 Damage effect
 void ashkandur( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect, "ashkandur_fall_of_the_brotherhood", effect.driver() -> id() );
+  auto damage = create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect, "ashkandur_fall_of_the_brotherhood", effect.player -> find_spell( 408791 ) );
   damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-  damage -> set_school( SCHOOL_SHADOWFLAME );
 
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
