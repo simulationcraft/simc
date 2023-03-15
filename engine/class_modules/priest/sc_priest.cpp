@@ -541,7 +541,7 @@ struct smite_t final : public priest_spell_t
     if ( priest().buffs.wrath_unleashed->check() )
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath unleashed",
+      sim->print_debug( "Smite damage modified by {} (new total: {}), from wrath_unleashed",
                         priest().buffs.wrath_unleashed->data().effectN( 1 ).percent(), d );
     }
     if ( priest().buffs.weal_and_woe->check() )
@@ -549,13 +549,13 @@ struct smite_t final : public priest_spell_t
       d *= 1.0 +
            ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
       sim->print_debug(
-          "Smite damage modified by {} (new total: {}), from weal and woe",
+          "Smite damage modified by {} (new total: {}), from weal_and_woe",
           priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack, d );
     }
     if ( priest().talents.discipline.blaze_of_light.enabled() )
     {
       d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
-      sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze of light",
+      sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze_of_light",
                         priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
