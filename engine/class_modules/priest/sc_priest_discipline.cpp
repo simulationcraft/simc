@@ -287,7 +287,7 @@ struct penance_t : public priest_spell_t
       move_random_target( has_ptw_targets, targets );
     }
 
-    sim->print_debug( "{} PTW spread selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
+    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
 
     range::for_each(
         targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
