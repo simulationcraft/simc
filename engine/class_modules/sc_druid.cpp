@@ -381,6 +381,7 @@ public:
     action_t* after_the_wildfire_heal;
     action_t* brambles;
     action_t* elunes_favored_heal;
+    action_t* furious_regeneration;
     action_t* galactic_guardian;
     action_t* maul_tooth_and_claw;
     action_t* moonless_night;
@@ -504,11 +505,13 @@ public:
     buff_t* dream_of_cenarius;
     buff_t* earthwarden;
     buff_t* elunes_favored;
+    buff_t* furious_regeneration;  // 2t30
     buff_t* galactic_guardian;
     buff_t* gore;
     buff_t* gory_fur;
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
+    buff_t* indomitable_guardian;  // 4t30
     buff_t* overpowering_aura;  // 2t29
     buff_t* rage_of_the_sleeper;
     buff_t* tooth_and_claw;
@@ -929,7 +932,7 @@ public:
     const spell_data_t* bear_form_2;
     const spell_data_t* berserk_bear;  // berserk cast/buff spell
     const spell_data_t* elunes_favored;
-    const spell_data_t* galactic_guardian_buff;
+    const spell_data_t* furious_regeneration;  // 2t30
     const spell_data_t* incarnation_bear;
     const spell_data_t* lightning_reflexes;
     const spell_data_t* ursine_adept;
@@ -1957,6 +1960,7 @@ public:
                         p()->talent.berserk_ravage,
                         p()->talent.berserk_unchecked_aggression );
     parse_buff_effects( p()->buff.dream_of_cenarius );
+    parse_buff_effects( p()->buff.furious_regeneration );
     parse_buff_effects( p()->buff.gory_fur );
     parse_buff_effects( p()->buff.overpowering_aura );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
@@ -4441,6 +4445,25 @@ public:
   }
 };
 
+template <typename BASE>
+struct trigger_indomitable_guardian_t : public BASE
+{
+private:
+  druid_t* p_;
+
+public:
+  trigger_indomitable_guardian_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
+    : BASE( n, p, s, o ), p_( p )
+  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    p_->buff.indomitable_guardian->trigger();
+  }
+};
+
 // Berserk (Bear) ===========================================================
 struct berserk_bear_base_t : public bear_attack_t
 {
@@ -4565,7 +4588,7 @@ struct incapacitating_roar_t : public bear_attack_t
 };
 
 // Ironfur ==================================================================
-struct ironfur_t : public rage_spender_t
+struct ironfur_t : public druid_mixin_t<trigger_indomitable_guardian_t<rage_spender_t>>
 {
   double lm_chance;
 
@@ -4678,11 +4701,13 @@ struct mangle_t : public bear_attack_t
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    double em = bear_attack_t::composite_energize_amount( s );
+    double e = bear_attack_t::composite_energize_amount( s );
 
-    em += p()->buff.gore->check_value();
+    e += p()->buff.gore->check_value();
 
-    return em;
+    e *= 1.0 + p()->buff.furious_regeneration->check_value();
+
+    return e;
   }
 
   int n_targets() const override
@@ -4742,7 +4767,8 @@ struct mangle_t : public bear_attack_t
 };
 
 // Maul =====================================================================
-struct maul_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>
+struct maul_t
+  : public druid_mixin_t<trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>>
 {
   maul_t( druid_t* p, std::string_view opt ) : maul_t( p, "maul", opt ) {}
 
@@ -4855,7 +4881,8 @@ struct rage_of_the_sleeper_t : public bear_attack_t
 };
 
 // Raze =====================================================================
-struct raze_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>
+struct raze_t
+  : public druid_mixin_t<trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trigger_gore_t<rage_spender_t>>>>
 {
   raze_t( druid_t* p, std::string_view opt ) : raze_t( p, "raze", opt ) {}
 
@@ -5000,6 +5027,15 @@ struct thrash_bear_t : public druid_mixin_t<trigger_ursocs_fury_t<trigger_gore_t
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
+  }
+
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double e = base_t::composite_energize_amount( s );
+
+    e *= 1.0 + p()->buff.furious_regeneration->check_value();
+
+    return e;
   }
 
   void execute() override
@@ -5227,6 +5263,12 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     return pm;
   }
+};
+
+// Furious Regeneration (Guardian Tier 30 2pc) ==============================
+struct furious_regeneration_t : public residual_action::residual_periodic_action_t<druid_heal_t>
+{
+  furious_regeneration_t( druid_t* p ) : residual_action_t( "furious_regeneration", p, p->spec.furious_regeneration ) {}
 };
 
 // Flourish =================================================================
@@ -9654,6 +9696,7 @@ void druid_t::init_spells()
                                          talent.berserk_unchecked_aggression ||
                                          talent.berserk_persistence, 50334 );
   spec.elunes_favored           = check( talent.elunes_favored, 370588 );
+  spec.furious_regeneration     = check( sets->set( DRUID_GUARDIAN, T30, B2 ), 408504 );
   spec.incarnation_bear         = check( talent.incarnation_bear, 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
   spec.ursine_adept             = find_specialization_spell( "Ursine Adept" );
@@ -10150,6 +10193,10 @@ void druid_t::create_buffs()
       active.elunes_favored_heal->execute();
     } );
 
+  buff.furious_regeneration = make_buff( this, "furious_regeneration", spec.furious_regeneration )
+    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T30, B2 ) )
+    ->set_default_value_from_effect( 5, 0.1 );
+
   // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
     ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
@@ -10165,6 +10212,19 @@ void druid_t::create_buffs()
     ->set_chance( talent.gory_fur->proc_chance() );
 
   buff.guardian_of_elune = make_buff( this, "guardian_of_elune", talent.guardian_of_elune->effectN( 1 ).trigger() );
+
+  buff.indomitable_guardian = make_buff( this, "indomitable_guardian", find_spell( 408522 ) )
+    ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T30, B4 ) )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+      auto old_mul = 1.0 + old_ * b->default_value;
+      auto new_mul = 1.0 + new_ * b->default_value;
+      auto hp_mul = new_mul / old_mul;
+
+      resources.max[ RESOURCE_HEALTH ] *= hp_mul;
+      resources.current[ RESOURCE_HEALTH ] *= hp_mul;
+      recalculate_resource_max( RESOURCE_HEALTH );
+    } );
 
   buff.overpowering_aura = make_buff( this, "overpowering_aura", find_spell( 395944 ) )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B2 ) )
@@ -10377,6 +10437,9 @@ void druid_t::create_actions()
 
   if ( talent.elunes_favored.ok() )
     active.elunes_favored_heal = get_secondary_action<elunes_favored_heal_t>( "elunes_favored" );
+
+  if ( sets->has_set_bonus( DRUID_GUARDIAN, T30, B2 ) )
+    active.furious_regeneration = get_secondary_action<furious_regeneration_t>( "furious_regeneration" );
 
   if ( talent.galactic_guardian.ok() )
   {
@@ -12046,6 +12109,15 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
 
     if ( talent.dream_of_cenarius.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       buff.dream_of_cenarius->trigger( -1, buff_t::DEFAULT_VALUE(), cache.attack_crit_chance() );
+
+    if ( active.furious_regeneration )
+    {
+      buff.furious_regeneration->trigger();
+
+      auto heal_pct = sets->set( DRUID_GUARDIAN, T30, B2 )->effectN( 1 ).percent();
+
+      residual_action::trigger( active.furious_regeneration, this, s->result_amount * heal_pct );
+    }
   }
 }
 
@@ -12649,6 +12721,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T29, B4 ) );
+  action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T30, B4 ) );
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
