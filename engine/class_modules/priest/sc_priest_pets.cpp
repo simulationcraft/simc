@@ -1088,7 +1088,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 
       auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
 
-      throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}' {}.", tail ) );
+      throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
     }
   }
   else if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) )
