@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48537
-static const std::array<spelltext_data_t, 19663> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19665> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19380,6 +19380,7 @@ static const std::array<spelltext_data_t, 19663> __ptr_spelltext_data { {
   { 404111, "Pour it into the pot!", 0, 0 },
   { 404112, "Pour it into the pot!", 0, 0 },
   { 404139, "Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holystrike damage to enemies.", 0, 0 },
+  { 404140, "Throws a Blessed Hammer that spirals outward, dealing $404139s1 Holy damage to enemies.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   { 404306, "Abilities that deal Holystrike damage deal $s1% increased damage and casting abilities that deal Holystrike damage grants you a stack of Divine Arbiter.\r\n\r\nAt $s3 stacks your next damaging single target Holy Power ability causes $406983s1 Holystrike damage to your primary target and $406983s2 Holystrike damage to enemies within 6 yds.", 0, 0 },
   { 404357, "When your health is brought below $s1%, you instantly cast a free Word of Glory at $s2% effectiveness on yourself.\r\n\r\nCannot occur more than once every $proccooldown sec.", 0, 0 },
   { 404358, "Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 $?s403665[Holy][Physical] damage.\r\n\r\nDeals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFGenerates $184575s2 Holy Power.|r\r\n", 0, 0 },
@@ -19609,6 +19610,7 @@ static const std::array<spelltext_data_t, 19663> __ptr_spelltext_data { {
   { 408310, "$@spelldesc405511", 0, 0 },
   { 408340, "$@spelldesc405512", "Agility increased by $w1%.", 0 },
   { 408356, "$@spelldesc405500", "Strength increased by $w1%.", 0 },
+  { 408368, "$@spelldesc405502", "A Frostwyrm is approaching.", 0 },
   { 408375, "$@spelldesc405503", "Death incarnate approaches.", 0 },
   { 408376, "$@spelldesc405503", "Mastery increased by $s1%.", 0 },
   { 408377, "$@spelldesc405503", 0, 0 },
