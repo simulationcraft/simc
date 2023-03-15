@@ -114,7 +114,7 @@ struct penance_damage_t : public priest_spell_t
     if ( priest().talents.discipline.blaze_of_light.enabled() )
     {
       d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
-      sim->print_debug( "Penance damage modified by {} (new total: {}), from blaze of light",
+      sim->print_debug( "Penance damage modified by {} (new total: {}), from blaze_of_light",
                         priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
