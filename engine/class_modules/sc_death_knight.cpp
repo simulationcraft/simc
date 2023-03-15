@@ -1148,6 +1148,7 @@ public:
   double    composite_melee_haste() const override;
   double    composite_spell_haste() const override;
   double    composite_attribute_multiplier( attribute_e attr ) const override;
+  double    composite_mastery() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_parry_rating() const override;
   double    composite_parry() const override;
@@ -10051,13 +10052,14 @@ void death_knight_t::create_buffs()
             }
           } );
 
-  buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-      -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-      -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).base_value() );
-
   buffs.unholy_t30_4pc_mastery = make_buff( this, "death_dealer_4pc", spell.unholy_t30_4pc_mastery )
-      -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() );
+      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() )
+      -> add_invalidate( CACHE_MASTERY );
+
+  buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
+      -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).base_value() )
+      -> add_invalidate( CACHE_MASTERY );
+
 }
 
 // death_knight_t::init_gains ===============================================
@@ -10419,6 +10421,17 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     m *= 1.0 + spec.blood_fortification -> effectN( 1 ).percent();
   }
+
+  return m;
+}
+
+// death_knight_t::composite_mastery_value ===========================
+
+double death_knight_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  m += 1.0 + buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
 
   return m;
 }
