@@ -518,9 +518,7 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 struct smite_t final : public priest_spell_t
 {
-  const spell_data_t* holy_fire_rank2;
   const spell_data_t* holy_word_chastise;
-  const spell_data_t* smite_rank2;
   propagate_const<cooldown_t*> holy_word_chastise_cooldown;
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
