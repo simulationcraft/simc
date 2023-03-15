@@ -148,7 +148,7 @@ public:
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
 
-    if ( priest().sets->has_set_bonus(PRIEST_SHADOW, T30, B2) && priest().buffs.shadowy_insight->check() )
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
     {
       m *= 1 + 0.6;
     }
@@ -808,8 +808,7 @@ struct summon_shadowfiend_t final : public priest_spell_t
       }
       else
       {
-        duration +=
-            timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+        duration += timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
       }
     }
 
@@ -837,7 +836,6 @@ struct summon_mindbender_t final : public priest_spell_t
 
   void execute() override
   {
-
     priest_spell_t::execute();
 
     auto duration = default_duration;
@@ -850,8 +848,7 @@ struct summon_mindbender_t final : public priest_spell_t
       }
       else
       {
-        duration +=
-            timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+        duration += timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
         priest().procs.idol_of_yshaarj_extra_duration->occur();
       }
     }
@@ -1086,7 +1083,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
 // ==========================================================================
 // Holy Nova
-// TODO: Add Improved Holy Nova for Holy/Discipline
 // ==========================================================================
 struct holy_nova_t final : public priest_spell_t
 {
@@ -2544,7 +2540,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
