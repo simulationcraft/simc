@@ -3117,6 +3117,9 @@ void paladin_t::init_spells()
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
+  tier_sets.hearthfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B4 );
+  tier_sets.hearthfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
+
 
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );

@@ -35,6 +35,16 @@ enum consecration_source : unsigned int {
   SEARING_LIGHT = 2,
 };
 
+template<typename Action, typename Actor, typename... Args> action_t* get_action( util::string_view name, Actor* actor,
+                                                                                 Args&&... args )
+{
+  action_t* a = actor->find_action( name );
+  if ( !a )
+    a = new Action( name, actor, std::forward<Args>( args )... );
+  assert( dynamic_cast<Action*>( a ) && a->name_str == name && a->background );
+  return a;
+}
+
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
@@ -73,6 +83,7 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
+    action_t* heartfire;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
@@ -156,6 +167,7 @@ public:
     buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
+    buff_t* heartfire;         // T30 2pc 
 
     // Ret
     buffs::crusade_buff_t* crusade;
@@ -523,6 +535,7 @@ public:
     const spell_data_t* consecrated_blade;
     const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
+    const spell_data_t* heartfire;
     const spell_data_t* boundless_judgment;
     const spell_data_t* sanctification;
     const spell_data_t* inner_grace;
@@ -618,6 +631,8 @@ public:
   {
     const spell_data_t* ally_of_the_light_2pc;
     const spell_data_t* ally_of_the_light_4pc;
+    const spell_data_t* hearthfire_sentinels_authority_2pc;
+    const spell_data_t* hearthfire_sentinels_authority_4pc;
 
   } tier_sets;
 
@@ -700,6 +715,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
+  void    heartfire( action_state_t* s );
   void    t29_4p_prot();
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
