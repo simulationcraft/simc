@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 10.0.7.48295
-static const std::array<permanent_enchant_entry_t, 769> __ptr_permanent_enchant_data { {
+// Permanent item enchants, wow build 10.1.0.48537
+static const std::array<permanent_enchant_entry_t, 775> __ptr_permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -349,6 +349,9 @@ static const std::array<permanent_enchant_entry_t, 769> __ptr_permanent_enchant_
   { 6688,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_order"          },
   { 6689,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_order"          },
   { 6690,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_order"          },
+  { 6819,  1,  4, 0x00000008, 0x0000001f, "illusory_adornment_spores"         },
+  { 6820,  2,  4, 0x00000008, 0x0000001f, "illusory_adornment_spores"         },
+  { 6821,  3,  4, 0x00000008, 0x0000001f, "illusory_adornment_spores"         },
   { 1897,  0,  2, 0x00000000, 0x00000562, "impact"                            },
   { 5957,  0,  2, 0x00000000, 0x0004000c, "incendiary_ammunition"             },
   { 6195,  0,  2, 0x00000000, 0x0004000c, "infragreen_reflex_sight"           },
@@ -369,6 +372,9 @@ static const std::array<permanent_enchant_entry_t, 769> __ptr_permanent_enchant_
   { 5933,  0,  4, 0x00000400, 0x0000001f, "kul_tiran_mining"                  },
   { 5934,  0,  4, 0x00000400, 0x0000001f, "kul_tiran_skinning"                },
   { 5935,  0,  4, 0x00000400, 0x0000001f, "kul_tiran_surveying"               },
+  { 6828,  1,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
+  { 6829,  2,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
+  { 6490,  3,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
   { 4099,  0,  2, 0x00000000, 0x000ae7f3, "landslide"                         },
   { 4104,  0,  4, 0x00000100, 0x0000001e, "lavawalker"                        },
   { 5444,  0,  4, 0x00000400, 0x0000001f, "legion_herbalism"                  },

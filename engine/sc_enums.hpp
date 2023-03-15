@@ -691,6 +691,8 @@ enum school_e
   SCHOOL_MAX
 };
 
+const school_e SCHOOL_RADIANT = SCHOOL_HOLYFIRE;
+
 enum school_mask_e
 {
   SCHOOL_MASK_PHYSICAL = 0x01,
@@ -854,6 +856,7 @@ enum set_bonus_type_e
   T29_AZUREWEAVE_VESTMENTS,
   T29_WOVEN_CHRONOCLOTH,
   T29_RAGING_TEMPESTS,
+  T30,
   SET_BONUS_MAX
 };
 

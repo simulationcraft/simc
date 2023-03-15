@@ -355,8 +355,8 @@ struct base_fiend_pet_t : public priest_pet_t
 
   double direct_power_mod;
 
-  base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
-    : priest_pet_t( sim, owner, name ),
+  base_fiend_pet_t( priest_t* owner, util::string_view name, enum fiend_type type )
+    : priest_pet_t( owner->sim, *owner, name ),
       inescapable_torment( nullptr ),
       gains(),
       fiend_type( type ),
@@ -408,7 +408,7 @@ struct base_fiend_pet_t : public priest_pet_t
   void demise() override
   {
     priest_pet_t::demise();
-    o().buffs.devoured_pride->cancel();
+    o().buffs.devoured_pride->decrement();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -418,15 +418,21 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
 {
   double power_leech_insanity;
 
-  shadowfiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "shadowfiend" )
-    : base_fiend_pet_t( sim, owner, name, fiend_type::Shadowfiend ),
+  shadowfiend_pet_t( priest_t* owner, util::string_view name = "shadowfiend" )
+    : base_fiend_pet_t( owner, name, fiend_type::Shadowfiend ),
       power_leech_insanity( o().find_spell( 262485 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.408;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
-    npc_id           = 19668;
 
-    main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
-    main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
+    // Empirically tested to match 3/10/2023, actual value not available in spell data
+    if ( owner->specialization() == PRIEST_DISCIPLINE )
+    {
+      direct_power_mod = 0.445;
+    }
+    npc_id = 19668;
+
+    main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
+    main_hand_weapon.max_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
 
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
@@ -453,16 +459,22 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   const spell_data_t* mindbender_spell;
   double power_leech_insanity;
 
-  mindbender_pet_t( sim_t* sim, priest_t& owner, util::string_view name = "mindbender" )
-    : base_fiend_pet_t( sim, owner, name, fiend_type::Mindbender ),
-      mindbender_spell( owner.find_spell( 123051 ) ),
+  mindbender_pet_t( priest_t* owner, util::string_view name = "mindbender" )
+    : base_fiend_pet_t( owner, name, fiend_type::Mindbender ),
+      mindbender_spell( owner->find_spell( 123051 ) ),
       power_leech_insanity( o().find_spell( 200010 )->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     direct_power_mod = 0.442;  // New modifier after Spec Spell has been 0'd -- Anshlun 2020-10-06
-    npc_id           = 62982;
 
-    main_hand_weapon.min_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
-    main_hand_weapon.max_dmg = owner.dbc->spell_scaling( owner.type, owner.level() ) * 2;
+    // Empirically tested to match 3/10/2023, actual value not available in spell data
+    if ( owner->specialization() == PRIEST_DISCIPLINE )
+    {
+      direct_power_mod = 0.326;
+    }
+    npc_id = 62982;
+
+    main_hand_weapon.min_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
+    main_hand_weapon.max_dmg = owner->dbc->spell_scaling( owner->type, owner->level() ) * 2;
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
@@ -720,7 +732,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 
     // BUG: This talent is cursed
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    if ( p.o().bugs )
+    if ( p.o().bugs && !p.o().is_ptr())
     {
       if ( p.o().level() == 70 )
       {
@@ -808,6 +820,11 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
     affected_by_shadow_weaving = true;
+
+    if ( p.o().is_ptr() )
+    {
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
 
     // BUG: The damage this is dealing is not following spell data
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
@@ -1019,49 +1036,31 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
-fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
+spawner::pet_spawner_t<pet_t, priest_t>* get_current_main_pet( priest_t& priest )
 {
-  pet_t* current_main_pet =
-      priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
-
-  return debug_cast<fiend::base_fiend_pet_t*>( current_main_pet );
+  return priest.talents.shadow.mindbender.enabled() ? &priest.pets.mindbender : &priest.pets.shadowfiend;
 }
 
 }  // namespace
 
 namespace priestspace
 {
-pet_t* priest_t::create_pet( util::string_view pet_name, util::string_view /* pet_type */ )
-{
-  pet_t* p = find_pet( pet_name );
-
-  if ( p )
-    return p;
-
-  if ( pet_name == "shadowfiend" )
-  {
-    return new fiend::shadowfiend_pet_t( sim, *this );
-  }
-  if ( pet_name == "mindbender" )
-  {
-    return new fiend::mindbender_pet_t( sim, *this );
-  }
-
-  sim->error( "{} Tried to create unknown priest pet {}.", *this, pet_name );
-
-  return nullptr;
-}
 
 void priest_t::trigger_inescapable_torment( player_t* target )
 {
-  auto current_pet = get_current_main_pet( *this );
-  if ( current_pet && !current_pet->is_sleeping() )
+  auto current_pets = get_current_main_pet( *this );
+
+  for ( auto a_pet : current_pets->active_pets() )
   {
-    if ( current_pet->o().talents.shadow.inescapable_torment.enabled() )
+    auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
+    if ( pet && !pet->is_sleeping() )
     {
-      assert( current_pet->inescapable_torment );
-      current_pet->inescapable_torment->set_target( target );
-      current_pet->inescapable_torment->execute();
+      if ( pet->o().talents.shadow.inescapable_torment.enabled() )
+      {
+        assert( pet->inescapable_torment );
+        pet->inescapable_torment->set_target( target );
+        pet->inescapable_torment->execute();
+      }
     }
   }
 }
@@ -1069,7 +1068,7 @@ void priest_t::trigger_inescapable_torment( player_t* target )
 std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expression_str,
                                                          util::span<util::string_view> splits )
 {
-  if ( splits.size() < 2 )
+  if ( splits.size() <= 2 )
   {
     return {};
   }
@@ -1079,45 +1078,17 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
     {
       // pet.fiend.X refers to either shadowfiend or mindbender
-      pet_t* pet = get_current_main_pet( *this );
-      if ( !pet )
-      {
-        return expr_t::create_constant( "no_fiend", 0.0 );
-      }
-      if ( splits.size() == 2 )
-      {
-        return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
-      }
-      // pet.foo.blah
-      else
-      {
-        if ( splits[ 2 ] == "active" )
-        {
-          return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
-        }
-        else if ( splits[ 2 ] == "remains" )
-        {
-          return make_fn_expr( expression_str, [ pet ] {
-            if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
-            {
-              return pet->expiration->remains().total_seconds();
-            }
-            else
-            {
-              return 0.0;
-            };
-          } );
-        }
+      auto pets = get_current_main_pet( *this );
 
-        // build player/pet expression from the tail of the expression string.
-        auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
-        if ( auto e = pet->create_expression( tail ) )
-        {
-          return e;
-        }
-
-        throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
+      auto expr = pets->create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      if ( expr )
+      {
+        return expr;
       }
+
+      auto tail = expression_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
+
+      throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
     }
   }
   else if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) )
@@ -1125,16 +1096,12 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) || util::str_compare_ci( splits[ 1 ], "shadowfiend" ) ||
          util::str_compare_ci( splits[ 1 ], "bender" ) || util::str_compare_ci( splits[ 1 ], "mindbender" ) )
     {
-      pet_t* pet = get_current_main_pet( *this );
-      if ( !pet )
-      {
-        return expr_t::create_constant( "no_fiend", 0.0 );
-      }
-      if ( cooldown_t* cooldown = get_cooldown( pet->name_str ) )
+      if ( cooldown_t* cooldown = get_cooldown( talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
-      throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.", pet->name_str ) );
+      throw std::invalid_argument( fmt::format( "Cannot find any cooldown with name '{}'.",
+                                                talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" ) );
     }
   }
 
@@ -1142,8 +1109,8 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 }
 
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )
-  : shadowfiend(),
-    mindbender(),
+  : shadowfiend( "shadowfiend", &p, []( priest_t* priest ) { return new fiend::shadowfiend_pet_t( priest ); } ),
+    mindbender( "mindbender", &p, []( priest_t* priest ) { return new fiend::mindbender_pet_t( priest ); } ),
     void_tendril( "void_tendril", &p, []( priest_t* priest ) { return new void_tendril_t( priest ); } ),
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
