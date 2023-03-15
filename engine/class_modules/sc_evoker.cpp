@@ -119,6 +119,7 @@ struct evoker_t : public player_t
   // Action pointers
   struct actions_t
   {
+    action_t* obsidian_shards;  // 2t30
     action_t* volatility;
     action_t* volatility_dragonrage;
   } action;
@@ -152,6 +153,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> fury_of_the_aspects;
     propagate_const<buff_t*> causality;
     propagate_const<buff_t*> imminent_destruction;
+    propagate_const<buff_t*> tier30_4pc;
 
     // Preservation
   } buff;
@@ -772,7 +774,7 @@ struct empowered_release_spell_t : public empowered_base_t
 {
   using base_t = empowered_release_spell_t;
 
-  timespan_t extend_4pc;
+  timespan_t extend_tier29_4pc;
 
   empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : empowered_base_t( name, p, spell )
@@ -786,7 +788,13 @@ struct empowered_release_spell_t : public empowered_base_t
       trigger_gcd = gcd_spell->gcd();
     gcd_type = gcd_haste_type::NONE;
 
-    extend_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
+    extend_tier29_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
+
+    if ( p->sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ) )
+    {
+      empowered_base_t::da_multiplier_buffeffects.emplace_back( nullptr, 0.08, false, false, [] { return true; } );
+      empowered_base_t::ta_multiplier_buffeffects.emplace_back( nullptr, 0.08, false, false, [] { return true; } );
+    }
   }
 
   empower_e empower_level( const action_state_t* s ) const
@@ -825,12 +833,14 @@ struct empowered_release_spell_t : public empowered_base_t
     if ( rng().roll( p()->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 2 ).percent() ) )
     {
       if ( p()->buffs.bloodlust->check() )
-        p()->buffs.bloodlust->extend_duration( p(), extend_4pc );
+        p()->buffs.bloodlust->extend_duration( p(), extend_tier29_4pc );
       else if ( p()->buff.fury_of_the_aspects->check() )
-        p()->buff.fury_of_the_aspects->extend_duration( p(), extend_4pc );
+        p()->buff.fury_of_the_aspects->extend_duration( p(), extend_tier29_4pc );
       else
-        p()->buff.fury_of_the_aspects->trigger( extend_4pc );
+        p()->buff.fury_of_the_aspects->trigger( extend_tier29_4pc );
     }
+
+    p()->buff.tier30_4pc->trigger();
   }
 };
 
@@ -1038,13 +1048,15 @@ struct essence_spell_t : public evoker_spell_t
   timespan_t ftf_dur_eb;
   double hoarded_pct;
   double titanic_mul;
+  double tier30_2pc_mul;
 
   essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
     : evoker_spell_t( n, p, s, o ),
       ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
       ftf_dur_eb( -timespan_t::from_seconds( p->is_ptr() ? p->talent.feed_the_flames->effectN( 2 ).base_value() : 0 ) ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
-      titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() )
+      titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
+      tier30_2pc_mul( 0.12 )
   {
   }
 
@@ -1372,6 +1384,9 @@ struct disintegrate_t : public essence_spell_t
 
       eternity_surge->schedule_execute( emp_state );
     }
+
+    if ( p()->action.obsidian_shards )
+      residual_action::trigger( p()->action.obsidian_shards, d->state->target, d->state->result_amount * tier30_2pc_mul );
   }
 };
 
@@ -1643,6 +1658,31 @@ struct obsidian_scales_t : public evoker_spell_t
   }
 };
 
+struct obsidian_shards_t : public residual_action::residual_periodic_action_t<evoker_spell_t>
+{
+  obsidian_shards_t( evoker_t* p ) : residual_action_t( "obsidian_shards", p, spell_data_t::nil() )
+  {
+    school = SCHOOL_FIRESTORM;
+    dot_duration = 8_s;
+    base_tick_time = 2_s;
+
+    if ( p->sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ) )
+    {
+      residual_action_t::ta_multiplier_buffeffects.emplace_back( nullptr, 2.0, false, false, [ p ] {
+        return p->buff.dragonrage->check() || p->buff.tier30_4pc->check();
+      } );
+    }
+  }
+
+  void init() override
+  {
+    residual_action_t::init();
+
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_TGT_MUL_TA );
+    update_flags &= ~( STATE_VERSATILITY | STATE_TGT_MUL_TA );
+  }
+};
+
 struct quell_t : public evoker_spell_t
 {
   quell_t( evoker_t* p, std::string_view options_str ) : evoker_spell_t( "quell", p, p->talent.quell, options_str )
@@ -1767,6 +1807,14 @@ struct pyre_t : public essence_spell_t
       da *= 1.0 + s_->iridescence;
 
       return da;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      essence_spell_t::impact( s );
+
+      if ( p()->action.obsidian_shards )
+        residual_action::trigger( p()->action.obsidian_shards, s->target, s->result_amount * tier30_2pc_mul );
     }
   };
 
@@ -2229,6 +2277,9 @@ void evoker_t::create_actions()
   using namespace spells;
   using namespace heals;
 
+  if ( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B2 ) )
+    action.obsidian_shards = get_secondary_action<obsidian_shards_t>( "obsidians_shards" );
+
   if ( talent.volatility.ok() )
   {
     auto vol                = get_secondary_action<pyre_t>( "pyre_volatility", "pyre_volatility", talent.pyre );
@@ -2349,6 +2400,10 @@ void evoker_t::create_buffs()
                                  ->set_default_value_from_effect( 1 )
                                  ->set_cooldown( 0_s )
                                  ->add_invalidate( CACHE_HASTE );
+
+  buff.tier30_4pc = make_buff( this, "tier30_4pc" )
+    ->set_chance( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ) ? 1.0 : 0.0 )
+    ->set_duration( 5_s );
 
   // Preservation
 }
