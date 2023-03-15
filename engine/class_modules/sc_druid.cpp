@@ -365,7 +365,6 @@ public:
     action_t* astral_smolder;
     action_t* denizen_of_the_dream;      // placeholder action
     action_t* orbit_breaker;
-    action_t* shooting_stars;
     action_t* starfall_cosmos;           // free starfall from 4t29 TODO remove in 10.1
     action_t* starsurge_cosmos;          // free starsurge fromm 4t29 TODO remove in 10.1
     action_t* starfall_starweaver;       // free starfall from starweaver's warp
@@ -2579,24 +2578,67 @@ public:
 template <typename BASE>
 struct trigger_shooting_stars_t : public BASE
 {
+  struct shooting_stars_t : public druid_spell_t
+  {
+    buff_t* buff;
+
+    shooting_stars_t( druid_t* p, std::string_view n, const spell_data_t* s )
+      : druid_spell_t( n, p, s ), buff( p->buff.orbit_breaker )
+    {
+      background = true;
+    }
+
+    void execute() override
+    {
+      druid_spell_t::execute();
+
+      buff->trigger();
+
+      if ( buff->at_max_stacks() )
+      {
+        p()->active.orbit_breaker->execute_on_target( target );
+        buff->expire();
+      }
+    }
+  };
+
 private:
   druid_t* p_;
+  action_t* shooting = nullptr;
+  action_t* crashing = nullptr;
+  double base_chance;
+  double crash_chance;
 
 public:
   trigger_shooting_stars_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o )
-    : BASE(n, p, s, o ), p_( p ) {}
+    : BASE( n, p, s, o ),
+      p_( p ),
+      base_chance( p->talent.shooting_stars->effectN( 1 ).percent() ),
+      crash_chance( p->sets->set( DRUID_BALANCE, T30, B4 )->effectN( 1 ).percent() )
+  {
+    if ( base_chance )
+      shooting = p->get_secondary_action_n<shooting_stars_t>( "shooting_stars", p->spec.shooting_stars_dmg );
+
+    if ( crash_chance )
+      crashing = p->get_secondary_action_n<shooting_stars_t>( "crashing_star", p->find_spell( 408310 ) );
+  }
 
   void trigger_shooting_stars( dot_t* d )
   {
-    if ( !p_->active.shooting_stars || !d->is_ticking() )
+    if ( !base_chance || !d->is_ticking() )
       return;
 
-    double chance = p_->talent.shooting_stars->effectN( 1 ).percent() / std::sqrt( BASE::get_dot_count() );
+    double c = base_chance / std::sqrt( BASE::get_dot_count() );
 
-    chance *= 1.0 + p_->buff.solstice->value();
+    c *= 1.0 + p_->buff.solstice->value();
 
-    if ( p_->rng().roll( chance ) )
-      p_->active.shooting_stars->execute_on_target( d->target );
+    if ( p_->rng().roll( c ) )
+    {
+      if ( p_->rng().roll( crash_chance ) )
+        crashing->execute_on_target( d->target );
+      else
+        shooting->execute_on_target( d->target );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -7314,22 +7356,6 @@ struct thrash_proxy_t : public druid_spell_t
   }
 };
 
-// Shooting Stars ===========================================================
-struct shooting_stars_t : public druid_spell_t
-{
-  shooting_stars_t( druid_t* player ) : druid_spell_t( "shooting_stars", player, player->spec.shooting_stars_dmg )
-  {
-    background = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.orbit_breaker->trigger();
-  }
-};
-
 // Skull Bash ===============================================================
 struct skull_bash_t : public druid_interrupt_t
 {
@@ -9970,16 +9996,8 @@ void druid_t::create_buffs()
 
   buff.orbit_breaker = make_buff( this, "orbit_breaker" )
     ->set_quiet( true )
-    ->set_trigger_spell( talent.orbit_breaker );
-  if ( talent.orbit_breaker.ok() )
-  {
-    buff.orbit_breaker->set_max_stack( as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) )
-      ->set_expire_at_max_stack( true )
-      ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-        if ( b->at_max_stacks() )
-          active.orbit_breaker->execute_on_target( active.shooting_stars->target );
-      } );
-  }
+    ->set_trigger_spell( talent.orbit_breaker )
+    ->set_max_stack( as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) );
 
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
     ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
@@ -10273,9 +10291,6 @@ void druid_t::create_actions()
     fm->background = true;
     active.orbit_breaker = fm;
   }
-
-  if ( talent.shooting_stars.ok() )
-    active.shooting_stars = get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) && !is_ptr() )
   {
@@ -12611,6 +12626,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.twin_moons );
   action.apply_affecting_aura( talent.wild_surges );
+  action.apply_affecting_aura( sets->set( DRUID_BALANCE, T30, B2 ) );
   
   // Feral
   action.apply_affecting_aura( spec.ashamanes_guidance );
