@@ -539,6 +539,9 @@ public:
     buff_t* commander_of_the_dead_window;
     buff_t* commander_of_the_dead;
     buff_t* defile_buff;
+    buff_t* unholy_t30_2pc_stacking;
+    buff_t* unholy_t30_2pc_mastery;
+    buff_t* unholy_t30_4pc_mastery;
 
   } buffs;
 
@@ -962,6 +965,9 @@ public:
     const spell_data_t* commander_of_the_dead;
     const spell_data_t* defile_buff;
     const spell_data_t* ruptured_viscera_chance;
+    const spell_data_t* unholy_t30_2pc_stacking;
+    const spell_data_t* unholy_t30_2pc_mastery;
+    const spell_data_t* unholy_t30_4pc_mastery;
 
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
@@ -1080,6 +1086,8 @@ public:
     bool split_obliterate_schools = true;
     double ams_absorb_percent = 0;
     double amz_absorb_percent = 0;
+    bool t30_2pc = false;
+    bool t30_4pc = false;
   } options;
 
   // Runes
@@ -1146,6 +1154,7 @@ public:
   double    composite_melee_haste() const override;
   double    composite_spell_haste() const override;
   double    composite_attribute_multiplier( attribute_e attr ) const override;
+  double    composite_mastery() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_parry_rating() const override;
   double    composite_parry() const override;
@@ -5285,6 +5294,11 @@ struct death_coil_damage_t : public death_knight_spell_t
       m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent() * p() -> buffs.sudden_doom -> stack();
     }
 
+    if ( p() -> options.t30_2pc )
+    {
+      m *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -5348,6 +5362,21 @@ struct death_coil_t : public death_knight_spell_t
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
     {
       get_td( target ) -> debuff.rotten_touch -> trigger();
+    }
+
+    if ( p()->options.t30_2pc )
+    {
+      p() -> buffs.unholy_t30_2pc_stacking -> trigger();
+
+      if ( p() -> buffs.sudden_doom -> up() )
+      {
+        p() -> buffs.unholy_t30_2pc_stacking -> trigger();
+        
+        if( p() -> options.t30_4pc && p() -> buffs.unholy_t30_2pc_mastery -> up() )
+        {
+          p() -> buffs.unholy_t30_4pc_mastery -> trigger();
+        }
+      }
     }
     p() -> buffs.sudden_doom -> decrement();
   }
@@ -5722,6 +5751,11 @@ struct epidemic_damage_main_t : public death_knight_spell_t
       cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
     }
 
+    if( p() -> options.t30_2pc )
+    {
+      cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
+    }
+
     return cam;
   }
 };
@@ -5762,6 +5796,11 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
     if( p() -> is_ptr() && p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
     {
       cam *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 4 ).percent();
+    }
+
+    if( p() -> options.t30_2pc )
+    {
+      cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
     }
     return cam;
   }
@@ -5819,6 +5858,21 @@ struct epidemic_t : public death_knight_spell_t
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
+    }
+
+    if ( p()->options.t30_2pc )
+    {
+      p() -> buffs.unholy_t30_2pc_stacking -> trigger();
+
+      if ( p() -> buffs.sudden_doom -> up() )
+      {
+        p() -> buffs.unholy_t30_2pc_stacking -> trigger();
+        
+        if( p() -> options.t30_4pc && p() -> buffs.unholy_t30_2pc_mastery -> up() )
+        {
+          p() -> buffs.unholy_t30_4pc_mastery -> trigger();
+        }
+      }
     }
 
     p() -> buffs.sudden_doom -> decrement();
@@ -8500,6 +8554,8 @@ void death_knight_t::create_options()
   add_option( opt_bool( "deathknight.split_obliterate_schools", options.split_obliterate_schools ) );
   add_option( opt_float( "deathknight.ams_absorb_percent", options.ams_absorb_percent ) );
   add_option( opt_float( "deathknight.amz_absorb_percent", options.amz_absorb_percent ) );
+  add_option( opt_bool("deathknight.t30_2pc", options.t30_2pc ) );
+  add_option( opt_bool("deathknight.t30_4pc", options.t30_4pc ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -9692,6 +9748,9 @@ void death_knight_t::init_spells()
   spell.commander_of_the_dead      = find_spell( 390260 );
   spell.defile_buff                = find_spell( 218100 );
   spell.ruptured_viscera_chance    = find_spell( 390236 );
+  spell.unholy_t30_2pc_stacking    = find_spell( 408375 );
+  spell.unholy_t30_2pc_mastery     = find_spell( 408376 );
+  spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10044,6 +10103,26 @@ void death_knight_t::create_buffs()
         -> add_invalidate ( CACHE_MASTERY )
         -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() );
   }
+
+  buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
+      -> set_duration( 0_s ) // seems to have a 30s duration in spell data, overriding to emulate in game behavior
+      -> set_stack_change_callback( [ this ] ( buff_t*, int old_, int new_ )
+          {
+            if( buffs.unholy_t30_2pc_stacking -> at_max_stacks() )
+            {
+              buffs.unholy_t30_2pc_stacking -> expire();
+              buffs.unholy_t30_2pc_mastery -> trigger();
+            }
+          } );
+
+  buffs.unholy_t30_4pc_mastery = make_buff( this, "death_dealer_4pc", spell.unholy_t30_4pc_mastery )
+      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).base_value() )
+      -> add_invalidate( CACHE_MASTERY );
+
+  buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
+      -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).base_value() )
+      -> add_invalidate( CACHE_MASTERY );
+
 }
 
 // death_knight_t::init_gains ===============================================
@@ -10405,6 +10484,17 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
     m *= 1.0 + spec.blood_fortification -> effectN( 1 ).percent();
   }
+
+  return m;
+}
+
+// death_knight_t::composite_mastery_value ===========================
+
+double death_knight_t::composite_mastery() const
+{
+  double m = player_t::composite_mastery();
+
+  m += buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
 
   return m;
 }
