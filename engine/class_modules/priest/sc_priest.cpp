@@ -1058,7 +1058,8 @@ struct shadow_word_death_t final : public priest_spell_t
       // Cooldown is reset only if you have't already gotten a reset
       if ( !priest().buffs.death_and_madness_reset->check() )
       {
-        if ( target->health_percentage() <= execute_percent )
+        if ( target->health_percentage() <= execute_percent &&
+             ( !priest().buffs.deathspeaker->check() || !priest().is_ptr() ) )
         {
           priest().buffs.death_and_madness_reset->trigger();
           cooldown->reset( false );
