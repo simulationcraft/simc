@@ -668,13 +668,13 @@ namespace monk
           p()->proc.bountiful_brew_proc->occur();
         }
 
-        if ( get_td( s->target )->debuff.exploding_keg->up() )
-          trigger_exploding_keg_proc( s );
+        trigger_exploding_keg_proc( s );
 
         p()->trigger_empowered_tiger_lightning( s, true );
 
         if ( get_td( s->target )->debuff.bonedust_brew->up() )
           p()->bonedust_brew_assessor( s );
+
       }
 
       void tick( dot_t *dot ) override
@@ -686,8 +686,7 @@ namespace monk
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
 
-          if ( get_td( dot->state->target )->debuff.exploding_keg->up() )
-            trigger_exploding_keg_proc( dot->state );
+          trigger_exploding_keg_proc( dot->state );
         }
       }
 
@@ -779,6 +778,10 @@ namespace monk
       void trigger_exploding_keg_proc( action_state_t *s )
       {
         if ( p()->specialization() != MONK_BREWMASTER )
+          return;
+
+        // Exploding keg damage is triggered when the player buff is up, regardless if the enemy has the debuff
+        if ( !p()->buff.exploding_keg->up() )
           return;
 
         if ( !s->action->harmful )
@@ -3950,6 +3953,8 @@ namespace monk
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
+
+          p()->buff.exploding_keg->trigger(); // Buff occurs after impact when the keg finishes travelling 
 
           get_td( s->target )->debuff.exploding_keg->trigger();
         }
@@ -7708,6 +7713,9 @@ namespace monk
 
     buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
       ->add_invalidate( CACHE_DODGE );
+
+    buff.exploding_keg = make_buff( this, "exploding_keg", talent.brewmaster.exploding_keg )
+      ->set_default_value_from_effect( 2 );
 
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
