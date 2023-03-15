@@ -986,6 +986,7 @@ struct judgment_ret_t : public judgment_t
   {
     // This is for Divine Toll's background judgments
     background = true;
+    cooldown = p->get_cooldown( "dummy_cd" );
 
     if ( p -> talents.highlords_judgment -> ok() )
       base_multiplier *= 1.0 + p -> talents.highlords_judgment -> effectN( 1 ).percent();
