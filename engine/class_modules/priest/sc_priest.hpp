@@ -118,7 +118,6 @@ public:
     propagate_const<buff_t*> twilight_equilibrium_shadow_amp;
     propagate_const<buff_t*> harsh_discipline;
     propagate_const<buff_t*> harsh_discipline_ready;
-    propagate_const<buff_t*> blaze_of_light;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
@@ -157,6 +156,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
+    propagate_const<buff_t*> light_weaving;
     propagate_const<buff_t*> t30_4pc;
   } buffs;
 
@@ -355,7 +355,7 @@ public:
       player_talent_t expiation;
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
-      const spell_data_t* blaze_of_light;
+      player_talent_t blaze_of_light;
       // Row 10
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;
@@ -784,7 +784,7 @@ public:
     {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
-      
+
       parse_buff_effects( p().buffs.deathspeaker );
     }
     else
@@ -807,6 +807,7 @@ public:
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
     parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
     parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
+    parse_buff_effects( p().buffs.light_weaving );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -914,7 +915,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( s->result_amount > 0 )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
@@ -968,7 +969,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( result_is_hit( s->result ) )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
