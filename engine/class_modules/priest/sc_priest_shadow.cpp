@@ -1302,6 +1302,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     apply_affecting_aura( p.talents.shadow.voidtouched );
     apply_affecting_aura( p.talents.shadow.minds_eye );
+    apply_affecting_aura( p.talents.shadow.distorted_reality );
   }
 
   action_state_t* new_state() override
@@ -2488,7 +2489,13 @@ void priest_t::create_buffs_shadow()
 
   buffs.mind_spike_insanity = make_buff( this, "mind_spike_insanity", find_spell( 407468 ) );
 
-  buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() );
+  buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() )
+                           ->set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
+                             if ( is_ptr() )
+                             {
+                               cooldowns.shadow_word_death->adjust_max_charges( cur - old );
+                             }
+                           } );
 
   // TODO: use default_value to parse increase instead of stacks
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
@@ -2576,6 +2583,7 @@ void priest_t::init_spells_shadow()
   // Mind Devourer
   talents.shadow.phantasmal_pathogen = ST( "Phantasmal Pathogen" );
   talents.shadow.minds_eye           = ST( "Mind's Eye" );
+  talents.shadow.distorted_reality   = ST( "Distorted Reality" );
   // Row 8
   talents.shadow.mindbender               = ST( "Mindbender" );
   talents.shadow.deathspeaker             = ST( "Deathspeaker" );

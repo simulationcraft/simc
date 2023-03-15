@@ -1066,6 +1066,18 @@ struct shadow_word_death_t final : public priest_spell_t
     }
   }
 
+  void reset() override
+  {
+    priest_spell_t::reset();
+
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up.
+    if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+    {
+      cooldown->charges = data().charges();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );

@@ -292,6 +292,7 @@ public:
       player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
       player_talent_t minds_eye;
+      player_talent_t distorted_reality;
       // Row 8
       player_talent_t mindbender;
       player_talent_t deathspeaker;
@@ -778,6 +779,8 @@ public:
     {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+      
+      parse_buff_effects( p().buffs.deathspeaker );
     }
     else
     {
