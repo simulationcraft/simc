@@ -93,6 +93,7 @@ public:
   {
     // Brewmaster
     propagate_const<buff_t*> keg_smash;
+    propagate_const<buff_t*> exploding_keg;
 
     // Windwalker
     propagate_const<buff_t*> flying_serpent_kick;
@@ -298,7 +299,6 @@ public:
     propagate_const<buff_t*> charred_passions;
     propagate_const<buff_t*> counterstrike;
     propagate_const<buff_t*> elusive_brawler;
-    propagate_const<buff_t*> exploding_keg;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
     propagate_const<buff_t*> graceful_exit;
