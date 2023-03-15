@@ -968,6 +968,7 @@ public:
     const spell_data_t* unholy_t30_2pc_stacking;
     const spell_data_t* unholy_t30_2pc_mastery;
     const spell_data_t* unholy_t30_4pc_mastery;
+    const spell_data_t* unholy_t30_2pc_values;
 
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
@@ -5288,7 +5289,7 @@ struct death_coil_damage_t : public death_knight_spell_t
 
     if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
-      m *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5745,7 +5746,7 @@ struct epidemic_damage_main_t : public death_knight_spell_t
 
     if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
-      cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
+      cam *= 1.0 + p() -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
     }
 
     return cam;
@@ -5792,7 +5793,7 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
     if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
     {
-      cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
+      cam *= 1.0 + p() -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
     }
     return cam;
   }
@@ -9732,6 +9733,7 @@ void death_knight_t::init_spells()
   spell.unholy_t30_2pc_stacking    = find_spell( 408375 );
   spell.unholy_t30_2pc_mastery     = find_spell( 408376 );
   spell.unholy_t30_4pc_mastery     = find_spell( 408377 );
+  spell.unholy_t30_2pc_values      = find_spell( 405503 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
