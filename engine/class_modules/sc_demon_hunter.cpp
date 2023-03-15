@@ -539,6 +539,10 @@ public:
     const spell_data_t* t29_havoc_4pc;
     const spell_data_t* t29_vengeance_2pc;
     const spell_data_t* t29_vengeance_4pc;
+    const spell_data_t* t30_havoc_2pc;
+    const spell_data_t* t30_havoc_4pc;
+    const spell_data_t* t30_vengeance_2pc;
+    const spell_data_t* t30_vengeance_4pc;
   } set_bonuses;
 
   // Mastery Spells
@@ -6441,6 +6445,10 @@ void demon_hunter_t::init_spells()
   set_bonuses.t29_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T29, B4 );
   set_bonuses.t29_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B2 );
   set_bonuses.t29_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B4 );
+  set_bonuses.t30_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B2 );
+  set_bonuses.t30_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B4 );
+  set_bonuses.t30_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B2 );
+  set_bonuses.t30_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B4 );
 
   // Spell Initialization ===================================================
 
