@@ -5734,7 +5734,7 @@ struct epidemic_damage_main_t : public death_knight_spell_t
 
     if( p() -> options.t30_2pc )
     {
-      cam *= 1.0 + 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
+      cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
     }
 
     return cam;
@@ -5781,7 +5781,7 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 
     if( p() -> options.t30_2pc )
     {
-      cam *= 1.0 + 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
+      cam *= 1.0 + p() -> find_spell( 405503 ) -> effectN( 1 ).percent();;
     }
     return cam;
   }
