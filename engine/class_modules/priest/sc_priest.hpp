@@ -156,6 +156,7 @@ public:
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
+    propagate_const<buff_t*> t30_4pc;
   } buffs;
 
   // Talents
@@ -292,6 +293,7 @@ public:
       player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
       player_talent_t minds_eye;
+      player_talent_t distorted_reality;
       // Row 8
       player_talent_t mindbender;
       player_talent_t deathspeaker;
@@ -472,6 +474,7 @@ public:
     propagate_const<gain_t*> insanity_dark_void;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_whispers_of_the_damned;
+    propagate_const<gain_t*> insanity_t30_2pc;
   } gains;
 
   // Benefits
@@ -538,8 +541,8 @@ public:
   // Pets
   struct priest_pets_t
   {
-    propagate_const<pet_t*> shadowfiend;
-    propagate_const<pet_t*> mindbender;
+    spawner::pet_spawner_t<pet_t, priest_t> shadowfiend;
+    spawner::pet_spawner_t<pet_t, priest_t> mindbender;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
@@ -588,7 +591,6 @@ public:
   void create_options() override;
   std::string create_profile( save_e ) override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override
@@ -781,6 +783,8 @@ public:
     {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+      
+      parse_buff_effects( p().buffs.deathspeaker );
     }
     else
     {
@@ -942,6 +946,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void consume_resource() override
   {
     base_t::consume_resource();
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && resource_current == RESOURCE_INSANITY )
+    {
+      priest().buffs.t30_4pc->trigger( last_resource_cost );
+    }
   }
 
   void last_tick( dot_t* d ) override

@@ -19,7 +19,6 @@ namespace actions
 {
 namespace spells
 {
-
 // ==========================================================================
 // Expiation
 // ==========================================================================
@@ -148,6 +147,11 @@ public:
     {
       m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
+
+    if ( priest().sets->has_set_bonus(PRIEST_SHADOW, T30, B2) && priest().buffs.shadowy_insight->check() )
+    {
+      m *= 1 + 0.6;
+    }
     return m;
   }
 
@@ -192,6 +196,11 @@ public:
         priest().generate_insanity(
             priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
             priest().gains.insanity_whispers_of_the_damned, s->action );
+      }
+
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
+      {
+        priest().generate_insanity( 4, priest().gains.insanity_t30_2pc, s->action );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -652,17 +661,6 @@ struct power_infusion_t final : public priest_spell_t
     if ( priest().options.self_power_infusion || priest().talents.twins_of_the_sun_priestess->ok() )
     {
       player->buffs.power_infusion->trigger();
-
-      if ( priest().options.power_infusion_fiend && priest().options.self_power_infusion &&
-           priest().talents.twins_of_the_sun_priestess->ok() )
-      {
-        pet_t* current_pet =
-            priest().talents.shadow.mindbender.enabled() ? priest().pets.mindbender : priest().pets.shadowfiend;
-        if ( current_pet && !current_pet->is_sleeping() )
-        {
-          current_pet->buffs.power_infusion->trigger();
-        }
-      }
     }
   }
 };
@@ -781,73 +779,26 @@ struct mindgames_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Summon Pet
-// ==========================================================================
-/// Priest Pet Summon Base Spell
-struct summon_pet_t : public priest_spell_t
-{
-  timespan_t summoning_duration;
-  std::string pet_name;
-  propagate_const<pet_t*> pet;
-
-public:
-  summon_pet_t( util::string_view n, priest_t& p, const spell_data_t* sd = spell_data_t::nil() )
-    : priest_spell_t( n, p, sd ), summoning_duration( timespan_t::zero() ), pet_name( n ), pet( nullptr )
-  {
-    harmful = false;
-  }
-
-  void init_finished() override
-  {
-    pet = player->find_pet( pet_name );
-
-    priest_spell_t::init_finished();
-  }
-
-  void execute() override
-  {
-    if ( pet->is_sleeping() )
-    {
-      pet->summon( summoning_duration );
-    }
-    else
-    {
-      auto new_duration = pet->expiration->remains();
-      new_duration += summoning_duration;
-      pet->expiration->reschedule( new_duration );
-    }
-
-    priest_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !pet )
-    {
-      return false;
-    }
-
-    return priest_spell_t::ready();
-  }
-};
-
-// ==========================================================================
 // Summon Shadowfiend
 // ==========================================================================
-struct summon_shadowfiend_t final : public summon_pet_t
+struct summon_shadowfiend_t final : public priest_spell_t
 {
   timespan_t default_duration;
 
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p, p.talents.shadowfiend )
+    : priest_spell_t( "shadowfiend", p, p.talents.shadowfiend )
   {
     parse_options( options_str );
     harmful          = false;
-    default_duration = summoning_duration = data().duration();
+    default_duration = data().duration();
   }
 
   void execute() override
   {
+    priest_spell_t::execute();
+
+    auto duration = default_duration;
+
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
       // Health Percentage not in spelldata
@@ -857,14 +808,12 @@ struct summon_shadowfiend_t final : public summon_pet_t
       }
       else
       {
-        summoning_duration +=
+        duration +=
             timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
       }
     }
 
-    summon_pet_t::execute();
-
-    summoning_duration = default_duration;
+    priest().pets.shadowfiend.spawn( duration );
   }
 };
 
@@ -874,20 +823,24 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
-struct summon_mindbender_t final : public summon_pet_t
+struct summon_mindbender_t final : public priest_spell_t
 {
   timespan_t default_duration;
 
   summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "mindbender", p, p.talents.shadow.mindbender )
+    : priest_spell_t( "mindbender", p, p.talents.shadow.mindbender )
   {
     parse_options( options_str );
     harmful          = false;
-    default_duration = summoning_duration = data().duration();
+    default_duration = data().duration();
   }
 
   void execute() override
   {
+
+    priest_spell_t::execute();
+
+    auto duration = default_duration;
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
       // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
@@ -897,15 +850,13 @@ struct summon_mindbender_t final : public summon_pet_t
       }
       else
       {
-        summoning_duration +=
+        duration +=
             timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
         priest().procs.idol_of_yshaarj_extra_duration->occur();
       }
     }
 
-    summon_pet_t::execute();
-
-    summoning_duration = default_duration;
+    priest().pets.mindbender.spawn( duration );
   }
 };
 
@@ -1019,6 +970,13 @@ struct shadow_word_death_t final : public priest_spell_t
       child_expiation->background = true;
     }
 
+    if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+    {
+      energize_type     = action_energize::ON_CAST;
+      energize_resource = RESOURCE_INSANITY;
+      energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
+    }
+
     // 13%/25% damage increase
     apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
@@ -1049,7 +1007,8 @@ struct shadow_word_death_t final : public priest_spell_t
       // Cooldown is reset only if you have't already gotten a reset
       if ( !priest().buffs.death_and_madness_reset->check() )
       {
-        if ( target->health_percentage() <= execute_percent )
+        if ( target->health_percentage() <= execute_percent &&
+             ( !priest().buffs.deathspeaker->check() || !priest().is_ptr() ) )
         {
           priest().buffs.death_and_madness_reset->trigger();
           cooldown->reset( false );
@@ -1060,6 +1019,18 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( priest().talents.shadow.deathspeaker.enabled() )
     {
       priest().buffs.deathspeaker->expire();
+    }
+  }
+
+  void reset() override
+  {
+    priest_spell_t::reset();
+
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up.
+    if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+    {
+      cooldown->charges = data().charges();
     }
   }
 
@@ -1097,6 +1068,11 @@ struct shadow_word_death_t final : public priest_spell_t
         {
           priest().trigger_psychic_link( s );
         }
+      }
+
+      if ( priest().talents.shadow.psychic_link.enabled() )
+      {
+        priest().trigger_psychic_link( s );
       }
 
       if ( child_expiation )
@@ -1470,7 +1446,16 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
     {
       sim->print_debug( "{} death_and_madness insanity gain buff triggered", priest() );
 
-      priest().buffs.death_and_madness_buff->trigger();
+      if ( priest().is_ptr() )
+      {
+        priest().generate_insanity(
+            priest().talents.death_and_madness_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_death_and_madness, nullptr );
+      }
+      else
+      {
+        priest().buffs.death_and_madness_buff->trigger();
+      }
     }
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -1640,6 +1625,7 @@ void priest_t::create_gains()
   gains.insanity_dark_void               = get_gain( "Dark Void" );
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
   gains.insanity_whispers_of_the_damned  = get_gain( "Whispers of the Damned" );
+  gains.insanity_t30_2pc                 = get_gain( "Insanity Gained from T30 2PC" );
 }
 
 /** Construct priest procs */
@@ -2000,16 +1986,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
 void priest_t::create_pets()
 {
   base_t::create_pets();
-
-  if ( find_action( "shadowfiend" ) && talents.shadowfiend.enabled() && !talents.shadow.mindbender.enabled() )
-  {
-    pets.shadowfiend = create_pet( "shadowfiend" );
-  }
-
-  if ( ( find_action( "shadowfiend" ) || find_action( "mindbender" ) ) && talents.shadow.mindbender.enabled() )
-  {
-    pets.mindbender = create_pet( "mindbender" );
-  }
 }
 
 void priest_t::init_base_stats()
@@ -2568,7 +2544,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
