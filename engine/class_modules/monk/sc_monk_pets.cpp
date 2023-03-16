@@ -1859,7 +1859,7 @@ struct shadowflame_monk_t : public monk_pet_t
       may_crit = true;
       merge_report = false;
 
-      school = SCHOOL_SHADOWFLAME;      
+      school = SCHOOL_SHADOWFLAME;
     }
   };
 
@@ -1871,6 +1871,8 @@ struct shadowflame_monk_t : public monk_pet_t
   shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true ),
     attack_counter( 0 )
   {
+    _spec = owner->specialization();
+
     owner_coeff.ap_from_ap = 1.00;
   }
 
