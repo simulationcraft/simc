@@ -1630,8 +1630,12 @@ struct divine_arbiter_t : public paladin_spell_t
 
     // force effect 1 to be used for the direct ratios
     parse_effect_data( data().effectN( 1 ) );
+
     // but compute the aoe multiplier from the 2nd effect
     base_aoe_multiplier *= data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
+
+    // and do aoe, too
+    aoe = -1;
   }
 };
 
