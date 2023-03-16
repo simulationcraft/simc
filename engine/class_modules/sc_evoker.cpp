@@ -274,6 +274,7 @@ struct evoker_t : public player_t
   // Benefits
   struct benefits_t
   {
+    propagate_const<benefit_t*> supercharged_shards;
   } benefit;
 
   // Cooldowns
@@ -314,7 +315,7 @@ struct evoker_t : public player_t
   void init_action_list() override;
   void init_base_stats() override;
   // void init_resources( bool ) override;
-  // void init_benefits() override;
+  void init_benefits() override;
   role_e primary_role() const override;
   void init_gains() override;
   void init_procs() override;
@@ -1681,6 +1682,13 @@ struct obsidian_shards_t : public residual_action::residual_periodic_action_t<ev
     snapshot_flags &= ~( STATE_VERSATILITY | STATE_TGT_MUL_TA );
     update_flags &= ~( STATE_VERSATILITY | STATE_TGT_MUL_TA );
   }
+
+  void tick( dot_t* d ) override
+  {
+    residual_action_t::tick( d );
+
+    p()->benefit.supercharged_shards->update( p()->buff.dragonrage->check() || p()->buff.tier30_4pc->check() );
+  }
 };
 
 struct quell_t : public evoker_spell_t
@@ -2147,6 +2155,13 @@ role_e evoker_t::primary_role() const
   }
 
   return ROLE_SPELL;
+}
+
+void evoker_t::init_benefits()
+{
+  player_t::init_benefits();
+
+  benefit.supercharged_shards = get_benefit( "Supercharged Shards" );
 }
 
 void evoker_t::init_gains()
