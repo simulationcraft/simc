@@ -571,94 +571,63 @@ struct vile_taint_t : public affliction_spell_t
 
 struct soul_swap_t : public affliction_spell_t
 {
-  action_t* corruption;
-  agony_t* agony;
-  unstable_affliction_t* ua;
-
   soul_swap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
   {
     parse_options( options_str );
     may_crit = false;
-
-    corruption = p->pass_corruption_action( p );
-    corruption->dual = true;
-
-    agony = new agony_t( p, "" );
-    agony->dual = true;
-
-    ua = new unstable_affliction_t( p );
-    ua->dual = true;
   }
 
   bool ready() override
   {
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
-    {
-      if ( td( target )->dots_corruption->is_ticking() || td( target )->dots_agony->is_ticking() 
-        || td( target )->dots_unstable_affliction->is_ticking() || td( target )->dots_siphon_life->is_ticking()
-        || td( target )->debuffs_haunt->check() )
-        return affliction_spell_t::ready();
-
-      return false;
-    }
-    else
-    {
+    if ( td( target )->dots_corruption->is_ticking() || td( target )->dots_agony->is_ticking() 
+      || td( target )->dots_unstable_affliction->is_ticking() || td( target )->dots_siphon_life->is_ticking()
+      || td( target )->debuffs_haunt->check() )
       return affliction_spell_t::ready();
-    }
+
+    return false;
   }
 
   void execute() override
   {
     affliction_spell_t::execute();
 
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
+    // Loop through relevant DoTs and store states
+    // (DoTs that are not present have action_copied set to false)
+    auto tar = td( target );
+
+    if ( tar->dots_corruption->is_ticking() )
     {
-      // Loop through relevant DoTs and store states
-      // (DoTs that are not present have action_copied set to false)
-      auto tar = td( target );
-
-      if ( tar->dots_corruption->is_ticking() )
-      {
-        p()->soul_swap_state.corruption.action_copied = true;
-        p()->soul_swap_state.corruption.duration = tar->dots_corruption->remains();
-      }
-
-      if ( tar->dots_agony->is_ticking() )
-      {
-        p()->soul_swap_state.agony.action_copied = true;
-        p()->soul_swap_state.agony.duration = tar->dots_agony->remains();
-        p()->soul_swap_state.agony.stacks = tar->dots_agony->current_stack();
-      }
-
-      if ( tar->dots_unstable_affliction->is_ticking() )
-      {
-        p()->soul_swap_state.unstable_affliction.action_copied = true;
-        p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
-        tar->dots_unstable_affliction->cancel();
-      }
-
-      if ( tar->dots_siphon_life->is_ticking() )
-      {
-        p()->soul_swap_state.siphon_life.action_copied = true;
-        p()->soul_swap_state.siphon_life.duration = tar->dots_siphon_life->remains();
-      }
-
-      if ( tar->debuffs_haunt->check() )
-      {
-        p()->soul_swap_state.haunt.action_copied = true;
-        p()->soul_swap_state.haunt.duration = tar->debuffs_haunt->remains();
-      }
-
-      // NOT IMPLEMENTED: As of 2023-01-22 there is a bug where the Haunted Soul buff is being triggered when Soul Swap is used
-
-      p()->buffs.soul_swap->trigger();
+      p()->soul_swap_state.corruption.action_copied = true;
+      p()->soul_swap_state.corruption.duration = tar->dots_corruption->remains();
     }
-    else
+
+    if ( tar->dots_agony->is_ticking() )
     {
-      corruption->execute_on_target( target );
-      agony->execute_on_target( target );
-      ua->execute_on_target( target );
+      p()->soul_swap_state.agony.action_copied = true;
+      p()->soul_swap_state.agony.duration = tar->dots_agony->remains();
+      p()->soul_swap_state.agony.stacks = tar->dots_agony->current_stack();
     }
+
+    if ( tar->dots_unstable_affliction->is_ticking() )
+    {
+      p()->soul_swap_state.unstable_affliction.action_copied = true;
+      p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
+      tar->dots_unstable_affliction->cancel();
+    }
+
+    if ( tar->dots_siphon_life->is_ticking() )
+    {
+      p()->soul_swap_state.siphon_life.action_copied = true;
+      p()->soul_swap_state.siphon_life.duration = tar->dots_siphon_life->remains();
+    }
+
+    if ( tar->debuffs_haunt->check() )
+    {
+      p()->soul_swap_state.haunt.action_copied = true;
+      p()->soul_swap_state.haunt.duration = tar->debuffs_haunt->remains();
+    }
+
+    p()->buffs.soul_swap->trigger();
   }
 };
 

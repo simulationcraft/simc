@@ -1997,7 +1997,7 @@ bool warlock_t::min_version_check( version_check_e version ) const
 
 action_t* warlock_t::pass_corruption_action( warlock_t* p )
 {
-  return debug_cast<action_t*>( new actions::corruption_t( p, "", p->min_version_check( VERSION_10_0_5 ) ) );
+  return debug_cast<action_t*>( new actions::corruption_t( p, "", true ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
