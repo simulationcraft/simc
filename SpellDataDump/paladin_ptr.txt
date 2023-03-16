@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317, git build wrath_buff 485b5905e6)
+SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317, git build dragonflight 99a56c2d07)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
