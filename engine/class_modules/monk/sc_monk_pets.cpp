@@ -1884,9 +1884,10 @@ struct shadowflame_monk_t : public monk_pet_t
     if ( s->result_amount <= 0 )
       return;
 
+    // Potentially able to use affected_by spell data instead of black/whitelist
     switch ( s->action->id )
     {
-      // TODO: Blacklist
+      // TODO: Black/whitelist
       case 0:
       case 1:
         return;
@@ -1904,8 +1905,6 @@ struct shadowflame_monk_t : public monk_pet_t
     damage_event->execute();
     
     monk->attack_counter++;
-
-    sim->print_debug( "Shadowflame Monk attack#... {}", attack_counter );
 
     if ( monk->attack_counter == 3 )
       monk->dismiss();
