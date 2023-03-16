@@ -95,6 +95,8 @@ struct drain_life_t : public warlock_spell_t
         }
       }
     }
+
+    p()->buffs.soulburn->expire();
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -816,6 +818,21 @@ struct soulburn_t : public warlock_spell_t
     may_crit = false;
   }
 
+  bool ready() override
+  {
+    if ( p()->buffs.soulburn->check() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p()->buffs.soulburn->trigger();
+  }
+
   void consume_resource() override
   {
     warlock_spell_t::consume_resource();
@@ -859,9 +876,6 @@ struct soulburn_t : public warlock_spell_t
       }
     }
   }
-
-  // We could put an execute here to trigger a buff, but the only use for Soulburn from a DPS perspective is
-  // to trigger it for the shard spending and then cancelaura the buff so it can be used again after the cooldown
 };
 
 // Catchall action to trigger pet interrupt abilities via main APL.
@@ -1508,6 +1522,8 @@ void warlock_t::create_buffs()
                                  proc_actions.fel_barrage->execute_on_target( target );
                                } );
 
+  buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
+
   buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
 
   // Affliction buffs
@@ -1622,6 +1638,7 @@ void warlock_t::init_spells()
   talents.fel_barrage = find_spell( 388070 );
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
+  talents.soulburn_buff = find_spell( 387626 );
 
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
 }

@@ -206,6 +206,7 @@ public:
     const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
     const spell_data_t* fel_barrage; // Inquisitor's Eye damage spell
     player_talent_t soulburn;
+    const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
     // Specializations
 
@@ -503,6 +504,7 @@ public:
     propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
     propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
+    propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
