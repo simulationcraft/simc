@@ -245,7 +245,6 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t soul_tap; // REMOVED in 10.0.5!
     player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
     const spell_data_t* pandemic_invocation_proc; // Damage data
     player_talent_t inevitable_demise; // The talent version of the ability
@@ -572,7 +571,6 @@ public:
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
-    gain_t* soul_tap;
     gain_t* pandemic_invocation;
 
     // Destruction

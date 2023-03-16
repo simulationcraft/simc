@@ -569,32 +569,6 @@ struct vile_taint_t : public affliction_spell_t
   }
 };
 
-struct soul_tap_t : public affliction_spell_t
-{
-  soul_tap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Tap", p, p->min_version_check( VERSION_10_0_5 ) ? spell_data_t::nil() : p->talents.soul_tap )
-  {
-    parse_options( options_str );
-    harmful = false;
-    cooldown->duration = 30_s;
-  }
-
-  bool ready() override
-  {
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
-      return false;
-
-    return affliction_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-
-    // 1 Soul Shard is hardcoded, not in spell data
-    p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_tap );
-  }
-};
-
 struct soul_swap_t : public affliction_spell_t
 {
   action_t* corruption;
@@ -803,8 +777,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new vile_taint_t( this, options_str );
   if ( action_name == "malefic_rapture" )
     return new malefic_rapture_t( this, options_str );
-  if ( action_name == "soul_tap" )
-    return new soul_tap_t( this, options_str );
   if ( action_name == "soul_swap" )
     return new soul_swap_t( this, options_str );
   if ( action_name == "soul_swap_exhale" )
@@ -914,8 +886,6 @@ void warlock_t::init_spells_affliction()
   talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
   talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
 
-  talents.soul_tap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Tap" ); // Should be ID 387073
-
   talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
   talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
 
@@ -1008,7 +978,6 @@ void warlock_t::init_gains_affliction()
   gains.agony = get_gain( "agony" );
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
   gains.drain_soul = get_gain( "drain_soul" );
-  gains.soul_tap = get_gain( "soul_tap" );
   gains.pandemic_invocation = get_gain( "pandemic_invocation" );
 }
 
