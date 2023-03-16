@@ -1893,7 +1893,7 @@ struct shadowflame_monk_t : public monk_pet_t
       this->attack_counter = 0;
   }
 
-  void trigger_attack( shadowflame_monk_t *monk, action_state_t *s )
+  void trigger_attack( action_state_t *s )
   {
     if ( s->result_amount <= 0  )
       return;
@@ -1911,7 +1911,7 @@ struct shadowflame_monk_t : public monk_pet_t
     }
 
     // Iterate through vector to find valid action
-    for ( auto damage_event : sf_action_list )
+    for ( auto damage_event : this->sf_action_list )
     {
       if ( damage_event->id == s->action->id )
       {
@@ -1922,10 +1922,10 @@ struct shadowflame_monk_t : public monk_pet_t
         damage_event->target = s->target;
         damage_event->execute();
 
-        monk->attack_counter++;
+        this->attack_counter++;
 
-        if ( monk->attack_counter == 3 )
-          monk->dismiss();
+        if ( this->attack_counter == 3 )
+          this->dismiss();
 
         break;
       }
@@ -1996,7 +1996,7 @@ void monk_t::trigger_shadowflame_monk( action_state_t *s )
     if ( !shadowflame_monk )
       break;
 
-    shadowflame_monk->trigger_attack( shadowflame_monk, s );
+    shadowflame_monk->trigger_attack( s );
   }
 }
 
