@@ -62,6 +62,7 @@ void affliction( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
+  default_->add_action( "malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3" );
   default_->add_action( "unstable_affliction,if=remains<5" );
   default_->add_action( "agony,if=remains<5" );
   default_->add_action( "corruption,if=remains<5" );
@@ -69,16 +70,16 @@ void affliction( player_t* p )
   default_->add_action( "haunt" );
   default_->add_action( "drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
   default_->add_action( "shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  default_->add_action( "phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|!talent.summon_darkglare" );
+  default_->add_action( "phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time" );
   default_->add_action( "vile_taint,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<2&cooldown.soul_rot.remains>=12" );
-  default_->add_action( "soul_rot,if=variable.ps_up&variable.vt_up|!talent.summon_darkglare" );
+  default_->add_action( "soul_rot,if=variable.vt_up&variable.ps_up" );
   default_->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
   default_->add_action( "malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)" );
-  default_->add_action( "malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3" );
+  
   default_->add_action( "malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2" );
-  default_->add_action( "malefic_rapture,if=variable.cd_dots_up|dot.vile_taint_dot.ticking&soul_shard>1" );
+  default_->add_action( "malefic_rapture,if=variable.cd_dots_up|variable.vt_up&soul_shard>1" );
   default_->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
   default_->add_action( "drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4" );
   default_->add_action( "drain_soul,if=buff.nightfall.react" );
