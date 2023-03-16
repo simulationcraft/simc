@@ -192,7 +192,7 @@ public:
 
     player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
     player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
-    player_talent_t grimoire_of_synergy; // Note: Does not trigger when using Grimoire of Sacrifice
+    player_talent_t grimoire_of_synergy;
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
