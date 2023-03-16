@@ -1858,11 +1858,13 @@ struct shadowflame_monk_t : public monk_pet_t
     {      
       may_crit = true;
       merge_report = false;
-      initialized = true;
 
-      school = SCHOOL_SHADOWFLAME;
+      school = SCHOOL_SHADOWFLAME;      
     }
   };
+
+  // Pet spell vector
+  std::vector<shadowflame_damage_t *> sf_action_list;
 
   public:
 
@@ -1870,6 +1872,15 @@ struct shadowflame_monk_t : public monk_pet_t
     attack_counter( 0 )
   {
     owner_coeff.ap_from_ap = 1.00;
+  }
+
+  void init_spells() override
+  {
+    // Initialize all player spells as a vector
+    for ( auto action : owner->action_list )
+      sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
+
+    monk_pet_t::init_spells();
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1882,7 +1893,7 @@ struct shadowflame_monk_t : public monk_pet_t
 
   void trigger_attack( shadowflame_monk_t *monk, action_state_t *s )
   {
-    if ( s->result_amount <= 0 )
+    if ( s->result_amount <= 0  )
       return;
 
     // Potentially able to use affected_by spell data instead of black/whitelist
@@ -1897,18 +1908,26 @@ struct shadowflame_monk_t : public monk_pet_t
         break;
     }
 
-    shadowflame_damage_t *damage_event = new shadowflame_damage_t( monk, s->action );
-    double damage_modifier = 0.4; // Placeholder until spell data acquired from Blizzard
-    double damage = s->result_amount * damage_modifier;
-    damage_event->base_dd_min = s->result_amount;
-    damage_event->base_dd_max = s->result_amount;
-    damage_event->target = s->target;
-    damage_event->execute();
-    
-    monk->attack_counter++;
+    // Iterate through vector to find valid action
+    for ( auto damage_event : sf_action_list )
+    {
+      if ( damage_event->id == s->action->id )
+      {
+        double damage_modifier = 0.4; // Placeholder until spell data acquired from Blizzard
+        double damage = s->result_amount * damage_modifier;
+        damage_event->base_dd_min = s->result_amount;
+        damage_event->base_dd_max = s->result_amount;
+        damage_event->target = s->target;
+        damage_event->execute();
 
-    if ( monk->attack_counter == 3 )
-      monk->dismiss();
+        monk->attack_counter++;
+
+        if ( monk->attack_counter == 3 )
+          monk->dismiss();
+
+        break;
+      }
+    }
   }
 };
 
