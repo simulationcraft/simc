@@ -2936,7 +2936,10 @@ namespace monk
               double duration = 12;
 
               if ( rng().roll( spawn_chance ) )
-                p()->pets.shadowflame_monk.spawn( timespan_t::from_seconds( duration ), 1 );
+              {
+                p()->pets.shadowflame_monk.spawn( timespan_t::from_seconds( duration ) );
+                p()->proc.shadowflame_monk_spawn->occur();
+              }
             }
           }
         }
@@ -8000,6 +8003,7 @@ namespace monk
     proc.resonant_fists = get_proc( "Resonant Fists" );
     proc.rsk_reset_totm = get_proc( "Rising Sun Kick TotM Reset" );
     proc.salsalabim_bof_reset = get_proc( "Sal'salabim Breath of Fire Reset" );
+    proc.shadowflame_monk_spawn = get_proc( "Shadow Flame Monk Summon" );
     proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
     proc.tranquil_spirit_goto = get_proc( "Tranquil Spirit - Gift of the Ox" );
     proc.xuens_battlegear_reduction = get_proc( "Xuen's Battlegear CD Reduction" );
