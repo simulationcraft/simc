@@ -510,7 +510,7 @@ public:
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> inevitable_demise; // TOCHECK: (noticed 2023-03-16) Having one point in this talent may be getting half the intended value!
     propagate_const<buff_t*> soul_swap; // Buff for when Soul Swap currently is holding copies
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
