@@ -718,7 +718,7 @@ struct summon_soulkeeper_t : public warlock_spell_t
     {
       background = dual = true;
       aoe = -1;
-      reduced_aoe_targets = p->min_version_check( VERSION_10_0_5 ) ? 8.0 : 0.0; // Presumably hardcoded, mentioned in tooltip
+      reduced_aoe_targets = 8.0; // Presumably hardcoded, mentioned in tooltip
 
       tormented_souls = 1;
     }
@@ -768,15 +768,10 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
     timespan_t dur = 0_ms;
 
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
-    {
-      dur = p()->talents.summon_soulkeeper_aoe->duration() - 2_s + 1_s; // Hardcoded -2 according to tooltip, but is doing 9 ticks as of 2023-01-19
-      debug_cast<soul_combustion_t*>( p()->proc_actions.soul_combustion )->tormented_souls = p()->buffs.tormented_soul->stack();
-    }
-    else
-    {
-      dur = 1_s + 1_s * p()->buffs.tormented_soul->stack();
-    }
+
+    dur = p()->talents.summon_soulkeeper_aoe->duration() - 2_s + 1_s; // Hardcoded -2 according to tooltip, but is doing 9 ticks as of 2023-01-19
+    debug_cast<soul_combustion_t*>( p()->proc_actions.soul_combustion )->tormented_souls = p()->buffs.tormented_soul->stack();
+
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                 ground_aoe_params_t()
