@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48537
-static const std::array<spelltext_data_t, 19665> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19667> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19653,7 +19653,9 @@ static const std::array<spelltext_data_t, 19665> __ptr_spelltext_data { {
   { 408711, "[NYI] Strike your target with an Erupting Slam dealing $s1 Shadowflame damage.\r\n\r\nAfter a short delay, Residual Shadowflame rains on a random enemy within 15 yards dealing $s2 Shadowflame damage in an 8 yard radius. This effect can also damage the caster.", 0, 0 },
   { 408737, "$@spelldesc405505", "Agility increased by $w1%.", 0 },
   { 408757, "$@spelldesc405507", 0, 0 },
+  { 408763, "$@spelldesc405536", 0, 0 },
   { 408790, "Your auto-attacks have a low chance to strike again with violent purpose, dealing $s1 Shadowflame damage. This damage is doubled against Humanoids.", 0, 0 },
+  { 408791, "$@speldesc408790", 0, 0 },
   { 408903, "$@spelldesc408625", 0, 0 },
   { 408915, "Throw a Magma Serpent Lure at the target location. After $408913s2 seconds a magma serpent emerges, dealing ${($408913s3/$408913s2)*$408913s1} Fire damage over $408913s3 sec split between all enemies.", 0, 0 },
   { 408983, "$@spelldesc408607", "$pri increased by $w1.", 0 },
