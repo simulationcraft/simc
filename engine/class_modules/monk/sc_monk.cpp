@@ -668,21 +668,24 @@ namespace monk
           p()->proc.bountiful_brew_proc->occur();
         }
 
-        trigger_exploding_keg_proc( s );
+        if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
+        {
+          trigger_exploding_keg_proc( s );
 
-        p()->trigger_empowered_tiger_lightning( s, true );
+          p()->trigger_empowered_tiger_lightning( s, true );
 
-        if ( get_td( s->target )->debuff.bonedust_brew->up() )
-          p()->bonedust_brew_assessor( s );
+          if ( get_td( s->target )->debuff.bonedust_brew->up() )
+            p()->bonedust_brew_assessor( s );
 
-        p()->trigger_shadowflame_monk( s );
+          p()->trigger_shadowflame_monk( s );
+        }
       }
 
       void tick( dot_t *dot ) override
       {
         ab::tick( dot );
 
-        if ( !ab::result_is_miss( dot->state->result ) )
+        if ( !ab::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
         {
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
@@ -783,9 +786,6 @@ namespace monk
 
         // Exploding keg damage is triggered when the player buff is up, regardless if the enemy has the debuff
         if ( !p()->buff.exploding_keg->up() )
-          return;
-
-        if ( !s->action->harmful )
           return;
 
         // Blacklist spells
