@@ -566,7 +566,8 @@ public:
     bool mindgames_healing_reversal = false;
     bool mindgames_damage_reversal  = true;
 
-    bool power_infusion_fiend = false;
+    bool t30_multiple_bender = true;
+    bool t30_yshaarj = true;
 
     // Actives the screams bug with Mental Decay and Shadow Word: Pain
     bool priest_screams_bug = true;
