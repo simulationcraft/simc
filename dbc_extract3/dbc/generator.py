@@ -2150,6 +2150,7 @@ class SpellDataGenerator(DataGenerator):
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
