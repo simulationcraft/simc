@@ -95,6 +95,8 @@ struct drain_life_t : public warlock_spell_t
         }
       }
     }
+
+    p()->buffs.soulburn->expire();
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -607,6 +609,14 @@ struct soul_rot_t : public warlock_spell_t
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
   }
 
+  soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
+  {
+    if ( soul_swap )
+    {
+      aoe = 1;
+    }
+  }
+
   void execute() override
   {
     warlock_spell_t::execute();
@@ -618,7 +628,7 @@ struct soul_rot_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p()->talents.dark_harvest->ok() )
+    if ( p()->talents.dark_harvest->ok() && aoe > 1)
     {
       p()->buffs.dark_harvest_haste->trigger();
       p()->buffs.dark_harvest_crit->trigger();
@@ -634,7 +644,10 @@ struct soul_rot_t : public warlock_spell_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( s->chain_target == 0 )
+    // Note: Soul Swapped Soul Rot technically retains memory of who the primary target was
+    // For the moment, we will shortcut this by assuming Soul Swap copy is going on a secondary target
+    // TODO: Figure out how to model this appropriately in the case where you copy a secondary and then apply to primary
+    if ( s->chain_target == 0 && aoe > 1 )
     {
       m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
     }
@@ -805,6 +818,21 @@ struct soulburn_t : public warlock_spell_t
     may_crit = false;
   }
 
+  bool ready() override
+  {
+    if ( p()->buffs.soulburn->check() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p()->buffs.soulburn->trigger();
+  }
+
   void consume_resource() override
   {
     warlock_spell_t::consume_resource();
@@ -848,9 +876,6 @@ struct soulburn_t : public warlock_spell_t
       }
     }
   }
-
-  // We could put an execute here to trigger a buff, but the only use for Soulburn from a DPS perspective is
-  // to trigger it for the shard spending and then cancelaura the buff so it can be used again after the cooldown
 };
 
 // Catchall action to trigger pet interrupt abilities via main APL.
@@ -1497,6 +1522,8 @@ void warlock_t::create_buffs()
                                  proc_actions.fel_barrage->execute_on_target( target );
                                } );
 
+  buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
+
   buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
 
   // Affliction buffs
@@ -1611,6 +1638,7 @@ void warlock_t::init_spells()
   talents.fel_barrage = find_spell( 388070 );
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
+  talents.soulburn_buff = find_spell( 387626 );
 
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
 }
@@ -1996,6 +2024,11 @@ bool warlock_t::min_version_check( version_check_e version ) const
 action_t* warlock_t::pass_corruption_action( warlock_t* p )
 {
   return debug_cast<action_t*>( new actions::corruption_t( p, "", true ) );
+}
+
+action_t* warlock_t::pass_soul_rot_action( warlock_t* p )
+{
+  return debug_cast<action_t*>( new actions::soul_rot_t( p, "", true ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )

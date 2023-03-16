@@ -717,7 +717,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::execute();
 
     // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
-    // TOCHECK: As of 2023-01-22, GFG Felstorm is also triggering this inadvertently
     if ( internal_cooldown )
     {
       internal_cooldown->start( 5_s * p()->composite_spell_haste() );
@@ -2214,10 +2213,6 @@ struct eye_beam_t : public warlock_pet_spell_t
       background = dual = true;
 
       base_dd_min = base_dd_max = 0.0;
-
-      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_PERSISTENT;
-      update_flags   |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET;
-
     }
   };
   
