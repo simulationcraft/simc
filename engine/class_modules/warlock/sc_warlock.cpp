@@ -1612,7 +1612,6 @@ void warlock_t::init_spells()
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
 
-  version_10_0_5_data = find_spell( 399668 ); // For 10.0.5 version checking, new Focused Malignancy talent data
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
 }
 
@@ -1986,7 +1985,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
     case VERSION_10_0_7:
       return !( version_10_0_7_data == spell_data_t::not_found() );
     case VERSION_10_0_5:
-      return !( version_10_0_5_data == spell_data_t::not_found() );
     case VERSION_10_0_0:
     case VERSION_ANY:
       return true;

@@ -636,7 +636,6 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_0_5_data;
   const spell_data_t* version_10_0_7_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
