@@ -780,58 +780,25 @@ struct mindgames_t final : public priest_spell_t
 
 // ==========================================================================
 // Summon Shadowfiend
-// ==========================================================================
-struct summon_shadowfiend_t final : public priest_spell_t
-{
-  timespan_t default_duration;
-
-  summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadowfiend", p, p.talents.shadowfiend )
-  {
-    parse_options( options_str );
-    harmful          = false;
-    default_duration = data().duration();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    auto duration = default_duration;
-
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
-    {
-      // Health Percentage not in spelldata
-      if ( target->health_percentage() >= 80.0 )
-      {
-        priest().buffs.devoured_pride->trigger();
-      }
-      else
-      {
-        duration += timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-      }
-    }
-
-    priest().pets.shadowfiend.spawn( duration );
-  }
-};
-
-// ==========================================================================
+//
 // Summon Mindbender
 // TODO: confirm Holy/Disc versions work as expected
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
-struct summon_mindbender_t final : public priest_spell_t
+struct summon_fiend_t final : public priest_spell_t
 {
   timespan_t default_duration;
+  spawner::pet_spawner_t<pet_t, priest_t>* spawner;
 
-  summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mindbender", p, p.talents.shadow.mindbender )
+  summon_fiend_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( p.talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend", p,
+                      p.talents.shadow.mindbender.enabled() ? p.talents.shadow.mindbender : p.talents.shadowfiend ),
+      default_duration( data().duration() ),
+      spawner( p.talents.shadow.mindbender.enabled() ? &p.pets.mindbender : &p.pets.shadowfiend )
   {
     parse_options( options_str );
-    harmful          = false;
-    default_duration = data().duration();
+    harmful = false;
   }
 
   void execute() override
@@ -853,7 +820,8 @@ struct summon_mindbender_t final : public priest_spell_t
       }
     }
 
-    priest().pets.mindbender.spawn( duration );
+    if ( spawner )
+      spawner->spawn( duration );
   }
 };
 
@@ -1924,16 +1892,9 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_word_fortitude_t( *this, options_str );
   }
-  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
+  if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) || ( name == "fiend" ) )
   {
-    if ( talents.shadow.mindbender.enabled() )
-    {
-      return new summon_mindbender_t( *this, options_str );
-    }
-    else
-    {
-      return new summon_shadowfiend_t( *this, options_str );
-    }
+    return new summon_fiend_t( *this, options_str );
   }
   if ( name == "mind_blast" )
   {
