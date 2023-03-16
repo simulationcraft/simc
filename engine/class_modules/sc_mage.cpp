@@ -4291,6 +4291,8 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   void init_finished() override
   {
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Ice Lance" );
+
     frost_mage_spell_t::init_finished();
 
     if ( sim->report_details != 0 && p()->talents.splitting_ice.ok() )
@@ -4342,6 +4344,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( s->chain_target == 0 && frozen( s ) )
     {
       p()->trigger_time_manipulation();
+      p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T30, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
       if ( p()->rng().roll( p()->talents.hailstones->effectN( 1 ).percent() ) )
         p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance );
     }
