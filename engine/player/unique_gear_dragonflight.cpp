@@ -829,9 +829,9 @@ void darkmoon_deck_dance( special_effect_t& effect )
         delay += timespan_t::from_seconds( rng().gauss( 5.0 / travel_speed, sim->travel_variance ) );
 
         if ( i % 2 )
-          make_event( *sim, delay, [ s, this ]() { damage->execute_on_target( s->target ); } );
+          make_event( *sim, delay, [ t = s->target, this ] { damage->execute_on_target( t ); } );
         else
-          make_event( *sim, delay, [ this ]() { heal->execute_on_target( player ); } );
+          make_event( *sim, delay, [ this ] { heal->execute_on_target( player ); } );
       }
     }
   };
@@ -4516,7 +4516,7 @@ struct pestilent_plague_stone_t : public damage_stone_t
 
     if ( result_is_hit( s->result ) && aoe_damage )
     {
-      make_event( *sim, aoe_delay, [ s, this ]() { aoe_damage->execute_on_target( s->target ); } );
+      make_event( *sim, aoe_delay, [ t = s->target, this ] { aoe_damage->execute_on_target( t ); } );
     }
   }
 };
