@@ -2622,10 +2622,15 @@ public:
       crash_chance( p->sets->set( DRUID_BALANCE, T30, B4 )->effectN( 1 ).percent() )
   {
     if ( base_chance )
+    {
       shooting = p->get_secondary_action_n<shooting_stars_t>( "shooting_stars", p->spec.shooting_stars_dmg );
 
-    if ( crash_chance )
-      crashing = p->get_secondary_action_n<shooting_stars_t>( "crashing_star", p->find_spell( 408310 ) );
+      if ( crash_chance )
+      {
+        crashing = p->get_secondary_action_n<shooting_stars_t>( "crashing_star", p->find_spell( 408310 ) );
+        shooting->add_child( crashing );
+      }
+    }
   }
 
   void trigger_shooting_stars( dot_t* d )
