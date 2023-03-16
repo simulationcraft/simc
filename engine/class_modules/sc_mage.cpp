@@ -319,6 +319,7 @@ public:
 
 
     // Set Bonuses
+    buff_t* arcane_overload;
     buff_t* bursting_energy;
 
     buff_t* touch_of_ice;
@@ -444,6 +445,7 @@ public:
     player_t* last_bomb_target;
     int frostbolt_counter;
     bool trigger_cc_channel;
+    double spent_mana;
   } state;
 
   struct expression_support_t
@@ -1295,6 +1297,7 @@ struct mage_spell_t : public spell_t
     bool rune_of_power = true;
     bool savant = false;
 
+    bool arcane_overload = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -1446,6 +1449,9 @@ public:
     if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
 
+    if ( affected_by.arcane_overload )
+      m *= 1.0 + p()->buffs.arcane_overload->check_value();
+
     return m;
   }
 
@@ -1540,6 +1546,14 @@ public:
 
   virtual void consume_cost_reductions()
   { }
+
+  void consume_resource() override
+  {
+    spell_t::consume_resource();
+
+    if ( current_resource() == RESOURCE_MANA )
+      p()->state.spent_mana += last_resource_cost;
+  }
 
   void execute() override
   {
@@ -3005,6 +3019,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
   void execute() override
   {
+    // Clear any existing surge buffs to trigger the T30 4pc buff.
+    p()->buffs.arcane_surge->expire();
     p()->buffs.arcane_surge->trigger();
     p()->buffs.rune_of_power->trigger();
 
@@ -6474,6 +6490,8 @@ void mage_t::create_buffs()
 
 
   // Set Bonuses
+  buffs.arcane_overload = make_buff( this, "arcane_overload", find_spell( 409022 ) )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) );
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
@@ -6497,6 +6515,24 @@ void mage_t::create_buffs()
       {
         buffs.foresight_icd->trigger( 0_ms );
         buffs.foresight->expire( buffs.foresight->data().effectN( 2 ).time_value() );
+      }
+    } );
+  }
+
+  if ( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
+  {
+    buffs.arcane_surge->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+    {
+      if ( cur == 0 )
+      {
+        auto set = sets->set( MAGE_ARCANE, T30, B4 );
+        double value = 0.01 * state.spent_mana / set->effectN( 1 ).base_value();
+        value = std::min( value, set->effectN( 2 ).percent() );
+        buffs.arcane_overload->trigger( -1, value );
+      }
+      else
+      {
+        state.spent_mana = 0.0;
       }
     } );
   }
