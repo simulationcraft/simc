@@ -7305,6 +7305,7 @@ void demon_hunter_t::reset()
   ragefire_crit_accumulator     = 0;
   shattered_destiny_accumulator = 0.0;
   darkglare_boon_cdr_roll       = 0.0;
+  set_bonuses.t30_havoc_2pc_fury_tracker = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
