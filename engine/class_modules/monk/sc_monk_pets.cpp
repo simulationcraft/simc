@@ -1849,10 +1849,12 @@ struct shadowflame_monk_t : public monk_pet_t
 {
   private:
 
+  int attack_counter;
+
   struct shadowflame_damage_t : public pet_spell_t
   {
     shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
-      : pet_spell_t( "shadowflame_damage", p, source_action->s_data )
+      : pet_spell_t( "shadowflame_damage" + source_action->name_str, p, source_action->s_data)
     {      
       may_crit = true;
       merge_report = false;
@@ -1863,8 +1865,6 @@ struct shadowflame_monk_t : public monk_pet_t
 
   public:
 
-  int attack_counter;
-
   shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true ),
     attack_counter( 0 )
   {
@@ -1873,8 +1873,10 @@ struct shadowflame_monk_t : public monk_pet_t
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
-    // TODO: Is there a limit?
-    monk_pet_t::summon( duration );
+      // TODO: Is there a limit on simultaneous summons or cooldown?
+      monk_pet_t::summon( duration );
+
+      this->attack_counter = 0;
   }
 
   void trigger_attack( shadowflame_monk_t *monk, action_state_t *s )
@@ -1900,12 +1902,13 @@ struct shadowflame_monk_t : public monk_pet_t
     damage_event->base_dd_max = s->result_amount;
     damage_event->target = s->target;
     damage_event->execute();
+    
+    monk->attack_counter++;
 
-    attack_counter++;
+    sim->print_debug( "Shadowflame Monk attack#... {}", attack_counter );
 
-    if ( attack_counter == 3 )
-      this->dismiss();
-
+    if ( monk->attack_counter == 3 )
+      monk->dismiss();
   }
 };
 
@@ -1951,6 +1954,7 @@ void monk_t::create_pets()
     pets.yulon = new pets::yulon_pet_t( this );
   }
 */
+
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
     pets.sef[ (int)sef_pet_e::SEF_FIRE ] =
