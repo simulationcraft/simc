@@ -4274,6 +4274,8 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case OBSCURE_PASTEL_STONE:
     case PROPHETIC_TWILIGHT_STONE:
       return PRIMORDIAL_SHADOW;
+    default:
+      break;
   }
 
   throw std::invalid_argument( fmt::format( "Unsupported Primordial Stone driver '{}' has no family implemented.", e.driver()->id() ) );
@@ -4314,6 +4316,8 @@ action_t* find_primordial_stone_action( player_t* player, primordial_stone_drive
       return player->find_action( "cold_frost_stone" );
     case INDOMITABLE_EARTH_STONE:
       return player->find_action( "indomitable_earth_stone" );
+    default:
+      break;
   }
 
   return nullptr;
@@ -4327,6 +4331,8 @@ buff_t* find_primordial_stone_buff( player_t* player, primordial_stone_drivers_e
       return buff_t::find( player, "harmonic_music_stone" );
     case NECROMANTIC_DEATH_STONE:
       return buff_t::find( player, "necromantic_death_stone" );
+    default:
+      break;
   }
 
   return nullptr;
@@ -4598,6 +4604,8 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
       return nullptr;
     case INDOMITABLE_EARTH_STONE:
       return nullptr;
+    default:
+      break;
   }
 
   return nullptr;
@@ -4621,7 +4629,7 @@ void echoing_thunder_stone( special_effect_t& effect )
       dbc_proc_callback_t( e.player, e ), damage( d ), ready_buff ( b )
     {}
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       if ( s->target->is_sleeping() )
         return;

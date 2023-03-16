@@ -3313,8 +3313,8 @@ public:
 
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
 
-      if ( ( !p()->is_ptr() && p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) &&
-           berserk_finisher && rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
+      if ( !p()->is_ptr() && p()->buff.b_inc_cat->check() && berserk_finisher &&
+           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
       {
         p()->resource_gain( RESOURCE_COMBO_POINT, berserk_finisher, p()->gain.berserk );
       }
@@ -10957,7 +10957,7 @@ void druid_t::init_special_effects()
           dur( timespan_t::from_seconds( p->spec.ashamanes_guidance->effectN( 1 ).base_value() ) )
       {}
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( action_t*, action_state_t* ) override
       {
         if ( druid->buff.incarnation_cat->check() )
           return;
