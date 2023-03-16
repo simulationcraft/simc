@@ -1854,7 +1854,7 @@ struct shadowflame_monk_t : public monk_pet_t
   struct shadowflame_damage_t : public pet_spell_t
   {
     shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
-      : pet_spell_t( "shadowflame_damage" + source_action->name_str, p, source_action->s_data)
+      : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {      
       may_crit = true;
       merge_report = false;
