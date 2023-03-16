@@ -1801,6 +1801,7 @@ class SpellDataGenerator(DataGenerator):
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
+          ( 408763, 0 ),                            # Frost T30 2pc
         ),
 
         # Warlock:
