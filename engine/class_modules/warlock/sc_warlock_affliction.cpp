@@ -621,6 +621,7 @@ struct soul_swap_t : public affliction_spell_t
     {
       p()->soul_swap_state.unstable_affliction.action_copied = true;
       p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
+      p()->soul_swap_state.unstable_affliction.stacks = p()->buffs.malefic_affliction->check(); // While there are no stacks for UA, Soul Swap *will* reapply Malefic Affliction if UA is put on another target
       tar->dots_unstable_affliction->cancel();
     }
 
@@ -724,6 +725,11 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       p()->soul_swap_state.unstable_affliction.action->execute_on_target( s->target );
       td( s->target )->dots_unstable_affliction->adjust_duration( p()->soul_swap_state.unstable_affliction.duration - td( s->target)->dots_unstable_affliction->remains() );
+
+      if ( p()->soul_swap_state.unstable_affliction.stacks > 0 )
+      {
+        p()->buffs.malefic_affliction->trigger( p()->soul_swap_state.unstable_affliction.stacks );
+      }
     }
 
     if ( p()->soul_swap_state.siphon_life.action_copied )
