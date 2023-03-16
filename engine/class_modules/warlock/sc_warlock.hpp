@@ -201,9 +201,7 @@ public:
     const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
     player_talent_t inquisitors_gaze;
     const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
-    const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
-    const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
-    const spell_data_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
+    const spell_data_t* fel_barrage; // Inquisitor's Eye damage spell
     player_talent_t soulburn;
 
     // Specializations
@@ -247,7 +245,6 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t soul_tap; // REMOVED in 10.0.5!
     player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
     const spell_data_t* pandemic_invocation_proc; // Damage data
     player_talent_t inevitable_demise; // The talent version of the ability
@@ -464,8 +461,6 @@ public:
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
-    action_t* fel_bolt; // Inquistor's Eye spell #1
-    action_t* fel_blast; // Inquisitor's Eye spell #2
     action_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
   } proc_actions;
 
@@ -505,7 +500,6 @@ public:
     propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
     propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
-    propagate_const<buff_t*> inquisitors_gaze_buildup; // Dummy buff to trigger Fel Blast at max stacks
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
@@ -577,7 +571,6 @@ public:
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
-    gain_t* soul_tap;
     gain_t* pandemic_invocation;
 
     // Destruction
@@ -643,7 +636,6 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_0_5_data;
   const spell_data_t* version_10_0_7_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
