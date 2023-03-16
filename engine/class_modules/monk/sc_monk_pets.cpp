@@ -1858,6 +1858,7 @@ struct shadowflame_monk_t : public monk_pet_t
     {      
       may_crit = true;
       merge_report = false;
+      initialized = true;
 
       school = SCHOOL_SHADOWFLAME;
     }
