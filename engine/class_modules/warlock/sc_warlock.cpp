@@ -607,6 +607,14 @@ struct soul_rot_t : public warlock_spell_t
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
   }
 
+  soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
+  {
+    if ( soul_swap )
+    {
+      aoe = 1;
+    }
+  }
+
   void execute() override
   {
     warlock_spell_t::execute();
@@ -618,7 +626,7 @@ struct soul_rot_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p()->talents.dark_harvest->ok() )
+    if ( p()->talents.dark_harvest->ok() && aoe > 1)
     {
       p()->buffs.dark_harvest_haste->trigger();
       p()->buffs.dark_harvest_crit->trigger();
@@ -634,7 +642,10 @@ struct soul_rot_t : public warlock_spell_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( s->chain_target == 0 )
+    // Note: Soul Swapped Soul Rot technically retains memory of who the primary target was
+    // For the moment, we will shortcut this by assuming Soul Swap copy is going on a secondary target
+    // TODO: Figure out how to model this appropriately in the case where you copy a secondary and then apply to primary
+    if ( s->chain_target == 0 && aoe > 1 )
     {
       m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
     }
@@ -1996,6 +2007,11 @@ bool warlock_t::min_version_check( version_check_e version ) const
 action_t* warlock_t::pass_corruption_action( warlock_t* p )
 {
   return debug_cast<action_t*>( new actions::corruption_t( p, "", true ) );
+}
+
+action_t* warlock_t::pass_soul_rot_action( warlock_t* p )
+{
+  return debug_cast<action_t*>( new actions::soul_rot_t( p, "", true ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )

@@ -103,6 +103,9 @@ public:
     ss_action_state_t unstable_affliction;
     ss_action_state_t siphon_life;
     ss_action_state_t haunt;
+    ss_action_state_t soul_rot;
+    ss_action_state_t phantom_singularity;
+    ss_action_state_t vile_taint;
     // Seed of Corruption is also copied, NYI
   } soul_swap_state;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
@@ -659,6 +662,7 @@ public:
   void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
+  action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   bool crescendo_check( warlock_t* p ); 
   void create_actions() override;
   void create_soul_swap_actions();
