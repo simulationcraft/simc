@@ -223,6 +223,7 @@ public:
     action_t* orb_barrage_arcane_orb;
     action_t* pet_freeze;
     action_t* pet_water_jet;
+    action_t* shattered_ice;
     action_t* touch_of_the_magi_explosion;
 
     struct icicles_t
@@ -3681,6 +3682,36 @@ struct glacial_assault_t final : public frost_mage_spell_t
   }
 };
 
+struct shattered_ice_t final : public frost_mage_spell_t
+{
+  shattered_ice_t( std::string_view n, mage_t* p ) :
+    frost_mage_spell_t( n, p, p->find_spell( 408763 ) )
+  {
+    background = true;
+    may_crit = affected_by.shatter = false;
+    aoe = -1;
+    reduced_aoe_targets = p->sets->set( MAGE_FROST, T30, B2 )->effectN( 3 ).base_value();
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  void init() override
+  {
+    frost_mage_spell_t::init();
+
+    // TODO: This spell currently ignores damage reductions, which is probably not intended.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    frost_mage_spell_t::available_targets( tl );
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 struct flurry_bolt_t final : public frost_mage_spell_t
 {
   flurry_bolt_t( std::string_view n, mage_t* p ) :
@@ -3688,6 +3719,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   {
     background = triggers.chill = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -3711,6 +3743,12 @@ struct flurry_bolt_t final : public frost_mage_spell_t
         .target( s->target )
         .n_pulses( 1 )
         .action( p()->action.glacial_assault ) );
+    }
+
+    if ( p()->action.shattered_ice )
+    {
+      double pct = p()->sets->set( MAGE_FROST, T30, B2 )->effectN( 2 ).percent();
+      p()->action.shattered_ice->execute_on_target( s->target, pct * s->result_total );
     }
   }
 
@@ -3742,6 +3780,8 @@ struct flurry_t final : public frost_mage_spell_t
       add_child( p->action.icicle.flurry );
     if ( p->action.glacial_assault )
       add_child( p->action.glacial_assault );
+    if ( p->action.shattered_ice )
+      add_child( p->action.shattered_ice );
   }
 
   void init() override
@@ -3805,6 +3845,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
@@ -5850,6 +5891,9 @@ void mage_t::create_actions()
 
   if ( talents.harmonic_echo.ok() )
     action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
+
+  if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
+    action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
 
   player_t::create_actions();
 
