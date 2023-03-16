@@ -32,6 +32,13 @@ const warlock_t* warlock_pet_t::o() const
   return static_cast<warlock_t*>( owner );
 }
 
+void warlock_pet_t::apply_affecting_auras( action_t& action )
+{
+  pet_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( o()->talents.socrethars_guile );
+}
+
 void warlock_pet_t::create_buffs()
 {
   pet_t::create_buffs();
