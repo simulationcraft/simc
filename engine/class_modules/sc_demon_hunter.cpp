@@ -237,7 +237,6 @@ public:
     buff_t* t30_havoc_2pc;
     buff_t* t30_havoc_4pc;
     buff_t* t30_havoc_4pc_damage_amp;
-
   } buff;
 
   // Talents
@@ -1715,14 +1714,13 @@ public:
       {       
         p()->set_bonuses.t30_havoc_2pc_fury_tracker += ab::last_resource_cost;
         const double threshold = p()->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value();
-        p()->sim->print_debug( "Spent {} toward Seething Fury ({}/{})", ab::last_resource_cost, 
+        p()->sim->print_debug( "{} spent {} toward Seething Fury ({}/{})", *p(), ab::last_resource_cost,
                                p()->set_bonuses.t30_havoc_2pc_fury_tracker, threshold );
-        while ( p()->set_bonuses.t30_havoc_2pc_fury_tracker >= threshold )
+        if ( p()->set_bonuses.t30_havoc_2pc_fury_tracker >= threshold )
         {
           p()->set_bonuses.t30_havoc_2pc_fury_tracker -= threshold;
           p()->buff.t30_havoc_2pc->trigger();
-          p()->sim->print_debug( "Seething fury procced at a threshold of {} with {} fury left over.", threshold,
-                                 p()->set_bonuses.t30_havoc_2pc_fury_tracker );
+          p()->sim->print_debug( "{} procced Seething Fury ({}/{})", *p(), p()->set_bonuses.t30_havoc_2pc_fury_tracker, threshold );
           if ( p()->set_bonuses.t30_havoc_4pc->ok() )
           {            
             p()->buff.t30_havoc_4pc->trigger();
