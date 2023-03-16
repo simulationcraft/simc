@@ -1874,10 +1874,12 @@ struct pyre_t : public essence_spell_t
       if ( p()->buff.essence_burst->up() )
       {
         p()->cooldown.fire_breath->adjust( ftf_dur_eb );
+        p()->cooldown.eternity_surge->adjust( ftf_dur_eb );
       }
       else
       {
         p()->cooldown.fire_breath->adjust( ftf_dur );
+        p()->cooldown.eternity_surge->adjust( ftf_dur );
       }
     }
 
