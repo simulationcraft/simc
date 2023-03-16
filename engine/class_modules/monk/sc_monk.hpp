@@ -361,6 +361,13 @@ public:
     propagate_const<buff_t*> fists_of_flowing_momentum;
     propagate_const<buff_t*> fists_of_flowing_momentum_fof;
     propagate_const<buff_t*> brewmasters_rhythm;
+
+    // Tier 30 Brewmaster
+    // TODO: Update name when known.
+    propagate_const<buff_t*> tier30_brew_2p;
+    propagate_const<buff_t*> tier30_brew_4p;
+    propagate_const<buff_t*> leverage;
+
   } buff;
 
 public:
@@ -896,6 +903,11 @@ public:
     // Tier 29
     const spell_data_t* kicks_of_flowing_momentum;
     const spell_data_t* fists_of_flowing_momentum;
+
+    // Tier 30 BrM
+    // TODO: Update name when known.
+    const spell_data_t* tier30_brew_2p;
+    const spell_data_t* tier30_brew_4p;
   } passives;
 
   // RPPM objects

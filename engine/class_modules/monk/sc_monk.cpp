@@ -1976,6 +1976,11 @@ namespace monk
 
           am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
 
+          // p()->sim->print_debug("am pre 2p: {}", am);
+          if ( p()->buff.tier30_brew_2p->up() )
+            am *= 1.0 + p()->passives.tier30_brew_2p->effectN( 1 ).percent();
+          // p()->sim->print_debug("am pos 2p: {}", am);
+
           return am;
         }
 
@@ -3954,7 +3959,7 @@ namespace monk
         {
           monk_spell_t::execute();
 
-          // Buff occurs after the keg finishes travelling 
+          // Buff occurs after the keg finishes travelling
           p()->buff.exploding_keg->trigger();
         }
 
@@ -7442,6 +7447,10 @@ namespace monk
     passives.kicks_of_flowing_momentum = find_spell( 394944 );
     passives.fists_of_flowing_momentum = find_spell( 394949 );
 
+    // Tier 30
+    passives.tier30_brew_2p = find_spell( 405539 );
+    passives.tier30_brew_4p = find_spell( 405540 );
+
     // Mastery spells =========================================
     mastery.combo_strikes = find_mastery_spell( MONK_WINDWALKER );
     mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -7901,6 +7910,17 @@ namespace monk
       ->set_cooldown( timespan_t::from_seconds( 1 ) )
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    buff.tier30_brew_2p = make_buff( this, "tier30_brew_2p", passives.tier30_brew_2p )
+      ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B2 ));
+
+    // buff.tier30_brew_4p = make_buff( this, "tier30_brew_4p", passives.tier30_brew_4p )
+    //   ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ));
+
+    // buff.leverage = make_buff( this, "leverage", find_spell( 408503 ))
+    //   ->set_trigger_spell( sets->set( MONK_BREWMASTER, T29, B4 ));
+    //   ->add_invalidate( CACHE_CRIT_CHANCE )
+    //   ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // ------------------------------
     // Movement
