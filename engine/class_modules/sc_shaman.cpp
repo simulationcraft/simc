@@ -4122,10 +4122,11 @@ struct weapon_imbue_t : public shaman_spell_t
     shaman_spell_t::init_finished();
 
     if ( player->items[ slot ].active() &&
-         player->items[ slot ].parsed.temporary_enchant_id > 0 )
+         player->items[ slot ].selected_temporary_enchant() > 0 )
     {
       sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}",
-        player->name(), util::slot_type_string( slot ), player->items[ slot ].parsed.temporary_enchant_id, name() );
+        player->name(), util::slot_type_string( slot ),
+        player->items[ slot ].selected_temporary_enchant(), name() );
     }
   }
 
@@ -4151,7 +4152,7 @@ struct weapon_imbue_t : public shaman_spell_t
     }
 
     if ( player->items[ slot ].active() &&
-         player->items[ slot ].parsed.temporary_enchant_id > 0 )
+         player->items[ slot ].selected_temporary_enchant() > 0 )
     {
       return false;
     }
@@ -10090,10 +10091,7 @@ std::string shaman_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case SHAMAN_ELEMENTAL:
-      // if ( !talent.improved_flametongue_weapon.ok() )
-      //   return "main_hand:howling_rune_3";
-      // else
-        return "disabled";
+      return "main_hand:howling_rune_3,if=!talent.improved_flametongue_weapon";
     case SHAMAN_ENHANCEMENT:
       return "disabled";
     case SHAMAN_RESTORATION:

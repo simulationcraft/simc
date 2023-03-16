@@ -428,7 +428,6 @@ public:
     gain_t* trueshot;
 
     gain_t* barbed_shot;
-    gain_t* dire_beast;
 
     gain_t* terms_of_engagement;
     gain_t* coordinated_kill;
@@ -1787,13 +1786,6 @@ struct dire_critter_t final : public hunter_pet_t
 
     o() -> buffs.dire_beast -> trigger();
 
-    //20/02/2023
-    //When Dire Beast has been glyphed with Dire Stable it generates 10 focus on summon
-    if ( o() -> bugs) 
-    {
-      o() -> resource_gain( RESOURCE_FOCUS, find_spell( 120694 ) -> effectN( 1 ).base_value(), o() -> gains.dire_beast );
-    }
-
     o() -> state.dire_pack_counter++;
     if ( o() -> state.dire_pack_counter == dire_pack_threshold )
     {
@@ -2697,6 +2689,16 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     }
 
     p() -> buffs.focusing_aim -> trigger();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = auto_attack_base_t::action_multiplier();
+
+    if ( player -> buffs.heavens_nemesis && player -> buffs.heavens_nemesis -> data().effectN( 1 ).subtype() != A_MOD_RANGED_AND_MELEE_ATTACK_SPEED )
+      am *= 1 + player -> buffs.heavens_nemesis -> stack_value();
+
+    return am;
   }
 };
 
@@ -4377,6 +4379,16 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
     weapon_multiplier  = 1;
     may_glance         = true;
     may_crit           = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto_attack_base_t::impact( s );
+
+    if( p() -> is_ptr() && p() -> talents.lunge.ok() )
+    {
+      p() -> cooldowns.wildfire_bomb -> adjust( -timespan_t::from_millis( p() -> talents.lunge -> effectN( 3 ).base_value() ) );
+    }
   }
 };
 
@@ -6964,7 +6976,6 @@ void hunter_t::init_gains()
   gains.trueshot               = get_gain( "Trueshot" );
 
   gains.barbed_shot            = get_gain( "Barbed Shot" );
-  gains.dire_beast             = get_gain( "Dire Beast (Bug)" ); 
 
   gains.terms_of_engagement    = get_gain( "Terms of Engagement" );
   gains.coordinated_kill       = get_gain( "Coordinated Kill" );

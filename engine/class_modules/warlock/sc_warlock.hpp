@@ -13,6 +13,7 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_10_0_7,
   VERSION_10_0_5,
   VERSION_10_0_0,
   VERSION_ANY
@@ -102,6 +103,9 @@ public:
     ss_action_state_t unstable_affliction;
     ss_action_state_t siphon_life;
     ss_action_state_t haunt;
+    ss_action_state_t soul_rot;
+    ss_action_state_t phantom_singularity;
+    ss_action_state_t vile_taint;
     // Seed of Corruption is also copied, NYI
   } soul_swap_state;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
@@ -123,6 +127,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
+    const spell_data_t* xavian_teachings;  // Seperate Spell (Learned automatically). Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -185,10 +190,12 @@ public:
   {
     // Class Tree
 
-    player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
-    player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
-    player_talent_t grimoire_of_synergy; // Note: Does not trigger when using Grimoire of Sacrifice
+    player_talent_t demonic_inspiration; // TODO: Behavior is changing in 10.0.7
+    player_talent_t wrathful_minion; // TODO: Behavior is changing in 10.0.7
+    player_talent_t grimoire_of_synergy;
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
+    player_talent_t socrethars_guile;
+    player_talent_t sargerei_technique;
     player_talent_t soul_conduit;
     player_talent_t grim_feast; // Faster Drain Life
     player_talent_t summon_soulkeeper; // Active ground AoE which spends hidden stacking buff. NOT A PET
@@ -197,10 +204,9 @@ public:
     const spell_data_t* soul_combustion; // AoE tick damage for Summon Soulkeeper
     player_talent_t inquisitors_gaze;
     const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
-    const spell_data_t* fel_bolt; // Inquisitor's Eye spell #1
-    const spell_data_t* fel_blast; // Inquisitor's Eye spell #2
-    const spell_data_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
+    const spell_data_t* fel_barrage; // Inquisitor's Eye damage spell
     player_talent_t soulburn;
+    const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
     // Specializations
 
@@ -228,6 +234,8 @@ public:
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t harvester_of_souls;
+    player_talent_t dark_virtuosity;
+    player_talent_t kindled_malice;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
     player_talent_t writhe_in_agony;
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
@@ -241,7 +249,6 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    player_talent_t soul_tap; // REMOVED in 10.0.5!
     player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
     const spell_data_t* pandemic_invocation_proc; // Damage data
     player_talent_t inevitable_demise; // The talent version of the ability
@@ -458,8 +465,6 @@ public:
     action_t* rain_of_fire_tick;
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
-    action_t* fel_bolt; // Inquistor's Eye spell #1
-    action_t* fel_blast; // Inquisitor's Eye spell #2
     action_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
   } proc_actions;
 
@@ -499,13 +504,13 @@ public:
     propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
     propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
-    propagate_const<buff_t*> inquisitors_gaze_buildup; // Dummy buff to trigger Fel Blast at max stacks
+    propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> inevitable_demise; // TOCHECK: (noticed 2023-03-16) Having one point in this talent may be getting half the intended value!
     propagate_const<buff_t*> soul_swap; // Buff for when Soul Swap currently is holding copies
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
@@ -571,7 +576,6 @@ public:
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
-    gain_t* soul_tap;
     gain_t* pandemic_invocation;
 
     // Destruction
@@ -637,7 +641,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_10_0_5_data;
+  const spell_data_t* version_10_0_7_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -660,6 +664,7 @@ public:
   void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
+  action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   bool crescendo_check( warlock_t* p ); 
   void create_actions() override;
   void create_soul_swap_actions();

@@ -1388,6 +1388,9 @@ class SpellDataGenerator(DataGenerator):
          389581, # Emerald Coach's Whistle
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
+         405209, # Humming Arcane Stone
+         # 10.1.0
+         408791, # Ashkandur
         ),
 
         # Warrior:
@@ -1457,6 +1460,7 @@ class SpellDataGenerator(DataGenerator):
             ( 387178, 0 ),          # Empyrean Legacy buff
             ( 224239, 0 ),          # Tempest divine storm
             ( 384810, 0 ),          # Seal of Clarity buff
+            ( 404140, 0 ),          # Blessed Hammers for Adjudication
         ),
 
         # Hunter:
@@ -1567,7 +1571,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394757, 0 ),          # Flagellation talent damage spell
             ( 394758, 0 ),          # Flagellation talent persist buff
             ( 385948, 0 ), ( 385949, 0 ), ( 385951, 0 ), # Finality talent buffs
-            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells 
+            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
@@ -1695,6 +1699,7 @@ class SpellDataGenerator(DataGenerator):
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
+          ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
         ),
 
         # Shaman:
@@ -2166,9 +2171,10 @@ class SpellDataGenerator(DataGenerator):
           ( 361519, 0 ), # Essence Burst
           # Devastation
           ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
-          ( 375802, 1 ), # Burnout buff
-          ( 376850, 1 ), # Power Swell buff
+          ( 375802, 1 ),  # Burnout buff
+          ( 376850, 1 ),  # Power Swell buff
           ( 397870, 1 ),  # Titanic Wrath
+          ( 405651, 1 ),  # Imminent Destruction Player Buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),
@@ -3642,6 +3648,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'raging_tempests',
             'bonuses': [ 1521, 1523, 1524, 1525 ],
             'tier'   : 29
+        },
+        {
+            'name'   : 'tier30',
+            'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
+            'tier'   : 30
         }
     ]
 
