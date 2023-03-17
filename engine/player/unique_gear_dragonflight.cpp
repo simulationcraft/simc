@@ -3438,7 +3438,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
   }
 
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403386 ) )
-                           ->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) );
+                           ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.spell_id = driver_id;
 
