@@ -8924,7 +8924,7 @@ namespace monk
         if ( rng().roll( 1.0 - sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 2 ).percent())) {
           buff.elusive_brawler->expire();
         } else {
-          sim->print_debug("eb noexpire");
+          // t30 2p proc statistic
         }
 
         buff.leverage->trigger();
