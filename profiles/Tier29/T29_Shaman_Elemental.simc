@@ -12,7 +12,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_elemental_chaos_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=disabled
+temporary_enchant=main_hand:howling_rune_3,if=!talent.improved_flametongue_weapon
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
