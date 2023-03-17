@@ -4249,7 +4249,7 @@ enum primordial_stone_drivers_e
   SEARING_SMOKEY_STONE     = 402932, // NYI (procs on interrupts)
   ENTROPIC_FEL_STONE       = 402934,
   INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
-  SHINING_OBSIDIAN_STONE   = 402936, // NYI
+  SHINING_OBSIDIAN_STONE   = 402936, // no absorbs are implemented to trigger this
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
   GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
   DELUGING_WATER_STONE     = 402939, // NYI (heal)
