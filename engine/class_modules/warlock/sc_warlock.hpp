@@ -233,7 +233,7 @@ public:
 
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
-    player_talent_t harvester_of_souls;
+    player_talent_t harvester_of_souls; // REMOVED in 10.0.7
     player_talent_t dark_virtuosity;
     player_talent_t kindled_malice;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
