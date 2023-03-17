@@ -63,6 +63,7 @@ struct warlock_pet_t : public pet_t
   void init_special_effects() override;
   void arise() override;
   void demise() override;
+  void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<warlock_pet_td_t> target_data;
 

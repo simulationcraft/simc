@@ -1456,6 +1456,11 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
+  bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
+  {
+    return dot->ticks_left() <= 1;
+  }
+
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     priest_spell_t::snapshot_state( s, rt );
@@ -2535,7 +2540,7 @@ void priest_t::create_buffs_shadow()
 
                 auto duration = 5_s;
 
-                if ( talents.shadow.idol_of_yshaarj.enabled() )
+                if ( talents.shadow.idol_of_yshaarj.enabled() && options.t30_yshaarj )
                 {
                   // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
                   if ( target->health_percentage() >= 80.0 )
@@ -2548,14 +2553,19 @@ void priest_t::create_buffs_shadow()
                     procs.idol_of_yshaarj_extra_duration->occur();
                   }
                 }
-                if ( talents.shadow.mindbender.enabled() )
+
+                auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
+
+                auto pet = pet_spawner.active_pet_min_remains();
+                if ( pet && !pet->is_sleeping() && !options.t30_multiple_bender )
                 {
-                  pets.mindbender.spawn( duration );
+                  pet->adjust_duration( 5_s );
                 }
                 else
                 {
-                  pets.shadowfiend.spawn( duration );
+                  pet_spawner.spawn( duration );
                 }
+
               } );
             }
           } );

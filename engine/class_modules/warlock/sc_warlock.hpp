@@ -103,6 +103,9 @@ public:
     ss_action_state_t unstable_affliction;
     ss_action_state_t siphon_life;
     ss_action_state_t haunt;
+    ss_action_state_t soul_rot;
+    ss_action_state_t phantom_singularity;
+    ss_action_state_t vile_taint;
     // Seed of Corruption is also copied, NYI
   } soul_swap_state;
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
@@ -124,7 +127,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
-    const spell_data_t* xavian_teachings;  // Seperate Spell (Learned automatically). Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
+    const spell_data_t* xavian_teachings;  // Separate spell (learned automatically). Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -187,9 +190,9 @@ public:
   {
     // Class Tree
 
-    player_talent_t demonic_inspiration; // Pet haste on Soul Shard fill
-    player_talent_t wrathful_minion; // Pet damage buff on Soul Shard fill
-    player_talent_t grimoire_of_synergy; // Note: Does not trigger when using Grimoire of Sacrifice
+    player_talent_t demonic_inspiration; // Behavior changed in 10.0.7
+    player_talent_t wrathful_minion; // Behavior changed in 10.0.7
+    player_talent_t grimoire_of_synergy;
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t socrethars_guile;
     player_talent_t sargerei_technique;
@@ -203,6 +206,7 @@ public:
     const spell_data_t* inquisitors_gaze_buff; // Aura which triggers the damage procs
     const spell_data_t* fel_barrage; // Inquisitor's Eye damage spell
     player_talent_t soulburn;
+    const spell_data_t* soulburn_buff; // This buff is applied after using Soulburn and prevents another usage unless cleared
 
     // Specializations
 
@@ -224,16 +228,16 @@ public:
 
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
-    player_talent_t xavian_teachings; // Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
+    player_talent_t xavian_teachings; // REMOVED (from here) in 10.0.7
+    player_talent_t writhe_in_agony;
     player_talent_t sow_the_seeds;
 
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
-    player_talent_t harvester_of_souls;
+    player_talent_t harvester_of_souls; // REMOVED in 10.0.7
     player_talent_t dark_virtuosity;
     player_talent_t kindled_malice;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
-    player_talent_t writhe_in_agony;
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
     player_talent_t drain_soul; // This represents the talent node but not much else
@@ -333,8 +337,10 @@ public:
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
-    player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
-    
+    player_talent_t hounds_of_war; // REMOVED in 10.0.7
+    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT - TODO
+    const spell_data_t* umbral_blaze_dot; // The actual DoT applied to the target
+
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
     player_talent_t summon_demonic_tyrant; // TOCHECK: 2022-10-07 Pit Lord is not currently extendable by Tyrant
@@ -356,6 +362,7 @@ public:
     player_talent_t reign_of_tyranny; // Each summoned active pet gives stacks of Demonic Servitude. Tyrant snapshots this buff on summon for more damage
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
+    player_talent_t immutable_hatred; // PLACEHOLDER - TODO
     player_talent_t guillotine;
 
     // Destruction
@@ -500,12 +507,13 @@ public:
     propagate_const<buff_t*> tormented_soul; // Hidden stacking buff
     propagate_const<buff_t*> tormented_soul_generator; // Dummy buff with periodic tick to add a stack every 20 seconds
     propagate_const<buff_t*> inquisitors_gaze; // Aura that indicates Inquisitor's Eye is summoned
+    propagate_const<buff_t*> soulburn;
     propagate_const<buff_t*> pet_movement; // One unified buff for some form of pet movement stat tracking
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; // Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> inevitable_demise;
+    propagate_const<buff_t*> inevitable_demise; // TOCHECK: (noticed 2023-03-16) Having one point in this talent may be getting half the intended value!
     propagate_const<buff_t*> soul_swap; // Buff for when Soul Swap currently is holding copies
     propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption;
@@ -659,6 +667,7 @@ public:
   void expendables_trigger_helper( warlock_pet_t* source );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
+  action_t* pass_soul_rot_action( warlock_t* p ); // ...they made me do it for Soul Rot too
   bool crescendo_check( warlock_t* p ); 
   void create_actions() override;
   void create_soul_swap_actions();
@@ -1072,8 +1081,8 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     background = true;
     proc = true;
 
-    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 7 ).percent();
-    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( p->min_version_check( VERSION_10_0_7 ) ? 2 : 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( p->min_version_check( VERSION_10_0_7 ) ? 2 : 7 ).percent();
   }
 };
 
