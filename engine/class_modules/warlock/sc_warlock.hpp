@@ -190,8 +190,8 @@ public:
   {
     // Class Tree
 
-    player_talent_t demonic_inspiration; // TODO: Behavior is changing in 10.0.7
-    player_talent_t wrathful_minion; // TODO: Behavior is changing in 10.0.7
+    player_talent_t demonic_inspiration; // Behavior changed in 10.0.7
+    player_talent_t wrathful_minion; // Behavior changed in 10.0.7
     player_talent_t grimoire_of_synergy;
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t socrethars_guile;
