@@ -775,16 +775,12 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
   void execute() override
   {
-    // TODO: Cancel existing ground event if cast while one is already active
-
     warlock_spell_t::execute();
 
     timespan_t dur = 0_ms;
 
-
     dur = p()->talents.summon_soulkeeper_aoe->duration() - 2_s + 1_s; // Hardcoded -2 according to tooltip, but is doing 9 ticks as of 2023-01-19
     debug_cast<soul_combustion_t*>( p()->proc_actions.soul_combustion )->tormented_souls = p()->buffs.tormented_soul->stack();
-
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                 ground_aoe_params_t()
@@ -795,6 +791,8 @@ struct summon_soulkeeper_t : public warlock_spell_t
                                     .duration( dur )
                                     .start_time( sim->current_time() )
                                     .action( p()->proc_actions.soul_combustion ) );
+
+    internal_cooldown->start( dur ); // As of 10.0.7, Soulkeepr can no longer be used if one is already active
 
     p()->buffs.tormented_soul->expire();
   }
