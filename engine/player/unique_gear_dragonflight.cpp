@@ -4270,6 +4270,7 @@ enum primordial_stone_drivers_e
 
 enum primordial_stone_family_e
 {
+  PRIMORDIAL_NONE,
   PRIMORDIAL_ARCANE,
   PRIMORDIAL_EARTH,
   PRIMORDIAL_FIRE,
@@ -4318,7 +4319,7 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
       break;
   }
 
-  throw std::invalid_argument( fmt::format( "Unsupported Primordial Stone driver '{}' has no family implemented.", e.driver()->id() ) );
+  return PRIMORDIAL_NONE;
 }
 
 action_t* find_primordial_stone_action( player_t* player, primordial_stone_drivers_e driver )
@@ -4587,7 +4588,11 @@ struct humming_arcane_stone_t : public damage_stone_t
     {
       if ( se->type == SPECIAL_EFFECT_EQUIP && se->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
       {
-        stone_families.insert( get_stone_family( *se ) );
+        auto family = get_stone_family( *se );
+        if ( family != PRIMORDIAL_NONE )
+        {
+          stone_families.insert( get_stone_family( *se ) );
+        }
       }
     }
 
