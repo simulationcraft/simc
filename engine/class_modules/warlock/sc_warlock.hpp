@@ -1078,8 +1078,8 @@ struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     background = true;
     proc = true;
 
-    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( 7 ).percent();
-    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.demonic_inspiration->effectN( p->min_version_check( VERSION_10_0_7 ) ? 2 : 7 ).percent();
+    base_dd_multiplier *= 1.0 + p->talents.wrathful_minion->effectN( p->min_version_check( VERSION_10_0_7 ) ? 2 : 7 ).percent();
   }
 };
 

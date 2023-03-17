@@ -1342,7 +1342,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double amt = player_t::resource_gain( resource_type, amount, source, action );
 
-  if ( resource_type == RESOURCE_SOUL_SHARD )
+  if ( resource_type == RESOURCE_SOUL_SHARD && !min_version_check( VERSION_10_0_7 ) )
   {
     bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
 

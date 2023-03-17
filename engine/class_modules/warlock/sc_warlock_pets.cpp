@@ -89,11 +89,14 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
                               ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
-  buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
-                                  ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
+  if ( !o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
+                                    ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
 
-  buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
-                              ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+    buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
+                                ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+  }
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
@@ -207,9 +210,16 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
 
-  if ( buffs.wrathful_minion->check() )
-    m *= 1.0 + buffs.wrathful_minion->check_value();
-
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( is_main_pet && o()->talents.wrathful_minion->ok() )
+      m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.wrathful_minion->check() )
+      m *= 1.0 + buffs.wrathful_minion->check_value();
+  }
   return m;
 }
 
@@ -245,9 +255,16 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( buffs.demonic_inspiration->check() )
-    m *= 1.0 + buffs.demonic_inspiration->check_value();
-
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( o()->talents.demonic_inspiration->ok() )
+      m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.demonic_inspiration->check() )
+      m *= 1.0 + buffs.demonic_inspiration->check_value();
+  }
   return m;
 }
 
@@ -255,8 +272,16 @@ double warlock_pet_t::composite_spell_speed() const
 {
   double m = pet_t::composite_spell_speed();
 
-  if ( buffs.demonic_inspiration->check() )
-    m /= 1.0 + buffs.demonic_inspiration->check_value();
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( o()->talents.demonic_inspiration->ok() )
+      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.demonic_inspiration->check() )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -265,8 +290,16 @@ double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
 
-  if ( buffs.demonic_inspiration->check() )
-    m /= 1.0 + buffs.demonic_inspiration->check_value();
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( o()->talents.demonic_inspiration->ok() )
+      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.demonic_inspiration->check() )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
