@@ -1391,6 +1391,10 @@ class SpellDataGenerator(DataGenerator):
          405209, # Humming Arcane Stone
          # 10.1.0
          408791, # Ashkandur
+         408089, # Idol of Debilitating Arrogance Death Knight
+         408090, # Idol of Debilitating Arrogance Druid?
+         408042, # Idol of Debilitating Arrogance Rogue?
+         408087, # Idol of Debilitating Arrogance Priest
         ),
 
         # Warrior:
