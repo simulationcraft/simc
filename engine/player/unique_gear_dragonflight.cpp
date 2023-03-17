@@ -4581,7 +4581,7 @@ struct humming_arcane_stone_t : public damage_stone_t
         auto family = get_stone_family( *se );
         if ( family != PRIMORDIAL_NONE )
         {
-          stone_families.insert( get_stone_family( *se ) );
+          stone_families.insert( family );
         }
       }
     }
