@@ -3437,9 +3437,11 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
       break;      
   }
 
+  // Buff scaling is on the main trinket driver.
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403386 ) )
                            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
 
+  // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
   effect.spell_id = driver_id;
 
   new dbc_proc_callback_t( effect.player, effect );
