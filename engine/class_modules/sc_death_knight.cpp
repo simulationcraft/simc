@@ -4114,7 +4114,7 @@ struct army_of_the_dead_t final : public death_knight_spell_t
     // There's a 0.5s interval between each ghoul's spawn
     timespan_t const summon_interval = p() -> talent.unholy.army_of_the_dead -> effectN( 1 ).period();
 
-    if ( ! p() -> in_combat && precombat_time )
+    if ( ! p() -> in_combat && precombat_time > 0 )
     {
       // The first pet spawns after the interval timer
       timespan_t duration_penalty = timespan_t::from_seconds( precombat_time ) - summon_interval;
