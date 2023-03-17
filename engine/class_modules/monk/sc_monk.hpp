@@ -364,8 +364,8 @@ public:
 
     // Tier 30 Brewmaster
     // TODO: Update name when known.
-    propagate_const<buff_t*> tier30_brew_2p;
-    propagate_const<buff_t*> tier30_brew_4p;
+    // propagate_const<buff_t*> tier30_brew_2p;
+    // propagate_const<buff_t*> tier30_brew_4p;
     propagate_const<buff_t*> leverage;
 
   } buff;
@@ -906,8 +906,8 @@ public:
 
     // Tier 30 BrM
     // TODO: Update name when known.
-    const spell_data_t* tier30_brew_2p;
-    const spell_data_t* tier30_brew_4p;
+    // const spell_data_t* tier30_brew_2p;
+    // const spell_data_t* tier30_brew_4p;
   } passives;
 
   // RPPM objects

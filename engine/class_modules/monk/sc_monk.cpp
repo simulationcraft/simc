@@ -1634,6 +1634,8 @@ namespace monk
 
           am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
+          am *= 1.0 + p()->buff.leverage->data().effectN( 1 ).percent() * p()->buff.leverage->check();
+
           return am;
         }
 
@@ -1642,6 +1644,8 @@ namespace monk
           double c = monk_melee_attack_t::composite_crit_chance();
 
           c += p()->buff.pressure_point->check_value();
+
+          c += p()->buff.leverage->data().effectN( 2 ).percent() * p()->buff.leverage->check();
 
           return c;
         }
@@ -1660,6 +1664,9 @@ namespace monk
         {
           monk_melee_attack_t::execute();
 
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T30, B4 ) )
+            p()->buff.elusive_brawler->trigger();
+
           if ( p()->buff.thunder_focus_tea->up() )
           {
             p()->cooldown.rising_sun_kick->adjust( p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(), true );
@@ -1669,6 +1676,8 @@ namespace monk
 
           if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
             p()->buff.gift_of_the_ox->trigger();
+
+          p()->buff.leverage->expire();
         }
 
         void impact( action_state_t *s ) override
@@ -1954,6 +1963,8 @@ namespace monk
 
           c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
 
+          c += p()->buff.leverage->data().effectN( 2 ).percent() * p()->buff.leverage->check();
+
           return c;
         }
 
@@ -1976,10 +1987,9 @@ namespace monk
 
           am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
 
-          // p()->sim->print_debug("am pre 2p: {}", am);
-          if ( p()->buff.tier30_brew_2p->up() )
-            am *= 1.0 + p()->passives.tier30_brew_2p->effectN( 1 ).percent();
-          // p()->sim->print_debug("am pos 2p: {}", am);
+          am *= 1.0 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
+
+          am *= 1.0 + p()->buff.leverage->data().effectN( 1 ).percent() * p()->buff.leverage->check();
 
           return am;
         }
@@ -2024,6 +2034,8 @@ namespace monk
 
           if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
             p()->buff.gift_of_the_ox->trigger();
+
+          p()->buff.leverage->expire();
         }
 
         void impact( action_state_t *s ) override
@@ -7448,8 +7460,8 @@ namespace monk
     passives.fists_of_flowing_momentum = find_spell( 394949 );
 
     // Tier 30
-    passives.tier30_brew_2p = find_spell( 405539 );
-    passives.tier30_brew_4p = find_spell( 405540 );
+    // passives.tier30_brew_2p = find_spell( 405539 );
+    // passives.tier30_brew_4p = find_spell( 405540 );
 
     // Mastery spells =========================================
     mastery.combo_strikes = find_mastery_spell( MONK_WINDWALKER );
@@ -7911,16 +7923,10 @@ namespace monk
       ->set_default_value_from_effect( 1 )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-    buff.tier30_brew_2p = make_buff( this, "tier30_brew_2p", passives.tier30_brew_2p )
-      ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B2 ));
-
-    // buff.tier30_brew_4p = make_buff( this, "tier30_brew_4p", passives.tier30_brew_4p )
-    //   ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ));
-
-    // buff.leverage = make_buff( this, "leverage", find_spell( 408503 ))
-    //   ->set_trigger_spell( sets->set( MONK_BREWMASTER, T29, B4 ));
-    //   ->add_invalidate( CACHE_CRIT_CHANCE )
-    //   ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buff.leverage = make_buff( this, "leverage", find_spell( 408503 ))
+      ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ))
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     // ------------------------------
     // Movement
@@ -8915,7 +8921,13 @@ namespace monk
     {
       if ( s->result == RESULT_DODGE )
       {
-        buff.elusive_brawler->expire();
+        if ( rng().roll( 1.0 - sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 2 ).percent())) {
+          buff.elusive_brawler->expire();
+        } else {
+          sim->print_debug("eb noexpire");
+        }
+
+        buff.leverage->trigger();
 
         // Saved as 5/10 base values but need it as 0.5 and 1 base values
         if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
