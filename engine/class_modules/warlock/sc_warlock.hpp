@@ -338,7 +338,9 @@ public:
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
     player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
-    
+    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT - TODO
+    const spell_data_t umbral_blaze_dot; // The actual DoT applied to the target
+
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
     const spell_data_t* nether_portal_buff; // Aura on player while the portal is active
     player_talent_t summon_demonic_tyrant; // TOCHECK: 2022-10-07 Pit Lord is not currently extendable by Tyrant
