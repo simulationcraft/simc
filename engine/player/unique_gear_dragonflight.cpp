@@ -3416,6 +3416,36 @@ void seething_black_dragonscale( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
+void idol_of_debilitating_arrogance( special_effect_t& effect )
+{
+  int driver_id = effect.spell_id;
+
+  switch ( effect.player->type )
+  {
+    case DEATH_KNIGHT:
+      driver_id = 408089;
+      break;
+    case DRUID:
+      driver_id = 408090;
+      break;
+    case ROGUE:
+      driver_id = 408042;
+      break;
+    case PRIEST:
+      driver_id = 408087;
+      break;      
+  }
+
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403386 ) )
+                           ->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  effect.spell_id = driver_id;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -4838,6 +4868,7 @@ void register_special_effects()
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
   register_special_effect( 401468, items::seething_black_dragonscale );
+  register_special_effect( 403385, items::idol_of_debilitating_arrogance );
 
 
   // Weapons
