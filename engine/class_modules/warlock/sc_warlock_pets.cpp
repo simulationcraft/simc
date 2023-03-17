@@ -32,6 +32,13 @@ const warlock_t* warlock_pet_t::o() const
   return static_cast<warlock_t*>( owner );
 }
 
+void warlock_pet_t::apply_affecting_auras( action_t& action )
+{
+  pet_t::apply_affecting_auras( action );
+
+  action.apply_affecting_aura( o()->talents.socrethars_guile );
+}
+
 void warlock_pet_t::create_buffs()
 {
   pet_t::create_buffs();
@@ -82,11 +89,14 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_synergy = make_buff( this, "demonic_synergy",  o()->talents.demonic_synergy )
                               ->set_default_value( o()->talents.grimoire_of_synergy->effectN( 2 ).percent() );
 
-  buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
-                                  ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
+  if ( !o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    buffs.demonic_inspiration = make_buff( this, "demonic_inspiration", find_spell( 386861 ) )
+                                    ->set_default_value( o()->talents.demonic_inspiration->effectN( 1 ).percent() );
 
-  buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
-                              ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+    buffs.wrathful_minion = make_buff( this, "wrathful_minion", find_spell( 386865 ) )
+                                ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
+  }
 
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
@@ -200,9 +210,16 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   if ( buffs.infernal_command->check() )
     m *= 1.0 + buffs.infernal_command->check_value();
 
-  if ( buffs.wrathful_minion->check() )
-    m *= 1.0 + buffs.wrathful_minion->check_value();
-
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( is_main_pet && o()->talents.wrathful_minion->ok() )
+      m *= 1.0 + o()->talents.wrathful_minion->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.wrathful_minion->check() )
+      m *= 1.0 + buffs.wrathful_minion->check_value();
+  }
   return m;
 }
 
@@ -238,9 +255,16 @@ double warlock_pet_t::composite_spell_haste() const
 {
   double m = pet_t::composite_spell_haste();
 
-  if ( buffs.demonic_inspiration->check() )
-    m *= 1.0 + buffs.demonic_inspiration->check_value();
-
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( o()->talents.demonic_inspiration->ok() )
+      m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.demonic_inspiration->check() )
+      m *= 1.0 + buffs.demonic_inspiration->check_value();
+  }
   return m;
 }
 
@@ -248,8 +272,16 @@ double warlock_pet_t::composite_spell_speed() const
 {
   double m = pet_t::composite_spell_speed();
 
-  if ( buffs.demonic_inspiration->check() )
-    m /= 1.0 + buffs.demonic_inspiration->check_value();
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( o()->talents.demonic_inspiration->ok() )
+      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.demonic_inspiration->check() )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -258,8 +290,16 @@ double warlock_pet_t::composite_melee_speed() const
 {
   double m = pet_t::composite_melee_speed();
 
-  if ( buffs.demonic_inspiration->check() )
-    m /= 1.0 + buffs.demonic_inspiration->check_value();
+  if ( o()->min_version_check( VERSION_10_0_7 ) )
+  {
+    if ( o()->talents.demonic_inspiration->ok() )
+      m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
+  }
+  else
+  {
+    if ( buffs.demonic_inspiration->check() )
+      m /= 1.0 + buffs.demonic_inspiration->check_value();
+  }
 
   return m;
 }
@@ -710,7 +750,6 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     warlock_pet_melee_attack_t::execute();
 
     // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
-    // TOCHECK: As of 2023-01-22, GFG Felstorm is also triggering this inadvertently
     if ( internal_cooldown )
     {
       internal_cooldown->start( 5_s * p()->composite_spell_haste() );
@@ -1532,7 +1571,7 @@ void demonic_tyrant_t::arise()
 
   if ( o()->talents.reign_of_tyranny->ok() )
   {
-    buffs.demonic_servitude->trigger( 1, o()->buffs.demonic_servitude->check_stack_value() );
+    buffs.demonic_servitude->trigger( 1, ( o()->buffs.demonic_servitude->check() + 1 ) * o()->buffs.demonic_servitude->check_value() ); // Demonic Servitude has a permanent extra 1 stack on tracking (last checked 2023-03-17)
   }
 }
 
@@ -1541,8 +1580,14 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
   double m = warlock_pet_t::composite_player_multiplier( school );
 
   if ( o()->talents.reign_of_tyranny->ok() )
+  {
     m *= 1.0 + buffs.demonic_servitude->check_value();
 
+    if ( o()->min_version_check( VERSION_10_0_7 ) )
+    {
+      m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
+    }
+  }
   return m;
 }
 
@@ -2207,10 +2252,6 @@ struct eye_beam_t : public warlock_pet_spell_t
       background = dual = true;
 
       base_dd_min = base_dd_max = 0.0;
-
-      snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET | STATE_MUL_PERSISTENT;
-      update_flags   |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_VERSATILITY | STATE_MUL_PET | STATE_TGT_MUL_PET;
-
     }
   };
   

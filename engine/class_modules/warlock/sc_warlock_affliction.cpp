@@ -567,124 +567,95 @@ struct vile_taint_t : public affliction_spell_t
     impact_action = new vile_taint_dot_t( p );
     add_child( impact_action );
   }
-};
 
-struct soul_tap_t : public affliction_spell_t
-{
-  soul_tap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Tap", p, p->min_version_check( VERSION_10_0_5 ) ? spell_data_t::nil() : p->talents.soul_tap )
+  vile_taint_t( warlock_t* p, util::string_view opt, bool soul_swap ) : vile_taint_t( p, opt )
   {
-    parse_options( options_str );
-    harmful = false;
-    cooldown->duration = 30_s;
-  }
-
-  bool ready() override
-  {
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
-      return false;
-
-    return affliction_spell_t::ready();
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-
-    // 1 Soul Shard is hardcoded, not in spell data
-    p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_tap );
+    if ( soul_swap )
+    {
+      impact_action->execute_action = nullptr; // Only want to apply Vile Taint DoT, not secondary effects
+      aoe = 1;
+    }
   }
 };
 
 struct soul_swap_t : public affliction_spell_t
 {
-  action_t* corruption;
-  agony_t* agony;
-  unstable_affliction_t* ua;
-
   soul_swap_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
   {
     parse_options( options_str );
     may_crit = false;
-
-    corruption = p->pass_corruption_action( p );
-    corruption->dual = true;
-
-    agony = new agony_t( p, "" );
-    agony->dual = true;
-
-    ua = new unstable_affliction_t( p );
-    ua->dual = true;
   }
 
   bool ready() override
   {
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
-    {
-      if ( td( target )->dots_corruption->is_ticking() || td( target )->dots_agony->is_ticking() 
-        || td( target )->dots_unstable_affliction->is_ticking() || td( target )->dots_siphon_life->is_ticking()
-        || td( target )->debuffs_haunt->check() )
-        return affliction_spell_t::ready();
-
-      return false;
-    }
-    else
-    {
+    if ( td( target )->dots_corruption->is_ticking() || td( target )->dots_agony->is_ticking() 
+      || td( target )->dots_unstable_affliction->is_ticking() || td( target )->dots_siphon_life->is_ticking()
+      || td( target )->debuffs_haunt->check() )
       return affliction_spell_t::ready();
-    }
+
+    return false;
   }
 
   void execute() override
   {
     affliction_spell_t::execute();
 
-    if ( p()->min_version_check( VERSION_10_0_5 ) )
+    // Loop through relevant DoTs and store states
+    // (DoTs that are not present have action_copied set to false)
+    auto tar = td( target );
+
+    if ( tar->dots_corruption->is_ticking() )
     {
-      // Loop through relevant DoTs and store states
-      // (DoTs that are not present have action_copied set to false)
-      auto tar = td( target );
-
-      if ( tar->dots_corruption->is_ticking() )
-      {
-        p()->soul_swap_state.corruption.action_copied = true;
-        p()->soul_swap_state.corruption.duration = tar->dots_corruption->remains();
-      }
-
-      if ( tar->dots_agony->is_ticking() )
-      {
-        p()->soul_swap_state.agony.action_copied = true;
-        p()->soul_swap_state.agony.duration = tar->dots_agony->remains();
-        p()->soul_swap_state.agony.stacks = tar->dots_agony->current_stack();
-      }
-
-      if ( tar->dots_unstable_affliction->is_ticking() )
-      {
-        p()->soul_swap_state.unstable_affliction.action_copied = true;
-        p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
-        tar->dots_unstable_affliction->cancel();
-      }
-
-      if ( tar->dots_siphon_life->is_ticking() )
-      {
-        p()->soul_swap_state.siphon_life.action_copied = true;
-        p()->soul_swap_state.siphon_life.duration = tar->dots_siphon_life->remains();
-      }
-
-      if ( tar->debuffs_haunt->check() )
-      {
-        p()->soul_swap_state.haunt.action_copied = true;
-        p()->soul_swap_state.haunt.duration = tar->debuffs_haunt->remains();
-      }
-
-      // NOT IMPLEMENTED: As of 2023-01-22 there is a bug where the Haunted Soul buff is being triggered when Soul Swap is used
-
-      p()->buffs.soul_swap->trigger();
+      p()->soul_swap_state.corruption.action_copied = true;
+      p()->soul_swap_state.corruption.duration = tar->dots_corruption->remains();
     }
-    else
+
+    if ( tar->dots_agony->is_ticking() )
     {
-      corruption->execute_on_target( target );
-      agony->execute_on_target( target );
-      ua->execute_on_target( target );
+      p()->soul_swap_state.agony.action_copied = true;
+      p()->soul_swap_state.agony.duration = tar->dots_agony->remains();
+      p()->soul_swap_state.agony.stacks = tar->dots_agony->current_stack();
     }
+
+    if ( tar->dots_unstable_affliction->is_ticking() )
+    {
+      p()->soul_swap_state.unstable_affliction.action_copied = true;
+      p()->soul_swap_state.unstable_affliction.duration = tar->dots_unstable_affliction->remains();
+      p()->soul_swap_state.unstable_affliction.stacks = p()->buffs.malefic_affliction->check(); // While there are no stacks for UA, Soul Swap *will* reapply Malefic Affliction if UA is put on another target
+      tar->dots_unstable_affliction->cancel();
+    }
+
+    if ( tar->dots_siphon_life->is_ticking() )
+    {
+      p()->soul_swap_state.siphon_life.action_copied = true;
+      p()->soul_swap_state.siphon_life.duration = tar->dots_siphon_life->remains();
+    }
+
+    if ( tar->debuffs_haunt->check() )
+    {
+      p()->soul_swap_state.haunt.action_copied = true;
+      p()->soul_swap_state.haunt.duration = tar->debuffs_haunt->remains();
+    }
+
+    if ( tar->dots_soul_rot->is_ticking() )
+    {
+      p()->soul_swap_state.soul_rot.action_copied = true;
+      p()->soul_swap_state.soul_rot.duration = tar->dots_soul_rot->remains();
+    }
+
+    if ( tar->dots_phantom_singularity->is_ticking() )
+    {
+      p()->soul_swap_state.phantom_singularity.action_copied = true;
+      p()->soul_swap_state.phantom_singularity.duration = tar->dots_phantom_singularity->remains();
+    }
+
+    if ( tar->dots_vile_taint->is_ticking() )
+    {
+      p()->soul_swap_state.vile_taint.action_copied = true;
+      p()->soul_swap_state.vile_taint.duration = tar->dots_vile_taint->remains();
+    }
+
+    p()->buffs.soul_swap->trigger();
   }
 };
 
@@ -745,10 +716,7 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       p()->soul_swap_state.agony.action->execute_on_target( s->target );
       td( s->target )->dots_agony->adjust_duration( p()->soul_swap_state.agony.duration - td( s->target )->dots_agony->remains() );
-
-      // 2023-01-22 This is currently bugged and only applies stacks correctly without Writhe in Agony
-      if ( !p()->talents.writhe_in_agony->ok() )
-        td( s->target )->dots_agony->increment( p()->soul_swap_state.agony.stacks - 1 );
+      td( s->target )->dots_agony->increment( p()->soul_swap_state.agony.stacks - 1 );
     }
 
     if ( p()->soul_swap_state.unstable_affliction.action_copied )
@@ -757,6 +725,11 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       p()->soul_swap_state.unstable_affliction.action->execute_on_target( s->target );
       td( s->target )->dots_unstable_affliction->adjust_duration( p()->soul_swap_state.unstable_affliction.duration - td( s->target)->dots_unstable_affliction->remains() );
+
+      if ( p()->soul_swap_state.unstable_affliction.stacks > 0 )
+      {
+        p()->buffs.malefic_affliction->trigger( p()->soul_swap_state.unstable_affliction.stacks );
+      }
     }
 
     if ( p()->soul_swap_state.siphon_life.action_copied )
@@ -773,6 +746,34 @@ struct soul_swap_exhale_t : public affliction_spell_t
 
       // Need to handle Haunt trigger manually instead of via action
       td( s->target )->debuffs_haunt->trigger( p()->soul_swap_state.haunt.duration );
+    }
+
+    if ( p()->soul_swap_state.soul_rot.action_copied )
+    {
+      td( s->target )->dots_soul_rot->cancel();
+
+      p()->soul_swap_state.soul_rot.action->execute_on_target( s->target );
+      td( s->target )->dots_soul_rot->adjust_duration( p()->soul_swap_state.soul_rot.duration - td( s->target )->dots_soul_rot->remains() );
+    }
+
+    if ( p()->soul_swap_state.phantom_singularity.action_copied )
+    {
+      td( s->target )->dots_phantom_singularity->cancel();
+
+      p()->soul_swap_state.phantom_singularity.action->execute_on_target( s->target );
+      
+      // Copied PS appears to fudge duration to force only full ticks
+      auto tick_count = std::ceil( p()->soul_swap_state.phantom_singularity.duration / ( p()->soul_swap_state.phantom_singularity.action->base_tick_time * s->haste ) );
+      auto dur = tick_count * p()->soul_swap_state.phantom_singularity.action->base_tick_time * s->haste;
+      td( s->target )->dots_phantom_singularity->adjust_duration( p()->soul_swap_state.phantom_singularity.duration - dur );
+    }
+
+    if ( p()->soul_swap_state.vile_taint.action_copied )
+    {
+      td( s->target )->dots_vile_taint->cancel();
+
+      p()->soul_swap_state.vile_taint.action->execute_on_target( s->target );
+      td( s->target )->dots_vile_taint->adjust_duration( p()->soul_swap_state.vile_taint.duration - td( s->target )->dots_vile_taint->remains() );
     }
 
     p()->buffs.soul_swap->expire();
@@ -803,8 +804,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new vile_taint_t( this, options_str );
   if ( action_name == "malefic_rapture" )
     return new malefic_rapture_t( this, options_str );
-  if ( action_name == "soul_tap" )
-    return new soul_tap_t( this, options_str );
   if ( action_name == "soul_swap" )
     return new soul_swap_t( this, options_str );
   if ( action_name == "soul_swap_exhale" )
@@ -835,6 +834,9 @@ void warlock_t::create_buffs_affliction()
                               soul_swap_state.unstable_affliction.action_copied = false;
                               soul_swap_state.siphon_life.action_copied = false;
                               soul_swap_state.haunt.action_copied = false;
+                              soul_swap_state.soul_rot.action_copied = false;
+                              soul_swap_state.phantom_singularity.action_copied = false;
+                              soul_swap_state.vile_taint.action_copied = false;
                             }
                           } );
 
@@ -885,6 +887,8 @@ void warlock_t::init_spells_affliction()
   
   talents.xavian_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Xavian Teachings" ); // Should be ID 317031
 
+  talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
+  
   talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
   talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
@@ -896,8 +900,6 @@ void warlock_t::init_spells_affliction()
 
   talents.harvester_of_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Harvester of Souls" ); // Should be ID 201424
   talents.harvester_of_souls_dmg = find_spell( 218615 ); // Damage and projectile data
-
-  talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
 
   talents.agonizing_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Corruption" ); // Should be ID 386922
 
@@ -913,8 +915,6 @@ void warlock_t::init_spells_affliction()
 
   talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
   talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
-
-  talents.soul_tap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Tap" ); // Should be ID 387073
 
   talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
   talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
@@ -1001,6 +1001,18 @@ void warlock_t::create_soul_swap_actions()
   soul_swap_state.haunt.action = new warlock::actions_affliction::haunt_t( this, "" );
   soul_swap_state.haunt.action->dual = true;
   soul_swap_state.haunt.action_copied = false;
+
+  soul_swap_state.soul_rot.action = this->pass_soul_rot_action( this );
+  soul_swap_state.soul_rot.action->dual = true;
+  soul_swap_state.soul_rot.action_copied = false;
+
+  soul_swap_state.phantom_singularity.action = new warlock::actions_affliction::phantom_singularity_t( this, "" );
+  soul_swap_state.phantom_singularity.action->dual = true;
+  soul_swap_state.phantom_singularity.action_copied = false;
+
+  soul_swap_state.vile_taint.action = new warlock::actions_affliction::vile_taint_t( this, "", true );
+  soul_swap_state.vile_taint.action->dual = true;
+  soul_swap_state.vile_taint.action_copied = false;
 }
 
 void warlock_t::init_gains_affliction()
@@ -1008,7 +1020,6 @@ void warlock_t::init_gains_affliction()
   gains.agony = get_gain( "agony" );
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
   gains.drain_soul = get_gain( "drain_soul" );
-  gains.soul_tap = get_gain( "soul_tap" );
   gains.pandemic_invocation = get_gain( "pandemic_invocation" );
 }
 

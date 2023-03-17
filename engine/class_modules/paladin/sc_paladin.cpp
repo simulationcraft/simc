@@ -2742,7 +2742,11 @@ void paladin_t::create_buffs()
   else
   {
     buffs.blessing_of_dawn =
-        make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect(1);
+        make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect( 1 );
+    if ( specialization() == PALADIN_RETRIBUTION )
+    {
+      buffs.blessing_of_dawn->apply_affecting_aura( spec.retribution_paladin );
+    }
     buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
     buffs.faiths_armor = make_buff( this, "faiths_armor", find_spell( 379017 ) )
                              ->set_default_value_from_effect(1)

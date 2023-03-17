@@ -378,6 +378,8 @@ struct blade_of_justice_t : public paladin_melee_attack_t
       hasted_ticks = false;
       tick_may_crit = false;
 
+      searing_light_disabled = true;
+
       if ( p -> is_ptr() )
       {
         if ( p -> talents.jurisdiction -> ok() )
@@ -986,6 +988,7 @@ struct judgment_ret_t : public judgment_t
   {
     // This is for Divine Toll's background judgments
     background = true;
+    cooldown = p->get_cooldown( "dummy_cd" );
 
     if ( p -> talents.highlords_judgment -> ok() )
       base_multiplier *= 1.0 + p -> talents.highlords_judgment -> effectN( 1 ).percent();
@@ -1627,8 +1630,12 @@ struct divine_arbiter_t : public paladin_spell_t
 
     // force effect 1 to be used for the direct ratios
     parse_effect_data( data().effectN( 1 ) );
+
     // but compute the aoe multiplier from the 2nd effect
     base_aoe_multiplier *= data().effectN( 2 ).ap_coeff() / data().effectN( 1 ).ap_coeff();
+
+    // and do aoe, too
+    aoe = -1;
   }
 };
 
@@ -1655,6 +1662,8 @@ void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
   double accumulated = get_target_data( target ) -> debuff.execution_sentence -> get_accumulated_damage();
+  if ( is_ptr() && talents.penitence->ok() )
+    accumulated *= 1.0 + talents.penitence->effectN( 1 ).percent();
   sim -> print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target -> name(), accumulated );
   ta += accumulated;
 
