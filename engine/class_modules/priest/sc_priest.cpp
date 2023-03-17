@@ -923,12 +923,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
     affected_by_shadow_weaving = true;
 
-    // BUG: CD is static 20s and not affected by haste
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/943
-    if ( !priest().bugs )
-    {
-      cooldown->hasted = true;
-    }
     if ( priest().talents.discipline.expiation.enabled() )
     {
       child_expiation             = new expiation_t( priest() );
