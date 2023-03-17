@@ -294,7 +294,7 @@ struct corruption_t : public warlock_spell_t
       {
         if ( p->warlock_base.xavian_teachings->ok() )
         {
-          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // It uses this effect in base spell for damage
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Spell uses this effect in base spell for damage
           base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
         }
       }
@@ -775,16 +775,12 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
   void execute() override
   {
-    // TODO: Cancel existing ground event if cast while one is already active
-
     warlock_spell_t::execute();
 
     timespan_t dur = 0_ms;
 
-
     dur = p()->talents.summon_soulkeeper_aoe->duration() - 2_s + 1_s; // Hardcoded -2 according to tooltip, but is doing 9 ticks as of 2023-01-19
     debug_cast<soul_combustion_t*>( p()->proc_actions.soul_combustion )->tormented_souls = p()->buffs.tormented_soul->stack();
-
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                 ground_aoe_params_t()
@@ -795,6 +791,8 @@ struct summon_soulkeeper_t : public warlock_spell_t
                                     .duration( dur )
                                     .start_time( sim->current_time() )
                                     .action( p()->proc_actions.soul_combustion ) );
+
+    internal_cooldown->start( dur ); // As of 10.0.7, Soulkeepr can no longer be used if one is already active
 
     p()->buffs.tormented_soul->expire();
   }
@@ -1342,7 +1340,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double amt = player_t::resource_gain( resource_type, amount, source, action );
 
-  if ( resource_type == RESOURCE_SOUL_SHARD )
+  if ( resource_type == RESOURCE_SOUL_SHARD && !min_version_check( VERSION_10_0_7 ) )
   {
     bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
 
@@ -1575,7 +1573,7 @@ void warlock_t::init_spells()
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
-  warlock_base.xavian_teachings   = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
+  warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
   warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
