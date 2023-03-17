@@ -360,6 +360,7 @@ public:
     player_talent_t reign_of_tyranny; // Each summoned active pet gives stacks of Demonic Servitude. Tyrant snapshots this buff on summon for more damage
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
+    player_talent_t immutable_hatred; // PLACEHOLDER - TODO
     player_talent_t guillotine;
 
     // Destruction
