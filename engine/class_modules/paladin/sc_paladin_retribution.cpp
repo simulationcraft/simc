@@ -1662,6 +1662,8 @@ void paladin_t::trigger_es_explosion( player_t* target )
 {
   double ta = 0.0;
   double accumulated = get_target_data( target ) -> debuff.execution_sentence -> get_accumulated_damage();
+  if ( is_ptr() && talents.penitence->ok() )
+    accumulated *= 1.0 + talents.penitence->effectN( 1 ).percent();
   sim -> print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target -> name(), accumulated );
   ta += accumulated;
 
