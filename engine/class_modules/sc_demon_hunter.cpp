@@ -718,8 +718,6 @@ public:
     // TODO: Determine a more realistic value
     double fodder_to_the_flame_initiative_chance = 1;
     double darkglare_boon_cdr_high_roll_seconds = 18;
-    // Fallback based on 10.1 PTR values 3/15/2023
-    double t30_4pc_damage_amp_fallback = 0.1;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -5774,18 +5772,8 @@ void demon_hunter_t::create_buffs()
   buff.t30_havoc_4pc =
       make_buff<buff_t>( this, "seething_potential",
                          set_bonuses.t30_havoc_4pc->ok() ? set_bonuses.t30_havoc_4pc_buff : spell_data_t::not_found() )
-      ->set_max_stack( 5 );
-
-  // TODO: Remove hard code when spell data is available
-  if ( buff.t30_havoc_4pc->data().ok() )
-  {
-    buff.t30_havoc_4pc->set_default_value( buff.t30_havoc_4pc->data().effectN( 1 ).percent() );
-  }
-  else {
-    this->sim->error( "T30 Spell not found! Using t30_4pc_damage_amp_fallback={}", options.t30_4pc_damage_amp_fallback);
-    buff.t30_havoc_4pc->set_default_value( options.t30_4pc_damage_amp_fallback );
-    buff.t30_havoc_4pc->set_chance( 1.0 );
-  }
+          ->set_default_value( set_bonuses.t30_havoc_4pc_buff->effectN( 1 ).percent() )
+          ->set_max_stack( 5 );
 
   buff.t30_havoc_4pc_damage_amp = make_buff<buff_t>( this, "seething_potential_damage_amp", spell_data_t::nil() )
                                       ->set_quiet( true );
@@ -5984,8 +5972,6 @@ void demon_hunter_t::create_options()
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
   add_option( opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
   add_option( opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
-
-  add_option( opt_float( "t30_4pc_damage_amp_fallback", options.t30_4pc_damage_amp_fallback, 0, 1 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
