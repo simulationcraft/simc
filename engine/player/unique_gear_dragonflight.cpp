@@ -4245,22 +4245,22 @@ enum primordial_stone_drivers_e
   STORM_INFUSED_STONE      = 402928,
   ECHOING_THUNDER_STONE    = 402929,
   FLAME_LICKED_STONE       = 402930,
-  RAGING_MAGMA_STONE       = 402931, // NYI (tanks only, requires getting hit)
+  RAGING_MAGMA_STONE       = 402931, // NYI (requires getting hit, damage)
   SEARING_SMOKEY_STONE     = 402932, // NYI (procs on interrupts)
   ENTROPIC_FEL_STONE       = 402934,
-  INDOMITABLE_EARTH_STONE  = 402935, // NYI
+  INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
   SHINING_OBSIDIAN_STONE   = 402936, // NYI
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
-  GLEAMING_IRON_STONE      = 402938, // NYI
-  DELUGING_WATER_STONE     = 402939, // NYI
+  GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
+  DELUGING_WATER_STONE     = 402939, // NYI (heal)
   FREEZING_ICE_STONE       = 402940,
-  COLD_FROST_STONE         = 402941, // NYI
+  COLD_FROST_STONE         = 402941, // NYI (absorb)
   EXUDING_STEAM_STONE      = 402942, // NYI (procs on receiving heals)
   SPARKLING_MANA_STONE     = 402943, // NYI (restores mana)
   SWIRLING_MOJO_STONE      = 402944, // NYI (requires creature deaths, gives the player an item to activate its buff)
   HUMMING_ARCANE_STONE     = 402947,
   HARMONIC_MUSIC_STONE     = 402948, // NYI (buffs tertiary stats)
-  WILD_SPIRIT_STONE        = 402949, // NYI
+  WILD_SPIRIT_STONE        = 402949, // NYI (heal)
   NECROMANTIC_DEATH_STONE  = 402951, // NYI
   PESTILENT_PLAGUE_STONE   = 402952,
   OBSCURE_PASTEL_STONE     = 402955, // NYI
@@ -4608,6 +4608,16 @@ struct humming_arcane_stone_t : public damage_stone_t
   }
 };
 
+struct shining_obsidian_stone_t : public aoe_damage_stone_t
+{
+  shining_obsidian_stone_t( const special_effect_t& e ) :
+    aoe_damage_stone_t( e, "shining_obsidian_stone", 404941, true )
+  {
+    auto driver = e.player->find_spell( SHINING_OBSIDIAN_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4626,7 +4636,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
     case FLAME_LICKED_STONE:
       return new flame_licked_stone_t( effect );
     case SHINING_OBSIDIAN_STONE:
-      return nullptr;
+      return new shining_obsidian_stone_t( effect );
     case FREEZING_ICE_STONE:
       return new freezing_ice_stone_t( effect );
     case HUMMING_ARCANE_STONE:
@@ -4778,6 +4788,11 @@ void humming_arcane_stone( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void shining_obsidian_stone( special_effect_t& effect )
+{
+  create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
+}
 }
 
 void register_special_effects()
@@ -4914,6 +4929,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,   primordial_stones::desirous_blood_stone );
   register_special_effect( primordial_stones::PESTILENT_PLAGUE_STONE, primordial_stones::pestilent_plague_stone );
   register_special_effect( primordial_stones::HUMMING_ARCANE_STONE,   primordial_stones::humming_arcane_stone );
+  register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE, primordial_stones::shining_obsidian_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,     DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
