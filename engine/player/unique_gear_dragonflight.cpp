@@ -4263,7 +4263,7 @@ enum primordial_stone_drivers_e
   WILD_SPIRIT_STONE        = 402949, // NYI (heal)
   NECROMANTIC_DEATH_STONE  = 402951, // NYI
   PESTILENT_PLAGUE_STONE   = 402952,
-  OBSCURE_PASTEL_STONE     = 402955, // NYI
+  OBSCURE_PASTEL_STONE     = 402955,
   DESIROUS_BLOOD_STONE     = 402957,
   PROPHETIC_TWILIGHT_STONE = 402959, // NYI
 };
@@ -4357,21 +4357,11 @@ action_t* find_primordial_stone_action( player_t* player, primordial_stone_drive
       return player->find_action( "cold_frost_stone" );
     case INDOMITABLE_EARTH_STONE:
       return player->find_action( "indomitable_earth_stone" );
-    default:
-      break;
-  }
 
-  return nullptr;
-}
-
-buff_t* find_primordial_stone_buff( player_t* player, primordial_stone_drivers_e driver )
-{
-  switch ( driver )
-  {
+    // other
     case HARMONIC_MUSIC_STONE:
-      return buff_t::find( player, "harmonic_music_stone" );
-    case NECROMANTIC_DEATH_STONE:
-      return buff_t::find( player, "necromantic_death_stone" );
+      return nullptr;
+
     default:
       break;
   }
@@ -4659,6 +4649,11 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
       return nullptr;
     case INDOMITABLE_EARTH_STONE:
       return nullptr;
+
+    // misc
+    case HARMONIC_MUSIC_STONE:
+      return nullptr;
+
     default:
       break;
   }
@@ -4792,6 +4787,60 @@ void humming_arcane_stone( special_effect_t& effect )
 void shining_obsidian_stone( special_effect_t& effect )
 {
   create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
+}
+
+void obscure_pastel_stone( special_effect_t& effect )
+{
+  static constexpr std::array<primordial_stone_drivers_e, 14> possible_stones = {
+    // damage stones
+    STORM_INFUSED_STONE,
+    ECHOING_THUNDER_STONE,
+    FLAME_LICKED_STONE,
+    SHINING_OBSIDIAN_STONE,
+    FREEZING_ICE_STONE,
+    HUMMING_ARCANE_STONE,
+    PESTILENT_PLAGUE_STONE,
+    DESIROUS_BLOOD_STONE,
+    // healing stones
+    DELUGING_WATER_STONE,
+    WILD_SPIRIT_STONE,
+    EXUDING_STEAM_STONE,
+    // absorb stones
+    COLD_FROST_STONE,
+    INDOMITABLE_EARTH_STONE,
+    // other
+    HARMONIC_MUSIC_STONE,
+  };
+
+  struct obscure_pastel_stone_t : public generic_proc_t
+  {
+    std::vector<action_t*> stone_actions;
+
+    obscure_pastel_stone_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "obscure_pastel_stone", 405257 ), stone_actions()
+    {
+      stone_actions.reserve( stone_actions.size() );
+      for ( auto driver : possible_stones )
+        stone_actions.push_back( create_primordial_stone_action( effect, driver ) );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        // TODO: If heal and absorb procs are implemented, they should target the player.
+        auto action = stone_actions[ rng().range( stone_actions.size() ) ];
+        if ( action )
+          action->execute_on_target( s->target );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<obscure_pastel_stone_t>( "obscure_pastel_stone", effect );
+
+  new dbc_proc_callback_t( effect.player, effect);
 }
 }
 
@@ -4930,6 +4979,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::PESTILENT_PLAGUE_STONE, primordial_stones::pestilent_plague_stone );
   register_special_effect( primordial_stones::HUMMING_ARCANE_STONE,   primordial_stones::humming_arcane_stone );
   register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE, primordial_stones::shining_obsidian_stone );
+  register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,   primordial_stones::obscure_pastel_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,     DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
