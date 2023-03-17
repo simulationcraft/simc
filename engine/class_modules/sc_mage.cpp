@@ -2253,7 +2253,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
     if ( frozen & FF_WINTERS_CHILL )
       source->occur( FROZEN_WINTERS_CHILL );
-    else if ( frozen & ~FF_FINGERS_OF_FROST )
+    else if ( frozen & FF_ROOT )
       source->occur( FROZEN_ROOT );
     else if ( frozen & FF_FINGERS_OF_FROST )
       source->occur( FROZEN_FINGERS_OF_FROST );
