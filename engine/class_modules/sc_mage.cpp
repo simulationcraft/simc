@@ -223,6 +223,7 @@ public:
     action_t* orb_barrage_arcane_orb;
     action_t* pet_freeze;
     action_t* pet_water_jet;
+    action_t* shattered_ice;
     action_t* touch_of_the_magi_explosion;
 
     struct icicles_t
@@ -318,6 +319,7 @@ public:
 
 
     // Set Bonuses
+    buff_t* arcane_overload;
     buff_t* bursting_energy;
 
     buff_t* touch_of_ice;
@@ -443,6 +445,7 @@ public:
     player_t* last_bomb_target;
     int frostbolt_counter;
     bool trigger_cc_channel;
+    double spent_mana;
   } state;
 
   struct expression_support_t
@@ -1294,6 +1297,7 @@ struct mage_spell_t : public spell_t
     bool rune_of_power = true;
     bool savant = false;
 
+    bool arcane_overload = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -1416,7 +1420,9 @@ public:
     double m = spell_t::action_multiplier();
 
     if ( affected_by.arcane_surge && p()->buffs.arcane_surge->check() )
-      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent() + p()->talents.arcane_power->effectN( 2 ).percent();
+      m *= 1.0 + p()->buffs.arcane_surge->data().effectN( 1 ).percent()
+               + p()->talents.arcane_power->effectN( 2 ).percent()
+               + p()->sets->set( MAGE_ARCANE, T30, B2 )->effectN( 1 ).percent();
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
@@ -1442,6 +1448,9 @@ public:
 
     if ( affected_by.savant )
       m *= 1.0 + p()->cache.mastery() * p()->spec.savant->effectN( 5 ).mastery_value();
+
+    if ( affected_by.arcane_overload )
+      m *= 1.0 + p()->buffs.arcane_overload->check_value();
 
     return m;
   }
@@ -1537,6 +1546,14 @@ public:
 
   virtual void consume_cost_reductions()
   { }
+
+  void consume_resource() override
+  {
+    spell_t::consume_resource();
+
+    if ( current_resource() == RESOURCE_MANA )
+      p()->state.spent_mana += last_resource_cost;
+  }
 
   void execute() override
   {
@@ -2236,7 +2253,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
     if ( frozen & FF_WINTERS_CHILL )
       source->occur( FROZEN_WINTERS_CHILL );
-    else if ( frozen & ~FF_FINGERS_OF_FROST )
+    else if ( frozen & FF_ROOT )
       source->occur( FROZEN_ROOT );
     else if ( frozen & FF_FINGERS_OF_FROST )
       source->occur( FROZEN_FINGERS_OF_FROST );
@@ -3002,6 +3019,8 @@ struct arcane_surge_t final : public arcane_mage_spell_t
 
   void execute() override
   {
+    // Clear any existing surge buffs to trigger the T30 4pc buff.
+    p()->buffs.arcane_surge->expire();
     p()->buffs.arcane_surge->trigger();
     p()->buffs.rune_of_power->trigger();
 
@@ -3681,6 +3700,36 @@ struct glacial_assault_t final : public frost_mage_spell_t
   }
 };
 
+struct shattered_ice_t final : public frost_mage_spell_t
+{
+  shattered_ice_t( std::string_view n, mage_t* p ) :
+    frost_mage_spell_t( n, p, p->find_spell( 408763 ) )
+  {
+    background = true;
+    may_crit = affected_by.shatter = false;
+    aoe = -1;
+    reduced_aoe_targets = p->sets->set( MAGE_FROST, T30, B2 )->effectN( 3 ).base_value();
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  void init() override
+  {
+    frost_mage_spell_t::init();
+
+    // TODO: This spell currently ignores damage reductions, which is probably not intended.
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    frost_mage_spell_t::available_targets( tl );
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl.size();
+  }
+};
+
 struct flurry_bolt_t final : public frost_mage_spell_t
 {
   flurry_bolt_t( std::string_view n, mage_t* p ) :
@@ -3688,6 +3737,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   {
     background = triggers.chill = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -3711,6 +3761,12 @@ struct flurry_bolt_t final : public frost_mage_spell_t
         .target( s->target )
         .n_pulses( 1 )
         .action( p()->action.glacial_assault ) );
+    }
+
+    if ( p()->action.shattered_ice )
+    {
+      double pct = p()->sets->set( MAGE_FROST, T30, B2 )->effectN( 2 ).percent();
+      p()->action.shattered_ice->execute_on_target( s->target, pct * s->result_total );
     }
   }
 
@@ -3742,6 +3798,8 @@ struct flurry_t final : public frost_mage_spell_t
       add_child( p->action.icicle.flurry );
     if ( p->action.glacial_assault )
       add_child( p->action.glacial_assault );
+    if ( p->action.shattered_ice )
+      add_child( p->action.shattered_ice );
   }
 
   void init() override
@@ -3805,6 +3863,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
@@ -4250,6 +4309,8 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   void init_finished() override
   {
+    proc_brain_freeze = p()->get_proc( "Brain Freeze from Ice Lance" );
+
     frost_mage_spell_t::init_finished();
 
     if ( sim->report_details != 0 && p()->talents.splitting_ice.ok() )
@@ -4301,6 +4362,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     if ( s->chain_target == 0 && frozen( s ) )
     {
       p()->trigger_time_manipulation();
+      p()->trigger_brain_freeze( p()->sets->set( MAGE_FROST, T30, B4 )->effectN( 1 ).percent(), proc_brain_freeze );
       if ( p()->rng().roll( p()->talents.hailstones->effectN( 1 ).percent() ) )
         p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance );
     }
@@ -5851,6 +5913,9 @@ void mage_t::create_actions()
   if ( talents.harmonic_echo.ok() )
     action.harmonic_echo = get_action<harmonic_echo_t>( "harmonic_echo", this );
 
+  if ( sets->has_set_bonus( MAGE_FROST, T30, B2 ) )
+    action.shattered_ice = get_action<shattered_ice_t>( "shattered_ice", this );
+
   player_t::create_actions();
 
   // Ensure the cooldown of Phoenix Flames is properly initialized.
@@ -6255,7 +6320,8 @@ void mage_t::create_buffs()
   buffs.arcane_surge         = make_buff( this, "arcane_surge", find_spell( 365362 ) )
                                  ->set_default_value_from_effect( 3 )
                                  ->set_affects_regen( true )
-                                 ->modify_duration( talents.arcane_power->effectN( 1 ).time_value() );
+                                 ->modify_duration( talents.arcane_power->effectN( 1 ).time_value() )
+                                 ->modify_duration( sets->set( MAGE_ARCANE, T30, B2 )->effectN( 3 ).time_value() );
   buffs.arcane_tempo         = make_buff( this, "arcane_tempo", find_spell( 383997 ) )
                                  ->set_default_value( talents.arcane_tempo->effectN( 1 ).percent() )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -6424,6 +6490,8 @@ void mage_t::create_buffs()
 
 
   // Set Bonuses
+  buffs.arcane_overload = make_buff( this, "arcane_overload", find_spell( 409022 ) )
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) );
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
@@ -6447,6 +6515,24 @@ void mage_t::create_buffs()
       {
         buffs.foresight_icd->trigger( 0_ms );
         buffs.foresight->expire( buffs.foresight->data().effectN( 2 ).time_value() );
+      }
+    } );
+  }
+
+  if ( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
+  {
+    buffs.arcane_surge->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+    {
+      if ( cur == 0 )
+      {
+        auto set = sets->set( MAGE_ARCANE, T30, B4 );
+        double value = 0.01 * state.spent_mana / set->effectN( 1 ).base_value();
+        value = std::min( value, set->effectN( 2 ).percent() );
+        buffs.arcane_overload->trigger( -1, value );
+      }
+      else
+      {
+        state.spent_mana = 0.0;
       }
     } );
   }

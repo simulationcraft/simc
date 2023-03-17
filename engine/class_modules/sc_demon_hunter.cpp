@@ -186,8 +186,8 @@ public:
   auto_dispose<std::vector<soul_fragment_t*>> soul_fragments;
   event_t* soul_fragment_pick_up;
 
-  double spirit_bomb_accumulator;  // Spirit Bomb healing accumulator
-  event_t* spirit_bomb_driver;
+  double frailty_accumulator;  // Frailty healing accumulator
+  event_t* frailty_driver;
 
   double ragefire_accumulator;
   unsigned ragefire_crit_accumulator;
@@ -539,6 +539,10 @@ public:
     const spell_data_t* t29_havoc_4pc;
     const spell_data_t* t29_vengeance_2pc;
     const spell_data_t* t29_vengeance_4pc;
+    const spell_data_t* t30_havoc_2pc;
+    const spell_data_t* t30_havoc_4pc;
+    const spell_data_t* t30_vengeance_2pc;
+    const spell_data_t* t30_vengeance_4pc;
   } set_bonuses;
 
   // Mastery Spells
@@ -685,7 +689,7 @@ public:
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
-    heal_t* spirit_bomb_heal = nullptr;
+    heal_t* frailty_heal    = nullptr;
   } active;
 
   // Pets
@@ -1709,7 +1713,7 @@ public:
       return;
 
     const double multiplier = target_data->debuffs.frailty->stack_value();
-    p()->spirit_bomb_accumulator += s->result_amount * multiplier;
+    p()->frailty_accumulator += s->result_amount * multiplier;
   }
 
   void accumulate_ragefire( action_state_t* s )
@@ -2019,12 +2023,12 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
   }
 };
 
-// Spirit Bomb ==============================================================
+// Frailty ==============================================================
 
-struct spirit_bomb_heal_t : public demon_hunter_heal_t
+struct frailty_heal_t : public demon_hunter_heal_t
 {
-  spirit_bomb_heal_t( demon_hunter_t* p )
-    : demon_hunter_heal_t( "spirit_bomb_heal", p, p->find_spell( 227255 ) )
+  frailty_heal_t( demon_hunter_t* p )
+    : demon_hunter_heal_t( "frailty_heal", p, p->find_spell( 227255 ) )
   {
     background = true;
     may_crit   = false;
@@ -2678,6 +2682,10 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
       energize_amount = p->spell.sigil_of_flame_fury->effectN( 1 ).resource();
     }
 
+    if ( !p->active.frailty_heal )
+    {
+      p->active.frailty_heal = new heals::frailty_heal_t( p );
+    }
     // Add damage modifiers in sigil_of_flame_damage_t, not here.
   }
 
@@ -3382,9 +3390,9 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     damage = p->get_background_action<spirit_bomb_damage_t>( "spirit_bomb_damage" );
     damage->stats = stats;
 
-    if (!p->active.spirit_bomb_heal)
+    if ( !p->active.frailty_heal )
     {
-      p->active.spirit_bomb_heal = new heals::spirit_bomb_heal_t(p);
+      p->active.frailty_heal = new heals::frailty_heal_t( p );
     }
   }
 
@@ -4904,6 +4912,10 @@ struct soul_cleave_t : public demon_hunter_attack_t
       heal = p->get_background_action<heals::soul_cleave_heal_t>( "soul_cleave_heal" );
     }
 
+    if ( p->talent.vengeance.void_reaver->ok() && !p->active.frailty_heal )
+    {
+      p->active.frailty_heal = new heals::frailty_heal_t( p );
+    }
     // Add damage modifiers in soul_cleave_damage_t, not here.
   }
 
@@ -5354,13 +5366,13 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
 // Misc. Events and Structs
 // ==========================================================================
 
-// Spirit Bomb event ========================================================
+// Frailty event ========================================================
 
-struct spirit_bomb_event_t : public event_t
+struct frailty_event_t : public event_t
 {
   demon_hunter_t* dh;
 
-  spirit_bomb_event_t( demon_hunter_t* p, bool initial = false )
+  frailty_event_t( demon_hunter_t* p, bool initial = false )
     : event_t( *p), dh( p )
   {
     timespan_t delta_time = timespan_t::from_seconds( 1.0 );
@@ -5373,23 +5385,23 @@ struct spirit_bomb_event_t : public event_t
 
   const char* name() const override
   {
-    return "spirit_bomb_driver";
+    return "frailty_driver";
   }
 
   void execute() override
   {
-    assert( dh ->spirit_bomb_accumulator >= 0.0 );
+    assert( dh ->frailty_accumulator >= 0.0 );
 
-    if ( dh->spirit_bomb_accumulator > 0 )
+    if ( dh->frailty_accumulator > 0 )
     {
-      action_t* a = dh->active.spirit_bomb_heal;
-      a->base_dd_min = a->base_dd_max = dh->spirit_bomb_accumulator;
+      action_t* a = dh->active.frailty_heal;
+      a->base_dd_min = a->base_dd_max = dh->frailty_accumulator;
       a->execute();
 
-      dh->spirit_bomb_accumulator = 0.0;
+      dh->frailty_accumulator = 0.0;
     }
 
-    dh->spirit_bomb_driver = make_event<spirit_bomb_event_t>( sim(), dh );
+    dh->frailty_driver = make_event<frailty_event_t>( sim(), dh );
   }
 };
 
@@ -5476,8 +5488,8 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, util::string_view name, race_e r)
   melee_off_hand( nullptr ),
   next_fragment_spawn( 0 ),
   soul_fragments(),
-  spirit_bomb_accumulator( 0.0 ),
-  spirit_bomb_driver( nullptr ),
+    frailty_accumulator( 0.0 ),
+    frailty_driver( nullptr ),
   ragefire_accumulator( 0.0 ),
   ragefire_crit_accumulator( 0 ),
   shattered_destiny_accumulator( 0.0 ),
@@ -6441,6 +6453,10 @@ void demon_hunter_t::init_spells()
   set_bonuses.t29_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T29, B4 );
   set_bonuses.t29_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B2 );
   set_bonuses.t29_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T29, B4 );
+  set_bonuses.t30_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B2 );
+  set_bonuses.t30_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B4 );
+  set_bonuses.t30_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B2 );
+  set_bonuses.t30_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B4 );
 
   // Spell Initialization ===================================================
 
@@ -7061,7 +7077,7 @@ void demon_hunter_t::combat_begin()
   // Start event drivers
   if ( talent.vengeance.spirit_bomb->ok() )
   {
-    spirit_bomb_driver = make_event<spirit_bomb_event_t>( *sim, this, true );
+    frailty_driver = make_event<frailty_event_t>( *sim, this, true );
   }
 }
 
@@ -7197,11 +7213,11 @@ void demon_hunter_t::reset()
   base_t::reset();
 
   soul_fragment_pick_up         = nullptr;
-  spirit_bomb_driver            = nullptr;
+  frailty_driver                = nullptr;
   exit_melee_event              = nullptr;
   next_fragment_spawn           = 0;
   metamorphosis_health          = 0;
-  spirit_bomb_accumulator       = 0.0;
+  frailty_accumulator           = 0.0;
   ragefire_accumulator          = 0.0;
   ragefire_crit_accumulator     = 0;
   shattered_destiny_accumulator = 0.0;

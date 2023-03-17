@@ -1389,6 +1389,12 @@ class SpellDataGenerator(DataGenerator):
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
          405209, # Humming Arcane Stone
+         # 10.1.0
+         408791, # Ashkandur
+         408089, # Idol of Debilitating Arrogance Death Knight
+         408090, # Idol of Debilitating Arrogance Druid?
+         408042, # Idol of Debilitating Arrogance Rogue?
+         408087, # Idol of Debilitating Arrogance Priest
         ),
 
         # Warrior:
@@ -1799,6 +1805,7 @@ class SpellDataGenerator(DataGenerator):
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
+          ( 408763, 0 ),                            # Frost T30 2pc
         ),
 
         # Warlock:
@@ -2147,6 +2154,7 @@ class SpellDataGenerator(DataGenerator):
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate

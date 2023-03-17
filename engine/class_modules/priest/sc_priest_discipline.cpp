@@ -102,7 +102,6 @@ struct penance_damage_t : public priest_spell_t
     // This is not found in the affected spells for Shadow Covenant, overriding it manually
     // Final two params allow us to override the 25% damage buff when twilight corruption is selected (25% -> 35%)
     force_buff_effect( p.buffs.shadow_covenant, 1, false, true );
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -111,6 +110,12 @@ struct penance_damage_t : public priest_spell_t
     if ( priest().buffs.power_of_the_dark_side->check() )
     {
       d *= 1.0 + priest().buffs.power_of_the_dark_side->data().effectN( 1 ).percent();
+    }
+    if ( priest().talents.discipline.blaze_of_light.enabled() )
+    {
+      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
+      sim->print_debug( "Penance damage modified by {} (new total: {}), from blaze_of_light",
+                        priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
     return d;
   }
@@ -208,14 +213,13 @@ struct penance_t : public priest_spell_t
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.specs.penance ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) ),
       channel( new penance_channel_t( p, "penance", p.specs.penance_channel ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) ),
-      void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() )
+      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand ) )
   {
     parse_options( options_str );
     cooldown->duration = p.specs.penance->cooldown();
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
     add_child( channel );
     add_child( shadow_covenant_channel );
   }
@@ -287,7 +291,8 @@ struct penance_t : public priest_spell_t
       move_random_target( has_ptw_targets, targets );
     }
 
-    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(), actor_list_str( targets ) );
+    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
+                      actor_list_str( targets ) );
 
     range::for_each(
         targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
@@ -343,8 +348,6 @@ struct power_word_solace_t final : public priest_spell_t
   {
     parse_options( options_str );
     cooldown->hasted = true;
-    travel_speed     = 0.0;  // DBC has default travel taking 54 seconds
-    apply_affecting_aura( priest().talents.discipline.blaze_of_light );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -359,11 +362,16 @@ struct power_word_solace_t final : public priest_spell_t
       d *= 1.0 +
            ( priest().buffs.weal_and_woe->data().effectN( 1 ).percent() * priest().buffs.weal_and_woe->current_stack );
     }
+    if ( priest().talents.discipline.blaze_of_light.enabled() )
+    {
+      d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
+    }
     return d;
   }
 
   void execute() override
   {
+    priest_spell_t::execute();
     if ( priest().talents.manipulation.enabled() )
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
@@ -386,7 +394,7 @@ struct power_word_solace_t final : public priest_spell_t
 
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
-      priest().buffs.harsh_discipline->increment();
+      priest().buffs.harsh_discipline->trigger();
     }
     if ( priest().talents.discipline.weal_and_woe.enabled() && priest().buffs.weal_and_woe->check() )
     {
@@ -418,21 +426,34 @@ struct schism_t final : public priest_spell_t
   }
 };
 
-// Heal allies effect not implemented
 struct shadow_covenant_t final : public priest_spell_t
 {
   shadow_covenant_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant )
+    : priest_spell_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant ),
+      heal( new shadow_covenant_heal_t( p ) )
   {
     parse_options( options_str );
+    add_child( heal );
   }
+
+  struct shadow_covenant_heal_t final : public priest_heal_t
+  {
+    shadow_covenant_heal_t( priest_t& p ) : priest_heal_t( "shadow_covenant", p, p.talents.discipline.shadow_covenant )
+    {
+      background = true;
+      harmful    = false;
+    }
+  };
 
   void execute() override
   {
     priest_spell_t::execute();
-
+    heal->execute();
     priest().buffs.shadow_covenant->trigger();
   }
+
+private:
+  propagate_const<action_t*> heal;
 };
 
 struct lights_wrath_t final : public priest_spell_t
@@ -506,11 +527,14 @@ void priest_t::create_buffs_discipline()
 
   buffs.harsh_discipline_ready = make_buff( this, "harsh_discipline_ready", find_spell( 373183 ) );
 
-  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) )->set_trigger_spell( find_spell( 17 ) );
+  buffs.borrowed_time = make_buff( this, "borrowed_time", find_spell( 390692 ) );
 
   buffs.wrath_unleashed = make_buff( this, "wrath_unleashed", talents.discipline.wrath_unleashed_buff );
 
   buffs.weal_and_woe = make_buff( this, "weal_and_woe", talents.discipline.weal_and_woe_buff );
+
+  // Discipline T29 2-piece bonus
+  buffs.light_weaving = make_buff( this, "light_weaving", find_spell( 394609 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -558,7 +582,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.expiation              = ST( "Expiation" );
   talents.discipline.harsh_discipline       = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
-  talents.discipline.blaze_of_light         = find_spell( 215768 );
+  talents.discipline.blaze_of_light         = ST( "Blaze of Light" );
   // Row 10
   talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
   talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
