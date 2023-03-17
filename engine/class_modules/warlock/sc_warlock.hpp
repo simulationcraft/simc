@@ -337,7 +337,7 @@ public:
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
-    player_talent_t hounds_of_war; // Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers
+    player_talent_t hounds_of_war; // REMOVED in 10.0.7
     player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT - TODO
     const spell_data_t umbral_blaze_dot; // The actual DoT applied to the target
 
