@@ -3403,6 +3403,18 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+void seething_black_dragonscale( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+                           ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 1 ).average( effect.item ) )
+                           ->add_stat( STAT_LEECH_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+  
+  if ( effect.player->bugs )
+    debug_cast<stat_buff_t*>( effect.custom_buff )
+        ->add_stat( STAT_HASTE_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
@@ -4825,6 +4837,7 @@ void register_special_effects()
   register_special_effect( 383812, items::ruby_whelp_shell );
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
+  register_special_effect( 401468, items::seething_black_dragonscale );
 
 
   // Weapons
