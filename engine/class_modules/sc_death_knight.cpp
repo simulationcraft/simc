@@ -9890,8 +9890,8 @@ void death_knight_t::create_buffs()
   buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", spell.commander_of_the_dead );
 
   buffs.defile_buff = make_buff( this, "defile", spell.defile_buff )
-          -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-          -> set_default_value( spell.defile_buff -> effectN( 1 ).base_value() );
+          -> add_invalidate( CACHE_MASTERY )
+          -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
       -> set_duration( 0_s ) // seems to have a 30s duration in spell data, overriding to emulate in game behavior
@@ -10544,6 +10544,8 @@ double death_knight_t::composite_mastery_value() const
   double m = player_t::composite_mastery_value();
 
   m += buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
+
+  m += buffs.defile_buff -> check_stack_value();
 
   return m;
 }
