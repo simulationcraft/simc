@@ -229,6 +229,7 @@ public:
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
     player_talent_t xavian_teachings; // REMOVED (from here) in 10.0.7
+    player_talent_t writhe_in_agony;
     player_talent_t sow_the_seeds;
 
     player_talent_t shadow_embrace;
@@ -237,7 +238,6 @@ public:
     player_talent_t dark_virtuosity;
     player_talent_t kindled_malice;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
-    player_talent_t writhe_in_agony;
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
     player_talent_t drain_soul; // This represents the talent node but not much else
