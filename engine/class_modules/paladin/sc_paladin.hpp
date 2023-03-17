@@ -58,6 +58,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* sanctify;
     buff_t* eye_of_tyr;
     buff_t* crusaders_resolve;
+    buff_t* heartfire; // T30 2p Prot
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -158,7 +159,6 @@ public:
     buff_t* barricade_of_faith;
     buff_t* ally_of_the_light; // T29 2pc
     buff_t* deflecting_light; // T29 4pc
-    buff_t* heartfire;         // T30 2pc 
 
     // Ret
     buffs::crusade_buff_t* crusade;

@@ -153,6 +153,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       residual_action::trigger(
           heartfire, s->target,
           s->result_amount * p()->tier_sets.hearthfire_sentinels_authority_2pc->effectN( 2 ).percent() );
+        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.hearthfire_sentinels_authority_2pc->duration() );
     }
 
 
@@ -1224,7 +1225,6 @@ void paladin_t::create_buffs_protection()
   buffs.deflecting_light = make_buff( this, "deflecting_light", find_spell( 394727 ) )
     ->set_default_value_from_effect( 1 )
     ->add_invalidate( CACHE_PARRY );
-  buffs.heartfire = make_buff( this, "heartfire", find_spell( 408461 ) );
 }
 
 void paladin_t::init_spells_protection()

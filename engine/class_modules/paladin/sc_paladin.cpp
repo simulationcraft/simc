@@ -2352,6 +2352,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
+  debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
 
   if ( !paladin->is_ptr() )
     debuff.seal_of_the_crusader =
