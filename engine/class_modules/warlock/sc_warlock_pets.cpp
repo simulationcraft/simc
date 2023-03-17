@@ -1571,7 +1571,7 @@ void demonic_tyrant_t::arise()
 
   if ( o()->talents.reign_of_tyranny->ok() )
   {
-    buffs.demonic_servitude->trigger( 1, o()->buffs.demonic_servitude->check_stack_value() );
+    buffs.demonic_servitude->trigger( 1, ( o()->buffs.demonic_servitude->check() + 1 ) * o()->buffs.demonic_servitude->check_value() ); // Demonic Servitude has a permanent extra 1 stack on tracking (last checked 2023-03-17)
   }
 }
 
@@ -1580,8 +1580,14 @@ double demonic_tyrant_t::composite_player_multiplier( school_e school ) const
   double m = warlock_pet_t::composite_player_multiplier( school );
 
   if ( o()->talents.reign_of_tyranny->ok() )
+  {
     m *= 1.0 + buffs.demonic_servitude->check_value();
 
+    if ( o()->min_version_check( VERSION_10_0_7 ) )
+    {
+      m *= 1.0 + o()->talents.reign_of_tyranny->effectN( 4 ).percent();
+    }
+  }
   return m;
 }
 
