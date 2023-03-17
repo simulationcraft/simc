@@ -941,7 +941,7 @@ struct guillotine_t : public demonology_spell_t
       debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
 
       // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
-      internal_cooldown->start( 8_s );
+      internal_cooldown->start( 6_s ); // TOCHECK: Is there a reasonable way to get the duration instead of hardcoding
     }
   }
 };
