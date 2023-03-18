@@ -2352,6 +2352,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.crusaders_resolve     = make_buff( *this, "crusaders_resolve", paladin->find_spell( 383843 ) )
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
+  debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
 
   if ( !paladin->is_ptr() )
     debuff.seal_of_the_crusader =
@@ -2992,7 +2993,6 @@ void paladin_t::init_special_effects()
   }
 }
 
-
 void paladin_t::init_rng()
 {
   player_t::init_rng();
@@ -3117,10 +3117,11 @@ void paladin_t::init_spells()
   legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
   legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
-
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
+  tier_sets.hearthfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
+  tier_sets.hearthfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
 
   // Covenants
   covenant.kyrian    = find_covenant_spell( "Divine Toll" );

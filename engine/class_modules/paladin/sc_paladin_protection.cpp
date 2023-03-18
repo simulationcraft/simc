@@ -84,16 +84,38 @@ struct ardent_defender_t : public paladin_spell_t
   }
 };
 
+// Heartfire ================================================================
+
+struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
+{
+  heartfire_t( paladin_t* p ) : base_t( "heartfire", p, p->find_spell( 408461 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+    dot_duration        = timespan_t::from_seconds( 4 );
+    base_tick_time      = timespan_t::from_seconds( 2 );
+    tick_zero           = false;
+    hasted_ticks        = false;
+  }
+};
+
 // Avengers Shield ==========================================================
 
 // This struct is for all things Avenger's Shield which should occur baseline, disregarding whether it's selfcast, Divine Resonance or Divine Toll.
 // Specific interactions with Selfcast, Divine Resonance and Divine Toll should be put under the other structs.
 struct avengers_shield_base_t : public paladin_spell_t
 {
+  heartfire_t* heartfire;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) )
+    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ), heartfire(nullptr)
   {
     parse_options( options_str );
+    {
+      if ( p->tier_sets.hearthfire_sentinels_authority_2pc->ok() )
+      {
+      heartfire = new heartfire_t( p );
+      }
+    }
     if ( ! p -> has_shield_equipped() )
     {
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
@@ -125,7 +147,13 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       p()->trigger_tyrs_enforcer(s);
     }
-
+    if (p()->tier_sets.hearthfire_sentinels_authority_2pc->ok())
+    {
+      residual_action::trigger(
+          heartfire, s->target,
+          s->result_amount * p()->tier_sets.hearthfire_sentinels_authority_2pc->effectN( 2 ).percent() );
+        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.hearthfire_sentinels_authority_2pc->duration() );
+    }
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> talents.bulwark_of_order -> ok() )
@@ -636,6 +664,8 @@ struct judgment_prot_t : public judgment_t
         hopo += sw_holy_power;
       if( hopo > 0 )
         p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
+          p()->trigger_grand_crusader();
     }
   }
 };
@@ -1290,6 +1320,8 @@ void paladin_t::init_spells_protection()
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
 
+  tier_sets.hearthfire_sentinels_authority_2pc = find_spell( 408399 );
+  tier_sets.hearthfire_sentinels_authority_4pc = find_spell( 405548 );
   spells.sentinel = find_spell( 389539 );
 }
 
