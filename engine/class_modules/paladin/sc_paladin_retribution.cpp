@@ -858,10 +858,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       if ( p() -> buffs.righteous_verdict -> check() )
         am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
-
-      // this happens twice apparently
-      if ( p() -> bugs && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
-        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
     }
     return am;
   }
