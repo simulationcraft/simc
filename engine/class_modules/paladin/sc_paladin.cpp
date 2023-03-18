@@ -3742,12 +3742,9 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     if ( resource_type == RESOURCE_HOLY_POWER && amount > 0 && ( talents.of_dusk_and_dawn->ok() ) )
     {
-      // There's probably a better way to do this, so many spells that don't trigger Dawn
+      // There's probably a better way to do this, some spells don't trigger Dawn
       // Also Judgment only gives Dawn when it impacts, but eh...
-      if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ||
-              source->name_str == "wake_of_ashes" || source->name_str == "final_reckoning" ||
-              source->name_str == "execution_sentence" || source->name_str == "divine_hammer" ||
-              source->name_str == "crusading_strikes" ) )
+      if ( !( source->name_str == "arcane_torrent" ) )
       {
         holy_power_generators_used++;
         int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
