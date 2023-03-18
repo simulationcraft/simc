@@ -2254,10 +2254,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       double m = demon_hunter_spell_t::composite_persistent_multiplier( state );
 
-      if ( p()->buff.t30_havoc_4pc->up() )
-      {
-        m *= 1.0 + p()->buff.t30_havoc_4pc->stack_value();
-      }
+      m *= 1.0 + p()->buff.t30_havoc_4pc->stack_value();
 
       return m;
     }
@@ -2317,10 +2314,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
     
-    if ( p()->buff.t30_havoc_4pc->up() )
-    {
-      p()->buff.t30_havoc_4pc->expire();
-    }
+    p()->buff.t30_havoc_4pc->expire();
 
     // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
