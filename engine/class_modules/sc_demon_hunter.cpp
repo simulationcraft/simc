@@ -236,7 +236,6 @@ public:
     damage_buff_t* t29_havoc_4pc;
     buff_t* t30_havoc_2pc;
     buff_t* t30_havoc_4pc;
-    buff_t* t30_havoc_4pc_damage_amp;
   } buff;
 
   // Talents
@@ -2239,11 +2238,6 @@ struct eye_beam_t : public demon_hunter_spell_t
         }
       }
 
-      if ( p()->set_bonuses.t30_havoc_4pc->ok() && p()->buff.t30_havoc_4pc_damage_amp->up() )
-      {
-        m *= 1.0 + p()->buff.t30_havoc_4pc_damage_amp->check_value();
-      }
-
       return m;
     }
 
@@ -2252,6 +2246,18 @@ struct eye_beam_t : public demon_hunter_spell_t
       double m = demon_hunter_spell_t::composite_target_multiplier( target );
 
       m *= 1.0 + td( target )->debuffs.serrated_glaive->value();
+
+      return m;
+    }
+    
+    double composite_persistent_multiplier( const action_state_t* state ) const override
+    {
+      double m = demon_hunter_spell_t::composite_persistent_multiplier( state );
+
+      if ( p()->buff.t30_havoc_4pc->up() )
+      {
+        m *= 1.0 + p()->buff.t30_havoc_4pc->stack_value();
+      }
 
       return m;
     }
@@ -2301,11 +2307,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       p()->buff.furious_gaze->trigger();
     }
-
-    if ( p()->buff.t30_havoc_4pc_damage_amp->up() )
-    {
-      p()->buff.t30_havoc_4pc_damage_amp->expire();
-    }
   }
 
   void execute() override
@@ -2313,14 +2314,13 @@ struct eye_beam_t : public demon_hunter_spell_t
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
 
-    if ( p()->buff.t30_havoc_4pc->up() )
-    {
-      p()->buff.t30_havoc_4pc_damage_amp->trigger( 1, p()->buff.t30_havoc_4pc->stack_value(), -1, data().duration() );
-      p()->buff.t30_havoc_4pc->expire();
-    }
-
     demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
+    
+    if ( p()->buff.t30_havoc_4pc->up() )
+    {
+      p()->buff.t30_havoc_4pc->expire();
+    }
 
     // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
@@ -5768,15 +5768,10 @@ void demon_hunter_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
           ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
   
-
   buff.t30_havoc_4pc =
       make_buff<buff_t>( this, "seething_potential",
                          set_bonuses.t30_havoc_4pc->ok() ? set_bonuses.t30_havoc_4pc_buff : spell_data_t::not_found() )
-          ->set_default_value( set_bonuses.t30_havoc_4pc_buff->effectN( 1 ).percent() )
-          ->set_max_stack( 5 );
-
-  buff.t30_havoc_4pc_damage_amp = make_buff<buff_t>( this, "seething_potential_damage_amp", spell_data_t::nil() )
-                                      ->set_quiet( true );
+          ->set_default_value_from_effect( 1 );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
