@@ -1670,17 +1670,12 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
   double cap_coeff;
 
   protector_of_the_pack_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
-    : base_t( p, n, s ), mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() )
+    : base_t( p, n, s ),
+      mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() ),
+      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : 4.0 )
   {
     set_trigger_spell( p->talent.protector_of_the_pack );
     set_name_reporting( "protector_of_the_pack" );
-
-    if ( !p->is_ptr() )
-      cap_coeff = 2.2;
-    else if ( p->specialization() == DRUID_RESTORATION )
-      cap_coeff = 3.0;
-    else
-      cap_coeff = 4.0;
   }
 
   void add_amount( double amt )
@@ -4570,9 +4565,7 @@ struct bristling_fur_t : public bear_attack_t
     : bear_attack_t( "bristling_fur", p, p->talent.bristling_fur, opt )
   {
     harmful = false;
-
-    if ( p->is_ptr() )
-      gcd_type = gcd_haste_type::ATTACK_HASTE;
+    gcd_type = gcd_haste_type::ATTACK_HASTE;
   }
 
   void execute() override
@@ -4994,6 +4987,17 @@ struct thorns_of_iron_t : public bear_attack_t
   double base_da_max( const action_state_t* ) const override
   {
     return p()->cache.armor() * mul;
+  }
+
+  double action_multiplier() const override
+  {
+    auto am = bear_attack_t::action_multiplier();
+    auto lm = p()->buff.ironfur->check();
+
+    if ( lm > 4 )
+      am *= std::pow( 0.955, lm - 4 );  // approx. from testing
+
+    return am;
   }
 };
 

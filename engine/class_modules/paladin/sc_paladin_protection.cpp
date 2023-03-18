@@ -84,29 +84,46 @@ struct ardent_defender_t : public paladin_spell_t
   }
 };
 
+// Heartfire ================================================================
+
+struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_spell_t>
+{
+  heartfire_t( paladin_t* p ) : base_t( "heartfire", p, p->find_spell( 408461 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+    dot_duration        = timespan_t::from_seconds( 4 );
+    base_tick_time      = timespan_t::from_seconds( 2 );
+    tick_zero           = false;
+    hasted_ticks        = false;
+  }
+};
+
 // Avengers Shield ==========================================================
 
 // This struct is for all things Avenger's Shield which should occur baseline, disregarding whether it's selfcast, Divine Resonance or Divine Toll.
 // Specific interactions with Selfcast, Divine Resonance and Divine Toll should be put under the other structs.
 struct avengers_shield_base_t : public paladin_spell_t
 {
+  heartfire_t* heartfire;
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) )
+    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) ), heartfire(nullptr)
   {
     parse_options( options_str );
+    {
+      if ( p->tier_sets.hearthfire_sentinels_authority_2pc->ok() )
+      {
+      heartfire = new heartfire_t( p );
+      }
+    }
     if ( ! p -> has_shield_equipped() )
     {
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
       background = true;
     }
     may_crit = true;
-    //Turn off chaining if focused enmity
-    if ( p->talents.focused_enmity->ok() )
-    {
-      if (!p->is_ptr())
-        aoe += as<int>( p->talents.focused_enmity->effectN( 1 ).base_value() );
-    }
-    else
+
+    if ( !p->talents.focused_enmity->ok() )
     {
       aoe = data().effectN( 1 ).chain_target();
 
@@ -125,7 +142,13 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       p()->trigger_tyrs_enforcer(s);
     }
-
+    if (p()->tier_sets.hearthfire_sentinels_authority_2pc->ok())
+    {
+      residual_action::trigger(
+          heartfire, s->target,
+          s->result_amount * p()->tier_sets.hearthfire_sentinels_authority_2pc->effectN( 2 ).percent() );
+        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.hearthfire_sentinels_authority_2pc->duration() );
+    }
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> talents.bulwark_of_order -> ok() )
@@ -136,9 +159,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       p()->buffs.bulwark_of_order_absorb->trigger(
           1, std::min( p()->buffs.bulwark_of_order_absorb->value() + new_absorb, max_absorb ) );
     }
-
-    if ( p() -> legendary.bulwark_of_righteous_fury -> ok() && !p() -> talents.bulwark_of_righteous_fury -> ok() )
-      p() -> buffs.bulwark_of_righteous_fury -> trigger();
 
     if ( p()->talents.bulwark_of_righteous_fury->ok() )
       p()->buffs.bulwark_of_righteous_fury->trigger();
@@ -172,9 +192,7 @@ double recharge_multiplier( const cooldown_t& cd ) const override
     }
     if ( p()->talents.focused_enmity->ok() )
     {
-      if ( !p()->is_ptr() )
-        m *= 1.0 + p()->talents.focused_enmity->effectN( 2 ).percent();
-      else if ( paladin_spell_t::num_targets() == 1 )
+      if ( paladin_spell_t::num_targets() == 1 )
         m *= 1.0 + p()->talents.focused_enmity->effectN( 1 ).percent();
     }
     return m;
@@ -249,21 +267,6 @@ struct avengers_shield_t : public avengers_shield_base_t
   {
     avengers_shield_base_t::execute();
 
-    bool wasted_reset = false;
-
-    if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
-      rng().roll( p() -> legendary.holy_avengers_engraved_sigil -> proc_chance() ) )
-    {
-      if ( ! wasted_reset )
-      {
-        // With 35% chance to proc, the average skill player can expect a proc to happen
-        p() -> cooldowns.avengers_shield -> reset( false );
-        p() -> procs.as_engraved_sigil -> occur();
-        wasted_reset = true;
-      }
-      else
-        p() -> procs.as_engraved_sigil_wasted -> occur();
-    }
     // Barricade only triggers on self-cast AS
     if ( p()->talents.barricade_of_faith->ok() )
     {
@@ -571,7 +574,7 @@ struct eye_of_tyr_t : public paladin_spell_t
     aoe      = -1;
     may_crit = true;
 
-    if ( p->is_ptr() && p->talents.inmost_light->ok() )
+    if ( p->talents.inmost_light->ok() )
       cooldown->duration = data().cooldown() * ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
 
   }
@@ -590,7 +593,7 @@ struct eye_of_tyr_t : public paladin_spell_t
   double action_multiplier() const override
   {
     double m = paladin_spell_t::action_multiplier();
-    if ( p()->is_ptr() && p()->talents.inmost_light->ok() )
+    if ( p()->talents.inmost_light->ok() )
     {
       m *= 1.0 + p()->talents.inmost_light->effectN( 1 ).percent();
     }
@@ -636,6 +639,8 @@ struct judgment_prot_t : public judgment_t
         hopo += sw_holy_power;
       if( hopo > 0 )
         p() -> resource_gain( RESOURCE_HOLY_POWER, hopo, p() -> gains.judgment );
+      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
+          p()->trigger_grand_crusader();
     }
   }
 };
@@ -833,7 +838,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   {
     double am = holy_power_consumer_t::action_multiplier();
     // Range increase on bulwark of righteous fury not implemented.
-    if ( p()->talents.bulwark_of_righteous_fury->ok() || p()->legendary.bulwark_of_righteous_fury->ok())
+    if ( p()->talents.bulwark_of_righteous_fury->ok() )
     {
       am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
     }
@@ -1090,7 +1095,6 @@ void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance = new avengers_shield_dr_t( this );
-  active.necrolord_shield_of_the_righteous = new shield_of_the_righteous_t( this );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
@@ -1172,8 +1176,6 @@ void paladin_t::create_buffs_protection()
                           ->set_default_value_from_effect( 1 )
                           ->add_invalidate( CACHE_BLOCK );
   buffs.royal_decree = make_buff( this, "royal_decree", find_spell( 340147 ) );
-  buffs.reign_of_ancient_kings = make_buff( this, "reign_of_ancient_kings",
-    legendary.reign_of_endless_kings -> effectN( 2 ).trigger() -> effectN( 2 ).trigger() );
   buffs.faith_in_the_light = make_buff( this, "faith_in_the_light", find_spell( 379041 ) )
                                  ->set_default_value( talents.faith_in_the_light->effectN( 1 ).percent() )
                                  ->add_invalidate( CACHE_BLOCK );
@@ -1244,23 +1246,11 @@ void paladin_t::init_spells_protection()
   talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
   talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
 
-  if ( player_t::is_ptr() )
-  {
-    talents.sanctified_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Wrath" );
-    talents.inmost_light     = find_talent_spell( talent_tree::SPECIALIZATION, "Inmost Light" );
-    talents.seal_of_charity  = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
-    talents.tirions_devotion = find_talent_spell( talent_tree::SPECIALIZATION, "Tirion's Devotion" );
-    talents.seal_of_reprisal = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Reprisal" );
-  }
-  else
-  {
-    talents.divine_toll            = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
-    talents.improved_lay_on_hands = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Lay on Hands" );
-    talents.divine_resonance      = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
-    talents.quickened_invocations = find_talent_spell( talent_tree::SPECIALIZATION, "Quickened Invocations" );
-    talents.faiths_armor           = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
-    talents.strength_of_conviction = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
-  }
+  talents.sanctified_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Wrath" );
+  talents.inmost_light     = find_talent_spell( talent_tree::SPECIALIZATION, "Inmost Light" );
+  talents.seal_of_charity  = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Charity" );
+  talents.tirions_devotion = find_talent_spell( talent_tree::SPECIALIZATION, "Tirion's Devotion" );
+  talents.seal_of_reprisal = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Reprisal" );
 
   // Spec passives and useful spells
   spec.protection_paladin = find_specialization_spell( "Protection Paladin" );
@@ -1290,6 +1280,8 @@ void paladin_t::init_spells_protection()
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
 
+  tier_sets.hearthfire_sentinels_authority_2pc = find_spell( 408399 );
+  tier_sets.hearthfire_sentinels_authority_4pc = find_spell( 405548 );
   spells.sentinel = find_spell( 389539 );
 }
 

@@ -5500,9 +5500,6 @@ void player_t::combat_begin()
   auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     add_timed_buff_triggers( times, buff, duration );
-    if ( buff && external_buffs.seasons_of_plenty )
-      for ( auto t : times )
-        make_event( *sim, t + 10_s, [ b = buffs.equinox ] { b->trigger(); } );
   };
 
   timespan_t summer_duration = buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
@@ -12569,7 +12566,6 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );
 
   // Additional Options for Timed External Buffs
-  add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
   add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, util::string_view, util::string_view val )
   {
     unsigned rank = util::to_unsigned( val );

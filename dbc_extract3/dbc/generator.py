@@ -1903,6 +1903,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387409, 0 ),    # Madness Chaos Bolt aura
           ( 387413, 0 ),    # Madness Rain of Fire aura
           ( 387414, 0 ),    # Madness Shadowburn aura
+          ( 405681, 0 ),    # Immutable Hatred Damage Proc
         ),
 
         # Monk:

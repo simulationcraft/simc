@@ -234,7 +234,8 @@ public:
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
-
+    buff_t* t30_havoc_2pc;
+    buff_t* t30_havoc_4pc;
   } buff;
 
   // Talents
@@ -543,6 +544,11 @@ public:
     const spell_data_t* t30_havoc_4pc;
     const spell_data_t* t30_vengeance_2pc;
     const spell_data_t* t30_vengeance_4pc;
+    // Auxilliary
+    const spell_data_t* t30_havoc_2pc_buff;
+    const spell_data_t* t30_havoc_4pc_refund;
+    const spell_data_t* t30_havoc_4pc_buff;
+    double t30_havoc_2pc_fury_tracker = 0.0;
   } set_bonuses;
 
   // Mastery Spells
@@ -612,6 +618,9 @@ public:
     gain_t* metamorphosis;
     gain_t* volatile_flameblood;
     gain_t* darkglare_boon;
+
+    // Set Bonuses
+    gain_t* seething_fury;
   } gain;
 
   // Benefits
@@ -1697,6 +1706,25 @@ public:
           }
         }
       }
+
+      if ( p()->set_bonuses.t30_havoc_2pc->ok() )
+      {       
+        p()->set_bonuses.t30_havoc_2pc_fury_tracker += ab::last_resource_cost;
+        const double threshold = p()->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value();
+        p()->sim->print_debug( "{} spent {} toward Seething Fury ({}/{})", *p(), ab::last_resource_cost,
+                               p()->set_bonuses.t30_havoc_2pc_fury_tracker, threshold );
+        if ( p()->set_bonuses.t30_havoc_2pc_fury_tracker >= threshold )
+        {
+          p()->set_bonuses.t30_havoc_2pc_fury_tracker -= threshold;
+          p()->buff.t30_havoc_2pc->trigger();
+          p()->sim->print_debug( "{} procced Seething Fury ({}/{})", *p(), p()->set_bonuses.t30_havoc_2pc_fury_tracker, threshold );
+          if ( p()->set_bonuses.t30_havoc_4pc->ok() )
+          {            
+            p()->buff.t30_havoc_4pc->trigger();
+            p()->resource_gain( RESOURCE_FURY, p()->set_bonuses.t30_havoc_4pc_refund->effectN( 1 ).base_value(), p()->gain.seething_fury );
+          }
+        }
+      }
     }
   }
 
@@ -2221,6 +2249,15 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       return m;
     }
+    
+    double composite_persistent_multiplier( const action_state_t* state ) const override
+    {
+      double m = demon_hunter_spell_t::composite_persistent_multiplier( state );
+
+      m *= 1.0 + p()->buff.t30_havoc_4pc->stack_value();
+
+      return m;
+    }
 
     timespan_t execute_time() const override
     {
@@ -2276,6 +2313,8 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
+    
+    p()->buff.t30_havoc_4pc->expire();
 
     // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an execute_state
     if ( p()->talent.demon_hunter.demonic->ok() )
@@ -5716,6 +5755,17 @@ void demon_hunter_t::create_buffs()
   buff.t29_havoc_4pc = make_buff<damage_buff_t>( this, "seething_chaos", set_bonuses.t29_havoc_4pc->ok() ?
                                                  find_spell( 394934 ) : spell_data_t::not_found() );
   buff.t29_havoc_4pc->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  buff.t30_havoc_2pc =
+      make_buff<buff_t>( this, "seething_fury",
+                         set_bonuses.t30_havoc_2pc->ok() ? set_bonuses.t30_havoc_2pc_buff : spell_data_t::not_found() )
+          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+  
+  buff.t30_havoc_4pc =
+      make_buff<buff_t>( this, "seething_potential",
+                         set_bonuses.t30_havoc_4pc->ok() ? set_bonuses.t30_havoc_4pc_buff : spell_data_t::not_found() )
+          ->set_default_value_from_effect( 1 );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -6457,6 +6507,11 @@ void demon_hunter_t::init_spells()
   set_bonuses.t30_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B4 );
   set_bonuses.t30_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B2 );
   set_bonuses.t30_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B4 );
+  
+  // Set Bonus Auxilliary 
+  set_bonuses.t30_havoc_2pc_buff = set_bonuses.t30_havoc_2pc->ok() ? find_spell( 408737 ) : spell_data_t::not_found();
+  set_bonuses.t30_havoc_4pc_buff = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408754 ) : spell_data_t::not_found();
+  set_bonuses.t30_havoc_4pc_refund = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408757 ) : spell_data_t::not_found();
 
   // Spell Initialization ===================================================
 
@@ -6665,6 +6720,9 @@ void demon_hunter_t::create_gains()
   gain.metamorphosis          = get_gain( "metamorphosis" );
   gain.darkglare_boon         = get_gain( "darkglare_boon" );
   gain.volatile_flameblood    = get_gain( "volatile_flameblood" );
+
+  // Set Bonuses
+  gain.seething_fury          = get_gain( "seething_fury" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
@@ -7222,6 +7280,7 @@ void demon_hunter_t::reset()
   ragefire_crit_accumulator     = 0;
   shattered_destiny_accumulator = 0.0;
   darkglare_boon_cdr_roll       = 0.0;
+  set_bonuses.t30_havoc_2pc_fury_tracker = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {

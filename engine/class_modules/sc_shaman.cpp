@@ -10713,7 +10713,15 @@ double shaman_t::composite_player_multiplier( school_e school ) const
        ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ||
          dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
-    m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent();
+    if ( dbc->ptr )
+    {
+      unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
+      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
+    }
+    else
+    {
+      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent();
+    }
   }
 
   return m;
