@@ -106,7 +106,7 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
-  cooldowns->add_action( "avenging_wrath,if=(buff.seraphim.up|!talent.seraphim.enabled)" );
+  cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );
   cooldowns->add_action( "holy_avenger,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
@@ -121,7 +121,7 @@ void protection( player_t* p )
   standard->add_action( "avengers_shield,if=buff.moment_of_glory.up|!talent.moment_of_glory.enabled" );
   standard->add_action( "hammer_of_wrath,if=buff.avenging_wrath.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
-  standard->add_action( "divine_toll,if=time>20|((!talent.seraphim.enabled|buff.seraphim.up)&(buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
+  standard->add_action( "divine_toll,if=time>20|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
   standard->add_action( "avengers_shield" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
