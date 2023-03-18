@@ -172,7 +172,6 @@ public:
 
     buff_t* empyrean_legacy;
     buff_t* empyrean_legacy_cooldown;
-    buff_t* aspiration_of_divinity;
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
   } buffs;
@@ -367,7 +366,6 @@ public:
 
     // 20
     const spell_data_t* seal_of_clarity;
-    const spell_data_t* aspiration_of_divinity;
     const spell_data_t* touch_of_light;
     const spell_data_t* incandescence;
     const spell_data_t* hallowed_ground;
