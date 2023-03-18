@@ -44,7 +44,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.sentinel                     = get_cooldown( "sentinel" );
   cooldowns.hammer_of_justice            = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd        = get_cooldown( "judgment_of_light_icd" );
-  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
   cooldowns.blessing_of_protection       = get_cooldown( "blessing_of_protection" );
   cooldowns.blessing_of_spellwarding     = get_cooldown( "blessing_of_spellwarding" );
   cooldowns.divine_shield                = get_cooldown( "divine_shield" );
@@ -70,7 +69,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.wake_of_ashes    = get_cooldown( "wake_of_ashes" );
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
-  cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
   cooldowns.ret_aura_icd = get_cooldown( "ret_aura_icd" );
   cooldowns.ret_aura_icd->duration = timespan_t::from_seconds( 30 );
@@ -130,7 +128,7 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
   if ( p->talents.avenging_wrath_might->ok() )
     crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
 
-  if ( p->is_ptr() && p->talents.divine_wrath->ok() )
+  if ( p->talents.divine_wrath->ok() )
   {
     base_buff_duration += p->talents.divine_wrath->effectN( 1 ).time_value();
   }
@@ -248,32 +246,6 @@ struct holy_avenger_t : public paladin_spell_t
   }
 };
 
-// seraphim
-struct seraphim_t : public holy_power_consumer_t<paladin_spell_t>
-{
-  seraphim_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "seraphim", p, p->talents.seraphim )
-  {
-    parse_options( options_str );
-    harmful = false;
-
-    // not in spelldata for some reason, apparently?
-    hasted_gcd = true;
-
-    if ( p->talents.quickened_invocations->ok() )
-      cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 2 ).base_value() );
-
-    doesnt_consume_dp = p->bugs;
-  }
-
-  void execute() override
-  {
-    holy_power_consumer_t::execute();
-
-    p()->buffs.seraphim->trigger();
-  }
-};
-
 // Consecration =============================================================
 
 struct golden_path_t : public paladin_heal_t
@@ -374,7 +346,7 @@ struct consecration_t : public paladin_spell_t
     if ( p->specialization() == PALADIN_PROTECTION && p->spec.consecration_3->ok() )
       cooldown->duration *= 1.0 + p->spec.consecration_3->effectN( 1 ).percent();
 
-    if ( p->is_ptr() && ( p->talents.divine_hammer->ok() || p->talents.consecrated_blade->ok() ) )
+    if ( p->talents.divine_hammer->ok() || p->talents.consecrated_blade->ok() )
       background = true;
 
     add_child( damage_tick );
@@ -674,12 +646,6 @@ struct lay_on_hands_t : public paladin_heal_t
       cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
     }
 
-    // Improved Lay on Hands also reduces cooldown
-    if (!p->is_ptr() && p->talents.improved_lay_on_hands->ok())
-    {
-      cooldown->duration *= 1.0 + p->talents.improved_lay_on_hands->effectN( 1 ).percent();
-    }
-
     may_crit    = false;
     use_off_gcd = true;
     trigger_gcd = 0_ms;
@@ -781,24 +747,6 @@ struct retribution_aura_t : public paladin_aura_base_t
       background = true;
 
     aura_buff = p->buffs.retribution_aura;
-  }
-};
-
-struct seal_of_the_crusader_cb_t : public dbc_proc_callback_t
-{
-  paladin_t* p;
-  seal_of_the_crusader_cb_t( paladin_t* player, const special_effect_t& effect )
-    : dbc_proc_callback_t( player, effect ), p( player )
-  {
-  }
-
-  void execute( action_t*, action_state_t* s ) override
-  {
-    if ( !p->is_ptr() )
-    {
-      auto td = p->get_target_data( s->target );
-      td->debuff.seal_of_the_crusader->trigger();
-    }
   }
 };
 
@@ -938,7 +886,7 @@ struct melee_t : public paladin_melee_attack_t
     base_execute_time = p->main_hand_weapon.swing_time;
     weapon_multiplier = 1.0;
 
-    if ( p->is_ptr() && p->talents.crusading_strikes->ok() )
+    if ( p->talents.crusading_strikes->ok() )
     {
       crusading_strike = new crusading_strike_t( p );
       add_child( crusading_strike );
@@ -948,7 +896,7 @@ struct melee_t : public paladin_melee_attack_t
 
     affected_by.avenging_wrath = affected_by.crusade = affected_by.blessing_of_dawn = true;
 
-    if ( p->is_ptr() && p->talents.seal_of_the_crusader->ok() )
+    if ( p->talents.seal_of_the_crusader->ok() )
     {
       seal_of_the_crusader = new seal_of_the_crusader_t( p );
       add_child( seal_of_the_crusader );
@@ -988,67 +936,18 @@ struct melee_t : public paladin_melee_attack_t
         {
           // Check for BoW procs
           double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
-
-          if ( p()->talents.blade_of_wrath->ok() )
-            aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
-
           if ( rng().roll( aow_proc_chance ) )
           {
             p()->procs.art_of_war->occur();
-
-            if ( p()->talents.ashes_to_ashes->ok() )
-            {
-              if ( p()->bugs && p()->buffs.fires_of_justice->up() )
-              {
-                p()->buffs.fires_of_justice->expire();
-              }
-
-              p()->buffs.seraphim->extend_duration_or_trigger(
-                timespan_t::from_seconds( p()->talents.ashes_to_ashes->effectN( 1 ).base_value() ),
-                player
-              );
-            }
-
-            if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
-            {
-              p()->cooldowns.wake_of_ashes->reset( true );
-            }
-            else
-            {
-              if ( p()->talents.blade_of_wrath->ok() )
-              p()->buffs.blade_of_wrath->trigger();
-
-              if ( p()->talents.consecrated_blade->ok() && !p()->is_ptr() )
-                p()->buffs.consecrated_blade->trigger();
-
-              p()->cooldowns.blade_of_justice->reset( true );
-            }
+            p()->cooldowns.blade_of_justice->reset( true );
           }
         }
-
-        if ( p()->buffs.zeal->up() && p()->active.zeal )
-        {
-          p()->active.zeal->set_target( execute_state->target );
-          p()->active.zeal->schedule_execute();
-          p()->buffs.zeal->decrement();
-        }
       }
 
-      if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
+      if ( p()->talents.seal_of_the_crusader->ok() )
       {
-        action_t* vc    = p()->active.virtuous_command;
-        vc->base_dd_min = vc->base_dd_max = execute_state->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
-        vc->set_target( execute_state->target );
-        vc->schedule_execute();
-      }
-
-      if ( p()->is_ptr() )
-      {
-        if ( p()->talents.seal_of_the_crusader->ok() )
-        {
-          seal_of_the_crusader->target = execute_state->target;
-          seal_of_the_crusader->schedule_execute();
-        }
+        seal_of_the_crusader->target = execute_state->target;
+        seal_of_the_crusader->schedule_execute();
       }
     }
   }
@@ -1099,44 +998,31 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p->talents.fires_of_justice->ok() && !p->is_ptr() )
+    if ( p->talents.swift_justice->ok() )
     {
-      cooldown->duration *= 1.0 + p->talents.fires_of_justice->effectN( 3 ).percent();
+      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
     }
 
-    if ( p->talents.improved_crusader_strike->ok() && !p->is_ptr() )
+    if ( p->spec.improved_crusader_strike )
     {
-      cooldown->charges += as<int>( p->talents.improved_crusader_strike->effectN( 1 ).base_value() );
+      cooldown->charges += as<int>( p->spec.improved_crusader_strike->effectN( 1 ).base_value() );
     }
 
-    if ( p->is_ptr() )
+    if ( p->talents.blessed_champion->ok() )
     {
-      if ( p->talents.swift_justice->ok() )
-      {
-        cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
-      }
+      aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
+      base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
+    }
 
-      if ( p->spec.improved_crusader_strike )
-      {
-        cooldown->charges += as<int>( p->spec.improved_crusader_strike->effectN( 1 ).base_value() );
-      }
+    if ( p->talents.heart_of_the_crusader->ok() )
+    {
+      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
+    }
 
-      if ( p->talents.blessed_champion->ok() )
-      {
-        aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
-        base_aoe_multiplier *= 1.0 - p->talents.blessed_champion->effectN( 3 ).percent();
-      }
-
-      if ( p->talents.heart_of_the_crusader->ok() )
-      {
-        crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
-        base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
-      }
-
-      if ( p->talents.crusading_strikes->ok() || p->talents.templar_strikes->ok() )
-      {
-        background = true;
-      }
+    if ( p->talents.crusading_strikes->ok() || p->talents.templar_strikes->ok() )
+    {
+      background = true;
     }
   }
 
@@ -1153,13 +1039,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     // Special things that happen when CS connects
     if ( result_is_hit( s->result ) )
     {
-      // fires of justice
-      if ( p()->talents.fires_of_justice->ok() )
-      {
-        if ( p()->buffs.fires_of_justice->trigger() )
-          p()->procs.fires_of_justice->occur();
-      }
-
       if ( p()->talents.empyrean_power->ok() )
       {
         if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
@@ -1167,19 +1046,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
           p()->procs.empyrean_power->occur();
           p()->buffs.empyrean_power->trigger();
         }
-      }
-
-      if ( p()->talents.aspiration_of_divinity->ok() )
-      {
-        p()->buffs.aspiration_of_divinity->trigger();
-      }
-
-      if ( p()->buffs.virtuous_command->up() && p()->active.virtuous_command )
-      {
-        action_t* vc    = p()->active.virtuous_command;
-        vc->base_dd_min = vc->base_dd_max = s->result_amount * p()->talents.virtuous_command->effectN( 1 ).percent();
-        vc->set_target( s->target );
-        vc->schedule_execute();
       }
     }
   }
@@ -1311,11 +1177,6 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
 
     if ( p()->specialization() == PALADIN_PROTECTION )
     {
-      if ( p()->buffs.vanquishers_hammer->up() )
-      {
-        p()->buffs.vanquishers_hammer->decrement( 1 );
-        p()->active.necrolord_shield_of_the_righteous->execute();
-      }
       if ( p()->talents.faith_in_the_light->ok() )
       {
         p()->buffs.faith_in_the_light->trigger();
@@ -1425,27 +1286,24 @@ judgment_t::judgment_t( paladin_t* p, util::string_view name ) :
     base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 3 ).percent();
   }
 
-  if ( p->is_ptr() )
+  if ( p->talents.seal_of_alacrity->ok() )
   {
-    if ( p->talents.seal_of_alacrity->ok() )
-    {
-      cooldown->duration += timespan_t::from_millis( p->talents.seal_of_alacrity->effectN( 2 ).base_value() );
-    }
+    cooldown->duration += timespan_t::from_millis( p->talents.seal_of_alacrity->effectN( 2 ).base_value() );
+  }
 
-    if ( p->talents.swift_justice->ok() )
-    {
-      cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
-    }
+  if ( p->talents.swift_justice->ok() )
+  {
+    cooldown->duration += timespan_t::from_millis( p->talents.swift_justice->effectN( 2 ).base_value() );
+  }
 
-    if ( p->talents.judgment_of_justice->ok() )
-    {
-      base_multiplier *= 1.0 + p->talents.judgment_of_justice->effectN( 2 ).percent();
-    }
+  if ( p->talents.judgment_of_justice->ok() )
+  {
+    base_multiplier *= 1.0 + p->talents.judgment_of_justice->effectN( 2 ).percent();
+  }
 
-    if ( p->talents.improved_judgment->ok() )
-    {
-      cooldown->charges += as<int>( p->talents.improved_judgment->effectN( 1 ).base_value() );
-    }
+  if ( p->talents.improved_judgment->ok() )
+  {
+    cooldown->charges += as<int>( p->talents.improved_judgment->effectN( 1 ).base_value() );
   }
 }
 
@@ -1463,16 +1321,14 @@ void judgment_t::impact( action_state_t* s )
       if ( p()->talents.greater_judgment->ok() )
       {
         int num_stacks = 1;
-        if ( p()->is_ptr() && p()->talents.highlords_judgment->ok() )
+        if ( p()->talents.highlords_judgment->ok() )
         {
           num_stacks += p()->talents.highlords_judgment->effectN( 1 ).base_value();
         }
         td( s->target )->debuff.judgment->trigger( num_stacks );
       }
 
-    int amount = 25;
-      if ( p()->is_ptr() )
-        amount = 5;
+    int amount = 5;
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( amount );
   }
@@ -1481,27 +1337,6 @@ void judgment_t::impact( action_state_t* s )
 void judgment_t::execute()
 {
   paladin_melee_attack_t::execute();
-  if ( p()->legendary.the_magistrates_judgment->ok() )
-  {
-    double magistrate_chance;
-    switch ( p()->specialization() )
-    {
-      case PALADIN_HOLY:
-        magistrate_chance = p()->legendary.the_magistrates_judgment->effectN( 1 ).percent();
-        break;
-      case PALADIN_PROTECTION:
-        magistrate_chance = p()->legendary.the_magistrates_judgment->effectN( 2 ).percent();
-        break;
-      case PALADIN_RETRIBUTION:
-      default:
-        magistrate_chance = p()->legendary.the_magistrates_judgment->effectN( 3 ).percent();
-    }
-    if ( p()->cooldowns.the_magistrates_judgment_icd->up() && rng().roll( magistrate_chance ) )
-    {
-      p()->buffs.the_magistrates_judgment->trigger();
-      p()->cooldowns.the_magistrates_judgment_icd->start();
-    }
-  }
 
   if ( p()->talents.zealots_paragon->ok() )
   {
@@ -1533,12 +1368,8 @@ double judgment_t::action_multiplier() const
 {
   double am = paladin_melee_attack_t::action_multiplier();
 
-  // these can both likely be moved to base_multiplier in the constructor
-  if ( p()->is_ptr() )
-  {
-    if ( p()->talents.justification->ok() )
-      am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
-  }
+  if ( p()->talents.justification->ok() )
+    am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
 
   return am;
 }
@@ -1601,36 +1432,10 @@ struct righteous_might_t : public heal_t
   }
 };
 
-struct vanquishers_hammer_t : public paladin_melee_attack_t
-{
-  righteous_might_t* r_m_heal;
-  vanquishers_hammer_t( paladin_t* p, util::string_view options_str )
-    : paladin_melee_attack_t( "vanquishers_hammer", p, p->covenant.necrolord )
-  {
-    parse_options( options_str );
-
-    hasted_gcd = true;  // also not in spelldata for some reason?
-
-    if ( p->specialization() == PALADIN_PROTECTION )
-    {
-      add_child( p->find_action( "shield_of_the_righteous_vanquishers_hammer" ) );
-    }
-    if ( p->legendary.duty_bound_gavel->ok() )
-      cooldown -> charges += as<int>( p->legendary.duty_bound_gavel->effectN( 1 ).base_value() );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    paladin_melee_attack_t::impact( s );
-
-    p()->buffs.vanquishers_hammer->trigger( 1 + p()->legendary.duty_bound_gavel->ok() * as<int>( p() -> legendary.duty_bound_gavel -> effectN( 1 ).base_value() ) );
-  }
-};
-
 struct divine_toll_t : public paladin_spell_t
 {
   divine_toll_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "divine_toll", p, p->talents.divine_toll->ok() ? p->talents.divine_toll : p->covenant.kyrian )
+    : paladin_spell_t( "divine_toll", p, p->talents.divine_toll )
   {
     parse_options( options_str );
 
@@ -1639,9 +1444,7 @@ struct divine_toll_t : public paladin_spell_t
     add_child( p->active.divine_toll );
     add_child( p->active.divine_resonance );
 
-    if ( !p->is_ptr() && p->talents.quickened_invocations->ok() )
-      cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocations->effectN( 1 ).base_value() );
-    else if ( p->is_ptr() && p->talents.quickened_invocation->ok() ) // They share spell id, so it's the same in the end
+    if ( p->talents.quickened_invocation->ok() ) // They share spell id, so it's the same in the end
       cooldown->duration += timespan_t::from_millis( p->talents.quickened_invocation->effectN( 1 ).base_value() );
   }
 
@@ -1660,153 +1463,10 @@ struct divine_toll_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( !p()->talents.divine_toll->ok() && p()->legendary.divine_resonance->ok() )
-    {
-      p()->buffs.divine_resonance->trigger();
-    }
     if ( p()->talents.divine_resonance->ok() )
     {
       p()->buffs.divine_resonance->trigger();
     }
-  }
-};
-
-struct ashen_hallow_tick_t : public paladin_spell_t
-{
-  ashen_hallow_tick_t( paladin_t* p )
-    : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) )
-  {
-    aoe         = -1;
-    reduced_aoe_targets = p->covenant.venthyr->effectN( 2 ).base_value();
-    dual        = true;
-    direct_tick = true;
-    background  = true;
-    may_crit    = true;
-    ground_aoe  = true;
-  }
-};
-
-// Heal aoe cap not implemented. Hallowed Discernment target selection not implemented.
-struct ashen_hallow_heal_tick_t : public paladin_heal_t
-{
-  ashen_hallow_heal_tick_t( paladin_t* p )
-    : paladin_heal_t( "ashen_hallow_heal_tick", p, p->find_spell( 317223 ) )
-  {
-    aoe         = -1;
-    dual        = true;
-    direct_tick = true;
-    background  = true;
-    ground_aoe  = true;
-  }
-};
-
-struct ashen_hallow_t : public paladin_spell_t
-{
-  ashen_hallow_tick_t* damage_tick;
-  ashen_hallow_heal_tick_t* heal_tick;
-
-  ashen_hallow_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "ashen_hallow", p, p->covenant.venthyr )
-  {
-    parse_options( options_str );
-
-    dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
-    may_miss     = false;
-
-    damage_tick = new ashen_hallow_tick_t( p );
-    heal_tick   = new ashen_hallow_heal_tick_t( p );
-
-    add_child( damage_tick );
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    auto duration = data().duration();
-    if ( p()->legendary.radiant_embers->ok() )
-    {
-      duration *= 1.0 + p()->legendary.radiant_embers->effectN( 1 ).percent();
-    }
-    ground_aoe_params_t hallow_params = ground_aoe_params_t()
-                                            .duration( duration )
-                                            .pulse_time( data().effectN( 1 ).period() )
-                                            .hasted( ground_aoe_params_t::SPELL_HASTE )
-                                            .x( execute_state->target->x_position )
-                                            .y( execute_state->target->y_position );
-
-    // In game it's just an ability that both heals and damages naturally. Here
-    // I made 2 hallows and stacked them on top of each other: one for healing
-    // and one for damage.
-
-    make_event<ground_aoe_event_t>(
-        *sim, p(),
-        hallow_params.action( damage_tick )
-            .target( execute_state->target )
-            .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-              switch ( type )
-              {
-                case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_hallow_damaging = event;
-                  break;
-                case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p() -> active_hallow_damaging = nullptr;
-                  break;
-                default:
-                  break;
-              }
-            } ) );
-
-    make_event<ground_aoe_event_t>( *sim, p(),
-        hallow_params.action( heal_tick )
-        .target( p() )
-        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
-              switch ( type )
-              {
-                case ground_aoe_params_t::EVENT_CREATED:
-                  p()->active_hallow_healing = event;
-                  break;
-                case ground_aoe_params_t::EVENT_DESTRUCTED:
-                  p() -> active_hallow_healing = nullptr;
-                  break;
-                default:
-                  break;
-              }
-            } ) );
-  }
-};
-
-struct cancel_ashen_hallow_t : public action_t
-{
-  cancel_ashen_hallow_t( paladin_t* p, util::string_view options_str ) :
-    action_t( ACTION_OTHER, "cancel_ashen_hallow", p )
-  {
-    parse_options( options_str );
-    trigger_gcd = timespan_t::zero();
-  }
-
-  bool ready() override
-  {
-    auto* p = static_cast<paladin_t*>( action_t::player );
-    if ( p -> active_hallow_damaging != nullptr && p -> legendary.radiant_embers->ok() )
-      return action_t::ready();
-    return false;
-  }
-
-  void execute() override
-  {
-    auto* p = static_cast<paladin_t*>( action_t::player );
-      // CDR = % remaining duration/base duration * 50% * base cooldown
-      double ah_reduction = p -> active_hallow_damaging -> remaining_time().total_seconds();
-      ah_reduction /= p -> active_hallow_damaging -> params -> duration_.total_seconds();
-      ah_reduction *= 1.0 - p -> legendary.radiant_embers -> effectN( 2 ).percent();
-      ah_reduction *= p -> cooldowns.ashen_hallow -> base_duration.total_seconds();
-
-      p -> cooldowns.ashen_hallow -> adjust( timespan_t::from_seconds( - ah_reduction ) );
-
-      event_t::cancel( p->active_hallow_damaging );
-      event_t::cancel( p->active_hallow_healing );
-
   }
 };
 
@@ -1916,11 +1576,6 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( ab::player->buffs.equinox->up() )
-    {
-      am *= 1.0 + ab::player->buffs.equinox->data().effectN( 2 ).percent();
-    }
-
     return am;
   }
 };
@@ -1949,16 +1604,14 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
   {
     parse_options( options_str );
 
-    if ( !( p->covenant.night_fae->ok() ) )
-      background = true;
+    // we're keeping this around in case it's relevant to holy someday
+    background = true;
 
     harmful = false;
 
     hasted_gcd  = true;
-    trigger_gcd = p->covenant.night_fae->gcd();
 
     cooldown           = p->cooldowns.blessing_of_the_seasons;
-    cooldown->duration = p->covenant.night_fae->cooldown();
   }
 
   timespan_t execute_time() const override
@@ -1971,13 +1624,6 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
     paladin_spell_t::execute();
     p()->active.seasons[ p()->next_season ]->execute();
     p()->next_season = season( ( p()->next_season + 1 ) % NUM_SEASONS );
-
-    if ( p()->legendary.seasons_of_plenty->ok() )
-    {
-      make_event( *sim, 10_s, [ this ]() {
-        player->buffs.equinox->trigger();
-      } );
-    }
   }
 };
 
@@ -1990,20 +1636,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p->legendary.the_mad_paragon->ok() )
-      base_multiplier *= 1.0 + p->legendary.the_mad_paragon->effectN( 2 ).percent();
-
-    if ( p->legendary.vanguards_momentum->ok() )
-    {
-      cooldown->charges += as<int>( p->legendary.vanguards_momentum->effectN( 1 ).base_value() );
-    }
-
-    if ( p->talents.vanguards_momentum->ok() && !p->is_ptr() )
-    {
-      cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 3 ).base_value() );
-    }
-
-    if ( p->is_ptr() && p->talents.vanguards_momentum->ok() )
+    if ( p->talents.vanguards_momentum->ok() )
     {
       cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 1 ).base_value() );
 
@@ -2019,17 +1652,14 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       base_multiplier *= 1.0 + p->talents.zealots_paragon->effectN( 2 ).percent();
     }
 
-    if ( p->is_ptr() )
+    if ( p->talents.vengeful_wrath->ok() )
     {
-      if ( p->talents.vengeful_wrath->ok() )
-      {
-        base_crit = p->talents.vengeful_wrath->effectN( 1 ).percent();
-      }
+      base_crit = p->talents.vengeful_wrath->effectN( 1 ).percent();
+    }
 
-      if ( p->talents.adjudication->ok() )
-      {
-        add_child( p->active.background_blessed_hammer );
-      }
+    if ( p->talents.adjudication->ok() )
+    {
+      add_child( p->active.background_blessed_hammer );
     }
   }
 
@@ -2057,31 +1687,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( p()->legendary.the_mad_paragon->ok() )
-    {
-      if ( p()->buffs.avenging_wrath->up() )
-      {
-        p()->buffs.avenging_wrath->extend_duration(
-            p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
-      }
-      else if ( p()->buffs.crusade->up() )
-      {
-        p()->buffs.crusade->extend_duration(
-            p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
-      }
-      else if ( p()->buffs.sentinel->up() )
-      {
-        p()->buffs.sentinel->extend_duration(
-            p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
-        // 2022-11-14 If Sentinel is still at max stacks, Mad Paragon increases decay length, too.
-        if ( p()->bugs && p()->buffs.sentinel->at_max_stacks() && p()->buffs.sentinel_decay->up() )
-        {
-          p()->buffs.sentinel_decay->extend_duration(
-              p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
-        }
-      }
-    }
-
     if ( p()->talents.zealots_paragon->ok() )
     {
       auto extension = timespan_t::from_millis( p()->talents.zealots_paragon->effectN( 1 ).base_value() );
@@ -2107,33 +1712,20 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       }
     }
 
-    if ( p()->legendary.vanguards_momentum->ok() )
+    if ( p()->talents.vanguards_momentum->ok() )
     {
-      p()->buffs.vanguards_momentum_legendary->trigger();
-    }
-
-    if ( !p()->is_ptr() && p()->talents.vanguards_momentum->ok() )
-    {
-      p()->buffs.vanguards_momentum->trigger();
-    }
-
-    if ( p()->is_ptr() )
-    {
-      if ( p()->talents.vanguards_momentum->ok() )
+      if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() )
       {
-        if ( s->target->health_percentage() <= p()->talents.vanguards_momentum->effectN( 2 ).base_value() )
-        {
-          // technically this is in spell 403081 for some reason
-          p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
-        }
+        // technically this is in spell 403081 for some reason
+        p()->resource_gain( RESOURCE_HOLY_POWER, 1, p()->gains.hp_vm );
       }
+    }
 
-      if ( p()->talents.adjudication->ok() )
+    if ( p()->talents.adjudication->ok() )
+    {
+      if ( s->result == RESULT_CRIT )
       {
-        if ( s->result == RESULT_CRIT )
-        {
-          p()->active.background_blessed_hammer->schedule_execute();
-        }
+        p()->active.background_blessed_hammer->schedule_execute();
       }
     }
   }
@@ -2142,18 +1734,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    if ( p()->standing_in_hallow() )
-      am *= 1.0 + p()->spells.ashen_hallow_how->effectN( 2 ).percent();
-
     return am;
-  }
-};
-
-struct virtuous_command_t : public paladin_spell_t
-{
-  virtuous_command_t( paladin_t* p, int spell_id ) : paladin_spell_t( "virtuous_command", p, p->find_spell( spell_id ) )
-  {
-    background = true;
   }
 };
 
@@ -2269,15 +1850,11 @@ struct blessing_of_autumn_t : public buff_t
     } );
   }
 
-  void update_cooldowns( int new_, bool is_equinox=false )
+  void update_cooldowns( int new_ )
   {
     assert( affected_actions_initialized );
 
     double recharge_rate_multiplier = 1.0 / ( 1 + default_value );
-    if ( is_equinox )
-    {
-      recharge_rate_multiplier = 1.0 / ( 1 + default_value * ( 1.0 + player->buffs.equinox->data().effectN( 2 ).percent() ) );
-    }
     for ( auto a : affected_actions )
     {
       if ( new_ > 0 )
@@ -2297,8 +1874,6 @@ struct blessing_of_autumn_t : public buff_t
 
   void expire( timespan_t delay ) override
   {
-    player->buffs.equinox->expire( delay );
-
     buff_t::expire( delay );
   }
 };
@@ -2329,7 +1904,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
 
   debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
-  if ( paladin->is_ptr() && paladin->talents.highlords_judgment->ok() )
+  if ( paladin->talents.highlords_judgment->ok() )
   {
     debuff.judgment = debuff.judgment
                       ->set_max_stack( 1 + paladin->talents.highlords_judgment->effectN( 1 ).base_value() )
@@ -2340,12 +1915,11 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
 
   debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                 ->set_cooldown( 0_ms );  // handled by ability
-  if ( paladin->is_ptr() && paladin->talents.executioners_will->ok() )
+  if ( paladin->talents.executioners_will->ok() )
   {
     debuff.final_reckoning = debuff.final_reckoning->modify_duration( timespan_t::from_millis( paladin->talents.executioners_will->effectN( 1 ).base_value() ) );
   }
 
-  debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
   debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
   debuff.eye_of_tyr            = make_buff( *this, "eye_of_tyr", paladin->find_spell( 387174 ) )
                                 ->set_cooldown( 0_ms );
@@ -2353,11 +1927,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
                                  ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                  ->set_max_stack( 3 );
   debuff.heartfire = make_buff( *this, "heartfire", paladin-> find_spell( 408461 ) );
-
-  if ( !paladin->is_ptr() )
-    debuff.seal_of_the_crusader =
-        make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) )
-            ->set_default_value( paladin->talents.seal_of_the_crusader->effectN( 2 ).percent() );
 }
 
 bool paladin_td_t::standing_in_consecration()
@@ -2417,22 +1986,10 @@ void paladin_t::create_actions()
         timespan_t::from_seconds( talents.judgment_of_light->effectN( 1 ).base_value() );
   }
 
-  if ( covenant.night_fae->ok() )
-  {
-    active.seasons[ SUMMER ] = new blessing_of_summer_t( this );
-    active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
-    active.seasons[ WINTER ] = new blessing_of_winter_t( this );
-    active.seasons[ SPRING ] = new blessing_of_spring_t( this );
-  }
-
-  if ( talents.virtuous_command->ok() )
-  {
-    active.virtuous_command = new virtuous_command_t( this, 383305 );
-  }
-  else
-  {
-    active.virtuous_command = nullptr;
-  }
+  active.seasons[ SUMMER ] = new blessing_of_summer_t( this );
+  active.seasons[ AUTUMN ] = new blessing_of_autumn_t( this );
+  active.seasons[ WINTER ] = new blessing_of_winter_t( this );
+  active.seasons[ SPRING ] = new blessing_of_spring_t( this );
 
   if ( talents.incandescence->ok() )
   {
@@ -2442,9 +1999,6 @@ void paladin_t::create_actions()
   {
     active.incandescence = nullptr;
   }
-
-  if ( legendary.the_magistrates_judgment->ok() )
-    cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
 
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
   active.searing_light_cons = new consecration_t( this, "searing_light", SEARING_LIGHT );
@@ -2498,27 +2052,18 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
     return new lay_on_hands_t( this, options_str );
   if ( name == "holy_avenger" )
     return new holy_avenger_t( this, options_str );
-  if ( name == "seraphim" )
-    return new seraphim_t( this, options_str );
   if ( name == "hammer_of_wrath" )
     return new hammer_of_wrath_t( this, options_str );
   if ( name == "devotion_aura" )
     return new devotion_aura_t( this, options_str );
   if ( name == "retribution_aura" )
     return new retribution_aura_t( this, options_str );
-
-  if ( name == "vanquishers_hammer" )
-    return new vanquishers_hammer_t( this, options_str );
   if ( name == "divine_toll" )
     return new divine_toll_t( this, options_str );
-  if ( name == "ashen_hallow" )
-    return new ashen_hallow_t( this, options_str );
   if ( name == "blessing_of_the_seasons" )
     return new blessing_of_the_seasons_t( this, options_str );
   if ( name == "word_of_glory" )
     return new word_of_glory_t( this, options_str );
-  if ( name == "cancel_ashen_hallow" )
-    return new cancel_ashen_hallow_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -2633,7 +2178,6 @@ void paladin_t::init_procs()
   procs.art_of_war        = get_proc( "Art of War" );
   procs.righteous_cause   = get_proc( "Righteous Cause" );
   procs.divine_purpose    = get_proc( "Divine Purpose" );
-  procs.fires_of_justice  = get_proc( "Fires of Justice" );
   procs.final_reckoning   = get_proc( "Final Reckoning" );
   procs.empyrean_power    = get_proc( "Empyrean Power" );
 
@@ -2706,53 +2250,22 @@ void paladin_t::create_buffs()
                                     ->set_default_value_from_effect(1)
                                     ->set_max_stack(5); // Buff has no stacks, but can have up to 5 different values.
 
-  buffs.seraphim = make_buff( this, "seraphim", spells.seraphim_buff )
-                       ->add_invalidate( CACHE_CRIT_CHANCE )
-                       ->add_invalidate( CACHE_HASTE )
-                       ->add_invalidate( CACHE_MASTERY )
-                       ->add_invalidate( CACHE_VERSATILITY )
-                       ->set_cooldown( 0_ms );  // let the ability handle the cooldown
   buffs.holy_avenger =
       make_buff( this, "holy_avenger", talents.holy_avenger )->set_cooldown( 0_ms );  // handled by the ability
   buffs.devotion_aura = make_buff( this, "devotion_aura", find_spell( 465 ) )
                             ->set_default_value( find_spell( 465 )->effectN( 1 ).percent() );
-  buffs.retribution_aura = make_buff( this, "retribution_aura", find_spell( 183435 ) )
-                            ->set_period( 1_s )
-                            ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
-                              if ( b->player != this ) return;
-                              if ( cooldowns.ret_aura_icd->up() && rng().roll( options.proc_chance_ret_aura_sera ) )
-                              {
-                                if ( !bugs || !buffs.seraphim->up() )
-                                {
-                                  buffs.seraphim->extend_duration_or_trigger(
-                                    timespan_t::from_seconds( b->data().effectN( 4 ).base_value() ),
-                                    this
-                                  );
-                                }
-                                cooldowns.ret_aura_icd->start();
-                              }
-                            });
 
-  // Legendaries
-  if ( !paladin_t::is_ptr() )
+  buffs.blessing_of_dawn =
+      make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect( 1 );
+  if ( specialization() == PALADIN_RETRIBUTION )
   {
-    buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
-    buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
-      ->set_default_value_from_effect( 1 );
+    buffs.blessing_of_dawn->apply_affecting_aura( spec.retribution_paladin );
   }
-  else
-  {
-    buffs.blessing_of_dawn =
-        make_buff( this, "blessing_of_dawn", find_spell( 385127 ) )->set_default_value_from_effect( 1 );
-    if ( specialization() == PALADIN_RETRIBUTION )
-    {
-      buffs.blessing_of_dawn->apply_affecting_aura( spec.retribution_paladin );
-    }
-    buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
-    buffs.faiths_armor = make_buff( this, "faiths_armor", find_spell( 379017 ) )
-                             ->set_default_value_from_effect(1)
-                             ->add_invalidate( CACHE_BONUS_ARMOR );
-  }
+  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", find_spell( 385126 ) );
+  buffs.faiths_armor = make_buff( this, "faiths_armor", find_spell( 379017 ) )
+                           ->set_default_value_from_effect(1)
+                           ->add_invalidate( CACHE_BONUS_ARMOR );
+
   if ( talents.seal_of_order->ok() )
   {
     buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
@@ -2763,11 +2276,7 @@ void paladin_t::create_buffs()
         // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
         if ( i == 6 )
           i = 8;
-        spelleffect_data_t label;
-        if ( !paladin_t::is_ptr() )
-          label = talents.of_dusk_and_dawn->effectN( 2 ).trigger()->effectN( i );
-        else
-          label = find_spell( 385126 )->effectN( i );
+        spelleffect_data_t label = find_spell( 385126 )->effectN( i );
         for ( auto a : action_list )
         {
           if ( a->cooldown->duration != 0_ms && (a->data().affected_by( label ) || a->data().affected_by_category(label) ))
@@ -2788,38 +2297,24 @@ void paladin_t::create_buffs()
       } );
   }
 
-  buffs.relentless_inquisitor_legendary = make_buff( this, "relentless_inquisitor_legendary", find_spell( 337315 ) )
-                                    ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
-                                    ->add_invalidate( CACHE_HASTE );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 383389 ) )
                                 ->set_default_value( find_spell( 383389 )->effectN( 1 ).percent() )
                                 ->add_invalidate( CACHE_HASTE );
+
   if ( talents.relentless_inquisitor->ok() )
   {
-    buffs.relentless_inquisitor->set_max_stack( talents.relentless_inquisitor->effectN( 2 ).base_value() + talents.relentless_inquisitor->effectN( 3 ).base_value() );
+    buffs.relentless_inquisitor->set_max_stack(
+      talents.relentless_inquisitor->effectN( 2 ).base_value() +
+      talents.relentless_inquisitor->effectN( 3 ).base_value()
+    );
   }
 
-  buffs.the_magistrates_judgment = make_buff( this, "the_magistrates_judgment", find_spell( 337682 ) )
-                                       ->set_default_value( find_spell( 337682 )->effectN( 1 ).base_value() );
   buffs.final_verdict = make_buff( this, "final_verdict", find_spell( 337228 ) );
-  buffs.virtuous_command =
-      make_buff( this, "virtuous_command", find_spell( 383307 ) );
   buffs.divine_resonance = make_buff( this, "divine_resonance", find_spell( 355455 ) )
           ->set_tick_callback( [ this ]( buff_t* /* b */, int /* stacks */, timespan_t /* tick_time */ ) {
               this->active.divine_resonance->set_target( this->target );
               this->active.divine_resonance->schedule_execute();
           } );
-
- buffs.aspiration_of_divinity =
-      make_buff<stat_buff_t>( this, "aspiration_of_divinity", find_spell( 385417 ) )
-          ->set_pct_buff_type( specialization() == PALADIN_HOLY ? STAT_PCT_BUFF_INTELLECT : STAT_PCT_BUFF_STRENGTH )
-          ->modify_default_value( talents.aspiration_of_divinity->effectN( 1 ).percent() )
-          ->set_cooldown( talents.aspiration_of_divinity->internal_cooldown() )
-          ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-
-  // Covenants
-  buffs.vanquishers_hammer = make_buff( this, "vanquishers_hammer", covenant.necrolord )->set_cooldown( 0_ms )
-    ->modify_max_stack( legendary.duty_bound_gavel->ok() ? as<int>(legendary.duty_bound_gavel->effectN( 2 ).base_value()) : 0 );
 }
 
 // paladin_t::default_potion ================================================
@@ -2970,17 +2465,6 @@ void paladin_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  if ( !player_t::is_ptr() && talents.seal_of_the_crusader->ok() )
-  {
-    auto const seal_of_the_crusader_driver = new special_effect_t( this );
-    seal_of_the_crusader_driver->name_str  = "seal_of_the_crusader_driver";
-    seal_of_the_crusader_driver->spell_id  = 385728;
-    special_effects.push_back( seal_of_the_crusader_driver );
-
-    auto cb = new paladin::seal_of_the_crusader_cb_t( this, *seal_of_the_crusader_driver );
-    cb->initialize();
-  }
-
   if ( talents.touch_of_light->ok() )
   {
     auto const touch_of_light_driver = new special_effect_t( this );
@@ -3049,7 +2533,6 @@ void paladin_t::init_spells()
   talents.divine_purpose                  = find_talent_spell( talent_tree::CLASS, "Divine Purpose" );
   talents.obduracy                        = find_talent_spell( talent_tree::CLASS, "Obduracy" );
   talents.seal_of_clarity                 = find_talent_spell( talent_tree::CLASS, "Seal of Clarity" );
-  talents.aspiration_of_divinity          = find_talent_spell( talent_tree::CLASS, "Aspiration of Divinity" );
   talents.touch_of_light                  = find_talent_spell( talent_tree::CLASS, "Touch of Light" );
   talents.incandescence                   = find_talent_spell( talent_tree::CLASS, "Incandescence" );
   talents.hallowed_ground                 = find_talent_spell( talent_tree::CLASS, "Hallowed Ground" );
@@ -3059,35 +2542,24 @@ void paladin_t::init_spells()
   talents.improved_blessing_of_protection = find_talent_spell( talent_tree::CLASS, "Improved Blessing of Protection" );
   talents.seal_of_the_crusader            = find_talent_spell( talent_tree::CLASS, "Seal of the Crusader" );
   talents.seal_of_order                   = find_talent_spell( talent_tree::CLASS, "Seal of Order" );
-  talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
   talents.zealots_paragon                 = find_talent_spell( talent_tree::CLASS, "Zealot's Paragon" );
 
   // spec talents shared among specs
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
 
-  if ( player_t::is_ptr() )
-  {
-    talents.divine_toll      = find_talent_spell( talent_tree::CLASS, "Divine Toll" );
-    talents.divine_resonance = find_talent_spell( talent_tree::CLASS, "Divine Resonance" );
-    talents.quickened_invocation = find_talent_spell( talent_tree::CLASS, "Quickened Invocation" );
-    talents.faiths_armor         = find_talent_spell( talent_tree::CLASS, "Faith's Armor" );
-    talents.strength_of_conviction = find_talent_spell( talent_tree::CLASS, "Strength of Conviction" );
+  talents.divine_toll      = find_talent_spell( talent_tree::CLASS, "Divine Toll" );
+  talents.divine_resonance = find_talent_spell( talent_tree::CLASS, "Divine Resonance" );
+  talents.quickened_invocation = find_talent_spell( talent_tree::CLASS, "Quickened Invocation" );
+  talents.faiths_armor         = find_talent_spell( talent_tree::CLASS, "Faith's Armor" );
+  talents.strength_of_conviction = find_talent_spell( talent_tree::CLASS, "Strength of Conviction" );
 
-    talents.justification = find_talent_spell( talent_tree::CLASS, "Justification" );
-    talents.punishment = find_talent_spell( talent_tree::CLASS, "Punishment" );
-    talents.sanctified_plates = find_talent_spell( talent_tree::CLASS, "Sanctified Plates" );
-    talents.lightforged_blessing = find_talent_spell( talent_tree::CLASS, "Lightforged Blessing" );
-    talents.crusaders_reprieve = find_talent_spell( talent_tree::CLASS, "Crusader's Reprieve" );
-    talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
-  }
-  else
-  {
-    talents.divine_toll      = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
-    talents.divine_resonance = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
-    talents.sanctified_wrath = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath" );
-    talents.seal_of_reprisal = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
-  }
+  talents.justification = find_talent_spell( talent_tree::CLASS, "Justification" );
+  talents.punishment = find_talent_spell( talent_tree::CLASS, "Punishment" );
+  talents.sanctified_plates = find_talent_spell( talent_tree::CLASS, "Sanctified Plates" );
+  talents.lightforged_blessing = find_talent_spell( talent_tree::CLASS, "Lightforged Blessing" );
+  talents.crusaders_reprieve = find_talent_spell( talent_tree::CLASS, "Crusader's Reprieve" );
+  talents.fading_light = find_talent_spell( talent_tree::CLASS, "Fading Light" );
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
@@ -3098,38 +2570,12 @@ void paladin_t::init_spells()
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
   spells.seal_of_clarity_buff   = find_spell( 384810 );
-  spells.seraphim_buff          = find_spell( 152262 );
-
-  // Shadowlands legendaries
-  legendary.vanguards_momentum            = find_runeforge_legendary( "Vanguard's Momentum" );
-  legendary.the_mad_paragon               = find_runeforge_legendary( "The Mad Paragon" );
-  legendary.final_verdict                 = find_runeforge_legendary( "Final Verdict" );
-  legendary.of_dusk_and_dawn              = find_runeforge_legendary( "Of Dusk and Dawn" );
-  legendary.the_magistrates_judgment      = find_runeforge_legendary( "The Magistrate's Judgment" );
-  legendary.bulwark_of_righteous_fury     = find_runeforge_legendary( "Bulwark of Righteous Fury" );
-  legendary.holy_avengers_engraved_sigil  = find_runeforge_legendary( "Holy Avenger's Engraved Sigil" );
-  legendary.the_ardent_protectors_sanctum = find_runeforge_legendary( "The Ardent Protector's Sanctum" );
-  legendary.relentless_inquisitor         = find_runeforge_legendary( "Relentless Inquisitor" );
-  legendary.tempest_of_the_lightbringer   = find_runeforge_legendary( "Tempest of the Lightbringer" );
-  legendary.reign_of_endless_kings        = find_runeforge_legendary( "Reign of Endless Kings" );
-  legendary.seasons_of_plenty             = find_runeforge_legendary( "Seasons of Plenty" );
-  legendary.radiant_embers                = find_runeforge_legendary( "Radiant Embers" );
-  legendary.duty_bound_gavel              = find_runeforge_legendary( "Duty-Bound Gavel" );
-  legendary.divine_resonance              = find_runeforge_legendary( "Divine Resonance" );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
   tier_sets.hearthfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
   tier_sets.hearthfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
-
-  // Covenants
-  covenant.kyrian    = find_covenant_spell( "Divine Toll" );
-  covenant.venthyr   = find_covenant_spell( "Ashen Hallow" );
-  covenant.necrolord = find_covenant_spell( "Vanquisher's Hammer" );
-  covenant.night_fae = find_covenant_spell( "Blessing of Summer" );
-
-  spells.ashen_hallow_how = find_spell( 330382 );
 }
 
 // paladin_t::primary_role ==================================================
@@ -3227,22 +2673,10 @@ double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_HOLY ) )
-  {
-    if ( buffs.vanguards_momentum->up() )
-    {
-      m *= 1.0 + buffs.vanguards_momentum->stack_value();
-    }
-    if ( buffs.vanguards_momentum_legendary->up() )
-    {
-      m *= 1.0 + buffs.vanguards_momentum_legendary->stack_value();
-    }
-  }
-
   // This also seems likely to be a bug: the spelldata says Fire, but the tooltip says Radiant
   if ( dbc::is_school( school, SCHOOL_FIRE ) )
   {
-    if ( is_ptr() && talents.burning_crusade->ok() )
+    if ( talents.burning_crusade->ok() )
     {
       m *= 1.0 + talents.burning_crusade->effectN( 2 ).percent();
     }
@@ -3264,7 +2698,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
       m *= 1.0 + passives.aegis_of_light -> effectN( 1 ).percent();
 
     // 2023-02-24 Sanctified Plates currently doesn't give the stamina bonus, despite an apparent bugfix (it worked before)
-    if ( is_ptr() && bugs && talents.sanctified_plates->ok() )
+    if ( bugs && talents.sanctified_plates->ok() )
       m *= 1.0 + talents.sanctified_plates->effectN( 1 ).percent();
 
     // This literally never gets triggered. Apparently, invalidating the Stamina cache doesn't recalculate Stamina?
@@ -3277,7 +2711,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
-    if ( is_ptr() && talents.seal_of_might->ok() )
+    if ( talents.seal_of_might->ok() )
       m *= 1.0 + talents.seal_of_might->effectN( 1 ).percent();
     if ( buffs.redoubt->up() )
       // Applies to base str, gear str and buffs. So everything basically.
@@ -3291,9 +2725,6 @@ double paladin_t::composite_damage_versatility() const
 {
   double cdv = player_t::composite_damage_versatility();
 
-  if ( buffs.seraphim->up() )
-    cdv += buffs.seraphim->data().effectN( 2 ).percent();
-
   if ( buffs.ally_of_the_light->up() )
     cdv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
 
@@ -3303,9 +2734,6 @@ double paladin_t::composite_damage_versatility() const
 double paladin_t::composite_heal_versatility() const
 {
   double chv = player_t::composite_heal_versatility();
-
-  if ( buffs.seraphim->up() )
-    chv += buffs.seraphim->data().effectN( 2 ).percent();
 
   if ( buffs.ally_of_the_light->up() )
     chv += buffs.ally_of_the_light->data().effectN( 1 ).percent();
@@ -3317,21 +2745,12 @@ double paladin_t::composite_mitigation_versatility() const
 {
   double cmv = player_t::composite_mitigation_versatility();
 
-  if ( buffs.seraphim->up() )
-    cmv += buffs.seraphim->data().effectN( 2 ).percent() / 2;
-
   return cmv;
 }
 
 double paladin_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
-
-  if ( buffs.seraphim->up() )
-    m += buffs.seraphim->data().effectN( 4 ).base_value();
-
-  if ( talents.holy_crusader->ok() )
-    m += talents.holy_crusader->effectN( 1 ).base_value();
 
   return m;
 }
@@ -3340,11 +2759,7 @@ double paladin_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  if (!is_ptr() && talents.seal_of_might->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() ) )
-  {
-    m += talents.seal_of_might->effectN( 1 ).percent();
-  }
-  if ( is_ptr() && talents.seal_of_might->ok() )
+  if ( talents.seal_of_might->ok() )
   {
     m += talents.seal_of_might->effectN( 2 ).percent();
   }
@@ -3356,9 +2771,6 @@ double paladin_t::composite_spell_crit_chance() const
 {
   double h = player_t::composite_spell_crit_chance();
 
-  if ( buffs.seraphim->up() )
-    h += buffs.seraphim->data().effectN( 1 ).percent();
-
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
 
@@ -3368,9 +2780,6 @@ double paladin_t::composite_spell_crit_chance() const
 double paladin_t::composite_melee_crit_chance() const
 {
   double h = player_t::composite_melee_crit_chance();
-
-  if ( buffs.seraphim->up() )
-    h += buffs.seraphim->data().effectN( 1 ).percent();
 
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
@@ -3390,10 +2799,10 @@ double paladin_t::composite_base_armor_multiplier() const
   if ( talents.holy_aegis -> ok() )
     a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
 
-  if ( is_ptr() && talents.sanctified_plates->ok() )
+  if ( talents.sanctified_plates->ok() )
     a *= 1.0 + talents.sanctified_plates->effectN( 3 ).percent();
 
-  if ( is_ptr() && talents.faiths_armor->ok() && buffs.faiths_armor->up() )
+  if ( talents.faiths_armor->ok() && buffs.faiths_armor->up() )
     a *= 1.0 + buffs.faiths_armor->default_value;
 
   return a;
@@ -3401,13 +2810,7 @@ double paladin_t::composite_base_armor_multiplier() const
 
 double paladin_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
-  paladin_td_t* td = get_target_data( target );
   double cptm      = player_t::composite_player_target_multiplier( target, school );
-  if (!paladin_t::is_ptr() && dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
-  {
-    cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();
-  }
-
   return cptm;
 }
 
@@ -3420,19 +2823,13 @@ double paladin_t::composite_melee_haste() const
   if ( buffs.crusade->up() )
     h /= 1.0 + buffs.crusade->get_haste_bonus();
 
-  if ( buffs.seraphim->up() )
-    h /= 1.0 + buffs.seraphim->data().effectN( 3 ).percent();
-
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();
-
-  if ( buffs.relentless_inquisitor_legendary->up() )
-    h /= 1.0 + buffs.relentless_inquisitor_legendary->stack_value();
 
   if ( talents.seal_of_alacrity->ok() )
     h /= 1.0 + talents.seal_of_alacrity->effectN( 1 ).percent();
 
-  if ( is_ptr() && buffs.rush_of_light->up() )
+  if ( buffs.rush_of_light->up() )
     h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
 
   return h;
@@ -3444,10 +2841,7 @@ double paladin_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  if ( buffs.zeal->check() )
-    s /= 1.0 + buffs.zeal->data().effectN( 1 ).percent();
-
-  if ( is_ptr() && talents.zealots_fervor->ok() )
+  if ( talents.zealots_fervor->ok() )
     s /= 1.0 + talents.zealots_fervor->effectN( 1 ).percent();
 
   return s;
@@ -3462,19 +2856,13 @@ double paladin_t::composite_spell_haste() const
   if ( buffs.crusade->up() )
     h /= 1.0 + buffs.crusade->get_haste_bonus();
 
-  if ( buffs.seraphim->up() )
-    h /= 1.0 + buffs.seraphim->data().effectN( 3 ).percent();
-
   if ( buffs.relentless_inquisitor->up() )
     h /= 1.0 + buffs.relentless_inquisitor->stack_value();
-
-  if ( buffs.relentless_inquisitor_legendary->up() )
-    h /= 1.0 + buffs.relentless_inquisitor_legendary->stack_value();
 
   if ( talents.seal_of_alacrity->ok() )
     h /= 1.0 + talents.seal_of_alacrity->effectN( 1 ).percent();
 
-  if ( is_ptr() && buffs.rush_of_light->up() )
+  if ( buffs.rush_of_light->up() )
     h /= 1.0 + talents.rush_of_light->effectN( 1 ).percent();
 
   return h;
@@ -3489,8 +2877,6 @@ double paladin_t::composite_bonus_armor() const
   if ( buffs.shield_of_the_righteous->check() )
   {
     double bonus = buffs.shield_of_the_righteous->value() * cache.strength();
-    if (!is_ptr() && talents.faiths_armor->ok() )
-      bonus *= 1.0 + talents.faiths_armor->effectN( 1 ).percent();
     ba += bonus;
   }
 
@@ -3726,33 +3112,17 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double result = player_t::resource_gain( resource_type, amount, source, action );
 
-  if ( !paladin_t::is_ptr() )
+  if ( resource_type == RESOURCE_HOLY_POWER && amount > 0 && ( talents.of_dusk_and_dawn->ok() ) )
   {
-    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && ( talents.of_dusk_and_dawn->ok() ) &&
-         resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 1 ).base_value() )
+    // There's probably a better way to do this, some spells don't trigger Dawn
+    // Also Judgment only gives Dawn when it impacts, but eh...
+    if ( !( source->name_str == "arcane_torrent" ) )
     {
-      buffs.blessing_of_dawn->trigger();
-    }
-    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
-         resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 1 ).base_value() )
-    {
-      buffs.blessing_of_dawn->trigger();
-    }
-  }
-  else
-  {
-    if ( resource_type == RESOURCE_HOLY_POWER && amount > 0 && ( talents.of_dusk_and_dawn->ok() ) )
-    {
-      // There's probably a better way to do this, some spells don't trigger Dawn
-      // Also Judgment only gives Dawn when it impacts, but eh...
-      if ( !( source->name_str == "arcane_torrent" ) )
+      holy_power_generators_used++;
+      int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
+      if ( holy_power_generators_used % hpGensNeeded == 0 )
       {
-        holy_power_generators_used++;
-        int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
-        if ( holy_power_generators_used % hpGensNeeded == 0 )
-        {
-          buffs.blessing_of_dawn->trigger();
-        }
+        buffs.blessing_of_dawn->trigger();
       }
     }
   }
@@ -3763,37 +3133,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
 double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
-  double initial_hp = health_percentage();
   double result     = player_t::resource_loss( resource_type, amount, source, action );
-  if ( !paladin_t::is_ptr() )
-  {
-    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
-      resources.current[RESOURCE_HOLY_POWER] == legendary.of_dusk_and_dawn->effectN( 2 ).base_value() )
-    {
-      buffs.blessing_of_dusk->trigger();
-    }
-    if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && talents.of_dusk_and_dawn->ok() &&
-      resources.current[RESOURCE_HOLY_POWER] == talents.of_dusk_and_dawn->effectN( 2 ).base_value() )
-    {
-      buffs.blessing_of_dusk->trigger();
-    }
-  }
-  if ( resource_type == RESOURCE_HEALTH && legendary.reign_of_endless_kings->ok() &&
-       !buffs.reign_of_ancient_kings->up() &&
-       health_percentage() < legendary.reign_of_endless_kings->effectN( 2 ).base_value() &&
-       // Won't trigger if you're below the threshhold when the debuff expires. You have to be healed back over it for
-       // it to be able to proc again.
-       initial_hp >= legendary.reign_of_endless_kings->effectN( 2 ).base_value() )
-  {
-    timespan_t reign_proc_duration = legendary.reign_of_endless_kings->effectN( 2 ).trigger()->duration();
-    // If Reign procs during GoAK, the buff will be set to 12 sec. Meaning up to
-    // a 20sec total duration. Uncertain if that's a bug. If you cast GoAK while
-    // the reign goak is up, it simply overwrites the buff.
-    if ( buffs.guardian_of_ancient_kings->up() )
-      reign_proc_duration += buffs.guardian_of_ancient_kings->buff_duration();
-    buffs.guardian_of_ancient_kings->trigger( reign_proc_duration );
-    buffs.reign_of_ancient_kings->trigger();
-  }
   return result;
 }
 
@@ -3947,12 +3287,7 @@ void paladin_t::combat_begin()
   // evidently it resets to summer on combat start
   next_season = SUMMER;
 
-  if ( talents.inner_grace->ok() )
-  {
-    buffs.inner_grace->trigger();
-  }
-
-  if ( is_ptr() && talents.inquisitors_ire->ok() )
+  if ( talents.inquisitors_ire->ok() )
   {
     buffs.inquisitors_ire_driver->trigger();
   }
@@ -3978,32 +3313,6 @@ bool paladin_t::standing_in_consecration() const
   return false;
 }
 
-// paladin_t::standing_in_hallow ============================================
-
-bool paladin_t::standing_in_hallow() const
-{
-  if ( !sim->distance_targeting_enabled )
-  {
-    return active_hallow_damaging != nullptr;
-  }
-
-  // new
-  if ( active_hallow_damaging != nullptr )
-  {
-    // calculate current distance to each consecration
-    ground_aoe_event_t* hallow_to_test = active_hallow_damaging;
-
-    double distance = get_position_distance( hallow_to_test->params->x(), hallow_to_test->params->y() );
-
-    // exit with true if we're in range of any one Cons center
-    if ( distance <= covenant.venthyr->effectN( 1 ).radius() )
-      return true;
-  }
-
-  // if we're not in range of any of them
-  return false;
-}
-
 // paladin_t::get_how_availability ==========================================
 
 bool paladin_t::get_how_availability( player_t* t ) const
@@ -4014,7 +3323,7 @@ bool paladin_t::get_how_availability( player_t* t ) const
   bool buffs_ok = talents.avenging_wrath->ok() && (buffs.avenging_wrath->up() || buffs.crusade->up() || buffs.sentinel->up() );
   buffs_ok      = buffs_ok || buffs.final_verdict->up();
   // Health threshold has to be hardcoded :peepocri:
-  return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 ) && talents.hammer_of_wrath->ok();
+  return ( buffs_ok || t->health_percentage() <= 20 ) && talents.hammer_of_wrath->ok();
 }
 
 // player_t::create_expression ==============================================
@@ -4045,33 +3354,6 @@ std::unique_ptr<expr_t> paladin_t::create_consecration_expression( util::string_
   else if ( util::str_compare_ci( expr[ 1U ], "count" ) )
   {
     return make_fn_expr( "consecration_count", [ this ]() { return all_active_consecrations.size(); } );
-  }
-
-  return nullptr;
-}
-
-std::unique_ptr<expr_t> paladin_t::create_ashen_hallow_expression( util::string_view expr_str )
-{
-  auto expr = util::string_split<util::string_view>( expr_str, "." );
-  if ( expr.size() != 2 )
-  {
-    return nullptr;
-  }
-
-  if ( !util::str_compare_ci( expr[ 0U ], "ashen_hallow" ) )
-  {
-    return nullptr;
-  }
-
-  if ( util::str_compare_ci( expr[ 1U ], "ticking" ) || util::str_compare_ci( expr[ 1U ], "up" ) )
-  {
-    return make_fn_expr( "ashen_hallow_ticking", [ this ]() { return active_hallow_damaging == nullptr ? 0 : 1; } );
-  }
-  else if ( util::str_compare_ci( expr[ 1U ], "remains" ) )
-  {
-    return make_fn_expr( "ashen_hallow_remains", [ this ]() {
-      return active_hallow_damaging == nullptr ? 0 : active_hallow_damaging->remaining_time().total_seconds();
-    } );
   }
 
   return nullptr;
@@ -4212,15 +3494,10 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   }
 
   auto cons_expr = create_consecration_expression( name_str );
-  auto ah_expr   = create_ashen_hallow_expression( name_str );
   auto aw_expr   = create_aw_expression( name_str );
   if ( cons_expr )
   {
     return cons_expr;
-  }
-  if ( ah_expr )
-  {
-     return ah_expr;
   }
   if ( aw_expr )
   {
@@ -4367,41 +3644,13 @@ struct paladin_module_t : public module_t
     p->buffs.blessing_of_sacrifice = new buffs::blessing_of_sacrifice_t( p );
     p->debuffs.forbearance         = new buffs::forbearance_t( p, "forbearance" );
 
-    // 9.0 Paladin Night Fae buffs
     p->buffs.blessing_of_summer =
         make_buff( p, "blessing_of_summer", p->find_spell( 328620 ) )->set_chance( 1.0 )->set_cooldown( 0_ms );
     p->buffs.blessing_of_autumn = make_buff<buffs::blessing_of_autumn_t>( p );
     p->buffs.blessing_of_winter = make_buff( p, "blessing_of_winter", p->find_spell( 328281 ) )->set_cooldown( 0_ms );
-    // TODO: make equinox also double this
     p->buffs.blessing_of_spring = make_buff( p, "blessing_of_spring", p->find_spell( 328282 ) )
                                       ->set_cooldown( 0_ms )
                                       ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
-    // Seasons of Plenty Legendary
-    // TODO: How does equinox work when multiple paladins cast blessings on the same target?
-    p->buffs.equinox = make_buff( p, "equinox", p->find_spell( 355567 ) )
-                           ->set_stack_change_callback( [ p ]( buff_t* /* b */, int /* old */, int new_ ) {
-                               buffs::blessing_of_autumn_t* autumn = debug_cast<buffs::blessing_of_autumn_t*>( p->buffs.blessing_of_autumn );
-
-                               if ( autumn->check() )
-                               {
-                                 // we basically fake expire the previous stacks
-                                 // this helps avoid cumulative floating point errors vs doing the relative computation here
-                                 // TODO: with the change to using the new dynamic_recharge_rate_multiplier, this method of
-                                 // removing the old multiplier before adding the new one is probably no longer necessary,
-                                 // since the amount of error that accumulates during a single iteration should be insignificant.
-                                 if ( new_ == 1 )
-                                 {
-                                   autumn->update_cooldowns( 0, false );
-                                   autumn->update_cooldowns( autumn->stack(), true );
-                                 }
-                                 else
-                                 {
-                                   autumn->update_cooldowns( 0, true );
-                                   autumn->update_cooldowns( autumn->stack(), false );
-                                 }
-                               }
-                             } );
   }
 
   void create_actions( player_t* p ) const override
@@ -4411,11 +3660,8 @@ struct paladin_module_t : public module_t
 
     // 9.0 Paladin Night Fae
 
-    // Only create these if the player is a Night Fae Paladin or sets the option to get the buff.
-    // If the Paladin action is ever updated to allow manually casting it on other players, this
-    // will need to be adjusted to also work if there is a Night Fae Paladin in the raid.
-    if ( ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ) ||
-         !p->external_buffs.blessing_of_summer.empty() )
+    // Only create these if the player sets the option to get the buff.
+    if ( !p->external_buffs.blessing_of_summer.empty() )
     {
       action_t* summer_proc           = new blessing_of_summer_proc_t( p );
       const spell_data_t* summer_data = p->find_spell( 328620 );
@@ -4429,16 +3675,11 @@ struct paladin_module_t : public module_t
               return assessor::CONTINUE;
 
             double proc_chance = summer_data->proc_chance();
-            bool has_equinox = p->buffs.equinox->up();
-            if ( has_equinox )
-              proc_chance *= 1.0 + p->buffs.equinox->data().effectN( 4 ).percent();
 
             if ( s->action != summer_proc && s->result_total > 0.0 && p->buffs.blessing_of_summer->up() &&
                  summer_data->proc_flags() & ( UINT64_C( 1 ) << s->proc_type() ) && p->rng().roll( proc_chance ) )
             {
               double da = s->result_amount * summer_data->effectN( 1 ).percent();
-              if ( has_equinox )
-                da *= 1.0 + p->buffs.equinox->data().effectN( 2 ).percent();
               make_event( p->sim, [ t = s->target, summer_proc, da ] {
                 summer_proc->set_target( t );
                 summer_proc->base_dd_min = summer_proc->base_dd_max = da;
@@ -4450,8 +3691,7 @@ struct paladin_module_t : public module_t
           } );
     }
 
-    if ( ( p->type == PALADIN && p->covenant && p->covenant->type() == covenant_e::NIGHT_FAE ) ||
-         !p->external_buffs.blessing_of_winter.empty() )
+    if ( !p->external_buffs.blessing_of_winter.empty() )
     {
       action_t* winter_proc;
       if ( p->type == PALADIN )
