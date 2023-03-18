@@ -99,7 +99,6 @@ struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_
   }
 };
 
-
 // Avengers Shield ==========================================================
 
 // This struct is for all things Avenger's Shield which should occur baseline, disregarding whether it's selfcast, Divine Resonance or Divine Toll.
@@ -155,8 +154,6 @@ struct avengers_shield_base_t : public paladin_spell_t
           s->result_amount * p()->tier_sets.hearthfire_sentinels_authority_2pc->effectN( 2 ).percent() );
         td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.hearthfire_sentinels_authority_2pc->duration() );
     }
-
-
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
     if ( p() -> talents.bulwark_of_order -> ok() )
