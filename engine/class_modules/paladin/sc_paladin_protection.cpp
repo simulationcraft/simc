@@ -92,8 +92,8 @@ struct heartfire_t : public residual_action::residual_periodic_action_t<paladin_
   {
     background = true;
     may_miss = may_crit = false;
-    dot_duration        = timespan_t::from_seconds( 4 );
-    base_tick_time      = timespan_t::from_seconds( 2 );
+    dot_duration        = timespan_t::from_seconds( 5 );
+    base_tick_time      = timespan_t::from_seconds( 1 );
     tick_zero           = false;
     hasted_ticks        = false;
   }
@@ -111,7 +111,7 @@ struct avengers_shield_base_t : public paladin_spell_t
   {
     parse_options( options_str );
     {
-      if ( p->tier_sets.hearthfire_sentinels_authority_2pc->ok() )
+      if ( p->tier_sets.heartfire_sentinels_authority_2pc->ok() )
       {
       heartfire = new heartfire_t( p );
       }
@@ -142,12 +142,12 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       p()->trigger_tyrs_enforcer(s);
     }
-    if (p()->tier_sets.hearthfire_sentinels_authority_2pc->ok())
+    if (p()->tier_sets.heartfire_sentinels_authority_2pc->ok())
     {
       residual_action::trigger(
           heartfire, s->target,
-          s->result_amount * p()->tier_sets.hearthfire_sentinels_authority_2pc->effectN( 2 ).percent() );
-        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.hearthfire_sentinels_authority_2pc->duration() );
+          s->result_amount * p()->tier_sets.heartfire_sentinels_authority_2pc->effectN( 2 ).percent() );
+        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
     }
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
@@ -1280,8 +1280,8 @@ void paladin_t::init_spells_protection()
   tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
   tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
 
-  tier_sets.hearthfire_sentinels_authority_2pc = find_spell( 408399 );
-  tier_sets.hearthfire_sentinels_authority_4pc = find_spell( 405548 );
+  tier_sets.heartfire_sentinels_authority_2pc = find_spell( 408399 );
+  tier_sets.heartfire_sentinels_authority_4pc = find_spell( 405548 );
   spells.sentinel = find_spell( 389539 );
 }
 

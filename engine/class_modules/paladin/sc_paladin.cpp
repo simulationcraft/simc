@@ -2574,8 +2574,8 @@ void paladin_t::init_spells()
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
-  tier_sets.hearthfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
-  tier_sets.hearthfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
+  tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
+  tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
 }
 
 // paladin_t::primary_role ==================================================
@@ -3116,7 +3116,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     // There's probably a better way to do this, some spells don't trigger Dawn
     // Also Judgment only gives Dawn when it impacts, but eh...
-    if ( !( source->name_str == "arcane_torrent" ) )
+    if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ) )
     {
       holy_power_generators_used++;
       int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
