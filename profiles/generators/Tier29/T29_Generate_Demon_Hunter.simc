@@ -5,7 +5,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=BEkAAAAAAAAAAAAAAAAAAAAAAQCIhUC0SSkkINEAAAAAAAkEkWKRSSBCplESSkkkE
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAIBkQKBaJJSSkGCAAAAAAASCSLlIJpgItkQSSSSSA
 
 head=skybound_avengers_visor,id=200345,bonus_id=4800/4786/1498,gem_id=192958
 neck=elemental_lariat,id=193001,ilevel=418,gem_id=192982/192958/192958,crafted_stats=32/49
@@ -32,7 +32,7 @@ race=blood_elf
 spec=vengeance
 role=tank
 position=front
-talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAQJCSSQS0QSiAJlEQ0CJSkESSJJIJJhSQAAAAA
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAoEBJJIJaIJRgkSCIahEJSCJpkEkkkQJIAAAAA
 
 head=windborne_hatsuburi,id=195492,bonus_id=4800/4786/1498/7187/6935,gem_id=192945
 neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790,gem_id=192945/192945/192945
