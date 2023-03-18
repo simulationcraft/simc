@@ -1049,9 +1049,6 @@ struct base_templar_strike_t : public paladin_melee_attack_t
     if ( !p->talents.templar_strikes->ok() )
       background = true;
 
-    // This might be a bug?
-    searing_light_disabled = true;
-
     if ( p->talents.blessed_champion->ok() )
     {
       aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
