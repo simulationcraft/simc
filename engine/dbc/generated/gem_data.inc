@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.0.7.48520
-static const std::array<gem_property_data_t, 2083> __gem_property_data { {
+// Gem properties, wow build 10.0.5.48317
+static const std::array<gem_property_data_t, 2052> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1950,96 +1950,96 @@ static const std::array<gem_property_data_t, 2083> __gem_property_data { {
   { 3920,  6369, 0x00800000 }, // $spell@spelldesc367270
   { 3921,  6370, 0x00800000 }, // $spell@spelldesc367269
   { 3922,  6371, 0x00800000 }, // $spell@spelldesc367268
-  { 3927,  6392, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
-  { 3928,  6393, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
-  { 3929,  6394, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
-  { 3930,  6395, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
-  { 3931,  6396, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
-  { 3932,  6397, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
-  { 3933,  6398, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste
-  { 3934,  6399, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste
-  { 3935,  6400, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste
-  { 3936,  6401, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
-  { 3937,  6402, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
-  { 3938,  6403, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
-  { 3939,  6404, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
-  { 3940,  6405, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
-  { 3941,  6406, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
-  { 3942,  6407, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
-  { 3943,  6408, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
-  { 3944,  6409, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
-  { 3945,  6410, 0x0000000e }, // +$k1 Stamina
-  { 3946,  6411, 0x0000000e }, // +$k1 Stamina
-  { 3947,  6412, 0x0000000e }, // +$k1 Stamina
-  { 3948,  6413, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
-  { 3949,  6414, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
-  { 3950,  6415, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
-  { 3951,  6416, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
-  { 3952,  6417, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
-  { 3953,  6418, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
-  { 3954,  6419, 0x0000000e }, // +$k1 Critical Strike
-  { 3955,  6420, 0x0000000e }, // +$k1 Critical Strike
-  { 3956,  6421, 0x0000000e }, // +$k1 Critical Strike
-  { 3957,  6422, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
-  { 3958,  6423, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
-  { 3959,  6424, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
-  { 3960,  6425, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
-  { 3961,  6426, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
-  { 3962,  6427, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
-  { 3963,  6428, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
-  { 3964,  6429, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
-  { 3965,  6430, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
-  { 3966,  6431, 0x0000000e }, // +$k1 Versatility
-  { 3967,  6432, 0x0000000e }, // +$k1 Versatility
-  { 3968,  6433, 0x0000000e }, // +$k1 Versatility
-  { 3969,  6434, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
-  { 3970,  6435, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
-  { 3971,  6436, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
-  { 3972,  6437, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
-  { 3973,  6438, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
-  { 3974,  6439, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
-  { 3975,  6440, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
-  { 3976,  6441, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
-  { 3977,  6442, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
-  { 3978,  6443, 0x0000000e }, // +$k1 Haste
-  { 3979,  6444, 0x0000000e }, // +$k1 Haste
-  { 3980,  6445, 0x0000000e }, // +$k1 Haste
-  { 3981,  6446, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
-  { 3982,  6447, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
-  { 3983,  6448, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
-  { 3984,  6449, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
-  { 3985,  6450, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
-  { 3986,  6451, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
-  { 3987,  6452, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
-  { 3988,  6453, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
-  { 3989,  6454, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
-  { 3990,  6455, 0x0000000e }, // +$k1 Mastery
-  { 3991,  6456, 0x0000000e }, // +$k1 Mastery
-  { 3992,  6457, 0x0000000e }, // +$k1 Mastery
-  { 3993,  6458, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
-  { 3994,  6459, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
-  { 3995,  6460, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
-  { 3996,  6461, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
-  { 3997,  6462, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
-  { 3998,  6463, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
-  { 3999,  6464, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
-  { 4000,  6465, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
-  { 4001,  6466, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
-  { 4002,  6467, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
-  { 4003,  6468, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
-  { 4004,  6469, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
-  { 4005,  6470, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike
-  { 4006,  6471, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike
-  { 4007,  6472, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike
-  { 4008,  6473, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery
-  { 4009,  6474, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery
-  { 4010,  6475, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery
-  { 4011,  6476, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility
-  { 4012,  6477, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility
-  { 4013,  6478, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility
-  { 4014,  6485, 0x0000000e }, // Speed increased by $k1
-  { 4015,  6486, 0x0000000e }, // Speed increased by $k1
-  { 4016,  6487, 0x0000000e }, // Speed increased by $k1
+  { 3927,  6392, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3928,  6393, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3929,  6394, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3930,  6395, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3931,  6396, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3932,  6397, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3933,  6398, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3934,  6399, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3935,  6400, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3936,  6401, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3937,  6402, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3938,  6403, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3939,  6404, 0x0000000e }, // +$k1 Haste and +$k2 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3940,  6405, 0x0000000e }, // +$k1 Haste and +$k2 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3941,  6406, 0x0000000e }, // +$k1 Haste and +$k2 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3942,  6407, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3943,  6408, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3944,  6409, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3945,  6410, 0x0000000e }, // +$k1 Stamina |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3946,  6411, 0x0000000e }, // +$k1 Stamina |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3947,  6412, 0x0000000e }, // +$k1 Stamina |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3948,  6413, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3949,  6414, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3950,  6415, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3951,  6416, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3952,  6417, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3953,  6418, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3954,  6419, 0x0000000e }, // +$k1 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3955,  6420, 0x0000000e }, // +$k1 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3956,  6421, 0x0000000e }, // +$k1 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3957,  6422, 0x0000000e }, // +$k1 Versatility and +$k2 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3958,  6423, 0x0000000e }, // +$k1 Versatility and +$k2 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3959,  6424, 0x0000000e }, // +$k1 Versatility and +$k2 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3960,  6425, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3961,  6426, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3962,  6427, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3963,  6428, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3964,  6429, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3965,  6430, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3966,  6431, 0x0000000e }, // +$k1 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3967,  6432, 0x0000000e }, // +$k1 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3968,  6433, 0x0000000e }, // +$k1 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3969,  6434, 0x0000000e }, // +$k1 Haste and +$k2 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3970,  6435, 0x0000000e }, // +$k1 Haste and +$k2 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3971,  6436, 0x0000000e }, // +$k1 Haste and +$k2 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3972,  6437, 0x0000000e }, // +$k1 Haste and +$k2 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3973,  6438, 0x0000000e }, // +$k1 Haste and +$k2 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3974,  6439, 0x0000000e }, // +$k1 Haste and +$k2 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3975,  6440, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3976,  6441, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3977,  6442, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3978,  6443, 0x0000000e }, // +$k1 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3979,  6444, 0x0000000e }, // +$k1 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3980,  6445, 0x0000000e }, // +$k1 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3981,  6446, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3982,  6447, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3983,  6448, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3984,  6449, 0x0000000e }, // +$k1 Mastery and +$k2 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3985,  6450, 0x0000000e }, // +$k1 Mastery and +$k2 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3986,  6451, 0x0000000e }, // +$k1 Mastery and +$k2 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3987,  6452, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3988,  6453, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3989,  6454, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3990,  6455, 0x0000000e }, // +$k1 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3991,  6456, 0x0000000e }, // +$k1 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3992,  6457, 0x0000000e }, // +$k1 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3993,  6458, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3994,  6459, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3995,  6460, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3996,  6461, 0x0000000e }, // +$k1 Stamina and +$k2 Haste |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 3997,  6462, 0x0000000e }, // +$k1 Stamina and +$k2 Haste |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 3998,  6463, 0x0000000e }, // +$k1 Stamina and +$k2 Haste |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 3999,  6464, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 4000,  6465, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 4001,  6466, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 4002,  6467, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 4003,  6468, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 4004,  6469, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 4005,  6470, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 4006,  6471, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 4007,  6472, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 4008,  6473, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 4009,  6474, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 4010,  6475, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 4011,  6476, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 4012,  6477, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 4013,  6478, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility |A:Professions-Icon-Quality-Tier3-Small:20:20|a
+  { 4014,  6485, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier1-Small:20:20|a
+  { 4015,  6486, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier2-Small:20:20|a
+  { 4016,  6487, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier3-Small:20:20|a
   { 4017,  6499, 0x00020000 }, // $spell@spelldesc382957
   { 4018,  6502, 0x01000000 }, // $spell@spelldesc384044
   { 4019,  6504, 0x01000000 }, // $spell@spelldesc384081
@@ -2052,36 +2052,5 @@ static const std::array<gem_property_data_t, 2083> __gem_property_data { {
   { 4026,  6691, 0x01000000 }, // $spell@spelldesc393795
   { 4027,  6692, 0x01000000 }, // $spell@spelldesc384266
   { 4028,  6693, 0x01000000 }, // $spell@spelldesc384266
-  { 4029,  6759, 0x02000000 }, // |C00FF5100Searing Smokey Stone
-  { 4030,  6760, 0x02000000 }, // |C00FF5100Entropic Fel Stone
-  { 4031,  6761, 0x02000000 }, // |C00FFAB00Indomitable Earth Stone
-  { 4032,  6763, 0x02000000 },
-  { 4033,  6762, 0x02000000 }, // |C00FFAB00Shining Obsidian Stone
-  { 4034,  6722, 0x02000000 }, // |C0040C040Wind Sculpted Stone
-  { 4035,  6755, 0x02000000 }, // |C0040C040Storm Infused Stone
-  { 4036,  6756, 0x02000000 }, // |C0040C040Echoing Thunder Stone
-  { 4037,  6758, 0x02000000 }, // |C00FF5100Raging Magma Stone
-  { 4038,  6757, 0x02000000 }, // |C00FF5100Flame-Licked Stone
-  { 4039,  6764, 0x02000000 }, // |C00FFAB00Gleaming Iron Stone
-  { 4040,  6765, 0x02000000 }, // |C0000D1FFDeluging Water Stone
-  { 4041,  6766, 0x02000000 }, // |C0000D1FFFreezing Ice Stone
-  { 4042,  6767, 0x02000000 }, // |C0000D1FFCold Frost Stone
-  { 4043,  6768, 0x02000000 }, // |C0000D1FFExuding Steam Stone
-  { 4044,  6769, 0x02000000 }, // |C00E97DFFSparkling Mana Stone
-  { 4045,  6770, 0x02000000 }, // |C00834FFFSwirling Mojo Stone
-  { 4046,  6771, 0x02000000 },
-  { 4047,  6772, 0x02000000 },
-  { 4048,  6773, 0x02000000 }, // |C00E97DFFHumming Arcane Stone
-  { 4049,  6774, 0x02000000 }, // |C00E97DFFHarmonic Music Stone
-  { 4050,  6775, 0x02000000 }, // |C0040C040Wild Spirit Stone
-  { 4051,  6776, 0x02000000 }, // |C00FF516CNecromantic Death Stone
-  { 4052,  6777, 0x02000000 }, // |C0040C040Pestilent Plague Stone
-  { 4053,  6778, 0x02000000 },
-  { 4054,  6779, 0x02000000 },
-  { 4055,  6780, 0x02000000 }, // |C00E97DFFObscure Pastel Stone
-  { 4056,  6781, 0x02000000 },
-  { 4057,  6782, 0x02000000 }, // |C00FF516CDesirous Blood Stone
-  { 4058,  6783, 0x02000000 },
-  { 4059,  6784, 0x02000000 }, // |C00834FFFProphetic Twilight Stone
 } };
 
