@@ -192,7 +192,6 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* judgment;
     gain_t* hp_cs;
-    gain_t* hp_sanctification;
     gain_t* hp_divine_toll;
     gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
@@ -485,7 +484,6 @@ public:
     const spell_data_t* expurgation;
     const spell_data_t* heartfire;
     const spell_data_t* boundless_judgment;
-    const spell_data_t* sanctification;
     const spell_data_t* crusade;
     const spell_data_t* truths_wake;
     const spell_data_t* empyrean_power;
