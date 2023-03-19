@@ -1451,8 +1451,7 @@ namespace monk
 
           am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
 
-          if ( p()->is_ptr() )
-            am *= 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
+          am *= 1 + p()->talent.windwalker.inner_peace->effectN( 2 ).percent();
 
           return am;
         }
@@ -1650,8 +1649,7 @@ namespace monk
         {
           double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
-          if ( p()->is_ptr() )
-            m *= 1 + p()->talent.windwalker.rising_star->effectN( 2 ).percent();
+          m *= 1 + p()->talent.windwalker.rising_star->effectN( 2 ).percent();
 
           return m;
         }
@@ -9201,7 +9199,7 @@ namespace monk
     double stagger_base = stagger_base_value();
     // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
     double k = dbc->armor_mitigation_constant( target_level );
-    k *= ( is_ptr() ? 1.992 : 1.384 );  // Mythic Raid
+    k *= 1.992;  // Mythic Raid
 
     double stagger = stagger_base / ( stagger_base + k );
 
