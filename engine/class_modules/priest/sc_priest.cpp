@@ -542,7 +542,8 @@ struct smite_t final : public priest_spell_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double d = priest_spell_t::composite_da_multiplier( s );
+    double d              = priest_spell_t::composite_da_multiplier( s );
+    const priest_td_t* td = priest().find_target_data( s->target );
     if ( priest().buffs.wrath_unleashed->check() )
     {
       d *= 1.0 + priest().buffs.wrath_unleashed->data().effectN( 1 ).percent();
@@ -562,6 +563,12 @@ struct smite_t final : public priest_spell_t
       d *= 1.0 + ( priest().talents.discipline.blaze_of_light->effectN( 1 ).percent() );
       sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze_of_light",
                         priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
+    }
+    if ( priest().talents.holy.searing_light.enabled() && td->dots.holy_fire->is_ticking() )
+    {
+      auto adjust_percent = priest().talents.holy.searing_light->effectN( 1 ).percent();
+      d *= 1.0 + adjust_percent;
+      sim->print_debug( "searing_light modifies Smite damage by {} (new total: {})", adjust_percent, d );
     }
     return d;
   }
