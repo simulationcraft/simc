@@ -759,7 +759,7 @@ struct execution_sentence_debuff_t : public buff_t
     buff_t::expire_override( stacks, duration );
 
     paladin_t* paladin = debug_cast<paladin_t*>( source );
-    paladin -> trigger_es_explosion( player );
+    paladin->trigger_es_explosion( player );
 
     accumulated_damage = 0.0;
     extended_count = 0;
@@ -873,23 +873,23 @@ public:
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
-    track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
+    track_cd_waste( s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms ),
     cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
     searing_light_disabled( false )
   {
     // Spec aura damage increase
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    if ( p->specialization() == PALADIN_RETRIBUTION )
     {
       // Mastery
-      this -> affected_by.hand_of_light = this -> data().affected_by( p -> mastery.hand_of_light -> effectN( 1 ) );
+      this->affected_by.hand_of_light = this->data().affected_by( p->mastery.hand_of_light->effectN( 1 ) );
 
       // Temporary damage modifiers
-      this -> affected_by.crusade = this -> data().affected_by( p -> spells.crusade -> effectN( 1 ) );
-      this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
-      this -> affected_by.ret_t29_2p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ) );
-      this -> affected_by.ret_t29_4p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ) );
+      this->affected_by.crusade = this->data().affected_by( p->spells.crusade->effectN( 1 ) );
+      this->affected_by.final_reckoning = this->data().affected_by( p->talents.final_reckoning->effectN( 3 ) );
+      this->affected_by.ret_t29_2p = this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
+      this->affected_by.ret_t29_4p = this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -901,11 +901,11 @@ public:
       this->affected_by.sentinel = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
     }
 
-    this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
-    this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 2 ) );
-    this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
-    this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p -> talents.seal_of_reprisal -> effectN( 1 ) );
+    this->affected_by.judgment = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
+    this->affected_by.avenging_wrath = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
+    this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
+    this->affected_by.divine_purpose = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
+    this->affected_by.seal_of_reprisal = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.seal_of_clarity  = this->data().affected_by( p->spells.seal_of_clarity_buff->effectN( 1 ) );
     this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
 
@@ -960,24 +960,24 @@ public:
   { return static_cast<paladin_t*>( ab::player ); }
 
   paladin_td_t* td( player_t* t ) const
-  { return p() -> get_target_data( t ); }
+  { return p()->get_target_data( t ); }
 
   void init() override
   {
     ab::init();
 
-    if ( track_cd_waste && ab::sim -> report_details != 0 )
+    if ( track_cd_waste && ab::sim->report_details != 0 )
     {
-      cd_waste = p() -> get_cooldown_waste_data( ab::cooldown );
+      cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
     }
 
     if ( hasted_cd )
     {
-      ab::cooldown -> hasted = hasted_cd;
+      ab::cooldown->hasted = hasted_cd;
     }
     if ( hasted_gcd )
     {
-      if ( p() -> specialization() == PALADIN_HOLY )
+      if ( p()->specialization() == PALADIN_HOLY )
       {
         ab::gcd_type = gcd_haste_type::SPELL_HASTE;
       }
@@ -991,10 +991,10 @@ public:
   void trigger_judgment_of_light( action_state_t* s )
   {
     // Don't activate if the player is at full HP
-    if ( p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] )
+    if ( p()->resources.current[ RESOURCE_HEALTH ] < p()->resources.max[ RESOURCE_HEALTH ] )
     {
-      p() -> active.judgment_of_light -> execute();
-      td ( s -> target ) -> debuff.judgment_of_light -> decrement();
+      p()->active.judgment_of_light->execute();
+      td ( s->target )->debuff.judgment_of_light->decrement();
     }
   }
 
@@ -1022,20 +1022,20 @@ public:
   {
     ab::impact( s );
 
-    if ( td( s -> target ) -> debuff.judgment_of_light -> up() && p() -> cooldowns.judgment_of_light_icd -> up() )
+    if ( td( s->target )->debuff.judgment_of_light->up() && p()->cooldowns.judgment_of_light_icd->up() )
     {
       trigger_judgment_of_light( s );
-      p() -> cooldowns.judgment_of_light_icd -> start();
+      p()->cooldowns.judgment_of_light_icd->start();
     }
 
 
-    if ( ab::result_is_hit( s -> result ) )
+    if ( ab::result_is_hit( s->result ) )
     {
       if ( affected_by.judgment )
       {
-        paladin_td_t* td = this -> td( s -> target );
-        if ( td -> debuff.judgment -> up() )
-          td -> debuff.judgment -> decrement();
+        paladin_td_t* td = this->td( s->target );
+        if ( td->debuff.judgment->up() )
+          td->debuff.judgment->decrement();
       }
     }
   }
@@ -1044,26 +1044,26 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( p() -> specialization() == PALADIN_RETRIBUTION )
+    if ( p()->specialization() == PALADIN_RETRIBUTION )
     {
       if ( affected_by.hand_of_light )
       {
-        am *= 1.0 + p() -> cache.mastery_value();
+        am *= 1.0 + p()->cache.mastery_value();
       }
 
-      if ( affected_by.crusade && p() -> buffs.crusade -> up() )
+      if ( affected_by.crusade && p()->buffs.crusade->up() )
       {
-        am *= 1.0 + p() -> buffs.crusade -> get_damage_mod();
+        am *= 1.0 + p()->buffs.crusade->get_damage_mod();
       }
 
-      if ( affected_by.ret_t29_2p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
+      if ( affected_by.ret_t29_2p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
       {
-        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ).percent();
+        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ).percent();
       }
 
-      if ( affected_by.ret_t29_4p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
+      if ( affected_by.ret_t29_4p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
       {
-        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
+        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ).percent();
       }
     }
 
@@ -1082,9 +1082,9 @@ public:
 
     // Divine purpose damage increase handled here,
     // Cost handled in holy_power_consumer_t
-    if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
+    if ( affected_by.divine_purpose && p()->buffs.divine_purpose->up() )
     {
-      am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+      am *= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
     }
 
     if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
@@ -1115,17 +1115,17 @@ public:
   {
     double ctm = ab::composite_target_multiplier( t );
 
-    paladin_td_t* td = this -> td( t );
+    paladin_td_t* td = this->td( t );
 
     // Handles both holy and ret judgment
-    if ( affected_by.judgment && td -> debuff.judgment -> up() )
+    if ( affected_by.judgment && td->debuff.judgment->up() )
     {
-      ctm *= 1.0 + p() -> spells.judgment_debuff -> effectN( 1 ).percent();
+      ctm *= 1.0 + p()->spells.judgment_debuff->effectN( 1 ).percent();
     }
 
-    if ( affected_by.final_reckoning && td -> debuff.final_reckoning -> up() )
+    if ( affected_by.final_reckoning && td->debuff.final_reckoning->up() )
     {
-      ctm *= 1.0 + p() -> talents.final_reckoning -> effectN( 3 ).percent();
+      ctm *= 1.0 + p()->talents.final_reckoning->effectN( 3 ).percent();
     }
 
     return ctm;
@@ -1133,17 +1133,17 @@ public:
 
   virtual void update_ready( timespan_t cd = timespan_t::min() ) override
   {
-    if ( cd_waste ) cd_waste -> add( cd, ab::time_to_execute );
+    if ( cd_waste ) cd_waste->add( cd, ab::time_to_execute );
     ab::update_ready( cd );
   }
 
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
   {
     ab::assess_damage( typ, s );
-    paladin_td_t* td = this -> td( s -> target );
-    if ( td -> debuff.execution_sentence -> check() )
+    paladin_td_t* td = this->td( s->target );
+    if ( td->debuff.execution_sentence->check() )
     {
-      td -> debuff.execution_sentence -> accumulate_damage( s );
+      td->debuff.execution_sentence->accumulate_damage( s );
     }
     if ( p()->buffs.moment_of_glory->up() )
     {
@@ -1209,32 +1209,32 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
   {
     base_t::impact( s );
 
-    if ( s -> target != p() -> beacon_target )
+    if ( s->target != p()->beacon_target )
       trigger_beacon_of_light( s );
   }
 
   void trigger_beacon_of_light( action_state_t* s )
   {
-    if ( ! p() -> beacon_target )
+    if ( ! p()->beacon_target )
       return;
 
-    if ( ! p() -> beacon_target -> buffs.beacon_of_light -> up() )
+    if ( ! p()->beacon_target->buffs.beacon_of_light->up() )
       return;
 
     if ( proc )
       return;
 
-    assert( p() -> active.beacon_of_light );
+    assert( p()->active.beacon_of_light );
 
-    p() -> active.beacon_of_light -> target = p() -> beacon_target;
+    p()->active.beacon_of_light->target = p()->beacon_target;
 
-    double amount = s -> result_amount;
-    amount *= p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+    double amount = s->result_amount;
+    amount *= p()->beacon_target->buffs.beacon_of_light->data().effectN( 1 ).percent();
 
-    p() -> active.beacon_of_light -> base_dd_min = amount;
-    p() -> active.beacon_of_light -> base_dd_max = amount;
+    p()->active.beacon_of_light->base_dd_min = amount;
+    p()->active.beacon_of_light->base_dd_max = amount;
 
-    p() -> active.beacon_of_light -> execute();
+    p()->active.beacon_of_light->execute();
   }
 };
 
@@ -1254,7 +1254,7 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
   {
     may_crit = true;
     special = true;
-    weapon = &( p -> main_hand_weapon );
+    weapon = &( p->main_hand_weapon );
   }
 };
 
@@ -1265,7 +1265,7 @@ struct sanctified_wrath_t : public paladin_spell_t
   int last_holy_power_cost;
 
   sanctified_wrath_t( paladin_t* p ) :
-    paladin_spell_t( "sanctified_wrath", p, p -> find_spell( 326731 ) ),
+    paladin_spell_t( "sanctified_wrath", p, p->find_spell( 326731 ) ),
     last_holy_power_cost( 0 )
   {
     aoe = -1;
@@ -1306,17 +1306,17 @@ struct holy_power_consumer_t : public Base
       return 0.0;
     }
 
-    if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power -> check() ) ) ||
-         ( ab::affected_by.divine_purpose_cost && ab::p() -> buffs.divine_purpose -> check() ) )
+    if ( ( is_divine_storm && ( ab::p()->buffs.empyrean_power->check() ) ) ||
+         ( ab::affected_by.divine_purpose_cost && ab::p()->buffs.divine_purpose->check() ) )
     {
       return 0.0;
     }
 
     double c = ab::cost();
 
-    if ( ab::p() -> talents.vanguard_of_justice -> ok() )
+    if ( ab::p()->talents.vanguard_of_justice->ok() )
     {
-      c += ab::p() -> talents.vanguard_of_justice -> effectN( 1 ).base_value();
+      c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
     }
 
     if ( ab::p()->buffs.seal_of_clarity->up() && this->affected_by.seal_of_clarity )
@@ -1354,15 +1354,15 @@ struct holy_power_consumer_t : public Base
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_hopo_spent = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
-    if ( p -> talents.relentless_inquisitor -> ok() )
-      p -> buffs.relentless_inquisitor -> trigger();
+    if ( p->talents.relentless_inquisitor->ok() )
+      p->buffs.relentless_inquisitor->trigger();
 
-    if ( p -> buffs.crusade -> check() )
+    if ( p->buffs.crusade->check() )
     {
-      p -> buffs.crusade -> trigger( num_hopo_spent );
+      p->buffs.crusade->trigger( num_hopo_spent );
     }
 
-    if ( p -> talents.righteous_protector -> ok()
+    if ( p->talents.righteous_protector->ok()
       && !ab::background
       && p->cooldowns.righteous_protector_icd->up())
     {
@@ -1391,7 +1391,7 @@ struct holy_power_consumer_t : public Base
       p->cooldowns.divine_shield->adjust( reduction );
     }
 
-    if ( p -> talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() )
+    if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() )
     {
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost());
@@ -1401,33 +1401,33 @@ struct holy_power_consumer_t : public Base
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
     // Cost reduction is still in divine_storm_t
     bool should_continue = true;
-    if ( is_divine_storm && p -> bugs )
+    if ( is_divine_storm && p->bugs )
     {
-      if ( p -> buffs.empyrean_power -> up() )
+      if ( p->buffs.empyrean_power->up() )
       {
-        p -> buffs.empyrean_power -> expire();
+        p->buffs.empyrean_power->expire();
         should_continue = false;
       }
     }
     else if ( is_divine_storm )
     {
-      if ( p -> buffs.empyrean_power -> up() )
+      if ( p->buffs.empyrean_power->up() )
       {
-        p -> buffs.empyrean_power -> expire();
+        p->buffs.empyrean_power->expire();
         should_continue = false;
       }
     }
 
-    if ( is_wog && p -> buffs.shining_light_free -> check() )
+    if ( is_wog && p->buffs.shining_light_free->check() )
     {
       should_continue = false;
         // Shining Light is now consumed before Divine Purpose 2020-11-01
-        p -> buffs.shining_light_free -> expire();
+        p->buffs.shining_light_free->expire();
     }
 
-    if (p -> buffs.bastion_of_light -> check() && should_continue)
+    if (p->buffs.bastion_of_light->check() && should_continue)
     {
-      p -> buffs.bastion_of_light->decrement();
+      p->buffs.bastion_of_light->decrement();
       should_continue = false;
     }
 
@@ -1442,14 +1442,14 @@ struct holy_power_consumer_t : public Base
 
     // We should only have should_continue false in the event that we're a divine storm
     // assert-check here for safety
-    assert( is_divine_storm || should_continue || p -> specialization() != PALADIN_RETRIBUTION );
+    assert( is_divine_storm || should_continue || p->specialization() != PALADIN_RETRIBUTION );
 
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p -> buffs.divine_purpose -> up() && !doesnt_consume_dp )
+      if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
-        p -> buffs.divine_purpose -> expire();
+        p->buffs.divine_purpose->expire();
       }
     }
 
@@ -1460,14 +1460,14 @@ struct holy_power_consumer_t : public Base
       p->procs.divine_purpose->occur();
     }
 
-    if ( p -> talents.incandescence -> ok() )
+    if ( p->talents.incandescence->ok() )
     {
       for ( int hopo = 0; hopo < num_hopo_spent; hopo++ )
       {
         // this appears to be hardcoded?
         if ( ab::rng().roll( 0.05 ) )
         {
-          p -> active.incandescence -> schedule_execute();
+          p->active.incandescence->schedule_execute();
         }
       }
     }
