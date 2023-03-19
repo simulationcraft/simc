@@ -626,6 +626,7 @@ public:
     proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
     proc_t* hounds_of_war;
+    proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
     proc_t* blazing_meteor; // T29 4pc
