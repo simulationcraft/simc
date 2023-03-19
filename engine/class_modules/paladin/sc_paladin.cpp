@@ -212,9 +212,6 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
 
   // link needed for Righteous Protector / SotR cooldown reduction
   cooldown = p->cooldowns.avenging_wrath;
-
-  // if ( p->talents.avenging_wrath_2->ok() )
-  //   cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 }
 
 void avenging_wrath_t::execute()
@@ -222,10 +219,6 @@ void avenging_wrath_t::execute()
   paladin_spell_t::execute();
 
   p()->buffs.avenging_wrath->trigger();
-
-  // Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
-  // if ( p()->talents.avenging_wrath_might->ok() )
-  //   p()->buffs.avenging_wrath_might->trigger();
 }
 
 // Holy Avenger
@@ -256,13 +249,6 @@ struct golden_path_t : public paladin_heal_t
   }
 };
 
-const double SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[4] = {
-  0.03,
-  0.05,
-  0.07,
-  0.08
-};
-
 struct consecration_tick_t : public paladin_spell_t
 {
   golden_path_t* heal_tick;
@@ -277,25 +263,6 @@ struct consecration_tick_t : public paladin_spell_t
     may_crit    = true;
     ground_aoe  = true;
     searing_light_disabled = true;
-  }
-
-  void execute() override
-  {
-    paladin_spell_t::execute();
-
-    if ( p()->talents.sanctification->ok() )
-    {
-      size_t target_count = target_list().size();
-      if ( target_count - 1 > 3 )
-        target_count = 4;
-
-      double proc_chance = SANCTIFICATION_PROC_CHANCE_BY_TARGET_COUNT[target_count - 1];
-      if ( rng().roll( proc_chance ) )
-      {
-        p()->resource_gain( RESOURCE_HOLY_POWER, p()->talents.sanctification->effectN( 1 ).base_value(),
-                            p()->gains.hp_sanctification );
-      }
-    }
   }
 
   double action_multiplier() const override
@@ -894,7 +861,7 @@ struct melee_t : public paladin_melee_attack_t
       weapon_multiplier = 0.0;
     }
 
-    affected_by.avenging_wrath = affected_by.crusade = affected_by.blessing_of_dawn = true;
+    affected_by.avenging_wrath = affected_by.crusade = true;
 
     if ( p->talents.seal_of_the_crusader->ok() )
     {
@@ -2162,7 +2129,6 @@ void paladin_t::init_gains()
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
   gains.judgment                   = get_gain( "judgment" );
   gains.hp_cs                      = get_gain( "crusader_strike" );
-  gains.hp_sanctification          = get_gain( "sanctification" );
   gains.hp_divine_toll             = get_gain( "divine_toll" );
   gains.hp_vm                      = get_gain( "vanguards_momentum" );
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
@@ -2568,14 +2534,14 @@ void paladin_t::init_spells()
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
-  spells.divine_purpose_buff    = find_spell( 223819 );
+  spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
   spells.seal_of_clarity_buff   = find_spell( 384810 );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
   tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
-  tier_sets.hearthfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
-  tier_sets.hearthfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
+  tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
+  tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
 }
 
 // paladin_t::primary_role ==================================================
@@ -2774,6 +2740,9 @@ double paladin_t::composite_spell_crit_chance() const
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
 
+  if ( buffs.avenging_wrath -> up() )
+    h += buffs.avenging_wrath -> get_crit_bonus();
+
   return h;
 }
 
@@ -2783,6 +2752,9 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
+
+  if ( buffs.avenging_wrath -> up() )
+    h += buffs.avenging_wrath -> get_crit_bonus();
 
   return h;
 }
@@ -3116,7 +3088,7 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     // There's probably a better way to do this, some spells don't trigger Dawn
     // Also Judgment only gives Dawn when it impacts, but eh...
-    if ( !( source->name_str == "arcane_torrent" ) )
+    if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ) )
     {
       holy_power_generators_used++;
       int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();

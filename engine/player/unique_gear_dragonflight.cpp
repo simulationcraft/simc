@@ -1930,6 +1930,7 @@ void storm_eaters_boon( special_effect_t& effect )
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 382092 )->effectN( 1 ).average(e.item);
       name_str_reporting = "stormeaters_boon";
+      reduced_aoe_targets = 5;  // from logs, not found in spell data
     }
 
      double composite_da_multiplier( const action_state_t* s ) const override
@@ -3430,7 +3431,9 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
       break;
     case PRIEST:
       driver_id = 408087;
-      break;      
+      break;
+    default:
+      return;
   }
 
   // Buff scaling is on the main trinket driver.

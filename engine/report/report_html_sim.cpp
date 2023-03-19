@@ -567,7 +567,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     sim.add_chart_data( raid_dps );
   }
 
-  if ( sim.num_enemies > 1 )
+  if ( sim.enemy_targets > 1 )
   {
     highchart::bar_chart_t priority_dps( "priority_dps", sim );
     if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )

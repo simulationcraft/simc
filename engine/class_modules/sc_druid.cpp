@@ -299,6 +299,12 @@ public:
   double cache_mastery_snapshot;  // for balance mastery snapshot
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
+  struct dot_list_t
+  {
+    std::vector<dot_t*> moonfire;
+    std::vector<dot_t*> sunfire;
+    std::vector<dot_t*> stellar_flare;  // TODO remove in 10.1
+  } dot_list;
   // !!!==========================================================================!!!
 
   // Options
@@ -350,7 +356,7 @@ public:
   struct rppms_t
   {
     // Feral
-    real_ppm_t* predator;    // Optional RPPM approximation
+    real_ppm_t* predator;  // Optional RPPM approximation
   } rppm;
 
   struct active_actions_t
@@ -363,17 +369,22 @@ public:
 
     // Balance
     action_t* astral_smolder;
-    action_t* denizen_of_the_dream;      // placeholder action
+    action_t* denizen_of_the_dream;          // placeholder action
     action_t* orbit_breaker;
-    action_t* starfall_cosmos;           // free starfall from 4t29 TODO remove in 10.1
-    action_t* starsurge_cosmos;          // free starsurge fromm 4t29 TODO remove in 10.1
-    action_t* starfall_starweaver;       // free starfall from starweaver's warp
-    action_t* starsurge_starweaver;      // free starsurge from starweaver's weft
+    action_t* shooting_stars;                // placeholder action
+    action_t* shooting_stars_moonfire;
+    action_t* shooting_stars_sunfire;
+    action_t* shooting_stars_stellar_flare;  // remove in 10.1
+    action_t* crashing_stars;                // 4t30
+    action_t* starfall_cosmos;               // free starfall from 4t29 TODO remove in 10.1
+    action_t* starsurge_cosmos;              // free starsurge fromm 4t29 TODO remove in 10.1
+    action_t* starfall_starweaver;           // free starfall from starweaver's warp
+    action_t* starsurge_starweaver;          // free starsurge from starweaver's weft
     action_t* sundered_firmament;
     action_t* orbital_strike;
 
     // Feral
-    action_t* ferocious_bite_apex;       // free bite from apex predator's crazing
+    action_t* ferocious_bite_apex;           // free bite from apex predator's crazing
     action_t* frenzied_assault;
     action_t* thrashing_claws;
 
@@ -461,6 +472,9 @@ public:
     buff_t* orbit_breaker;
     buff_t* owlkin_frenzy;
     buff_t* parting_skies;  // sundered firmament tracker
+    buff_t* shooting_stars_moonfire;
+    buff_t* shooting_stars_sunfire;
+    buff_t* shooting_stars_stellar_flare;
     buff_t* starweavers_warp;  // free starfall
     buff_t* starweavers_weft;  // free starsurge
     buff_t* primordial_arcanic_pulsar;
@@ -1689,6 +1703,59 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
   }
 };
 
+// Shooting Stars ============================================================
+struct shooting_stars_buff_t : public druid_buff_t
+{
+  std::vector<dot_t*>& dot_list;
+  action_t*& damage;
+  double base_chance;
+  double crash_chance;
+
+  shooting_stars_buff_t( druid_t* p, std::string_view n, std::vector<dot_t*>& d, action_t*& a )
+    : base_t( p, n, p->talent.shooting_stars ),
+      dot_list( d ),
+      damage( a ),
+      base_chance( p->talent.shooting_stars->effectN( 1 ).percent() ),
+      crash_chance( p->sets->set( DRUID_BALANCE, T30, B4 )->effectN( 1 ).percent() )
+  {
+    set_quiet( true );
+    set_tick_zero( true );
+    apply_affecting_aura( p->talent.cosmic_rapidity );
+    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { trigger_shooting_stars(); } );
+  }
+
+  void trigger_shooting_stars()
+  {
+    auto n = dot_list.size();
+    if ( !n )
+      return;
+
+    double c = base_chance;
+    c *= 1.0 + p()->buff.solstice->value();
+
+    if ( n > 1 )
+    {
+      c *= std::sqrt( n );
+      rng().shuffle( dot_list.begin(), dot_list.end() );
+    }
+
+    double procs;
+    auto f = std::modf( c, &procs );
+    if ( rng().roll( f ) )
+      procs++;
+
+    assert( procs <= n );
+
+    for ( size_t i = 0; i < procs; i++ )
+    {
+      if ( rng().roll( crash_chance ) )
+        p()->active.crashing_stars->execute_on_target( dot_list[ i ]->target );
+      else
+        damage->execute_on_target( dot_list[ i ]->target );
+    }
+  }
+};
+
 // Ursine Vigor =============================================================
 struct ursine_vigor_buff_t : public druid_buff_t
 {
@@ -2412,7 +2479,6 @@ public:
 
     return ab::create_expression( name_str );
   }
-
 };  // end druid_spell_t
 
 struct astral_power_spender_t : public druid_spell_t
@@ -2592,81 +2658,43 @@ public:
 template <typename BASE>
 struct trigger_shooting_stars_t : public BASE
 {
-  struct shooting_stars_t : public druid_spell_t
-  {
-    buff_t* buff;
-
-    shooting_stars_t( druid_t* p, std::string_view n, const spell_data_t* s )
-      : druid_spell_t( n, p, s ), buff( p->buff.orbit_breaker )
-    {
-      background = true;
-    }
-
-    void execute() override
-    {
-      druid_spell_t::execute();
-
-      buff->trigger();
-
-      if ( buff->at_max_stacks() )
-      {
-        p()->active.orbit_breaker->execute_on_target( target );
-        buff->expire();
-      }
-    }
-  };
-
 private:
   druid_t* p_;
-  action_t* shooting = nullptr;
-  action_t* crashing = nullptr;
-  double base_chance;
-  double crash_chance;
 
 public:
   using base_t = trigger_shooting_stars_t<BASE>;
 
+  std::vector<dot_t*>* dot_list = nullptr;
+
   trigger_shooting_stars_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view o = {} )
-    : BASE( n, p, s, o ),
-      p_( p ),
-      base_chance( p->talent.shooting_stars->effectN( 1 ).percent() ),
-      crash_chance( p->sets->set( DRUID_BALANCE, T30, B4 )->effectN( 1 ).percent() )
-  {
-    if ( base_chance )
-    {
-      shooting = p->get_secondary_action_n<shooting_stars_t>( "shooting_stars", p->spec.shooting_stars_dmg );
+    : BASE( n, p, s, o ), p_( p )
+  {}
 
-      if ( crash_chance )
-      {
-        crashing = p->get_secondary_action_n<shooting_stars_t>( "crashing_star", p->find_spell( 408310 ) );
-        shooting->add_child( crashing );
-      }
-    }
+  void init() override
+  {
+    assert( dot_list );
+
+    BASE::init();
   }
 
-  void trigger_shooting_stars( dot_t* d )
+  void trigger_dot( action_state_t* s ) override
   {
-    if ( !base_chance || !d->is_ticking() )
-      return;
-
-    double c = base_chance / std::sqrt( BASE::get_dot_count() );
-
-    c *= 1.0 + p_->buff.solstice->value();
-
-    if ( p_->rng().roll( c ) )
+    dot_t* d = BASE::get_dot( s->target );
+    if( !d->is_ticking() )
     {
-      if ( p_->rng().roll( crash_chance ) )
-        crashing->execute_on_target( d->target );
-      else
-        shooting->execute_on_target( d->target );
+      assert( !range::contains( *dot_list, d ) );
+      dot_list->push_back( d );
     }
+
+    BASE::trigger_dot( s );
   }
 
-  void tick( dot_t* d ) override
+  void last_tick( dot_t* d ) override
   {
-    BASE::tick( d );
+    assert( range::contains( *dot_list, d ) );
+    dot_list->erase( std::remove( dot_list->begin(), dot_list->end(), d ), dot_list->end() );
 
-    trigger_shooting_stars( d );
+    BASE::last_tick( d );
   }
 };
 
@@ -6977,6 +7005,7 @@ struct moonfire_t : public druid_spell_t
 
       triggers_galactic_guardian = false;
       dot_name = "moonfire";
+      dot_list = &p->dot_list.moonfire;
 
       if ( p->talent.twin_moons.ok() )
       {
@@ -7122,10 +7151,7 @@ struct moonfire_t : public druid_spell_t
       // moonfire will resume ticking for damage.
       // Note that moonfire CAN still proc shooting stars while suppressed
       if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
-      {
-        trigger_shooting_stars( d );
         return;
-      }
 
       base_t::tick( d );
     }
@@ -7426,6 +7452,31 @@ struct thrash_proxy_t : public druid_spell_t
       return thrash_bear->cost();
 
     return 0;
+  }
+};
+
+// Shooting Stars ===========================================================
+struct shooting_stars_t : public druid_spell_t
+{
+  buff_t* buff;
+
+  shooting_stars_t( druid_t* p, std::string_view n, const spell_data_t* s )
+    : druid_spell_t( n, p, s ), buff( p->buff.orbit_breaker )
+  {
+    background = true;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    buff->trigger();
+
+    if ( buff->at_max_stacks() )
+    {
+      p()->active.orbit_breaker->execute_on_target( target );
+      buff->expire();
+    }
   }
 };
 
@@ -7978,6 +8029,7 @@ struct stellar_flare_t : public trigger_shooting_stars_t<trigger_waning_twilight
     : base_t( n, p, s, opt )
   {
     dot_name = "stellar_flare";
+    dot_list = &p->dot_list.stellar_flare;
   }
 
   void tick( dot_t* d ) override
@@ -8002,6 +8054,7 @@ struct sunfire_t : public druid_spell_t
       radius = data().effectN( 2 ).radius();
 
       dot_name = "sunfire";
+      dot_list = &p->dot_list.sunfire;
     }
   };
 
@@ -10083,6 +10136,15 @@ void druid_t::create_buffs()
   buff.rattled_stars = make_buff( this, "rattled_stars", talent.rattle_the_stars->effectN( 1 ).trigger() )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
+  buff.shooting_stars_moonfire = make_buff<shooting_stars_buff_t>( this, "shooting_stars_moonfire",
+      dot_list.moonfire, active.shooting_stars_moonfire );
+
+  buff.shooting_stars_sunfire = make_buff<shooting_stars_buff_t>( this, "shooting_stars_sunfire",
+      dot_list.sunfire, active.shooting_stars_sunfire );
+
+  buff.shooting_stars_stellar_flare = make_buff<shooting_stars_buff_t>( this, "shooting_stars_stellar_flare",
+      dot_list.stellar_flare, active.shooting_stars_stellar_flare );
+
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() )
     ->set_default_value( talent.solstice->effectN( 1 ).percent() );
 
@@ -10381,6 +10443,32 @@ void druid_t::create_actions()
     fm->set_free_cast( free_spell_e::ORBIT );
     fm->background = true;
     active.orbit_breaker = fm;
+  }
+
+  if ( talent.shooting_stars.ok() )
+  {
+    active.shooting_stars = new action_t( action_e::ACTION_OTHER, "shooting_stars", this, talent.shooting_stars );
+
+    auto mf = get_secondary_action_n<shooting_stars_t>( "shooting_stars_moonfire", spec.shooting_stars_dmg );
+    mf->name_str_reporting = "Moonfire";
+    active.shooting_stars->add_child( mf );
+    active.shooting_stars_moonfire = mf;
+
+    auto sf = get_secondary_action_n<shooting_stars_t>( "shooting_stars_sunfire", spec.shooting_stars_dmg );
+    sf->name_str_reporting = "Sunfire";
+    active.shooting_stars->add_child( sf );
+    active.shooting_stars_sunfire = sf;
+
+    auto fl = get_secondary_action_n<shooting_stars_t>( "shooting_stars_stellar_flare", spec.shooting_stars_dmg );
+    fl->name_str_reporting = "Stellar Flare";
+    active.shooting_stars->add_child( fl );
+    active.shooting_stars_stellar_flare = fl;
+
+    if ( sets->has_set_bonus( DRUID_BALANCE, T30, B4 ) )
+    {
+      active.crashing_stars = get_secondary_action_n<shooting_stars_t>( "crashing_star", find_spell( 408310 ) );
+      active.shooting_stars->add_child( active.crashing_stars );
+    }
   }
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) && !is_ptr() )
@@ -10873,10 +10961,10 @@ void druid_t::init_uptimes()
 
   uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
-  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
-  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
+  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
@@ -11078,6 +11166,9 @@ void druid_t::reset()
   snapshot_mastery();
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
+  dot_list.moonfire.clear();
+  dot_list.sunfire.clear();
+  dot_list.stellar_flare.clear();
 }
 
 // druid_t::merge ===========================================================
@@ -11191,6 +11282,17 @@ void druid_t::arise()
 
   buff.elunes_favored->trigger();
   buff.natures_balance->trigger();
+
+  if ( active.shooting_stars )
+  {
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_moonfire ) );
+
+    if ( talent.sunfire.ok() )
+      persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_sunfire ) );
+
+    if ( talent.stellar_flare.ok() && !is_ptr() )
+      persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_stellar_flare ) );
+  }
 
   if ( active.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
