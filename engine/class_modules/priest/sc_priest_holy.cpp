@@ -49,48 +49,19 @@ struct empyreal_blaze_t final : public priest_spell_t
   }
 };
 
-/// Holy Fire Base Spell, used for both Holy Fire and its overriding spell Purge the Wicked
-// struct holy_fire_base_t : public priest_spell_t
-// {
-//   holy_fire_base_t( util::string_view name, priest_t& p, const spell_data_t* sd ) : priest_spell_t( name, p, sd )
-//   {
-//   }
-// };
-
-// struct holy_fire_t final : public holy_fire_base_t
-// {
-//   timespan_t manipulation_cdr;
-//   holy_fire_t( priest_t& player, util::string_view options_str )
-//     : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) ),
-//       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
-//   {
-//     parse_options( options_str );
-//     auto rank2 = priest().find_specialization_spell( "Holy Fire", "Rank 2" );
-//     if ( rank2->ok() )
-//     {
-//       dot_max_stack += as<int>( rank2->effectN( 2 ).base_value() );
-//     }
-//   }
-//   void execute() override
-//   {
-//     priest_spell_t::execute();
-//     if ( priest().talents.manipulation.enabled() )
-//     {
-//       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
-//     }
-//   }
-// };
-
 struct holy_fire_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
 
   holy_fire_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      _dot_extension( p.specs.holy_fire->duration() )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
+    if ( p.talents.holy.empyreal_blaze.enabled() )
+    {
+      dot_behavior = DOT_EXTEND;
+    }
   }
 
   double cost() const override
@@ -126,20 +97,6 @@ struct holy_fire_t final : public priest_spell_t
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
   }
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest_td_t& td = get_td( s->target );
-    if ( result_is_hit( s->result ) && priest().talents.holy.empyreal_blaze.enabled() &&
-         td.dots.holy_fire->is_ticking() )
-    {
-      sim->print_debug( "Extending duration of holy_fire by {}", _dot_extension );
-      td.dots.holy_fire->adjust_duration( _dot_extension, true );
-    }
-  }
-
-private:
-  timespan_t _dot_extension;
 };
 
 struct holy_word_chastise_t final : public priest_spell_t
