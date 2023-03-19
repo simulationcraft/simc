@@ -5,7 +5,7 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-talents=BkQAAAAAAAAAAAAAAAAAAAAAAgcARSSiEINlIItkkQKBAAAAakAAAAAAAJcgGiIJJRSLJCAA
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgcARSSiEoAAAAAAAAAAAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -39,6 +39,7 @@ actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|var
 actions+=/call_action_list,name=aoe,if=active_enemies>3
 actions+=/call_action_list,name=ogcd
 actions+=/call_action_list,name=items
+actions+=/malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3
 actions+=/unstable_affliction,if=remains<5
 actions+=/agony,if=remains<5
 actions+=/corruption,if=remains<5
@@ -46,16 +47,15 @@ actions+=/siphon_life,if=remains<5
 actions+=/haunt
 actions+=/drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
 actions+=/shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
-actions+=/phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|!talent.summon_darkglare
+actions+=/phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time
 actions+=/vile_taint,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<2&cooldown.soul_rot.remains>=12
-actions+=/soul_rot,if=variable.ps_up&variable.vt_up|!talent.summon_darkglare
+actions+=/soul_rot,if=variable.vt_up&variable.ps_up
 actions+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
 actions+=/malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)
-actions+=/malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3
 actions+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3
 actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react
 actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
-actions+=/malefic_rapture,if=variable.cd_dots_up|dot.vile_taint_dot.ticking&soul_shard>1
+actions+=/malefic_rapture,if=variable.cd_dots_up|variable.vt_up&soul_shard>1
 actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
 actions+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4
 actions+=/drain_soul,if=buff.nightfall.react
