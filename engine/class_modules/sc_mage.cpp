@@ -1697,7 +1697,7 @@ public:
       }
       else
       {
-        p()->buffs.hyperthermia->execute( -1, p()->buffs.hyperthermia->DEFAULT_VALUE(), d );
+        p()->buffs.hyperthermia->execute( -1, buff_t::DEFAULT_VALUE(), d );
       }
     } );
   }
