@@ -1031,6 +1031,9 @@ void felguard_pet_t::init_base_stats()
 
   // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2022-10-02
   melee_attack->base_dd_multiplier *= 1.1;
+  // 2023-03-19 Last minute hotfix for 10.0.7
+  melee_attack->base_dd_multiplier *= 1.2;
+
   special_action = new axe_toss_t( this, "" );
 
   if ( o()->talents.soul_strike->ok() )
@@ -1589,6 +1592,8 @@ void vilefiend_t::init_base_stats()
   warlock_simple_pet_t::init_base_stats();
 
   melee_attack = new warlock_pet_melee_t( this, 2.0 );
+  melee_attack->base_dd_multiplier *= 1.3; // 2023-03-19 Last minute hotfix for 10.0.7
+
   special_ability = new headbutt_t( this );
 }
 
