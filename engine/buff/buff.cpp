@@ -1448,6 +1448,11 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
 
+      case P_TICK_TIME:
+        set_period( buff_period * ( 1.0 + effect.percent() ) );
+        sim->print_debug ( "{} tick time modified by {}%", *this, effect.base_value() );
+        break;
+
       case P_EFFECT_1:
         if ( default_value_effect_idx == 1 )
           apply_percent_effect_modifier( effect );
