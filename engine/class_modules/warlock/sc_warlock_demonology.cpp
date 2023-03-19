@@ -66,10 +66,21 @@ public:
 
 struct hand_of_guldan_t : public demonology_spell_t
 {
+  struct umbral_blaze_dot_t : public demonology_spell_t
+  {
+    umbral_blaze_dot_t( warlock_t* p ) : demonology_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
+    {
+      background = dual = true;
+      hasted_ticks = false;
+      base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
+    }
+  };
+
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
     timespan_t meteor_time;
+    umbral_blaze_dot_t* blaze;
 
     hog_impact_t( warlock_t* p )
       : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
@@ -78,6 +89,12 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       aoe = -1;
       dual = true;
+
+      if ( p->talents.umbral_blaze->ok() )
+      {
+        blaze = new umbral_blaze_dot_t( p );
+        add_child( blaze );
+      }
     }
 
     timespan_t travel_time() const override
@@ -126,7 +143,14 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }        
+        }
+
+        // Umbral Blaze only triggers on primary target
+        if ( p()->talents.umbral_blaze->ok() && rng().roll( p()->talents.umbral_blaze->effectN( 1 ).percent() ) )
+        {
+          blaze->execute_on_target( s->target );
+          p()->procs.umbral_blaze->occur();
+        }
       }
     }
   };
@@ -1341,6 +1365,7 @@ void warlock_t::init_procs_demonology()
   procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.hounds_of_war = get_proc( "hounds_of_war" );
+  procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );
