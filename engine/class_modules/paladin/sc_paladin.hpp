@@ -1113,18 +1113,6 @@ public:
     return am;
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = ab::composite_crit_chance();
-
-    if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
-    {
-      cc += p() -> buffs.avenging_wrath -> get_crit_bonus();
-    }
-
-    return cc;
-  }
-
   virtual double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = ab::composite_target_multiplier( t );

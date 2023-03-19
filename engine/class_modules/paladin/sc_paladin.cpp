@@ -2774,6 +2774,9 @@ double paladin_t::composite_spell_crit_chance() const
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
 
+  if ( buffs.avenging_wrath -> up() )
+    h += buffs.avenging_wrath -> get_crit_bonus();
+
   return h;
 }
 
@@ -2783,6 +2786,9 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( talents.holy_aegis->ok() )
     h += talents.holy_aegis->effectN( 1 ).percent();
+
+  if ( buffs.avenging_wrath -> up() )
+    h += buffs.avenging_wrath -> get_crit_bonus();
 
   return h;
 }
