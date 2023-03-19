@@ -78,7 +78,7 @@ void warlock_pet_t::create_buffs()
                              ->set_default_value_from_effect( 1 );
 
   buffs.festering_hatred = make_buff( this, "festering_hatred" )
-                               ->set_max_stack( o()->talents.immutable_hatred->effectN( 2 ).base_value() )
+                               ->set_max_stack( std::max( 1, as<int>( o()->talents.immutable_hatred->effectN( 2 ).base_value() ) ) )
                                ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                     {
                                       if ( cur == b->max_stack() )
@@ -703,6 +703,8 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
 
+    // 2023-03-19 On PTR2, Grimoire Felguard was benefitting from the Legion Strike effect as well
+    // If this is fixed, will need to disable this somehow on GFG
     if ( p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
       m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
 

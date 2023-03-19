@@ -338,7 +338,7 @@ public:
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
     player_talent_t hounds_of_war; // REMOVED in 10.0.7
-    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT - TODO
+    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT
     const spell_data_t* umbral_blaze_dot; // The actual DoT applied to the target
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
