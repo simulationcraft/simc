@@ -3630,8 +3630,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   }
 
   const std::string n = util::encode_html( p.name() );
-  if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.num_enemies > 1 ) ||
-       ( p.primary_role() == ROLE_TANK && sim.num_enemies > 1 ) )
+  if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.enemy_targets > 1 ) ||
+       ( p.primary_role() == ROLE_TANK && sim.enemy_targets > 1 ) )
   {
     os.printf( "\">%s&#160;:&#160;%.0f dps, %.0f dps to main target",
                n.c_str(),
