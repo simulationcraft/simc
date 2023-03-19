@@ -894,7 +894,7 @@ struct melee_t : public paladin_melee_attack_t
       weapon_multiplier = 0.0;
     }
 
-    affected_by.avenging_wrath = affected_by.crusade = affected_by.blessing_of_dawn = true;
+    affected_by.avenging_wrath = affected_by.crusade = true;
 
     if ( p->talents.seal_of_the_crusader->ok() )
     {
