@@ -10873,10 +10873,10 @@ void druid_t::init_uptimes()
 
   uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
-  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
-  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim )->collect_duration( *sim );
-  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim )->collect_duration( *sim );
+  uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
+  uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
