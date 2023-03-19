@@ -88,6 +88,8 @@ struct mage_td_t final : public actor_target_data_t
     buff_t* radiant_spark_vulnerability;
     buff_t* touch_of_the_magi;
     buff_t* winters_chill;
+
+    buff_t* charring_embers;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -321,6 +323,8 @@ public:
     // Set Bonuses
     buff_t* arcane_overload;
     buff_t* bursting_energy;
+
+    buff_t* volatile_flame;
 
     buff_t* touch_of_ice;
   } buffs;
@@ -1298,6 +1302,7 @@ struct mage_spell_t : public spell_t
     bool savant = false;
 
     bool arcane_overload = true;
+    bool charring_embers = true;
     bool touch_of_ice = true;
 
     // Misc
@@ -1322,6 +1327,8 @@ struct mage_spell_t : public spell_t
 
     target_trigger_type_e hot_streak = TT_NONE;
     target_trigger_type_e kindling = TT_NONE;
+
+    target_trigger_type_e volatile_flame = TT_NONE;
   } triggers;
 
   bool track_cd_waste;
@@ -1463,6 +1470,8 @@ public:
     {
       if ( affected_by.radiant_spark )
         m *= 1.0 + td->debuffs.radiant_spark_vulnerability->check_stack_value();
+      if ( affected_by.charring_embers )
+        m *= 1.0 + td->debuffs.charring_embers->check_value();
     }
 
     return m;
@@ -1592,6 +1601,9 @@ public:
 
     if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       p()->trigger_merged_buff( p()->buffs.fevered_incantation, s->result == RESULT_CRIT );
+
+    if ( tt_applicable( s, triggers.volatile_flame ) )
+      trigger_volatile_flame( s->target );
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -1662,6 +1674,32 @@ public:
     {
       counter->trigger( stacks );
     }
+  }
+
+  void trigger_volatile_flame( player_t* target )
+  {
+    auto td = p()->find_target_data( target );
+    if ( !td || !td->debuffs.charring_embers->check() )
+      return;
+
+    p()->buffs.volatile_flame->trigger();
+    if ( p()->buffs.volatile_flame->check() < p()->buffs.volatile_flame->max_stack() )
+      return;
+
+    p()->buffs.volatile_flame->expire();
+    // When a crit generates a Hot Streak, the Hyperthermia talent will trigger before Volatile Flame.
+    make_event( sim, 30_ms, [ this ]
+    {
+      timespan_t d = timespan_t::from_seconds( p()->sets->set( MAGE_FIRE, T30, B4 )->effectN( 1 ).base_value() );
+      if ( p()->buffs.hyperthermia->check() )
+      {
+        p()->buffs.hyperthermia->extend_duration( p(), d );
+      }
+      else
+      {
+        p()->buffs.hyperthermia->execute( -1, p()->buffs.hyperthermia->DEFAULT_VALUE(), d );
+      }
+    } );
   }
 };
 
@@ -2133,7 +2171,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void execute() override
   {
-    if ( time_to_execute > 0_ms && p()->buffs.sun_kings_blessing_ready->check() )
+    if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() && p()->buffs.sun_kings_blessing_ready->check() )
     {
       p()->buffs.sun_kings_blessing_ready->expire();
       p()->buffs.combustion->extend_duration_or_trigger( 1000 * p()->talents.sun_kings_blessing->effectN( 2 ).time_value() );
@@ -3532,6 +3570,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
+    triggers.volatile_flame = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
@@ -3861,6 +3900,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
+    triggers.volatile_flame = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->sets->set( MAGE_FROST, T30, B2 )->effectN( 1 ).percent();
@@ -3977,6 +4017,10 @@ struct frostbolt_t final : public frost_mage_spell_t
       trigger_cold_front( s->n_targets );
       consume_cold_front( s->target );
     }
+
+    // TODO: As of 2023-03-19, Frostbolt currently triggers Volatile Flame twice.
+    if ( p()->bugs && tt_applicable( s, triggers.volatile_flame ) )
+      trigger_volatile_flame( s->target );
   }
 
   void handle_procs()
@@ -4511,7 +4555,7 @@ struct fire_blast_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
@@ -4864,10 +4908,18 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     full_amount_targets = 1;
     background = triggers.ignite = true;
     callbacks = false;
-    triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      get_td( s->target )->debuffs.charring_embers->trigger();
   }
 };
 
@@ -4922,7 +4974,7 @@ struct pyroblast_t final : public hot_streak_spell_t
     hot_streak_spell_t( n, p, p->talents.pyroblast )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     base_execute_time *= 1.0 + p->talents.tempered_flames->effectN( 1 ).percent();
     base_crit += p->talents.tempered_flames->effectN( 2 ).percent();
@@ -4932,7 +4984,7 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     double am = hot_streak_spell_t::action_multiplier();
 
-    if ( time_to_execute > 0_ms )
+    if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() )
       am *= 1.0 + p()->buffs.pyroclasm->check_value();
 
     return am;
@@ -4955,7 +5007,7 @@ struct pyroblast_t final : public hot_streak_spell_t
   {
     hot_streak_spell_t::execute();
 
-    if ( time_to_execute > 0_ms )
+    if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() )
       p()->buffs.pyroclasm->decrement();
   }
 
@@ -5056,7 +5108,7 @@ struct scorch_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->talents.scorch )
   {
     parse_options( options_str );
-    triggers.hot_streak = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.volatile_flame = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     // There is a tiny delay between Scorch dealing damage and Hot Streak
     // state being updated. Here we model it as a tiny travel time.
@@ -5750,6 +5802,12 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   debuffs.touch_of_the_magi           = make_buff<buffs::touch_of_the_magi_t>( this );
   debuffs.winters_chill               = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
+
+  // Set Bonuses
+  debuffs.charring_embers = make_buff( *this, "charring_embers", mage->find_spell( 408665 ) )
+                              ->set_chance( mage->sets->has_set_bonus( MAGE_FIRE, T30, B2 ) )
+                              ->set_default_value_from_effect( 1 );
+
 }
 
 mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
@@ -6420,7 +6478,7 @@ void mage_t::create_buffs()
                                            buffs.flame_accelerant->trigger();
                                          else
                                            buffs.flame_accelerant->expire();
-                                      } );
+                                       } );
   buffs.heating_up               = make_buff( this, "heating_up", find_spell( 48107 ) );
   buffs.hot_streak               = make_buff( this, "hot_streak", find_spell( 48108 ) )
                                      ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
@@ -6495,6 +6553,9 @@ void mage_t::create_buffs()
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
+
+  buffs.volatile_flame = make_buff( this, "volatile_flame", find_spell( 408673 ) )
+                           ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
 
   buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
                          ->set_default_value_from_effect( 1 )

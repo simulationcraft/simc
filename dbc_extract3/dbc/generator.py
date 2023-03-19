@@ -1806,6 +1806,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
           ( 408763, 0 ),                            # Frost T30 2pc
+          ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
         ),
 
         # Warlock:
