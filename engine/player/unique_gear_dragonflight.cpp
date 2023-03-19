@@ -3431,7 +3431,9 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
       break;
     case PRIEST:
       driver_id = 408087;
-      break;      
+      break;
+    default:
+      return;
   }
 
   // Buff scaling is on the main trinket driver.
