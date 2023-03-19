@@ -1,0 +1,22 @@
+# Jom - Discipline - 2023-03-01 16:08 - US/Spinebreaker
+# SimC Addon 10.0.5-01
+# WoW 10.0.5.48317, TOC 100005
+# Requires SimulationCraft 1000-01 or newer
+debug=1
+use_item_verification=0
+html="jom.html"
+priest="Jom"
+source=default
+spec=holy
+level=70
+race=blood_elf
+role=spell
+position=ranged_back
+talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJJJJQEgSSSJAAAAgEohSSSSgIJBBFRSSCKA
+optimal_raid=0
+
+# RUN ACTIONS
+# actions+=/shadow_word_pain,if=!ticking
+actions+=/holy_fire
+actions+=/empyreal_blaze
+actions+=/smite
