@@ -1963,7 +1963,8 @@ class SpellDataGenerator(DataGenerator):
           ( 396168, 3 ), # Fury of Xuen Haste Buff
           ( 393048, 3 ), # Skyreach Debuff
           ( 393050, 3 ), # Skyreach Exxhaustion Debuff
-          ( 395414, 3 ), # Fae Exposure Buff / Debuff
+          ( 395413, 3 ), # Fae Exposure Healing Buff
+          ( 395414, 3 ), # Fae Exposure Damage Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
