@@ -5807,7 +5807,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.charring_embers = make_buff( *this, "charring_embers", mage->find_spell( 408665 ) )
                               ->set_chance( mage->sets->has_set_bonus( MAGE_FIRE, T30, B2 ) )
                               ->set_default_value_from_effect( 1 );
-
 }
 
 mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
