@@ -515,13 +515,8 @@ void priest_t::create_buffs_discipline()
                                ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
                                  if ( buffs.harsh_discipline->at_max_stacks() )
                                  {
-                                   // The stacks only expire when creating the harsh discipline ready buff, otherwise
-                                   // they persist at max
-                                   if ( !buffs.harsh_discipline_ready->up() )
-                                   {
-                                     buffs.harsh_discipline_ready->trigger();
-                                     buffs.harsh_discipline->expire();
-                                   }
+                                   buffs.harsh_discipline_ready->trigger();
+                                   buffs.harsh_discipline->expire();
                                  }
                                } );
 
