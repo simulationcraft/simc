@@ -415,7 +415,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<4" );
   aoe_setup->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.epidemic" );
 
-  aoe_burst->add_action( "epidemic,if=(!talent.bursting_sores|rune<1|talent.bursting_sores&debuff.festering_wound.stack=0)&!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30)", "AoE Burst" );
+  aoe_burst->add_action( "epidemic,if=(!talent.bursting_sores|rune<1|talent.bursting_sores&debuff.festering_wound.stack=0)&!variable.pooling_runic_power&(active_enemies>=6|runic_power.deficit<30|buff.festermight.stack=20)", "AoE Burst" );
   aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1" );
   aoe_burst->add_action( "epidemic,if=!variable.pooling_runic_power|fight_remains<10" );
   aoe_burst->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.epidemic" );
