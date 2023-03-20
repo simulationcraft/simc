@@ -3404,6 +3404,43 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+/**Winterpelt Totem
+ * id=398292 main cast
+ * id=398293 Winterpelt's Blessing buff (proc driver)
+ * id=398320 Winterpelt's Fury (damage)
+ * id=398322 damage coefficient
+ */
+void winterpelt_totem( special_effect_t& effect )
+{
+  struct winterpelts_fury_t : public generic_proc_t
+  {
+    winterpelts_fury_t( const special_effect_t& e ) :
+      generic_proc_t( e, "winterpelts_fury", 398320 )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 398322 )->effectN( 1 ).average( e.item );
+    }
+  };
+
+  auto blessing            = new special_effect_t( effect.player );
+  blessing->name_str       = "winterpelts_blessing_cb";
+  blessing->type           = SPECIAL_EFFECT_EQUIP;
+  blessing->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  blessing->spell_id       = 398293;
+  blessing->execute_action = create_proc_action<winterpelts_fury_t>( "winterpelts_fury", effect );
+  effect.player->special_effects.push_back( blessing );
+
+  auto blessing_cb = new dbc_proc_callback_t( effect.player, *blessing );
+  blessing_cb->initialize();
+  blessing_cb->deactivate();
+
+  auto buff = make_buff( effect.player, "winterpelts_blessing", blessing->driver() )
+                ->set_stack_change_callback( [ blessing_cb ] ( buff_t*, int, int new_ )
+                  { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void seething_black_dragonscale( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
@@ -4953,6 +4990,7 @@ void register_special_effects()
   register_special_effect( 383812, items::ruby_whelp_shell );
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
+  register_special_effect( 398292, items::winterpelt_totem );
   register_special_effect( 401468, items::seething_black_dragonscale );
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
 
