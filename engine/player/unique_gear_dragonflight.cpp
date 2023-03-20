@@ -4701,62 +4701,33 @@ void echoing_thunder_stone( special_effect_t& effect )
                       ->set_stack_change_callback( [ ready_buff ] ( buff_t*, int, int cur )
                         { if ( cur == 0 ) ready_buff->trigger(); } );
 
-  double movement_chance = effect.player->sim->dragonflight_opts.echoing_thunder_stone_movement_chance;
-  if ( movement_chance < 0.0 )
+  auto trigger_counter = [ p = effect.player, counter ]
   {
-    switch ( effect.player->specialization() )
-    {
-      case WARRIOR_ARMS:
-      case WARRIOR_FURY:
-      case WARRIOR_PROTECTION:
-      case PALADIN_HOLY:
-      case PALADIN_PROTECTION:
-      case PALADIN_RETRIBUTION:
-      case HUNTER_BEAST_MASTERY:
-      case ROGUE_ASSASSINATION:
-      case ROGUE_OUTLAW:
-      case ROGUE_SUBTLETY:
-      case DEATH_KNIGHT_BLOOD:
-      case DEATH_KNIGHT_FROST:
-      case DEATH_KNIGHT_UNHOLY:
-      case SHAMAN_ENHANCEMENT:
-      case MONK_BREWMASTER:
-      case MONK_MISTWEAVER:
-      case MONK_WINDWALKER:
-      case DRUID_FERAL:
-      case DRUID_GUARDIAN:
-      case DRUID_RESTORATION:
-      case DEMON_HUNTER_HAVOC:
-      case DEMON_HUNTER_VENGEANCE:
-        movement_chance = 1.0;
-        break;
-      default:
-        movement_chance = 0.5;
-        break;
-    }
-  }
+    // If these effects become common or more precise control is desired, this check should be moved to a virtual method in player_t.
+    bool can_move = !p->buffs.stunned->check();
+    if ( p->channeling && !p->channeling->usable_moving() )
+      can_move = false;
+    if ( p->executing && !p->executing->usable_moving() )
+      can_move = false;
 
-  // Each time the driver ticks, stacks of Rolling Thunder are applied if the player is moving.
-  // The base number of stacks is 4 and is modified by speed (seems to be rounded up from 3.5).
-  effect.player->register_combat_begin( [ movement_chance, effect, counter ]( player_t* p )
+    if ( can_move )
+    {
+      // Each time the driver ticks, stacks of Rolling Thunder are applied if the player is moving.
+      // The base number of stacks is 4 and is modified by speed (seems to be rounded up from 3.5).
+      // TODO: Check more data points to make sure this model is correct.
+      int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
+      counter->trigger( num_stacks );
+    }
+  };
+
+  effect.player->register_combat_begin( [ effect, trigger_counter ] ( player_t* p )
   {
     timespan_t period = effect.driver()->effectN( 1 ).period();
     timespan_t first_update = p->rng().real() * period;
-    make_event( p->sim, first_update, [ movement_chance, period, counter, p ]()
+    make_event( p->sim, first_update, [ p, period, trigger_counter ]
     {
-      if ( p->rng().roll( movement_chance ) )
-      {
-        int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
-        counter->trigger( num_stacks );
-      }
-      make_repeating_event( p->sim, period, [ movement_chance, counter, p ]()
-      {
-        if ( p->rng().roll( movement_chance ) )
-        {
-          int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
-          counter->trigger( num_stacks );
-        }
-      } );
+      trigger_counter();
+      make_repeating_event( p->sim, period, [ trigger_counter ] { trigger_counter(); } );
     } );
   } );
 
