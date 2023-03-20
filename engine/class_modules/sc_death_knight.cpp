@@ -9645,6 +9645,8 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.icy_talons );
 
   // Blood
+  if ( DEATH_KNIGHT_BLOOD )
+  {
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
@@ -9759,8 +9761,11 @@ void death_knight_t::create_buffs()
   buffs.voracious = make_buff( this, "voracious", spell.voracious_buff )
         -> set_trigger_spell( talent.blood.voracious )
         -> add_invalidate( CACHE_LEECH );
+  }
 
   // Frost
+  if( DEATH_KNIGHT_FROST )
+  {
   buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
 
   buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart -> effectN( 1 ).trigger() );
@@ -9839,8 +9844,11 @@ void death_knight_t::create_buffs()
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   buffs.wrath_of_the_frostwyrm = new wrath_of_the_frostwyrm_buff_t( this );
+  }
 
   // Unholy
+  if( DEATH_KNIGHT_UNHOLY )
+  {
   buffs.dark_transformation = new dark_transformation_buff_t( this );
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
@@ -9905,7 +9913,7 @@ void death_knight_t::create_buffs()
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
       -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_MASTERY );
-
+  }
 }
 
 // death_knight_t::init_gains ===============================================
