@@ -5859,12 +5859,10 @@ namespace monk
             return PROC2_CAST_HEAL;
           }
         };
-        bool blackout_combo;
         special_delivery_t *delivery;
 
         celestial_brew_t( monk_t &p, util::string_view options_str )
-          : monk_absorb_t( "celestial_brew", p, p.talent.brewmaster.celestial_brew ), delivery( new special_delivery_t( p ) ),
-            blackout_combo( false )
+          : monk_absorb_t( "celestial_brew", p, p.talent.brewmaster.celestial_brew ), delivery( new special_delivery_t( p ) )
         {
           parse_options( options_str );
           harmful = may_crit = false;
@@ -5891,7 +5889,6 @@ namespace monk
         void execute() override
         {
           if ( p()->buff.blackout_combo->up() ) {
-            blackout_combo = true;
             p()->buff.purified_chi->trigger( ( int )p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
             p()->proc.blackout_combo_celestial_brew->occur();
             p()->buff.blackout_combo->expire();
