@@ -4077,7 +4077,7 @@ struct army_of_the_dead_t final : public death_knight_spell_t
 
     if ( is_precombat )
     {
-      double MIN_TIME = 1.5; // the player's base unhasted gcd: 1.5s
+      double MIN_TIME = player -> base_gcd.total_seconds(); // the player's base unhasted gcd: 1.5s
       double MAX_TIME = 10; // Using 10s as highest value because it's the time to recover the rune cost of AOTD at 0 haste
 
       // Ensure that we're using a positive value
@@ -4773,19 +4773,22 @@ struct dark_transformation_buff_t final : public buff_t
   {
     set_default_value_from_effect( 1 );
     cooldown -> duration = 0_ms; // Handled by the player ability
-    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
+    if( p -> talent.unholy.ghoulish_frenzy.ok() )
     {
-      if ( new_ && p -> talent.unholy.ghoulish_frenzy.ok() )
+      set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
       {
-        p -> buffs.ghoulish_frenzy -> trigger();
-        debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> trigger();
-      }
-      else
-      {
-        p -> buffs.ghoulish_frenzy -> expire();
-        debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> expire();
-      }
-    } );
+        if ( new_ )
+        {
+          p -> buffs.ghoulish_frenzy -> trigger();
+          debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> trigger();
+        }
+        else
+        {
+          p -> buffs.ghoulish_frenzy -> expire();
+          debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> expire();
+        }
+      } );
+    }
   }
 };
 
@@ -5157,7 +5160,10 @@ struct death_coil_damage_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_da_multiplier( state );
 
-    m *= 1.0 + p() -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
+    if ( p() -> talent.unholy.improved_death_coil -> ok() )
+    {
+      m *= 1.0 + p() -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
+    }
 
     if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
@@ -5795,6 +5801,9 @@ struct festering_wound_t final : public death_knight_spell_t
     death_knight_spell_t( "festering_wound", p, p -> spell.festering_wound_damage )
   {
     background = true;
+
+    base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5813,16 +5822,6 @@ struct festering_wound_t final : public death_knight_spell_t
           p()->gains.replenishing_wounds, this );
     }
   }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = death_knight_spell_t::composite_da_multiplier( state );
-
-    m *= 1.0 + p() -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
-    m *= 1.0 + p() -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
-
-    return m;
-  }
 };
 
 struct festering_strike_t final : public death_knight_melee_attack_t
@@ -5831,6 +5830,8 @@ struct festering_strike_t final : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
   {
     parse_options( options_str );
+
+    base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -5865,8 +5866,6 @@ struct festering_strike_t final : public death_knight_melee_attack_t
     {
       m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
     }
-     
-    m *= 1.0 + p() -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
 
     return m;
   }
@@ -6009,6 +6008,8 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     background = special = true;
     weapon = w;
     triggers_icecap = true;
+
+    base_multiplier *= 1.0 + p -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -6019,8 +6020,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     {
       m *= 1.0 + p() -> talent.frost.shattering_blade -> effectN( 1 ).percent();
     }
-
-    m *= 1.0 + p() -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
 
     return m;
   }
@@ -6533,6 +6532,15 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     weapon = w;
     triggers_icecap = true;
 
+    base_multiplier *= 1.0 + p -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
+    base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
+          
+    if ( p -> spec.might_of_the_frozen_wastes -> ok() && p -> main_hand_weapon.group() == WEAPON_2H )
+    {
+      base_multiplier *= 1.0 + ( p -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() );
+    }
+
+
     // To support Cleaving strieks affecting Obliterate in Dragonflight:
     // - obliterate damage spells have gained a value of 1 in their chain target data
     // - the death and decay buff now has an effect that modifies obliterate's chain target with a value of 0
@@ -6563,18 +6571,6 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }    
-
-    m *= 1.0 + p() -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
-
-    if ( p() -> spec.might_of_the_frozen_wastes -> ok() && p() -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      m *= 1.0 + ( p() -> spec.might_of_the_frozen_wastes -> effectN( 1 ).percent() );
-    }
-
-    if ( p() -> talent.frost.frigid_executioner.ok() )
-    {
-      m *= 1.0 + p() -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
-    }
 
     return m;
   }
