@@ -99,6 +99,37 @@ struct holy_fire_t final : public priest_spell_t
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    sim->print_debug( "entering impact" );
+    if ( result_is_hit( s->result ) )
+    {
+      sim->print_debug( "its a hit" );
+      sim->print_debug( "chastise: {}, apparatus: {}", priest().talents.holy.holy_word_chastise.enabled(),
+                        priest().talents.holy.harmonious_apparatus.enabled() );
+      if ( priest().talents.holy.holy_word_chastise.enabled() && priest().talents.holy.harmonious_apparatus.enabled() )
+      {
+        sim->print_debug( "talents enabled" );
+        timespan_t chastise_cdr =
+            timespan_t::from_seconds( priest().talents.holy.harmonious_apparatus->effectN( 1 ).base_value() );
+        if ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() )
+        {
+          chastise_cdr *= ( 1 + priest().talents.holy.apotheosis->effectN( 1 ).percent() );
+        }
+        if ( priest().talents.holy.light_of_the_naaru.enabled() )
+        {
+          chastise_cdr *= ( 1 + priest().talents.holy.light_of_the_naaru->effectN( 1 ).percent() );
+        }
+        sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with harmonious_apparatus: {}, apotheosis: {}",
+                          priest(), chastise_cdr, priest().talents.holy.harmonious_apparatus.enabled(),
+                          ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
+
+        priest().cooldowns.holy_word_chastise->adjust( chastise_cdr );
+      }
+    }
+  }
 };
 
 struct holy_word_chastise_t final : public priest_spell_t
@@ -151,9 +182,9 @@ void priest_t::init_spells_holy()
   // Row 8
   talents.holy.apotheosis = ST( "Apotheosis" );
   // Row 9
-  talents.holy.burning_vehemence   = ST( "Burning Vehemence" );
-  talents.holy.harmonius_apparatus = ST( "Harmonius Apparatus" );
-  talents.holy.light_of_the_naaru  = ST( "Light of the Naaru" );
+  talents.holy.burning_vehemence    = ST( "Burning Vehemence" );
+  talents.holy.harmonious_apparatus = ST( "harmonious Apparatus" );
+  talents.holy.light_of_the_naaru   = ST( "Light of the Naaru" );
   // Row 10
   talents.holy.divine_word    = ST( "Divine Word" );
   talents.holy.divine_image   = ST( "Divine Image" );

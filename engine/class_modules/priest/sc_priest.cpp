@@ -616,15 +616,14 @@ struct smite_t final : public priest_spell_t
       if ( priest().talents.holy.holy_word_chastise.enabled() )
       {
         timespan_t chastise_cdr =
-            -timespan_t::from_seconds( priest().talents.holy.holy_word_chastise->effectN( 2 ).base_value() );
-
+            timespan_t::from_seconds( priest().talents.holy.holy_word_chastise->effectN( 2 ).base_value() );
         if ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() )
         {
-          chastise_cdr *= ( 100 + priest().talents.holy.apotheosis->effectN( 1 ).base_value() ) / 100.0;
+          chastise_cdr *= ( 1 + priest().talents.holy.apotheosis->effectN( 1 ).percent() );
         }
         if ( priest().talents.holy.light_of_the_naaru.enabled() )
         {
-          chastise_cdr *= ( 100 + priest().talents.holy.light_of_the_naaru->effectN( 1 ).base_value() ) / 100.0;
+          chastise_cdr *= ( 1 + priest().talents.holy.light_of_the_naaru->effectN( 1 ).percent() );
         }
         sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with apotheosis: {}, light_of_the_naaru: {}",
                           priest(), chastise_cdr, priest().talents.holy.light_of_the_naaru.enabled(),

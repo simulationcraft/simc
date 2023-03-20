@@ -12,11 +12,10 @@ level=70
 race=blood_elf
 role=spell
 position=ranged_back
-talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJJJJQEgSSSJAAAAgEohSSSSgIJBBFRSSCKA
+talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJhSaikkEAJIKJJlAAAAAAAAAAAAAA
 optimal_raid=0
 
 # RUN ACTIONS
 # actions+=/shadow_word_pain,if=!ticking
-actions+=/apotheosis
 actions+=/holy_word_chastise
-actions+=/smite
+actions+=/holy_fire

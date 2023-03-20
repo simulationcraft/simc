@@ -382,7 +382,7 @@ public:
       player_talent_t apotheosis;
       // Row 9
       player_talent_t burning_vehemence;
-      player_talent_t harmonius_apparatus;
+      player_talent_t harmonious_apparatus;
       player_talent_t light_of_the_naaru;
       // Row 10
       player_talent_t divine_word;
