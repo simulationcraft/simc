@@ -7494,7 +7494,7 @@ namespace monk
     passives.dizzying_kicks = find_spell( 196723 );
     passives.empowered_tiger_lightning = find_spell( 335913 );
     passives.fae_exposure_dmg = find_spell( 395414 );
-    passives.fae_exposure_heal = find_spell( 395414 );
+    passives.fae_exposure_heal = find_spell( 395413 );
     passives.faeline_stomp_ww_damage = find_spell( 327264 );
     passives.fists_of_fury_tick = find_spell( 117418 );
     passives.flying_serpent_kick_damage = find_spell( 123586 );
