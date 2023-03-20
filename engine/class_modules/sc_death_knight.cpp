@@ -5141,7 +5141,6 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
   {
     background = dual = true;
     may_miss = may_crit = false;
-    
   }
 };
 
