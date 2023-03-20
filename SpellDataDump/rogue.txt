@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
+SimulationCraft 1005-01 for World of Warcraft 10.0.7.48520 Live (hotfix 2023-03-18/48520)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -592,7 +592,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=622)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -913,10 +912,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=2042)     : Apply Aura (6) | Modify Casting Speed (216)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.53333 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.666666 -> 0.533333)
 #2 (id=806027)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.53333 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.666666 -> 0.533333)
 Description      : $@spelldesc5761
 Tooltip          : Attack and casting speed slowed by $s1%.
 
@@ -2173,7 +2170,7 @@ Effects          :
 Description      : $@spelldesc63268
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2193,7 +2190,7 @@ Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2214,7 +2211,7 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2507,7 +2504,7 @@ Effects          :
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
 Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -11240,7 +11237,6 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shiv (319504)
                    Family Flags: 91
-Hotfixed         : Base Value (-35 -> -30)
 Description      : Shiv also reduces the target's healing received by $S1% for $319504d.
 
 Name             : Drink Up Me Hearties (desc=PvP Talent) (id=354425) [Spell Family (8), Passive, Hidden] 
@@ -11488,10 +11484,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
 Effects          :
 #1 (id=894884)   : Apply Aura (6) | Modify Casting Speed (216)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.6 -> 0.48)
 #2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.6 -> 0.48)
 Description      : An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.
 Tooltip          : Casting slowed by $s1%.
 
@@ -15250,11 +15244,9 @@ Effects          :
 #3 (id=1045959)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value 2: 2352 (Label) | Target: Self (1)
                    Affected Spells (Label): Rupture (360826), Garrote (360830), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
-Hotfixed         : Base Value (-30 -> -50)
 #4 (id=1045960)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2352 (Label) | Target: Self (1)
                    Affected Spells (Label): Rupture (360826), Garrote (360830), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
-Hotfixed         : Base Value (-30 -> -50)
 Description      : $@spelldesc360194
 
 Name             : Reverberation (id=394332) [Spell Family (8), Passive] 
