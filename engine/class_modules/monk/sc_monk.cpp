@@ -3952,7 +3952,7 @@ namespace monk
         {
           monk_spell_t::execute();
 
-          // Buff occurs after the keg finishes travelling 
+          // Buff occurs after the keg finishes travelling
           p()->buff.exploding_keg->trigger();
         }
 
@@ -5492,7 +5492,7 @@ namespace monk
       {
         zen_pulse_heal_t *heal;
         zen_pulse_dmg_t( monk_t *player )
-          : monk_spell_t( "zen_pulse_damage", player, player->find_spell( 124081 ) ), 
+          : monk_spell_t( "zen_pulse_damage", player, player->find_spell( 124081 ) ),
             heal( new zen_pulse_heal_t( *player ) )
         {
           background  = true;
@@ -5859,11 +5859,12 @@ namespace monk
             return PROC2_CAST_HEAL;
           }
         };
-
+        bool blackout_combo;
         special_delivery_t *delivery;
 
         celestial_brew_t( monk_t &p, util::string_view options_str )
-          : monk_absorb_t( "celestial_brew", p, p.talent.brewmaster.celestial_brew ), delivery( new special_delivery_t( p ) )
+          : monk_absorb_t( "celestial_brew", p, p.talent.brewmaster.celestial_brew ), delivery( new special_delivery_t( p ) ),
+            blackout_combo( false )
         {
           parse_options( options_str );
           harmful = may_crit = false;
@@ -5889,6 +5890,13 @@ namespace monk
 
         void execute() override
         {
+          if ( p()->buff.blackout_combo->up() ) {
+            blackout_combo = true;
+            p()->buff.purified_chi->trigger( ( int )p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
+            p()->proc.blackout_combo_celestial_brew->occur();
+            p()->buff.blackout_combo->expire();
+          }
+
           monk_absorb_t::execute();
 
           p()->buff.purified_chi->expire();
@@ -5903,16 +5911,6 @@ namespace monk
 
           p()->buff.celestial_flames->trigger();
 
-          if ( p()->buff.blackout_combo->up() )
-          {
-            // Currently, Blackout Combo Celestial Brew is overriding any current Purifying Chi
-            if ( p()->bugs )
-              p()->buff.purified_chi->expire();
-
-            p()->buff.purified_chi->trigger( ( int )p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
-            p()->proc.blackout_combo_celestial_brew->occur();
-            p()->buff.blackout_combo->expire();
-          }
         }
       };
 
