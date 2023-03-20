@@ -4889,9 +4889,13 @@ namespace monk
           heal = new faeline_stomp_heal_t( p );
           ww_damage = new faeline_stomp_ww_damage_t( p );
 
+          if ( p.specialization() == MONK_WINDWALKER )
+          {
+            add_child( ww_damage );
+          }
+
           add_child( damage );
           add_child( heal );
-          add_child( ww_damage );
         }
 
         std::vector<player_t *> &target_list() const override
@@ -5042,6 +5046,7 @@ namespace monk
           parse_options( options_str );
 
           may_miss = false;
+          target   = &( p );
 
           dot_duration = p.talent.mistweaver.enveloping_mist->duration();
           if ( p.talent.mistweaver.mist_wrap )
@@ -5418,12 +5423,67 @@ namespace monk
       // Zen Pulse
       // ==========================================================================
 
+      struct zen_pulse_echo_heal_t : public monk_heal_t
+      {
+        zen_pulse_echo_heal_t( monk_t &p ) : monk_heal_t( "zen_pulse_echo_heal", p, p.passives.zen_pulse_echo_heal )
+        {
+          background = true;
+          target              = &( p );
+          trigger_gcd         = timespan_t::zero();
+        }
+
+        bool ready() override
+        {
+          if ( p()->talent.mistweaver.echoing_reverberation->ok() )
+            return monk_heal_t::ready();
+
+          return false;
+        }
+      };
+
+      struct zen_pulse_echo_dmg_t : public monk_spell_t
+      {
+        zen_pulse_echo_heal_t *heal;
+        zen_pulse_echo_dmg_t( monk_t *player )
+          : monk_spell_t( "zen_pulse_echo_damage", player, player->passives.zen_pulse_echo_damage )
+        {
+          background = true;
+          target      = player->target;
+          aoe         = -1;
+          trigger_gcd             = timespan_t::zero();
+//          spell_power_mod.direct = player->passives.zen_pulse_echo_damage->effectN( 2 ).sp_coeff();
+          spell_power_mod.tick    = 0;
+
+          heal = new zen_pulse_echo_heal_t( *player );
+        }
+
+        double cost() const override
+        {
+          return 0;
+        }
+
+        bool ready() override
+        {
+          if ( p()->talent.mistweaver.echoing_reverberation->ok() )
+            return monk_spell_t::ready();
+
+          return false;
+        }
+
+        void impact( action_state_t *s ) override
+        {
+          monk_spell_t::impact( s );
+
+          heal->execute();
+        }
+      };
+
       struct zen_pulse_heal_t : public monk_heal_t
       {
         zen_pulse_heal_t( monk_t &p ) : monk_heal_t( "zen_pulse_heal", p, p.passives.zen_pulse_heal )
         {
           background = true;
-          may_crit = may_miss = false;
+          trigger_gcd         = timespan_t::zero();
           target = &( p );
         }
       };
@@ -5431,20 +5491,27 @@ namespace monk
       struct zen_pulse_dmg_t : public monk_spell_t
       {
         zen_pulse_heal_t *heal;
-        zen_pulse_dmg_t( monk_t *player ) : monk_spell_t( "zen_pulse_damage", player, player->talent.mistweaver.zen_pulse )
+        zen_pulse_dmg_t( monk_t *player )
+          : monk_spell_t( "zen_pulse_damage", player, player->find_spell( 124081 ) ), 
+            heal( new zen_pulse_heal_t( *player ) )
         {
-          background = true;
-          aoe = -1;
+          background  = true;
+          target      = player->target;
+          trigger_gcd = timespan_t::zero();
+          aoe                     = -1;
+//          spell_power_mod.direct  = player->find_spell( 124081 )->effectN( 2 ).sp_coeff();
+          spell_power_mod.tick    = 0;
+        }
 
-          heal = new zen_pulse_heal_t( *player );
+        double cost() const override
+        {
+          return 0;
         }
 
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
 
-          heal->base_dd_min = s->result_amount;
-          heal->base_dd_max = s->result_amount;
           heal->execute();
         }
       };
@@ -5452,20 +5519,25 @@ namespace monk
       struct zen_pulse_t : public monk_spell_t
       {
         spell_t *damage;
-        zen_pulse_t( monk_t *player ) : monk_spell_t( "zen_pulse", player, player->talent.mistweaver.zen_pulse )
+        zen_pulse_echo_dmg_t *echo;
+        zen_pulse_t( monk_t *player, util::string_view options_str )
+          : monk_spell_t( "zen_pulse", player, player->talent.mistweaver.zen_pulse ),
+            damage( new zen_pulse_dmg_t( player ) ),
+            echo( new zen_pulse_echo_dmg_t( player ) )
         {
           may_miss = may_dodge = may_parry = false;
-          damage = new zen_pulse_dmg_t( player );
+
+          add_child( damage );
+          add_child( echo );
         }
 
         void execute() override
         {
           monk_spell_t::execute();
-
-          if ( result_is_miss( execute_state->result ) )
-            return;
-
           damage->execute();
+
+          if ( p()->get_dot( "enveloping_mist", p() )->is_ticking() )
+            echo->execute();
         }
       };
 
@@ -6780,6 +6852,8 @@ namespace monk
       return new revival_t( *this, options_str );
     if ( name == "thunder_focus_tea" )
       return new thunder_focus_tea_t( *this, options_str );
+    if ( name == "zen_pulse" )
+      return new zen_pulse_t( this, options_str );
 
     // Windwalker
     if ( name == "fists_of_fury" )
@@ -7226,7 +7300,7 @@ namespace monk
     talent.mistweaver.gift_of_the_celestials = _ST( "Gift of the Celestials" );
     talent.mistweaver.focused_thunder = _ST( "Focused Thunder" );
     talent.mistweaver.upwelling = _ST( "Upwelling" );
-    talent.mistweaver.bonedust_brew = _ST( "Bonedust Brew" );
+//    talent.mistweaver.bonedust_brew = _ST( "Bonedust Brew" );
     // Row 9
     talent.mistweaver.ancient_concordance = _ST( "Ancient Concordance" );
     talent.mistweaver.resplendent_mist = _ST( "Resplendent Mist" );
@@ -7406,6 +7480,8 @@ namespace monk
     passives.soothing_mist_statue = find_spell( 198533 );
     passives.spirit_of_the_crane = find_spell( 210803 );
     passives.zen_pulse_heal = find_spell( 198487 );
+    passives.zen_pulse_echo_damage = find_spell( 388609 );
+    passives.zen_pulse_echo_heal   = find_spell( 388668 );
 
     // Windwalker
     passives.bok_proc = find_spell( 116768 );
@@ -7475,7 +7551,7 @@ namespace monk
       _priority( talent.windwalker.attenuation, talent.brewmaster.attenuation, talent.mistweaver.attenuation );
 
     shared.bonedust_brew =
-      _priority( talent.windwalker.bonedust_brew, talent.brewmaster.bonedust_brew, talent.mistweaver.bonedust_brew );
+      _priority( talent.windwalker.bonedust_brew, talent.brewmaster.bonedust_brew );
 
     shared.bountiful_brew =
       _priority( talent.brewmaster.bountiful_brew, talent.mistweaver.bountiful_brew );
@@ -9199,7 +9275,7 @@ namespace monk
     double stagger_base = stagger_base_value();
     // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
     double k = dbc->armor_mitigation_constant( target_level );
-    k *= 1.992;  // Mythic Raid
+    k *= 1.384;  // Mythic Raid
 
     double stagger = stagger_base / ( stagger_base + k );
 
