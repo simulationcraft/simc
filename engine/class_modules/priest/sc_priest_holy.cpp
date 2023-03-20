@@ -60,6 +60,7 @@ struct holy_fire_t final : public priest_spell_t
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
+    apply_affecting_aura( p.talents.holy.burning_vehemence );
     if ( p.talents.holy.empyreal_blaze.enabled() )
     {
       dot_behavior = DOT_EXTEND;
