@@ -463,6 +463,7 @@ public:
 
     // Holy
     propagate_const<cooldown_t*> holy_fire;
+    propagate_const<cooldown_t*> holy_word_chastise;
   } cooldowns;
 
   struct realppm_t

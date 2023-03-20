@@ -27,7 +27,9 @@ struct apotheosis_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.apotheosis->trigger();
-    sim->print_debug( "{} starting Apotheosis. ", priest() );
+    sim->print_debug( "starting apotheosis. ", priest() );
+    priest().cooldowns.holy_word_chastise->reset( false );
+    sim->print_debug( "apotheosis reset holy_word_chastise cooldown. ", priest() );
   }
 };
 
@@ -121,12 +123,16 @@ struct holy_word_chastise_t final : public priest_spell_t
 
 void priest_t::create_buffs_holy()
 {
-  buffs.apotheosis = make_buff( this, "apotheosis", talents.holy.apotheosis );
-  buffs.empyreal_blaze =
-      make_buff( this, "empyreal_blaze", talents.holy.empyreal_blaze->effectN( 2 ).trigger() )
-          ->set_trigger_spell( talents.holy.empyreal_blaze )
-          ->set_reverse( true )
-          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) { cooldowns.holy_fire->reset( false ); } );
+  buffs.apotheosis     = make_buff( this, "apotheosis", talents.holy.apotheosis );
+  buffs.empyreal_blaze = make_buff( this, "empyreal_blaze", talents.holy.empyreal_blaze->effectN( 2 ).trigger() )
+                             ->set_trigger_spell( talents.holy.empyreal_blaze )
+                             ->set_reverse( true )
+                             ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+                               if ( new_ > 0 )
+                               {
+                                 cooldowns.holy_fire->reset( false );
+                               }
+                             } );
 }
 
 void priest_t::init_rng_holy()
@@ -137,7 +143,7 @@ void priest_t::init_spells_holy()
 {
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   // Row 2
-  talents.holy.holy_word_chastise = ST( "Holy Word Chastise" );
+  talents.holy.holy_word_chastise = ST( "Holy Word: Chastise" );
   // Row 3
   talents.holy.empyreal_blaze = ST( "Empyreal Blaze" );
   // Row 4

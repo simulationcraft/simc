@@ -17,6 +17,6 @@ optimal_raid=0
 
 # RUN ACTIONS
 # actions+=/shadow_word_pain,if=!ticking
-actions+=/holy_fire
-actions+=/empyreal_blaze
+actions+=/apotheosis
+actions+=/holy_word_chastise
 actions+=/smite

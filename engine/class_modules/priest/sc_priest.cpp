@@ -610,28 +610,29 @@ struct smite_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    // sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent.", priest() );
-    // auto cooldown_base_reduction = -timespan_t::from_seconds( holy_word_chastise->effectN( 2 ).base_value() );
-    // if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
-    // {
-    //   auto cd1 = cooldown_base_reduction * ( 100 + priest().talents.apotheosis->effectN( 1 ).base_value() ) / 100.0;
-    //   holy_word_chastise_cooldown->adjust( cd1 );
 
-    //   sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Apotheosis.", priest(), cd1 );
-    // }
-    // else if ( s->result_amount > 0 && priest().talents.light_of_the_naaru->ok() )
-    // {
-    //   auto cd2 =
-    //       cooldown_base_reduction * ( 100 + priest().talents.light_of_the_naaru->effectN( 1 ).base_value() ) / 100.0;
-    //   holy_word_chastise_cooldown->adjust( cd2 );
-    //   sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Light of the Naaru.", priest(), cd2 );
-    // }
-    // else if ( s->result_amount > 0 )
-    // {
-    //   holy_word_chastise_cooldown->adjust( cooldown_base_reduction );
-    //   sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis.", priest(),
-    //                     cooldown_base_reduction );
-    // }
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().talents.holy.holy_word_chastise.enabled() )
+      {
+        timespan_t chastise_cdr =
+            -timespan_t::from_seconds( priest().talents.holy.holy_word_chastise->effectN( 2 ).base_value() );
+
+        if ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() )
+        {
+          chastise_cdr *= ( 100 + priest().talents.holy.apotheosis->effectN( 1 ).base_value() ) / 100.0;
+        }
+        if ( priest().talents.holy.light_of_the_naaru.enabled() )
+        {
+          chastise_cdr *= ( 100 + priest().talents.holy.light_of_the_naaru->effectN( 1 ).base_value() ) / 100.0;
+        }
+        sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with apotheosis: {}, light_of_the_naaru: {}",
+                          priest(), chastise_cdr, priest().talents.holy.light_of_the_naaru.enabled(),
+                          ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
+
+        priest().cooldowns.holy_word_chastise->adjust( chastise_cdr );
+      }
+    }
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
       priest().buffs.harsh_discipline->trigger();
@@ -1561,6 +1562,7 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 void priest_t::create_cooldowns()
 {
   cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
   cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
@@ -2016,7 +2018,6 @@ void priest_t::init_spells()
   // DoT Spells
   dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
   dot_spells.vampiric_touch   = find_specialization_spell( "Vampiric Touch", PRIEST_SHADOW );
-  dot_spells.holy_fire        = find_specialization_spell( "Holy Fire", PRIEST_HOLY );
   dot_spells.devouring_plague = find_talent_spell( talent_tree::SPECIALIZATION, "Devouring Plague" );
 
   // Mastery Spells
