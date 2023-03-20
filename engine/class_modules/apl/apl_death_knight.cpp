@@ -394,13 +394,13 @@ void unholy( player_t* p )
   high_prio_actions->add_action( "army_of_the_dead,if=talent.summon_gargoyle&cooldown.summon_gargoyle.remains<2|!talent.summon_gargoyle|fight_remains<35" );
   high_prio_actions->add_action( "death_coil,if=(active_enemies<=3|!talent.epidemic)&(pet.gargoyle.active&talent.commander_of_the_dead&buff.commander_of_the_dead.up&cooldown.apocalypse.remains<5&buff.commander_of_the_dead.remains>26|debuff.death_rot.up&debuff.death_rot.remains<gcd)" );
   high_prio_actions->add_action( "epidemic,if=active_enemies>=4&(talent.commander_of_the_dead&buff.commander_of_the_dead.up&cooldown.apocalypse.remains<5|debuff.death_rot.up&debuff.death_rot.remains<gcd)" );
+  high_prio_actions->add_action( "wound_spender,if=(cooldown.apocalypse.remains>variable.apoc_timing+3|active_enemies>=3)&talent.plaguebringer&(talent.superstrain|talent.unholy_blight)&buff.plaguebringer.remains<gcd" );
   high_prio_actions->add_action( "unholy_blight,if=variable.st_planning&((!talent.apocalypse|cooldown.apocalypse.remains)&talent.morbidity|!talent.morbidity)|variable.adds_remain|fight_remains<21" );
   high_prio_actions->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever_superstrain.refreshable|dot.blood_plague_superstrain.refreshable))&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)+(talent.ebon_fever*2)))" );
-  high_prio_actions->add_action( "wound_spender,if=cooldown.apocalypse.remains>variable.apoc_timing+3&talent.plaguebringer&talent.superstrain&buff.plaguebringer.remains<gcd" );
 
   aoe_cooldowns->add_action( "vile_contagion,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3", "AoE Cooldowns" );
   aoe_cooldowns->add_action( "summon_gargoyle" );
-  aoe_cooldowns->add_action( "abomination_limb,if=rune<2|buff.festermight.stack>10" );
+  aoe_cooldowns->add_action( "abomination_limb,if=rune<2|buff.festermight.stack>10|!talent.festermight|buff.festermight.up&buff.festermight.remains<12" );
   aoe_cooldowns->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=talent.bursting_sores&debuff.festering_wound.up&(!death_and_decay.ticking&cooldown.death_and_decay.remains&rune<3|death_and_decay.ticking&rune=0)|!talent.bursting_sores&debuff.festering_wound.stack>=4" );
   aoe_cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=2|buff.dark_transformation.up" );
   aoe_cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
@@ -424,6 +424,7 @@ void unholy( player_t* p )
   aoe->add_action( "epidemic,if=!variable.pooling_runic_power|fight_remains<10", "Generic AoE" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds" );
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=!variable.pop_wounds" );
+  aoe->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.epidemic" );
 
   cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead.up", "ST/Cleave Cooldowns" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
