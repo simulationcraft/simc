@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.7.48520
-static const std::array<spelltext_data_t, 19486> __spelltext_data { {
+static const std::array<spelltext_data_t, 19489> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18034,12 +18034,14 @@ static const std::array<spelltext_data_t, 19486> __spelltext_data { {
   { 388593, "Allies targeted by Soothing Mist receive $s1% more healing from your Enveloping Mist and Renewing Mist effects.", 0, 0 },
   { 388603, "Your ranged spells and abilities have a chance to unleash a volley of pure decay, dealing up to ${$s2*$s1} Nature damage split between enemies hit and decreasing their movement speed by up to ${$393935s3*$s1}% for $393935d.", 0, 0 },
   { 388604, "Zen Pulse triggers a second time at $s1% effectiveness if cast on targets with Enveloping Mist.", 0, 0 },
+  { 388609, "Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of the target. The ally is healed for $388668s1 per enemy damaged.", 0, 0 },
   { 388615, "Heals all party and raid members within $A1 yds for $s1 and clears them of all harmful Poison and Disease effects. \r\n\r\nCastable while stunned.\r\n\r\nHealing increased by $s4% when not in a raid.", 0, 0 },
   { 388640, "Brush off the ice coating this fish.", 0, 0 },
   { 388661, "You gain $388663m1% haste for $388663d after summoning your Celestial. ", 0, 0 },
   { 388663, "$@spelldesc388661", "Haste increased by $w1%.", 0 },
   { 388664, "Reduces all damage taken by $s1%.", "Reduces all damage taken by $w1%.", 0 },
   { 388667, "$@spelldesc198590", 0, 0 },
+  { 388668, "$@spelldesc124081", 0, 0 },
   { 388674, "Increases all damage dealt by $s1%.", "Increases all damage dealt by $w1%.", 0 },
   { 388681, "Reduces all damage taken while channelling Soothing Mists by $s1%.", "Reduces all damage taken while channelling Soothing Mists by $s1%.", 0 },
   { 388682, "Renewing Mist's heal over time effect has a $s3% chance to proc Enveloping Mist for $s2 sec.", 0, 0 },
@@ -19071,6 +19073,7 @@ static const std::array<spelltext_data_t, 19486> __spelltext_data { {
   { 395349, "$@spelldesc192222", 0, 0 },
   { 395388, "Add the Thundering affix to a Mythic Keystone.", 0, 0 },
   { 395413, "$@spelldesc356705", "Healing taken from $@auracaster increased by $s1%", 0 },
+  { 395414, "$@spelldesc356705", "Damage taken from $@auracaster increased by $s1%", 0 },
   { 395422, "Generate full combo points when you gain Adrenaline Rush, and again when it ends.", 0, 0 },
   { 395424, "$@spelldesc395422", 0, 0 },
   { 395446, "Afflicting an enemy with a Sigil generates $m1 Lesser Soul $LFragment:Fragments;. ", 0, 0 },

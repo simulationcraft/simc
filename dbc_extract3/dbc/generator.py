@@ -1806,6 +1806,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
           ( 408763, 0 ),                            # Frost T30 2pc
+          ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
         ),
 
         # Warlock:
@@ -1938,6 +1939,8 @@ class SpellDataGenerator(DataGenerator):
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
+          ( 388609, 2 ), # Zen Pulse Echoing Reverberation Damage
+          ( 388668, 2 ), # Zen Pulse Echoing Reverberation Heal
 
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
@@ -1960,6 +1963,8 @@ class SpellDataGenerator(DataGenerator):
           ( 396168, 3 ), # Fury of Xuen Haste Buff
           ( 393048, 3 ), # Skyreach Debuff
           ( 393050, 3 ), # Skyreach Exxhaustion Debuff
+          ( 395413, 3 ), # Fae Exposure Healing Buff
+          ( 395414, 3 ), # Fae Exposure Damage Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage

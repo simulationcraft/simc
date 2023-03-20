@@ -3431,7 +3431,9 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
       break;
     case PRIEST:
       driver_id = 408087;
-      break;      
+      break;
+    default:
+      return;
   }
 
   // Buff scaling is on the main trinket driver.
@@ -4283,7 +4285,7 @@ enum primordial_stone_family_e
 
 primordial_stone_family_e get_stone_family( const special_effect_t& e )
 {
-  switch ( static_cast<primordial_stone_drivers_e>( e.driver()->id() ) )
+  switch ( e.driver()->id() )
   {
     case SPARKLING_MANA_STONE:
     case HUMMING_ARCANE_STONE:
@@ -4306,6 +4308,7 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case WIND_SCULPTED_STONE:
     case STORM_INFUSED_STONE:
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
     case WILD_SPIRIT_STONE:
     case PESTILENT_PLAGUE_STONE:
       return PRIMORDIAL_NATURE;
@@ -4698,18 +4701,33 @@ void echoing_thunder_stone( special_effect_t& effect )
                       ->set_stack_change_callback( [ ready_buff ] ( buff_t*, int, int cur )
                         { if ( cur == 0 ) ready_buff->trigger(); } );
 
-  // Each time the driver ticks, 4 stacks of Rolling Thunder are applied.
-  // If Rolling Thunder is not already active, the player must be moving
-  // when the tick occurs to gain the first 4 stacks.
-  // TODO: Add an option for chance to be moving?
-  effect.player->register_combat_begin( [ effect, counter ]( player_t* p )
+  auto trigger_counter = [ p = effect.player, counter ]
+  {
+    // If these effects become common or more precise control is desired, this check should be moved to a virtual method in player_t.
+    bool can_move = !p->buffs.stunned->check();
+    if ( p->channeling && !p->channeling->usable_moving() )
+      can_move = false;
+    if ( p->executing && !p->executing->usable_moving() )
+      can_move = false;
+
+    if ( can_move )
+    {
+      // Each time the driver ticks, stacks of Rolling Thunder are applied if the player is moving.
+      // The base number of stacks is 4 and is modified by speed (seems to be rounded up from 3.5).
+      // TODO: Check more data points to make sure this model is correct.
+      int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
+      counter->trigger( num_stacks );
+    }
+  };
+
+  effect.player->register_combat_begin( [ effect, trigger_counter ] ( player_t* p )
   {
     timespan_t period = effect.driver()->effectN( 1 ).period();
     timespan_t first_update = p->rng().real() * period;
-    make_event( p->sim, first_update, [ period, counter, p ]()
+    make_event( p->sim, first_update, [ p, period, trigger_counter ]
     {
-      counter->trigger( 4 );
-      make_repeating_event( p->sim, period, [ counter ](){ counter->trigger( 4 ); } );
+      trigger_counter();
+      make_repeating_event( p->sim, period, [ trigger_counter ] { trigger_counter(); } );
     } );
   } );
 

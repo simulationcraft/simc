@@ -338,7 +338,7 @@ public:
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
     player_talent_t hounds_of_war; // REMOVED in 10.0.7
-    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT - TODO
+    player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT
     const spell_data_t* umbral_blaze_dot; // The actual DoT applied to the target
 
     player_talent_t nether_portal; // TOCHECK: 2022-10-07 Portal summon damage is possibly slightly above current in-game values (~1% max), full audit needed closer to release
@@ -362,7 +362,7 @@ public:
     player_talent_t reign_of_tyranny; // Each summoned active pet gives stacks of Demonic Servitude. Tyrant snapshots this buff on summon for more damage
     const spell_data_t* demonic_servitude; // TOCHECK: 2022-10-09 - In addition to aura stack bugs, Nether Portal demons are not currently giving stacks in beta (not implemented)
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
-    player_talent_t immutable_hatred; // PLACEHOLDER - TODO
+    player_talent_t immutable_hatred;
     player_talent_t guillotine;
 
     // Destruction
@@ -626,6 +626,7 @@ public:
     proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
     proc_t* hounds_of_war;
+    proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
     proc_t* blazing_meteor; // T29 4pc
