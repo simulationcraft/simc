@@ -4327,6 +4327,7 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case SPARKLING_MANA_STONE:
     case HUMMING_ARCANE_STONE:
     case HARMONIC_MUSIC_STONE:
+    case OBSCURE_PASTEL_STONE:
       return PRIMORDIAL_ARCANE;
     case INDOMITABLE_EARTH_STONE:
     case SHINING_OBSIDIAN_STONE:
@@ -4353,7 +4354,6 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case DESIROUS_BLOOD_STONE:
       return PRIMORDIAL_NECROMANTIC;
     case SWIRLING_MOJO_STONE:
-    case OBSCURE_PASTEL_STONE:
     case PROPHETIC_TWILIGHT_STONE:
       return PRIMORDIAL_SHADOW;
     default:
