@@ -9783,6 +9783,8 @@ void death_knight_t::create_buffs()
       ->add_invalidate( CACHE_STRENGTH )
       ->set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
           {
+            // Right now it is impossible to refresh Pillar of Frost. If it is refreshed though, Enduring Strength builder, as well as Pillar's Bonus strength expire
+	    // If enduring strength builder expires in a refresh, trigger the strength buff with the duration of the builder added as it was when pillar was refreshed.
             if ( !new_ || buffs.pillar_of_frost -> up() )
             {
                 buffs.pillar_of_frost_bonus -> expire();
