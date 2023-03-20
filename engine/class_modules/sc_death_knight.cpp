@@ -5141,6 +5141,7 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
   {
     background = dual = true;
     may_miss = may_crit = false;
+    
   }
 };
 
@@ -5149,6 +5150,13 @@ struct death_coil_damage_t final : public death_knight_spell_t
   death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p -> spell.death_coil_damage ), coil_of_devastation( nullptr )
   {
     background = dual = true;
+
+    base_multiplier *= 1.0 + p -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
+
+    if ( p -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
+    }
 
     if ( p -> talent.unholy.coil_of_devastation.ok() )
     {
@@ -5160,11 +5168,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_da_multiplier( state );
 
-    if ( p() -> talent.unholy.improved_death_coil -> ok() )
-    {
-      m *= 1.0 + p() -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
-    }
-
     if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
       m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
@@ -5173,11 +5176,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
     if ( p() -> talent.unholy.harbinger_of_doom.ok() && p() -> buffs.sudden_doom -> check() )
     {
       m *= 1.0 + p() -> talent.unholy.harbinger_of_doom -> effectN( 3 ).percent() * p() -> buffs.sudden_doom -> stack();
-    }
-
-    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
-    {
-      m *= 1.0 + p() -> spell.unholy_t30_2pc_values -> effectN( 1 ).percent();
     }
 
     return m;
