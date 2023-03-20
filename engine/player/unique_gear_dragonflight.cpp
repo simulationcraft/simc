@@ -4285,7 +4285,7 @@ enum primordial_stone_family_e
 
 primordial_stone_family_e get_stone_family( const special_effect_t& e )
 {
-  switch ( static_cast<primordial_stone_drivers_e>( e.driver()->id() ) )
+  switch ( e.driver()->id() )
   {
     case SPARKLING_MANA_STONE:
     case HUMMING_ARCANE_STONE:
@@ -4308,6 +4308,7 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case WIND_SCULPTED_STONE:
     case STORM_INFUSED_STONE:
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
     case WILD_SPIRIT_STONE:
     case PESTILENT_PLAGUE_STONE:
       return PRIMORDIAL_NATURE;
@@ -4700,18 +4701,62 @@ void echoing_thunder_stone( special_effect_t& effect )
                       ->set_stack_change_callback( [ ready_buff ] ( buff_t*, int, int cur )
                         { if ( cur == 0 ) ready_buff->trigger(); } );
 
-  // Each time the driver ticks, 4 stacks of Rolling Thunder are applied.
-  // If Rolling Thunder is not already active, the player must be moving
-  // when the tick occurs to gain the first 4 stacks.
-  // TODO: Add an option for chance to be moving?
-  effect.player->register_combat_begin( [ effect, counter ]( player_t* p )
+  double movement_chance = effect.player->sim->dragonflight_opts.echoing_thunder_stone_movement_chance;
+  if ( movement_chance < 0.0 )
+  {
+    switch ( effect.player->specialization() )
+    {
+      case WARRIOR_ARMS:
+      case WARRIOR_FURY:
+      case WARRIOR_PROTECTION:
+      case PALADIN_HOLY:
+      case PALADIN_PROTECTION:
+      case PALADIN_RETRIBUTION:
+      case HUNTER_BEAST_MASTERY:
+      case ROGUE_ASSASSINATION:
+      case ROGUE_OUTLAW:
+      case ROGUE_SUBTLETY:
+      case DEATH_KNIGHT_BLOOD:
+      case DEATH_KNIGHT_FROST:
+      case DEATH_KNIGHT_UNHOLY:
+      case SHAMAN_ENHANCEMENT:
+      case MONK_BREWMASTER:
+      case MONK_MISTWEAVER:
+      case MONK_WINDWALKER:
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+      case DRUID_RESTORATION:
+      case DEMON_HUNTER_HAVOC:
+      case DEMON_HUNTER_VENGEANCE:
+        movement_chance = 1.0;
+        break;
+      default:
+        movement_chance = 0.5;
+        break;
+    }
+  }
+
+  // Each time the driver ticks, stacks of Rolling Thunder are applied if the player is moving.
+  // The base number of stacks is 4 and is modified by speed (seems to be rounded up from 3.5).
+  effect.player->register_combat_begin( [ movement_chance, effect, counter ]( player_t* p )
   {
     timespan_t period = effect.driver()->effectN( 1 ).period();
     timespan_t first_update = p->rng().real() * period;
-    make_event( p->sim, first_update, [ period, counter, p ]()
+    make_event( p->sim, first_update, [ movement_chance, period, counter, p ]()
     {
-      counter->trigger( 4 );
-      make_repeating_event( p->sim, period, [ counter ](){ counter->trigger( 4 ); } );
+      if ( p->rng().roll( movement_chance ) )
+      {
+        int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
+        counter->trigger( num_stacks );
+      }
+      make_repeating_event( p->sim, period, [ movement_chance, counter, p ]()
+      {
+        if ( p->rng().roll( movement_chance ) )
+        {
+          int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
+          counter->trigger( num_stacks );
+        }
+      } );
     } );
   } );
 

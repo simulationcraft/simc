@@ -506,6 +506,8 @@ struct sim_t : private sc_thread_t
     double blue_silken_lining_uptime = 0.7;
     // Interval between checking blue_silken_lining_uptime
     timespan_t blue_silken_lining_update_interval = 5_s;
+    // Chance to be moving on each tick for Echoing Thunder Stone (negative values fallback to a spec-specific default)
+    double echoing_thunder_stone_movement_chance = -1.0;
   } dragonflight_opts;
 
   // Auras and De-Buffs

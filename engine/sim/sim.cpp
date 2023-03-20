@@ -3922,6 +3922,7 @@ void sim_t::create_options()
   add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
   add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_float( "dragonflight.echoing_thunder_stone_movement_chance", dragonflight_opts.echoing_thunder_stone_movement_chance, -1.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================
