@@ -2506,14 +2506,19 @@ namespace monk
           return am;
         }
 
+        void execute() override
+        {
+          monk_melee_attack_t::execute();
+
+          if ( rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
+            p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.open_palm_strikes->effectN( 3 ).base_value(), p()->gain.open_palm_strikes );
+        }
+
         void impact( action_state_t *s ) override
         {
           monk_melee_attack_t::impact( s );
 
           p()->buff.chi_energy->trigger();
-
-          if ( rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
-            p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.open_palm_strikes->effectN( 3 ).base_value(), p()->gain.open_palm_strikes );
         }
       };
 
