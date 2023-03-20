@@ -3952,7 +3952,7 @@ namespace monk
         {
           monk_spell_t::execute();
 
-          // Buff occurs after the keg finishes travelling 
+          // Buff occurs after the keg finishes travelling
           p()->buff.exploding_keg->trigger();
         }
 
@@ -5492,7 +5492,7 @@ namespace monk
       {
         zen_pulse_heal_t *heal;
         zen_pulse_dmg_t( monk_t *player )
-          : monk_spell_t( "zen_pulse_damage", player, player->find_spell( 124081 ) ), 
+          : monk_spell_t( "zen_pulse_damage", player, player->find_spell( 124081 ) ),
             heal( new zen_pulse_heal_t( *player ) )
         {
           background  = true;
@@ -9665,7 +9665,6 @@ namespace monk
 
       // Add bugs / issues with sims here:
       ReportIssue( "Faeline Stomp WW damage hits 6 targets ( Tooltip: 5 )", "2023-02-21", true );
-      ReportIssue( "Blackout Combo Celestial Brew is overriding any current Purifying Chi", "2023-02-21", true );
       ReportIssue( "Fortifying Brew provides 20% HP ( Tooltip: 15% )", "2023-02-21", true );
       ReportIssue( "Fortifying Brew: Determination provides 17.39% HP ( Tooltip: 20% )", "2023-02-21", true );
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
