@@ -35,6 +35,7 @@ struct mental_fortitude_t;
 struct expiation_t;
 struct purge_the_wicked_t;
 struct holy_fire_t;
+struct burning_vehemence_t;
 }  // namespace actions::spells
 
 /**
@@ -382,6 +383,7 @@ public:
       player_talent_t apotheosis;
       // Row 9
       player_talent_t burning_vehemence;
+      const spell_data_t* burning_vehemence_damage;
       player_talent_t harmonious_apparatus;
       player_talent_t light_of_the_naaru;
       // Row 10
@@ -547,6 +549,7 @@ public:
     propagate_const<actions::spells::expiation_t*> expiation;
     propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
     propagate_const<actions::spells::holy_fire_t*> holy_fire;
+    propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
   } background_actions;
 
   // Items

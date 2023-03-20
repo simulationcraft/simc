@@ -17,5 +17,5 @@ optimal_raid=0
 
 # RUN ACTIONS
 # actions+=/shadow_word_pain,if=!ticking
-actions+=/holy_word_chastise
+# actions+=/holy_word_chastise
 actions+=/holy_fire

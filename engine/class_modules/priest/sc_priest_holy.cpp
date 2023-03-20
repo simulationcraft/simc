@@ -51,19 +51,50 @@ struct empyreal_blaze_t final : public priest_spell_t
   }
 };
 
+struct burning_vehemence_t final : public priest_spell_t
+{
+  burning_vehemence_t( priest_t& p ) : priest_spell_t( "burning_vehemence", p, p.talents.holy.burning_vehemence_damage )
+  {
+    background          = true;
+    dual                = true;
+    may_crit            = false;
+    may_miss            = false;
+    aoe                 = -1;
+    reduced_aoe_targets = priest().talents.holy.burning_vehemence_damage->effectN( 2 ).base_value();
+    base_multiplier     = priest().talents.holy.burning_vehemence->effectN( 3 ).percent();
+  }
+  void trigger( double initial_hit_damage )
+  {
+    double bv_damage = initial_hit_damage * base_multiplier;
+    sim->print_debug(
+        "burning_vehemence splash damage calculating: initial holy_fire hit: {}, multiplier: {}, result: {}",
+        initial_hit_damage, base_multiplier, bv_damage );
+    base_dd_min = base_dd_max = bv_damage;
+    execute();
+  }
+};
+
 struct holy_fire_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
+  propagate_const<burning_vehemence_t*> child_burning_vehemence;
 
   holy_fire_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
+      child_burning_vehemence( nullptr )
   {
     parse_options( options_str );
     apply_affecting_aura( p.talents.holy.burning_vehemence );
     if ( p.talents.holy.empyreal_blaze.enabled() )
     {
       dot_behavior = DOT_EXTEND;
+    }
+    if ( priest().talents.holy.burning_vehemence.enabled() )
+    {
+      child_burning_vehemence             = new burning_vehemence_t( priest() );
+      child_burning_vehemence->background = true;
+      add_child( child_burning_vehemence );
     }
   }
 
@@ -104,15 +135,10 @@ struct holy_fire_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    sim->print_debug( "entering impact" );
     if ( result_is_hit( s->result ) )
     {
-      sim->print_debug( "its a hit" );
-      sim->print_debug( "chastise: {}, apparatus: {}", priest().talents.holy.holy_word_chastise.enabled(),
-                        priest().talents.holy.harmonious_apparatus.enabled() );
       if ( priest().talents.holy.holy_word_chastise.enabled() && priest().talents.holy.harmonious_apparatus.enabled() )
       {
-        sim->print_debug( "talents enabled" );
         timespan_t chastise_cdr =
             timespan_t::from_seconds( priest().talents.holy.harmonious_apparatus->effectN( 1 ).base_value() );
         if ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() )
@@ -129,6 +155,11 @@ struct holy_fire_t final : public priest_spell_t
 
         priest().cooldowns.holy_word_chastise->adjust( chastise_cdr );
       }
+    }
+
+    if ( child_burning_vehemence )
+    {
+      child_burning_vehemence->trigger( s->result_amount );
     }
   }
 };
@@ -183,9 +214,10 @@ void priest_t::init_spells_holy()
   // Row 8
   talents.holy.apotheosis = ST( "Apotheosis" );
   // Row 9
-  talents.holy.burning_vehemence    = ST( "Burning Vehemence" );
-  talents.holy.harmonious_apparatus = ST( "harmonious Apparatus" );
-  talents.holy.light_of_the_naaru   = ST( "Light of the Naaru" );
+  talents.holy.burning_vehemence        = ST( "Burning Vehemence" );
+  talents.holy.burning_vehemence_damage = find_spell( 400370 );
+  talents.holy.harmonious_apparatus     = ST( "harmonious Apparatus" );
+  talents.holy.light_of_the_naaru       = ST( "Light of the Naaru" );
   // Row 10
   talents.holy.divine_word    = ST( "Divine Word" );
   talents.holy.divine_image   = ST( "Divine Image" );
