@@ -4534,6 +4534,7 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
+// TODO: Damage split?
 struct searing_smokey_stone_t : public damage_stone_t
 {
   searing_smokey_stone_t( const special_effect_t &e ) :
