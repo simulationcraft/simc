@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.7.48676
-static const std::array<spelltext_data_t, 19490> __spelltext_data { {
+static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19490,6 +19490,7 @@ static const std::array<spelltext_data_t, 19490> __spelltext_data { {
   { 408459, "Holy Power abilities have a $s1% chance to make your next Holy Power ability free and deal $408458s2% increased damage and healing.", 0, 0 },
   { 409439, "When you cast $s1 Holy Power generating abilities, you gain Blessing of Dawn. When you consume Blessing of Dawn, you gain Blessing of Dusk.\r\n\r\n$@spellicon385127$@spellname385127\r\n$@spelldesc385127\r\n\r\n$@spellicon385126$@spellname385126\r\n$@spelldesc385126\r\n", 0, 0 },
   { 409441, "When you cast $s1 Holy Power generating abilities, you gain Blessing of Dawn. When you consume Blessing of Dawn, you gain Blessing of Dusk.\r\n\r\n$@spellicon385127$@spellname385127\r\n$@spelldesc385127\r\n\r\n$@spellicon385126$@spellname385126\r\n$@spelldesc385126\r\n", 0, 0 },
+  { 409451, "Create a piece of Crimson Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.0.7.48676
