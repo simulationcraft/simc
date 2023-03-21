@@ -19181,8 +19181,8 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   { 398118, "Warmed, removing the effects of $@spellname396050\r\nAny attempt to apply $@spellicon396050$@spellname396050 will instead remove one stack of $@spellname398118.\r\n\r\n\r\n$@spellicon396050$@spellname396050:\r\n$@spellaura396050.", "Warmed, removing the effects of $@spellicon396050 $@spellname396050.\r\n\r\nAny attempt to apply $@spellicon396050 $@spellname396050 will instead remove one stack of $@spellname398118.", 0 },
   { 398250, "Your spells and abilities have a low chance to call forth a Winterpelt Defender to fight by your side for $398252d.", 0, 0 },
   { 398292, "Summons a Winterpelt totem at the target location for $d. Party members within $s2 yards have a high chance to deal $398322s1 bonus Nature damage when dealing a harmful spell or ability.\r\n\r\nThe bonus damage is increased if the affected ally is a furbolg.", 0, 0 },
-  { 398293, "$@spelldesc398292", "Your harmful spells and abilities deal an additional $w1 Nature damage, increased if aura wearer is a Furbolg.", 0 },
-  { 398320, "Deal $w1 Nature damage to your current target.", 0, 0 },
+  { 398293, "$@spelldesc398292", "Your harmful spells and abilities deal an additional $398322w1 Nature damage, increased if aura wearer is a Furbolg.", 0 },
+  { 398320, "Deal $398322s1 Nature damage to your current target.", 0, 0 },
   { 398393, "Smash the totem into an ally's wound, briefly stunning them and Healing them for $s1.\r\n\r\nOnly usable outdoors.", 0, 0 },
   { 398396, "$@spelldesc386578", 0, 0 },
   { 398453, "$@spelldesc396918  If you spend at least 10 seconds eating, you will become well fed, increasing all secondary stats by $398458s1 and growing in size.", 0, 0 },
@@ -19494,8 +19494,10 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.7.48676
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
   {  184575,  0, "$?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $?s403826[$404358s1][$s1] $?s403665[Holy][Physical] damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.|r", "$?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $?s403826[$404358s1][$s1] Holy damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.|r" },
+  {  398293,  1, "Your harmful spells and abilities deal an additional $w1 Nature damage, increased if aura wearer is a Furbolg.", "Your harmful spells and abilities deal an additional $398322w1 Nature damage, increased if aura wearer is a Furbolg." },
+  {  398320,  0, "Deal $w1 Nature damage to your current target.", "Deal $398322s1 Nature damage to your current target." },
   {  403826,  0, "Blade of Justice now hits nearby enemies for $404358s1 Physical damage. \r\n\r\nDeals reduced damage beyond 5 targets.", "Blade of Justice now hits nearby enemies for $404358s1 Holy damage. \r\n\r\nDeals reduced damage beyond 5 targets." },
   {  404358,  0, "Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 $?s403665[Holy][Physical] damage.\r\n\r\nDeals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFGenerates $184575s2 Holy Power.|r\r\n", "Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 Holy damage.\r\n\r\nDeals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFGenerates $184575s2 Holy Power.|r\r\n" },
   {  404542,  0, "Crusader Strike replaces your auto-attacks and deals $408385s1 $?403664[Holystrike][Physical] damage, but now only generates $s4 Holy Power every $s3 attacks.\r\n\r\nInherits Crusader Strike benefits but cannot benefit from Windufry.", "Crusader Strike replaces your auto-attacks and deals $408385s1 $?403664[Holystrike][Physical] damage, but now only generates $s4 Holy Power every $s3 attacks.\r\n\r\nInherits Crusader Strike benefits but cannot benefit from Windfury." },
