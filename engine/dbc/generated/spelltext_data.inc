@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.7.48520
-static const std::array<spelltext_data_t, 19491> __spelltext_data { {
+// Spell text, wow build 10.0.7.48676
+static const std::array<spelltext_data_t, 19490> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16839,7 +16839,6 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
-  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -19493,7 +19492,7 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   { 409441, "When you cast $s1 Holy Power generating abilities, you gain Blessing of Dawn. When you consume Blessing of Dawn, you gain Blessing of Dusk.\r\n\r\n$@spellicon385127$@spellname385127\r\n$@spelldesc385127\r\n\r\n$@spellicon385126$@spellname385126\r\n$@spelldesc385126\r\n", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.7.48520
+// spelltext hotfix entries, wow build 10.0.7.48676
 static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {  184575,  0, "$?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $?s403826[$404358s1][$s1] $?s403665[Holy][Physical] damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.|r", "$?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $?s403826[$404358s1][$s1] Holy damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.|r" },
   {  403826,  0, "Blade of Justice now hits nearby enemies for $404358s1 Physical damage. \r\n\r\nDeals reduced damage beyond 5 targets.", "Blade of Justice now hits nearby enemies for $404358s1 Holy damage. \r\n\r\nDeals reduced damage beyond 5 targets." },
@@ -19501,7 +19500,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix
   {  404542,  0, "Crusader Strike replaces your auto-attacks and deals $408385s1 $?403664[Holystrike][Physical] damage, but now only generates $s4 Holy Power every $s3 attacks.\r\n\r\nInherits Crusader Strike benefits but cannot benefit from Windufry.", "Crusader Strike replaces your auto-attacks and deals $408385s1 $?403664[Holystrike][Physical] damage, but now only generates $s4 Holy Power every $s3 attacks.\r\n\r\nInherits Crusader Strike benefits but cannot benefit from Windfury." },
 } };
 
-// Spell description variables, wow build 10.0.7.48520
+// Spell description variables, wow build 10.0.7.48676
 static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19879,7 +19878,7 @@ static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.7.48520
+// spelldesc_vars hotfix entries, wow build 10.0.7.48676
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
