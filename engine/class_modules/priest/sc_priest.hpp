@@ -128,6 +128,8 @@ public:
     // Holy
     propagate_const<buff_t*> apotheosis;
     propagate_const<buff_t*> empyreal_blaze;
+    propagate_const<buff_t*> divine_word;
+    propagate_const<buff_t*> divine_favor_chastise;
 
     // Shadow
     propagate_const<buff_t*> dispersion;
@@ -388,6 +390,7 @@ public:
       player_talent_t light_of_the_naaru;
       // Row 10
       player_talent_t divine_word;
+      const spell_data_t* divine_favor_chastise;
       player_talent_t divine_image;
       player_talent_t miracle_worker;
     } holy;
@@ -533,6 +536,7 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
+    propagate_const<proc_t*> divine_favor_chastise;
   } procs;
 
   // Special
@@ -660,6 +664,7 @@ private:
 
   void init_background_actions_shadow();
   void init_background_actions_discipline();
+  void init_background_actions_holy();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
   action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 
@@ -828,6 +833,7 @@ public:
     // HOLY BUFF EFFECTS
     if ( p().specialization() == PRIEST_HOLY )
     {
+      parse_buff_effects( p().buffs.divine_favor_chastise );
     }
 
     // PTR BUFF EFFECTS

@@ -32,6 +32,23 @@ struct apotheosis_t final : public priest_spell_t
     sim->print_debug( "apotheosis reset holy_word_chastise cooldown. ", priest() );
   }
 };
+struct divine_word_t final : public priest_spell_t
+{
+  divine_word_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "divine_word", p, p.talents.holy.divine_word )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.divine_word->trigger();
+    sim->print_debug( "starting divine_word." );
+  }
+};
 
 struct empyreal_blaze_t final : public priest_spell_t
 {
@@ -79,12 +96,11 @@ struct holy_fire_t final : public priest_spell_t
   timespan_t manipulation_cdr;
   propagate_const<burning_vehemence_t*> child_burning_vehemence;
 
-  holy_fire_t( priest_t& p, util::string_view options_str )
+  holy_fire_t( priest_t& p )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       child_burning_vehemence( nullptr )
   {
-    parse_options( options_str );
     apply_affecting_aura( p.talents.holy.burning_vehemence );
     if ( p.talents.holy.empyreal_blaze.enabled() )
     {
@@ -180,13 +196,35 @@ struct holy_word_chastise_t final : public priest_spell_t
 
     return priest_spell_t::cost();
   }
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+    if ( priest().buffs.divine_word->check() )
+    {
+      d *= 1.0 + priest().buffs.divine_word->data().effectN( 1 ).percent();
+      sim->print_debug( "divine_favor increasing holy_word_chastise damage by {}, total: {}",
+                        priest().buffs.divine_word->data().effectN( 1 ).percent(), d );
+    }
+    return d;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    if ( priest().buffs.divine_word->check() )
+    {
+      priest().buffs.divine_word->expire();
+      priest().buffs.divine_favor_chastise->trigger();
+    }
+  }
 };
 
 }  // namespace actions::spells
 
 void priest_t::create_buffs_holy()
 {
-  buffs.apotheosis     = make_buff( this, "apotheosis", talents.holy.apotheosis );
+  buffs.apotheosis = make_buff( this, "apotheosis", talents.holy.apotheosis );
+
   buffs.empyreal_blaze = make_buff( this, "empyreal_blaze", talents.holy.empyreal_blaze->effectN( 2 ).trigger() )
                              ->set_trigger_spell( talents.holy.empyreal_blaze )
                              ->set_reverse( true )
@@ -196,6 +234,9 @@ void priest_t::create_buffs_holy()
                                  cooldowns.holy_fire->reset( false );
                                }
                              } );
+
+  buffs.divine_word           = make_buff( this, "divine_word", talents.holy.divine_word );
+  buffs.divine_favor_chastise = make_buff( this, "divine_favor_chastise", talents.holy.divine_favor_chastise );
 }
 
 void priest_t::init_rng_holy()
@@ -219,9 +260,10 @@ void priest_t::init_spells_holy()
   talents.holy.harmonious_apparatus     = ST( "harmonious Apparatus" );
   talents.holy.light_of_the_naaru       = ST( "Light of the Naaru" );
   // Row 10
-  talents.holy.divine_word    = ST( "Divine Word" );
-  talents.holy.divine_image   = ST( "Divine Image" );
-  talents.holy.miracle_worker = ST( "Miracle Worker" );
+  talents.holy.divine_word           = ST( "Divine Word" );
+  talents.holy.divine_favor_chastise = find_spell( 372761 );
+  talents.holy.divine_image          = ST( "Divine Image" );
+  talents.holy.miracle_worker        = ST( "Miracle Worker" );
 
   // General Spells
   specs.holy_fire = find_specialization_spell( "Holy Fire" );
@@ -233,7 +275,7 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
 
   if ( name == "holy_fire" )
   {
-    return new holy_fire_t( *this, options_str );
+    return new holy_fire_t( *this );
   }
 
   if ( name == "apotheosis" )
@@ -249,8 +291,17 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new empyreal_blaze_t( *this, options_str );
   }
+  if ( name == "divine_word" )
+  {
+    return new divine_word_t( *this, options_str );
+  }
 
   return nullptr;
+}
+
+void priest_t::init_background_actions_holy()
+{
+  background_actions.holy_fire = new actions::spells::holy_fire_t( *this );
 }
 
 expr_t* priest_t::create_expression_holy( action_t*, util::string_view /*name_str*/ )

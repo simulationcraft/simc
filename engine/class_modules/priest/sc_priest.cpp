@@ -530,14 +530,20 @@ struct smite_t final : public priest_spell_t
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
+  propagate_const<holy_fire_t*> child_holy_fire;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
-      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() )
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
+      child_holy_fire( nullptr )
   {
     parse_options( options_str );
+    if ( priest().talents.holy.divine_word.enabled() )
+    {
+      child_holy_fire = priest().background_actions.holy_fire;
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -604,6 +610,13 @@ struct smite_t final : public priest_spell_t
     if ( priest().talents.discipline.train_of_thought.enabled() )
     {
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
+    }
+    // If we have divine word, have triggered divine favor: chastise, and proc the holy fire effect
+    if ( priest().talents.holy.divine_word.enabled() && priest().buffs.divine_favor_chastise->check() &&
+         rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) )
+    {
+      priest().procs.divine_favor_chastise->occur();
+      child_holy_fire->execute();
     }
   }
 
@@ -1628,6 +1641,7 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.divine_favor_chastise          = get_proc( "Divine Favor: Chastise procs holy fire" );
 }
 
 /** Construct priest benefits */
@@ -2166,6 +2180,7 @@ void priest_t::init_background_actions()
 
   init_background_actions_shadow();
   init_background_actions_discipline();
+  init_background_actions_holy();
 }
 
 void priest_t::do_dynamic_regen( bool forced )
