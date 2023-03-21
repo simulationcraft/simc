@@ -4283,7 +4283,7 @@ enum primordial_stone_drivers_e
   ECHOING_THUNDER_STONE    = 402929,
   FLAME_LICKED_STONE       = 402930,
   RAGING_MAGMA_STONE       = 402931, // NYI (requires getting hit, damage)
-  SEARING_SMOKEY_STONE     = 402932, // NYI (procs on interrupts)
+  SEARING_SMOKEY_STONE     = 402932,
   ENTROPIC_FEL_STONE       = 402934,
   INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
   SHINING_OBSIDIAN_STONE   = 402936, // no absorbs are implemented to trigger this
@@ -4381,6 +4381,8 @@ action_t* find_primordial_stone_action( player_t* player, primordial_stone_drive
       return player->find_action( "pestilent_plague_stone" );
     case DESIROUS_BLOOD_STONE:
       return player->find_action( "desirous_blood_stone" );
+    case SEARING_SMOKEY_STONE:
+      return player->find_action( "searing_smokey_stone" );
 
     // healing stones
     case DELUGING_WATER_STONE:
@@ -4532,6 +4534,16 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
+struct searing_smokey_stone_t : public damage_stone_t
+{
+  searing_smokey_stone_t( const special_effect_t &e ) :
+    damage_stone_t( e, "searing_smokey_stone", 403257 )
+  {
+    auto driver = e.player->find_spell( SEARING_SMOKEY_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
+  }
+};
+
 // TODO: Healing?
 struct desirous_blood_stone_t : public damage_stone_t
 {
@@ -4673,6 +4685,8 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
       return new pestilent_plague_stone_t( effect );
     case DESIROUS_BLOOD_STONE:
       return new desirous_blood_stone_t( effect );
+    case SEARING_SMOKEY_STONE:
+      return new searing_smokey_stone_t( effect );
 
     // healing stones
     case DELUGING_WATER_STONE:
@@ -4805,6 +4819,14 @@ void flame_licked_stone( special_effect_t& effect )
 void freezing_ice_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, FREEZING_ICE_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void searing_smokey_stone( special_effect_t &effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, SEARING_SMOKEY_STONE );
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5035,6 +5057,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::HUMMING_ARCANE_STONE,   primordial_stones::humming_arcane_stone );
   register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE, primordial_stones::shining_obsidian_stone );
   register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,   primordial_stones::obscure_pastel_stone );
+  register_special_effect( primordial_stones::SEARING_SMOKEY_STONE,   primordial_stones::searing_smokey_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,     DISABLED_EFFECT ); // Necessary for other gems to find the driver.
 
   // Disabled
