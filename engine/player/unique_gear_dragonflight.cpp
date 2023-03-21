@@ -3433,12 +3433,9 @@ void winterpelt_totem( special_effect_t& effect )
   blessing_cb->initialize();
   blessing_cb->deactivate();
 
-  auto buff = make_buff( effect.player, "winterpelts_blessing", blessing->driver() )
-                ->set_stack_change_callback( [ blessing_cb ] ( buff_t*, int, int new_ )
-                  { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
-
-  effect.custom_buff = buff;
-  new dbc_proc_callback_t( effect.player, effect );
+  effect.custom_buff = make_buff( effect.player, "winterpelts_blessing", blessing->driver() )
+                         ->set_stack_change_callback( [ blessing_cb ] ( buff_t*, int, int new_ )
+                           { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
 }
 
 void seething_black_dragonscale( special_effect_t& effect )
