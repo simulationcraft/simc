@@ -4409,10 +4409,11 @@ struct breath_of_sindragosa_buff_t : public buff_t
       // Currently use the player's target which is the first non invulnerable, active enemy found.
       player_t* bos_target = p -> target;
 
-      // On cast execute damage for no cost
+      // On cast execute damage for no cost, and generate runes
       if ( this -> current_tick == 0 )
       {
         bos_damage -> execute_on_target( bos_target );
+        p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
         return;
       }
 
@@ -4449,17 +4450,25 @@ struct breath_of_sindragosa_buff_t : public buff_t
       bos_damage -> execute_on_target( bos_target );
 
     } );
-    // Breath regenerates 2 runes on start, and end
-    set_stack_change_callback( [ this, p ] ( buff_t*, int, int new_ ) 
-    {
-      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
-    } );
   }
 
   // Breath of Sindragosa always ticks every one second, not affected by haste
   timespan_t tick_time() const override
   {
     return tick_period;
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+
+    if ( ! p -> sim -> event_mgr.canceled )
+    {
+      // BoS generates 2 runes when it expires
+      p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
+    }
   }
 private:
     propagate_const<action_t*> bos_damage;
