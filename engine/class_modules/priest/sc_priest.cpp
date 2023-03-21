@@ -542,7 +542,8 @@ struct smite_t final : public priest_spell_t
     parse_options( options_str );
     if ( priest().talents.holy.divine_word.enabled() )
     {
-      child_holy_fire = priest().background_actions.holy_fire;
+      child_holy_fire             = priest().background_actions.holy_fire;
+      child_holy_fire->background = true;
     }
   }
 
