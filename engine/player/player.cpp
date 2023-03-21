@@ -11125,7 +11125,6 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "block_chance" )
     return make_fn_expr( expression_str, [ this ] { return cache.block(); } );
 
-
   if ( expression_str == "position_front" )
     return std::make_unique<position_expr_t>( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
   if ( expression_str == "position_back" )
