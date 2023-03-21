@@ -4812,6 +4812,7 @@ void freezing_ice_stone( special_effect_t& effect )
 void storm_infused_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, STORM_INFUSED_STONE );
+  effect.proc_flags2_ = PF2_CRIT;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
