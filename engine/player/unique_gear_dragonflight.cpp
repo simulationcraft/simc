@@ -4534,11 +4534,10 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
-// TODO: Damage split?
-struct searing_smokey_stone_t : public damage_stone_t
+struct searing_smokey_stone_t : public generic_aoe_proc_t
 {
   searing_smokey_stone_t( const special_effect_t &e ) :
-    damage_stone_t( e, "searing_smokey_stone", 403257 )
+    generic_aoe_proc_t( e, "searing_smokey_stone", 403257 )
   {
     auto driver = e.player->find_spell( SEARING_SMOKEY_STONE );
     base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
