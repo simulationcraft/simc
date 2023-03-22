@@ -1874,10 +1874,12 @@ struct pyre_t : public essence_spell_t
       if ( p()->buff.essence_burst->up() )
       {
         p()->cooldown.fire_breath->adjust( ftf_dur_eb );
+        p()->cooldown.eternity_surge->adjust( ftf_dur_eb );
       }
       else
       {
         p()->cooldown.fire_breath->adjust( ftf_dur );
+        p()->cooldown.eternity_surge->adjust( ftf_dur );
       }
     }
 
@@ -2257,7 +2259,7 @@ void evoker_t::init_spells()
   talent.charged_blast               = ST( "Charged Blast" );
   talent.shattering_star             = ST( "Shattering Star" );
   talent.snapfire                    = ST( "Snapfire" );  // Row 8
-  talent.raging_inferno              = ST( "raging_inferno" );
+  talent.raging_inferno              = ST( "Raging Inferno" );
   talent.font_of_magic               = ST( "Font of Magic" );
   talent.onyx_legacy                 = ST( "Onyx Legacy" );
   talent.spellweavers_dominance      = ST( "Spellweaver's Dominance" );

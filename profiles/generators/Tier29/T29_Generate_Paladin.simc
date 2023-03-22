@@ -6,7 +6,7 @@ server=valdrakken
 role=tank
 spec=protection
 
-talents=BIEAwtJ2KpR8WbGzhz/jy2AP80iSikikiIJhSTSChESAAAAAAAAAAAAAAARSSaCSSUSRkEloEA
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKSKIJhSTSChESAAACAAAAAAAACJJEIJRSKSkkAAiAAQgA
 
 head=,id=200417,bonus_id=4800/4786/1498,gem_id=192919
 neck=,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
@@ -34,7 +34,7 @@ level=70
 race=dark_iron_dwarf
 role=attack
 position=back
-talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgIKplkIBkkkWKJJRJAAAAAAACRSSaJBJINJJJloEA
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjkWkkWSAAAAAAAEBJJFBSQkSESCpkmAJiQIKNaBA
 
 head=virtuous_silver_heaume,id=200417,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498/6935/6935/6935,gem_id=192948/192948/192948

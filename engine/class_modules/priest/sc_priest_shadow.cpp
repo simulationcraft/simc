@@ -320,7 +320,6 @@ struct mind_flay_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-
 private:
   propagate_const<action_t*> _base_spell;
   propagate_const<action_t*> _insanity_spell;
@@ -718,10 +717,7 @@ public:
         }
         else
         {
-          if ( !priest().bugs || !priest().options.as_insanity_bug )
-          {
-            priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
-          }
+          priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
         }
       }
 
@@ -788,13 +784,6 @@ public:
     proc->occur();
 
     schedule_execute( s );
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1081
-    if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug &&
-         !priest().is_ptr() )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
-    }
   }
 };
 
@@ -1658,14 +1647,6 @@ struct void_eruption_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
-
-    // BUG: on beta this is hitting 4 times instead of 2 on your main target, not sure why
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/963
-    if ( priest().bugs && s->target == parent_dot->target && !priest().is_ptr() )
-    {
-      priest_spell_t::impact( s );
-      priest_spell_t::impact( s );
-    }
   }
 };
 
@@ -1902,7 +1883,8 @@ struct psychic_link_t final : public priest_spell_t
       _pl_mindgames( new psychic_link_base_t( "psychic_link_mindgames", p, p.talents.shadow.psychic_link ) ),
       _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
-          _pl_shadow_word_death( new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
+      _pl_shadow_word_death(
+          new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -2494,7 +2476,7 @@ void priest_t::create_buffs_shadow()
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                              ->set_max_stack( 5 );
 
-  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1  ).trigger() )
+  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
@@ -2525,7 +2507,6 @@ void priest_t::create_buffs_shadow()
       make_buff<stat_buff_t>( this, "dark_reveries", sets->set( PRIEST_SHADOW, T29, B4 )->effectN( 1 ).trigger() )
           ->add_invalidate( CACHE_HASTE )
           ->set_default_value_from_effect( 1 );
-
 
   // TODO: Wire up spell data, split into helper function.
   buffs.t30_4pc =
@@ -2565,7 +2546,6 @@ void priest_t::create_buffs_shadow()
                 {
                   pet_spawner.spawn( duration );
                 }
-
               } );
             }
           } );

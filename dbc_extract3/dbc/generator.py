@@ -1389,8 +1389,13 @@ class SpellDataGenerator(DataGenerator):
          # 10.0.7
          403094, 403170, # Echoing Thunder Stone buffs
          405209, # Humming Arcane Stone
+         398293, 398320, # Winterpelt Totem
          # 10.1.0
          408791, # Ashkandur
+         408089, # Idol of Debilitating Arrogance Death Knight
+         408090, # Idol of Debilitating Arrogance Druid?
+         408042, # Idol of Debilitating Arrogance Rogue?
+         408087, # Idol of Debilitating Arrogance Priest
         ),
 
         # Warrior:
@@ -1801,6 +1806,8 @@ class SpellDataGenerator(DataGenerator):
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
+          ( 408763, 0 ),                            # Frost T30 2pc
+          ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
         ),
 
         # Warlock:
@@ -1898,6 +1905,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387409, 0 ),    # Madness Chaos Bolt aura
           ( 387413, 0 ),    # Madness Rain of Fire aura
           ( 387414, 0 ),    # Madness Shadowburn aura
+          ( 405681, 0 ),    # Immutable Hatred Damage Proc
         ),
 
         # Monk:
@@ -1932,6 +1940,8 @@ class SpellDataGenerator(DataGenerator):
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
+          ( 388609, 2 ), # Zen Pulse Echoing Reverberation Damage
+          ( 388668, 2 ), # Zen Pulse Echoing Reverberation Heal
 
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
@@ -1954,6 +1964,8 @@ class SpellDataGenerator(DataGenerator):
           ( 396168, 3 ), # Fury of Xuen Haste Buff
           ( 393048, 3 ), # Skyreach Debuff
           ( 393050, 3 ), # Skyreach Exxhaustion Debuff
+          ( 395413, 3 ), # Fae Exposure Healing Buff
+          ( 395414, 3 ), # Fae Exposure Damage Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
@@ -2149,6 +2161,7 @@ class SpellDataGenerator(DataGenerator):
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate

@@ -31,7 +31,7 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEQiIRSSSSSSa5AAAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIhkIJJJJJplAAAAAAAAAAAAA
 
 head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
 neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
@@ -58,7 +58,7 @@ level=70
 race=troll
 role=attack
 position=back
-talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJJBSAJJRIJSSSkAAAAAAAAAAKJJhIAAgEpkIRSSikA
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
 
 head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
 neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
