@@ -4,10 +4,9 @@ race=tauren
 spec=elemental
 role=spell
 position=ranged_back
-talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSp0SCgDkUSShSUikQOAAAAAAAUCQKJBEFiIJJtUC0SSAA
-# https://www.wowhead.com/beta/talent-calc/shaman/elemental/DARBFRBAFBEYolhFCEQQCAUOVRRRFFSZVBggQQDEAA
+talents=BYQAu3fz4tp2ZikXIAdNeR+oLAAAAAAgUSpUSCAJlkUoEOgkkEBAAAAAoEgIJgkCOQJJplSAJJJAC
+# https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFEFBFBJSJJREJBRCAQNVRRRVFSJVAoQUDAAA
 
-# TODO: First attempt at creating a profile
 head=faceguard_of_infused_earth,id=200399,bonus_id=8780,ilevel=424,gem_id=192985
 neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=7935,ilevel=421,gem_id=192948/192948/192948
 shoulders=calderas_of_infused_earth,id=200401,ilevel=424
