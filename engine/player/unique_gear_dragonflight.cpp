@@ -4374,6 +4374,7 @@ primordial_stone_type_e get_stone_type( const special_effect_t& e )
   {
     case STORM_INFUSED_STONE:
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
     case FLAME_LICKED_STONE:
     case SHINING_OBSIDIAN_STONE:
     case FREEZING_ICE_STONE:
@@ -4817,24 +4818,22 @@ void echoing_thunder_stone( special_effect_t& effect )
 {
   struct uncontainable_charge_cb_t : public primordial_stone_cb_t
   {
-    action_t* damage;
     buff_t* ready_buff;
 
-    uncontainable_charge_cb_t( const special_effect_t& e, action_t* d, buff_t* b ) :
-      primordial_stone_cb_t( e.player, e ), damage( d ), ready_buff ( b )
+    uncontainable_charge_cb_t( const special_effect_t& e, buff_t* b ) :
+      primordial_stone_cb_t( e.player, e ), ready_buff ( b )
     {}
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t* a, action_state_t* s ) override
     {
       if ( s->target->is_sleeping() )
         return;
 
-      damage->execute_on_target( s->target );
+      primordial_stone_cb_t::execute( a, s );
+
       ready_buff->expire();
     }
   };
-
-  auto damage = create_primordial_stone_action( effect, ECHOING_THUNDER_STONE );
 
   auto ready_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 403170 ) );
   auto counter    = create_buff<buff_t>( effect.player, effect.player->find_spell( 403094 ) )
@@ -4873,7 +4872,8 @@ void echoing_thunder_stone( special_effect_t& effect )
   } );
 
   effect.spell_id = 403170;
-  auto cb = new uncontainable_charge_cb_t( effect, damage, ready_buff );
+  effect.execute_action = create_primordial_stone_action( effect, ECHOING_THUNDER_STONE );
+  auto cb = new uncontainable_charge_cb_t( effect, ready_buff );
   cb->initialize();
   cb->deactivate();
 
