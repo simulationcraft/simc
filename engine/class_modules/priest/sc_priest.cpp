@@ -2352,7 +2352,6 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   add_option( opt_bool( "priest.screams_bug", options.priest_screams_bug ) );
   add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
-  add_option( opt_bool( "priest.as_insanity_bug", options.as_insanity_bug ) );
   add_option( opt_bool( "priest.t30_multiple_bender", options.t30_multiple_bender ) );
   add_option( opt_bool( "priest.t30_yshaarj", options.t30_yshaarj ) );
 }
