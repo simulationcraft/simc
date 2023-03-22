@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48661
-static const std::array<spelltext_data_t, 19779> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19784> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16827,6 +16827,7 @@ static const std::array<spelltext_data_t, 19779> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
+  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -19718,7 +19719,11 @@ static const std::array<spelltext_data_t, 19779> __ptr_spelltext_data { {
   { 408770, "$@spelldesc408667", "At $u stacks, gain one charge of Dragonfire Bomb Dispenser.", 0 },
   { 408790, "Your auto-attacks have a low chance to strike again with violent purpose, dealing $s1 Shadowflame damage. This damage is doubled against Humanoids.", 0, 0 },
   { 408791, "$@speldesc408790", 0, 0 },
+  { 408815, "Syphon heat from nearby enemies dealing $s1 Fire damage to them. Grow and you next attacks do a wave of lava damage.", 0, 0 },
   { 408821, "Ignite the Elder Flame to siphon the heat from nearby enemies, dealing $403545s1 Fire damage to them and causing your melee abilities to unleash waves of ancient lava, dealing $403545s2 Fire damage split between all enemies struck for [10 seconds].", 0, 0 },
+  { 408832, "Syphon heat from nearby enemies dealing $s1 Fire damage to them. Grow and you next attacks do a wave of lava damage.", 0, 0 },
+  { 408835, 0, "Your next melee ability will emit a burst of lava in front of you, dealing $403545w2  bonus Fire damage.", 0 },
+  { 408836, "$@spelldesc403545", 0, 0 },
   { 408903, "$@spelldesc408625", 0, 0 },
   { 408915, "Throw a Magma Serpent Lure at the target location. After $408913s2 seconds a magma serpent emerges, dealing ${($408913s3/$408913s2)*$408913s1} Fire damage over $408913s3 sec split between all enemies.", 0, 0 },
   { 408983, "$@spelldesc408607", "$pri increased by $w1.", 0 },

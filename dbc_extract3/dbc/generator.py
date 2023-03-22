@@ -1396,6 +1396,7 @@ class SpellDataGenerator(DataGenerator):
          408090, # Idol of Debilitating Arrogance Druid?
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
+         408815, 408832, 408835, 408836, # Djaruun
         ),
 
         # Warrior:
