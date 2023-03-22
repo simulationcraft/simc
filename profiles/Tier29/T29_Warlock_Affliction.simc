@@ -2,10 +2,10 @@ warlock="T29_Warlock_Affliction"
 source=default
 spec=affliction
 level=70
-race=orc
+race=mechagnome
 role=spell
 position=ranged_back
-talents=BkQAAAAAAAAAAAAAAAAAAAAAAgcARSSiEoAAAAAAAAAAAAAAAAAAAAAAA
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
