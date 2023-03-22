@@ -1943,27 +1943,32 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   /*
     10.0 values here
     Level 70 Base/open world: 11766.000 (Level 70 Armor mitigation constants (K-values))
-    Level 70 M0/M+: 12824.94 (ExpectedStatModID: 216; ArmorConstMod: 1.09)
-    Vault of the Incarnates LFR: 13083.792 (ExpectedStatModID: 212; ArmorConstMod: 1.112)
-    Vault of the Incarnates Normal: 14025.072 (ExpectedStatModID: 213; ArmorConstMod: 1.192)
-    Vault of the Incarnates Heroic: 15084.012 (ExpectedStatModID: 214; ArmorConstMod: 1.282)
-    Vault of the Incarnates Mythic: 16284.144 (ExpectedStatModID: 215; ArmorConstMod: 1.384)
+    Level 70 M0/M+: 12,824.94039274908 (ExpectedStatModID: 216; ArmorConstMod: 1.09000003338)
+    Vault of the Incarnates LFR: 13,083.79186539696 (ExpectedStatModID: 212; ArmorConstMod: 1.11199998856)
+    Vault of the Incarnates Normal: 14,025.07237027602 (ExpectedStatModID: 213; ArmorConstMod: 1.19200003147)
+    Vault of the Incarnates Heroic: 15,084.01136040024 (ExpectedStatModID: 214; ArmorConstMod: 1.28199994564)
+    Vault of the Incarnates Mythic: 16,284.14333792718 (ExpectedStatModID: 215; ArmorConstMod: 1.38399994373)
+    Level 70 Season 2 M0/M+: 14,742.79824685068 (ExpectedStatModID: 234; ArmorConstMod: 1.25300002098)
+    Aberrus, the Shadowed Crucible LFR: 15,084.01136040024 (ExpectedStatModID: 214; ArmorConstMod: 1.28199994564)
+    Aberrus, the Shadowed Crucible Normal: 16,284.14333792718 (ExpectedStatModID: 215; ArmorConstMod: 1.38399994373)
+    Aberrus, the Shadowed Crucible Heroic: 17,625.4683029745 (ExpectedStatModID: 227; ArmorConstMod: 1.49800002575)
+    Aberrus, the Shadowed Crucible Mythic: 19,155.04824685068 (ExpectedStatModID: 228; ArmorConstMod: 1.62800002098)
   */
   double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * 1.09;  // M0/M+
+      return k * ( is_ptr() ? 1.25300002098 : 1.09000003338 );  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * 1.192;  // Normal Raid
+      return k * ( is_ptr() ? 1.28199994564 : 1.19200003147 );  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * 1.282;  // Heroic Raid
+      return k * ( is_ptr() ? 1.49800002575 : 1.28199994564 );  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * 1.384;  // Mythic Raid
+      return k * ( is_ptr() ? 1.62800002098 : 1.38399994373 );  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE
