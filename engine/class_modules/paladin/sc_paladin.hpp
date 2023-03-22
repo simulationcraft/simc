@@ -868,7 +868,9 @@ public:
   // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
+
   bool searing_light_disabled;
+  bool clears_judgment;
 
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
@@ -877,7 +879,8 @@ public:
     cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
-    searing_light_disabled( false )
+    searing_light_disabled( false ),
+    clears_judgment( false )
   {
     // Spec aura damage increase
     if ( p->specialization() == PALADIN_RETRIBUTION )
@@ -902,6 +905,7 @@ public:
     }
 
     this->affected_by.judgment = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
+    this->clears_judgment = this->affected_by.judgment;
     this->affected_by.avenging_wrath = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
@@ -1031,7 +1035,7 @@ public:
 
     if ( ab::result_is_hit( s->result ) )
     {
-      if ( affected_by.judgment )
+      if ( affected_by.judgment && clears_judgment )
       {
         paladin_td_t* td = this->td( s->target );
         if ( td->debuff.judgment->up() )

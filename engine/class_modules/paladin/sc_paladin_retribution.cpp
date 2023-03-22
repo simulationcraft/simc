@@ -324,9 +324,6 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     expurgation_t( paladin_t* p ):
       paladin_spell_t( "expurgation", p, p->find_spell( 383346 ) )
     {
-      hasted_ticks = false;
-      tick_may_crit = false;
-
       searing_light_disabled = true;
 
       if ( p->talents.jurisdiction->ok() )
@@ -414,6 +411,7 @@ struct divine_storm_tempest_t : public paladin_melee_attack_t
 
     aoe = -1;
     base_multiplier *= p->talents.tempest_of_the_lightbringer->effectN( 1 ).percent();
+    clears_judgment = false;
   }
 };
 
