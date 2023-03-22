@@ -4951,6 +4951,12 @@ void humming_arcane_stone( special_effect_t& effect )
   effect.execute_action = create_primordial_stone_action( effect, HUMMING_ARCANE_STONE );
 
   new primordial_stone_cb_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+        return a->get_school() != SCHOOL_PHYSICAL;
+      } );
 }
 
 void shining_obsidian_stone( special_effect_t& effect )
