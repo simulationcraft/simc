@@ -37,6 +37,7 @@ actions=auto_attack
 actions+=/roll,if=movement.distance>5
 actions+=/chi_torpedo,if=movement.distance>5
 actions+=/flying_serpent_kick,if=movement.distance>5
+actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))
 # Potion
 actions+=/potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60

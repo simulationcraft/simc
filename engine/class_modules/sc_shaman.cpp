@@ -10118,7 +10118,7 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat->add_action( this, "Flametongue Weapon", "if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied." );
+    precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
     precombat->add_action( "potion" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs

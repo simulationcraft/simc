@@ -5,8 +5,7 @@ level=70
 race=troll
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAAlIJRIJSRASJJJFAlEJBa
-class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAAJCFhSKSUASKpkEAJRKA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -158,7 +157,7 @@ off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotio
 # gear_agility=2683
 # gear_stamina=6737
 # gear_crit_rating=1013
-# gear_haste_rating=3656
-# gear_mastery_rating=3246
+# gear_haste_rating=3663
+# gear_mastery_rating=3245
 # gear_versatility_rating=191
 # gear_armor=3603
