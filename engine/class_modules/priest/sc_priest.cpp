@@ -150,7 +150,7 @@ public:
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
     {
-      m *= 1 + 0.6;
+      m *= 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 1 ).percent();
     }
     return m;
   }
@@ -200,7 +200,9 @@ public:
 
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
       {
-        priest().generate_insanity( 4, priest().gains.insanity_t30_2pc, s->action );
+        priest().generate_insanity(
+            priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 2 ).resource( RESOURCE_INSANITY ),
+                                    priest().gains.insanity_t30_2pc, s->action );
       }
 
       priest().buffs.coalescing_shadows->expire();
