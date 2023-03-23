@@ -4,19 +4,19 @@ race=troll
 spec=balance
 role=spell
 position=back
-talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKASiIikkAkkIJSBpFOQSSokEikkQLpEhgCABAA
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlAIJJJBJhgkEJRKAkkkQJJEHIJhWSJCR0AI0AA
 
-head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192961
+head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192988
 neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8793,ilevel=418,gem_id=192961/192961/192961
 shoulder=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant_id=6625
-wrist=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192961
+wrist=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498/8780,gem_id=192961
 hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
-waist=swordsingers_belt,id=134287,bonus_id=1795/6808/4786/3300/6935,ilevel=418,gem_id=192961
-legs=lost_landcallers_leggings,id=200355,bonus_id=4800/4786/1498,enchant_id=6541
+waist=swordsingers_belt,id=134287,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192961
+legs=lost_landcallers_leggings,id=200355,bonus_id=6652/7981/8095/8827/1507,enchant_id=6541
 feet=lifebound_boots,id=193398,bonus_id=8836/8840/8902/8802/8846/8793,enchant_id=6607,crafted_stats=36/49
-finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,gem_id=192961,enchant_id=6562
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8840/8902/8780/8802/8793/8846/8175/8960,enchant_id=6562,gem_id=192961,crafted_stats=49/32
 finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant_id=6562
 trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
