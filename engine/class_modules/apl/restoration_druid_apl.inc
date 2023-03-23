@@ -41,10 +41,11 @@ cat->add_action( "adaptive_swarm,target_if=!dot.adaptive_swarm_damage.ticking" )
 cat->add_action( "run_action_list,name=owl,if=active_enemies>2&talent.convoke_the_spirits.enabled&talent.moonkin_form.enabled&cooldown.convoke_the_spirits.remains<=gcd.max&(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)" );
 cat->add_action( "cat_form,if=talent.convoke_the_spirits.enabled&(active_enemies<2|!talent.moonkin_form.enabled)&(!buff.cat_form.up&cooldown.convoke_the_spirits.remains<=gcd.max&(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled))" );
 cat->add_action( "convoke_the_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)" );
-cat->add_action( "rip,if=remains<=gcd&combo_points>0&dot.adaptive_swarm_damage.ticking" );
-cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>1" );
+cat->add_action( "rake,if=remains<=gcd&combo_points<5&(talent.deep_focus.enabled&active_dot.rake<=1&dot.rake.refreshable)" );
+cat->add_action( "rip,if=remains<=gcd&combo_points=5&(talent.deep_focus.enabled&active_dot.rip<=1&dot.rip.refreshable)" );
+cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>4" );
 cat->add_action( "sunfire,target_if=(refreshable&target.time_to_die>5)&!prev_gcd.1.cat_form&(active_enemies=1|talent.improved_sunfire.enabled)" );
-cat->add_action( "cat_form,if=!buff.cat_form.up&energy>50&(dot.thrash_cat.refreshable&spell_targets.swipe_cat>=9&talent.thrash.enabled)" );
+cat->add_action( "cat_form,if=!buff.cat_form.up&energy>50&((dot.thrash_cat.refreshable&spell_targets.swipe_cat>=9&talent.thrash.enabled)|(talent.deep_focus.enabled&dot.rip.refreshable&active_dot.rip<=1&active_enemies>=5))&cooldown.healing.remains>(gcd.max*2)" );
 cat->add_action( "moonfire,target_if=(refreshable&time_to_die>12&!ticking|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1))&!prev_gcd.1.cat_form" );
 cat->add_action( "sunfire,if=prev_gcd.1.moonfire&remains<duration*0.8" );
 cat->add_action( "starsurge,if=active_enemies=1|(active_enemies<8&!buff.cat_form.up)" );

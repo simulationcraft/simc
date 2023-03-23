@@ -320,7 +320,6 @@ struct mind_flay_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-
 private:
   propagate_const<action_t*> _base_spell;
   propagate_const<action_t*> _insanity_spell;
@@ -581,7 +580,7 @@ struct vampiric_embrace_t final : public priest_spell_t
     priest_spell_t::execute();
     priest().buffs.vampiric_embrace->trigger();
 
-    if ( priest().specs.hallucinations->ok() )
+    if ( priest().specs.hallucinations->ok() && !priest().is_ptr() )
     {
       priest().generate_insanity( insanity, priest().gains.hallucinations_vampiric_embrace, nullptr );
     }
@@ -718,10 +717,7 @@ public:
         }
         else
         {
-          if ( !priest().bugs || !priest().options.as_insanity_bug )
-          {
-            priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
-          }
+          priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
         }
       }
 
@@ -788,13 +784,6 @@ public:
     proc->occur();
 
     schedule_execute( s );
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1081
-    if ( priest().talents.shadow.auspicious_spirits.enabled() && priest().bugs && priest().options.as_insanity_bug &&
-         !priest().is_ptr() )
-    {
-      priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
-    }
   }
 };
 
@@ -1456,6 +1445,11 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
+  bool dot_refreshable( const dot_t* dot, timespan_t triggered_duration ) const
+  {
+    return dot->ticks_left() <= 1;
+  }
+
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
     priest_spell_t::snapshot_state( s, rt );
@@ -1653,14 +1647,6 @@ struct void_eruption_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
-
-    // BUG: on beta this is hitting 4 times instead of 2 on your main target, not sure why
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/963
-    if ( priest().bugs && s->target == parent_dot->target && !priest().is_ptr() )
-    {
-      priest_spell_t::impact( s );
-      priest_spell_t::impact( s );
-    }
   }
 };
 
@@ -1750,6 +1736,28 @@ struct psychic_horror_t final : public priest_spell_t
     parse_options( options_str );
     may_miss = may_crit   = false;
     ignore_false_positive = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( s->target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.psychic_horror->trigger();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !priest_spell_t::target_ready( candidate_target ) )
+      return false;
+
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+      return true;
+
+    return false;
   }
 };
 
@@ -1897,7 +1905,8 @@ struct psychic_link_t final : public priest_spell_t
       _pl_mindgames( new psychic_link_base_t( "psychic_link_mindgames", p, p.talents.shadow.psychic_link ) ),
       _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
-          _pl_shadow_word_death( new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
+      _pl_shadow_word_death(
+          new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -2115,8 +2124,7 @@ struct shadow_crash_t final : public priest_spell_t
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) +
-                     priest().talents.shadow.whispering_shadows->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) )
   {
     parse_options( options_str );
@@ -2489,7 +2497,7 @@ void priest_t::create_buffs_shadow()
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                              ->set_max_stack( 5 );
 
-  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1  ).trigger() )
+  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) );
@@ -2521,7 +2529,6 @@ void priest_t::create_buffs_shadow()
           ->add_invalidate( CACHE_HASTE )
           ->set_default_value_from_effect( 1 );
 
-
   // TODO: Wire up spell data, split into helper function.
   buffs.t30_4pc =
       make_buff( this, "t30_4pc_tracker" )
@@ -2535,7 +2542,7 @@ void priest_t::create_buffs_shadow()
 
                 auto duration = 5_s;
 
-                if ( talents.shadow.idol_of_yshaarj.enabled() )
+                if ( talents.shadow.idol_of_yshaarj.enabled() && options.t30_yshaarj )
                 {
                   // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
                   if ( target->health_percentage() >= 80.0 )
@@ -2548,13 +2555,17 @@ void priest_t::create_buffs_shadow()
                     procs.idol_of_yshaarj_extra_duration->occur();
                   }
                 }
-                if ( talents.shadow.mindbender.enabled() )
+
+                auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
+
+                auto pet = pet_spawner.active_pet_min_remains();
+                if ( pet && !pet->is_sleeping() && !options.t30_multiple_bender )
                 {
-                  pets.mindbender.spawn( duration );
+                  pet->adjust_duration( 5_s );
                 }
                 else
                 {
-                  pets.shadowfiend.spawn( duration );
+                  pet_spawner.spawn( duration );
                 }
               } );
             }

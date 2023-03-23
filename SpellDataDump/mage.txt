@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -1790,7 +1790,7 @@ Description      : Reduces the damage your pet takes from area of effect attacks
 Reduces the range at which enemies detect your pet.
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1810,7 +1810,7 @@ Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1831,7 +1831,7 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2252,7 +2252,7 @@ Effects          :
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
 Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -5448,7 +5448,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Do Not Chain To Crowd-Controlled Targets (200), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.69305 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.69305 | PvP Coefficient: 2.00000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.5 -> 2)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Spell Family (3)] 
@@ -5518,7 +5519,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Enemy Debuffs (426), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=344289)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.93173 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.93173 | PvP Coefficient: 0.85000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=344290)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199786
@@ -13861,7 +13863,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015723)  : Apply Aura (6) | Proc Trigger Spell (42): Living Bomb
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 217694 | Target: Enemy (6)
-Description      : Enemies damaged by Flame Patch have an $h% chance to erupt into a Living Bomb.
+Description      : Enemies damaged by Flame Patch have a $h% chance to erupt into a Living Bomb.
 
 Name             : Controlled Destruction (id=383669) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=9, col=1, max_rank=2, req_points=20]

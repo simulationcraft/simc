@@ -829,9 +829,9 @@ void darkmoon_deck_dance( special_effect_t& effect )
         delay += timespan_t::from_seconds( rng().gauss( 5.0 / travel_speed, sim->travel_variance ) );
 
         if ( i % 2 )
-          make_event( *sim, delay, [ s, this ]() { damage->execute_on_target( s->target ); } );
+          make_event( *sim, delay, [ t = s->target, this ] { damage->execute_on_target( t ); } );
         else
-          make_event( *sim, delay, [ this ]() { heal->execute_on_target( player ); } );
+          make_event( *sim, delay, [ this ] { heal->execute_on_target( player ); } );
       }
     }
   };
@@ -1930,6 +1930,7 @@ void storm_eaters_boon( special_effect_t& effect )
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 382092 )->effectN( 1 ).average(e.item);
       name_str_reporting = "stormeaters_boon";
+      reduced_aoe_targets = 5;  // from logs, not found in spell data
     }
 
      double composite_da_multiplier( const action_state_t* s ) const override
@@ -3403,6 +3404,82 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+/**Winterpelt Totem
+ * id=398292 main cast
+ * id=398293 Winterpelt's Blessing buff (proc driver)
+ * id=398320 Winterpelt's Fury (damage)
+ * id=398322 damage coefficient
+ */
+void winterpelt_totem( special_effect_t& effect )
+{
+  struct winterpelts_fury_t : public generic_proc_t
+  {
+    winterpelts_fury_t( const special_effect_t& e ) :
+      generic_proc_t( e, "winterpelts_fury", 398320 )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 398322 )->effectN( 1 ).average( e.item );
+    }
+  };
+
+  auto blessing            = new special_effect_t( effect.player );
+  blessing->name_str       = "winterpelts_blessing_cb";
+  blessing->type           = SPECIAL_EFFECT_EQUIP;
+  blessing->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  blessing->spell_id       = 398293;
+  blessing->execute_action = create_proc_action<winterpelts_fury_t>( "winterpelts_fury", effect );
+  effect.player->special_effects.push_back( blessing );
+
+  auto blessing_cb = new dbc_proc_callback_t( effect.player, *blessing );
+  blessing_cb->initialize();
+  blessing_cb->deactivate();
+
+  effect.custom_buff = make_buff( effect.player, "winterpelts_blessing", blessing->driver() )
+                         ->set_stack_change_callback( [ blessing_cb ] ( buff_t*, int, int new_ )
+                           { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
+}
+
+void seething_black_dragonscale( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+                           ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.item ) )
+                           ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect.item ) );
+  
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
+void idol_of_debilitating_arrogance( special_effect_t& effect )
+{
+  int driver_id = effect.spell_id;
+
+  switch ( effect.player->type )
+  {
+    case DEATH_KNIGHT:
+      driver_id = 408089;
+      break;
+    case DRUID:
+      driver_id = 408090;
+      break;
+    case ROGUE:
+      driver_id = 408042;
+      break;
+    case PRIEST:
+      driver_id = 408087;
+      break;
+    default:
+      return;
+  }
+
+  // Buff scaling is on the main trinket driver.
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403386 ) )
+                           ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
+  effect.spell_id = driver_id;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
@@ -4205,31 +4282,32 @@ enum primordial_stone_drivers_e
   STORM_INFUSED_STONE      = 402928,
   ECHOING_THUNDER_STONE    = 402929,
   FLAME_LICKED_STONE       = 402930,
-  RAGING_MAGMA_STONE       = 402931, // NYI (tanks only, requires getting hit)
-  SEARING_SMOKEY_STONE     = 402932, // NYI (procs on interrupts)
+  RAGING_MAGMA_STONE       = 402931, // NYI (requires getting hit, damage)
+  SEARING_SMOKEY_STONE     = 402932,
   ENTROPIC_FEL_STONE       = 402934,
-  INDOMITABLE_EARTH_STONE  = 402935, // NYI
-  SHINING_OBSIDIAN_STONE   = 402936, // NYI
+  INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
+  SHINING_OBSIDIAN_STONE   = 402936, // no absorbs are implemented to trigger this
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
-  GLEAMING_IRON_STONE      = 402938, // NYI
-  DELUGING_WATER_STONE     = 402939, // NYI
+  GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
+  DELUGING_WATER_STONE     = 402939, // NYI (heal)
   FREEZING_ICE_STONE       = 402940,
-  COLD_FROST_STONE         = 402941, // NYI
+  COLD_FROST_STONE         = 402941, // NYI (absorb)
   EXUDING_STEAM_STONE      = 402942, // NYI (procs on receiving heals)
   SPARKLING_MANA_STONE     = 402943, // NYI (restores mana)
   SWIRLING_MOJO_STONE      = 402944, // NYI (requires creature deaths, gives the player an item to activate its buff)
   HUMMING_ARCANE_STONE     = 402947,
   HARMONIC_MUSIC_STONE     = 402948, // NYI (buffs tertiary stats)
-  WILD_SPIRIT_STONE        = 402949, // NYI
+  WILD_SPIRIT_STONE        = 402949, // NYI (heal)
   NECROMANTIC_DEATH_STONE  = 402951, // NYI
   PESTILENT_PLAGUE_STONE   = 402952,
-  OBSCURE_PASTEL_STONE     = 402955, // NYI
+  OBSCURE_PASTEL_STONE     = 402955,
   DESIROUS_BLOOD_STONE     = 402957,
   PROPHETIC_TWILIGHT_STONE = 402959, // NYI
 };
 
 enum primordial_stone_family_e
 {
+  PRIMORDIAL_NONE,
   PRIMORDIAL_ARCANE,
   PRIMORDIAL_EARTH,
   PRIMORDIAL_FIRE,
@@ -4241,11 +4319,12 @@ enum primordial_stone_family_e
 
 primordial_stone_family_e get_stone_family( const special_effect_t& e )
 {
-  switch ( static_cast<primordial_stone_drivers_e>( e.driver()->id() ) )
+  switch ( e.driver()->id() )
   {
     case SPARKLING_MANA_STONE:
     case HUMMING_ARCANE_STONE:
     case HARMONIC_MUSIC_STONE:
+    case OBSCURE_PASTEL_STONE:
       return PRIMORDIAL_ARCANE;
     case INDOMITABLE_EARTH_STONE:
     case SHINING_OBSIDIAN_STONE:
@@ -4264,6 +4343,7 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case WIND_SCULPTED_STONE:
     case STORM_INFUSED_STONE:
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
     case WILD_SPIRIT_STONE:
     case PESTILENT_PLAGUE_STONE:
       return PRIMORDIAL_NATURE;
@@ -4271,15 +4351,47 @@ primordial_stone_family_e get_stone_family( const special_effect_t& e )
     case DESIROUS_BLOOD_STONE:
       return PRIMORDIAL_NECROMANTIC;
     case SWIRLING_MOJO_STONE:
-    case OBSCURE_PASTEL_STONE:
     case PROPHETIC_TWILIGHT_STONE:
       return PRIMORDIAL_SHADOW;
+    default:
+      break;
   }
 
-  throw std::invalid_argument( fmt::format( "Unsupported Primordial Stone driver '{}' has no family implemented.", e.driver()->id() ) );
+  return PRIMORDIAL_NONE;
 }
 
-action_t* find_primordial_stone_action( player_t* player, primordial_stone_drivers_e driver )
+enum primordial_stone_type_e
+{
+  PRIMORDIAL_TYPE_NONE = 0,
+  PRIMORDIAL_TYPE_DAMAGE,
+  PRIMORDIAL_TYPE_HEAL,
+  PRIMORDIAL_TYPE_ABSORB
+};
+
+primordial_stone_type_e get_stone_type( const special_effect_t& e )
+{
+  switch ( e.driver()->id() )
+  {
+    case STORM_INFUSED_STONE:
+    case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
+    case FLAME_LICKED_STONE:
+    case SHINING_OBSIDIAN_STONE:
+    case FREEZING_ICE_STONE:
+    case HUMMING_ARCANE_STONE:
+    case PESTILENT_PLAGUE_STONE:
+    case SEARING_SMOKEY_STONE:
+      return PRIMORDIAL_TYPE_DAMAGE;
+    case DESIROUS_BLOOD_STONE:
+      return PRIMORDIAL_TYPE_HEAL;
+    default:
+      break;
+  }
+
+  return PRIMORDIAL_TYPE_NONE;
+}
+
+action_t* find_primordial_stone_action( player_t* player, unsigned driver )
 {
   switch ( driver )
   {
@@ -4300,6 +4412,8 @@ action_t* find_primordial_stone_action( player_t* player, primordial_stone_drive
       return player->find_action( "pestilent_plague_stone" );
     case DESIROUS_BLOOD_STONE:
       return player->find_action( "desirous_blood_stone" );
+    case SEARING_SMOKEY_STONE:
+      return player->find_action( "searing_smokey_stone" );
 
     // healing stones
     case DELUGING_WATER_STONE:
@@ -4314,19 +4428,13 @@ action_t* find_primordial_stone_action( player_t* player, primordial_stone_drive
       return player->find_action( "cold_frost_stone" );
     case INDOMITABLE_EARTH_STONE:
       return player->find_action( "indomitable_earth_stone" );
-  }
 
-  return nullptr;
-}
-
-buff_t* find_primordial_stone_buff( player_t* player, primordial_stone_drivers_e driver )
-{
-  switch ( driver )
-  {
+    // other
     case HARMONIC_MUSIC_STONE:
-      return buff_t::find( player, "harmonic_music_stone" );
-    case NECROMANTIC_DEATH_STONE:
-      return buff_t::find( player, "necromantic_death_stone" );
+      return nullptr;
+
+    default:
+      break;
   }
 
   return nullptr;
@@ -4416,6 +4524,69 @@ struct absorb_stone_t : public absorb_t
   }
 };
 
+struct primordial_stone_cb_t : public dbc_proc_callback_t
+{
+  primordial_stone_cb_t( player_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
+
+  void initialize() override
+  {
+    dbc_proc_callback_t::initialize();
+
+    // if the current callback has an action and we find a prophetic twilight stone
+    if ( !proc_action )
+      return;
+
+    if ( !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
+      return;
+
+    auto type = get_stone_type( effect );
+    auto prophetic_driver = 0;
+
+    // depending on the type of the current callback's effect, find the opposite stone type
+    if ( type == PRIMORDIAL_TYPE_HEAL )
+    {
+      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
+        return get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE;
+      } );
+
+      if ( it != effect.item->parsed.special_effects.end() )
+        prophetic_driver = ( *it )->driver()->id();
+    }
+    else if ( type == PRIMORDIAL_TYPE_DAMAGE )
+    {
+      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
+        return get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL;
+      } );
+
+      if ( it != effect.item->parsed.special_effects.end() )
+        prophetic_driver = ( *it )->driver()->id();
+    }
+
+    // manual override for echoing thunder stone
+    if ( prophetic_driver == ECHOING_THUNDER_STONE )
+      prophetic_driver = 403170;
+
+    // if we've found the opposite stone type driver
+    if ( prophetic_driver )
+    {
+      auto execute_fn = []( action_t* a, action_state_t* s, const dbc_proc_callback_t* cb ) {
+        a->set_target( cb->target( s ) );
+        auto state = a->get_state();
+        state->target = a->target;
+        a->snapshot_state( state, a->amount_type( state ) );
+        a->schedule_execute( state );
+      };
+
+      // override the opposite driver's callback to also execute the current driver's action
+      listener->callbacks.register_callback_execute_function(
+          prophetic_driver, [ execute_fn, this ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+            execute_fn( cb->proc_action, s, cb );
+            execute_fn( proc_action, s, cb );
+          } );
+    }
+  }
+};
+
 // Echoing Thunder Stone
 struct uncontainable_charge_t : public damage_stone_t
 {
@@ -4453,6 +4624,16 @@ struct storm_infused_stone_t : public damage_stone_t
     damage_stone_t( e, "storm_infused_stone", 403087 )
   {
     auto driver = e.player->find_spell( STORM_INFUSED_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
+  }
+};
+
+struct searing_smokey_stone_t : public generic_aoe_proc_t
+{
+  searing_smokey_stone_t( const special_effect_t &e ) :
+    generic_aoe_proc_t( e, "searing_smokey_stone", 403257 )
+  {
+    auto driver = e.player->find_spell( SEARING_SMOKEY_STONE );
     base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
   }
 };
@@ -4510,7 +4691,7 @@ struct pestilent_plague_stone_t : public damage_stone_t
 
     if ( result_is_hit( s->result ) && aoe_damage )
     {
-      make_event( *sim, aoe_delay, [ s, this ]() { aoe_damage->execute_on_target( s->target ); } );
+      make_event( *sim, aoe_delay, [ t = s->target, this ] { aoe_damage->execute_on_target( t ); } );
     }
   }
 };
@@ -4539,9 +4720,13 @@ struct humming_arcane_stone_t : public damage_stone_t
     std::set<primordial_stone_family_e> stone_families;
     for ( const auto se : e.item->parsed.special_effects )
     {
-      if ( se->type == SPECIAL_EFFECT_EQUIP && se->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
+      if ( se->source == SPECIAL_EFFECT_SOURCE_GEM && se->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
       {
-        stone_families.insert( get_stone_family( *se ) );
+        auto family = get_stone_family( *se );
+        if ( family != PRIMORDIAL_NONE )
+        {
+          stone_families.insert( family );
+        }
       }
     }
 
@@ -4554,6 +4739,16 @@ struct humming_arcane_stone_t : public damage_stone_t
 
     for ( size_t i = 0; i < num_families; i++ )
       damage->execute_on_target( target );
+  }
+};
+
+struct shining_obsidian_stone_t : public aoe_damage_stone_t
+{
+  shining_obsidian_stone_t( const special_effect_t& e ) :
+    aoe_damage_stone_t( e, "shining_obsidian_stone", 404941, true )
+  {
+    auto driver = e.player->find_spell( SHINING_OBSIDIAN_STONE );
+    base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
   }
 };
 
@@ -4575,7 +4770,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
     case FLAME_LICKED_STONE:
       return new flame_licked_stone_t( effect );
     case SHINING_OBSIDIAN_STONE:
-      return nullptr;
+      return new shining_obsidian_stone_t( effect );
     case FREEZING_ICE_STONE:
       return new freezing_ice_stone_t( effect );
     case HUMMING_ARCANE_STONE:
@@ -4584,6 +4779,8 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
       return new pestilent_plague_stone_t( effect );
     case DESIROUS_BLOOD_STONE:
       return new desirous_blood_stone_t( effect );
+    case SEARING_SMOKEY_STONE:
+      return new searing_smokey_stone_t( effect );
 
     // healing stones
     case DELUGING_WATER_STONE:
@@ -4598,6 +4795,13 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
       return nullptr;
     case INDOMITABLE_EARTH_STONE:
       return nullptr;
+
+    // misc
+    case HARMONIC_MUSIC_STONE:
+      return nullptr;
+
+    default:
+      break;
   }
 
   return nullptr;
@@ -4612,13 +4816,12 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
  */
 void echoing_thunder_stone( special_effect_t& effect )
 {
-  struct uncontainable_charge_cb_t : public dbc_proc_callback_t
+  struct uncontainable_charge_cb_t : public primordial_stone_cb_t
   {
-    action_t* damage;
     buff_t* ready_buff;
 
-    uncontainable_charge_cb_t( const special_effect_t& e, action_t* d, buff_t* b ) :
-      dbc_proc_callback_t( e.player, e ), damage( d ), ready_buff ( b )
+    uncontainable_charge_cb_t( const special_effect_t& e, buff_t* b ) :
+      primordial_stone_cb_t( e.player, e ), ready_buff ( b )
     {}
 
     void execute( action_t* a, action_state_t* s ) override
@@ -4626,12 +4829,11 @@ void echoing_thunder_stone( special_effect_t& effect )
       if ( s->target->is_sleeping() )
         return;
 
-      damage->execute_on_target( s->target );
+      primordial_stone_cb_t::execute( a, s );
+
       ready_buff->expire();
     }
   };
-
-  auto damage = create_primordial_stone_action( effect, ECHOING_THUNDER_STONE );
 
   auto ready_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 403170 ) );
   auto counter    = create_buff<buff_t>( effect.player, effect.player->find_spell( 403094 ) )
@@ -4639,23 +4841,39 @@ void echoing_thunder_stone( special_effect_t& effect )
                       ->set_stack_change_callback( [ ready_buff ] ( buff_t*, int, int cur )
                         { if ( cur == 0 ) ready_buff->trigger(); } );
 
-  // Each time the driver ticks, 4 stacks of Rolling Thunder are applied.
-  // If Rolling Thunder is not already active, the player must be moving
-  // when the tick occurs to gain the first 4 stacks.
-  // TODO: Add an option for chance to be moving?
-  effect.player->register_combat_begin( [ effect, counter ]( player_t* p )
+  auto trigger_counter = [ p = effect.player, counter ]
+  {
+    // If these effects become common or more precise control is desired, this check should be moved to a virtual method in player_t.
+    bool can_move = !p->buffs.stunned->check();
+    if ( p->channeling && !p->channeling->usable_moving() )
+      can_move = false;
+    if ( p->executing && !p->executing->usable_moving() )
+      can_move = false;
+
+    if ( can_move )
+    {
+      // Each time the driver ticks, stacks of Rolling Thunder are applied if the player is moving.
+      // The base number of stacks is 4 and is modified by speed (seems to be rounded up from 3.5).
+      // TODO: Check more data points to make sure this model is correct.
+      int num_stacks = as<int>( std::round( 3.5 * p->composite_movement_speed() / p->base_movement_speed ) );
+      counter->trigger( num_stacks );
+    }
+  };
+
+  effect.player->register_combat_begin( [ effect, trigger_counter ] ( player_t* p )
   {
     timespan_t period = effect.driver()->effectN( 1 ).period();
     timespan_t first_update = p->rng().real() * period;
-    make_event( p->sim, first_update, [ period, counter, p ]()
+    make_event( p->sim, first_update, [ p, period, trigger_counter ]
     {
-      counter->trigger( 4 );
-      make_repeating_event( p->sim, period, [ counter ](){ counter->trigger( 4 ); } );
+      trigger_counter();
+      make_repeating_event( p->sim, period, [ trigger_counter ] { trigger_counter(); } );
     } );
   } );
 
   effect.spell_id = 403170;
-  auto cb = new uncontainable_charge_cb_t( effect, damage, ready_buff );
+  effect.execute_action = create_primordial_stone_action( effect, ECHOING_THUNDER_STONE );
+  auto cb = new uncontainable_charge_cb_t( effect, ready_buff );
   cb->initialize();
   cb->deactivate();
 
@@ -4683,7 +4901,7 @@ void flame_licked_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, FLAME_LICKED_STONE );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new primordial_stone_cb_t( effect.player, effect );
 }
 
 /**Freezing Ice Stone
@@ -4695,37 +4913,111 @@ void freezing_ice_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, FREEZING_ICE_STONE );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new primordial_stone_cb_t( effect.player, effect );
+}
+
+void searing_smokey_stone( special_effect_t &effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, SEARING_SMOKEY_STONE );
+  effect.proc_flags2_ |= PF2_CAST_INTERRUPT;
+
+  new primordial_stone_cb_t( effect.player, effect );
 }
 
 void storm_infused_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, STORM_INFUSED_STONE );
+  effect.proc_flags2_ = PF2_CRIT;
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new primordial_stone_cb_t( effect.player, effect );
 }
 
 void desirous_blood_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, DESIROUS_BLOOD_STONE );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new primordial_stone_cb_t( effect.player, effect );
 }
 
 void pestilent_plague_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, PESTILENT_PLAGUE_STONE );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new primordial_stone_cb_t( effect.player, effect );
 }
 
 void humming_arcane_stone( special_effect_t& effect )
 {
   effect.execute_action = create_primordial_stone_action( effect, HUMMING_ARCANE_STONE );
 
-  new dbc_proc_callback_t( effect.player, effect );
+  new primordial_stone_cb_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+        return a->get_school() != SCHOOL_PHYSICAL;
+      } );
 }
+
+void shining_obsidian_stone( special_effect_t& effect )
+{
+  create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
 }
+
+void obscure_pastel_stone( special_effect_t& effect )
+{
+  static constexpr std::array<primordial_stone_drivers_e, 14> possible_stones = {
+    // damage stones
+    STORM_INFUSED_STONE,
+    ECHOING_THUNDER_STONE,
+    FLAME_LICKED_STONE,
+    SHINING_OBSIDIAN_STONE,
+    FREEZING_ICE_STONE,
+    HUMMING_ARCANE_STONE,
+    PESTILENT_PLAGUE_STONE,
+    DESIROUS_BLOOD_STONE,
+    // healing stones
+    DELUGING_WATER_STONE,
+    WILD_SPIRIT_STONE,
+    EXUDING_STEAM_STONE,
+    // absorb stones
+    COLD_FROST_STONE,
+    INDOMITABLE_EARTH_STONE,
+    // other
+    HARMONIC_MUSIC_STONE,
+  };
+
+  struct obscure_pastel_stone_t : public generic_proc_t
+  {
+    std::vector<action_t*> stone_actions;
+
+    obscure_pastel_stone_t( const special_effect_t& effect ) :
+      generic_proc_t( effect, "obscure_pastel_stone", 405257 ), stone_actions()
+    {
+      stone_actions.reserve( stone_actions.size() );
+      for ( auto driver : possible_stones )
+        stone_actions.push_back( create_primordial_stone_action( effect, driver ) );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        // TODO: If heal and absorb procs are implemented, they should target the player.
+        auto action = stone_actions[ rng().range( stone_actions.size() ) ];
+        if ( action )
+          action->execute_on_target( s->target );
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<obscure_pastel_stone_t>( "obscure_pastel_stone", effect );
+
+  new primordial_stone_cb_t( effect.player, effect);
+}
+}  // namespace primordial_stones
 
 void register_special_effects()
 {
@@ -4817,6 +5109,9 @@ void register_special_effects()
   register_special_effect( 383812, items::ruby_whelp_shell );
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
+  register_special_effect( 398292, items::winterpelt_totem );
+  register_special_effect( 401468, items::seething_black_dragonscale );
+  register_special_effect( 403385, items::idol_of_debilitating_arrogance );
 
 
   // Weapons
@@ -4852,14 +5147,18 @@ void register_special_effects()
   register_special_effect( { 389987, 389498, 391117 }, sets::raging_tempests );
 
   // Primordial Stones
-  register_special_effect( primordial_stones::ECHOING_THUNDER_STONE,  primordial_stones::echoing_thunder_stone );
-  register_special_effect( primordial_stones::FLAME_LICKED_STONE,     primordial_stones::flame_licked_stone );
-  register_special_effect( primordial_stones::FREEZING_ICE_STONE,     primordial_stones::freezing_ice_stone );
-  register_special_effect( primordial_stones::STORM_INFUSED_STONE,    primordial_stones::storm_infused_stone );
-  register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,   primordial_stones::desirous_blood_stone );
-  register_special_effect( primordial_stones::PESTILENT_PLAGUE_STONE, primordial_stones::pestilent_plague_stone );
-  register_special_effect( primordial_stones::HUMMING_ARCANE_STONE,   primordial_stones::humming_arcane_stone );
-  register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,     DISABLED_EFFECT ); // Necessary for other gems to find the driver.
+  register_special_effect( primordial_stones::ECHOING_THUNDER_STONE,    primordial_stones::echoing_thunder_stone );
+  register_special_effect( primordial_stones::FLAME_LICKED_STONE,       primordial_stones::flame_licked_stone );
+  register_special_effect( primordial_stones::FREEZING_ICE_STONE,       primordial_stones::freezing_ice_stone );
+  register_special_effect( primordial_stones::STORM_INFUSED_STONE,      primordial_stones::storm_infused_stone );
+  register_special_effect( primordial_stones::DESIROUS_BLOOD_STONE,     primordial_stones::desirous_blood_stone );
+  register_special_effect( primordial_stones::PESTILENT_PLAGUE_STONE,   primordial_stones::pestilent_plague_stone );
+  register_special_effect( primordial_stones::HUMMING_ARCANE_STONE,     primordial_stones::humming_arcane_stone );
+  register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE,   primordial_stones::shining_obsidian_stone );
+  register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,     primordial_stones::obscure_pastel_stone );
+  register_special_effect( primordial_stones::SEARING_SMOKEY_STONE,     primordial_stones::searing_smokey_stone );
+  register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,       DISABLED_EFFECT ); // Necessary for other gems to find the driver.
+  register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 
   // Disabled
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed

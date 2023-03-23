@@ -66,10 +66,21 @@ public:
 
 struct hand_of_guldan_t : public demonology_spell_t
 {
+  struct umbral_blaze_dot_t : public demonology_spell_t
+  {
+    umbral_blaze_dot_t( warlock_t* p ) : demonology_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
+    {
+      background = dual = true;
+      hasted_ticks = false;
+      base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
+    }
+  };
+
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
     timespan_t meteor_time;
+    umbral_blaze_dot_t* blaze;
 
     hog_impact_t( warlock_t* p )
       : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
@@ -78,6 +89,12 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       aoe = -1;
       dual = true;
+
+      if ( p->talents.umbral_blaze->ok() )
+      {
+        blaze = new umbral_blaze_dot_t( p );
+        add_child( blaze );
+      }
     }
 
     timespan_t travel_time() const override
@@ -126,7 +143,14 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }        
+        }
+
+        // Umbral Blaze only triggers on primary target
+        if ( p()->talents.umbral_blaze->ok() && rng().roll( p()->talents.umbral_blaze->effectN( 1 ).percent() ) )
+        {
+          blaze->execute_on_target( s->target );
+          p()->procs.umbral_blaze->occur();
+        }
       }
     }
   };
@@ -594,13 +618,8 @@ struct demonic_strength_t : public demonology_spell_t
 
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
-    if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
-      return false;
-    if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
-      return false;
-    if ( active_pet->buffs.fiendish_wrath->check() )
-      return false;
-    return spell_t::ready();
+
+    return demonology_spell_t::ready();
   }
 
   void execute() override
@@ -616,10 +635,8 @@ struct demonic_strength_t : public demonology_spell_t
       debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
 
       // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
-      if ( p()->min_version_check( VERSION_10_0_5 ) )
-      {
-        internal_cooldown->start( 5_s * p()->composite_spell_haste() );
-      }
+      internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+
     }
   }
 };
@@ -922,8 +939,6 @@ struct guillotine_t : public demonology_spell_t
     internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
-  // Guillotine takes priority over any other actions except Demonic Strength Felstorm
-  // TOCHECK: New cooldown handling should render these redundant
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -933,27 +948,13 @@ struct guillotine_t : public demonology_spell_t
 
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
-
-    if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
-      return false;
     
-    return spell_t::ready();
+    return demonology_spell_t::ready();
   }
 
   void execute() override
   {
     auto active_pet = p()->warlock_pet_list.active;
-
-    // Activating Guillotine will cancel any active Felstorm
-    // Since Guillotine should not be usable when Demonic Strength Felstorm is active, we shouldn't hit that code, but keep it to be safe
-    if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
-    {
-      active_pet->find_action( "felstorm" )->cancel();
-    }
-    else if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
-    {
-      active_pet->find_action( "felstorm_demonic_strength" )->cancel();
-    }
 
     demonology_spell_t::execute();
 
@@ -964,10 +965,7 @@ struct guillotine_t : public demonology_spell_t
       debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
 
       // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
-      if ( p()->min_version_check( VERSION_10_0_5 ) )
-      {
-        internal_cooldown->start( 8_s );
-      }
+      internal_cooldown->start( 6_s ); // TOCHECK: Is there a reasonable way to get the duration instead of hardcoding
     }
   }
 };
@@ -1299,6 +1297,9 @@ void warlock_t::init_spells_demonology()
 
   talents.hounds_of_war = find_talent_spell( talent_tree::SPECIALIZATION, "Hounds of War" ); // Should be ID 387488
 
+  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
+  talents.umbral_blaze_dot = find_spell( 405802 );
+
   talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
   talents.nether_portal_buff = find_spell( 267218 );
 
@@ -1328,6 +1329,8 @@ void warlock_t::init_spells_demonology()
 
   talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
   talents.demonic_servitude = find_spell( 390193 );
+
+  talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
 
   talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
 
@@ -1362,6 +1365,7 @@ void warlock_t::init_procs_demonology()
   procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.hounds_of_war = get_proc( "hounds_of_war" );
+  procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );

@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.5.48317
-static const std::array<item_name_description_t, 731> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.7.48676
+static const std::array<item_name_description_t, 736> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -731,5 +731,10 @@ static const std::array<item_name_description_t, 731> __item_name_description_da
   { 13999, "Dragonflight Season 1"                       },
   { 14000, "Impressive"                                  },
   { 14001, "Remarkable"                                  },
+  { 14002, "Primal Empowered"                            },
+  { 14003, "Zskera Vaults"                               },
+  { 14004, "Primordial Stone"                            },
+  { 14005, "Artisan Curios"                              },
+  { 14009, "The Forbidden Reach"                         },
 } };
 
