@@ -1752,6 +1752,8 @@ struct psychic_horror_t final : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
       td.buffs.psychic_horror->trigger();
+      s->target->buffs.stunned->trigger( data().duration() );
+      s->target->stun();
     }
   }
 
@@ -2409,6 +2411,26 @@ struct dispersion_t final : public priest_buff_t<buff_t>
   }
 };
 
+// Fury of Elune AP =========================================================
+struct devoured_despair_buff_t : public priest_buff_t<buff_t>
+{
+  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_depair", p.talents.shadow.devoured_despair )
+  {
+    set_cooldown( 0_ms );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_trigger_spell( p.talents.shadow.idol_of_yshaarj );
+    set_duration( p.talents.shadow.devoured_pride->duration() );
+
+    auto eff = &data().effectN( 1 );
+    auto ap  = eff->resource( RESOURCE_INSANITY );
+    set_default_value( ap / eff->period().total_seconds() );
+
+    auto gain = p.get_gain( "devoured_despair" );
+    set_tick_callback(
+        [ ap, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_INSANITY, ap, gain ); } );
+  }
+};
+
 }  // namespace buffs
 
 // ==========================================================================
@@ -2511,12 +2533,11 @@ void priest_t::create_buffs_shadow()
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  if ( is_ptr() )
+  if ( !is_ptr() )
     buffs.devoured_pride->set_duration( 0_ms );
 
-  buffs.devoured_despair = make_buff( this, "devoured_despair", talents.shadow.devoured_despair )
-                               ->set_duration( buffs.devoured_pride->buff_duration() )
-                               ->set_trigger_spell( talents.shadow.idol_of_yshaarj );
+
+  buffs.devoured_despair = make_buff<buffs::devoured_despair_buff_t>( *this );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );

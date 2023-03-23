@@ -409,7 +409,7 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     priest_pet_t::demise();
 
-    if ( is_ptr() )
+    if ( !is_ptr() )
     {
       o().buffs.devoured_pride->expire();
       o().buffs.devoured_despair->expire();
