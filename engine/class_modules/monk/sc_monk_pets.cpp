@@ -1945,10 +1945,11 @@ struct shadowflame_monk_t : public monk_pet_t
     ( *pet_action )->set_target( s->target );
     ( *pet_action )->execute();
 
-    this->attack_counter++;
+    if ( !s->action->dual )
+      this->attack_counter++;
 
     if ( this->attack_counter == 3 )
-      this->dismiss();
+      this->dismiss( false );
   }
 
   action_t *create_action( util::string_view name, util::string_view options_str ) override
