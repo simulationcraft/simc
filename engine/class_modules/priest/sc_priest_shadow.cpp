@@ -2241,7 +2241,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
       set_default_value( am_value );
 
       // When Ancient Madness expires, make sure we do not expire Voidform
-      set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+      set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
         if ( cur == 1 )
         {
           set_reverse( false );
@@ -2427,7 +2427,7 @@ struct dark_ascension_t final : public priest_buff_t<buff_t>
       set_default_value( am_value );
 
       // When Ancient Madness expires, make sure we do not expire Dark Ascension
-      set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+      set_stack_change_callback( [ this ]( buff_t*, int old, int cur ) {
         if ( cur == 1 )
         {
           set_reverse( false );
