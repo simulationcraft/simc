@@ -421,10 +421,14 @@ public:
     propagate_const<proc_t*> resonant_fists;
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> salsalabim_bof_reset;
-    propagate_const<proc_t *> shadowflame_monk_spawn;
     propagate_const<proc_t*> tranquil_spirit_expel_harm;
     propagate_const<proc_t*> tranquil_spirit_goto;
     propagate_const<proc_t*> xuens_battlegear_reduction;
+
+    // Tier 30
+    propagate_const<proc_t *> shadowflame_monk_spawn;
+    propagate_const<proc_t *> shadowflame_nova;
+
   } proc;
 
   struct talents_t
@@ -900,6 +904,11 @@ public:
     // Tier 29
     const spell_data_t* kicks_of_flowing_momentum;
     const spell_data_t* fists_of_flowing_momentum;
+
+    // Tier 30
+    const spell_data_t *shadowflame_spirit;
+    const spell_data_t *shadowflame_spirit_summon;
+
   } passives;
 
   // RPPM objects
@@ -907,6 +916,9 @@ public:
   {
     real_ppm_t* bountiful_brew;
     real_ppm_t* spirit_of_the_ox;
+
+    // Tier 30
+    real_ppm_t *shadowflame_spirit;
   } rppm;
 
   struct pets_t
