@@ -333,6 +333,7 @@ public:
   } pets;
 
   struct tier_sets_t {
+    // T29 - Vault of the Incarnates
     spell_data_ptr_t t29_mm_2pc;
     spell_data_ptr_t t29_mm_4pc;
     spell_data_ptr_t t29_bm_2pc;
@@ -340,6 +341,13 @@ public:
     spell_data_ptr_t t29_sv_2pc;
     spell_data_ptr_t t29_sv_4pc;
     spell_data_ptr_t t29_sv_4pc_buff;
+    // T30 - Aberrus, the Shadowed Crucible
+    spell_data_ptr_t t30_bm_2pc; 
+    spell_data_ptr_t t30_bm_4pc; 
+    spell_data_ptr_t t30_mm_2pc; 
+    spell_data_ptr_t t30_mm_4pc; 
+    spell_data_ptr_t t30_sv_2pc; 
+    spell_data_ptr_t t30_sv_4pc; 
   } tier_set;
 
   // Buffs
@@ -919,6 +927,8 @@ public:
     // passive set bonuses
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
     ab::apply_affecting_aura( p -> tier_set.t29_sv_2pc );
+
+    ab::apply_affecting_aura( p -> tier_set.t30_bm_2pc );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -1294,6 +1304,7 @@ public:
     ab::apply_affecting_aura( o() -> talents.improved_kill_command );
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
     ab::apply_affecting_aura( o() -> talents.killer_command );
+    ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -3536,6 +3547,11 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> buffs.beast_cleave -> trigger( beast_cleave_duration );
+
+    if ( p() -> tier_set.t30_bm_4pc.ok() )
+    {
+      p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
   }
 };
 
@@ -3565,6 +3581,16 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s ); 
+
+    if ( p() -> tier_set.t30_bm_4pc.ok() )
+    {
+      p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
   }
 
   double cost() const override
@@ -5359,6 +5385,11 @@ struct kill_command_t: public hunter_spell_t
 
     p() -> buffs.lethal_command -> expire();
     p() -> buffs.deadly_duo -> expire();
+
+    if ( p() -> tier_set.t30_bm_4pc.ok() )
+    {
+      p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
   }
 
   double cost() const override
@@ -6628,6 +6659,13 @@ void hunter_t::init_spells()
   tier_set.t29_sv_2pc = sets -> set( HUNTER_SURVIVAL, T29, B2 );
   tier_set.t29_sv_4pc = sets -> set( HUNTER_SURVIVAL, T29, B4 );
   tier_set.t29_sv_4pc_buff = find_spell( 394388 );
+
+  tier_set.t30_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T30, B2 );
+  tier_set.t30_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T30, B4 );
+  tier_set.t30_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T30, B2 );
+  tier_set.t30_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T30, B4 );
+  tier_set.t30_sv_2pc = sets -> set( HUNTER_SURVIVAL, T30, B2 );
+  tier_set.t30_sv_4pc = sets -> set( HUNTER_SURVIVAL, T30, B4 );
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
