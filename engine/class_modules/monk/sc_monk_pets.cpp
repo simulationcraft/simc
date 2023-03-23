@@ -1843,7 +1843,7 @@ public:
 };
 
 // ==========================================================================
-// Shadowflame Monk
+// Shadowflame Spirit
 // ==========================================================================
 struct shadowflame_monk_t : public monk_pet_t
 {
@@ -1855,11 +1855,35 @@ struct shadowflame_monk_t : public monk_pet_t
   {
     shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
-    {      
-      may_crit = true;
+    {
       merge_report = false;
 
-      school = SCHOOL_SHADOWFLAME;
+      apply_affecting_aura( o()->passives.shadowflame_spirit );
+    }
+  };
+
+  struct melee_t : public pet_melee_t
+  {
+    melee_t( util::string_view n, shadowflame_monk_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
+    {
+      background        = repeating = may_crit = may_glance = true;
+      weapon            = weapon;
+      school            = SCHOOL_PHYSICAL;
+      weapon_multiplier = 1.0;
+      base_execute_time = weapon->swing_time;
+      trigger_gcd       = timespan_t::zero();
+      special           = false;
+    }
+  };
+
+  struct auto_attack_t : public pet_auto_attack_t
+  {
+    auto_attack_t( shadowflame_monk_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
+      player->off_hand_attack = new melee_t( "auto_attack_oh", player, &( player->off_hand_weapon ) );
     }
   };
 
@@ -1871,23 +1895,35 @@ struct shadowflame_monk_t : public monk_pet_t
   shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true ),
     attack_counter( 0 )
   {
-    _spec = owner->specialization();
+    npc_id  = owner->passives.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
+    _spec   = owner->specialization();
 
-    owner_coeff.ap_from_ap = 1.00;
+    main_hand_weapon.type       = WEAPON_SWORD;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
+    off_hand_weapon.type        = WEAPON_SWORD;
+    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2.6 );
+    owner_coeff.ap_from_ap      = 1.00;
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+
+    pet_t::init_action_list();
   }
 
   void init_spells() override
   {
-    // Initialize all player spells as a vector
+    // Initialize pet spells
     for ( auto action : owner->action_list )
-      sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
+      if ( action->data().affected_by( o()->passives.shadowflame_spirit->effectN( 2 ) ) )
+          sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
 
     monk_pet_t::init_spells();
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
-      // TODO: Is there a limit on simultaneous summons or cooldown?
       monk_pet_t::summon( duration );
 
       this->attack_counter = 0;
@@ -1898,38 +1934,29 @@ struct shadowflame_monk_t : public monk_pet_t
     if ( s->result_amount <= 0  )
       return;
 
-    // Potentially able to use affected_by spell data instead of black/whitelist
-    switch ( s->action->id )
+    auto pet_action = range::find_if( this->sf_action_list, [ s ] ( shadowflame_damage_t *pet_action )
     {
-      // TODO: Black/whitelist
-      case 0:
-      case 1:
-        return;
+      return pet_action->id == s->action->id;
+    } );
+    
+    if ( pet_action == this->sf_action_list.end() )
+      return;
 
-      default:
-        break;
-    }
+    ( *pet_action )->set_target( s->target );
+    ( *pet_action )->execute();
 
-    // Iterate through vector to find valid action
-    for ( auto damage_event : this->sf_action_list )
-    {
-      if ( damage_event->id == s->action->id )
-      {
-        double damage_modifier = 0.4; // Placeholder until spell data acquired from Blizzard
-        double damage = s->result_amount * damage_modifier;
-        damage_event->base_dd_min = s->result_amount;
-        damage_event->base_dd_max = s->result_amount;
-        damage_event->target = s->target;
-        damage_event->execute();
+    this->attack_counter++;
 
-        this->attack_counter++;
+    if ( this->attack_counter == 3 )
+      this->dismiss();
+  }
 
-        if ( this->attack_counter == 3 )
-          this->dismiss();
+  action_t *create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
 
-        break;
-      }
-    }
+    return pet_t::create_action( name, options_str );
   }
 };
 
