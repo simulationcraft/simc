@@ -580,7 +580,7 @@ struct vampiric_embrace_t final : public priest_spell_t
     priest_spell_t::execute();
     priest().buffs.vampiric_embrace->trigger();
 
-    if ( priest().specs.hallucinations->ok() )
+    if ( priest().specs.hallucinations->ok() && !priest().is_ptr() )
     {
       priest().generate_insanity( insanity, priest().gains.hallucinations_vampiric_embrace, nullptr );
     }
