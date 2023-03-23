@@ -12281,6 +12281,7 @@ void player_t::copy_from( player_t* source )
   player_traits     = source->player_traits;
   shadowlands_opts  = source->shadowlands_opts;
   dragonflight_opts = source->dragonflight_opts;
+  resources.initial_opt = source->resources.initial_opt;
 
   if ( azerite )
   {
