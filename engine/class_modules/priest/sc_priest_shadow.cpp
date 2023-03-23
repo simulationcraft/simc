@@ -1862,6 +1862,16 @@ struct void_torrent_t final : public priest_spell_t
 
     priest().buffs.void_torrent->trigger();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().is_ptr() )
+    {
+      priest().spawn_idol_of_cthun( s );
+    }
+  }
 };
 
 // ==========================================================================

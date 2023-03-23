@@ -2399,38 +2399,46 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;
 
-  auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id          = specs.mind_flay->id();
-  auto mind_flay_insanity_id = 391403U;
-  auto action_id             = s->action->id;
-
   if ( rppm.idol_of_cthun->trigger() )
   {
-    if ( is_ptr() )
+    spawn_idol_of_cthun( s );
+  }
+}
+
+void priest_t::spawn_idol_of_cthun( action_state_t* s )
+{
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
+
+  if ( is_ptr() )
+  {
+    if ( s->action->target_list().size() > 2 )
     {
-      if ( s->action->target_list().size() > 2 )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
-      else
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
     else
     {
-      if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
-      else if ( action_id == mind_sear_id )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+  }
+  else
+  {
+    auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
+    auto mind_flay_id          = specs.mind_flay->id();
+    auto mind_flay_insanity_id = 391403U;
+    auto action_id             = s->action->id;
+
+    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
+    {
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+    else if ( action_id == mind_sear_id )
+    {
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
   }
 }
