@@ -530,7 +530,7 @@ struct smite_t final : public priest_spell_t
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
-  propagate_const<holy_fire_t*> child_holy_fire;
+  propagate_const<action_t*> child_holy_fire;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
@@ -544,6 +544,7 @@ struct smite_t final : public priest_spell_t
     {
       child_holy_fire             = priest().background_actions.holy_fire;
       child_holy_fire->background = true;
+      add_child( child_holy_fire );
     }
   }
 
@@ -613,6 +614,9 @@ struct smite_t final : public priest_spell_t
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
     // If we have divine word, have triggered divine favor: chastise, and proc the holy fire effect
+    sim->print_debug( "checking child_holy_fire. divine_word: {}, divine favor chastise: {}, proc: {}",
+                      priest().talents.holy.divine_word.enabled(), priest().buffs.divine_favor_chastise->check(),
+                      rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) );
     if ( priest().talents.holy.divine_word.enabled() && priest().buffs.divine_favor_chastise->check() &&
          rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) )
     {
