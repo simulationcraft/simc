@@ -1158,6 +1158,7 @@ struct searing_light_t : public paladin_spell_t
     : paladin_spell_t( "searing_light", p, p->find_spell( 407478 ) )
   {
     background = true;
+    aoe = -1;
     reduced_aoe_targets = 8;
   }
 
