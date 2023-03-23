@@ -915,7 +915,8 @@ struct shadow_word_death_t final : public priest_spell_t
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() ),
+      execute_modifier( data().effectN( 3 ).percent() +
+                        ( priest().is_ptr() ? priest().specs.shadow_priest->effectN( 25 ).percent() : 0 ) ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr )
   {
@@ -948,8 +949,8 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       if ( sim->debug )
       {
-        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}", t->name_str, execute_percent, *this,
-                          execute_modifier );
+        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}%", t->name_str, execute_percent, *this,
+                          execute_modifier * 100 );
       }
       tdm *= 1 + execute_modifier;
     }
@@ -2501,7 +2502,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
