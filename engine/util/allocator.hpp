@@ -27,7 +27,7 @@ namespace util {
 // Allocating objects that do not fit a single page is a hard error, there is no
 // separate allocation path for such cases. It is caught at compile time for the
 // single object allocation case but only at runtime for the multi-object case.
-template <size_t PageSize = 4096>
+template <size_t PageSize = 8192>
 class bump_ptr_allocator_t
 {
   static constexpr size_t PageAlignment = alignof(std::max_align_t);

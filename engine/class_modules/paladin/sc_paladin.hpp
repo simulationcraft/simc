@@ -52,11 +52,10 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* judgment_of_light;
     buff_t* blessed_hammer;
     buff_t* final_reckoning;
-    buff_t* reckoning;
-    buff_t* seal_of_the_crusader;
     buff_t* sanctify;
     buff_t* eye_of_tyr;
     buff_t* crusaders_resolve;
+    buff_t* heartfire; // T30 2p Prot
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -73,10 +72,10 @@ public:
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
     action_t* tyrs_enforcer_damage;
+    action_t* heartfire;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
-    action_t* reckoning;
 
     action_t* inner_light_damage;
     action_t* sanctified_wrath;
@@ -89,8 +88,6 @@ public:
     blessing_of_sacrifice_redirect_t* blessing_of_sacrifice_redirect;
 
     // Covenant stuff
-    action_t* necrolord_divine_storm;
-    action_t* necrolord_shield_of_the_righteous;
     action_t* divine_toll;
     action_t* seasons[NUM_SEASONS];
     action_t* divine_resonance;
@@ -160,41 +157,21 @@ public:
     // Ret
     buffs::crusade_buff_t* crusade;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
-    buff_t* inner_grace;
-    buff_t* blade_of_wrath;
-    buff_t* fires_of_justice;
-    buff_t* righteous_verdict;
-    buff_t* zeal;
-    buff_t* sealed_verdict;
-    buff_t* consecrated_blade;
-    buff_t* virtuous_command;
-
     buff_t* empyrean_power;
-    buff_t* vanguards_momentum;
 
     buff_t* rush_of_light;
     buff_t* inquisitors_ire;
     buff_t* inquisitors_ire_driver;
     buff_t* templar_strikes;
 
-    // Covenants
-    buff_t* vanquishers_hammer;
-
-    // Legendaries
-    buff_t* vanguards_momentum_legendary;
     buff_t* bulwark_of_righteous_fury;
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
-    buff_t* relentless_inquisitor_legendary;
-    buff_t* the_magistrates_judgment;
     buff_t* final_verdict;
-    buff_t* reign_of_ancient_kings;
-    buff_t* equinox;
     buff_t* divine_resonance;
 
     buff_t* empyrean_legacy;
     buff_t* empyrean_legacy_cooldown;
-    buff_t* aspiration_of_divinity;
     buff_t* relentless_inquisitor;
     buff_t* divine_arbiter;
   } buffs;
@@ -215,8 +192,6 @@ public:
     gain_t* hp_templars_verdict_refund;
     gain_t* judgment;
     gain_t* hp_cs;
-    gain_t* hp_sanctification;
-    gain_t* hp_inner_grace;
     gain_t* hp_divine_toll;
     gain_t* hp_vm;
     gain_t* hp_crusading_strikes;
@@ -247,7 +222,6 @@ public:
     cooldown_t* sentinel; // Righteous Protector (Prot)
     cooldown_t* hammer_of_justice;
     cooldown_t* judgment_of_light_icd;
-    cooldown_t* the_magistrates_judgment_icd;
     cooldown_t* blessing_of_protection; // Blessing of Spellwarding Shared CD
     cooldown_t* blessing_of_spellwarding; // Blessing of Protection Shared CD
     cooldown_t* divine_shield; // Resolute Defender (Prot)
@@ -308,14 +282,11 @@ public:
   } mastery;
 
   // Procs and RNG
-  real_ppm_t* final_reckoning_rppm;
-
   struct procs_t
   {
     proc_t* art_of_war;
     proc_t* righteous_cause;
     proc_t* divine_purpose;
-    proc_t* fires_of_justice;
     proc_t* final_reckoning;
     proc_t* empyrean_power;
 
@@ -336,7 +307,6 @@ public:
 
     const spell_data_t* sotr_buff;
 
-    const spell_data_t* reckoning;
     const spell_data_t* sanctified_wrath_damage;
 
     const spell_data_t* judgment_2;
@@ -395,7 +365,6 @@ public:
 
     // 20
     const spell_data_t* seal_of_clarity;
-    const spell_data_t* aspiration_of_divinity;
     const spell_data_t* touch_of_light;
     const spell_data_t* incandescence;
     const spell_data_t* hallowed_ground;
@@ -505,53 +474,28 @@ public:
     const spell_data_t* blade_of_justice;
     const spell_data_t* divine_storm;
     const spell_data_t* art_of_war;
-    const spell_data_t* timely_judgment;
-    const spell_data_t* improved_crusader_strike;
-    const spell_data_t* holy_crusader;
     const spell_data_t* holy_blade;
-    const spell_data_t* blade_of_condemnation;
-    const spell_data_t* zeal;
     const spell_data_t* shield_of_vengeance;
-    const spell_data_t* divine_protection; // NYI
-    const spell_data_t* blade_of_wrath;
 
     // 8
     const spell_data_t* highlords_judgment;
-    const spell_data_t* righteous_verdict;
     const spell_data_t* sanctify;
     const spell_data_t* wake_of_ashes;
-    const spell_data_t* consecrated_blade;
-    const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
+    const spell_data_t* heartfire;
     const spell_data_t* boundless_judgment;
-    const spell_data_t* sanctification;
-    const spell_data_t* inner_grace;
-    const spell_data_t* ashes_to_dust;
-    const spell_data_t* radiant_decree;
     const spell_data_t* crusade;
     const spell_data_t* truths_wake;
     const spell_data_t* empyrean_power;
-    const spell_data_t* fires_of_justice;
-    const spell_data_t* sealed_verdict;
     const spell_data_t* consecrated_ground_ret; // NYI
-    const spell_data_t* sanctified_ground_ret; // NYI
-    const spell_data_t* exorcism;
-    const spell_data_t* hand_of_hindrance; // NYI
-    const spell_data_t* selfless_healer; // NYI
-    const spell_data_t* healing_hands; // NYI
     const spell_data_t* tempest_of_the_lightbringer;
     const spell_data_t* justicars_vengeance;
-    const spell_data_t* eye_for_an_eye; // NYI
 
     // 20
-    const spell_data_t* ashes_to_ashes;
-    const spell_data_t* templars_vindication; // ?
     const spell_data_t* execution_sentence; // ?
     const spell_data_t* empyrean_legacy;
-    const spell_data_t* virtuous_command;
     const spell_data_t* final_verdict; // sort of implemented
     const spell_data_t* executioners_will; // ?
-    const spell_data_t* executioners_wrath; // ?
     const spell_data_t* final_reckoning;
     const spell_data_t* vanguards_momentum;
 
@@ -560,6 +504,7 @@ public:
     const spell_data_t* judgment_of_justice;
     const spell_data_t* improved_blade_of_justice;
     const spell_data_t* righteous_cause;
+    const spell_data_t* consecrated_blade;
 
     const spell_data_t* jurisdiction;
     const spell_data_t* inquisitors_ire;
@@ -588,36 +533,12 @@ public:
     const spell_data_t* searing_light;
   } talents;
 
-  struct convenants_t {
-    const spell_data_t* kyrian;
-    const spell_data_t* venthyr;
-    const spell_data_t* necrolord;
-    const spell_data_t* night_fae;
-  } covenant;
-
-  struct legendaries_t {
-    item_runeforge_t vanguards_momentum;
-    item_runeforge_t the_mad_paragon;
-    item_runeforge_t final_verdict;
-    item_runeforge_t of_dusk_and_dawn;
-    item_runeforge_t the_magistrates_judgment;
-    item_runeforge_t bulwark_of_righteous_fury;
-    item_runeforge_t holy_avengers_engraved_sigil;
-    item_runeforge_t the_ardent_protectors_sanctum;
-    item_runeforge_t relentless_inquisitor;
-    item_runeforge_t tempest_of_the_lightbringer;
-    item_runeforge_t reign_of_endless_kings;
-
-    item_runeforge_t seasons_of_plenty;
-    item_runeforge_t radiant_embers;
-    item_runeforge_t duty_bound_gavel;
-    item_runeforge_t divine_resonance;
-  } legendary;
-
   struct tier_sets_t
   {
     const spell_data_t* ally_of_the_light_2pc;
     const spell_data_t* ally_of_the_light_4pc;
+    const spell_data_t* heartfire_sentinels_authority_2pc;
+    const spell_data_t* heartfire_sentinels_authority_4pc;
 
   } tier_sets;
 
@@ -700,6 +621,7 @@ public:
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
+  void    heartfire( action_state_t* s );
   void    t29_4p_prot();
   void    trigger_forbearance( player_t* target );
   void    trigger_es_explosion( player_t* target );
@@ -819,11 +741,7 @@ struct execution_sentence_debuff_t : public buff_t
 
     paladin_t* p = debug_cast<paladin_t*>( td->source );
 
-    // unclear if this is intended
-    if ( p->talents.executioners_wrath->ok() && !( p->bugs ) )
-      accum_percent = p->talents.executioners_wrath->effectN( 2 ).percent();
-
-    if ( p->is_ptr() && p->talents.executioners_will->ok() )
+    if ( p->talents.executioners_will->ok() )
     {
       modify_duration( timespan_t::from_millis( p->talents.executioners_will->effectN( 1 ).base_value() ) );
     }
@@ -841,7 +759,7 @@ struct execution_sentence_debuff_t : public buff_t
     buff_t::expire_override( stacks, duration );
 
     paladin_t* paladin = debug_cast<paladin_t*>( source );
-    paladin -> trigger_es_explosion( player );
+    paladin->trigger_es_explosion( player );
 
     accumulated_damage = 0.0;
     extended_count = 0;
@@ -941,8 +859,8 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost, seal_of_clarity; // Shared
-    bool crusade, hand_of_light, final_reckoning, reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
+    bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose, divine_purpose_cost, seal_of_clarity; // Shared
+    bool crusade, hand_of_light, final_reckoning, divine_arbiter, ret_t29_2p, ret_t29_4p; // Ret
     bool avenging_crusader; // Holy
     bool bastion_of_light, sentinel; // Prot
   } affected_by;
@@ -950,29 +868,31 @@ public:
   // haste scaling bools
   bool hasted_cd;
   bool hasted_gcd;
+
   bool searing_light_disabled;
+  bool clears_judgment;
 
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
-    track_cd_waste( s -> cooldown() > 0_ms || s -> charge_cooldown() > 0_ms ),
+    track_cd_waste( s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms ),
     cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
-    searing_light_disabled( false )
+    searing_light_disabled( false ),
+    clears_judgment( false )
   {
     // Spec aura damage increase
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
+    if ( p->specialization() == PALADIN_RETRIBUTION )
     {
       // Mastery
-      this -> affected_by.hand_of_light = this -> data().affected_by( p -> mastery.hand_of_light -> effectN( 1 ) );
+      this->affected_by.hand_of_light = this->data().affected_by( p->mastery.hand_of_light->effectN( 1 ) );
 
       // Temporary damage modifiers
-      this -> affected_by.crusade = this -> data().affected_by( p -> spells.crusade -> effectN( 1 ) );
-      this -> affected_by.reckoning = this -> data().affected_by( p -> spells.reckoning -> effectN( 1 ) );
-      this -> affected_by.final_reckoning = this -> data().affected_by( p -> talents.final_reckoning -> effectN( 3 ) );
-      this -> affected_by.ret_t29_2p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ) );
-      this -> affected_by.ret_t29_4p = this -> data().affected_by( p -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ) );
+      this->affected_by.crusade = this->data().affected_by( p->spells.crusade->effectN( 1 ) );
+      this->affected_by.final_reckoning = this->data().affected_by( p->talents.final_reckoning->effectN( 3 ) );
+      this->affected_by.ret_t29_2p = this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ) );
+      this->affected_by.ret_t29_4p = this->data().affected_by( p->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ) );
     }
     if ( p->specialization() == PALADIN_HOLY )
     {
@@ -984,63 +904,57 @@ public:
       this->affected_by.sentinel = this->data().affected_by( p->talents.sentinel->effectN( 1 ) );
     }
 
-    this -> affected_by.judgment = this -> data().affected_by( p -> spells.judgment_debuff -> effectN( 1 ) );
-    this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 2 ) );
-    this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
-    this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
-    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p -> talents.seal_of_reprisal -> effectN( 1 ) );
+    this->affected_by.judgment = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
+    this->clears_judgment = this->affected_by.judgment;
+    this->affected_by.avenging_wrath = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
+    this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
+    this->affected_by.divine_purpose = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
+    this->affected_by.seal_of_reprisal = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.seal_of_clarity  = this->data().affected_by( p->spells.seal_of_clarity_buff->effectN( 1 ) );
-    if ( !p->is_ptr() )
-      this->affected_by.blessing_of_dawn = this->data().affected_by( p->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ) );
-    else
-      this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
+    this->affected_by.blessing_of_dawn = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
 
-    if ( p->is_ptr() )
+    if ( p->talents.penitence->ok() )
     {
-      if ( p->talents.penitence->ok() )
+      if ( this->data().affected_by_label( p->talents.penitence->effectN( 1 ).misc_value2() ) )
       {
-        if ( this->data().affected_by_label( p->talents.penitence->effectN( 1 ).misc_value2() ) )
-        {
-          ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
-        }
-        else if ( this->data().affected_by_label( p->talents.penitence->effectN( 2 ).misc_value2() ) )
-        {
-          ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 2 ).percent();
-        }
+        ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 1 ).percent();
       }
+      else if ( this->data().affected_by_label( p->talents.penitence->effectN( 2 ).misc_value2() ) )
+      {
+        ab::base_multiplier *= 1.0 + p->talents.penitence->effectN( 2 ).percent();
+      }
+    }
 
-      if ( p->talents.adjudication->ok() && this->data().affected_by( p->talents.adjudication->effectN( 1 ) ) )
-      {
-        ab::crit_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
-      }
+    if ( p->talents.adjudication->ok() && this->data().affected_by( p->talents.adjudication->effectN( 1 ) ) )
+    {
+      ab::crit_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
+    }
 
-      if ( p->talents.vanguard_of_justice->ok() && this->data().affected_by( p->talents.vanguard_of_justice->effectN( 2 ) ) )
-      {
-        ab::base_multiplier *= 1.0 + p->talents.vanguard_of_justice->effectN( 2 ).percent();
-      }
+    if ( p->talents.vanguard_of_justice->ok() && this->data().affected_by( p->talents.vanguard_of_justice->effectN( 2 ) ) )
+    {
+      ab::base_multiplier *= 1.0 + p->talents.vanguard_of_justice->effectN( 2 ).percent();
+    }
 
-      if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
-      {
-        ab::school = SCHOOL_HOLYSTRIKE;
-      }
+    if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
+    {
+      ab::school = SCHOOL_HOLYSTRIKE;
+    }
 
-      if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
-      {
-        ab::school = SCHOOL_RADIANT;
-      }
+    if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
+    {
+      ab::school = SCHOOL_RADIANT;
+    }
 
-      if ( p->talents.divine_arbiter->ok() )
-      {
-        int label = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
-        this->affected_by.divine_arbiter = this->data().affected_by_label( label );
-        if ( this->affected_by.divine_arbiter )
-          ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
-      }
-      else
-      {
-        this->affected_by.divine_arbiter = false;
-      }
+    if ( p->talents.divine_arbiter->ok() )
+    {
+      int label = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
+      this->affected_by.divine_arbiter = this->data().affected_by_label( label );
+      if ( this->affected_by.divine_arbiter )
+        ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
+    }
+    else
+    {
+      this->affected_by.divine_arbiter = false;
     }
   }
 
@@ -1050,24 +964,24 @@ public:
   { return static_cast<paladin_t*>( ab::player ); }
 
   paladin_td_t* td( player_t* t ) const
-  { return p() -> get_target_data( t ); }
+  { return p()->get_target_data( t ); }
 
   void init() override
   {
     ab::init();
 
-    if ( track_cd_waste && ab::sim -> report_details != 0 )
+    if ( track_cd_waste && ab::sim->report_details != 0 )
     {
-      cd_waste = p() -> get_cooldown_waste_data( ab::cooldown );
+      cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
     }
 
     if ( hasted_cd )
     {
-      ab::cooldown -> hasted = hasted_cd;
+      ab::cooldown->hasted = hasted_cd;
     }
     if ( hasted_gcd )
     {
-      if ( p() -> specialization() == PALADIN_HOLY )
+      if ( p()->specialization() == PALADIN_HOLY )
       {
         ab::gcd_type = gcd_haste_type::SPELL_HASTE;
       }
@@ -1081,10 +995,10 @@ public:
   void trigger_judgment_of_light( action_state_t* s )
   {
     // Don't activate if the player is at full HP
-    if ( p() -> resources.current[ RESOURCE_HEALTH ] < p() -> resources.max[ RESOURCE_HEALTH ] )
+    if ( p()->resources.current[ RESOURCE_HEALTH ] < p()->resources.max[ RESOURCE_HEALTH ] )
     {
-      p() -> active.judgment_of_light -> execute();
-      td ( s -> target ) -> debuff.judgment_of_light -> decrement();
+      p()->active.judgment_of_light->execute();
+      td ( s->target )->debuff.judgment_of_light->decrement();
     }
   }
 
@@ -1092,21 +1006,18 @@ public:
   {
     ab::execute();
 
-    if ( p()->is_ptr() )
+    if ( this->affected_by.divine_arbiter && p()->talents.divine_arbiter->ok() )
     {
-      if ( this->affected_by.divine_arbiter && p()->talents.divine_arbiter->ok() )
-      {
-        p()->buffs.divine_arbiter->trigger( 1 );
-      }
+      p()->buffs.divine_arbiter->trigger( 1 );
+    }
 
-      if ( ab::get_school() == SCHOOL_RADIANT && !searing_light_disabled && p()->talents.searing_light->ok() )
+    if ( ab::get_school() == SCHOOL_RADIANT && !searing_light_disabled && p()->talents.searing_light->ok() )
+    {
+      if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
       {
-        if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
-        {
-          p()->cooldowns.searing_light_icd->start();
-          p()->active.searing_light->set_target( ab::execute_state->target );
-          p()->active.searing_light->schedule_execute();
-        }
+        p()->cooldowns.searing_light_icd->start();
+        p()->active.searing_light->set_target( ab::execute_state->target );
+        p()->active.searing_light->schedule_execute();
       }
     }
   }
@@ -1115,46 +1026,21 @@ public:
   {
     ab::impact( s );
 
-    if ( td( s -> target ) -> debuff.judgment_of_light -> up() && p() -> cooldowns.judgment_of_light_icd -> up() )
+    if ( td( s->target )->debuff.judgment_of_light->up() && p()->cooldowns.judgment_of_light_icd->up() )
     {
       trigger_judgment_of_light( s );
-      p() -> cooldowns.judgment_of_light_icd -> start();
+      p()->cooldowns.judgment_of_light_icd->start();
     }
 
 
-    if ( ab::result_is_hit( s -> result ) )
+    if ( ab::result_is_hit( s->result ) )
     {
-      if ( affected_by.judgment )
+      if ( affected_by.judgment && clears_judgment )
       {
-        paladin_td_t* td = this -> td( s -> target );
-        if ( td -> debuff.judgment -> up() )
-          td -> debuff.judgment -> decrement();
+        paladin_td_t* td = this->td( s->target );
+        if ( td->debuff.judgment->up() )
+          td->debuff.judgment->decrement();
       }
-
-      if ( affected_by.reckoning )
-      {
-        paladin_td_t* td = this -> td( s -> target );
-        if ( td -> debuff.reckoning -> up() )
-          td -> debuff.reckoning -> expire();
-      }
-
-      if ( ab::harmful && ! p() -> is_ptr() )
-      {
-        if ( p() -> talents.final_reckoning -> ok() && p() -> cooldowns.final_reckoning -> up() )
-        {
-          if ( p() -> final_reckoning_rppm -> trigger() )
-          {
-            p() -> procs.final_reckoning -> occur();
-
-            p() -> active.reckoning -> set_target( s -> target );
-            p() -> active.reckoning -> schedule_execute();
-          }
-        }
-      }
-
-      paladin_td_t* td = this -> td( s -> target );
-      if ( td -> debuff.reckoning -> up() )
-        td -> debuff.reckoning -> expire();
     }
   }
 
@@ -1162,26 +1048,26 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( p() -> specialization() == PALADIN_RETRIBUTION )
+    if ( p()->specialization() == PALADIN_RETRIBUTION )
     {
       if ( affected_by.hand_of_light )
       {
-        am *= 1.0 + p() -> cache.mastery_value();
+        am *= 1.0 + p()->cache.mastery_value();
       }
 
-      if ( affected_by.crusade && p() -> buffs.crusade -> up() )
+      if ( affected_by.crusade && p()->buffs.crusade->up() )
       {
-        am *= 1.0 + p() -> buffs.crusade -> get_damage_mod();
+        am *= 1.0 + p()->buffs.crusade->get_damage_mod();
       }
 
-      if ( affected_by.ret_t29_2p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
+      if ( affected_by.ret_t29_2p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
       {
-        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B2 ) -> effectN( 1 ).percent();
+        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ).percent();
       }
 
-      if ( affected_by.ret_t29_4p && p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
+      if ( affected_by.ret_t29_4p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
       {
-        am *= 1.0 + p() -> sets -> set( PALADIN_RETRIBUTION, T29, B4 ) -> effectN( 1 ).percent();
+        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ).percent();
       }
     }
 
@@ -1200,9 +1086,9 @@ public:
 
     // Divine purpose damage increase handled here,
     // Cost handled in holy_power_consumer_t
-    if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
+    if ( affected_by.divine_purpose && p()->buffs.divine_purpose->up() )
     {
-      am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+      am *= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
     }
 
     if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
@@ -1210,73 +1096,40 @@ public:
       am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
 
-    if ( !p()->is_ptr() && affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
-    {
-      am *= 1.0 + p()->talents.seal_of_order->effectN( 2 ).percent();
-    }
     if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() )
     {
       // Buffs handled in holy_power_consumer_t
-      if ( p()->is_ptr() )
-      {
-        // Get base multiplier
-        double bod_mult  = p()->buffs.blessing_of_dawn->value();
-        // Increase base multiplier by SoO/FL increase
-        if ( p()->talents.seal_of_order->ok() )
-          bod_mult += p()->talents.seal_of_order->effectN( 1 ).percent();
-        // Separating those, in case on of them gets changed. Both do exactly the same to Dawn, though.
-        if ( p()->talents.fading_light->ok() )
-          bod_mult += p()->talents.fading_light->effectN( 1 ).percent();
-        // Multiply by stack count
-        bod_mult *= p()->buffs.blessing_of_dawn->stack();
-        am *= 1.0 + bod_mult;
-      }
-      else
-      {
-        double bod_mult = 1.0 + p()->talents.of_dusk_and_dawn->effectN( 1 ).trigger()->effectN( 1 ).percent();
-        if ( p()->bugs && p()->talents.seal_of_order->ok() )
-        {
-          bod_mult += p()->talents.seal_of_order->effectN( 4 ).percent();
-        }
-        am *= bod_mult;
-      }
+      // Get base multiplier
+      double bod_mult  = p()->buffs.blessing_of_dawn->value();
+      // Increase base multiplier by SoO/FL increase
+      if ( p()->talents.seal_of_order->ok() )
+        bod_mult += p()->talents.seal_of_order->effectN( 1 ).percent();
+      // Separating those, in case on of them gets changed. Both do exactly the same to Dawn, though.
+      if ( p()->talents.fading_light->ok() )
+        bod_mult += p()->talents.fading_light->effectN( 1 ).percent();
+      // Multiply by stack count
+      bod_mult *= p()->buffs.blessing_of_dawn->stack();
+      am *= 1.0 + bod_mult;
     }
 
     return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = ab::composite_crit_chance();
-
-    if ( affected_by.avenging_wrath && p() -> buffs.avenging_wrath -> up() )
-    {
-      cc += p() -> buffs.avenging_wrath -> get_crit_bonus();
-    }
-
-    return cc;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
   {
     double ctm = ab::composite_target_multiplier( t );
 
-    paladin_td_t* td = this -> td( t );
+    paladin_td_t* td = this->td( t );
 
     // Handles both holy and ret judgment
-    if ( affected_by.judgment && td -> debuff.judgment -> up() )
+    if ( affected_by.judgment && td->debuff.judgment->up() )
     {
-      ctm *= 1.0 + p() -> spells.judgment_debuff -> effectN( 1 ).percent();
+      ctm *= 1.0 + p()->spells.judgment_debuff->effectN( 1 ).percent();
     }
 
-    if ( affected_by.reckoning && td -> debuff.reckoning -> up() )
+    if ( affected_by.final_reckoning && td->debuff.final_reckoning->up() )
     {
-      ctm *= 1.0 + p() -> spells.reckoning -> effectN( 2 ).percent();
-    }
-
-    if ( affected_by.final_reckoning && td -> debuff.final_reckoning -> up() )
-    {
-      ctm *= 1.0 + p() -> talents.final_reckoning -> effectN( 3 ).percent();
+      ctm *= 1.0 + p()->talents.final_reckoning->effectN( 3 ).percent();
     }
 
     return ctm;
@@ -1284,17 +1137,17 @@ public:
 
   virtual void update_ready( timespan_t cd = timespan_t::min() ) override
   {
-    if ( cd_waste ) cd_waste -> add( cd, ab::time_to_execute );
+    if ( cd_waste ) cd_waste->add( cd, ab::time_to_execute );
     ab::update_ready( cd );
   }
 
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
   {
     ab::assess_damage( typ, s );
-    paladin_td_t* td = this -> td( s -> target );
-    if ( td -> debuff.execution_sentence -> check() )
+    paladin_td_t* td = this->td( s->target );
+    if ( td->debuff.execution_sentence->check() )
     {
-      td -> debuff.execution_sentence -> accumulate_damage( s );
+      td->debuff.execution_sentence->accumulate_damage( s );
     }
     if ( p()->buffs.moment_of_glory->up() )
     {
@@ -1360,32 +1213,32 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
   {
     base_t::impact( s );
 
-    if ( s -> target != p() -> beacon_target )
+    if ( s->target != p()->beacon_target )
       trigger_beacon_of_light( s );
   }
 
   void trigger_beacon_of_light( action_state_t* s )
   {
-    if ( ! p() -> beacon_target )
+    if ( ! p()->beacon_target )
       return;
 
-    if ( ! p() -> beacon_target -> buffs.beacon_of_light -> up() )
+    if ( ! p()->beacon_target->buffs.beacon_of_light->up() )
       return;
 
     if ( proc )
       return;
 
-    assert( p() -> active.beacon_of_light );
+    assert( p()->active.beacon_of_light );
 
-    p() -> active.beacon_of_light -> target = p() -> beacon_target;
+    p()->active.beacon_of_light->target = p()->beacon_target;
 
-    double amount = s -> result_amount;
-    amount *= p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+    double amount = s->result_amount;
+    amount *= p()->beacon_target->buffs.beacon_of_light->data().effectN( 1 ).percent();
 
-    p() -> active.beacon_of_light -> base_dd_min = amount;
-    p() -> active.beacon_of_light -> base_dd_max = amount;
+    p()->active.beacon_of_light->base_dd_min = amount;
+    p()->active.beacon_of_light->base_dd_max = amount;
 
-    p() -> active.beacon_of_light -> execute();
+    p()->active.beacon_of_light->execute();
   }
 };
 
@@ -1405,7 +1258,7 @@ struct paladin_melee_attack_t: public paladin_action_t < melee_attack_t >
   {
     may_crit = true;
     special = true;
-    weapon = &( p -> main_hand_weapon );
+    weapon = &( p->main_hand_weapon );
   }
 };
 
@@ -1416,7 +1269,7 @@ struct sanctified_wrath_t : public paladin_spell_t
   int last_holy_power_cost;
 
   sanctified_wrath_t( paladin_t* p ) :
-    paladin_spell_t( "sanctified_wrath", p, p -> find_spell( 326731 ) ),
+    paladin_spell_t( "sanctified_wrath", p, p->find_spell( 326731 ) ),
     last_holy_power_cost( 0 )
   {
     aoe = -1;
@@ -1457,26 +1310,18 @@ struct holy_power_consumer_t : public Base
       return 0.0;
     }
 
-    if ( ( is_divine_storm && ( ab::p() -> buffs.empyrean_power -> check() ) ) ||
-         ( ab::affected_by.divine_purpose_cost && ab::p() -> buffs.divine_purpose -> check() ) )
+    if ( ( is_divine_storm && ( ab::p()->buffs.empyrean_power->check() ) ) ||
+         ( ab::affected_by.divine_purpose_cost && ab::p()->buffs.divine_purpose->check() ) )
     {
       return 0.0;
     }
 
     double c = ab::cost();
 
-    if ( ab::p() -> is_ptr() && ab::p() -> talents.vanguard_of_justice -> ok() )
+    if ( ab::p()->talents.vanguard_of_justice->ok() )
     {
-      c += ab::p() -> talents.vanguard_of_justice -> effectN( 1 ).base_value();
+      c += ab::p()->talents.vanguard_of_justice->effectN( 1 ).base_value();
     }
-
-    if ( ab::p() -> buffs.fires_of_justice -> check() )
-    {
-      c += ab::p() -> buffs.fires_of_justice -> data().effectN( 1 ).base_value();
-    }
-
-    if ( this -> affected_by.the_magistrates_judgment && ab::p() -> buffs.the_magistrates_judgment -> up() )
-      c += ab::p() -> buffs.the_magistrates_judgment -> value();
 
     if ( ab::p()->buffs.seal_of_clarity->up() && this->affected_by.seal_of_clarity )
     {
@@ -1491,12 +1336,9 @@ struct holy_power_consumer_t : public Base
     paladin_t* p = ab::p();
     ab::impact( s );
 
-    if ( p->is_ptr() )
+    if ( ab::aoe == 0 && p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
     {
-      if ( p->talents.rush_of_light->ok() && s->result == RESULT_CRIT )
-      {
-        p->buffs.rush_of_light->trigger();
-      }
+      p->buffs.rush_of_light->trigger();
     }
   }
 
@@ -1516,37 +1358,15 @@ struct holy_power_consumer_t : public Base
     // as of 11/8, according to Skeletor, crusade and RI trigger at full value now
     int num_hopo_spent = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
 
-    // as of 2021-06-22 magistrate's causes *extra* stacks?
-    // fixed at least for ret as of 9.0.5
-    if ( p -> bugs && p -> buffs.the_magistrates_judgment -> up() )
+    if ( p->talents.relentless_inquisitor->ok() )
+      p->buffs.relentless_inquisitor->trigger();
+
+    if ( p->buffs.crusade->check() )
     {
-      if ( p -> specialization() == PALADIN_PROTECTION &&
-          is_wog && !p -> buffs.divine_purpose -> up() &&
-          ( p -> buffs.shining_light_free -> up() || p -> buffs.royal_decree -> up() ) )
-        num_hopo_spent += 1;
+      p->buffs.crusade->trigger( num_hopo_spent );
     }
 
-    // 2021-08-10 The Word of Glory that procs Vanquisher's Hammer does not proc
-    // RP when DP is up
-    if ( p -> bugs && p -> specialization() == PALADIN_PROTECTION &&
-      p -> buffs.vanquishers_hammer -> up() && p -> buffs.divine_purpose -> up() &&
-      !( p -> buffs.royal_decree -> up() || p -> buffs.shining_light_free -> up() ) )
-    {
-      num_hopo_spent = 0;
-    }
-
-    if ( p -> legendary.relentless_inquisitor -> ok() )
-      p -> buffs.relentless_inquisitor_legendary -> trigger();
-
-    if ( p -> talents.relentless_inquisitor -> ok() )
-      p -> buffs.relentless_inquisitor -> trigger();
-
-    if ( p -> buffs.crusade -> check() )
-    {
-      p -> buffs.crusade -> trigger( num_hopo_spent );
-    }
-
-    if ( p -> talents.righteous_protector -> ok()
+    if ( p->talents.righteous_protector->ok()
       && !ab::background
       && p->cooldowns.righteous_protector_icd->up())
     {
@@ -1575,7 +1395,7 @@ struct holy_power_consumer_t : public Base
       p->cooldowns.divine_shield->adjust( reduction );
     }
 
-    if (p->is_ptr() && p -> talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok())
+    if ( p->talents.tirions_devotion->ok() && p->talents.lay_on_hands->ok() )
     {
       timespan_t reduction =
           timespan_t::from_seconds( -1.0 * p->talents.tirions_devotion->effectN( 1 ).base_value() * cost());
@@ -1585,33 +1405,33 @@ struct holy_power_consumer_t : public Base
     // Consume Empyrean Power on Divine Storm, handled here for interaction with DP/FoJ
     // Cost reduction is still in divine_storm_t
     bool should_continue = true;
-    if ( is_divine_storm && p -> bugs )
+    if ( is_divine_storm && p->bugs )
     {
-      if ( p -> buffs.empyrean_power -> up() )
+      if ( p->buffs.empyrean_power->up() )
       {
-        p -> buffs.empyrean_power -> expire();
+        p->buffs.empyrean_power->expire();
         should_continue = false;
       }
     }
     else if ( is_divine_storm )
     {
-      if ( p -> buffs.empyrean_power -> up() )
+      if ( p->buffs.empyrean_power->up() )
       {
-        p -> buffs.empyrean_power -> expire();
+        p->buffs.empyrean_power->expire();
         should_continue = false;
       }
     }
 
-    if ( is_wog && p -> buffs.shining_light_free -> check() )
+    if ( is_wog && p->buffs.shining_light_free->check() )
     {
       should_continue = false;
         // Shining Light is now consumed before Divine Purpose 2020-11-01
-        p -> buffs.shining_light_free -> expire();
+        p->buffs.shining_light_free->expire();
     }
 
-    if (p -> buffs.bastion_of_light -> check() && should_continue)
+    if (p->buffs.bastion_of_light->check() && should_continue)
     {
-      p -> buffs.bastion_of_light->decrement();
+      p->buffs.bastion_of_light->decrement();
       should_continue = false;
     }
 
@@ -1624,40 +1444,16 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // For prot (2021-06-22). Magistrate's does not get consumed when DP or SL
-    // are up, but does with RD.
-    // (2021-06-26) Vanquisher's hammer's auto-sotr does not interact with magistrate's judgment
-    // For ret (2020-10-29), Magistrate's does not get consumed with DP or EP up but does
-    // with FoJ.
-    if ( should_continue && this -> affected_by.the_magistrates_judgment
-        && !p -> buffs.divine_purpose -> check() && !ab::background )
-    {
-      p -> buffs.the_magistrates_judgment -> decrement( 1 );
-    }
-
-    // 2021-08-10 Vanquisher's Hammer's auto-sotr does not consume divine purpose
-    if ( p -> specialization() == PALADIN_PROTECTION && ab::background )
-      should_continue = false;
-    // 2021-08-10 The word of glory used to trigger vanquisher's hammer again
-    // does not consume divine purpose
-    if ( p -> specialization() == PALADIN_PROTECTION && p -> bugs && is_wog && p -> buffs.vanquishers_hammer -> up() )
-      should_continue = false;
-
     // We should only have should_continue false in the event that we're a divine storm
     // assert-check here for safety
-    assert( is_divine_storm || should_continue || p -> specialization() != PALADIN_RETRIBUTION );
+    assert( is_divine_storm || should_continue || p->specialization() != PALADIN_RETRIBUTION );
 
     // Divine Purpose isn't consumed on DS if EP was consumed
     if ( should_continue )
     {
-      if ( p -> buffs.divine_purpose -> up() && !doesnt_consume_dp )
+      if ( p->buffs.divine_purpose->up() && !doesnt_consume_dp )
       {
-        p -> buffs.divine_purpose -> expire();
-      }
-      // FoJ isn't consumed if EP or DP were consumed
-      else if ( p -> buffs.fires_of_justice -> up() )
-      {
-        p -> buffs.fires_of_justice -> expire();
+        p->buffs.divine_purpose->expire();
       }
     }
 
@@ -1668,31 +1464,16 @@ struct holy_power_consumer_t : public Base
       p->procs.divine_purpose->occur();
     }
 
-    if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )
-    {
-      if ( p -> specialization() == PALADIN_RETRIBUTION && p -> talents.sanctified_wrath -> ok() )
-      {
-        sanctified_wrath_t* st = debug_cast<sanctified_wrath_t*>( p -> active.sanctified_wrath );
-        st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
-        st -> execute();
-      }
-    }
-
-    if ( p -> talents.incandescence -> ok() )
+    if ( p->talents.incandescence->ok() )
     {
       for ( int hopo = 0; hopo < num_hopo_spent; hopo++ )
       {
         // this appears to be hardcoded?
         if ( ab::rng().roll( 0.05 ) )
         {
-          p -> active.incandescence -> schedule_execute();
+          p->active.incandescence->schedule_execute();
         }
       }
-    }
-
-    if ( p -> talents.sealed_verdict -> ok() )
-    {
-      p -> buffs.sealed_verdict -> trigger();
     }
 
     // ToDo: This is wrong, Seal of Clarity can stack to two stacks. Chances of happening are very slim, but possible
@@ -1702,7 +1483,7 @@ struct holy_power_consumer_t : public Base
     if (p->talents.seal_of_clarity->ok() && this->rng().roll(p->talents.seal_of_clarity->effectN(1).percent() ))
       p->buffs.seal_of_clarity->trigger();
 
-    if ( p->is_ptr() && p->talents.faiths_armor->ok())
+    if ( p->talents.faiths_armor->ok())
     {
       if ( (p->specialization() == PALADIN_RETRIBUTION && is_wog)
         || (p->specialization() != PALADIN_RETRIBUTION && is_sotr))
@@ -1711,7 +1492,7 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    if (p->is_ptr() && p->buffs.blessing_of_dawn->up())
+    if ( p->buffs.blessing_of_dawn->up() )
     {
       p->buffs.blessing_of_dawn->expire();
       p->buffs.blessing_of_dusk->trigger();

@@ -596,9 +596,6 @@ public:
 
     // Last tick of Mind Sear does not get buffed by Gathering Shadows
     bool gathering_shadows_bug = true;
-
-    // Auspicious Spirits generates insanity on execute not hit
-    bool as_insanity_bug = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -1025,7 +1022,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
-      if ( s->action->school == SCHOOL_HOLY )
+      if ( s->action->school == SCHOOL_HOLY || s->action->school == SCHOOL_HOLYFIRE )
       {
         priest().buffs.twilight_equilibrium_shadow_amp->trigger();
         priest().buffs.twilight_equilibrium_holy_amp->expire();

@@ -64,7 +64,7 @@ spec=enhancement
 role=attack
 position=back
 talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoB
-class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+# class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
 neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
@@ -92,7 +92,7 @@ spec=enhancement
 role=attack
 position=back
 talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
-class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
+# class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
 neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977

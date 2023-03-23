@@ -5,7 +5,7 @@ level=70
 race=blood_elf
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEQiIRSSSSSSa5AAAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIRkIJJJJJplAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -37,7 +37,7 @@ actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1
 actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
 actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
 actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.everfrost
-actions.precombat+=/variable,name=2h_check,value=main_hand.2h&talent.might_of_the_frozen_wastes
+actions.precombat+=/variable,name=2h_check,value=main_hand.2h
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -58,7 +58,7 @@ actions+=/invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!
 # Interrupt
 actions+=/mind_freeze,if=target.debuff.casting.react
 actions+=/antimagic_shell,if=runic_power.deficit>40
-actions+=/antimagic_zone,if=death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa)
+actions+=/antimagic_zone,if=death_knight.amz_absorb_percent>0&runic_power.deficit>70&talent.assimilation&(buff.breath_of_sindragosa.up&cooldown.empower_rune_weapon.charges<2|!talent.breath_of_sindragosa&!buff.pillar_of_frost.up)
 # Maintain Frost Fever, Icy Talons and Unleashed Frenzy
 actions+=/howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!buff.pillar_of_frost.up|buff.pillar_of_frost.up&!buff.killing_machine.react))
 actions+=/glacial_advance,if=active_enemies>=2&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
@@ -139,7 +139,7 @@ actions.cooldowns+=/frostwyrms_fury,if=active_enemies=1&(talent.pillar_of_frost&
 actions.cooldowns+=/frostwyrms_fury,if=active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in>cooldown.pillar_of_frost.remains_expected-raid_event.adds.in-raid_event.adds.duration)&(buff.pillar_of_frost.remains<gcd*2|raid_event.adds.exists&raid_event.adds.remains<gcd*2)
 actions.cooldowns+=/frostwyrms_fury,if=talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!variable.2h_check|!buff.pillar_of_frost.up&variable.2h_check&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&((buff.pillar_of_frost.remains<gcd|buff.unholy_strength.up&buff.unholy_strength.remains<gcd)&(debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance))
 actions.cooldowns+=/raise_dead
-actions.cooldowns+=/soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&active_enemies<=2&(buff.breath_of_sindragosa.up&runic_power>40|!buff.breath_of_sindragosa.up&!talent.obliteration|talent.obliteration&!buff.pillar_of_frost.up)
+actions.cooldowns+=/soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&active_enemies<=2&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react|!buff.pillar_of_frost.up)|talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&runic_power>40|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)
 actions.cooldowns+=/sacrificial_pact,if=!talent.glacial_advance&!buff.breath_of_sindragosa.up&pet.ghoul.remains<gcd*2&active_enemies>3
 actions.cooldowns+=/any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(buff.pillar_of_frost.up&buff.pillar_of_frost.remains>5|!buff.pillar_of_frost.up)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
 
@@ -148,7 +148,7 @@ actions.obliteration=remorseless_winter,if=active_enemies>3
 actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.obliteration+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
 actions.obliteration+=/howling_blast,if=!dot.frost_fever.ticking&!buff.killing_machine.react
-actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
+actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
 actions.obliteration+=/howling_blast,if=buff.rime.react&!buff.killing_machine.react
 actions.obliteration+=/glacial_advance,if=!variable.pooling_runic_power&variable.rp_buffs&!buff.killing_machine.react&active_enemies>=2
 actions.obliteration+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!buff.killing_machine.react&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1)
@@ -171,6 +171,7 @@ actions.racials+=/bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&
 
 # Single Target Rotation
 actions.single_target=remorseless_winter,if=variable.rw_buffs|variable.adds_remain
+actions.single_target+=/frost_strike,if=buff.killing_machine.stack<2&runic_power.deficit<20&!variable.2h_check
 actions.single_target+=/frostscythe,if=!variable.pooling_runes&buff.killing_machine.react&variable.frostscythe_priority
 actions.single_target+=/obliterate,if=!variable.pooling_runes&buff.killing_machine.react
 actions.single_target+=/howling_blast,if=buff.rime.react&talent.icebreaker.rank=2
@@ -191,18 +192,18 @@ actions.trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&!variable.
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.pillar_of_frost.up|!trinket.1.cast_time>0)|talent.pillar_of_frost&cooldown.pillar_of_frost.remains_expected>20|!talent.pillar_of_frost)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.pillar_of_frost.up|!trinket.2.cast_time>0)|talent.pillar_of_frost&cooldown.pillar_of_frost.remains_expected>20|!talent.pillar_of_frost)
 
-head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192922
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192988/192922/192922,crafted_stats=32/49
+head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192945/192945/192945,crafted_stats=36/32
 shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300
 chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192922
+wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192945
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
 waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8791/8932/8960/1498,gem_id=192958
 legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,enchant=fierce_armor_kit_3
-feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
-finger1=platinum_star_band,id=193708,bonus_id=6808/4786/1643/6935,gem_id=192922,enchant=devotion_of_mastery_3
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192922,enchant=devotion_of_mastery_3
+feet=valkyra_protector_greatboots,id=136772,bonus_id=6652/8811/8812/6808/4786/3300
+finger1=unstable_arcane_loop,id=193633,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,gem_id=192922,enchant=devotion_of_mastery_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192945,enchant=devotion_of_mastery_3
 trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_the_fallen_crusader
@@ -212,9 +213,9 @@ off_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_hysteria
 # gear_ilvl=421.19
 # gear_strength=4944
 # gear_stamina=13235
-# gear_crit_rating=5400
-# gear_haste_rating=2374
-# gear_mastery_rating=3372
+# gear_crit_rating=4634
+# gear_haste_rating=4503
+# gear_mastery_rating=2009
 # gear_versatility_rating=892
 # gear_armor=7154
 # set_bonus=tier29_2pc=1

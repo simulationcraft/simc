@@ -10118,7 +10118,7 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat->add_action( this, "Flametongue Weapon", "if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied." );
+    precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
     precombat->add_action( "potion" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
@@ -10713,7 +10713,15 @@ double shaman_t::composite_player_multiplier( school_e school ) const
        ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ||
          dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
-    m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent();
+    if ( dbc->ptr )
+    {
+      unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
+      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
+    }
+    else
+    {
+      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent();
+    }
   }
 
   return m;
