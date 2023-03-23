@@ -1753,12 +1753,18 @@ double priest_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  if ( talents.shadow.ancient_madness.enabled() )
+  if ( talents.shadow.ancient_madness.enabled() && !is_ptr() )
   {
-    if ( buffs.ancient_madness->check() )
+    if ( buffs.dark_ascension->check() )
     {
-      sim->print_debug( "Ancient Madness - adjusting crit increase to {}", buffs.ancient_madness->check_stack_value() );
-      sc += buffs.ancient_madness->check_stack_value();
+      sim->print_debug( "Ancient Madness - adjusting crit increase to {}", buffs.dark_ascension->check_stack_value() );
+      sc += buffs.dark_ascension->check_stack_value();
+    }
+
+    if ( buffs.voidform->check() )
+    {
+      sim->print_debug( "Ancient Madness - adjusting crit increase to {}", buffs.voidform->check_stack_value() );
+      sc += buffs.voidform->check_stack_value();
     }
   }
   return sc;

@@ -1434,7 +1434,6 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.weakening_reality->trigger();
     }
-
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
@@ -1615,11 +1614,6 @@ struct dark_ascension_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.dark_ascension->trigger();
-
-    if ( priest().talents.shadow.ancient_madness.enabled() )
-    {
-      priest().buffs.ancient_madness->trigger();
-    }
   }
 
   bool ready() override
@@ -2230,29 +2224,28 @@ struct voidform_t final : public priest_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-    // Set cooldown to 0s, cooldown is stored in Void Eruption
-    cooldown->duration = timespan_t::from_seconds( 0 );
+    if ( priest().talents.shadow.ancient_madness.enabled() )
+    {
+      add_invalidate( CACHE_CRIT_CHANCE );
+      add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+      set_reverse( true );
+      set_period( data().effectN( 4 ).period() );
+      set_max_stack( 20 );
+      set_default_value( priest().is_ptr() ? priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10
+                                           : priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
+    }
 
-    // Use a stack change callback to trigger voidform effects.
-    set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
-      if ( cur )
-      {
-        priest().cooldowns.mind_blast->reset( true, -1 );
-        priest().cooldowns.void_bolt->reset( true );
-      }
-    } );
+    // Set cooldown to 0s, cooldown is stored in Void Eruption
+    cooldown->duration = 0_s;
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    if ( priest().talents.shadow.ancient_madness.enabled() )
-    {
-      priest().buffs.ancient_madness->trigger();
-    }
-
     priest().buffs.shadowform->expire();
+    priest().cooldowns.mind_blast->reset( true, -1 );
+    priest().cooldowns.void_bolt->reset( true );
 
     return r;
   }
@@ -2372,30 +2365,6 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
   }
 };
 
-// ==========================================================================
-// Ancient Madness
-// ==========================================================================
-struct ancient_madness_t final : public priest_buff_t<buff_t>
-{
-  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.talents.shadow.ancient_madness )
-  {
-    if ( !data().ok() )
-      return;
-
-    add_invalidate( CACHE_CRIT_CHANCE );
-    add_invalidate( CACHE_SPELL_CRIT_CHANCE );
-    set_reverse( true );
-    set_period( timespan_t::from_seconds( 1 ) );
-    set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
-
-    if ( p.is_ptr() )
-      set_default_value( data().effectN( 2 ).percent() / 10 );  // 0.5%/1%
-    else
-      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
-    set_max_stack( 20 );                                   // 20/20;
-  }
-};
-
 // TODO: implement healing from Intangibility
 struct dispersion_t final : public priest_buff_t<buff_t>
 {
@@ -2406,6 +2375,29 @@ struct dispersion_t final : public priest_buff_t<buff_t>
     : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
       rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
   {
+  }
+};
+
+// ==========================================================================
+// Dark Ascension
+// ==========================================================================
+struct dark_ascension_t final : public priest_buff_t<buff_t>
+{
+  dark_ascension_t( priest_t& p ) : base_t( p, "dark_ascension", p.talents.shadow.dark_ascension )
+  {
+    cooldown->duration = 0_s;
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+    if ( priest().talents.shadow.ancient_madness.enabled() )
+    {
+      add_invalidate( CACHE_CRIT_CHANCE );
+      add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+      set_reverse( true );
+      set_period( data().effectN( 3 ).period() );
+      set_max_stack( 20 );
+      set_default_value( priest().is_ptr() ? priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10
+                                           : priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
+    }
   }
 };
 
@@ -2455,7 +2447,6 @@ void priest_t::create_buffs_shadow()
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.unfurling_darkness =
       make_buff( this, "unfurling_darkness", talents.shadow.unfurling_darkness->effectN( 1 ).trigger() );
@@ -2533,11 +2524,7 @@ void priest_t::create_buffs_shadow()
                              }
                            } );
 
-  // TODO: use default_value to parse increase instead of stacks
-  buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_cooldown( 0_s )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.dark_ascension = make_buff<buffs::dark_ascension_t>( *this );
 
   // Tier Sets
   // 393684 -> 394961
@@ -2571,8 +2558,7 @@ void priest_t::create_buffs_shadow()
           } );
 
   if ( weakening_reality->ok() )
-    buffs.weakening_reality->set_expire_at_max_stack( true ); // Avoid sim warning
-
+    buffs.weakening_reality->set_expire_at_max_stack( true );  // Avoid sim warning
 }
 
 void priest_t::init_rng_shadow()

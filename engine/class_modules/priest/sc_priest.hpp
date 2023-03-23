@@ -134,7 +134,6 @@ public:
     propagate_const<buff_t*> voidform;
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
-    propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> mind_devourer_ms_active;  // Tracking buff only
     propagate_const<buff_t*> shadowy_insight;
@@ -776,7 +775,7 @@ public:
   {
     // using S = const spell_data_t*;
 
-    parse_buff_effects( p().buffs.voidform );
+    parse_buff_effects( p().buffs.voidform, 0x4U, false, false );  // Skip 3 for Ancient Madness
     parse_buff_effects( p().buffs.shadowform );
     parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_buff_effects( p().buffs.mind_devourer );
@@ -786,15 +785,20 @@ public:
     {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
-
       parse_buff_effects( p().buffs.deathspeaker );
+
+      if ( p().talents.shadow.ancient_madness.enabled() )
+      {
+        parse_buff_effects( p().buffs.dark_ascension, 0b0001U, true, true );  // Skip Effect 1
+        parse_buff_effects( p().buffs.voidform, 0b0011U, true, true );        // Skip Effects 1 and 2
+      }
     }
     else
     {
       parse_buff_effects( p().buffs.mind_melt );  // Mind Blast instant cast and Crit increase
     }
-    // TODO: check why we cant use_default=true to get the value correct
-    parse_buff_effects( p().buffs.dark_ascension );  // Buffs corresponding non-periodic spells
+    parse_buff_effects( p().buffs.dark_ascension, 0b1000U, false,
+                        false );  // Buffs non-periodic spells - Skip 4 for Ancient Madness
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
     parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova

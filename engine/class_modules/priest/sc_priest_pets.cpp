@@ -244,11 +244,18 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   {
     // using S = const spell_data_t*;
 
-    parse_buff_effects( p().o().buffs.voidform );
+    parse_buff_effects( p().o().buffs.voidform, 0x4U, false, false );  // Skip 3 for Ancient Madness
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
-    parse_buff_effects( p().o().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
+    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false,
+                        false );  // Buffs non-periodic spells - Skip 4 for Ancient Madness
+
+    if ( p().o().is_ptr() && p().o().talents.shadow.ancient_madness.enabled() )
+    {
+      parse_buff_effects( p().o().buffs.dark_ascension, 0b0001U, true, true );  // Skip Effect 1
+      parse_buff_effects( p().o().buffs.voidform, 0b0011U, true, true );        // Skip Effects 1 and 2
+    }
   }
 
   priest_pet_t& p()
@@ -738,7 +745,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 
     // BUG: This talent is cursed
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    if ( p.o().bugs && !p.o().is_ptr())
+    if ( p.o().bugs && !p.o().is_ptr() )
     {
       if ( p.o().level() == 70 )
       {
@@ -1051,14 +1058,13 @@ spawner::pet_spawner_t<pet_t, priest_t>* get_current_main_pet( priest_t& priest 
 
 namespace priestspace
 {
-
 void priest_t::trigger_inescapable_torment( player_t* target )
 {
   if ( !talents.shadow.inescapable_torment.enabled() )
     return;
 
   auto current_pets = get_current_main_pet( *this );
-  
+
   if ( is_ptr() )
   {
     auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
