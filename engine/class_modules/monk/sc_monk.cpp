@@ -1605,6 +1605,26 @@ namespace monk
         }
       };
 
+      // T30 Shadowflame Nova =====================================================
+      struct shadowflame_nova_t : public monk_melee_attack_t
+      {
+        shadowflame_nova_t( monk_t *p )
+          : monk_melee_attack_t( "shadowflame_nova", p, p->find_spell( 410139 ) )
+        {
+          background = true;
+          aoe = -1;
+
+          apply_dual_wield_two_handed_scaling();
+        }
+
+        void execute() override
+        {
+          monk_melee_attack_t::execute();
+
+          p()->proc.shadowflame_nova->occur();
+        }
+      };
+
       // Rising Sun Kick Damage Trigger ===========================================
 
       struct rising_sun_kick_dmg_t : public monk_melee_attack_t
@@ -1695,6 +1715,7 @@ namespace monk
 
       struct rising_sun_kick_t : public monk_melee_attack_t
       {
+        shadowflame_nova_t *nova;
         rising_sun_kick_dmg_t *trigger_attack;
         glory_of_the_dawn_t *gotd;
 
@@ -1722,6 +1743,13 @@ namespace monk
 
             add_child( gotd );
           }
+
+          if ( p->specialization() == MONK_WINDWALKER )
+          {
+            nova = new shadowflame_nova_t( p );
+
+            add_child( nova );
+          }
         }
 
         void consume_resource() override
@@ -1744,6 +1772,13 @@ namespace monk
           {
             gotd->target = p()->target;
             gotd->execute();
+          }
+
+          // T30 Set Bonus
+          if ( p()->sets->set( MONK_WINDWALKER, T30, B2 )->proc_chance() )
+          {
+            nova->set_target( target );
+            nova->execute();
           }
 
           if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
@@ -2931,18 +2966,11 @@ namespace monk
               p()->passive_actions.thunderfist->schedule_execute();
             }
 
-            //if ( p()->specialization() == MONK_WINDWALKER && p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) )
-            if ( true ) // debug
+            // Tier 30 Windwalker 
+            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) && p()->rppm.shadowflame_spirit->trigger() )
             {
-              // Placeholders until spelldata is acquired from Blizzard
-              double spawn_chance = 0.1;
-              double duration = 12;
-
-              if ( rng().roll( spawn_chance ) )
-              {
-                p()->pets.shadowflame_monk.spawn( timespan_t::from_seconds( duration ) );
-                p()->proc.shadowflame_monk_spawn->occur();
-              }
+              p()->pets.shadowflame_monk.spawn( p()->passives.shadowflame_spirit_summon->duration() );
+              p()->proc.shadowflame_monk_spawn->occur();
             }
           }
         }
@@ -7536,6 +7564,10 @@ namespace monk
     passives.kicks_of_flowing_momentum = find_spell( 394944 );
     passives.fists_of_flowing_momentum = find_spell( 394949 );
 
+    // Tier 30
+    passives.shadowflame_spirit = find_spell( 410159 );
+    passives.shadowflame_spirit_summon = find_spell( 410153 );
+
     // Mastery spells =========================================
     mastery.combo_strikes = find_mastery_spell( MONK_WINDWALKER );
     mastery.elusive_brawler = find_mastery_spell( MONK_BREWMASTER );
@@ -8077,10 +8109,13 @@ namespace monk
     proc.resonant_fists = get_proc( "Resonant Fists" );
     proc.rsk_reset_totm = get_proc( "Rising Sun Kick TotM Reset" );
     proc.salsalabim_bof_reset = get_proc( "Sal'salabim Breath of Fire Reset" );
-    proc.shadowflame_monk_spawn = get_proc( "Shadow Flame Monk Summon" );
     proc.tranquil_spirit_expel_harm = get_proc( "Tranquil Spirit - Expel Harm" );
     proc.tranquil_spirit_goto = get_proc( "Tranquil Spirit - Gift of the Ox" );
     proc.xuens_battlegear_reduction = get_proc( "Xuen's Battlegear CD Reduction" );
+
+    // Tier 30
+    proc.shadowflame_monk_spawn = get_proc( "Shadow Flame Monk Summon" );
+    proc.shadowflame_nova = get_proc( "Rising Sun Kick - Shadowflame Nova" );
   }
 
   // monk_t::init_assessors ===================================================
@@ -8100,6 +8135,9 @@ namespace monk
 
     if ( talent.brewmaster.spirit_of_the_ox->ok() )
       rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
+
+    // Tier 30
+    rppm.shadowflame_spirit = get_rppm( "shadowflame_spirit", sets->set( MONK_WINDWALKER, T30, B4 ) );
   }
 
   // monk_t::init_special_effects ===========================================
