@@ -2102,8 +2102,7 @@ struct shadow_crash_t final : public priest_spell_t
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) +
-                     priest().talents.shadow.whispering_shadows->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) )
   {
     parse_options( options_str );
