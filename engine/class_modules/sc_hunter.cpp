@@ -2169,16 +2169,14 @@ struct kill_command_sv_t: public kill_command_base_t
   {
     kill_command_base_t::impact( s );
 
-    if( o() -> tier_set.t30_sv_4pc.ok() )
-    {
-        if ( o() -> state.last_kc_target && o() -> state.last_kc_target != s -> target )
-        {
-            o() -> find_target_data( o() -> state.last_kc_target ) -> debuffs.shredded_armor -> cancel();
-        }
-        o() -> state.last_kc_target = s -> target;
-        o() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> trigger();
-    }
+    if( ! o() -> tier_set.t30_sv_4pc.ok() )
+      return;
 
+    if ( o() -> state.last_kc_target && o() -> state.last_kc_target != s -> target )
+      o() -> get_target_data( o() -> state.last_kc_target ) -> debuffs.shredded_armor -> expire();
+
+    o() -> state.last_kc_target = s -> target;
+    o() -> get_target_data( s -> target ) -> debuffs.shredded_armor -> trigger();
   }
   
   void trigger_dot( action_state_t* s ) override
@@ -4529,9 +4527,10 @@ struct internal_bleeding_t
     {
       double am = hunter_spell_t::composite_ta_multiplier( s );
 
-      if( p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> check() )
+      auto td = p() -> find_target_data( s -> target ); 
+      if( td )
       {
-        am *= 1.0 + p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> value();
+        am *= 1.0 + td -> debuffs.shredded_armor -> value();
       }
 
       return am;
@@ -5992,9 +5991,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         double am = hunter_spell_t::composite_ta_multiplier( s );
 
-        if( p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> check() )
+        auto td = p() -> find_target_data( s -> target ); 
+        if( td )
         {
-          am *= 1.0 + p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> value();
+          am *= 1.0 + td -> debuffs.shredded_armor -> value();
         }
 
         return am;
@@ -6069,9 +6069,10 @@ struct wildfire_bomb_t: public hunter_spell_t
     {
       double am = hunter_spell_t::composite_da_multiplier( s );
 
-      if( p() -> find_target_data( s -> target ) ->  debuffs.shredded_armor -> check() )
+      auto td = p() -> find_target_data( s -> target ); 
+      if( td )
       {
-        am *= 1.0 + p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> value();
+        am *= 1.0 + td -> debuffs.shredded_armor -> value();
       }
 
       return am;
@@ -6144,9 +6145,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         double am = hunter_spell_t::composite_da_multiplier( s );
 
-        if( p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> check() )
+        auto td = p() -> find_target_data( s -> target ); 
+        if( td )
         {
-          am *= 1.0 + p() -> find_target_data( s -> target ) -> debuffs.shredded_armor -> value();
+          am *= 1.0 + td -> debuffs.shredded_armor -> value();
         }
 
         return am;
