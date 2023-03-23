@@ -2221,7 +2221,12 @@ namespace buffs
 // ==========================================================================
 struct voidform_t final : public priest_buff_t<buff_t>
 {
-  voidform_t( priest_t& p ) : base_t( p, "voidform", p.specs.voidform )
+  double am_value;
+
+  voidform_t( priest_t& p )
+    : base_t( p, "voidform", p.specs.voidform ),
+      am_value( priest().is_ptr() ? priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10
+                                  : priest().talents.shadow.ancient_madness->effectN( 2 ).percent() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
@@ -2233,8 +2238,17 @@ struct voidform_t final : public priest_buff_t<buff_t>
       set_reverse( true );
       set_period( data().effectN( 4 ).period() );
       set_max_stack( 20 );
-      set_default_value( priest().is_ptr() ? priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10
-                                           : priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
+      set_default_value( am_value );
+
+      // When Ancient Madness expires, make sure we do not expire Voidform
+      set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+        if ( cur == 1 )
+        {
+          set_reverse( false );
+          set_max_stack( 1 );
+          set_default_value( 0 );
+        }
+      } );
     }
 
     // Set cooldown to 0s, cooldown is stored in Void Eruption
@@ -2243,6 +2257,14 @@ struct voidform_t final : public priest_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
+    // Reset this back
+    if ( priest().talents.shadow.ancient_madness.enabled() )
+    {
+      set_reverse( true );
+      set_max_stack( 20 );
+      set_default_value( am_value );
+    }
+
     bool r = base_t::trigger( stacks, value, chance, duration );
 
     priest().buffs.shadowform->expire();
@@ -2385,7 +2407,12 @@ struct dispersion_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct dark_ascension_t final : public priest_buff_t<buff_t>
 {
-  dark_ascension_t( priest_t& p ) : base_t( p, "dark_ascension", p.talents.shadow.dark_ascension )
+  double am_value;
+
+  dark_ascension_t( priest_t& p )
+    : base_t( p, "dark_ascension", p.talents.shadow.dark_ascension ),
+      am_value( priest().is_ptr() ? priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10
+                                  : priest().talents.shadow.ancient_madness->effectN( 2 ).percent() )
   {
     cooldown->duration = 0_s;
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -2397,9 +2424,33 @@ struct dark_ascension_t final : public priest_buff_t<buff_t>
       set_reverse( true );
       set_period( data().effectN( 3 ).period() );
       set_max_stack( 20 );
-      set_default_value( priest().is_ptr() ? priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10
-                                           : priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
+      set_default_value( am_value );
+
+      // When Ancient Madness expires, make sure we do not expire Dark Ascension
+      set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+        if ( cur == 1 )
+        {
+          set_reverse( false );
+          set_max_stack( 1 );
+          set_default_value( 0 );
+        }
+      } );
     }
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    // Reset this back
+    if ( priest().talents.shadow.ancient_madness.enabled() )
+    {
+      set_reverse( true );
+      set_max_stack( 20 );
+      set_default_value( am_value );
+    }
+    
+    bool r = base_t::trigger( stacks, value, chance, duration );
+
+    return r;
   }
 };
 
@@ -2527,8 +2578,9 @@ void priest_t::create_buffs_shadow()
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   if ( !is_ptr() )
+  {
     buffs.devoured_pride->set_duration( 0_ms );
-
+  }
 
   buffs.devoured_despair = make_buff<buffs::devoured_despair_buff_t>( *this );
 
