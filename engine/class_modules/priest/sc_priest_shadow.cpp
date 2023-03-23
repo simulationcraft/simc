@@ -2511,6 +2511,9 @@ void priest_t::create_buffs_shadow()
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  if ( is_ptr() )
+    buffs.devoured_pride->set_duration( 0_ms );
+
   buffs.devoured_despair = make_buff( this, "devoured_despair", talents.shadow.devoured_despair )
                                ->set_duration( buffs.devoured_pride->buff_duration() )
                                ->set_trigger_spell( talents.shadow.idol_of_yshaarj );
@@ -2548,11 +2551,12 @@ void priest_t::create_buffs_shadow()
           ->set_default_value_from_effect( 1 );
 
   // TODO: Wire up spell data, split into helper function.
+
+  auto weakening_reality = find_spell( 409502 );
   buffs.weakening_reality =
-      make_buff( this, "weakening_reality", find_spell( 409502 ) )
+      make_buff( this, "weakening_reality", weakening_reality )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_expire_at_max_stack( true )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
+          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
             if ( old == b->max_stack() )
             {
               auto duration =
@@ -2565,6 +2569,10 @@ void priest_t::create_buffs_shadow()
               make_event( b->sim, [ this ] { trigger_idol_of_yshaarj( target ); } );
             }
           } );
+
+  if ( weakening_reality->ok() )
+    buffs.weakening_reality->set_expire_at_max_stack( true ); // Avoid sim warning
+
 }
 
 void priest_t::init_rng_shadow()

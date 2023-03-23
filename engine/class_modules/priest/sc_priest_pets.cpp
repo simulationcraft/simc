@@ -408,6 +408,12 @@ struct base_fiend_pet_t : public priest_pet_t
   void demise() override
   {
     priest_pet_t::demise();
+
+    if ( is_ptr() )
+    {
+      o().buffs.devoured_pride->expire();
+      o().buffs.devoured_despair->expire();
+    }
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -633,7 +639,8 @@ struct inescapable_torment_t final : public priest_pet_spell_t
 
   inescapable_torment_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
-      duration( data().effectN( 2 ).time_value() )
+      duration( p.is_ptr() ? data().effectN( 2 ).time_value()
+                           : timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
@@ -1052,10 +1059,12 @@ void priest_t::trigger_inescapable_torment( player_t* target )
 
   auto current_pets = get_current_main_pet( *this );
   
-  auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
-
-  buffs.devoured_pride->extend_duration( this, extend );
-  buffs.devoured_despair->extend_duration( this, extend );
+  if ( is_ptr() )
+  {
+    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
+    buffs.devoured_pride->extend_duration( this, extend );
+    buffs.devoured_despair->extend_duration( this, extend );
+  }
 
   for ( auto a_pet : current_pets->active_pets() )
   {
