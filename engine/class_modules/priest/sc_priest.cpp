@@ -544,7 +544,6 @@ struct smite_t final : public priest_spell_t
     {
       child_holy_fire             = priest().background_actions.holy_fire;
       child_holy_fire->background = true;
-      add_child( child_holy_fire );
     }
   }
 
@@ -647,7 +646,7 @@ struct smite_t final : public priest_spell_t
                           priest(), chastise_cdr, priest().talents.holy.light_of_the_naaru.enabled(),
                           ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
 
-        priest().cooldowns.holy_word_chastise->adjust( chastise_cdr );
+        priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
       }
     }
     if ( priest().talents.discipline.harsh_discipline.enabled() )
@@ -2182,11 +2181,19 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
-  background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
-
-  init_background_actions_shadow();
-  init_background_actions_discipline();
-  init_background_actions_holy();
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
+    init_background_actions_shadow();
+  }
+  else if ( specialization() == PRIEST_DISCIPLINE )
+  {
+    init_background_actions_discipline();
+  }
+  else if ( specialization() == PRIEST_HOLY )
+  {
+    init_background_actions_holy();
+  }
 }
 
 void priest_t::do_dynamic_regen( bool forced )
@@ -2522,7 +2529,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
