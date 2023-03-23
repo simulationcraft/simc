@@ -1687,7 +1687,8 @@ Description      : Your tattoos reduce $?$s338682[magic damage taken by $s1% and
 
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=6, col=2, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(25, 50)]
+                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(10, 20)]
                  : Effect#3 [op=set, values=(100, 200)]
 Class            : Demon Hunter
 School           : Physical
