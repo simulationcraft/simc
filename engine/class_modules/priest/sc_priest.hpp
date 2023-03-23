@@ -63,6 +63,7 @@ public:
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
     propagate_const<buff_t*> sins_of_the_many;
+    propagate_const<buff_t*> psychic_horror;
   } buffs;
 
   priest_t& priest()
@@ -567,7 +568,7 @@ public:
     bool mindgames_damage_reversal  = true;
 
     bool t30_multiple_bender = true;
-    bool t30_yshaarj = true;
+    bool t30_yshaarj         = true;
 
     // Actives the screams bug with Mental Decay and Shadow Word: Pain
     bool priest_screams_bug = true;

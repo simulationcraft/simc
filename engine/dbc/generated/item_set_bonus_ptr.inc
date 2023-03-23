@@ -1,4 +1,4 @@
-// Set bonus data, wow build 10.1.0.48537
+// Set bonus data, wow build 10.1.0.48661
 static const std::array<item_set_bonus_t, 601> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
@@ -578,9 +578,9 @@ static const std::array<item_set_bonus_t, 601> __ptr_set_bonus_data { {
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   4,   5,  256,  405553, { 202543, 202542, 202541, 202545, 202540,  0 } },
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   4,   5,  257,  405556, { 202543, 202542, 202541, 202545, 202540,  0 } },
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   4,   5,  258,  405558, { 202543, 202542, 202541, 202545, 202540,  0 } },
+  { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   2,   6,  250,  405499, { 202464, 202462, 202461, 202460, 202459,  0 } },
   { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   2,   6,  251,  405501, { 202464, 202462, 202461, 202460, 202459,  0 } },
   { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   2,   6,  252,  405503, { 202464, 202462, 202461, 202460, 202459,  0 } },
-  { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   4,   6,  250,  405499, { 202464, 202462, 202461, 202460, 202459,  0 } },
   { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   4,   6,  250,  405500, { 202464, 202462, 202461, 202460, 202459,  0 } },
   { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   4,   6,  251,  405502, { 202464, 202462, 202461, 202460, 202459,  0 } },
   { "Lingering Phantom's Encasement"            , "tier30"             ,     19,  1540,   30,   4,   6,  252,  405504, { 202464, 202462, 202461, 202460, 202459,  0 } },

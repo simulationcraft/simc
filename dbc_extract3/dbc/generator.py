@@ -1396,6 +1396,7 @@ class SpellDataGenerator(DataGenerator):
          408090, # Idol of Debilitating Arrogance Druid?
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
+         408815, 408832, 408835, 408836, # Djaruun
         ),
 
         # Warrior:
@@ -2180,14 +2181,15 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
-          ( 359115, 0 ),  # Empower Triggered GCD
+          ( 359115, 0 ), # Empower Triggered GCD
           ( 361519, 0 ), # Essence Burst
           # Devastation
           ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
-          ( 375802, 1 ),  # Burnout buff
-          ( 376850, 1 ),  # Power Swell buff
-          ( 397870, 1 ),  # Titanic Wrath
-          ( 405651, 1 ),  # Imminent Destruction Player Buff
+          ( 375802, 1 ), # Burnout buff
+          ( 376850, 1 ), # Power Swell buff
+          ( 397870, 1 ), # Titanic Wrath
+          ( 405651, 1 ), # Imminent Destruction Player Buff
+          ( 409848, 1 ), # 4t30 buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),

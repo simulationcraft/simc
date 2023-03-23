@@ -580,7 +580,7 @@ struct vampiric_embrace_t final : public priest_spell_t
     priest_spell_t::execute();
     priest().buffs.vampiric_embrace->trigger();
 
-    if ( priest().specs.hallucinations->ok() )
+    if ( priest().specs.hallucinations->ok() && !priest().is_ptr() )
     {
       priest().generate_insanity( insanity, priest().gains.hallucinations_vampiric_embrace, nullptr );
     }
@@ -1737,6 +1737,28 @@ struct psychic_horror_t final : public priest_spell_t
     may_miss = may_crit   = false;
     ignore_false_positive = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( s->target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.psychic_horror->trigger();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !priest_spell_t::target_ready( candidate_target ) )
+      return false;
+
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+      return true;
+
+    return false;
+  }
 };
 
 // ==========================================================================
@@ -2102,8 +2124,7 @@ struct shadow_crash_t final : public priest_spell_t
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) +
-                     priest().talents.shadow.whispering_shadows->effectN( 1 ).resource( RESOURCE_INSANITY ) ),
+      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
       shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) )
   {
     parse_options( options_str );

@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -3744,7 +3744,7 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #3 (id=222212)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20270 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24320 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #4 (id=819579)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #5 (id=1031978)  : Energize Power (30)
@@ -4355,6 +4355,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
+Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4), Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... .......x ........ ........   ........ .x...... ........ ........ 
@@ -4367,8 +4368,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=128469)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1072771)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Unknown(92)
 Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
 
 Name             : Light's Hammer (id=114919) [Spell Family (10)] 
@@ -4422,7 +4421,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
 Family Flags     : 46, 101
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
@@ -4463,7 +4462,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 15.5 seconds
-Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
+Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4), Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
 Triggered by     : Light's Hammer (114158)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4477,7 +4476,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=154587)   : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 59738 | Misc Value 2: 0xdb5 | Target: Unknown(87)
-#2 (id=1072782)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
+#2 (id=1074247)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 
 Name             : Nature's Vigil (id=124974) [Spell Family (7)] 
@@ -5232,7 +5231,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Internal Cooldown: 0.1 seconds
-Stacks           : 2 initial, 2 maximum
+Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -5352,9 +5351,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Require All Targets (58), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=216288)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -7083,7 +7082,7 @@ Effects          :
 #1 (id=297726)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #2 (id=297727)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.52150 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=819590)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Strikes all nearby enemies with a massive slash, inflicting $s2 Physical damage.$?a231063[ Deals $231063s1% increased damage against bleeding targets.][]$?a405300[ Applies the Bleed from Thrash.][] Deals reduced damage beyond $s3 targets.$?a5487[][
@@ -16915,11 +16914,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1027985)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830), Thrash (106832), Thrash (192090), Brutal Slash (202028), Swipe (213764), Swipe (213771), Thrash (405233)
                    Family Flags: 24, 26, 40, 52, 74, 91, 99, 126
 #2 (id=1027986)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Thrash (77758), Swipe (106785), Thrash (106830), Thrash (106832), Thrash (192090), Brutal Slash (202028), Swipe (213764), Swipe (213771), Thrash (405233)
                    Family Flags: 24, 26, 40, 52, 74, 91, 99, 126
 Description      : Swipe and Thrash damage is increased by $s1%.
@@ -20522,7 +20521,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1053489)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Shred deals $s1% increased damage against bleeding targets and Shred and $?s202028[Brutal Slash][Swipe] apply the Bleed damage over time from Thrash.
 
 Name             : Druid Balance 10.1 Class Set 2pc (id=405510) [Spell Family (7), Passive, Hidden] 
@@ -20616,6 +20615,7 @@ Effects          :
 Description      : When a Shadows of the Predator application resets stacks, you gain $408468s1% increased Agility and you generate $408468s2 combo point every $408468t2 secs for $408468d.
 
 Name             : Druid Guardian 10.1 Class Set 2pc (id=405514) [Spell Family (7), Passive, Hidden] 
+Hotfixed         : Description
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -20634,7 +20634,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053849)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you take damage, Mangle and Thrash damage and Rage generation are increased by $408504s1% for $408504d and you heal for $s1% of damage taken over $408504d.
+Description      : When you take damage, Mangle and Thrash damage and Rage generation are increased by $408504s2% for $408504d and you heal for $s1% of damage taken over $408504d.
 
 Name             : Druid Guardian 10.1 Class Set 4pc (id=405515) [Spell Family (7), Passive, Hidden] 
 Class            : Druid

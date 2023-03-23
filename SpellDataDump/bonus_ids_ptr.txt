@@ -1,4 +1,4 @@
-SimulationCraft 1005-01 for World of Warcraft 10.0.5.48317 Live (hotfix 2023-03-07/48317)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4747,3 +4747,6 @@ bonus_id={ 9404 }, ilevel_adjust={ 9 }
 bonus_id={ 9405 }, ilevel_adjust={ 13 }
 bonus_id={ 9406 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 372 @plvl 70 }
 bonus_id={ 9407 }, quality={ rare }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
+bonus_id={ 9412 }, effects={ Reserve Parachute (id=409838, index=0, type=use) }
+bonus_id={ 9413 }, socket={ 1 }
+bonus_id={ 9416 }, effects={ Medical Wrap Kit (id=409923, index=0, type=equip) }

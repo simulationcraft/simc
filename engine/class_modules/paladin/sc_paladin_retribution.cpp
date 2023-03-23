@@ -846,7 +846,7 @@ struct seething_flames_t : public paladin_spell_t
   {
     background = true;
     // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
-    base_aoe_multiplier *= 0.33;
+    base_aoe_multiplier *= 0.6;
   }
 };
 
@@ -890,7 +890,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     if ( p->talents.seething_flames->ok() )
     {
       // This is from logs; I assume it must be in spelldata somewhere but have not yet found it.
-      base_aoe_multiplier *= 0.33;
+      base_aoe_multiplier *= 0.6;
     }
 
     aoe = -1;
@@ -1158,6 +1158,7 @@ struct searing_light_t : public paladin_spell_t
     : paladin_spell_t( "searing_light", p, p->find_spell( 407478 ) )
   {
     background = true;
+    aoe = -1;
     reduced_aoe_targets = 8;
   }
 

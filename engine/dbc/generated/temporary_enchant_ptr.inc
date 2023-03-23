@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.1.0.48537
-static const std::array<temporary_enchant_entry_t, 70> __ptr_temporary_enchant_data { {
+// Temporary item enchants, wow build 10.1.0.48661
+static const std::array<temporary_enchant_entry_t, 74> __ptr_temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
   {  3265,  0,  45395, "blessed_weapon_coating"       },
@@ -37,6 +37,9 @@ static const std::array<temporary_enchant_entry_t, 70> __ptr_temporary_enchant_d
   {  6225,  0, 324068, "heavy_desolate_armor_kit"     },
   {    14,  0,   2830, "heavy_sharpening_stone"       },
   {    21,  0,   3114, "heavy_weightstone"            },
+  {  6838,  1, 409654, "hissing_rune"                 },
+  {  6837,  2, 409659, "hissing_rune"                 },
+  {  6839,  3, 409660, "hissing_rune"                 },
   {  6516,  1, 385575, "howling_rune"                 },
   {  6517,  2, 385576, "howling_rune"                 },
   {  6518,  3, 385577, "howling_rune"                 },
@@ -64,6 +67,7 @@ static const std::array<temporary_enchant_entry_t, 70> __ptr_temporary_enchant_d
   {  6201,  0, 322763, "shaded_weightstone"           },
   {    25,  0,   3594, "shadow_oil"                   },
   {  6188,  0, 320798, "shadowcore_oil"               },
+  {  6840,  1, 409669, "shadowed_belt_buckle"         },
   {   483,  0,   9900, "solid_sharpening_stone"       },
   {   484,  0,   9903, "solid_weightstone"            },
   {  2677,  0,  28013, "superior_mana_oil"            },

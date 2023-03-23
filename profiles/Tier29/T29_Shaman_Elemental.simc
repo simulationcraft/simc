@@ -5,7 +5,7 @@ level=70
 race=tauren
 role=spell
 position=ranged_back
-talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSp0SCgDkUSShSUikQOAAAAAAAkAkkSAFhIKpkAAAA
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCAJlkUoEOgkkEBAAAAAoEgIJgkCOQJJplSAJJJAC
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -26,7 +26,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-# Ensure weapon enchant is applied.
+# Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon.
 actions.precombat+=/flametongue_weapon,if=talent.improved_flametongue_weapon.enabled
 actions.precombat+=/potion
 

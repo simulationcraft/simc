@@ -141,19 +141,19 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> tip_the_scales;
 
     // Devastation
+    propagate_const<buff_t*> blazing_shards;  // 4t30
     propagate_const<buff_t*> burnout;
+    propagate_const<buff_t*> causality;
     propagate_const<buff_t*> charged_blast;
     propagate_const<buff_t*> dragonrage;
+    propagate_const<buff_t*> fury_of_the_aspects;
+    propagate_const<buff_t*> imminent_destruction;
     propagate_const<buff_t*> iridescence_blue;
     propagate_const<buff_t*> iridescence_blue_disintegrate;
     propagate_const<buff_t*> iridescence_red;
     propagate_const<buff_t*> limitless_potential;
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
-    propagate_const<buff_t*> fury_of_the_aspects;
-    propagate_const<buff_t*> causality;
-    propagate_const<buff_t*> imminent_destruction;
-    propagate_const<buff_t*> tier30_4pc;
 
     // Preservation
   } buff;
@@ -790,12 +790,6 @@ struct empowered_release_spell_t : public empowered_base_t
     gcd_type = gcd_haste_type::NONE;
 
     extend_tier29_4pc = timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
-
-    if ( p->sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ) )
-    {
-      empowered_base_t::da_multiplier_buffeffects.emplace_back( nullptr, 0.08, false, false, [] { return true; } );
-      empowered_base_t::ta_multiplier_buffeffects.emplace_back( nullptr, 0.08, false, false, [] { return true; } );
-    }
   }
 
   empower_e empower_level( const action_state_t* s ) const
@@ -841,7 +835,7 @@ struct empowered_release_spell_t : public empowered_base_t
         p()->buff.fury_of_the_aspects->trigger( extend_tier29_4pc );
     }
 
-    p()->buff.tier30_4pc->trigger();
+    p()->buff.blazing_shards->trigger();
   }
 };
 
@@ -1049,7 +1043,7 @@ struct essence_spell_t : public evoker_spell_t
   timespan_t ftf_dur_eb;
   double hoarded_pct;
   double titanic_mul;
-  double tier30_2pc_mul;
+  double obsidian_shards_mul;
 
   essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
     : evoker_spell_t( n, p, s, o ),
@@ -1057,7 +1051,7 @@ struct essence_spell_t : public evoker_spell_t
       ftf_dur_eb( -timespan_t::from_seconds( p->is_ptr() ? p->talent.feed_the_flames->effectN( 2 ).base_value() : 0 ) ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
       titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
-      tier30_2pc_mul( 0.12 )
+      obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B2 )->effectN( 1 ).percent() )
   {
   }
 
@@ -1387,7 +1381,10 @@ struct disintegrate_t : public essence_spell_t
     }
 
     if ( p()->action.obsidian_shards )
-      residual_action::trigger( p()->action.obsidian_shards, d->state->target, d->state->result_amount * tier30_2pc_mul );
+    {
+      residual_action::trigger( p()->action.obsidian_shards, d->state->target,
+                                d->state->result_amount * obsidian_shards_mul );
+    }
   }
 };
 
@@ -1661,33 +1658,28 @@ struct obsidian_scales_t : public evoker_spell_t
 
 struct obsidian_shards_t : public residual_action::residual_periodic_action_t<evoker_spell_t>
 {
-  obsidian_shards_t( evoker_t* p ) : residual_action_t( "obsidian_shards", p, spell_data_t::nil() )
+  double blazing_shards_mul;
+
+  obsidian_shards_t( evoker_t* p )
+    : residual_action_t( "obsidian_shards", p, p->find_spell( 409776 ) ),
+      blazing_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B4 )->effectN( 3 ).percent() )
+  {}
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    school = SCHOOL_FIRESTORM;
-    dot_duration = 8_s;
-    base_tick_time = 2_s;
+    auto ta = residual_action_t::composite_ta_multiplier( s );
 
-    if ( p->sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ) )
-    {
-      residual_action_t::ta_multiplier_buffeffects.emplace_back( nullptr, 2.0, false, false, [ p ] {
-        return p->buff.dragonrage->check() || p->buff.tier30_4pc->check();
-      } );
-    }
-  }
+    if ( p()->buff.dragonrage->check() || p()->buff.blazing_shards->check() )
+      ta *= 1.0 + blazing_shards_mul;
 
-  void init() override
-  {
-    residual_action_t::init();
-
-    snapshot_flags &= ~( STATE_VERSATILITY | STATE_TGT_MUL_TA );
-    update_flags &= ~( STATE_VERSATILITY | STATE_TGT_MUL_TA );
+    return ta;
   }
 
   void tick( dot_t* d ) override
   {
     residual_action_t::tick( d );
 
-    p()->benefit.supercharged_shards->update( p()->buff.dragonrage->check() || p()->buff.tier30_4pc->check() );
+    p()->benefit.supercharged_shards->update( p()->buff.dragonrage->check() || p()->buff.blazing_shards->check() );
   }
 };
 
@@ -1822,7 +1814,7 @@ struct pyre_t : public essence_spell_t
       essence_spell_t::impact( s );
 
       if ( p()->action.obsidian_shards )
-        residual_action::trigger( p()->action.obsidian_shards, s->target, s->result_amount * tier30_2pc_mul );
+        residual_action::trigger( p()->action.obsidian_shards, s->target, s->result_amount * obsidian_shards_mul );
     }
   };
 
@@ -2359,15 +2351,33 @@ void evoker_t::create_buffs()
   buff.tip_the_scales = make_buff( this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
 
   // Devastation
+  buff.blazing_shards = make_buff( this, "blazing_shards", find_spell( 409848 ) )
+                            ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
+
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
                      ->set_trigger_spell( talent.burnout )
                      ->set_cooldown( talent.burnout->internal_cooldown() )
                      ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
+  buff.causality = make_buff( this, "causality", find_spell( 375778 ) )
+                       ->set_default_value_from_effect( 1, 0.01 )
+                       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
+                         cooldown.eternity_surge->adjust_recharge_multiplier();
+                         cooldown.fire_breath->adjust_recharge_multiplier();
+                       } );
+
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
   buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
+
+
+  buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_cooldown( 0_s )
+                                 ->add_invalidate( CACHE_HASTE );
+
+  buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 405651 ) );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_trigger_spell( talent.iridescence )
@@ -2402,25 +2412,6 @@ void evoker_t::create_buffs()
                         if ( new_ )
                           cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
                       } );
-
-
-  buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 405651 ) );
-
-  buff.causality = make_buff( this, "causality", find_spell( 375778 ) )
-                       ->set_default_value_from_effect( 1, 0.01 )
-                       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-                         cooldown.eternity_surge->adjust_recharge_multiplier();
-                         cooldown.fire_breath->adjust_recharge_multiplier();
-                       } );
-
-  buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_cooldown( 0_s )
-                                 ->add_invalidate( CACHE_HASTE );
-
-  buff.tier30_4pc = make_buff( this, "tier30_4pc" )
-    ->set_chance( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B4 ) ? 1.0 : 0.0 )
-    ->set_duration( 5_s );
 
   // Preservation
 }
@@ -2558,6 +2549,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
+  action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
 
   // Preservation
 }

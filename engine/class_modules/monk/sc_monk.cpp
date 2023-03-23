@@ -9275,7 +9275,7 @@ namespace monk
     double stagger_base = stagger_base_value();
     // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
     double k = dbc->armor_mitigation_constant( target_level );
-    k *= 1.384;  // Mythic Raid
+    k *= ( is_ptr() ? 1.62800002098 : 1.38399994373 );  // Mythic Raid
 
     double stagger = stagger_base / ( stagger_base + k );
 
