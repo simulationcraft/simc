@@ -63,6 +63,7 @@ public:
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
     propagate_const<buff_t*> sins_of_the_many;
+    propagate_const<buff_t*> psychic_horror;
   } buffs;
 
   priest_t& priest()
@@ -143,6 +144,7 @@ public:
     propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
+    propagate_const<buff_t*> devoured_despair;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
@@ -157,7 +159,7 @@ public:
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
     propagate_const<buff_t*> light_weaving;
-    propagate_const<buff_t*> t30_4pc;
+    propagate_const<buff_t*> weakening_reality;
   } buffs;
 
   // Talents
@@ -567,7 +569,7 @@ public:
     bool mindgames_damage_reversal  = true;
 
     bool t30_multiple_bender = true;
-    bool t30_yshaarj = true;
+    bool t30_yshaarj         = true;
 
     // Actives the screams bug with Mental Decay and Shadow Word: Pain
     bool priest_screams_bug = true;
@@ -655,7 +657,9 @@ public:
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_inescapable_torment( player_t* target );
+  void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
+  void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
   void trigger_psychic_link( action_state_t* );
@@ -946,11 +950,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void consume_resource() override
   {
     base_t::consume_resource();
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && resource_current == RESOURCE_INSANITY )
-    {
-      priest().buffs.t30_4pc->trigger( last_resource_cost );
-    }
   }
 
   void last_tick( dot_t* d ) override

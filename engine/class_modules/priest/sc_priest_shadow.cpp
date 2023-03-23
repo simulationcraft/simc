@@ -1429,6 +1429,12 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.screams_of_the_void->trigger();
     }
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
+    {
+      priest().buffs.weakening_reality->trigger();
+    }
+
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
@@ -1737,6 +1743,30 @@ struct psychic_horror_t final : public priest_spell_t
     may_miss = may_crit   = false;
     ignore_false_positive = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( s->target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.psychic_horror->trigger();
+      s->target->buffs.stunned->trigger( data().duration() );
+      s->target->stun();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !priest_spell_t::target_ready( candidate_target ) )
+      return false;
+
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+      return true;
+
+    return false;
+  }
 };
 
 // ==========================================================================
@@ -1839,6 +1869,16 @@ struct void_torrent_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.void_torrent->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().is_ptr() )
+    {
+      priest().spawn_idol_of_cthun( s );
+    }
   }
 };
 
@@ -2371,6 +2411,26 @@ struct dispersion_t final : public priest_buff_t<buff_t>
   }
 };
 
+// Fury of Elune AP =========================================================
+struct devoured_despair_buff_t : public priest_buff_t<buff_t>
+{
+  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_depair", p.talents.shadow.devoured_despair )
+  {
+    set_cooldown( 0_ms );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_trigger_spell( p.talents.shadow.idol_of_yshaarj );
+    set_duration( p.talents.shadow.devoured_pride->duration() );
+
+    auto eff = &data().effectN( 1 );
+    auto ap  = eff->resource( RESOURCE_INSANITY );
+    set_default_value( ap / eff->period().total_seconds() );
+
+    auto gain = p.get_gain( "devoured_despair" );
+    set_tick_callback(
+        [ ap, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_INSANITY, ap, gain ); } );
+  }
+};
+
 }  // namespace buffs
 
 // ==========================================================================
@@ -2470,10 +2530,14 @@ void priest_t::create_buffs_shadow()
                                      ->set_trigger_spell( talents.shadow.coalescing_shadows_buff );
 
   buffs.devoured_pride = make_buff( this, "devoured_pride", talents.shadow.devoured_pride )
-                             ->set_duration( timespan_t::zero() )
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                             ->set_max_stack( 5 );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  if ( !is_ptr() )
+    buffs.devoured_pride->set_duration( 0_ms );
+
+
+  buffs.devoured_despair = make_buff<buffs::devoured_despair_buff_t>( *this );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
@@ -2508,46 +2572,28 @@ void priest_t::create_buffs_shadow()
           ->set_default_value_from_effect( 1 );
 
   // TODO: Wire up spell data, split into helper function.
-  buffs.t30_4pc =
-      make_buff( this, "t30_4pc_tracker" )
+
+  auto weakening_reality = find_spell( 409502 );
+  buffs.weakening_reality =
+      make_buff( this, "weakening_reality", weakening_reality )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_max_stack( 500 )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
-            if ( cur >= 400 )
+          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
+            if ( old == b->max_stack() )
             {
-              make_event( b->sim, [ this, b ] {
-                b->decrement( 400 );
+              auto duration =
+                  timespan_t::from_seconds( sets->set( PRIEST_SHADOW, T30, B4 )->effectN( 2 ).base_value() );
 
-                auto duration = 5_s;
+              auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
 
-                if ( talents.shadow.idol_of_yshaarj.enabled() && options.t30_yshaarj )
-                {
-                  // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-                  if ( target->health_percentage() >= 80.0 )
-                  {
-                    buffs.devoured_pride->trigger();
-                  }
-                  else
-                  {
-                    duration += timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-                    procs.idol_of_yshaarj_extra_duration->occur();
-                  }
-                }
+              pet_spawner.spawn( duration );
 
-                auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
-
-                auto pet = pet_spawner.active_pet_min_remains();
-                if ( pet && !pet->is_sleeping() && !options.t30_multiple_bender )
-                {
-                  pet->adjust_duration( 5_s );
-                }
-                else
-                {
-                  pet_spawner.spawn( duration );
-                }
-              } );
+              make_event( b->sim, [ this ] { trigger_idol_of_yshaarj( target ); } );
             }
           } );
+
+  if ( weakening_reality->ok() )
+    buffs.weakening_reality->set_expire_at_max_stack( true ); // Avoid sim warning
+
 }
 
 void priest_t::init_rng_shadow()

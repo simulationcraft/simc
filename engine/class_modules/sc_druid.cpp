@@ -7122,10 +7122,7 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack_moonfire->expire();
         }
 
-        auto rage = p()->buff.galactic_guardian->check_value();
-        if ( !p()->is_ptr() )
-          rage *= num_targets_hit;
-
+        auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
         p()->resource_gain( RESOURCE_RAGE, rage, gain );
 
         if ( !is_free() )

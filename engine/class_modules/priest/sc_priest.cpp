@@ -150,7 +150,7 @@ public:
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
     {
-      m *= 1 + 0.6;
+      m *= 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 1 ).percent();
     }
     return m;
   }
@@ -200,7 +200,9 @@ public:
 
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
       {
-        priest().generate_insanity( 4, priest().gains.insanity_t30_2pc, s->action );
+        priest().generate_insanity(
+            priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 2 ).resource( RESOURCE_INSANITY ),
+                                    priest().gains.insanity_t30_2pc, s->action );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -805,23 +807,14 @@ struct summon_fiend_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    auto duration = default_duration;
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
-    {
-      // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-      if ( target->health_percentage() >= 80.0 )
-      {
-        priest().buffs.devoured_pride->trigger();
-      }
-      else
-      {
-        duration += timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-        priest().procs.idol_of_yshaarj_extra_duration->occur();
-      }
-    }
-
     if ( spawner )
-      spawner->spawn( duration );
+      spawner->spawn( default_duration );
+  }
+
+  void impact( action_state_t* s )
+  {
+    priest_spell_t::impact( s );
+    make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
   }
 };
 
@@ -915,7 +908,8 @@ struct shadow_word_death_t final : public priest_spell_t
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() ),
+      execute_modifier( data().effectN( 3 ).percent() +
+                        ( priest().is_ptr() ? priest().specs.shadow_priest->effectN( 25 ).percent() : 0 ) ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr )
   {
@@ -948,8 +942,8 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       if ( sim->debug )
       {
-        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}", t->name_str, execute_percent, *this,
-                          execute_modifier );
+        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}%", t->name_str, execute_percent, *this,
+                          execute_modifier * 100 );
       }
       tdm *= 1 + execute_modifier;
     }
@@ -1486,6 +1480,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
 
+  buffs.psychic_horror = make_buff( *this, "psychic_horror", p.talents.shadow.psychic_horror )->set_cooldown( 0_s );
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -2185,6 +2180,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
   action.apply_affecting_aura( talents.shadow.mastermind );
+  action.apply_affecting_aura( talents.shadow.mental_decay );
 
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
@@ -2396,38 +2392,46 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;
 
-  auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id          = specs.mind_flay->id();
-  auto mind_flay_insanity_id = 391403U;
-  auto action_id             = s->action->id;
-
   if ( rppm.idol_of_cthun->trigger() )
   {
-    if ( is_ptr() )
+    spawn_idol_of_cthun( s );
+  }
+}
+
+void priest_t::spawn_idol_of_cthun( action_state_t* s )
+{
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
+
+  if ( is_ptr() )
+  {
+    if ( s->action->target_list().size() > 2 )
     {
-      if ( s->action->target_list().size() > 2 )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
-      else
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
     else
     {
-      if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
-      else if ( action_id == mind_sear_id )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+  }
+  else
+  {
+    auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
+    auto mind_flay_id          = specs.mind_flay->id();
+    auto mind_flay_insanity_id = 391403U;
+    auto action_id             = s->action->id;
+
+    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
+    {
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+    else if ( action_id == mind_sear_id )
+    {
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
   }
 }
@@ -2500,7 +2504,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }

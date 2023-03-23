@@ -1842,6 +1842,125 @@ public:
     }
 };
 
+// ==========================================================================
+// Shadowflame Spirit
+// ==========================================================================
+struct shadowflame_monk_t : public monk_pet_t
+{
+  private:
+
+  int attack_counter;
+
+  struct shadowflame_damage_t : public pet_spell_t
+  {
+    shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
+      : pet_spell_t( source_action->name_str, p, source_action->s_data )
+    {
+      merge_report = false;
+
+      apply_affecting_aura( o()->passives.shadowflame_spirit );
+    }
+  };
+
+  struct melee_t : public pet_melee_t
+  {
+    melee_t( util::string_view n, shadowflame_monk_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
+    {
+      background        = repeating = may_crit = may_glance = true;
+      weapon            = weapon;
+      school            = SCHOOL_PHYSICAL;
+      weapon_multiplier = 1.0;
+      base_execute_time = weapon->swing_time;
+      trigger_gcd       = timespan_t::zero();
+      special           = false;
+    }
+  };
+
+  struct auto_attack_t : public pet_auto_attack_t
+  {
+    auto_attack_t( shadowflame_monk_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
+    {
+      parse_options( options_str );
+
+      player->main_hand_attack = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
+      player->off_hand_attack = new melee_t( "auto_attack_oh", player, &( player->off_hand_weapon ) );
+    }
+  };
+
+  // Pet spell vector
+  std::vector<shadowflame_damage_t *> sf_action_list;
+
+  public:
+
+  shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true ),
+    attack_counter( 0 )
+  {
+    npc_id  = owner->passives.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
+    _spec   = owner->specialization();
+
+    main_hand_weapon.type       = WEAPON_SWORD;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
+    off_hand_weapon.type        = WEAPON_SWORD;
+    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2.6 );
+    owner_coeff.ap_from_ap      = 1.00;
+  }
+
+  void init_action_list() override
+  {
+    action_list_str = "auto_attack";
+
+    pet_t::init_action_list();
+  }
+
+  void init_spells() override
+  {
+    // Initialize pet spells
+    for ( auto action : owner->action_list )
+      if ( action->data().affected_by( o()->passives.shadowflame_spirit->effectN( 2 ) ) )
+          sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
+
+    monk_pet_t::init_spells();
+  }
+
+  void summon( timespan_t duration = timespan_t::zero() ) override
+  {
+      monk_pet_t::summon( duration );
+
+      this->attack_counter = 0;
+  }
+
+  void trigger_attack( action_state_t *s )
+  {
+    if ( s->result_amount <= 0  )
+      return;
+
+    auto pet_action = range::find_if( this->sf_action_list, [ s ] ( shadowflame_damage_t *pet_action )
+    {
+      return pet_action->id == s->action->id;
+    } );
+    
+    if ( pet_action == this->sf_action_list.end() )
+      return;
+
+    ( *pet_action )->set_target( s->target );
+    ( *pet_action )->execute();
+
+    if ( !s->action->dual )
+      this->attack_counter++;
+
+    if ( this->attack_counter == 3 )
+      this->dismiss( false );
+  }
+
+  action_t *create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
@@ -1852,7 +1971,8 @@ monk_t::pets_t::pets_t( monk_t* p )
     chiji( "chiji_the_red_crane", p, []( monk_t* p ) { return new pets::chiji_pet_t( p ); } ),
     white_tiger_statue( "white_tiger_statue", p, []( monk_t* p ) { return new pets::white_tiger_statue_t( p ); } ),
     fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t* p ) { return new pets::fury_of_xuen_pet_t( p ); }),
-    call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } )
+    call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
+    shadowflame_monk( "shadowflame_monk", p, []( monk_t* p ) { return new pets::shadowflame_monk_t( p ); } )
 {
 }
 
@@ -1883,6 +2003,7 @@ void monk_t::create_pets()
     pets.yulon = new pets::yulon_pet_t( this );
   }
 */
+
   if ( specialization() == MONK_WINDWALKER && find_action( "storm_earth_and_fire" ) )
   {
     pets.sef[ (int)sef_pet_e::SEF_FIRE ] =
@@ -1891,6 +2012,19 @@ void monk_t::create_pets()
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
     pets.sef[ (int)sef_pet_e::SEF_EARTH ] =
         new pets::storm_earth_and_fire_pet_t( "earth_spirit", this, true, WEAPON_MACE );
+  }
+}
+
+void monk_t::trigger_shadowflame_monk( action_state_t *s )
+{
+  for ( int i = 0; i <= pets.shadowflame_monk.max_pets(); i++ )
+  {
+    auto shadowflame_monk = ( pets::shadowflame_monk_t * )pets.shadowflame_monk.active_pet( i );
+
+    if ( !shadowflame_monk )
+      break;
+
+    shadowflame_monk->trigger_attack( s );
   }
 }
 
