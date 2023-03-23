@@ -1737,6 +1737,28 @@ struct psychic_horror_t final : public priest_spell_t
     may_miss = may_crit   = false;
     ignore_false_positive = true;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( s->target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.psychic_horror->trigger();
+    }
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !priest_spell_t::target_ready( candidate_target ) )
+      return false;
+
+    if ( target->type == ENEMY_ADD || target->level() < sim->max_player_level + 3 )
+      return true;
+
+    return false;
+  }
 };
 
 // ==========================================================================
