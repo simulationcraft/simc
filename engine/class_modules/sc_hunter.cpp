@@ -929,6 +929,8 @@ public:
     ab::apply_affecting_aura( p -> tier_set.t29_sv_2pc );
 
     ab::apply_affecting_aura( p -> tier_set.t30_bm_2pc );
+    ab::apply_affecting_aura( p -> tier_set.t30_mm_2pc );
+    ab::apply_affecting_aura( p -> tier_set.t30_mm_4pc );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -2850,6 +2852,12 @@ struct kill_shot_t : hunter_ranged_attack_t
     p() -> buffs.razor_fragments -> decrement();
 
     p() -> buffs.hunters_prey -> decrement();
+
+    if ( p() -> tier_set.t30_mm_4pc.ok() )
+    {
+      p() -> cooldowns.aimed_shot -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
+      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2955,6 +2963,11 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> decrement();
 
     p() -> buffs.focusing_aim -> expire();
+
+    if ( rng().roll( p() -> tier_set.t30_mm_2pc -> proc_chance() ) ) 
+    {
+      p() -> buffs.deathblow -> trigger(); 
+    }
   }
 
   double cost() const override
@@ -3758,6 +3771,12 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> decrement();
 
     p() -> buffs.focusing_aim -> expire();
+
+    if ( rng().roll( p() -> tier_set.t30_mm_2pc -> proc_chance() ) ) 
+    {
+      p() -> buffs.deathblow -> trigger();
+    }
+
   }
 
   double cost() const override
@@ -4360,6 +4379,11 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     }
 
     p() -> buffs.focusing_aim -> expire();
+
+    if ( rng().roll( p() -> tier_set.t30_mm_2pc -> proc_chance() ) ) 
+    {
+      p() -> buffs.deathblow -> trigger(); 
+    }
   }
 
   double cost() const override
@@ -5288,8 +5312,6 @@ struct kill_command_t: public hunter_spell_t
     double chance = 0;
     proc_t* proc;
   } dire_command;
-
-  double df_bm_2pc_chance = 0;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
