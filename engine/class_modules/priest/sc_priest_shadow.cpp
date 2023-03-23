@@ -2508,10 +2508,12 @@ void priest_t::create_buffs_shadow()
                                      ->set_trigger_spell( talents.shadow.coalescing_shadows_buff );
 
   buffs.devoured_pride = make_buff( this, "devoured_pride", talents.shadow.devoured_pride )
-                             ->set_duration( timespan_t::zero() )
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                             ->set_max_stack( 5 );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.devoured_despair = make_buff( this, "devoured_despair", talents.shadow.devoured_despair )
+                               ->set_duration( buffs.devoured_pride->buff_duration() )
+                               ->set_trigger_spell( talents.shadow.idol_of_yshaarj );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
@@ -2553,36 +2555,14 @@ void priest_t::create_buffs_shadow()
           ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
             if ( old == b->max_stack() )
             {
-              make_event( b->sim, [ this, b ] {
+              auto duration =
+                  timespan_t::from_seconds( sets->set( PRIEST_SHADOW, T30, B4 )->effectN( 2 ).base_value() );
 
-                auto duration = 5_s;
+              auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
 
-                if ( talents.shadow.idol_of_yshaarj.enabled() && options.t30_yshaarj )
-                {
-                  // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-                  if ( target->health_percentage() >= 80.0 )
-                  {
-                    buffs.devoured_pride->trigger();
-                  }
-                  else
-                  {
-                    duration += timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-                    procs.idol_of_yshaarj_extra_duration->occur();
-                  }
-                }
+              pet_spawner.spawn( duration );
 
-                auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
-
-                auto pet = pet_spawner.active_pet_min_remains();
-                if ( pet && !pet->is_sleeping() && !options.t30_multiple_bender )
-                {
-                  pet->adjust_duration( 5_s );
-                }
-                else
-                {
-                  pet_spawner.spawn( duration );
-                }
-              } );
+              make_event( b->sim, [ this ] { trigger_idol_of_yshaarj( target ); } );
             }
           } );
 }

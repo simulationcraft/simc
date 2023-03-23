@@ -807,23 +807,14 @@ struct summon_fiend_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    auto duration = default_duration;
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
-    {
-      // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-      if ( target->health_percentage() >= 80.0 )
-      {
-        priest().buffs.devoured_pride->trigger();
-      }
-      else
-      {
-        duration += timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-        priest().procs.idol_of_yshaarj_extra_duration->occur();
-      }
-    }
-
     if ( spawner )
-      spawner->spawn( duration );
+      spawner->spawn( default_duration );
+  }
+
+  void impact( action_state_t* s )
+  {
+    priest_spell_t::impact( s );
+    make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
   }
 };
 
