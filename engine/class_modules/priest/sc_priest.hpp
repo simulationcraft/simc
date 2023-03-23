@@ -33,6 +33,7 @@ struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
 struct expiation_t;
+struct purge_the_wicked_t;
 }  // namespace actions::spells
 
 /**
@@ -117,7 +118,6 @@ public:
     propagate_const<buff_t*> twilight_equilibrium_shadow_amp;
     propagate_const<buff_t*> harsh_discipline;
     propagate_const<buff_t*> harsh_discipline_ready;
-    propagate_const<buff_t*> blaze_of_light;
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
@@ -156,6 +156,8 @@ public:
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
+    propagate_const<buff_t*> light_weaving;
+    propagate_const<buff_t*> t30_4pc;
   } buffs;
 
   // Talents
@@ -292,6 +294,7 @@ public:
       player_talent_t psychic_link;
       player_talent_t whispers_of_the_damned;
       player_talent_t minds_eye;
+      player_talent_t distorted_reality;
       // Row 8
       player_talent_t mindbender;
       player_talent_t deathspeaker;
@@ -352,7 +355,7 @@ public:
       player_talent_t expiation;
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
-      const spell_data_t* blaze_of_light;
+      player_talent_t blaze_of_light;
       // Row 10
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;
@@ -472,6 +475,7 @@ public:
     propagate_const<gain_t*> insanity_dark_void;
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_whispers_of_the_damned;
+    propagate_const<gain_t*> insanity_t30_2pc;
   } gains;
 
   // Benefits
@@ -527,6 +531,7 @@ public:
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
     propagate_const<actions::spells::pain_of_death_t*> pain_of_death;
     propagate_const<actions::spells::expiation_t*> expiation;
+    propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
   } background_actions;
 
   // Items
@@ -537,8 +542,8 @@ public:
   // Pets
   struct priest_pets_t
   {
-    propagate_const<pet_t*> shadowfiend;
-    propagate_const<pet_t*> mindbender;
+    spawner::pet_spawner_t<pet_t, priest_t> shadowfiend;
+    spawner::pet_spawner_t<pet_t, priest_t> mindbender;
     spawner::pet_spawner_t<pet_t, priest_t> void_tendril;
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
@@ -561,16 +566,14 @@ public:
     bool mindgames_healing_reversal = false;
     bool mindgames_damage_reversal  = true;
 
-    bool power_infusion_fiend = false;
+    bool t30_multiple_bender = true;
+    bool t30_yshaarj = true;
 
     // Actives the screams bug with Mental Decay and Shadow Word: Pain
     bool priest_screams_bug = true;
 
     // Last tick of Mind Sear does not get buffed by Gathering Shadows
     bool gathering_shadows_bug = true;
-
-    // Auspicious Spirits generates insanity on execute not hit
-    bool as_insanity_bug = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -587,7 +590,6 @@ public:
   void create_options() override;
   std::string create_profile( save_e ) override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
-  pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
   void copy_from( player_t* source ) override;
   resource_e primary_resource() const override
@@ -636,6 +638,7 @@ private:
   void init_rng_discipline();
 
   void init_background_actions_shadow();
+  void init_background_actions_discipline();
   std::unique_ptr<expr_t> create_expression_discipline( action_t* a, const util::string_view name_str );
   action_t* create_action_discipline( util::string_view name, util::string_view options_str );
 
@@ -656,6 +659,7 @@ public:
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
   void trigger_psychic_link( action_state_t* );
+  void trigger_purge_the_wicked_spread( action_state_t* );
   void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
@@ -778,6 +782,8 @@ public:
     {
       parse_buff_effects( p().buffs.mind_melt,
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
+
+      parse_buff_effects( p().buffs.deathspeaker );
     }
     else
     {
@@ -799,6 +805,7 @@ public:
     parse_buff_effects( p().buffs.sins_of_the_many, false, true );
     parse_buff_effects( p().buffs.twilight_equilibrium_shadow_amp );
     parse_buff_effects( p().buffs.twilight_equilibrium_holy_amp );
+    parse_buff_effects( p().buffs.light_weaving );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -906,7 +913,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     if ( s->result_amount > 0 )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
@@ -939,6 +946,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void consume_resource() override
   {
     base_t::consume_resource();
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && resource_current == RESOURCE_INSANITY )
+    {
+      priest().buffs.t30_4pc->trigger( last_resource_cost );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -955,7 +967,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( result_is_hit( s->result ) )
     {
       // TODO: Use proper base_value() from talent struct when fixed
-      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+      if ( priest().talents.twist_of_fate.enabled() &&
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
@@ -968,7 +980,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
-      if ( s->action->school == SCHOOL_HOLY )
+      if ( s->action->school == SCHOOL_HOLY || s->action->school == SCHOOL_HOLYFIRE )
       {
         priest().buffs.twilight_equilibrium_shadow_amp->trigger();
         priest().buffs.twilight_equilibrium_holy_amp->expire();

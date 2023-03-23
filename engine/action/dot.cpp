@@ -861,10 +861,11 @@ void dot_t::start( timespan_t duration )
   state->original_x = target->x_position;
   state->original_y = target->y_position;
 
+  source->add_active_dot( current_action->internal_id );
+
   schedule_tick();
   check_tick_zero( true );
 
-  source->add_active_dot( current_action->internal_id );
 }
 
 /* Precondition: ticking == true

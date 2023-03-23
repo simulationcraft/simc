@@ -169,7 +169,7 @@ struct shadowburn_t : public destruction_spell_t
     {
       td( s->target )->debuffs_shadowburn->trigger();
 
-      if ( p()->talents.eradication->ok() && p()->min_version_check( VERSION_10_0_5 ) )
+      if ( p()->talents.eradication->ok() )
         td( s->target )->debuffs_eradication->trigger();
     }
   }
@@ -190,7 +190,7 @@ struct shadowburn_t : public destruction_spell_t
     if ( p()->talents.madness_of_the_azjaqir->ok() )
       p()->buffs.madness_sb->trigger();
 
-    if ( p()->talents.burn_to_ashes->ok() && p()->min_version_check( VERSION_10_0_5 ) )
+    if ( p()->talents.burn_to_ashes->ok() )
       p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
 
     p()->buffs.crashing_chaos->decrement();
@@ -210,7 +210,7 @@ struct shadowburn_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    if ( p()->talents.ashen_remains->ok() && td( t )->dots_immolate->is_ticking() && p()->min_version_check( VERSION_10_0_5 ) )
+    if ( p()->talents.ashen_remains->ok() && td( t )->dots_immolate->is_ticking() )
       m *= 1.0 + p()->talents.ashen_remains->effectN( 1 ).percent();
 
     return m;

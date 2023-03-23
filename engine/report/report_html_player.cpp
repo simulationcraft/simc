@@ -1397,6 +1397,24 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       }
     }
 
+    if ( !item.parsed.gem_color.empty() && range::find( item.parsed.gem_color, SOCKET_COLOR_PRIMORDIAL ) != item.parsed.gem_color.end() )
+    {
+      item_sim_desc += ", primordial_stones: { ";
+      bool first = true;
+      for ( const auto e : item.parsed.special_effects )
+      {
+        if ( !e->driver() || !e->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
+          continue;
+
+        if ( !first )
+          item_sim_desc += ", ";
+
+        item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, e->driver(), item );
+        first = false;
+      }
+      item_sim_desc += " }";
+    }
+
     {
       std::stringstream s;
       for ( const item_effect_t& effect : item.parsed.data.effects )
@@ -3612,8 +3630,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   }
 
   const std::string n = util::encode_html( p.name() );
-  if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.num_enemies > 1 ) ||
-       ( p.primary_role() == ROLE_TANK && sim.num_enemies > 1 ) )
+  if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.enemy_targets > 1 ) ||
+       ( p.primary_role() == ROLE_TANK && sim.enemy_targets > 1 ) )
   {
     os.printf( "\">%s&#160;:&#160;%.0f dps, %.0f dps to main target",
                n.c_str(),

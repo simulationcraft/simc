@@ -5,7 +5,7 @@ level=70
 race=draenei
 role=tank
 position=front
-talents=BIEAAAAAAAAAAAAAAAAAAAAAA0iSikikiIJhSTSChESAAAAAAAAAAAAAAARSSaCSSUSRkEloEA
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKSKIJhSTSChESAAACAAAAAAAACJJEIJRSKSkkAAiAAQgA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -41,18 +41,17 @@ actions+=/call_action_list,name=cooldowns
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=standard
 
-actions.cooldowns=seraphim
-actions.cooldowns+=/avenging_wrath,if=(buff.seraphim.up|!talent.seraphim.enabled)
+actions.cooldowns=avenging_wrath
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))
 actions.cooldowns+=/holy_avenger,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60
 actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up
 
-actions.standard=shield_of_the_righteous,if=(cooldown.seraphim.remains>=5|!talent.seraphim.enabled)&(((holy_power=3&!buff.blessing_of_dusk.up&!buff.holy_avenger.up)|(holy_power=5)|buff.bastion_of_light.up|buff.divine_purpose.up))
+actions.standard=shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&(buff.bastion_of_light.up|buff.divine_purpose.up|holy_power>2)
 actions.standard+=/avengers_shield,if=buff.moment_of_glory.up|!talent.moment_of_glory.enabled
 actions.standard+=/hammer_of_wrath,if=buff.avenging_wrath.up
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled
-actions.standard+=/divine_toll,if=time>20|((!talent.seraphim.enabled|buff.seraphim.up)&(buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))
+actions.standard+=/divine_toll,if=time>20|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))
 actions.standard+=/avengers_shield
 actions.standard+=/hammer_of_wrath
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains

@@ -93,6 +93,7 @@ public:
   {
     // Brewmaster
     propagate_const<buff_t*> keg_smash;
+    propagate_const<buff_t*> exploding_keg;
 
     // Windwalker
     propagate_const<buff_t*> flying_serpent_kick;
@@ -609,7 +610,7 @@ public:
       player_talent_t gift_of_the_celestials;
       player_talent_t focused_thunder;
       player_talent_t upwelling;
-      player_talent_t bonedust_brew;
+//      player_talent_t bonedust_brew;
       // Row 9
       player_talent_t ancient_concordance;
       player_talent_t resplendent_mist;
@@ -862,6 +863,8 @@ public:
     const spell_data_t* spirit_of_the_crane;
     const spell_data_t* totm_bok_proc;
     const spell_data_t* zen_pulse_heal;
+    const spell_data_t* zen_pulse_echo_damage;
+    const spell_data_t* zen_pulse_echo_heal;
 
     // Windwalker
     const spell_data_t* bok_proc;
