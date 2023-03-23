@@ -1429,6 +1429,12 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.screams_of_the_void->trigger();
     }
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
+    {
+      priest().buffs.weakening_reality->trigger();
+    }
+
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
@@ -2540,15 +2546,14 @@ void priest_t::create_buffs_shadow()
           ->set_default_value_from_effect( 1 );
 
   // TODO: Wire up spell data, split into helper function.
-  buffs.t30_4pc =
-      make_buff( this, "t30_4pc_tracker" )
+  buffs.weakening_reality =
+      make_buff( this, "weakening_reality", find_spell( 409502 ) )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_max_stack( 500 )
+          ->set_expire_at_max_stack( true )
           ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
-            if ( cur >= 400 )
+            if ( old == b->max_stack() )
             {
               make_event( b->sim, [ this, b ] {
-                b->decrement( 400 );
 
                 auto duration = 5_s;
 
