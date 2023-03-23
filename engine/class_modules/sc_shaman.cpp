@@ -4600,7 +4600,7 @@ struct chained_base_t : public shaman_spell_t
 
     if ( exec_type == execute_type::NORMAL )
     {
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.stormkeeper->stack() == 1 ) {
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 ) {
         p()->buff.t30_4pc_ele->trigger();
       }
       p()->buff.stormkeeper->decrement();
@@ -5769,7 +5769,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( type == execute_type::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ) && p()->buff.stormkeeper->stack() == 1 ) {
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 ) {
         p()->buff.t30_4pc_ele->trigger();
       }
       p()->buff.stormkeeper->decrement();
