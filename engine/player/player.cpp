@@ -2752,6 +2752,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         trait = node[ index ].first;
       }
 
+      player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
                                           as<unsigned>( rank ) );
     }
