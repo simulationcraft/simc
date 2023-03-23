@@ -623,10 +623,10 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
-    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 4 ).percent() );
+    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
-    spell_power_mod.direct *= ( 1 + p.o().specs.shadow_priest->effectN( 14 ).percent() );
+    apply_affecting_aura( p.o().specs.shadow_priest );
   }
 };
 
