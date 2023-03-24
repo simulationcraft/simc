@@ -1074,13 +1074,13 @@ void priest_t::trigger_inescapable_torment( player_t* target )
 
   auto current_pets = get_current_main_pet( *this );
 
-  if ( is_ptr() )
+  if ( is_ptr() && current_pets->n_active_pets() > 0)
   {
     auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
   }
-
+   
   for ( auto a_pet : current_pets->active_pets() )
   {
     auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
