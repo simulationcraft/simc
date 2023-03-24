@@ -4194,7 +4194,7 @@ void voice_of_the_silent_star( special_effect_t& effect )
 
   auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
                  ->set_expire_at_max_stack( true )
-                 ->set_stack_change_callback( [ buffs, effect ]( buff_t* b, int, int new_ ) {
+                 ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
                    if ( !new_ )
                    {
                       stat_e max_stat = util::highest_stat( effect.player, ratings );
@@ -4592,7 +4592,7 @@ struct residual_stone_t : public BASE
   residual_stone_t( const special_effect_t& e, ARGS&&... args ) : BASE( e, std::forward<ARGS>( args )... )
   {}
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     return 0_ms;
   }
@@ -5088,7 +5088,7 @@ void humming_arcane_stone( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
         return a->get_school() != SCHOOL_PHYSICAL;
       } );
 }
