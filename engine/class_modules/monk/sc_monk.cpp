@@ -6792,50 +6792,6 @@ namespace monk
       player_t::moving();
   }
 
-  void monk_t::create_special_effects()
-  {
-    player_t::create_special_effects();
-
-    // ======================================
-    // Resonant Fists Talent
-    // ======================================
-
-    if ( talent.general.resonant_fists.ok() )
-    {    
-      auto trigger = talent.general.resonant_fists.spell();
-
-      special_effects.resonant_fists = new special_effect_t( this );
-      special_effects.resonant_fists->spell_id = trigger->id();
-      special_effects.resonant_fists->cooldown_ = trigger->internal_cooldown();
-      special_effects.resonant_fists->proc_flags_ = trigger->proc_flags();
-      special_effects.resonant_fists->proc_chance_ = trigger->proc_chance();
-
-      struct rf_callback : dbc_proc_callback_t
-      {
-        monk_t *p;
-
-        rf_callback( const special_effect_t &effect, monk_t *p ) : dbc_proc_callback_t( effect.player, effect ), p( p )
-        {
-        }
-
-        void trigger( action_t *a, action_state_t *state ) override
-        {
-          if ( state->action->id == p->active_actions.resonant_fists->id )
-            return;
-
-          p->active_actions.resonant_fists->set_target( state->target );
-
-          dbc_proc_callback_t::trigger( a, state );
-        }
-      };
-
-      new rf_callback( *special_effects.resonant_fists, this ); 
-      delete special_effects.resonant_fists;
-    }
-
-    // ======================================
-  }
-
   // monk_t::create_action ====================================================
 
   action_t *monk_t::create_action( util::string_view name, util::string_view options_str )
@@ -8160,7 +8116,70 @@ namespace monk
 
   void monk_t::init_special_effects()
   {
+    // ======================================
+    // create_proc_callback
+    // ======================================
+
+    auto create_proc_callback = [ this ] ( const spell_data_t *trigger_spell, bool ( *trigger )( monk_t *p, action_state_t *state ) )
+    {
+      auto effect = new special_effect_t( this );
+
+      effect->spell_id = trigger_spell->id();
+      effect->cooldown_ = trigger_spell->internal_cooldown();
+      effect->proc_flags_ = trigger_spell->proc_flags();
+      effect->proc_chance_ = trigger_spell->proc_chance();
+
+      struct monk_effect_callback : dbc_proc_callback_t
+      {
+        monk_t *p;
+        bool ( *callback_trigger )( monk_t *p, action_state_t *state );
+
+        monk_effect_callback( const special_effect_t &effect, monk_t *p, bool ( *trigger )( monk_t *p, action_state_t *state ) ) : dbc_proc_callback_t( effect.player, effect )
+          , p( p ), callback_trigger( trigger )
+        {
+        }
+
+        void trigger( action_t *a, action_state_t *state ) override
+        {
+          if ( callback_trigger == NULL )
+          {
+            assert( 0 );
+            return;
+          }
+
+          if ( callback_trigger( p, state ) )
+            dbc_proc_callback_t::trigger( a, state );
+        }
+      };
+
+      special_effects.push_back( effect ); // Garbage disposal
+
+      new monk_effect_callback( *effect, this, trigger );
+    };
+
+    // ======================================
+    // Resonant Fists Talent
+    // ======================================
+
+    if ( talent.general.resonant_fists.ok() )
+    {
+
+      create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
+      {
+        if ( state->action->id == p->active_actions.resonant_fists->id )
+          return false;
+
+        p->active_actions.resonant_fists->set_target( state->target );
+
+        return true;
+      } );
+
+    }
+
+    // ======================================
+
     player_t::init_special_effects();
+
   }
 
   // monk_t::init_special_effect ============================================
