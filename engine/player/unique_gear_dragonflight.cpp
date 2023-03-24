@@ -4126,6 +4126,51 @@ void hood_of_surging_time( special_effect_t& effect )
     }
   } );
 }
+// Voice of the Silent Star
+// 409434 Driver
+// 409447 Stat Buff
+// 409442 Stacking Buff
+void voice_of_the_silent_star( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+  effect, { "power_beyond_imagination_crit_rating", "power_beyond_imagination_mastery_rating", "power_beyond_imagination_haste_rating",
+                "power_beyond_imagination_versatility_rating" } ) )
+  return;
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  stat_e max_stat = util::highest_stat( effect.player, ratings );
+  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver() -> effectN( 1 ).average( effect.item ) + ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver() -> effectN( 4 ).base_value() );
+
+  for ( auto stat : ratings )
+  {
+    auto name    = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
+             ->add_stat( stat, amount );
+    }
+    ( *buffs )[ stat ] = buff;
+  }
+
+  auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
+                 ->set_expire_at_max_stack( true )
+                 ->set_stack_change_callback( [ buffs, max_stat ]( buff_t* b, int, int new_ ) {
+                   if ( !new_ )
+                   {
+                      ( *buffs )[ max_stat ] -> trigger();
+                   }
+                 } );
+
+  effect.custom_buff = stack_buff;
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 }  // namespace items
 
@@ -5161,6 +5206,7 @@ void register_special_effects()
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
+  register_special_effect( 409434, items::voice_of_the_silent_star, true );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
