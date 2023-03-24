@@ -6802,37 +6802,35 @@ namespace monk
 
     if ( talent.general.resonant_fists.ok() )
     {    
-      if ( !special_effects.resonant_fists )
+      auto trigger = talent.general.resonant_fists.spell();
+
+      special_effects.resonant_fists = new special_effect_t( this );
+      special_effects.resonant_fists->spell_id = trigger->id();
+      special_effects.resonant_fists->cooldown_ = trigger->internal_cooldown();
+      special_effects.resonant_fists->proc_flags_ = trigger->proc_flags();
+      special_effects.resonant_fists->proc_chance_ = trigger->proc_chance();
+
+      struct rf_callback : dbc_proc_callback_t
       {
-        auto trigger = talent.general.resonant_fists.spell();
+        monk_t *p;
 
-        special_effects.resonant_fists = new special_effect_t( this );
-        special_effects.resonant_fists->spell_id = trigger->id();
-        special_effects.resonant_fists->cooldown_ = trigger->internal_cooldown();
-        special_effects.resonant_fists->proc_flags_ = trigger->proc_flags();
-        special_effects.resonant_fists->proc_chance_ = trigger->proc_chance();
-
-        struct rf_callback : dbc_proc_callback_t
+        rf_callback( const special_effect_t &effect, monk_t *p ) : dbc_proc_callback_t( effect.player, effect ), p( p )
         {
-          monk_t *p;
+        }
 
-          rf_callback( const special_effect_t &effect, monk_t *p ) : dbc_proc_callback_t( effect.player, effect ), p( p )
-          {
-          }
+        void trigger( action_t *a, action_state_t *state ) override
+        {
+          if ( state->action->id == p->active_actions.resonant_fists->id )
+            return;
 
-          void trigger( action_t *a, action_state_t *state ) override
-          {
-            if ( state->action->id == p->active_actions.resonant_fists->id )
-              return;
+          p->active_actions.resonant_fists->set_target( state->target );
 
-            p->active_actions.resonant_fists->set_target( state->target );
+          dbc_proc_callback_t::trigger( a, state );
+        }
+      };
 
-            dbc_proc_callback_t::trigger( a, state );
-          }
-        };
-
-        auto callback = new rf_callback( *special_effects.resonant_fists, this );
-      }
+      new rf_callback( *special_effects.resonant_fists, this ); 
+      delete special_effects.resonant_fists;
     }
 
     // ======================================
