@@ -506,6 +506,8 @@ struct sim_t : private sc_thread_t
     double blue_silken_lining_uptime = 0.7;
     // Interval between checking blue_silken_lining_uptime
     timespan_t blue_silken_lining_update_interval = 5_s;
+    // Enable or Disable Seething Black Dragonscale's damage
+    bool seething_black_dragonscale_damage = false;
   } dragonflight_opts;
 
   // Auras and De-Buffs
