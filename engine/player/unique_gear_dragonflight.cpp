@@ -3449,7 +3449,7 @@ void seething_black_dragonscale_equip( special_effect_t& effect )
 
 void seething_black_dragonscale_use( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver(), true );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
   damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
 
   if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
