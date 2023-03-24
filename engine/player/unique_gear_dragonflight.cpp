@@ -7,6 +7,7 @@
 
 #include "action/absorb.hpp"
 #include "action/dot.hpp"
+#include "action/residual_action.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
 #include "darkmoon_deck.hpp"
@@ -4499,6 +4500,30 @@ struct damage_stone_base_t : public BASE
 using damage_stone_t = damage_stone_base_t<generic_proc_t>;
 using aoe_damage_stone_t = damage_stone_base_t<generic_aoe_proc_t>;
 
+template <typename BASE>
+struct residual_stone_t : public BASE
+{
+  using proc_residual_t = base_generic_proc_t<proc_action_t<residual_action::residual_periodic_action_t<spell_t>>>;
+
+  action_t* dot = nullptr;
+  double full_damage = 0.0;
+
+  template <typename... ARGS>
+  residual_stone_t( const special_effect_t& e, ARGS&&... args ) : BASE( e, std::forward<ARGS>( args )... )
+  {}
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    return 0_ms;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+    residual_action::trigger( dot, s->target, full_damage );
+  }
+};
+
 struct heal_stone_t : public proc_heal_t
 {
   heal_stone_t( const special_effect_t& effect, std::string_view name, const spell_data_t* spell ) :
@@ -4619,13 +4644,15 @@ struct uncontainable_charge_t : public damage_stone_t
   }
 };
 
-struct flame_licked_stone_t : public damage_stone_t
+struct flame_licked_stone_t : public residual_stone_t<damage_stone_t>
 {
-  flame_licked_stone_t( const special_effect_t& e ) :
-    damage_stone_t( e, "flame_licked_stone", 403225 )
+  flame_licked_stone_t( const special_effect_t& e ) : residual_stone_t( e, "flame_licked_stone", 403225 )
   {
+    dot = new damage_stone_base_t<proc_residual_t>( e, "flame_licked_stone_dot", data().id() );
+    dot->stats = stats;
+
     auto driver = e.player->find_spell( FLAME_LICKED_STONE );
-    base_td = driver->effectN( 1 ).average( e.item );
+    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
   }
 };
 
@@ -4671,13 +4698,16 @@ struct desirous_blood_stone_t : public damage_stone_t
 };
 
 // TODO: Is this damage fully uncapped?
-struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
+struct pestilent_plague_stone_aoe_t : public residual_stone_t<generic_aoe_proc_t>
 {
-  pestilent_plague_stone_aoe_t( const special_effect_t& e ) :
-    generic_aoe_proc_t( e, "pestilent_plague_stone_aoe", 405221 )
+  pestilent_plague_stone_aoe_t( const special_effect_t& e )
+    : residual_stone_t( e, "pestilent_plague_stone_aoe", 405221 )
   {
+    dot = new proc_residual_t( e, "pestilent_plague_stone_aoe_dot", data().id() );
+    dot->stats = stats;
+
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
-    base_td = driver->effectN( 1 ).average( e.item );
+    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4691,16 +4721,19 @@ struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
   }
 };
 
-struct pestilent_plague_stone_t : public damage_stone_t
+struct pestilent_plague_stone_t : public residual_stone_t<damage_stone_t>
 {
   timespan_t aoe_delay;
   action_t* aoe_damage;
 
-  pestilent_plague_stone_t( const special_effect_t& e ) :
-    damage_stone_t( e, "pestilent_plague_stone", 405220 )
+  pestilent_plague_stone_t( const special_effect_t& e ) : residual_stone_t( e, "pestilent_plague_stone", 405220 )
   {
+    dot = new proc_residual_t( e, "pestilent_plague_stone_dot", data().id() );
+    dot->stats = stats;
+
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
-    base_td = driver->effectN( 1 ).average( e.item );
+    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
+
     aoe_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
     aoe_damage = create_proc_action<pestilent_plague_stone_aoe_t>( "pestilent_plague_stone_aoe", e );
     add_child( aoe_damage );
@@ -4708,7 +4741,7 @@ struct pestilent_plague_stone_t : public damage_stone_t
 
   void impact( action_state_t* s ) override
   {
-    damage_stone_t::impact( s );
+    residual_stone_t::impact( s );
 
     if ( result_is_hit( s->result ) && aoe_damage )
     {
