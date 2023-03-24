@@ -3446,6 +3446,16 @@ void seething_black_dragonscale( special_effect_t& effect )
   
   new dbc_proc_callback_t( effect.player, effect );
 }
+// Anshuul the Cosmic Wanderer
+// 402583 Driver
+// 402574 Damage Value 
+void anshuul_the_cosmic_wanderer( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "anshuul_the_cosmic_wanderer", effect, "anshuul_the_cosmic_wanderer", effect.driver(), true );
+  damage -> base_dd_min = damage -> base_dd_max = effect.trigger() -> effectN( 1 ).average( effect.item );
+  damage -> set_school( SCHOOL_COSMIC ); // Manually set the spell school, School set to none in data.
+  effect.execute_action = damage;
+}
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
 void idol_of_debilitating_arrogance( special_effect_t& effect )
@@ -5112,6 +5122,7 @@ void register_special_effects()
   register_special_effect( 398292, items::winterpelt_totem );
   register_special_effect( 401468, items::seething_black_dragonscale );
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
+  register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
 
 
   // Weapons
