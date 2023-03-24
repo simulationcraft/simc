@@ -34,7 +34,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJgkEikkQJhAAAAAAAAAAAAAQLCRIRLFBIlkkUAUSkEA
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJgkEikkQJhAAAAAAAAAAAAAKRIJkgiAJtkkCiQQIBC
 # class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 # spec_talents=stormstrike:1/windfury_weapon:1/lava_lash:1/improved_maelstrom_weapon:2/molten_assault:2/raging_maelstrom:1/ice_strike:1/hailstorm:1/sundering:1/overflowing_maelstrom:1/windfury_totem:1/swirling_maelstrom:1/hot_hand:2/storms_wrath:1/ashen_catalyst:1/elemental_blast:1/elemental_weapons:2/lashing_flames:1/primordial_wave:1/feral_spirit:1/primal_maelstrom:2/witch_doctors_ancestry:2/splintered_elements:1/elemental_spirits:1
 
@@ -63,7 +63,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoB
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikGC
 # class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
@@ -91,7 +91,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
 # class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977

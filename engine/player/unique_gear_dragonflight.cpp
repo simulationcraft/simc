@@ -3447,6 +3447,18 @@ void seething_black_dragonscale_equip( special_effect_t& effect )
   
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void seething_black_dragonscale_use( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
+  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
+
+  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  {
+    effect.execute_action = damage;
+  }
+}
+
 // Anshuul the Cosmic Wanderer
 // 402583 Driver
 // 402574 Damage Value 
@@ -3458,15 +3470,38 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
   effect.execute_action = damage;
 }
 
-void seething_black_dragonscale_use( special_effect_t& effect )
+// Zaqali Chaos Grapnel
+// 400956 Driver
+// 400955 Damage Values
+// 406558 Missile
+void zaqali_chaos_grapnel( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
-  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
-
-  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  struct zaqali_chaos_grapnel_missile_t : public generic_aoe_proc_t
   {
-    effect.execute_action = damage;
-  }
+    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "impaling_grapnel_missile", e.player -> find_spell( 406558 ), true )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct zaqali_chaos_grapnel_t : public generic_proc_t
+  {
+    action_t* missile;
+    zaqali_chaos_grapnel_t( const special_effect_t& e ) : generic_proc_t( e, "impaling_grapnel", e.driver() ),
+        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "impaling_grapnel_missile", e ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 1 ).average( e.item );
+      add_child( missile );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      missile -> execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<zaqali_chaos_grapnel_t>( "impaling_grapnel", effect );
 }
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
@@ -4126,6 +4161,51 @@ void hood_of_surging_time( special_effect_t& effect )
       } );
     }
   } );
+}
+// Voice of the Silent Star
+// 409434 Driver
+// 409447 Stat Buff
+// 409442 Stacking Buff
+void voice_of_the_silent_star( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+  effect, { "power_beyond_imagination_crit_rating", "power_beyond_imagination_mastery_rating", "power_beyond_imagination_haste_rating",
+                "power_beyond_imagination_versatility_rating" } ) )
+  return;
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver() -> effectN( 1 ).average( effect.item ) + ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver() -> effectN( 4 ).base_value() );
+
+  for ( auto stat : ratings )
+  {
+    auto name    = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
+             ->add_stat( stat, amount );
+    }
+    ( *buffs )[ stat ] = buff;
+  }
+
+  auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
+                 ->set_expire_at_max_stack( true )
+                 ->set_stack_change_callback( [ buffs, effect ]( buff_t* b, int, int new_ ) {
+                   if ( !new_ )
+                   {
+                      stat_e max_stat = util::highest_stat( effect.player, ratings );
+                      ( *buffs )[ max_stat ] -> trigger();
+                   }
+                 } );
+
+  effect.custom_buff = stack_buff;
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 }  // namespace items
@@ -5168,6 +5248,7 @@ void register_special_effects()
   register_special_effect( 405940, items::seething_black_dragonscale_use);
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
+  register_special_effect( 400956, items::zaqali_chaos_grapnel );
 
 
   // Weapons
@@ -5194,6 +5275,7 @@ void register_special_effects()
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
+  register_special_effect( 409434, items::voice_of_the_silent_star, true );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

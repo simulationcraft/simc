@@ -32,7 +32,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJgkEikkQJhAAAAAAAAAAAAAQLCRIRLFBIlkkUAUSkEA
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJgkEikkQJhAAAAAAAAAAAAAKRIJkgiAJtkkCiQQIBC
 
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192988
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192961/192961/192961,crafted_stats=49/36
@@ -44,7 +44,7 @@ hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
 waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192961
 legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
 feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497,gem_id=192961,enchant=devotion_of_mastery_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
 trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
@@ -59,7 +59,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoB
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikGC
 
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
@@ -86,7 +86,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAfcj78nJtvjmejSqe5Zhm9IJJHAkcARSSSQSiECAAAAAAAAAAAAAlIEhkIFBIlkkUAUSkEoA
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
 
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
