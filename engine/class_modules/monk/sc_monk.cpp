@@ -3508,6 +3508,13 @@ namespace monk
           return am;
         }
 
+        void execute() override
+        {
+          p()->proc.resonant_fists->occur();
+
+          monk_spell_t::execute();
+        }
+
       };
 
       // ==========================================================================
@@ -6819,7 +6826,6 @@ namespace monk
               return;
 
             p->active_actions.resonant_fists->set_target( state->target );
-            p->proc.resonant_fists->occur();
 
             dbc_proc_callback_t::trigger( a, state );
           }
