@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48661
-static const std::array<spelltext_data_t, 19787> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19786> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19269,7 +19269,6 @@ static const std::array<spelltext_data_t, 19787> __ptr_spelltext_data { {
   { 401773, "Your Heroic Throw now launches your main hand weapon.", 0, 0 },
   { 402583, "Briefly open a pair of gates to the Void to redirect the orbit of An'shuul, the Cosmic Wanderer through your target, dealing $402574s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to 5 enemies.", 0, 0 },
   { 402642, "Consume the spores and let them transform you.", "A Spore-bound Essence transforms your body.", 0 },
-  { 402685, "Take an adventurous nibble to gain Volcanic Heartburn for $402685d, granting your spells and ranged abilities a chance to cause you to belch Magma Spittle towards your target, dealing ${$402666s2*($402674d/$402674t2)} Volcanic damage over $402674d to enemies who remain in the Spittle.", "Your ranged spells and abilities have a chance cause you to belch Magma Spittle.", 0 },
   { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every 45 seconds.\r\n\r\nAt Low Tide, your next ranged ability grants you $s2 Critical Strike Rating for $402897d. \r\n\r\nAt High Tide, your next ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", 0, 0 },
   { 402897, "$@spelldesc402813", "Critical Strike Rating increased by $w1.", 0 },
   { 402912, "Templar's Verdict, Final Verdict and Justicar's Vengeance have a $h% chance to reset the cooldown of Blade of Justice.", 0, 0 },
@@ -19504,7 +19503,7 @@ static const std::array<spelltext_data_t, 19787> __ptr_spelltext_data { {
   { 405538, "Casting Ice Lance on a frozen target has a $s1% chance to trigger Brain Freeze.", 0, 0 },
   { 405539, "Blackout Kick damage increased by $s1%. You have a $s2% chance to not reset your Elusive Brawler stacks on a successful dodge.", 0, 0 },
   { 405540, "Rising Sun Kick grants a stack of Elusive Brawler. When you dodge, the damage and critical strike chance of your next Blackout Kick or Rising Sun Kick is increased by $408503s1%, stacking up to $408503U times.", 0, 0 },
-  { 405541, "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec. ", "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec.", 0 },
+  { 405541, "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.", "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.", 0 },
   { 405542, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", 0 },
   { 405543, "Rising Sun Kick deals $s1% increased damage and has a chance to go nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1.", "Rising Sun Kick deals $w1% increased damage and has a chance to go nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1.", 0 },
   { 405544, "Your melee auto-attacks have a chance to launch a Shadowflame spirit at your enemy that duplicates your abilities at ${$s1+$410159s2}% effectiveness for the next $410153d.", "Your melee auto-attacks have a chance to launch a Shadowflame spirit at your enemy that duplicates your abilities at ${$s1+$410159s2}% effectiveness for the next $410153d.", 0 },
@@ -19776,7 +19775,7 @@ static const std::array<spelltext_data_t, 19787> __ptr_spelltext_data { {
   { 409915, "Heals $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
   { 409923, "Increases healing done by Dragon Isles Bandages by $M1% and they no longer are interrupted by damage. Only usable in the Dragon Isles.", "Duration of Dragon Isles meals increased by $w%. Well Fed persists through death.", 0 },
   { 409964, "$@spelldesc405535", "Phoenix Flames refunds a charge on use and its damage is increased by $w1%.", 0 },
-  { 410007, "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 5 sec. ", "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec.", 0 },
+  { 410007, "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$o1}.2% of your maximum Mana over $d.", "Restoring $o1 mana over $d.", 0 },
   { 410018, "$@spelldesc405566", "Maelstrom generated from Lava Burst, Lightning Bolt, Icefury, and Frost Shock increased by $s1%.\r\nCritical damage dealt by Earthquake, Chain Lightning, and Lava Beam increased by $s2%.", 0 },
   { 410082, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", 0 },
   { 410138, "$@spelldesc405578", "Damage of you next Slam increased by $s1% and Slam strikes up to 4 additional targets for 50% damage.", 0 },
@@ -19790,9 +19789,13 @@ static const std::array<spelltext_data_t, 19787> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.48661
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __ptr_spelltext_hotfix_data { {
   {  405514,  0, "When you take damage, Mangle and Thrash damage and Rage generation are increased by $408504s1% for $408504d and you heal for $s1% of damage taken over $408504d.", "When you take damage, Mangle and Thrash damage and Rage generation are increased by $408504s2% for $408504d and you heal for $s1% of damage taken over $408504d." },
   {  405522,  0, "After casting $s1 empower spells, gain Essence Burst immediately and every $409899t1 sec for $409899d.", "After casting $s1 empower spells, gain Essence Burst immediately and another $409899t1 sec later." },
+  {  405541,  0, "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec. ", "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d." },
+  {  405541,  1, "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec.", "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d." },
+  {  410007,  0, "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 5 sec. ", "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$o1}.2% of your maximum Mana over $d." },
+  {  410007,  1, "Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec.", "Restoring $o1 mana over $d." },
 } };
 
 // Spell description variables, wow build 10.1.0.48661

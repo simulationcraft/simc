@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-23/48676)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
