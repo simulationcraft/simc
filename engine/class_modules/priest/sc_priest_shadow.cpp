@@ -2394,7 +2394,7 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
 
     if ( p.talents.shadow.void_eruption.enabled() )
     {
-      set_period( p.specs.voidform->effectN( 4 ).period() );
+      set_period( p.specs.voidform->effectN( p.is_ptr() ? 4 : 5 ).period() );
       set_duration( p.specs.voidform->duration() );
     }
 
