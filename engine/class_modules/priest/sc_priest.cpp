@@ -202,7 +202,7 @@ public:
       {
         priest().generate_insanity(
             priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 2 ).resource( RESOURCE_INSANITY ),
-                                    priest().gains.insanity_t30_2pc, s->action );
+            priest().gains.insanity_t30_2pc, s->action );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -1753,7 +1753,7 @@ double priest_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  if ( talents.shadow.ancient_madness.enabled() )
+  if ( talents.shadow.ancient_madness.enabled() && !is_ptr() )
   {
     if ( buffs.ancient_madness->check() )
     {
