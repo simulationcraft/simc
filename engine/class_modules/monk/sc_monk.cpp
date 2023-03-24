@@ -77,8 +77,6 @@ namespace monk
       bool trigger_faeline_stomp;
       // Whether the ability can trigger the Legendary Bountiful Brew.
       bool trigger_bountiful_brew;
-      // Whether the ability can trigger Resonant Fists
-      bool trigger_resonant_fists;
       // Whether the ability can be used during Spinning Crane Kick
       bool cast_during_sck;
 
@@ -106,19 +104,11 @@ namespace monk
         trigger_chiji( false ),
         trigger_faeline_stomp( false ),
         trigger_bountiful_brew( false ),
-        trigger_resonant_fists( false ),
         cast_during_sck( false ),
         keefers_skyreach_proc( nullptr ),
         affected_by()
       {
         range::fill( _resource_by_stance, RESOURCE_MAX );
-        // Resonant Fists talent
-        if ( player->talent.general.resonant_fists->ok() )
-        {
-          auto trigger = player->talent.general.resonant_fists.spell();
-
-          trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( UINT64_C( 1 ) << ab::proc_type() ) );
-        }
 
         apply_buff_effects();
         apply_debuffs_effects();
@@ -322,13 +312,6 @@ namespace monk
           }
         }
 
-        // Resonant Fists talent
-        if ( p()->talent.general.resonant_fists->ok() )
-        {
-          auto trigger = p()->talent.general.resonant_fists.spell();
-
-          trigger_resonant_fists = ab::harmful && ab::may_hit && ( trigger->proc_flags() & ( UINT64_C( 1 ) << ab::proc_type() ) );
-        }
       }
 
       void init_finished() override
@@ -645,19 +628,6 @@ namespace monk
           trigger_mystic_touch( s );
 
         ab::impact( s );
-
-        if ( p()->talent.general.resonant_fists->ok() && trigger_resonant_fists )
-        {
-          if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
-          {
-            p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
-            p()->sim->print_debug( "rf procced by {}", s->action->name_str );
-            p()->active_actions.resonant_fists->set_target( s->target );
-            p()->active_actions.resonant_fists->execute();
-            p()->proc.resonant_fists->occur();
-            p()->sim->print_debug( "rf proc finished" );
-          }
-        }
 
         if ( p()->shared.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
           p()->rppm.bountiful_brew->trigger() )
@@ -1654,6 +1624,8 @@ namespace monk
 
           am *= 1 + p()->buff.kicks_of_flowing_momentum->check_value();
 
+          am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
+
           return am;
         }
 
@@ -1775,7 +1747,7 @@ namespace monk
           }
 
           // T30 Set Bonus
-          if ( p()->sets->set( MONK_WINDWALKER, T30, B2 )->proc_chance() )
+          if ( rng().roll( p()->sets->set( MONK_WINDWALKER, T30, B2 )->proc_chance() ) )
           {
             nova->set_target( target );
             nova->execute();
@@ -1904,7 +1876,6 @@ namespace monk
           background = dual = true;
           proc = true;
           may_crit = false;
-          trigger_resonant_fists = false;
         }
       };
 
@@ -3528,13 +3499,6 @@ namespace monk
           reduced_aoe_targets = 5;
         }
 
-        void init() override
-        {
-          monk_spell_t::init();
-
-          trigger_resonant_fists = false;
-        }
-
         double action_multiplier() const override
         {
           double am = monk_spell_t::action_multiplier();
@@ -3543,6 +3507,14 @@ namespace monk
 
           return am;
         }
+
+        void execute() override
+        {
+          p()->proc.resonant_fists->occur();
+
+          monk_spell_t::execute();
+        }
+
       };
 
       // ==========================================================================
@@ -8144,7 +8116,70 @@ namespace monk
 
   void monk_t::init_special_effects()
   {
+    // ======================================
+    // create_proc_callback
+    // ======================================
+
+    auto create_proc_callback = [ this ] ( const spell_data_t *trigger_spell, bool ( *trigger )( monk_t *p, action_state_t *state ) )
+    {
+      auto effect = new special_effect_t( this );
+
+      effect->spell_id = trigger_spell->id();
+      effect->cooldown_ = trigger_spell->internal_cooldown();
+      effect->proc_flags_ = trigger_spell->proc_flags();
+      effect->proc_chance_ = trigger_spell->proc_chance();
+
+      struct monk_effect_callback : dbc_proc_callback_t
+      {
+        monk_t *p;
+        bool ( *callback_trigger )( monk_t *p, action_state_t *state );
+
+        monk_effect_callback( const special_effect_t &effect, monk_t *p, bool ( *trigger )( monk_t *p, action_state_t *state ) ) : dbc_proc_callback_t( effect.player, effect )
+          , p( p ), callback_trigger( trigger )
+        {
+        }
+
+        void trigger( action_t *a, action_state_t *state ) override
+        {
+          if ( callback_trigger == NULL )
+          {
+            assert( 0 );
+            return;
+          }
+
+          if ( callback_trigger( p, state ) )
+            dbc_proc_callback_t::trigger( a, state );
+        }
+      };
+
+      special_effects.push_back( effect ); // Garbage disposal
+
+      new monk_effect_callback( *effect, this, trigger );
+    };
+
+    // ======================================
+    // Resonant Fists Talent
+    // ======================================
+
+    if ( talent.general.resonant_fists.ok() )
+    {
+
+      create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
+      {
+        if ( state->action->id == p->active_actions.resonant_fists->id )
+          return false;
+
+        p->active_actions.resonant_fists->set_target( state->target );
+
+        return true;
+      } );
+
+    }
+
+    // ======================================
+
     player_t::init_special_effects();
+
   }
 
   // monk_t::init_special_effect ============================================
