@@ -1178,7 +1178,8 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
-    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    if ( p()->dbc->ptr )
+      affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
 
     initialized = true;
   }
@@ -5389,15 +5390,6 @@ struct shield_charge_damage_t : public warrior_attack_t
     return c;
   }
 
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
-
-    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
-
-    return cm;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5470,15 +5462,6 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
     c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
 
     return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
-
-    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
-
-    return cm;
   }
 };
 
@@ -10412,6 +10395,9 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   cdm *= 1.0 + buff.elysian_might_legendary->check_value();
 
   cdm *= 1.0 + buff.elysian_might->check_value();
+
+  if ( s->action->school == SCHOOL_PHYSICAL )
+    cdm *= 1.0 + talents.protection.battering_ram->effectN( 3 ).percent();
 
   return cdm;
 }
