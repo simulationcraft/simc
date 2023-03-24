@@ -670,6 +670,12 @@ public:
     const spell_data_t* t29_fury_4pc;
     const spell_data_t* t29_prot_2pc;
     const spell_data_t* t29_prot_4pc;
+    const spell_data_t* t30_arms_2pc;
+    const spell_data_t* t30_arms_4pc;
+    const spell_data_t* t30_fury_2pc;
+    const spell_data_t* t30_fury_4pc;
+    const spell_data_t* t30_prot_2pc;
+    const spell_data_t* t30_prot_4pc;
   } tier_set;
 
   struct legendary_t
@@ -1005,6 +1011,7 @@ struct warrior_action_t : public Base
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
+    bool t30_arms_2pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -1027,6 +1034,7 @@ struct warrior_action_t : public Base
         juggernaut_prot( false ),
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
+        t30_arms_2pc( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
     {
@@ -1146,6 +1154,7 @@ public:
    // set bonus
     ab::apply_affecting_aura( p()->tier_set.t29_arms_2pc );  
     ab::apply_affecting_aura( p()->tier_set.t29_fury_2pc );  
+    ab::apply_affecting_aura( p()->tier_set.t30_fury_2pc );
 
 
 
@@ -1168,6 +1177,7 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
+    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
 
     initialized = true;
   }
@@ -1260,12 +1270,14 @@ public:
   {
     double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
 
-    //warrior_td_t* td = p()->get_target_data( target ); ?
+    warrior_td_t* td = p()->get_target_data( target );
 
-    //if ( affected_by.impale )
-    //{
-      //tcdbm *= 1.0 + ( p()->talents.arms.impale->effectN( 1 ).percent() );
-    //}
+    // needs adjusting - this is actually a TOTAL crit damage increase, not extra - current implementation does not support
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
+         affected_by.t30_arms_2pc )
+    {
+      tcdbm *= 1.0 + ( p()->find_spell( 262115 )->effectN( 5 ).percent() );
+    }
 
     return tcdbm;
   }
@@ -8261,6 +8273,12 @@ void warrior_t::init_spells()
   tier_set.t29_fury_4pc               = sets->set( WARRIOR_FURY, T29, B4 );
   tier_set.t29_prot_2pc               = sets->set( WARRIOR_PROTECTION, T29, B2 );
   tier_set.t29_prot_4pc               = sets->set( WARRIOR_PROTECTION, T29, B4 );
+  tier_set.t30_arms_2pc               = sets->set( WARRIOR_ARMS, T30, B2 );
+  tier_set.t30_arms_4pc               = sets->set( WARRIOR_ARMS, T30, B4 );
+  tier_set.t30_fury_2pc               = sets->set( WARRIOR_FURY, T30, B2 );
+  tier_set.t30_fury_4pc               = sets->set( WARRIOR_FURY, T30, B4 );
+  tier_set.t30_prot_2pc               = sets->set( WARRIOR_PROTECTION, T30, B2 );
+  tier_set.t30_prot_4pc               = sets->set( WARRIOR_PROTECTION, T30, B4 );
 
   // Active spells
   //active.ancient_aftershock_pulse = nullptr;
