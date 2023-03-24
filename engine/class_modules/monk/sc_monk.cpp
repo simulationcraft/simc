@@ -6789,39 +6789,47 @@ namespace monk
   {
     player_t::create_special_effects();
 
+    // ======================================
     // Resonant Fists Talent
+    // ======================================
 
     if ( talent.general.resonant_fists.ok() )
-    {
-      auto trigger = talent.general.resonant_fists.spell();
-
-      auto rf_effect = new special_effect_t( this );
-      rf_effect->spell_id = trigger->id();
-      rf_effect->cooldown_ = trigger->internal_cooldown();
-      rf_effect->proc_flags_ = trigger->proc_flags();
-      rf_effect->proc_chance_ = trigger->proc_chance();
-
-      struct rf_callback : dbc_proc_callback_t
+    {    
+      if ( !special_effects.resonant_fists )
       {
-        monk_t *p;
+        auto trigger = talent.general.resonant_fists.spell();
 
-        rf_callback( const special_effect_t &effect, monk_t *p ) : dbc_proc_callback_t( effect.player, effect ), p( p ) { }
+        special_effects.resonant_fists = new special_effect_t( this );
+        special_effects.resonant_fists->spell_id = trigger->id();
+        special_effects.resonant_fists->cooldown_ = trigger->internal_cooldown();
+        special_effects.resonant_fists->proc_flags_ = trigger->proc_flags();
+        special_effects.resonant_fists->proc_chance_ = trigger->proc_chance();
 
-        void trigger( action_t * a , action_state_t *state  ) override
+        struct rf_callback : dbc_proc_callback_t
         {
-          if ( state->action->id == p->active_actions.resonant_fists->id )
-            return;
+          monk_t *p;
 
-          p->active_actions.resonant_fists->set_target( state->target );
-          p->active_actions.resonant_fists->execute();
-          p->proc.resonant_fists->occur();
+          rf_callback( const special_effect_t &effect, monk_t *p ) : dbc_proc_callback_t( effect.player, effect ), p( p )
+          {
+          }
 
-          dbc_proc_callback_t::trigger( a, state );
-        }
-      };
+          void trigger( action_t *a, action_state_t *state ) override
+          {
+            if ( state->action->id == p->active_actions.resonant_fists->id )
+              return;
 
-      auto callback = new rf_callback( *rf_effect, this );
+            p->active_actions.resonant_fists->set_target( state->target );
+            p->proc.resonant_fists->occur();
+
+            dbc_proc_callback_t::trigger( a, state );
+          }
+        };
+
+        auto callback = new rf_callback( *special_effects.resonant_fists, this );
+      }
     }
+
+    // ======================================
   }
 
   // monk_t::create_action ====================================================
