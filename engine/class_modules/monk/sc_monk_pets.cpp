@@ -1849,8 +1849,6 @@ struct shadowflame_monk_t : public monk_pet_t
 {
   private:
 
-  int attack_counter;
-
   struct shadowflame_damage_t : public pet_spell_t
   {
     shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
@@ -1861,6 +1859,9 @@ struct shadowflame_monk_t : public monk_pet_t
       apply_affecting_aura( o()->passives.shadowflame_spirit );
     }
   };
+
+  // Pet spell vector
+  std::vector<shadowflame_damage_t *> sf_action_list;
 
   struct melee_t : public pet_melee_t
   {
@@ -1887,13 +1888,9 @@ struct shadowflame_monk_t : public monk_pet_t
     }
   };
 
-  // Pet spell vector
-  std::vector<shadowflame_damage_t *> sf_action_list;
-
   public:
 
-  shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true ),
-    attack_counter( 0 )
+  shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true )
   {
     npc_id  = owner->passives.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
     _spec   = owner->specialization();
@@ -1922,13 +1919,6 @@ struct shadowflame_monk_t : public monk_pet_t
     monk_pet_t::init_spells();
   }
 
-  void summon( timespan_t duration = timespan_t::zero() ) override
-  {
-      monk_pet_t::summon( duration );
-
-      this->attack_counter = 0;
-  }
-
   void trigger_attack( action_state_t *s )
   {
     if ( s->result_amount <= 0  )
@@ -1944,12 +1934,6 @@ struct shadowflame_monk_t : public monk_pet_t
 
     ( *pet_action )->set_target( s->target );
     ( *pet_action )->execute();
-
-    if ( !s->action->dual )
-      this->attack_counter++;
-
-    if ( this->attack_counter == 3 )
-      this->dismiss( false );
   }
 
   action_t *create_action( util::string_view name, util::string_view options_str ) override
