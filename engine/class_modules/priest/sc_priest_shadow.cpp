@@ -2406,11 +2406,11 @@ struct ancient_madness_t final : public priest_buff_t<buff_t>
 
     if ( p.is_ptr() )
     {
-      set_default_value( data().effectN( 2 ).percent() / 10 );
+      set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10 );
     }
     else
     {
-      set_default_value( data().effectN( 2 ).percent() );
+      set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
     }
   }
 };
