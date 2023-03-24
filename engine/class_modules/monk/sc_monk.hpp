@@ -921,6 +921,12 @@ public:
     real_ppm_t *shadowflame_spirit;
   } rppm;
 
+  // Special effects
+  struct effects_t
+  {
+    special_effect_t *resonant_fists;
+  } special_effects;
+
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t*, (int)sef_pet_e::SEF_PET_MAX> sef;
