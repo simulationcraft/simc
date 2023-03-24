@@ -2431,7 +2431,7 @@ struct dispersion_t final : public priest_buff_t<buff_t>
 // Fury of Elune AP =========================================================
 struct devoured_despair_buff_t : public priest_buff_t<buff_t>
 {
-  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_depair", p.talents.shadow.devoured_despair )
+  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_despair", p.talents.shadow.devoured_despair )
   {
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
