@@ -4140,7 +4140,6 @@ void voice_of_the_silent_star( special_effect_t& effect )
   static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
 
-  stat_e max_stat = util::highest_stat( effect.player, ratings );
   auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
   double amount = effect.driver() -> effectN( 1 ).average( effect.item ) + ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver() -> effectN( 4 ).base_value() );
 
@@ -4159,9 +4158,10 @@ void voice_of_the_silent_star( special_effect_t& effect )
 
   auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
                  ->set_expire_at_max_stack( true )
-                 ->set_stack_change_callback( [ buffs, max_stat ]( buff_t* b, int, int new_ ) {
+                 ->set_stack_change_callback( [ buffs, effect ]( buff_t* b, int, int new_ ) {
                    if ( !new_ )
                    {
+                      stat_e max_stat = util::highest_stat( effect.player, ratings );
                       ( *buffs )[ max_stat ] -> trigger();
                    }
                  } );
