@@ -10624,14 +10624,7 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
     case STAT_SPIRIT:
       return STAT_NONE;
     case STAT_BONUS_ARMOR:
-      if ( specialization() == WARRIOR_PROTECTION )
-      {
         return s;
-      }
-      else
-      {
-        return STAT_NONE;
-      }
     default:
       return s;
   }
