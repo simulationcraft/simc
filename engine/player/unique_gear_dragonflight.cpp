@@ -3438,13 +3438,24 @@ void winterpelt_totem( special_effect_t& effect )
                            { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
 }
 
-void seething_black_dragonscale( special_effect_t& effect )
+void seething_black_dragonscale_equip( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
                            ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.item ) )
                            ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect.item ) );
   
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void seething_black_dragonscale_use( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver(), true );
+  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
+
+  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  {
+    effect.execute_action = damage;
+  }
 }
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
@@ -5110,7 +5121,8 @@ void register_special_effects()
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
   register_special_effect( 398292, items::winterpelt_totem );
-  register_special_effect( 401468, items::seething_black_dragonscale );
+  register_special_effect( 401468, items::seething_black_dragonscale_equip);
+  register_special_effect( 405940, items::seething_black_dragonscale_use);
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
 
 
