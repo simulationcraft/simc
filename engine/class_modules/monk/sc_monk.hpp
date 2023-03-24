@@ -921,12 +921,6 @@ public:
     real_ppm_t *shadowflame_spirit;
   } rppm;
 
-  // Special effects
-  struct effects_t
-  {
-    special_effect_t *resonant_fists;
-  } special_effects;
-
   struct pets_t
   {
     std::array<pets::storm_earth_and_fire_pet_t*, (int)sef_pet_e::SEF_PET_MAX> sef;
@@ -1050,7 +1044,6 @@ public:
   void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
   void moving() override;
-  void create_special_effects() override;
 
   // Custom Monk Functions
   void stagger_damage_changed( bool last_tick = false );
