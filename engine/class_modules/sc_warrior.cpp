@@ -5376,15 +5376,6 @@ struct shield_charge_damage_t : public warrior_attack_t
     return c;
   }
 
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
-
-    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
-
-    return cm;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5457,15 +5448,6 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
     c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
 
     return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
-
-    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
-
-    return cm;
   }
 };
 
@@ -10378,6 +10360,9 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   cdm *= 1.0 + buff.elysian_might_legendary->check_value();
 
   cdm *= 1.0 + buff.elysian_might->check_value();
+
+  if ( s->action->school == SCHOOL_PHYSICAL )
+    cdm *= 1.0 + talents.protection.battering_ram->effectN( 3 ).percent();
 
   return cdm;
 }
