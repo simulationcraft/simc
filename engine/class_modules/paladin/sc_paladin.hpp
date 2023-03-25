@@ -1368,7 +1368,6 @@ struct holy_power_consumer_t : public Base
 
     if ( p->talents.righteous_protector->ok() )
     {
-      auto icd = p->cooldowns.righteous_protector_icd->up();
       // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
       if ( p->cooldowns.righteous_protector_icd->up() ||
            ( p->bugs && ( isFreeSLDPSpender || p->buffs.bastion_of_light->up() ) ) )
