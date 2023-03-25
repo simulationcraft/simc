@@ -1366,10 +1366,12 @@ struct holy_power_consumer_t : public Base
       p->buffs.crusade->trigger( num_hopo_spent );
     }
 
-    if ( p->talents.righteous_protector->ok()
-      && !ab::background
-      && p->cooldowns.righteous_protector_icd->up())
+    if ( p->talents.righteous_protector->ok() )
     {
+      // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
+      if ( p->cooldowns.righteous_protector_icd->up() ||
+           ( p->bugs && ( isFreeSLDPSpender || p->buffs.bastion_of_light->up() ) ) )
+      {
         timespan_t reduction = timespan_t::from_seconds(
             // Why is this in deciseconds?
             -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 10 );
@@ -1383,6 +1385,7 @@ struct holy_power_consumer_t : public Base
         p->cooldowns.guardian_of_ancient_kings->adjust( reduction );
 
         p->cooldowns.righteous_protector_icd->start();
+      }
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown
