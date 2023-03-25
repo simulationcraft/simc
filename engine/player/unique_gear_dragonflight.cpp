@@ -7,6 +7,7 @@
 
 #include "action/absorb.hpp"
 #include "action/dot.hpp"
+#include "action/residual_action.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
 #include "darkmoon_deck.hpp"
@@ -3438,13 +3439,69 @@ void winterpelt_totem( special_effect_t& effect )
                            { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
 }
 
-void seething_black_dragonscale( special_effect_t& effect )
+void seething_black_dragonscale_equip( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
                            ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.item ) )
                            ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect.item ) );
   
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void seething_black_dragonscale_use( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
+  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
+
+  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  {
+    effect.execute_action = damage;
+  }
+}
+
+// Anshuul the Cosmic Wanderer
+// 402583 Driver
+// 402574 Damage Value 
+void anshuul_the_cosmic_wanderer( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "anshuul_the_cosmic_wanderer", effect, "anshuul_the_cosmic_wanderer", effect.driver(), true );
+  damage -> base_dd_min = damage -> base_dd_max = effect.trigger() -> effectN( 1 ).average( effect.item );
+  damage -> set_school( SCHOOL_COSMIC ); // Manually set the spell school, School set to none in data.
+  effect.execute_action = damage;
+}
+
+// Zaqali Chaos Grapnel
+// 400956 Driver
+// 400955 Damage Values
+// 406558 Missile
+void zaqali_chaos_grapnel( special_effect_t& effect )
+{
+  struct zaqali_chaos_grapnel_missile_t : public generic_aoe_proc_t
+  {
+    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "impaling_grapnel_missile", e.player -> find_spell( 406558 ), true )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct zaqali_chaos_grapnel_t : public generic_proc_t
+  {
+    action_t* missile;
+    zaqali_chaos_grapnel_t( const special_effect_t& e ) : generic_proc_t( e, "impaling_grapnel", e.driver() ),
+        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "impaling_grapnel_missile", e ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 1 ).average( e.item );
+      add_child( missile );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      missile -> execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<zaqali_chaos_grapnel_t>( "impaling_grapnel", effect );
 }
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
@@ -4105,6 +4162,51 @@ void hood_of_surging_time( special_effect_t& effect )
     }
   } );
 }
+// Voice of the Silent Star
+// 409434 Driver
+// 409447 Stat Buff
+// 409442 Stacking Buff
+void voice_of_the_silent_star( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+  effect, { "power_beyond_imagination_crit_rating", "power_beyond_imagination_mastery_rating", "power_beyond_imagination_haste_rating",
+                "power_beyond_imagination_versatility_rating" } ) )
+  return;
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver() -> effectN( 1 ).average( effect.item ) + ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver() -> effectN( 4 ).base_value() );
+
+  for ( auto stat : ratings )
+  {
+    auto name    = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
+             ->add_stat( stat, amount );
+    }
+    ( *buffs )[ stat ] = buff;
+  }
+
+  auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
+                 ->set_expire_at_max_stack( true )
+                 ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
+                   if ( !new_ )
+                   {
+                      stat_e max_stat = util::highest_stat( effect.player, ratings );
+                      ( *buffs )[ max_stat ] -> trigger();
+                   }
+                 } );
+
+  effect.custom_buff = stack_buff;
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 }  // namespace items
 
@@ -4478,6 +4580,30 @@ struct damage_stone_base_t : public BASE
 using damage_stone_t = damage_stone_base_t<generic_proc_t>;
 using aoe_damage_stone_t = damage_stone_base_t<generic_aoe_proc_t>;
 
+template <typename BASE>
+struct residual_stone_t : public BASE
+{
+  using proc_residual_t = base_generic_proc_t<proc_action_t<residual_action::residual_periodic_action_t<spell_t>>>;
+
+  action_t* dot = nullptr;
+  double full_damage = 0.0;
+
+  template <typename... ARGS>
+  residual_stone_t( const special_effect_t& e, ARGS&&... args ) : BASE( e, std::forward<ARGS>( args )... )
+  {}
+
+  timespan_t composite_dot_duration( const action_state_t* ) const override
+  {
+    return 0_ms;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    BASE::impact( s );
+    residual_action::trigger( dot, s->target, full_damage );
+  }
+};
+
 struct heal_stone_t : public proc_heal_t
 {
   heal_stone_t( const special_effect_t& effect, std::string_view name, const spell_data_t* spell ) :
@@ -4598,13 +4724,15 @@ struct uncontainable_charge_t : public damage_stone_t
   }
 };
 
-struct flame_licked_stone_t : public damage_stone_t
+struct flame_licked_stone_t : public residual_stone_t<damage_stone_t>
 {
-  flame_licked_stone_t( const special_effect_t& e ) :
-    damage_stone_t( e, "flame_licked_stone", 403225 )
+  flame_licked_stone_t( const special_effect_t& e ) : residual_stone_t( e, "flame_licked_stone", 403225 )
   {
+    dot = new damage_stone_base_t<proc_residual_t>( e, "flame_licked_stone_dot", data().id() );
+    dot->stats = stats;
+
     auto driver = e.player->find_spell( FLAME_LICKED_STONE );
-    base_td = driver->effectN( 1 ).average( e.item );
+    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
   }
 };
 
@@ -4650,13 +4778,16 @@ struct desirous_blood_stone_t : public damage_stone_t
 };
 
 // TODO: Is this damage fully uncapped?
-struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
+struct pestilent_plague_stone_aoe_t : public residual_stone_t<generic_aoe_proc_t>
 {
-  pestilent_plague_stone_aoe_t( const special_effect_t& e ) :
-    generic_aoe_proc_t( e, "pestilent_plague_stone_aoe", 405221 )
+  pestilent_plague_stone_aoe_t( const special_effect_t& e )
+    : residual_stone_t( e, "pestilent_plague_stone_aoe", 405221 )
   {
+    dot = new proc_residual_t( e, "pestilent_plague_stone_aoe_dot", data().id() );
+    dot->stats = stats;
+
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
-    base_td = driver->effectN( 1 ).average( e.item );
+    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4670,16 +4801,19 @@ struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
   }
 };
 
-struct pestilent_plague_stone_t : public damage_stone_t
+struct pestilent_plague_stone_t : public residual_stone_t<damage_stone_t>
 {
   timespan_t aoe_delay;
   action_t* aoe_damage;
 
-  pestilent_plague_stone_t( const special_effect_t& e ) :
-    damage_stone_t( e, "pestilent_plague_stone", 405220 )
+  pestilent_plague_stone_t( const special_effect_t& e ) : residual_stone_t( e, "pestilent_plague_stone", 405220 )
   {
+    dot = new proc_residual_t( e, "pestilent_plague_stone_dot", data().id() );
+    dot->stats = stats;
+
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
-    base_td = driver->effectN( 1 ).average( e.item );
+    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
+
     aoe_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
     aoe_damage = create_proc_action<pestilent_plague_stone_aoe_t>( "pestilent_plague_stone_aoe", e );
     add_child( aoe_damage );
@@ -4687,7 +4821,7 @@ struct pestilent_plague_stone_t : public damage_stone_t
 
   void impact( action_state_t* s ) override
   {
-    damage_stone_t::impact( s );
+    residual_stone_t::impact( s );
 
     if ( result_is_hit( s->result ) && aoe_damage )
     {
@@ -4954,7 +5088,7 @@ void humming_arcane_stone( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
         return a->get_school() != SCHOOL_PHYSICAL;
       } );
 }
@@ -5110,8 +5244,11 @@ void register_special_effects()
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
   register_special_effect( 398292, items::winterpelt_totem );
-  register_special_effect( 401468, items::seething_black_dragonscale );
+  register_special_effect( 401468, items::seething_black_dragonscale_equip);
+  register_special_effect( 405940, items::seething_black_dragonscale_use);
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
+  register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
+  register_special_effect( 400956, items::zaqali_chaos_grapnel );
 
 
   // Weapons
@@ -5138,6 +5275,7 @@ void register_special_effects()
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
+  register_special_effect( 409434, items::voice_of_the_silent_star, true );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

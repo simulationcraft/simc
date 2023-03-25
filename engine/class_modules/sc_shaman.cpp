@@ -401,6 +401,11 @@ public:
     buff_t* t29_2pc_enh;
     buff_t* t29_4pc_enh;
 
+    // Tier 30
+    buff_t* t30_2pc_enh;
+    buff_t* t30_4pc_enh_damage;
+    buff_t* t30_4pc_enh_cl;
+
     // PvP
     buff_t* thundercharge;
 
@@ -491,6 +496,7 @@ public:
     proc_t* maelstrom_weapon_sm;
     proc_t* maelstrom_weapon_pw;
     proc_t* maelstrom_weapon_sa;
+    proc_t* maelstrom_weapon_4pc_enh;
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
@@ -1158,6 +1164,8 @@ public:
   bool affected_by_enh_t29_2pc;
   bool affected_by_lotfw_da;
   bool affected_by_lotfw_ta;
+  bool affected_by_enh_t30_4pc_da;
+  bool affected_by_enh_t30_4pc_ta;
 
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
@@ -1183,7 +1191,9 @@ public:
       affected_by_enh_mastery_ta( false ),
       affected_by_enh_t29_2pc( false ),
       affected_by_lotfw_da( false ),
-      affected_by_lotfw_ta( false )
+      affected_by_lotfw_ta( false ),
+      affected_by_enh_t30_4pc_da( false ),
+      affected_by_enh_t30_4pc_ta( false )
   {
     ab::may_crit = true;
 
@@ -1235,6 +1245,12 @@ public:
 
     //T29 Enhance 2pc
     affected_by_enh_t29_2pc = ab::data().affected_by( player->find_spell( 394677 )->effectN( 1 ) );
+
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T30, B4 ) )
+    {
+      affected_by_enh_t30_4pc_da = ab::data().affected_by( player->find_spell( 409833 )->effectN( 1 ) );
+      affected_by_enh_t30_4pc_ta = ab::data().affected_by( player->find_spell( 409833 )->effectN( 2 ) );
+    }
   }
 
   std::string full_name() const
@@ -1350,6 +1366,11 @@ public:
       m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
 
+    if ( affected_by_enh_t30_4pc_da && p()->buff.t30_4pc_enh_damage->check() )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
     return m;
   }
 
@@ -1394,6 +1415,11 @@ public:
       {
         m *= 1.0 + p()->buff.earthen_weapon->value();
       }
+    }
+
+    if ( affected_by_enh_t30_4pc_ta && p()->buff.t30_4pc_enh_damage->check() )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
     }
 
     return m;
@@ -4088,6 +4114,15 @@ struct sundering_t : public shaman_attack_t
 
     may_proc_stormbringer = may_proc_flametongue = true;
   }
+
+  void execute() override
+  {
+    shaman_attack_t::execute();
+
+    p()->buff.t30_2pc_enh->trigger();
+    p()->buff.t30_4pc_enh_damage->trigger();
+    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
+  }
 };
 
 // Weapon imbues
@@ -4622,6 +4657,15 @@ struct chain_lightning_t : public chained_base_t
     }
   }
 
+  double action_da_multiplier() const override
+  {
+    double m = shaman_spell_t::action_da_multiplier();
+
+    m *= 1.0 + p()->buff.t30_4pc_enh_cl->value();
+
+    return m;
+  }
+
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     tl.clear();
@@ -4720,6 +4764,8 @@ struct chain_lightning_t : public chained_base_t
 
   void execute() override
   {
+    auto mw_stacks = maelstrom_weapon_stacks();
+
     chained_base_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
@@ -4770,7 +4816,21 @@ struct chain_lightning_t : public chained_base_t
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
 
+    if ( p()->buff.t30_4pc_enh_cl->check() )
+    {
+      auto refunded = as<int>(
+        std::ceil( mw_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
+
+      p()->buff.maelstrom_weapon->trigger( refunded );
+      for ( auto i = 0; i < refunded; ++i )
+      {
+        p()->proc.maelstrom_weapon_4pc_enh->occur();
+      }
+      p()->buff.t30_4pc_enh_cl->decrement();
+    }
+
     p()->buff.t29_2pc_ele->trigger();
+
   }
 
   void impact( action_state_t* state ) override
@@ -9778,6 +9838,18 @@ void shaman_t::create_buffs()
                    ->set_default_value_from_effect( 1 )
                    ->set_max_stack( 1 );
 
+  buff.t30_2pc_enh = make_buff<buff_t>( this, "earthen_might", find_spell( 409689 ) )
+    ->set_default_value_from_effect( 1 )
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B2 ) );
+
+  buff.t30_4pc_enh_damage = make_buff<buff_t>( this, "volcanic_strength", find_spell( 409833 ) )
+    ->set_default_value_from_effect( 1 )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B4 ) );
+  buff.t30_4pc_enh_cl = make_buff<buff_t>( this, "crackling_thunder", find_spell( 409834 ) )
+    ->set_default_value_from_effect( 2 )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B4 ) );
+
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   // Buffs crash lightning with extra damage, after using chain lightning
@@ -9888,6 +9960,7 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_sm    = get_proc( "Maelstrom Weapon: Swirling Maelstrom" );
   proc.maelstrom_weapon_pw    = get_proc( "Maelstrom Weapon: Primordial Wave" );
   proc.maelstrom_weapon_sa    = get_proc( "Maelstrom Weapon: Static Accumulation" );
+  proc.maelstrom_weapon_4pc_enh = get_proc( "Maelstrom Weapon: Enhancement Tier30 4PC" );
   proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );

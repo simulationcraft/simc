@@ -302,6 +302,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* latent_poison_injectors;
     buff_t* death_chakram;
     buff_t* stampede;
+    buff_t* shredded_armor;
   } debuffs;
 
   struct dots_t
@@ -333,6 +334,7 @@ public:
   } pets;
 
   struct tier_sets_t {
+    // T29 - Vault of the Incarnates
     spell_data_ptr_t t29_mm_2pc;
     spell_data_ptr_t t29_mm_4pc;
     spell_data_ptr_t t29_bm_2pc;
@@ -340,6 +342,13 @@ public:
     spell_data_ptr_t t29_sv_2pc;
     spell_data_ptr_t t29_sv_4pc;
     spell_data_ptr_t t29_sv_4pc_buff;
+    // T30 - Aberrus, the Shadowed Crucible
+    spell_data_ptr_t t30_bm_2pc; 
+    spell_data_ptr_t t30_bm_4pc; 
+    spell_data_ptr_t t30_mm_2pc; 
+    spell_data_ptr_t t30_mm_4pc; 
+    spell_data_ptr_t t30_sv_2pc; 
+    spell_data_ptr_t t30_sv_4pc; 
   } tier_set;
 
   // Buffs
@@ -398,6 +407,8 @@ public:
     buff_t* focusing_aim;
     buff_t* lethal_command;
     buff_t* bestial_barrage;
+
+    buff_t* exposed_wound; 
   } buffs;
 
   // Cooldowns
@@ -442,6 +453,8 @@ public:
 
     proc_t* wild_call;
     proc_t* wild_instincts;
+
+    proc_t* t30_sv_4p; 
   } procs;
 
   // RPPM
@@ -681,6 +694,10 @@ public:
     unsigned steady_focus_counter = 0;
     // Focus used for Calling the Shots (260404)
     double focus_used_CTS = 0;
+    // Focus used for T30 Survival 4pc (405530)
+    double focus_used_T30_sv_4p = 0; 
+    // Last KC target used for T30 Survival 4pc (410167)
+    player_t* last_kc_target;
     unsigned dire_pack_counter = 0;
     unsigned bombardment_counter = 0;
   } state;
@@ -816,6 +833,7 @@ public:
   }
 
   void trigger_bloodseeker_update();
+  void trigger_t30_sv_4p( action_t* action, double cost );
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
@@ -833,6 +851,7 @@ public:
 
   bool track_cd_waste;
   maybe_bool triggers_calling_the_shots;
+  maybe_bool triggers_t30_sv_4p; 
 
   struct {
     bool serrated_shots = false;
@@ -919,6 +938,11 @@ public:
     // passive set bonuses
     ab::apply_affecting_aura( p -> tier_set.t29_bm_4pc );
     ab::apply_affecting_aura( p -> tier_set.t29_sv_2pc );
+
+    ab::apply_affecting_aura( p -> tier_set.t30_bm_2pc );
+    ab::apply_affecting_aura( p -> tier_set.t30_mm_2pc );
+    ab::apply_affecting_aura( p -> tier_set.t30_mm_4pc );
+    ab::apply_affecting_aura( p -> tier_set.t30_sv_2pc );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
@@ -947,6 +971,21 @@ public:
 
     if ( triggers_calling_the_shots )
       ab::sim -> print_debug( "{} action {} set to proc Calling the Shots", ab::player -> name(), ab::name() );
+
+    if ( p() -> tier_set.t30_sv_4pc.ok() ) 
+    {
+      if ( triggers_t30_sv_4p.is_none() )
+      {
+        triggers_t30_sv_4p = !ab::background && !ab::proc && ab::base_cost() > 0;
+      }
+    }
+    else
+    {
+      triggers_t30_sv_4p = false; 
+    }
+
+    if ( triggers_t30_sv_4p )
+      ab::sim -> print_debug( "{} action {} set to proc T30 SV 4P", ab::player -> name(), ab::name() );
   }
 
   timespan_t gcd() const override
@@ -971,6 +1010,9 @@ public:
 
     if ( affected_by.t29_sv_4pc_cost )
       p() -> buffs.bestial_barrage -> expire();
+    
+    if ( triggers_t30_sv_4p )
+      p() -> trigger_t30_sv_4p( this, ab::cost() );
   }
 
   void impact( action_state_t* s ) override
@@ -1294,6 +1336,7 @@ public:
     ab::apply_affecting_aura( o() -> talents.improved_kill_command );
     ab::apply_affecting_aura( o() -> tier_set.t29_bm_2pc );
     ab::apply_affecting_aura( o() -> talents.killer_command );
+    ab::apply_affecting_aura( o() -> tier_set.t30_bm_2pc );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -1444,6 +1487,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 
     buff_t* bloodseeker = nullptr;
     buff_t* coordinated_assault = nullptr;
+    buff_t* exposed_wound = nullptr; 
   } buffs;
 
   struct {
@@ -1504,6 +1548,10 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buffs.lethal_command =
       make_buff( this, "lethal_command", o() -> tier_set.t29_bm_4pc -> effectN( 3 ).trigger() )
       -> set_default_value_from_effect( 1 );
+
+    buffs.exposed_wound = 
+      make_buff( this, "exposed_wound", o() -> tier_set.t30_sv_2pc -> effectN( 2 ).trigger() )
+        -> set_default_value_from_effect( 1 ); 
   }
 
   double composite_melee_speed() const override
@@ -2117,6 +2165,20 @@ struct kill_command_sv_t: public kill_command_base_t
       dot_duration = 0_ms;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    kill_command_base_t::impact( s );
+
+    if( ! o() -> tier_set.t30_sv_4pc.ok() )
+      return;
+
+    if ( o() -> state.last_kc_target && o() -> state.last_kc_target != s -> target )
+      o() -> get_target_data( o() -> state.last_kc_target ) -> debuffs.shredded_armor -> expire();
+
+    o() -> state.last_kc_target = s -> target;
+    o() -> get_target_data( s -> target ) -> debuffs.shredded_armor -> trigger();
+  }
+  
   void trigger_dot( action_state_t* s ) override
   {
     kill_command_base_t::trigger_dot( s );
@@ -2136,6 +2198,8 @@ struct kill_command_sv_t: public kill_command_base_t
     double am = kill_command_base_t::action_multiplier();
 
     am *= 1 + o() -> buffs.deadly_duo -> stack_value();
+
+    am *= 1 + o() -> buffs.exposed_wound -> value(); 
 
     return am;
   }
@@ -2526,6 +2590,24 @@ void hunter_t::trigger_bloodseeker_update()
   }
 }
 
+void hunter_t::trigger_t30_sv_4p( action_t* action, double cost )
+{
+  if ( !tier_set.t30_sv_4pc.ok() )
+    return;
+
+  state.focus_used_T30_sv_4p += cost; 
+  sim -> print_debug( "{} action {} spent {} focus, t30 4p now at {}", name(), action->name(), cost, state.focus_used_T30_sv_4p );
+
+  const double threshold = tier_set.t30_sv_4pc -> effectN( 1 ).base_value();
+  if ( state.focus_used_T30_sv_4p >= threshold )
+  {
+    state.focus_used_T30_sv_4p -= threshold;
+    cooldowns.wildfire_bomb -> adjust( -timespan_t::from_millis( tier_set.t30_sv_4pc -> effectN( 2 ).base_value() ) );
+    procs.t30_sv_4p -> occur();
+  }
+  
+}
+
 void hunter_t::trigger_lethal_shots()
 {
   if ( !talents.lethal_shots.ok() )
@@ -2839,6 +2921,12 @@ struct kill_shot_t : hunter_ranged_attack_t
     p() -> buffs.razor_fragments -> decrement();
 
     p() -> buffs.hunters_prey -> decrement();
+
+    if ( p() -> tier_set.t30_mm_4pc.ok() )
+    {
+      p() -> cooldowns.aimed_shot -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
+      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2944,6 +3032,11 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> decrement();
 
     p() -> buffs.focusing_aim -> expire();
+
+    if ( rng().roll( p() -> tier_set.t30_mm_2pc -> proc_chance() ) ) 
+    {
+      p() -> buffs.deathblow -> trigger(); 
+    }
   }
 
   double cost() const override
@@ -3536,6 +3629,11 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> buffs.beast_cleave -> trigger( beast_cleave_duration );
+
+    if ( p() -> tier_set.t30_bm_4pc.ok() )
+    {
+      p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
   }
 };
 
@@ -3565,6 +3663,16 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> rppm.arctic_bola -> trigger() )
       p() -> actions.arctic_bola -> execute_on_target( target );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s ); 
+
+    if ( p() -> tier_set.t30_bm_4pc.ok() )
+    {
+      p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
   }
 
   double cost() const override
@@ -3732,6 +3840,12 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> decrement();
 
     p() -> buffs.focusing_aim -> expire();
+
+    if ( rng().roll( p() -> tier_set.t30_mm_2pc -> proc_chance() ) ) 
+    {
+      p() -> buffs.deathblow -> trigger();
+    }
+
   }
 
   double cost() const override
@@ -4334,6 +4448,11 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     }
 
     p() -> buffs.focusing_aim -> expire();
+
+    if ( rng().roll( p() -> tier_set.t30_mm_2pc -> proc_chance() ) ) 
+    {
+      p() -> buffs.deathblow -> trigger(); 
+    }
   }
 
   double cost() const override
@@ -4403,6 +4522,19 @@ struct internal_bleeding_t
     {
       dual = true;
     }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double am = hunter_spell_t::composite_ta_multiplier( s );
+
+      auto td = p() -> find_target_data( s -> target ); 
+      if( td )
+      {
+        am *= 1.0 + td -> debuffs.shredded_armor -> value();
+      }
+
+      return am;
+    }    
   };
   action_t* action = nullptr;
 
@@ -5263,8 +5395,6 @@ struct kill_command_t: public hunter_spell_t
     proc_t* proc;
   } dire_command;
 
-  double df_bm_2pc_chance = 0;
-
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
   {
@@ -5359,6 +5489,12 @@ struct kill_command_t: public hunter_spell_t
 
     p() -> buffs.lethal_command -> expire();
     p() -> buffs.deadly_duo -> expire();
+    p() -> buffs.exposed_wound -> expire();
+
+    if ( p() -> tier_set.t30_bm_4pc.ok() )
+    {
+      p() -> cooldowns.bestial_wrath -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_bm_4pc -> effectN( 1 ).base_value() ) );
+    }
   }
 
   double cost() const override
@@ -5850,6 +5986,19 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
       }
+
+      double composite_ta_multiplier( const action_state_t* s ) const override
+      {
+        double am = hunter_spell_t::composite_ta_multiplier( s );
+
+        auto td = p() -> find_target_data( s -> target ); 
+        if( td )
+        {
+          am *= 1.0 + td -> debuffs.shredded_armor -> value();
+        }
+
+        return am;
+      }
     };
     dot_action_t* dot_action;
 
@@ -5899,6 +6048,11 @@ struct wildfire_bomb_t: public hunter_spell_t
 
       p() -> buffs.coordinated_assault_empower -> up();
       p() -> buffs.coordinated_assault_empower -> expire();
+
+      if( p() -> tier_set.t30_sv_2pc.ok() )
+      {
+        p() -> buffs.exposed_wound -> trigger();
+      }
     }
 
     double energize_cast_regen( const action_state_t* s ) const override
@@ -5914,6 +6068,12 @@ struct wildfire_bomb_t: public hunter_spell_t
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double am = hunter_spell_t::composite_da_multiplier( s );
+
+      auto td = p() -> find_target_data( s -> target ); 
+      if( td )
+      {
+        am *= 1.0 + td -> debuffs.shredded_armor -> value();
+      }
 
       return am;
     }
@@ -5979,6 +6139,19 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
         aoe = -1;
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double am = hunter_spell_t::composite_da_multiplier( s );
+
+        auto td = p() -> find_target_data( s -> target ); 
+        if( td )
+        {
+          am *= 1.0 + td -> debuffs.shredded_armor -> value();
+        }
+
+        return am;
       }
     };
     violent_reaction_t* violent_reaction;
@@ -6162,6 +6335,10 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs.latent_poison =
     make_buff( *this, "latent_poison", p -> talents.poison_injection -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> talents.poison_injection );
+
+  debuffs.shredded_armor = 
+    make_buff( *this, "shredded_armor", p -> find_spell( 410167 ) )
+      -> set_default_value_from_effect( 1 );
 
   debuffs.death_chakram =
     make_buff( *this, "death_chakram", p -> find_spell( 375893 ) )
@@ -6629,6 +6806,13 @@ void hunter_t::init_spells()
   tier_set.t29_sv_4pc = sets -> set( HUNTER_SURVIVAL, T29, B4 );
   tier_set.t29_sv_4pc_buff = find_spell( 394388 );
 
+  tier_set.t30_bm_2pc = sets -> set( HUNTER_BEAST_MASTERY, T30, B2 );
+  tier_set.t30_bm_4pc = sets -> set( HUNTER_BEAST_MASTERY, T30, B4 );
+  tier_set.t30_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, T30, B2 );
+  tier_set.t30_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, T30, B4 );
+  tier_set.t30_sv_2pc = sets -> set( HUNTER_SURVIVAL, T30, B2 );
+  tier_set.t30_sv_4pc = sets -> set( HUNTER_SURVIVAL, T30, B4 );
+
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
 }
@@ -6965,6 +7149,10 @@ void hunter_t::create_buffs()
   buffs.bestial_barrage =
     make_buff( this, "bestial_barrage", tier_set.t29_sv_4pc_buff )
     -> set_chance( tier_set.t29_sv_4pc -> effectN( 1 ).percent() );
+
+  buffs.exposed_wound = 
+    make_buff( this, "exposed_wound", tier_set.t30_sv_2pc -> effectN( 2 ).trigger() ) 
+      -> set_default_value_from_effect( 1 ); 
 }
 
 // hunter_t::init_gains =====================================================
@@ -7026,6 +7214,9 @@ void hunter_t::init_procs()
 
   procs.wild_call           = get_proc( "Wild Call" );
   procs.wild_instincts      = get_proc( "Wild Instincts");
+
+  if ( tier_set.t30_sv_4pc.ok() )
+    procs.t30_sv_4p          = get_proc( "Wildfire Bomb Reduction T304P" );
 }
 
 // hunter_t::init_rng =======================================================

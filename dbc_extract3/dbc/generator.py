@@ -1418,6 +1418,7 @@ class SpellDataGenerator(DataGenerator):
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
+            ( 405580, 0 ),          # Fury 10.1 Class Set 4pc (buff)
         ),
 
         # Paladin:
@@ -1637,6 +1638,7 @@ class SpellDataGenerator(DataGenerator):
             ( 373213, 0 ),          # Insidious Ire Buff
             ( 407468, 0 ),          # Mind Spike Insanity Buff
             ( 391232, 0 ),          # Maddening Touch Insanity
+            ( 409502, 0 ),          # Priest Shadow Class Set 2-set - Weakening Reality
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)

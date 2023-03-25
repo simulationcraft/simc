@@ -66,6 +66,7 @@ public:
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
     propagate_const<buff_t*> sins_of_the_many;
+    propagate_const<buff_t*> psychic_horror;
   } buffs;
 
   priest_t& priest()
@@ -149,6 +150,7 @@ public:
     propagate_const<buff_t*> screams_of_the_void;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
+    propagate_const<buff_t*> devoured_despair;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
@@ -163,7 +165,7 @@ public:
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
     propagate_const<buff_t*> light_weaving;
-    propagate_const<buff_t*> t30_4pc;
+    propagate_const<buff_t*> weakening_reality;
   } buffs;
 
   // Talents
@@ -677,7 +679,9 @@ public:
   void generate_insanity( double num_amount, gain_t* g, action_t* action );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_inescapable_torment( player_t* target );
+  void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
+  void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
   int number_of_echoing_voids_active();
   void trigger_psychic_link( action_state_t* );
@@ -794,14 +798,18 @@ public:
   {
     // using S = const spell_data_t*;
 
-    // ALL PRIEST EFFECTS
+    // GENERAL PRIEST BUFF EFFECTS
     parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
 
     // SHADOW BUFF EFFECTS
     if ( p().specialization() == PRIEST_SHADOW )
     {
-      parse_buff_effects( p().buffs.voidform );
+      parse_buff_effects( p().buffs.gathering_shadows,
+                          true );                      // Spell Direct amount for Mind Sear (NOT DP)
+      parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
+
+      parse_buff_effects( p().buffs.voidform, 0x4U, false, false );  // Skip E3 for AM
       parse_buff_effects( p().buffs.shadowform );
       parse_buff_effects( p().buffs.mind_devourer );
       parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
@@ -809,7 +817,7 @@ public:
       parse_buff_effects( p().buffs.coalescing_shadows );
       parse_buff_effects( p().buffs.coalescing_shadows_dot );
       // TODO: check why we cant use_default=true to get the value correct
-      parse_buff_effects( p().buffs.dark_ascension );  // Buffs corresponding non-periodic spells
+      parse_buff_effects( p().buffs.dark_ascension, 0b1000U, false, false );  // Buffs non-periodic spells - Skip E4
       parse_buff_effects( p().buffs.gathering_shadows,
                           true );                      // Spell Direct amount for Mind Sear (NOT DP)
       parse_buff_effects( p().buffs.devoured_pride );  // Spell Direct and Periodic amount
@@ -840,6 +848,19 @@ public:
                           p().talents.shadow.mind_melt );  // Mind Blast instant cast and Crit increase
 
       parse_buff_effects( p().buffs.deathspeaker );
+
+      if ( p().talents.shadow.ancient_madness.enabled() )
+      {
+        // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
+        if ( p().talents.shadow.dark_ascension.enabled() )
+        {
+          parse_buff_effects( p().buffs.ancient_madness, 0b0001U, true, true );  // Skip E1
+        }
+        else
+        {
+          parse_buff_effects( p().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
+        }
+      }
     }
     else
     {
@@ -988,11 +1009,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void consume_resource() override
   {
     base_t::consume_resource();
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && resource_current == RESOURCE_INSANITY )
-    {
-      priest().buffs.t30_4pc->trigger( last_resource_cost );
-    }
   }
 
   void last_tick( dot_t* d ) override

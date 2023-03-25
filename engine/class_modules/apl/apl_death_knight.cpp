@@ -291,6 +291,9 @@ void frost( player_t* p )
   cooldowns->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(buff.pillar_of_frost.up&buff.pillar_of_frost.remains>5|!buff.pillar_of_frost.up)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>3", "Obliteration Active Rotation" );
+  obliteration->add_action( "howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react" );
+  obliteration->add_action( "frost_strike,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd" );
+  obliteration->add_action( "glacial_advance,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking" );
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority" );
   obliteration->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
   obliteration->add_action( "howling_blast,if=!dot.frost_fever.ticking&!buff.killing_machine.react" );
@@ -316,8 +319,8 @@ void frost( player_t* p )
 
   single_target->add_action( "remorseless_winter,if=variable.rw_buffs|variable.adds_remain", "Single Target Rotation" );
   single_target->add_action( "frost_strike,if=buff.killing_machine.stack<2&runic_power.deficit<20&!variable.2h_check" );
-  single_target->add_action( "frostscythe,if=!variable.pooling_runes&buff.killing_machine.react&variable.frostscythe_priority" );
-  single_target->add_action( "obliterate,if=!variable.pooling_runes&buff.killing_machine.react" );
+  single_target->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
+  single_target->add_action( "obliterate,if=buff.killing_machine.react" );
   single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=2" );
   single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25&talent.obliteration&talent.breath_of_sindragosa" );
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25|debuff.razorice.stack=5&talent.shattering_blade)" );

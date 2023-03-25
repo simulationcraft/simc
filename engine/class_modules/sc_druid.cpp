@@ -946,6 +946,7 @@ public:
 
   struct uptimes_t
   {
+    uptime_t* astral_smolder;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse_solar;
     uptime_t* eclipse_lunar;
@@ -6374,6 +6375,20 @@ struct astral_smolder_t
   : public residual_action::residual_periodic_action_t<trigger_waning_twilight_t<druid_spell_t>>
 {
   astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) ) {}
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    residual_action_t::trigger_dot( s );
+
+    p()->uptime.astral_smolder->update( true, sim->current_time() );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    residual_action_t::last_tick( d );
+
+    p()->uptime.astral_smolder->update( false, sim->current_time() );
+  }
 };
 
 // Barkskin =================================================================
@@ -7122,10 +7137,7 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack_moonfire->expire();
         }
 
-        auto rage = p()->buff.galactic_guardian->check_value();
-        if ( !p()->is_ptr() )
-          rage *= num_targets_hit;
-
+        auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
         p()->resource_gain( RESOURCE_RAGE, rage, gain );
 
         if ( !is_free() )
@@ -10959,6 +10971,7 @@ void druid_t::init_uptimes()
 
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
+  uptime.astral_smolder            = get_uptime( "Astral Smolder" )->collect_uptime( *sim );
   uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );

@@ -82,7 +82,7 @@ namespace residual_action
       // Residual periodic actions + tick_zero does not work
       assert(!ab::tick_zero);
 
-      dot_t* dot = ab::get_dot(s->target);
+      dot_t* dot = this->get_dot(s->target);
       double current_amount = 0, old_amount = 0;
       int ticks_left = 0;
       residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>(dot->state);
@@ -99,7 +99,7 @@ namespace residual_action
       current_amount += s->result_amount;
 
       // Trigger the dot, refreshing it's duration or starting it
-      ab::trigger_dot(s);
+      this->trigger_dot(s);
 
       // If the dot is not ticking, dot_state will be nullptr, so get the
       // residual_periodic_state_t object from the dot again (since it will exist
@@ -122,7 +122,7 @@ namespace residual_action
     // The damage of the tick is simply the tick_amount in the state
     double base_ta(const action_state_t* s) const override
     {
-      auto dot = ab::find_dot(s->target);
+      auto dot = this->find_dot(s->target);
       if (dot)
       {
         auto rd_state = debug_cast<const residual_periodic_state_t*>(dot->state);

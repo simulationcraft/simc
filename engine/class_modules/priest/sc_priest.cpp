@@ -150,7 +150,7 @@ public:
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
     {
-      m *= 1 + 0.6;
+      m *= 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 1 ).percent();
     }
     return m;
   }
@@ -200,7 +200,9 @@ public:
 
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
       {
-        priest().generate_insanity( 4, priest().gains.insanity_t30_2pc, s->action );
+        priest().generate_insanity(
+            priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 2 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_t30_2pc, s->action );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -825,23 +827,14 @@ struct summon_fiend_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    auto duration = default_duration;
-    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
-    {
-      // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-      if ( target->health_percentage() >= 80.0 )
-      {
-        priest().buffs.devoured_pride->trigger();
-      }
-      else
-      {
-        duration += timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-        priest().procs.idol_of_yshaarj_extra_duration->occur();
-      }
-    }
-
     if ( spawner )
-      spawner->spawn( duration );
+      spawner->spawn( default_duration );
+  }
+
+  void impact( action_state_t* s )
+  {
+    priest_spell_t::impact( s );
+    make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
   }
 };
 
@@ -1507,6 +1500,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
 
+  buffs.psychic_horror = make_buff( *this, "psychic_horror", p.talents.shadow.psychic_horror )->set_cooldown( 0_s );
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
 
@@ -1780,7 +1774,7 @@ double priest_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  if ( talents.shadow.ancient_madness.enabled() )
+  if ( talents.shadow.ancient_madness.enabled() && !is_ptr() )
   {
     if ( buffs.ancient_madness->check() )
     {
@@ -2425,38 +2419,46 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;
 
-  auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id          = specs.mind_flay->id();
-  auto mind_flay_insanity_id = 391403U;
-  auto action_id             = s->action->id;
-
   if ( rppm.idol_of_cthun->trigger() )
   {
-    if ( is_ptr() )
+    spawn_idol_of_cthun( s );
+  }
+}
+
+void priest_t::spawn_idol_of_cthun( action_state_t* s )
+{
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
+
+  if ( is_ptr() )
+  {
+    if ( s->action->target_list().size() > 2 )
     {
-      if ( s->action->target_list().size() > 2 )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
-      else
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
     else
     {
-      if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
-      {
-        procs.void_tendril->occur();
-        auto spawned_pets = pets.void_tendril.spawn();
-      }
-      else if ( action_id == mind_sear_id )
-      {
-        procs.void_lasher->occur();
-        auto spawned_pets = pets.void_lasher.spawn();
-      }
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+  }
+  else
+  {
+    auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
+    auto mind_flay_id          = specs.mind_flay->id();
+    auto mind_flay_insanity_id = 391403U;
+    auto action_id             = s->action->id;
+
+    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
+    {
+      procs.void_tendril->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+    else if ( action_id == mind_sear_id )
+    {
+      procs.void_lasher->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
     }
   }
 }

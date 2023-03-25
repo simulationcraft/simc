@@ -2703,9 +2703,17 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-        return a.first->selection_index < b.first->selection_index;
-      } );
+      // it is possible to have multiple entries per node that are not choice node, in which case the higher trait node
+      // entry id seems to take precedence
+      if ( node.size() > 1 )
+      {
+        range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+          if ( a.first->selection_index != -1 && b.first->selection_index != -1 )
+            return a.first->selection_index < b.first->selection_index;
+          else
+            return a.first->id_trait_node_entry > b.first->id_trait_node_entry;
+        } );
+      }
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
@@ -2752,6 +2760,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         trait = node[ index ].first;
       }
 
+      player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
                                           as<unsigned>( rank ) );
     }
@@ -12281,6 +12290,7 @@ void player_t::copy_from( player_t* source )
   player_traits     = source->player_traits;
   shadowlands_opts  = source->shadowlands_opts;
   dragonflight_opts = source->dragonflight_opts;
+  resources.initial_opt = source->resources.initial_opt;
 
   if ( azerite )
   {

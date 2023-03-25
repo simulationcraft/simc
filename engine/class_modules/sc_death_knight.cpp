@@ -1896,7 +1896,7 @@ struct death_knight_pet_t : public pet_t
   void init_action_list() override
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( spawn_travel_duration >= 0_s )
+    if ( spawn_travel_duration > 0_s )
       def -> add_action( "spawn_travel" );
     if ( use_auto_attack )
       def -> add_action( "auto_attack" );

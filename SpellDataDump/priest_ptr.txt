@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-23/48676)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -17251,5 +17251,34 @@ Effects          :
                    Family Flags: 10, 21, 28, 69
 Description      : $@spelldesc405556
 Tooltip          : The damage and healing of your next Holy Word is increased by $s1%.
+
+Name             : Weakening Reality (id=409502) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 8 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1074409)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1074460)  : None (0)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000
+#3 (id=1074463)  : None (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : $@spelldesc405558
+
+Tooltip          : ${$w1~} Insanity collected.
+
+Once $s2 Insanity has been collected, you summon a $?s200174[Mindbender][Shadowfiend] for $s3 sec.
 
 
