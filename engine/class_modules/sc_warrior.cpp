@@ -203,6 +203,7 @@ public:
     // Tier
     buff_t* strike_vulnerabilities;
     buff_t* vanguards_determination;
+    buff_t* t30_fury_4p;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -1013,6 +1014,7 @@ struct warrior_action_t : public Base
     bool t29_arms_4pc;
     bool t29_prot_2pc;
     bool t30_arms_2pc;
+    bool t30_fury_4pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -1036,6 +1038,7 @@ struct warrior_action_t : public Base
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
+        t30_fury_4pc( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
     {
@@ -1179,7 +1182,8 @@ public:
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     if ( p()->dbc->ptr )
-      affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+      affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
     initialized = true;
   }
@@ -1363,6 +1367,11 @@ public:
     if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
     {
       dm *= 1.0 + p()->buff.vanguards_determination->check_value();
+    }
+
+    if ( affected_by.t30_fury_4pc && p()->buff.t30_fury_4p->up() )
+    {
+      dm *= 1.0 + p()->buff.t30_fury_4p->stack_value();
     }
 
     return dm;
@@ -2794,6 +2803,11 @@ struct bloodthirst_t : public warrior_attack_t
       gushing_wound->execute();
     }
 
+    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
+    }
+
     p()->buff.fujiedas_fury->trigger( 1 );
   }
 
@@ -2807,6 +2821,7 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.meat_cleaver->decrement();
+    p()->buff.t30_fury_4p->expire();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -4840,6 +4855,11 @@ struct rampage_attack_t : public warrior_attack_t
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
 
+      if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT &&
+           target == s->target )
+      {
+        p()->buff.t30_fury_4p->trigger();
+      }
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
       {
@@ -9575,6 +9595,12 @@ void warrior_t::create_buffs()
   buff.vanguards_determination = make_buff( this, "vanguards_determination", tier_set.t29_prot_2pc->ok() ?
                                             find_spell( 394056 ) : spell_data_t::not_found() )
                                     ->set_default_value( find_spell( 394056 )->effectN( 1 ).percent());
+
+  // T30 Tier Effects ===============================================================================================================
+  buff.t30_fury_4p = make_buff( this, "t30_fury_4p", tier_set.t30_fury_4pc->ok() ? 
+                                find_spell( 409983 ) : spell_data_t::not_found() )
+                    ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
+                    ->set_duration( find_spell( 409983 )->duration() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
