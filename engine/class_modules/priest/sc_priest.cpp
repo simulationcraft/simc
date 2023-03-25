@@ -1646,7 +1646,7 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.divine_favor_chastise          = get_proc( "Divine Favor: Chastise procs holy fire" );
+  procs.divine_favor_chastise          = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
 }
 
 /** Construct priest benefits */
