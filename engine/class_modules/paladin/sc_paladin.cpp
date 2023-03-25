@@ -2335,7 +2335,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 50 ) ? "phial_of_static_empowerment_3" : "disabled";
+  std::string protection_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
