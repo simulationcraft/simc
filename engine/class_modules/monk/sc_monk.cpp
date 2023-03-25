@@ -9083,14 +9083,15 @@ namespace monk
       }
     }
 
+    base_t::assess_damage( school, dtype, s );
+
+
     if ( action_t::result_is_hit( s->result ) && s->action->id != passives.stagger_self_damage->id() )
     {
       // trigger the mastery if the player gets hit by a physical attack; but not from stagger
       if ( school == SCHOOL_PHYSICAL )
         buff.elusive_brawler->trigger();
     }
-
-    base_t::assess_damage( school, dtype, s );
   }
 
   // monk_t::target_mitigation ====================================================
