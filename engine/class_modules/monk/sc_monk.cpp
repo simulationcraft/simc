@@ -1988,8 +1988,6 @@ namespace monk
         {
           monk_melee_attack_t::execute();
 
-          p()->buff.elusive_brawler->trigger();
-
           p()->buff.blackout_combo->trigger();
 
           trigger_shuffle( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() );
