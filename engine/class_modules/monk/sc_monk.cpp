@@ -2938,7 +2938,7 @@ namespace monk
             // Tier 30 Windwalker 
             if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) && p()->rppm.shadowflame_spirit->trigger() )
             {
-              p()->pets.shadowflame_monk.spawn( p()->passives.shadowflame_spirit_summon->duration() );
+              p()->pets.shadowflame_monk.spawn( p()->passives.shadowflame_spirit_summon->duration(), 1 );
               p()->proc.shadowflame_monk_spawn->occur();
             }
           }
