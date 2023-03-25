@@ -9839,7 +9839,7 @@ void shaman_t::create_buffs()
                    ->set_max_stack( 1 );
 
   buff.t30_2pc_enh = make_buff<buff_t>( this, "earthen_might", find_spell( 409689 ) )
-    ->set_default_value_from_effect( 1, 0.01 )
+    ->set_default_value_from_effect( 1 )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B2 ) );
 
