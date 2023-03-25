@@ -5095,7 +5095,12 @@ void humming_arcane_stone( special_effect_t& effect )
 
 void shining_obsidian_stone( special_effect_t& effect )
 {
-  create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
+  effect.execute_action = create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
+
+  // Hack so that Prophetic Twilight Stone can find the action.
+  auto cb = new primordial_stone_cb_t( effect.player, effect );
+  cb->initialize();
+  cb->deactivate();
 }
 
 void obscure_pastel_stone( special_effect_t& effect )
