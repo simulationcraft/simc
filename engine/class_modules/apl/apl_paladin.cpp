@@ -113,8 +113,8 @@ void protection( player_t* p )
   cooldowns->add_action( "holy_avenger,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory_enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
-  trinkets->add_action( "use_item,slot=trinket2,if=(buff.moment_of_glory.up|!talent.moment_of_glory_enabled&buff.avenging_wrath.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
+  trinkets->add_action( "use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
+  trinkets->add_action( "use_item,slot=trinket2,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|(cooldown.moment_of_glory.remains>20|(!talent.moment_of_glory.enabled&cooldown.avenging_wrath.remains>20)))" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|(cooldown.moment_of_glory.remains>20|(!talent.moment_of_glory.enabled&cooldown.avenging_wrath.remains>20)))" );
 
