@@ -2426,7 +2426,7 @@ void stable_pet_t::init_spells()
 
   main_hand_attack = new actions::pet_melee_t( "melee", this );
 
-  if ( o() -> talents.beast_cleave.ok() )
+  if ( o() -> talents.beast_cleave.ok() || o() -> is_ptr() && o() -> talents.bloody_frenzy.ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
 }
 
