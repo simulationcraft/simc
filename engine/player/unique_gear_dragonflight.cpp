@@ -4500,6 +4500,7 @@ action_t* find_primordial_stone_action( player_t* player, unsigned driver )
     case STORM_INFUSED_STONE:
       return player->find_action( "storm_infused_stone" );
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
       return player->find_action( "uncontainable_charge" );
     case FLAME_LICKED_STONE:
       return player->find_action( "flame_licked_stone" );
@@ -4627,6 +4628,8 @@ struct absorb_stone_t : public absorb_t
 
 struct primordial_stone_cb_t : public dbc_proc_callback_t
 {
+  action_t* twilight_action = nullptr;
+
   primordial_stone_cb_t( player_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
 
   void initialize() override
@@ -4634,57 +4637,42 @@ struct primordial_stone_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t::initialize();
 
     // if the current callback has an action and we find a prophetic twilight stone
-    if ( !proc_action )
-      return;
-
-    if ( !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
+    if ( !proc_action || !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
       return;
 
     auto type = get_stone_type( effect );
-    auto prophetic_driver = 0;
 
     // depending on the type of the current callback's effect, find the opposite stone type
     if ( type == PRIMORDIAL_TYPE_HEAL )
     {
-      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
-        return get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE;
-      } );
-
-      if ( it != effect.item->parsed.special_effects.end() )
-        prophetic_driver = ( *it )->driver()->id();
+      for ( auto e : effect.item->parsed.special_effects )
+      {
+        if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE )
+        {
+          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          break;
+        }
+      }
     }
     else if ( type == PRIMORDIAL_TYPE_DAMAGE )
     {
-      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
-        return get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL;
-      } );
-
-      if ( it != effect.item->parsed.special_effects.end() )
-        prophetic_driver = ( *it )->driver()->id();
+      for ( auto e : effect.item->parsed.special_effects )
+      {
+        if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL )
+        {
+          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          break;
+        }
+      }
     }
+  }
 
-    // manual override for echoing thunder stone
-    if ( prophetic_driver == ECHOING_THUNDER_STONE )
-      prophetic_driver = 403170;
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    dbc_proc_callback_t::execute( a, s );
 
-    // if we've found the opposite stone type driver
-    if ( prophetic_driver )
-    {
-      auto execute_fn = []( action_t* a, action_state_t* s, const dbc_proc_callback_t* cb ) {
-        a->set_target( cb->target( s ) );
-        auto state = a->get_state();
-        state->target = a->target;
-        a->snapshot_state( state, a->amount_type( state ) );
-        a->schedule_execute( state );
-      };
-
-      // override the opposite driver's callback to also execute the current driver's action
-      listener->callbacks.register_callback_execute_function(
-          prophetic_driver, [ execute_fn, this ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
-            execute_fn( cb->proc_action, s, cb );
-            execute_fn( proc_action, s, cb );
-          } );
-    }
+    if ( twilight_action )
+      twilight_action->execute_on_target( s->target );
   }
 };
 
