@@ -10157,6 +10157,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.stormkeeper2 );
   action.apply_affecting_aura( talent.oath_of_the_far_seer );
   action.apply_affecting_aura( talent.fire_and_ice );
+  action.apply_affecting_aura( talent.thorims_invocation );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
