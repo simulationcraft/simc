@@ -4386,7 +4386,7 @@ enum primordial_stone_drivers_e
   RAGING_MAGMA_STONE       = 402931, // NYI (requires getting hit, damage)
   SEARING_SMOKEY_STONE     = 402932,
   ENTROPIC_FEL_STONE       = 402934,
-  INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
+  INDOMITABLE_EARTH_STONE  = 402935,
   SHINING_OBSIDIAN_STONE   = 402936,
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
   GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
@@ -4849,6 +4849,14 @@ struct cold_frost_stone_t : public absorb_stone_t
   {}
 };
 
+struct indomitable_earth_stone_t : public absorb_stone_t
+{
+  indomitable_earth_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "indomitable_earth_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.trigger(), e.item ) )
+  {}
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4891,7 +4899,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
     case COLD_FROST_STONE:
       return new cold_frost_stone_t( effect );
     case INDOMITABLE_EARTH_STONE:
-      return nullptr;
+      return new indomitable_earth_stone_t( effect );
 
     // misc
     case HARMONIC_MUSIC_STONE:
@@ -5072,6 +5080,13 @@ void cold_frost_stone( special_effect_t& effect )
       make_repeating_event( p->sim, period, [ shield ] { shield->execute(); } );
     } );
   } );
+}
+
+void indomitable_earth_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, INDOMITABLE_EARTH_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void obscure_pastel_stone( special_effect_t& effect )
@@ -5272,6 +5287,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,     primordial_stones::obscure_pastel_stone );
   register_special_effect( primordial_stones::SEARING_SMOKEY_STONE,     primordial_stones::searing_smokey_stone );
   register_special_effect( primordial_stones::COLD_FROST_STONE,         primordial_stones::cold_frost_stone );
+  register_special_effect( primordial_stones::INDOMITABLE_EARTH_STONE,  primordial_stones::indomitable_earth_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,       DISABLED_EFFECT ); // Necessary for other gems to find the driver.
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 
