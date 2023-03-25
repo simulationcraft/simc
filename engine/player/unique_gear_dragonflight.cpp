@@ -4387,12 +4387,12 @@ enum primordial_stone_drivers_e
   SEARING_SMOKEY_STONE     = 402932,
   ENTROPIC_FEL_STONE       = 402934,
   INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
-  SHINING_OBSIDIAN_STONE   = 402936, // no absorbs are implemented to trigger this
+  SHINING_OBSIDIAN_STONE   = 402936,
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
   GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
   DELUGING_WATER_STONE     = 402939, // NYI (heal)
   FREEZING_ICE_STONE       = 402940,
-  COLD_FROST_STONE         = 402941, // NYI (absorb)
+  COLD_FROST_STONE         = 402941,
   EXUDING_STEAM_STONE      = 402942, // NYI (procs on receiving heals)
   SPARKLING_MANA_STONE     = 402943, // NYI (restores mana)
   SWIRLING_MOJO_STONE      = 402944, // NYI (requires creature deaths, gives the player an item to activate its buff)
@@ -4841,6 +4841,14 @@ struct shining_obsidian_stone_t : public aoe_damage_stone_t
   }
 };
 
+struct cold_frost_stone_t : public absorb_stone_t
+{
+  cold_frost_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "cold_frost_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.trigger(), e.item ) )
+  {}
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4881,7 +4889,7 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
 
     // absorb stones
     case COLD_FROST_STONE:
-      return nullptr;
+      return new cold_frost_stone_t( effect );
     case INDOMITABLE_EARTH_STONE:
       return nullptr;
 
@@ -5051,6 +5059,19 @@ void humming_arcane_stone( special_effect_t& effect )
 void shining_obsidian_stone( special_effect_t& effect )
 {
   create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
+}
+
+void cold_frost_stone( special_effect_t& effect )
+{
+  auto shield = create_primordial_stone_action( effect, COLD_FROST_STONE );
+  timespan_t period = effect.driver()->effectN( 1 ).period();
+
+  effect.player->register_combat_begin( [ shield, period ]( player_t* p ) {
+    make_event( p->sim, p->rng().real() * period, [ p, period, shield ] {
+      shield->execute();
+      make_repeating_event( p->sim, period, [ shield ] { shield->execute(); } );
+    } );
+  } );
 }
 
 void obscure_pastel_stone( special_effect_t& effect )
@@ -5250,6 +5271,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE,   primordial_stones::shining_obsidian_stone );
   register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,     primordial_stones::obscure_pastel_stone );
   register_special_effect( primordial_stones::SEARING_SMOKEY_STONE,     primordial_stones::searing_smokey_stone );
+  register_special_effect( primordial_stones::COLD_FROST_STONE,         primordial_stones::cold_frost_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,       DISABLED_EFFECT ); // Necessary for other gems to find the driver.
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 
