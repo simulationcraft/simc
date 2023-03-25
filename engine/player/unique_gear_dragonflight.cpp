@@ -4404,7 +4404,7 @@ enum primordial_stone_drivers_e
   PESTILENT_PLAGUE_STONE   = 402952,
   OBSCURE_PASTEL_STONE     = 402955,
   DESIROUS_BLOOD_STONE     = 402957,
-  PROPHETIC_TWILIGHT_STONE = 402959, // NYI
+  PROPHETIC_TWILIGHT_STONE = 402959,
 };
 
 enum primordial_stone_family_e
@@ -4756,10 +4756,10 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
-struct searing_smokey_stone_t : public generic_aoe_proc_t
+struct searing_smokey_stone_t : public damage_stone_t
 {
   searing_smokey_stone_t( const special_effect_t &e ) :
-    generic_aoe_proc_t( e, "searing_smokey_stone", 403257 )
+    damage_stone_t( e, "searing_smokey_stone", 403257 )
   {
     auto driver = e.player->find_spell( SEARING_SMOKEY_STONE );
     base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
