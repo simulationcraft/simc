@@ -9061,7 +9061,9 @@ namespace monk
     {
       if ( s->result == RESULT_DODGE )
       {
-        buff.elusive_brawler->expire();
+        // In order to trigger the expire before the hit but not actually remove the buff until AFTER the hit
+        // We are setting a 1 millisecond delay on the expire.
+        buff.elusive_brawler->expire( timespan_t::from_millis( 1 ) );
 
         // Saved as 5/10 base values but need it as 0.5 and 1 base values
         if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
@@ -9083,15 +9085,14 @@ namespace monk
       }
     }
 
-    base_t::assess_damage( school, dtype, s );
-
-
     if ( action_t::result_is_hit( s->result ) && s->action->id != passives.stagger_self_damage->id() )
     {
       // trigger the mastery if the player gets hit by a physical attack; but not from stagger
       if ( school == SCHOOL_PHYSICAL )
         buff.elusive_brawler->trigger();
     }
+
+    base_t::assess_damage( school, dtype, s );
   }
 
   // monk_t::target_mitigation ====================================================
