@@ -12,11 +12,16 @@ level=70
 race=blood_elf
 role=spell
 position=ranged_back
-talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA
+talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA
+
+profileset."Divine Image2"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Divine Image + Miracle"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Divine Word"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA"
+profileset."Divine Image"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA"
 
 # Overrides
 optimal_raid=0
-
+fight_style=DungeonSlice
 # potion=elemental_potion_of_ultimate_power_3
 # flask=phial_of_tepid_versatility_3
 # food=fated_fortune_cookie
@@ -31,86 +36,105 @@ optimal_raid=0
 actions.precombat+=/snapshot_stats
 
 # RUN ACTIONS
-actions.main_variables+=/variable,name=hf_up,op=set,value=dot.holy_fire.ticking
-actions.main_variables+=/variable,name=swp_up,op=set,value=dot.shadow_word_pain.ticking
+actions+=/run_action_list,name=main
 
-# main
+# VARIABLES
+actions.main_variables+=/variable,name=time_until_divine_favor,op=set,value=cooldown.divine_word.remains+action.divine_word.execute_time+action.holy_word_chastise.execute_time+action.empyreal_blaze.execute_time+action.apotheosis.execute_time+(4*action.holy_fire.execute_time)
+# 31.5% base spell power * (rhapsody stacks * rhapsody multiplier) * number of targets
+actions.main_variables+=/variable,name=holy_nova_damage,op=set,value=0.315*action.holy_nova.spell_targets*(1+(buff.rhapsody.stack*0.1))
+actions.main_variables+=/variable,name=filler_smite_estimate,op=set,value=action.smite.execute_time*10
+
+# MAIN
 actions.main+=/call_action_list,name=main_variables
 
-# holy fire
-actions.main+=/holy_fire,if=!variable.hf_up|refreshable
+# Keep dots up
+actions.main+=/holy_fire,if=refreshable|!ticking
+actions.main+=/shadow_word_pain,if=refreshable|!ticking&(!talent.apotheosis.enabled|(talent.apotheosis.enabled&buff.apotheosis.down))
 
-# don't cast sw:p during any of our damage phases
-actions.main+=/shadow_word_pain,if=!buff.holy_word_chastise.up&!buff.empyreal_blaze.up&!buff.divine_word.up&(!variable.swp_up|refreshable)
+# Divine Word only if we can sync with Chastise. If we have Empyreal Blaze, sync with that as well.
+actions.main+=/divine_word,if=talent.divine_word.enabled&(talent.holy_word_chastise.enabled&cooldown.holy_word_chastise.up)&((talent.empyreal_blaze.enabled&cooldown.empyreal_blaze.up)|!talent.empyreal_blaze.enabled)
+# Only holy word chastise early if we're triggering divine favor: chastise
+actions.main+=/holy_word_chastise,if=buff.divine_word.up
 
-# divine word to prep for chastise, hold up to 20 sec to sync up with PI
-actions.main+=/divine_word,if=talent.holy_word_chastise.enabled&cooldown.holy_word_chastise.up
+# Enter Divine Favor Active rotation with divine favor: chastise buff up
+actions.main+=/run_action_list,name=divine_favor_active,if=buff.divine_favor_chastise.up
+# Run divine favor fillers rotation with buff down
+actions.main+=/run_action_list,name=divine_favor_filler,if=talent.divine_word.enabled&talent.holy_word_chastise.enabled&buff.divine_favor_chastise.down
+# Run divine image rotation with divine image
+actions.main+=/run_action_list,name=divine_image,if=talent.divine_image.enabled
+# Otherwise generic rotation
+actions.main+=/run_action_list,name=generic,if=!talent.divine_image.enabled&!talent.divine_word.enabled
 
-# if divine word is active, I should be casting chastise
-# otherwise, cast it when it will be back before the next divine word
-actions.main+=/holy_word_chastise,if=!talent.divine_word.enabled|buff.divine_word.up
+# DIVINE FAVOR ACTIVE
+actions.divine_favor_active+=/call_action_list,name=cooldowns
+actions.divine_favor_active+=/apotheosis,if=talent.apotheosis.enabled
+actions.divine_favor_active+=/empyreal_blaze,if=talent.empyreal_blaze.enabled
+actions.divine_favor_active+=/holy_fire,if=buff.empyreal_blaze.up|refreshable|!ticking
+actions.divine_favor_active+=/shadow_word_pain,if=refreshable|!ticking
+actions.divine_favor_active+=/shadow_word_death,if=target.health.pct<20
+actions.divine_favor_active+=/holy_nova,if=talent.rhapsody.enabled&buff.rhapsody.stack=buff.rhapsody.max_stack
+actions.divine_favor_active+=/mindgames,if=talent.mindgames.enabled
+actions.divine_favor_active+=/holy_word_chastise,if=talent.holy_word_chastise.enabled
+actions.divine_favor_active+=/shadow_word_death,if=target.health.pct<50
+# Only does more damage than smite + holy_fire proc if > 1 targets
+actions.divine_favor_active+=/divine_star,if=talent.divine_star.enabled&spell_targets.divine_star>=2
+# Only does more damage than smite + holy_fire proc if > 1 targets
+actions.divine_favor_active+=/halo,if=talent.halo.enabled&spell_targets.halo>=2
+actions.divine_favor_active+=/smite
 
-# Shadow word death priority during execute (<20%) and chastise if we have death and madness
-actions.main+=/shadow_word_death,if=buff.holy_word_chastise.up&target.health.pct<20
-
-# mindgames gets high priority to get CD reduced
-actions.main+=/mindgames
-
-# empyreal blaze gets priority when its up
-# save it to cast with chastise buff if possible
-# in an aoe situation just use it
-# hold it up to 5 seconds if mindgames coming soon to reduce MG cooldown
-actions.main+=/empyreal_blaze,if=(talent.divine_word.enabled&buff.divine_favor_chastise.up)|spell_targets.divine_star>=3|&cooldown.mindgames.remains>5
-
-# spam holy fire if empyreal_blaze is up
-actions.main+=/holy_fire,if=buff.empyreal_blaze.up
-
-# if chastise buff is up and we're out of empyreal blaze, prioritize smite as long as holy fire remains up
-actions.main+=/smite,if=buff.holy_word_chastise.remains>execute_time&dot.holy_fire.remains>execute_time
-
-# Shadow word death priority during bonus dmg (<50%), hold up to 10s for divine word
-actions.main+=/shadow_word_death,if=target.health.pct<50&cooldown.divine_word.remains>10
-
-# Save up to 10s if adds are coming soon.
-# cast divine star sooner if > 3 adds
-actions.main+=/divine_star,if=raid_event.adds.in>10&spell_targets.divine_star>=3
-
-# filler holy fires if it's up
-actions.main+=/holy_fire,cycle_targets=1,if=!variable.hf_up|refreshable
-
-# spread sw:p to several targets
-actions.main+=/shadow_word_pain,cycle_targets=1,if=!buff.holy_word_chastise.up&!buff.empyreal_blaze.up&!buff.divine_word.up&(!variable.swp_up|refreshable)
-
-# lower priority shadow word death when not in damage boost windows
-actions.main+=/shadow_word_death,if=!buff.empyreal_blaze.up
-
-# Save up to 10s if adds are coming soon.
-actions.main+=/divine_star,if=!buff.empyreal_blaze.up&raid_event.adds.in>10
-
-# otherwise fillers
-actions.main+=/call_action_list,name=filler
+# DIVINE FAVOR FILLER
+actions.divine_favor_filler+=/holy_fire,if=refreshable|!ticking
+actions.divine_favor_filler+=/shadow_word_pain,if=refreshable|!ticking
+actions.divine_favor_filler+=/shadow_word_death,if=target.health.pct<20&variable.time_until_divine_favor>cooldown
+actions.divine_favor_filler+=/holy_nova,if=talent.rhapsody.enabled&buff.rhapsody.stack=buff.rhapsody.max_stack&(buff.rhapsody.max_stack*2>variable.time_until_divine_favor)
+actions.divine_favor_filler+=/mindgames,if=variable.time_until_divine_favor>cooldown
+actions.divine_favor_filler+=/holy_word_chastise,if=variable.time_until_divine_favor>cooldown
+actions.divine_favor_filler+=/shadow_word_death,if=target.health.pct<50&variable.time_until_divine_favor>cooldown
+actions.divine_favor_filler+=/divine_star,if=talent.divine_star.enabled&variable.time_until_divine_favor>cooldown
+actions.divine_favor_filler+=/halo,if=talent.halo.enabled&variable.time_until_divine_favor>cooldown
+actions.divine_favor_filler+=/smite
 
 
-# Fillers
-# Use Shadow Word: Death while moving as a low-priority action in execute
-actions.filler+=/shadow_word_death,moving=1,if=target.health.pct<20
-# Use Divine Star while moving as a low-priority action
-actions.filler+=/divine_star,moving=1
-# Use Shadow Word: Death while moving as a low-priority action
-actions.filler+=/shadow_word_death,moving=1,cycle_targets=1
-# Use Shadow Word: Death while moving as a low-priority action
-actions.filler+=/shadow_word_pain,moving=1,cycle_targets=1
-# if all else fails, low prio smite
-actions.filler+=/smite,if=!buff.empyreal_blaze.up
+# DIVINE IMAGE
+actions.divine_image+=/holy_word_sanctify,if=talent.holy_word_sanctify.enabled
+actions.divine_image+=/holy_word_serenity,if=talent.holy_word_serenity.enabled
+actions.divine_image+=/call_action_list,name=cooldowns,if=(!talent.apotheosis.enabled|(talent.apotheosis.enabled&cooldown.apotheosis.up))
+actions.divine_image+=/holy_word_chastise,if=talent.holy_word_chastise.enabled
+actions.divine_image+=/apotheosis,if=talent.apotheosis.enabled
+actions.divine_image+=/empyreal_blaze,if=talent.empyreal_blaze.enabled
+actions.divine_image+=/holy_fire,if=buff.empyreal_blaze.up|refreshable|!ticking
+actions.divine_image+=/shadow_word_pain,if=refreshable|!ticking
+actions.divine_image+=/shadow_word_death,if=target.health.pct<20
+actions.divine_image+=/mindgames,if=talent.mindgames.enabled
+actions.divine_image+=/holy_nova,if=talent.rhapsody.enabled&buff.rhapsody.stack=buff.rhapsody.max_stack
+actions.divine_image+=/shadow_word_death,if=target.health.pct<50
+actions.divine_image+=/divine_star,if=talent.divine_star.enabled
+actions.divine_image+=/halo,if=talent.halo.enabled
+actions.divine_image+=/smite
 
-# CDs
-#actions.cds+=/call_action_list,name=main_variables
-# actions.cds+=/potion,if=buff.power_infusion.up&(fight_remains<=cooldown.power_infusion.remains+15)|boss&fight_remains<=30
+# GENERIC
+actions.generic+=/call_action_list,name=cooldowns,if=(!talent.apotheosis.enabled|(talent.apotheosis.enabled&cooldown.apotheosis.up))
+actions.generic+=/holy_word_chastise,if=talent.holy_word_chastise.enabled
+actions.generic+=/apotheosis,if=talent.apotheosis.enabled
+actions.generic+=/empyreal_blaze,if=talent.empyreal_blaze.enabled
+actions.generic+=/holy_fire,if=buff.empyreal_blaze.up|refreshable|!ticking
+actions.generic+=/shadow_word_pain,if=refreshable|!ticking
+actions.generic+=/shadow_word_death,if=target.health.pct<20
+actions.generic+=/mindgames,if=talent.mindgames.enabled
+actions.generic+=/holy_nova,if=talent.rhapsody.enabled&buff.rhapsody.stack=buff.rhapsody.max_stack
+actions.generic+=/shadow_word_death,if=target.health.pct<50
+actions.generic+=/divine_star,if=talent.divine_star.enabled
+actions.generic+=/halo,if=talent.halo.enabled
+actions.generic+=/smite
+
+# Cooldowns
 # hold PI up to 30 seconds to sync with divine word
-# actions.cds+=/power_infusion,if=!talent.divine_word.enabled|(talent.divine_word.enabled&(cooldown.divine_word.up|cooldown.divine_word.remains>30))
+actions.cooldowns+=/power_infusion
+# Only potion in sync with power infusion
+actions.cooldowns+=/potion,if=buff.power_infusion.up
 # hold trinkets to use with PI
-# actions.cds+=/use_items,if=buff.power_infusion.up|cooldown.power_infusion.remains>=cooldown
-# actions.cds+=/shadowfiend,if=mana.pct<=95&target.time_to_die>10
+actions.cooldowns+=/use_items,if=buff.power_infusion.up|cooldown.power_infusion.remains>=cooldown
+actions.cooldowns+=/shadowfiend
 # Use Desperate Prayer to heal when very low health
 # actions.cds+=/desperate_prayer,if=health.pct<=35
 #symbol of hope when low mana

@@ -67,6 +67,8 @@ struct apotheosis_t final : public priest_spell_t
     priest().buffs.apotheosis->trigger();
     sim->print_debug( "starting apotheosis. ", priest() );
     priest().cooldowns.holy_word_chastise->reset( false );
+    priest().cooldowns.holy_word_serenity->reset( false );
+    priest().cooldowns.holy_word_sanctify->reset( false );
     sim->print_debug( "apotheosis reset holy_word_chastise cooldown. ", priest() );
   }
 };
