@@ -131,6 +131,7 @@ public:
     propagate_const<buff_t*> empyreal_blaze;
     propagate_const<buff_t*> divine_word;
     propagate_const<buff_t*> divine_favor_chastise;
+    propagate_const<buff_t*> divine_image;
 
     // Shadow
     propagate_const<buff_t*> dispersion;
@@ -394,6 +395,9 @@ public:
       player_talent_t divine_word;
       const spell_data_t* divine_favor_chastise;
       player_talent_t divine_image;
+      const spell_data_t* divine_image_buff;
+      const spell_data_t* divine_image_summon;
+      const spell_data_t* divine_image_searing_light;
       player_talent_t miracle_worker;
     } holy;
 
@@ -555,6 +559,7 @@ public:
     propagate_const<actions::spells::expiation_t*> expiation;
     propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
     propagate_const<action_t*> holy_fire;
+    propagate_const<action_t*> searing_light;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
   } background_actions;
 
@@ -1117,18 +1122,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       {
         pet->resource_gain( RESOURCE_HEALTH, amount, pet->gains.vampiric_embrace );
       }
-    }
-  }
-
-  void trigger_divine_favor_chastise()
-  {
-    auto child_holy_fire = priest().background_actions.holy_fire;
-
-    if ( priest().talents.holy.divine_word.enabled() && priest().buffs.divine_favor_chastise->check() &&
-         rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) )
-    {
-      priest().procs.divine_favor_chastise->occur();
-      child_holy_fire->execute();
     }
   }
 };

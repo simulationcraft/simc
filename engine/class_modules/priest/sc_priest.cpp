@@ -533,19 +533,25 @@ struct smite_t final : public priest_spell_t
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
   propagate_const<action_t*> child_holy_fire;
+  propagate_const<action_t*> child_searing_light;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
-      child_holy_fire( nullptr )
+      child_holy_fire( nullptr ),
+      child_searing_light( nullptr )
   {
     parse_options( options_str );
     if ( priest().talents.holy.divine_word.enabled() )
     {
       child_holy_fire             = priest().background_actions.holy_fire;
       child_holy_fire->background = true;
+    }
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      child_holy_fire = priest().background_actions.searing_light;
     }
   }
 
@@ -615,9 +621,6 @@ struct smite_t final : public priest_spell_t
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
     // If we have divine word, have triggered divine favor: chastise, and proc the holy fire effect
-    sim->print_debug( "checking child_holy_fire. divine_word: {}, divine favor chastise: {}, proc: {}",
-                      priest().talents.holy.divine_word.enabled(), priest().buffs.divine_favor_chastise->check(),
-                      rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) );
     if ( priest().talents.holy.divine_word.enabled() && priest().buffs.divine_favor_chastise->check() &&
          rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) )
     {
@@ -649,6 +652,16 @@ struct smite_t final : public priest_spell_t
                           ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
 
         priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
+      }
+      sim->print_debug( "smite test: child_searing_light: {}, divine_image: {}", child_searing_light,
+                        priest().buffs.divine_image->up() );
+      if ( child_searing_light && priest().buffs.divine_image->up() )
+      {
+        sim->print_debug( "searing_light triggered by smite: {}", priest().buffs.divine_image->up() );
+        for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
       }
     }
     if ( priest().talents.discipline.harsh_discipline.enabled() )
@@ -804,7 +817,6 @@ struct mindgames_t final : public priest_spell_t
 // Summon Shadowfiend
 //
 // Summon Mindbender
-// TODO: confirm Holy/Disc versions work as expected
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
@@ -831,7 +843,7 @@ struct summon_fiend_t final : public priest_spell_t
       spawner->spawn( default_duration );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
     make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );

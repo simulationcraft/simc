@@ -32,6 +32,7 @@ struct apotheosis_t final : public priest_spell_t
     sim->print_debug( "apotheosis reset holy_word_chastise cooldown. ", priest() );
   }
 };
+
 struct divine_word_t final : public priest_spell_t
 {
   divine_word_t( priest_t& p, util::string_view options_str )
@@ -47,6 +48,17 @@ struct divine_word_t final : public priest_spell_t
 
     priest().buffs.divine_word->trigger();
     sim->print_debug( "starting divine_word." );
+  }
+};
+
+// holy word cast -> Divine Image [Talent] (392988) -> Divine Image [Buff] (405963) -> Divine Image [Summon] (392990) ->
+// Searing Light (196811)
+struct searing_light_t final : public priest_spell_t
+{
+  searing_light_t( priest_t& p ) : priest_spell_t( "searing_light", p, p.talents.holy.divine_image_searing_light )
+  {
+    background = true;
+    may_miss   = false;
   }
 };
 
@@ -95,11 +107,13 @@ struct holy_fire_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
   propagate_const<burning_vehemence_t*> child_burning_vehemence;
+  propagate_const<searing_light_t*> child_searing_light;
 
   holy_fire_t( priest_t& p )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
-      child_burning_vehemence( nullptr )
+      child_burning_vehemence( nullptr ),
+      child_searing_light( nullptr )
   {
     apply_affecting_aura( p.talents.holy.burning_vehemence );
     if ( p.talents.holy.empyreal_blaze.enabled() )
@@ -108,9 +122,12 @@ struct holy_fire_t final : public priest_spell_t
     }
     if ( priest().talents.holy.burning_vehemence.enabled() )
     {
-      child_burning_vehemence             = new burning_vehemence_t( priest() );
-      child_burning_vehemence->background = true;
+      child_burning_vehemence = new burning_vehemence_t( priest() );
       add_child( child_burning_vehemence );
+    }
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      child_searing_light = new searing_light_t( priest() );
     }
   }
 
@@ -171,6 +188,14 @@ struct holy_fire_t final : public priest_spell_t
 
         priest().cooldowns.holy_word_chastise->adjust( chastise_cdr );
       }
+      if ( child_searing_light && priest().buffs.divine_image->up() )
+      {
+        sim->print_debug( "searing_light triggered by holy_fire: {}", priest().buffs.divine_image->up() );
+        for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
+      }
     }
 
     if ( child_burning_vehemence )
@@ -182,10 +207,15 @@ struct holy_fire_t final : public priest_spell_t
 
 struct holy_word_chastise_t final : public priest_spell_t
 {
+  propagate_const<searing_light_t*> child_searing_light;
   holy_word_chastise_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "holy_word_chastise", p, p.talents.holy.holy_word_chastise )
+    : priest_spell_t( "holy_word_chastise", p, p.talents.holy.holy_word_chastise ), child_searing_light( nullptr )
   {
     parse_options( options_str );
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      child_searing_light = new searing_light_t( priest() );
+    }
   }
   double cost() const override
   {
@@ -211,10 +241,34 @@ struct holy_word_chastise_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-    if ( priest().buffs.divine_word->check() )
+    if ( priest().talents.holy.divine_word.enabled() && priest().buffs.divine_word->check() )
     {
       priest().buffs.divine_word->expire();
       priest().buffs.divine_favor_chastise->trigger();
+    }
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      priest().buffs.divine_image->trigger();
+      // Activating cast also immediately executes searing light
+      sim->print_debug( "searing_light triggered by holy_word_chastise: {}", priest().buffs.divine_image->up() );
+      for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_searing_light->execute();
+      }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    sim->print_debug( "divine_image_buff: {}", priest().buffs.divine_image->up() );
+    if ( child_searing_light && priest().buffs.divine_image->up() )
+    {
+      sim->print_debug( "searing_light triggered by holy_word_chastise: {}", priest().buffs.divine_image->up() );
+      for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_searing_light->execute();
+      }
     }
   }
 };
@@ -235,8 +289,11 @@ void priest_t::create_buffs_holy()
                                }
                              } );
 
-  buffs.divine_word           = make_buff( this, "divine_word", talents.holy.divine_word );
+  buffs.divine_word = make_buff( this, "divine_word", talents.holy.divine_word );
+
   buffs.divine_favor_chastise = make_buff( this, "divine_favor_chastise", talents.holy.divine_favor_chastise );
+
+  buffs.divine_image = make_buff( this, "divine_image", talents.holy.divine_image_buff );
 }
 
 void priest_t::init_rng_holy()
@@ -260,10 +317,13 @@ void priest_t::init_spells_holy()
   talents.holy.harmonious_apparatus     = ST( "harmonious Apparatus" );
   talents.holy.light_of_the_naaru       = ST( "Light of the Naaru" );
   // Row 10
-  talents.holy.divine_word           = ST( "Divine Word" );
-  talents.holy.divine_favor_chastise = find_spell( 372761 );
-  talents.holy.divine_image          = ST( "Divine Image" );
-  talents.holy.miracle_worker        = ST( "Miracle Worker" );
+  talents.holy.divine_word                = ST( "Divine Word" );
+  talents.holy.divine_favor_chastise      = find_spell( 372761 );
+  talents.holy.divine_image               = ST( "Divine Image" );
+  talents.holy.divine_image_buff          = find_spell( 405963 );
+  talents.holy.divine_image_summon        = find_spell( 392990 );
+  talents.holy.divine_image_searing_light = find_spell( 196811 );
+  talents.holy.miracle_worker             = ST( "Miracle Worker" );
 
   // General Spells
   specs.holy_fire = find_specialization_spell( "Holy Fire" );

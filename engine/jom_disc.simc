@@ -14,6 +14,7 @@ role=spell
 position=ranged_back
 talents=BAQA16pR6xQxvK1VWhXk+w0/GAAIlEJQSSKRkmUSSSQAAAAAAAAAAAgESakWCh0IkEEUkWikAA
 optimal_raid=0
+fight_style=DungeonSlice
 
 head=,id=200327,gem_id=192945,bonus_id=6652/7935/8828/9130/7977/1495/8767
 neck=,id=193001,gem_id=192945/192945/192984,bonus_id=8836/8840/8902/8960/8784/8782/8802/8790/8846,crafted_stats=40/36
@@ -244,6 +245,12 @@ actions.s_scov_ramp+=/divine_star,if=buff.shadow_covenant.up&spell_targets.divin
 actions.s_scov_ramp+=/mindgames,if=buff.shadow_covenant.up&talent.shattered_perceptions.enabled
 # sw:d later if not execute phase
 actions.s_scov_ramp+=/shadow_word_death,if=buff.shadow_covenant.up
+# PTW fallback, should only happen during high haste periods
+actions.s_scov_ramp+=/purge_the_wicked,if=buff.shadow_covenant.up&(refreshable|!variable.ptw_up)
+# PTW fallback, should only happen during high haste periods
+actions.s_scov_ramp+=/power_word_solace,if=buff.shadow_covenant.up
+# PTW fallback, should only happen during high haste periods
+actions.s_scov_ramp+=/smite
 
 
 # LONG SHADOW COVENANT FILLER

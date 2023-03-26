@@ -12,12 +12,12 @@ level=70
 race=blood_elf
 role=spell
 position=ranged_back
-talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJhSaikkEAJIKJJlAAAAAAAAAAAAAA
+talents=BEQA16pR6xQxvK1VWhXk+w0/GQBAAAAAAAUIRKaCIJCRSiokkUAAAAASIphSChUIkEEUKRSSCKA
 optimal_raid=0
 
 # RUN ACTIONS
 # actions+=/shadow_word_pain,if=!ticking
-actions+=/divine_word
-actions+=/holy_word_chastise,if=buff.divine_word.up
-actions+=/holy_fire,if=!ticking
+# actions+=/divine_word
+actions+=/holy_word_chastise
+# actions+=/holy_fire,if=!ticking
 actions+=/smite
