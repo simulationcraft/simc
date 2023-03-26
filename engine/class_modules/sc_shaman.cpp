@@ -498,6 +498,7 @@ public:
     proc_t* maelstrom_weapon_sm;
     proc_t* maelstrom_weapon_pw;
     proc_t* maelstrom_weapon_sa;
+    proc_t* maelstrom_weapon_sa_rf;
     proc_t* maelstrom_weapon_4pc_enh;
     proc_t* stormflurry;
     proc_t* windfury_uw;
@@ -873,6 +874,7 @@ public:
   void trigger_flash_of_lightning();
   void trigger_lightning_rod_damage( const action_state_t* state );
   void trigger_swirling_maelstrom();
+  void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
@@ -1799,13 +1801,14 @@ public:
 
   bool affected_by_maelstrom_weapon = false;
 
-  int mw_consume_max_stack;
+  int mw_consume_max_stack, mw_consumed_stacks, mw_affected_stacks;
   // Cache execute MW multiplier into a variable upon cast finish
   double mw_multiplier;
 
   shaman_spell_base_t( util::string_view n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ), mw_consume_max_stack( 0 ), mw_multiplier( 0.0 )
+    : ab( n, player, s ), mw_consume_max_stack( 0 ), mw_consumed_stacks( 0 ),
+      mw_affected_stacks( 0 ), mw_multiplier( 0.0 )
   {
     if ( this->data().affected_by( player->spell.maelstrom_weapon->effectN( 1 ) ) )
     {
@@ -1870,21 +1873,24 @@ public:
   void compute_mw_multiplier()
   {
     mw_multiplier = 0.0;
+    mw_affected_stacks = maelstrom_weapon_stacks();
+    mw_consumed_stacks = consume_maelstrom_weapon() ? mw_affected_stacks : 0;
 
-    auto mw_stacks = maelstrom_weapon_stacks();
-    if ( mw_stacks && affected_by_maelstrom_weapon )
+    if ( mw_affected_stacks && affected_by_maelstrom_weapon )
     {
       double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
                            this->p()->talent.raging_maelstrom->effectN( 2 ).percent();
 
-      mw_multiplier = stack_value * mw_stacks;
+      mw_multiplier = stack_value * mw_affected_stacks;
     }
 
     if ( this->sim->debug && mw_multiplier )
     {
-      this->sim->out_debug.print( "{} {} mw_affected={}, mw_benefit={}, mw_consumed={}, mw_stacks={}, mw_multiplier={}",
-          this->player->name(), this->name(), affected_by_maelstrom_weapon, benefit_from_maelstrom_weapon(),
-          consume_maelstrom_weapon(), mw_stacks, mw_multiplier );
+      this->sim->out_debug.print(
+        "{} {} mw_affected={}, mw_benefit={}, mw_consumed={}, mw_stacks={}, mw_multiplier={}",
+        this->player->name(), this->name(), affected_by_maelstrom_weapon,
+        benefit_from_maelstrom_weapon(), mw_consumed_stacks,
+        mw_affected_stacks, mw_multiplier );
     }
   }
 
@@ -1926,20 +1932,19 @@ public:
       this->p()->proc.aftershock->occur();
     }
 
-    auto stacks = maelstrom_weapon_stacks();
-    if ( stacks && consume_maelstrom_weapon() )
+    if ( mw_consumed_stacks )
     {
-      this->p()->buff.maelstrom_weapon->decrement( stacks );
+      this->p()->buff.maelstrom_weapon->decrement( mw_consumed_stacks );
       if ( this->p()->talent.hailstorm.ok() )
       {
-        this->p()->buff.hailstorm->trigger( stacks );
+        this->p()->buff.hailstorm->trigger( mw_consumed_stacks );
       }
 
-      this->p()->trigger_legacy_of_the_frost_witch( this->execute_state, stacks );
+      this->p()->trigger_legacy_of_the_frost_witch( this->execute_state, mw_consumed_stacks );
 
       if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
            this->p()->rng().roll(
-             this->p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
+             this->p()->spell.t28_2pc_enh->effectN( 1 ).percent() * mw_consumed_stacks ) )
       {
         if ( this->sim->debug )
         {
@@ -1953,9 +1958,9 @@ public:
       }
 
       if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
-      { 
+      {
         //4pc refreshes duration and adds stacks
-        this->p()->buff.t29_4pc_enh->trigger( stacks );
+        this->p()->buff.t29_4pc_enh->trigger( mw_consumed_stacks );
       }
     }
   }
@@ -4635,11 +4640,14 @@ struct chained_base_t : public shaman_spell_t
 
     if ( exec_type == execute_type::NORMAL )
     {
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 ) {
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
+      {
         p()->buff.t30_4pc_ele->trigger();
       }
       p()->buff.stormkeeper->decrement();
     }
+
+    p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -4797,8 +4805,6 @@ struct chain_lightning_t : public chained_base_t
 
   void execute() override
   {
-    auto mw_stacks = maelstrom_weapon_stacks();
-
     chained_base_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
@@ -4852,7 +4858,7 @@ struct chain_lightning_t : public chained_base_t
     if ( p()->buff.t30_4pc_enh_cl->check() )
     {
       auto refunded = as<int>(
-        std::ceil( mw_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
+        std::ceil( mw_consumed_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
 
       p()->buff.maelstrom_weapon->trigger( refunded );
       for ( auto i = 0; i < refunded; ++i )
@@ -5121,9 +5127,10 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
   {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state);
 
-    if ( p()->buff.t30_4pc_ele->up() ) {
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
       m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 5 ).percent();
     }
 
@@ -5618,9 +5625,10 @@ struct lava_burst_t : public shaman_spell_t
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
   {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
 
-    if ( p()->buff.t30_4pc_ele->up() ) {
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
       m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 4 ).percent();
     }
 
@@ -5660,9 +5668,10 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
   {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
 
-    if ( p()->buff.t30_4pc_ele->up() ) {
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
       m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 3 ).percent();
     }
 
@@ -5735,11 +5744,12 @@ struct lightning_bolt_t : public shaman_spell_t
 
   int maelstrom_weapon_stacks() const override
   {
-    double mw_stacks = as<double>( shaman_spell_t::maelstrom_weapon_stacks() );
+    auto mw_stacks = shaman_spell_t::maelstrom_weapon_stacks();
 
     if ( type == execute_type::THORIMS_INVOCATION )
     {
-      mw_stacks = std::min( mw_stacks, p()->talent.thorims_invocation->effectN( 1 ).base_value() );
+      mw_stacks = std::min( mw_stacks,
+                            as<int>( p()->talent.thorims_invocation->effectN( 1 ).base_value() ) );
     }
 
     return mw_stacks;
@@ -5808,7 +5818,6 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.primordial_wave->expire();
     }
 
-
     shaman_spell_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
@@ -5829,7 +5838,8 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( type == execute_type::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 ) {
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
+      {
         p()->buff.t30_4pc_ele->trigger();
       }
       p()->buff.stormkeeper->decrement();
@@ -5837,6 +5847,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     p()->trigger_flash_of_lightning();
     p()->trigger_lightning_rod_damage( execute_state );
+    p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
 
     // Track last cast for LB / CL because of Thorim's Invocation
     if ( p()->talent.thorims_invocation.ok() && type == execute_type::NORMAL )
@@ -5887,9 +5898,10 @@ struct lightning_bolt_t : public shaman_spell_t
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
   {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
 
-    if ( p()->buff.t30_4pc_ele->up() ) {
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
       m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 1 ).percent();
     }
 
@@ -6103,9 +6115,10 @@ struct icefury_t : public shaman_spell_t
 
   double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
   {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
 
-    if ( p()->buff.t30_4pc_ele->up() ) {
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
       m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 6 ).percent();
     }
 
@@ -6223,7 +6236,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
     {
       cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
-    
+
     return cm;
   }
 };
@@ -6932,7 +6945,8 @@ struct frost_shock_t : public shaman_spell_t
 
     double if_multi = p()->buff.icefury->value();
     // bug, instead this should apply to the maelstrom generation
-    if ( p()->buff.t30_4pc_ele->up() ) {
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
       if_multi += 1.0 * p()->spell.t30_4pc_ele->effectN( 7 ).percent();
     }
 
@@ -9784,6 +9798,26 @@ void shaman_t::trigger_swirling_maelstrom()
   }
 }
 
+void shaman_t::trigger_static_accumulation_refund( const action_state_t* /* state */, int mw_stacks )
+{
+  if ( !dbc->ptr || !talent.static_accumulation.ok() || mw_stacks == 0 )
+  {
+    return;
+  }
+
+  if ( !rng().roll( talent.static_accumulation->effectN( 2 ).percent() ) )
+  {
+    return;
+  }
+
+  buff.maelstrom_weapon->trigger( mw_stacks );
+
+  for ( auto i = 0; i < mw_stacks; ++i )
+  {
+    proc.maelstrom_weapon_sa_rf->occur();
+  }
+}
+
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -9827,7 +9861,7 @@ void shaman_t::create_buffs()
                       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                       ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B4 ) );
   buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
-      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
         // spell data says "40", but means 40s
         timespan_t test = sim->current_time() - spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
         if ( last_t30_proc <= test )
@@ -10086,6 +10120,7 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_sm    = get_proc( "Maelstrom Weapon: Swirling Maelstrom" );
   proc.maelstrom_weapon_pw    = get_proc( "Maelstrom Weapon: Primordial Wave" );
   proc.maelstrom_weapon_sa    = get_proc( "Maelstrom Weapon: Static Accumulation" );
+  proc.maelstrom_weapon_sa_rf = get_proc( "Maelstrom Weapon: Static Accumulation Refund" );
   proc.maelstrom_weapon_4pc_enh = get_proc( "Maelstrom Weapon: Enhancement Tier30 4PC" );
   proc.stormflurry            = get_proc( "Stormflurry" );
 
