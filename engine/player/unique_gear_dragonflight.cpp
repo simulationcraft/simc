@@ -7,7 +7,6 @@
 
 #include "action/absorb.hpp"
 #include "action/dot.hpp"
-#include "action/residual_action.hpp"
 #include "actor_target_data.hpp"
 #include "buff/buff.hpp"
 #include "darkmoon_deck.hpp"
@@ -4404,7 +4403,7 @@ enum primordial_stone_drivers_e
   PESTILENT_PLAGUE_STONE   = 402952,
   OBSCURE_PASTEL_STONE     = 402955,
   DESIROUS_BLOOD_STONE     = 402957,
-  PROPHETIC_TWILIGHT_STONE = 402959, // NYI
+  PROPHETIC_TWILIGHT_STONE = 402959,
 };
 
 enum primordial_stone_family_e
@@ -4501,6 +4500,7 @@ action_t* find_primordial_stone_action( player_t* player, unsigned driver )
     case STORM_INFUSED_STONE:
       return player->find_action( "storm_infused_stone" );
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
       return player->find_action( "uncontainable_charge" );
     case FLAME_LICKED_STONE:
       return player->find_action( "flame_licked_stone" );
@@ -4580,30 +4580,6 @@ struct damage_stone_base_t : public BASE
 using damage_stone_t = damage_stone_base_t<generic_proc_t>;
 using aoe_damage_stone_t = damage_stone_base_t<generic_aoe_proc_t>;
 
-template <typename BASE>
-struct residual_stone_t : public BASE
-{
-  using proc_residual_t = base_generic_proc_t<proc_action_t<residual_action::residual_periodic_action_t<spell_t>>>;
-
-  action_t* dot = nullptr;
-  double full_damage = 0.0;
-
-  template <typename... ARGS>
-  residual_stone_t( const special_effect_t& e, ARGS&&... args ) : BASE( e, std::forward<ARGS>( args )... )
-  {}
-
-  timespan_t composite_dot_duration( const action_state_t* ) const override
-  {
-    return 0_ms;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    BASE::impact( s );
-    residual_action::trigger( dot, s->target, full_damage );
-  }
-};
-
 struct heal_stone_t : public proc_heal_t
 {
   heal_stone_t( const special_effect_t& effect, std::string_view name, const spell_data_t* spell ) :
@@ -4652,6 +4628,8 @@ struct absorb_stone_t : public absorb_t
 
 struct primordial_stone_cb_t : public dbc_proc_callback_t
 {
+  action_t* twilight_action = nullptr;
+
   primordial_stone_cb_t( player_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
 
   void initialize() override
@@ -4659,57 +4637,42 @@ struct primordial_stone_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t::initialize();
 
     // if the current callback has an action and we find a prophetic twilight stone
-    if ( !proc_action )
-      return;
-
-    if ( !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
+    if ( !proc_action || !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
       return;
 
     auto type = get_stone_type( effect );
-    auto prophetic_driver = 0;
 
     // depending on the type of the current callback's effect, find the opposite stone type
     if ( type == PRIMORDIAL_TYPE_HEAL )
     {
-      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
-        return get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE;
-      } );
-
-      if ( it != effect.item->parsed.special_effects.end() )
-        prophetic_driver = ( *it )->driver()->id();
+      for ( auto e : effect.item->parsed.special_effects )
+      {
+        if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE )
+        {
+          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          break;
+        }
+      }
     }
     else if ( type == PRIMORDIAL_TYPE_DAMAGE )
     {
-      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
-        return get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL;
-      } );
-
-      if ( it != effect.item->parsed.special_effects.end() )
-        prophetic_driver = ( *it )->driver()->id();
+      for ( auto e : effect.item->parsed.special_effects )
+      {
+        if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL )
+        {
+          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          break;
+        }
+      }
     }
+  }
 
-    // manual override for echoing thunder stone
-    if ( prophetic_driver == ECHOING_THUNDER_STONE )
-      prophetic_driver = 403170;
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    dbc_proc_callback_t::execute( a, s );
 
-    // if we've found the opposite stone type driver
-    if ( prophetic_driver )
-    {
-      auto execute_fn = []( action_t* a, action_state_t* s, const dbc_proc_callback_t* cb ) {
-        a->set_target( cb->target( s ) );
-        auto state = a->get_state();
-        state->target = a->target;
-        a->snapshot_state( state, a->amount_type( state ) );
-        a->schedule_execute( state );
-      };
-
-      // override the opposite driver's callback to also execute the current driver's action
-      listener->callbacks.register_callback_execute_function(
-          prophetic_driver, [ execute_fn, this ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
-            execute_fn( cb->proc_action, s, cb );
-            execute_fn( proc_action, s, cb );
-          } );
-    }
+    if ( twilight_action )
+      twilight_action->execute_on_target( s->target );
   }
 };
 
@@ -4724,15 +4687,13 @@ struct uncontainable_charge_t : public damage_stone_t
   }
 };
 
-struct flame_licked_stone_t : public residual_stone_t<damage_stone_t>
+struct flame_licked_stone_t : public damage_stone_t
 {
-  flame_licked_stone_t( const special_effect_t& e ) : residual_stone_t( e, "flame_licked_stone", 403225 )
+  flame_licked_stone_t( const special_effect_t& e ) :
+    damage_stone_t( e, "flame_licked_stone", 403225 )
   {
-    dot = new damage_stone_base_t<proc_residual_t>( e, "flame_licked_stone_dot", data().id() );
-    dot->stats = stats;
-
     auto driver = e.player->find_spell( FLAME_LICKED_STONE );
-    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
+    base_td = driver->effectN( 1 ).average( e.item );
   }
 };
 
@@ -4756,10 +4717,10 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
-struct searing_smokey_stone_t : public generic_aoe_proc_t
+struct searing_smokey_stone_t : public damage_stone_t
 {
   searing_smokey_stone_t( const special_effect_t &e ) :
-    generic_aoe_proc_t( e, "searing_smokey_stone", 403257 )
+    damage_stone_t( e, "searing_smokey_stone", 403257 )
   {
     auto driver = e.player->find_spell( SEARING_SMOKEY_STONE );
     base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
@@ -4778,16 +4739,13 @@ struct desirous_blood_stone_t : public damage_stone_t
 };
 
 // TODO: Is this damage fully uncapped?
-struct pestilent_plague_stone_aoe_t : public residual_stone_t<generic_aoe_proc_t>
+struct pestilent_plague_stone_aoe_t : public generic_aoe_proc_t
 {
-  pestilent_plague_stone_aoe_t( const special_effect_t& e )
-    : residual_stone_t( e, "pestilent_plague_stone_aoe", 405221 )
+  pestilent_plague_stone_aoe_t( const special_effect_t& e ) :
+    generic_aoe_proc_t( e, "pestilent_plague_stone_aoe", 405221 )
   {
-    dot = new proc_residual_t( e, "pestilent_plague_stone_aoe_dot", data().id() );
-    dot->stats = stats;
-
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
-    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
+    base_td = driver->effectN( 1 ).average( e.item );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4801,19 +4759,16 @@ struct pestilent_plague_stone_aoe_t : public residual_stone_t<generic_aoe_proc_t
   }
 };
 
-struct pestilent_plague_stone_t : public residual_stone_t<damage_stone_t>
+struct pestilent_plague_stone_t : public damage_stone_t
 {
   timespan_t aoe_delay;
   action_t* aoe_damage;
 
-  pestilent_plague_stone_t( const special_effect_t& e ) : residual_stone_t( e, "pestilent_plague_stone", 405220 )
+  pestilent_plague_stone_t( const special_effect_t& e ) :
+    damage_stone_t( e, "pestilent_plague_stone", 405220 )
   {
-    dot = new proc_residual_t( e, "pestilent_plague_stone_dot", data().id() );
-    dot->stats = stats;
-
     auto driver = e.player->find_spell( PESTILENT_PLAGUE_STONE );
-    full_damage = driver->effectN( 1 ).average( e.item ) * ( dot_duration / base_tick_time );
-
+    base_td = driver->effectN( 1 ).average( e.item );
     aoe_delay = timespan_t::from_millis( data().effectN( 3 ).misc_value1() );
     aoe_damage = create_proc_action<pestilent_plague_stone_aoe_t>( "pestilent_plague_stone_aoe", e );
     add_child( aoe_damage );
@@ -4821,7 +4776,7 @@ struct pestilent_plague_stone_t : public residual_stone_t<damage_stone_t>
 
   void impact( action_state_t* s ) override
   {
-    residual_stone_t::impact( s );
+    damage_stone_t::impact( s );
 
     if ( result_is_hit( s->result ) && aoe_damage )
     {

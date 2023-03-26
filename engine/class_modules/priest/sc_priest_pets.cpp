@@ -852,7 +852,11 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
     if ( p.o().bugs )
     {
-      spell_power_mod.direct *= 0.6;
+      if ( !p.o().is_ptr() )
+      {
+        spell_power_mod.direct *= 0.6;
+      }
+
       da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
     }
   }
@@ -1074,13 +1078,13 @@ void priest_t::trigger_inescapable_torment( player_t* target )
 
   auto current_pets = get_current_main_pet( *this );
 
-  if ( is_ptr() && current_pets->n_active_pets() > 0)
+  if ( is_ptr() && current_pets->n_active_pets() > 0 )
   {
     auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
     buffs.devoured_pride->extend_duration( this, extend );
     buffs.devoured_despair->extend_duration( this, extend );
   }
-   
+
   for ( auto a_pet : current_pets->active_pets() )
   {
     auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );

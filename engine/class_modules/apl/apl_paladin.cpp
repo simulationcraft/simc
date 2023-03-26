@@ -106,19 +106,20 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
+  cooldowns->add_action( "avengers_shield,if=time=0&set_bonus.tier29_2pc", "Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped." );
   cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );
   cooldowns->add_action( "holy_avenger,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains>60" );
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
 
-  trinkets->add_action( "use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory_enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
-  trinkets->add_action( "use_item,slot=trinket2,if=(buff.moment_of_glory.up|!talent.moment_of_glory_enabled&buff.avenging_wrath.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
+  trinkets->add_action( "use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
+  trinkets->add_action( "use_item,slot=trinket2,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|(cooldown.moment_of_glory.remains>20|(!talent.moment_of_glory.enabled&cooldown.avenging_wrath.remains>20)))" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|(cooldown.moment_of_glory.remains>20|(!talent.moment_of_glory.enabled&cooldown.avenging_wrath.remains>20)))" );
 
-  standard->add_action( "shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&(buff.bastion_of_light.up|buff.divine_purpose.up|holy_power>2)" );
-  standard->add_action( "avengers_shield,if=buff.moment_of_glory.up|!talent.moment_of_glory.enabled" );
+  standard->add_action( "shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)" );
+  standard->add_action( "avengers_shield,if=buff.moment_of_glory.up|(set_bonus.tier29_2pc&(!buff.ally_of_the_light.up|buff.ally_of_the_light.remains<gcd))", "Use Avenger's Shield as First Priority when 2pc buff is missing." );
   standard->add_action( "hammer_of_wrath,if=buff.avenging_wrath.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
   standard->add_action( "divine_toll,if=time>20|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
@@ -131,6 +132,8 @@ void protection( player_t* p )
   standard->add_action( "hammer_of_the_righteous" );
   standard->add_action( "crusader_strike" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
+  standard->add_action( "arcane_torrent,if=holy_power<5" );
+  standard->add_action( "lights_judgment" );
   standard->add_action( "consecration" );
 }
 //protection_apl_end
