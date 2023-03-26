@@ -1923,7 +1923,7 @@ struct psychic_link_t final : public priest_spell_t
       _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
       _pl_shadow_word_death(
-          new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
+          new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -1939,6 +1939,7 @@ struct psychic_link_t final : public priest_spell_t
     add_child( _pl_mindgames );
     add_child( _pl_void_bolt );
     add_child( _pl_void_torrent );
+    add_child( _pl_shadow_word_death );
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
