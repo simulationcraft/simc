@@ -925,6 +925,13 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
                                d->state->action );
   }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
+  }
 };
 
 action_t* void_lasher_t::create_action( util::string_view name, util::string_view options_str )
