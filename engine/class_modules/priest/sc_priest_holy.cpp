@@ -13,6 +13,44 @@ namespace priestspace
 namespace actions::spells
 {
 
+struct holy_word_sanctify_t final : public priest_spell_t
+{
+  holy_word_sanctify_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "holy_word_sanctify", p, p.talents.holy.holy_word_serenity )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      priest().buffs.divine_image->trigger();
+    }
+  }
+};
+
+struct holy_word_serenity_t final : public priest_spell_t
+{
+  holy_word_serenity_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "holy_word_serenity", p, p.talents.holy.holy_word_serenity )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      priest().buffs.divine_image->trigger();
+    }
+  }
+};
+
 struct apotheosis_t final : public priest_spell_t
 {
   apotheosis_t( priest_t& p, util::string_view options_str )
@@ -303,10 +341,13 @@ void priest_t::init_rng_holy()
 void priest_t::init_spells_holy()
 {
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+  // Row 1
+  talents.holy.holy_word_serenity = ST( "Holy Word: Serenity" );
   // Row 2
   talents.holy.holy_word_chastise = ST( "Holy Word: Chastise" );
   // Row 3
-  talents.holy.empyreal_blaze = ST( "Empyreal Blaze" );
+  talents.holy.empyreal_blaze     = ST( "Empyreal Blaze" );
+  talents.holy.holy_word_sanctify = ST( "Holy Word: Sanctify" );
   // Row 4
   talents.holy.searing_light = ST( "Searing Light" );
   // Row 8

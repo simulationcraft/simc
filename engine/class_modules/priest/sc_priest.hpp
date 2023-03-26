@@ -378,10 +378,13 @@ public:
 
     struct
     {
+      // Row 1
+      player_talent_t holy_word_serenity;
       // Row 2
       player_talent_t holy_word_chastise;
       // Row 3
       player_talent_t empyreal_blaze;
+      player_talent_t holy_word_sanctify;
       // Row 4
       player_talent_t searing_light;
       // Row 8
