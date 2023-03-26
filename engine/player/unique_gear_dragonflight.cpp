@@ -4607,7 +4607,8 @@ struct absorb_stone_t : public absorb_t
   {
     absorb_t::init_finished();
 
-    shining_obsidian_stone = find_primordial_stone_action( player, SHINING_OBSIDIAN_STONE );
+    if ( find_special_effect( player, SHINING_OBSIDIAN_STONE ) )
+      shining_obsidian_stone = find_primordial_stone_action( player, SHINING_OBSIDIAN_STONE );
   }
 
   absorb_buff_t* create_buff( const action_state_t* ) override
