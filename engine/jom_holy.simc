@@ -15,15 +15,103 @@ position=ranged_back
 talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA
 
 # Overrides
-fight_style=DungeonSlice
 optimal_raid=0
 
+# potion=elemental_potion_of_ultimate_power_3
+# flask=phial_of_tepid_versatility_3
+# food=fated_fortune_cookie
+# augmentation=draconic_augment_rune
+# temporary_enchant=main_hand:howling_rune_3
+
+# Executed before combat begins. Accepts non-harmful actions only.
+# actions.precombat=flask
+# actions.precombat+=/food
+# actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
 # RUN ACTIONS
-# actions+=/shadow_word_pain,if=!ticking
-# actions+=/divine_word
-# actions+=/holy_word_serenity
-# actions+=/holy_word_sanctify
-actions+=/empyreal_blaze
-actions+=/holy_fire,if=!ticking|refreshable
-# actions+=/holy_word_chastise
-actions+=/smite
+actions.main_variables+=/variable,name=hf_up,op=set,value=dot.holy_fire.ticking
+actions.main_variables+=/variable,name=swp_up,op=set,value=dot.shadow_word_pain.ticking
+
+# main
+actions.main+=/call_action_list,name=main_variables
+
+# holy fire
+actions.main+=/holy_fire,if=!variable.hf_up|refreshable
+
+# don't cast sw:p during any of our damage phases
+actions.main+=/shadow_word_pain,if=!buff.holy_word_chastise.up&!buff.empyreal_blaze.up&!buff.divine_word.up&(!variable.swp_up|refreshable)
+
+# divine word to prep for chastise, hold up to 20 sec to sync up with PI
+actions.main+=/divine_word,if=talent.holy_word_chastise.enabled&cooldown.holy_word_chastise.up
+
+# if divine word is active, I should be casting chastise
+# otherwise, cast it when it will be back before the next divine word
+actions.main+=/holy_word_chastise,if=!talent.divine_word.enabled|buff.divine_word.up
+
+# Shadow word death priority during execute (<20%) and chastise if we have death and madness
+actions.main+=/shadow_word_death,if=buff.holy_word_chastise.up&target.health.pct<20
+
+# mindgames gets high priority to get CD reduced
+actions.main+=/mindgames
+
+# empyreal blaze gets priority when its up
+# save it to cast with chastise buff if possible
+# in an aoe situation just use it
+# hold it up to 5 seconds if mindgames coming soon to reduce MG cooldown
+actions.main+=/empyreal_blaze,if=(talent.divine_word.enabled&buff.divine_favor_chastise.up)|spell_targets.divine_star>=3|&cooldown.mindgames.remains>5
+
+# spam holy fire if empyreal_blaze is up
+actions.main+=/holy_fire,if=buff.empyreal_blaze.up
+
+# if chastise buff is up and we're out of empyreal blaze, prioritize smite as long as holy fire remains up
+actions.main+=/smite,if=buff.holy_word_chastise.remains>execute_time&dot.holy_fire.remains>execute_time
+
+# Shadow word death priority during bonus dmg (<50%), hold up to 10s for divine word
+actions.main+=/shadow_word_death,if=target.health.pct<50&cooldown.divine_word.remains>10
+
+# Save up to 10s if adds are coming soon.
+# cast divine star sooner if > 3 adds
+actions.main+=/divine_star,if=raid_event.adds.in>10&spell_targets.divine_star>=3
+
+# filler holy fires if it's up
+actions.main+=/holy_fire,cycle_targets=1,if=!variable.hf_up|refreshable
+
+# spread sw:p to several targets
+actions.main+=/shadow_word_pain,cycle_targets=1,if=!buff.holy_word_chastise.up&!buff.empyreal_blaze.up&!buff.divine_word.up&(!variable.swp_up|refreshable)
+
+# lower priority shadow word death when not in damage boost windows
+actions.main+=/shadow_word_death,if=!buff.empyreal_blaze.up
+
+# Save up to 10s if adds are coming soon.
+actions.main+=/divine_star,if=!buff.empyreal_blaze.up&raid_event.adds.in>10
+
+# otherwise fillers
+actions.main+=/call_action_list,name=filler
+
+
+# Fillers
+# Use Shadow Word: Death while moving as a low-priority action in execute
+actions.filler+=/shadow_word_death,moving=1,if=target.health.pct<20
+# Use Divine Star while moving as a low-priority action
+actions.filler+=/divine_star,moving=1
+# Use Shadow Word: Death while moving as a low-priority action
+actions.filler+=/shadow_word_death,moving=1,cycle_targets=1
+# Use Shadow Word: Death while moving as a low-priority action
+actions.filler+=/shadow_word_pain,moving=1,cycle_targets=1
+# if all else fails, low prio smite
+actions.filler+=/smite,if=!buff.empyreal_blaze.up
+
+# CDs
+#actions.cds+=/call_action_list,name=main_variables
+# actions.cds+=/potion,if=buff.power_infusion.up&(fight_remains<=cooldown.power_infusion.remains+15)|boss&fight_remains<=30
+# hold PI up to 30 seconds to sync with divine word
+# actions.cds+=/power_infusion,if=!talent.divine_word.enabled|(talent.divine_word.enabled&(cooldown.divine_word.up|cooldown.divine_word.remains>30))
+# hold trinkets to use with PI
+# actions.cds+=/use_items,if=buff.power_infusion.up|cooldown.power_infusion.remains>=cooldown
+# actions.cds+=/shadowfiend,if=mana.pct<=95&target.time_to_die>10
+# Use Desperate Prayer to heal when very low health
+# actions.cds+=/desperate_prayer,if=health.pct<=35
+#symbol of hope when low mana
+# actions.cds+=/symbol_of_hope,if=mana.pct<=50
