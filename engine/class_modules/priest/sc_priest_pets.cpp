@@ -568,6 +568,13 @@ struct fiend_melee_t : public priest_pet_melee_t
     return static_cast<base_fiend_pet_t&>( *player );
   }
 
+  void init() override
+  {
+    priest_pet_melee_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "Mindbender" );
+  }
+
   timespan_t execute_time() const override
   {
     if ( base_execute_time == timespan_t::zero() )
@@ -644,6 +651,13 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     // Tuning modifier effect
     apply_affecting_aura( p.o().specs.shadow_priest );
   }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "Mindbender" );
+  }
 };
 
 // ==========================================================================
@@ -681,6 +695,13 @@ struct inescapable_torment_t final : public priest_pet_spell_t
                         duration, new_duration, remaining_duration );
       current_pet.expiration->reschedule( new_duration );
     }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "Mindbender" );
   }
 };
 }  // namespace actions
