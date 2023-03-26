@@ -551,7 +551,7 @@ struct smite_t final : public priest_spell_t
     }
     if ( priest().talents.holy.divine_image.enabled() )
     {
-      child_holy_fire = priest().background_actions.searing_light;
+      child_searing_light = priest().background_actions.searing_light;
     }
   }
 
@@ -647,18 +647,17 @@ struct smite_t final : public priest_spell_t
         {
           chastise_cdr *= ( 1 + priest().talents.holy.light_of_the_naaru->effectN( 1 ).percent() );
         }
-        sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with apotheosis: {}, light_of_the_naaru: {}",
+        sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with light_of_the_naaru: {}, apotheosis: {}",
                           priest(), chastise_cdr, priest().talents.holy.light_of_the_naaru.enabled(),
                           ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
 
         priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
       }
-      sim->print_debug( "smite test: child_searing_light: {}, divine_image: {}", child_searing_light,
-                        priest().buffs.divine_image->up() );
+      sim->print_debug( "smite test: divine_image: {}", priest().buffs.divine_image->up() );
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
         sim->print_debug( "searing_light triggered by smite: {}", priest().buffs.divine_image->up() );
-        for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
         }

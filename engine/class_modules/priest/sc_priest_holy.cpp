@@ -191,7 +191,7 @@ struct holy_fire_t final : public priest_spell_t
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
         sim->print_debug( "searing_light triggered by holy_fire: {}", priest().buffs.divine_image->up() );
-        for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
         }
@@ -251,7 +251,7 @@ struct holy_word_chastise_t final : public priest_spell_t
       priest().buffs.divine_image->trigger();
       // Activating cast also immediately executes searing light
       sim->print_debug( "searing_light triggered by holy_word_chastise: {}", priest().buffs.divine_image->up() );
-      for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_searing_light->execute();
       }
@@ -265,7 +265,7 @@ struct holy_word_chastise_t final : public priest_spell_t
     if ( child_searing_light && priest().buffs.divine_image->up() )
     {
       sim->print_debug( "searing_light triggered by holy_word_chastise: {}", priest().buffs.divine_image->up() );
-      for ( int i = 0; i <= priest().buffs.divine_image->stack(); i++ )
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_searing_light->execute();
       }
@@ -355,13 +355,18 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new divine_word_t( *this, options_str );
   }
+  if ( name == "searing_light" )
+  {
+    return new searing_light_t( *this );
+  }
 
   return nullptr;
 }
 
 void priest_t::init_background_actions_holy()
 {
-  background_actions.holy_fire = new actions::spells::holy_fire_t( *this );
+  background_actions.holy_fire     = new actions::spells::holy_fire_t( *this );
+  background_actions.searing_light = new actions::spells::searing_light_t( *this );
 }
 
 expr_t* priest_t::create_expression_holy( action_t*, util::string_view /*name_str*/ )
