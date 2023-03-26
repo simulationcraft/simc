@@ -367,6 +367,8 @@ public:
 
     buff_t* t29_2pc_ele;
     buff_t* t29_4pc_ele;
+    buff_t* t30_2pc_ele_driver;
+    buff_t* t30_4pc_ele;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -400,6 +402,11 @@ public:
     //Tier 29
     buff_t* t29_2pc_enh;
     buff_t* t29_4pc_enh;
+
+    // Tier 30
+    buff_t* t30_2pc_enh;
+    buff_t* t30_4pc_enh_damage;
+    buff_t* t30_4pc_enh_cl;
 
     // PvP
     buff_t* thundercharge;
@@ -491,6 +498,7 @@ public:
     proc_t* maelstrom_weapon_sm;
     proc_t* maelstrom_weapon_pw;
     proc_t* maelstrom_weapon_sa;
+    proc_t* maelstrom_weapon_4pc_enh;
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
@@ -718,6 +726,8 @@ public:
     const spell_data_t* t28_4pc_enh;
     const spell_data_t* t29_2pc_ele;
     const spell_data_t* t29_4pc_ele;
+    const spell_data_t* t30_2pc_ele;
+    const spell_data_t* t30_4pc_ele;
     const spell_data_t* inundate;
   } spell;
 
@@ -793,6 +803,7 @@ public:
   void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
+  timespan_t last_t30_proc;
 
   std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t* action, mw_proc_state state )
   {
@@ -928,6 +939,7 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void combat_begin() override;
   void reset() override;
+  void arise() override;
   void merge( player_t& other ) override;
   void copy_from( player_t* ) override;
 
@@ -1158,6 +1170,8 @@ public:
   bool affected_by_enh_t29_2pc;
   bool affected_by_lotfw_da;
   bool affected_by_lotfw_ta;
+  bool affected_by_enh_t30_4pc_da;
+  bool affected_by_enh_t30_4pc_ta;
 
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
@@ -1183,7 +1197,9 @@ public:
       affected_by_enh_mastery_ta( false ),
       affected_by_enh_t29_2pc( false ),
       affected_by_lotfw_da( false ),
-      affected_by_lotfw_ta( false )
+      affected_by_lotfw_ta( false ),
+      affected_by_enh_t30_4pc_da( false ),
+      affected_by_enh_t30_4pc_ta( false )
   {
     ab::may_crit = true;
 
@@ -1235,6 +1251,12 @@ public:
 
     //T29 Enhance 2pc
     affected_by_enh_t29_2pc = ab::data().affected_by( player->find_spell( 394677 )->effectN( 1 ) );
+
+    if ( p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T30, B4 ) )
+    {
+      affected_by_enh_t30_4pc_da = ab::data().affected_by( player->find_spell( 409833 )->effectN( 1 ) );
+      affected_by_enh_t30_4pc_ta = ab::data().affected_by( player->find_spell( 409833 )->effectN( 2 ) );
+    }
   }
 
   std::string full_name() const
@@ -1350,6 +1372,11 @@ public:
       m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
 
+    if ( affected_by_enh_t30_4pc_da && p()->buff.t30_4pc_enh_damage->check() )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
     return m;
   }
 
@@ -1394,6 +1421,11 @@ public:
       {
         m *= 1.0 + p()->buff.earthen_weapon->value();
       }
+    }
+
+    if ( affected_by_enh_t30_4pc_ta && p()->buff.t30_4pc_enh_damage->check() )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
     }
 
     return m;
@@ -4088,6 +4120,15 @@ struct sundering_t : public shaman_attack_t
 
     may_proc_stormbringer = may_proc_flametongue = true;
   }
+
+  void execute() override
+  {
+    shaman_attack_t::execute();
+
+    p()->buff.t30_2pc_enh->trigger();
+    p()->buff.t30_4pc_enh_damage->trigger();
+    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
+  }
 };
 
 // Weapon imbues
@@ -4478,6 +4519,18 @@ struct chained_overload_base_t : public elemental_overload_spell_t
   {
     return __check_distance_targeting( this, tl );
   }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = elemental_overload_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
+      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+    }
+
+    return cm;
+  }
 };
 
 struct chain_lightning_overload_t : public chained_overload_base_t
@@ -4582,8 +4635,23 @@ struct chained_base_t : public shaman_spell_t
 
     if ( exec_type == execute_type::NORMAL )
     {
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 ) {
+        p()->buff.t30_4pc_ele->trigger();
+      }
       p()->buff.stormkeeper->decrement();
     }
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = shaman_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
+      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+    }
+
+    return cm;
   }
 
   std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
@@ -4620,6 +4688,15 @@ struct chain_lightning_t : public chained_base_t
       default:
         break;
     }
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = shaman_spell_t::action_da_multiplier();
+
+    m *= 1.0 + p()->buff.t30_4pc_enh_cl->value();
+
+    return m;
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4720,6 +4797,8 @@ struct chain_lightning_t : public chained_base_t
 
   void execute() override
   {
+    auto mw_stacks = maelstrom_weapon_stacks();
+
     chained_base_t::execute();
 
     // Storm Elemental Wind Gust passive buff trigger
@@ -4770,7 +4849,21 @@ struct chain_lightning_t : public chained_base_t
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
 
+    if ( p()->buff.t30_4pc_enh_cl->check() )
+    {
+      auto refunded = as<int>(
+        std::ceil( mw_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
+
+      p()->buff.maelstrom_weapon->trigger( refunded );
+      for ( auto i = 0; i < refunded; ++i )
+      {
+        p()->proc.maelstrom_weapon_4pc_enh->occur();
+      }
+      p()->buff.t30_4pc_enh_cl->decrement();
+    }
+
     p()->buff.t29_2pc_ele->trigger();
+
   }
 
   void impact( action_state_t* state ) override
@@ -5025,7 +5118,18 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     p()->buff.t29_2pc_ele->trigger();
   }
- };
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+
+    if ( p()->buff.t30_4pc_ele->up() ) {
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 5 ).percent();
+    }
+
+    return m;
+  }
+};
 
 struct flame_shock_spreader_t : public shaman_spell_t
 {
@@ -5511,6 +5615,17 @@ struct lava_burst_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+
+    if ( p()->buff.t30_4pc_ele->up() ) {
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 4 ).percent();
+    }
+
+    return m;
+  }
 };
 
 // Lightning Bolt Spell =====================================================
@@ -5541,6 +5656,17 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     elemental_overload_spell_t::impact( state );
 
     p()->trigger_lightning_rod_damage( state );
+  }
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+
+    if ( p()->buff.t30_4pc_ele->up() ) {
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 3 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -5703,6 +5829,9 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( type == execute_type::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
+      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 ) {
+        p()->buff.t30_4pc_ele->trigger();
+      }
       p()->buff.stormkeeper->decrement();
     }
 
@@ -5755,6 +5884,17 @@ struct lightning_bolt_t : public shaman_spell_t
   //    player->off_hand_attack->schedule_execute();
   //  }
   //}
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+
+    if ( p()->buff.t30_4pc_ele->up() ) {
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
 };
 
 // Elemental Blast Spell ====================================================
@@ -5960,6 +6100,17 @@ struct icefury_t : public shaman_spell_t
 
     p()->buff.icefury->trigger( data().initial_stacks() );
   }
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient();
+
+    if ( p()->buff.t30_4pc_ele->up() ) {
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 6 ).percent();
+    }
+
+    return m;
+  }
 };
 
 // Spirit Wolf Spell ========================================================
@@ -6062,6 +6213,18 @@ struct earthquake_damage_base_t : public shaman_spell_t
     m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
     return m;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = shaman_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
+      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+    }
+    
+    return cm;
   }
 };
 
@@ -6767,7 +6930,13 @@ struct frost_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.icefury->value();
+    double if_multi = p()->buff.icefury->value();
+    // bug, instead this should apply to the maelstrom generation
+    if ( p()->buff.t30_4pc_ele->up() ) {
+      if_multi += 1.0 * p()->spell.t30_4pc_ele->effectN( 7 ).percent();
+    }
+
+    m *= 1.0 + if_multi;
 
     m *= 1.0 + p()->buff.hailstorm->stack_value();
 
@@ -8869,6 +9038,9 @@ void shaman_t::init_spells()
   spell.t29_2pc_ele        = find_spell( 394651 );
   spell.t29_4pc_ele        = find_spell( 394670 );
 
+  spell.t30_2pc_ele        = find_spell( 405565 );
+  spell.t30_4pc_ele        = find_spell( 410018 ); // 405566 otherwise empty T30 base spell
+
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
 
@@ -9654,6 +9826,20 @@ void shaman_t::create_buffs()
                       ->set_default_value_from_effect(1)
                       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                       ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B4 ) );
+  buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
+      ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        // spell data says "40", but means 40s
+        timespan_t test = sim->current_time() - spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
+        if ( last_t30_proc <= test )
+        {
+          if ( !buff.stormkeeper->up() )
+          {
+            last_t30_proc = sim->current_time();
+            buff.stormkeeper->trigger( 2 );
+          }
+        }
+      } );
+  buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
 
@@ -9778,6 +9964,18 @@ void shaman_t::create_buffs()
                    ->set_default_value_from_effect( 1 )
                    ->set_max_stack( 1 );
 
+  buff.t30_2pc_enh = make_buff<buff_t>( this, "earthen_might", find_spell( 409689 ) )
+    ->set_default_value_from_effect( 1 )
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B2 ) );
+
+  buff.t30_4pc_enh_damage = make_buff<buff_t>( this, "volcanic_strength", find_spell( 409833 ) )
+    ->set_default_value_from_effect( 1 )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B4 ) );
+  buff.t30_4pc_enh_cl = make_buff<buff_t>( this, "crackling_thunder", find_spell( 409834 ) )
+    ->set_default_value_from_effect( 2 )
+    ->set_trigger_spell( sets->set( SHAMAN_ENHANCEMENT, T30, B4 ) );
+
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   // Buffs crash lightning with extra damage, after using chain lightning
@@ -9888,6 +10086,7 @@ void shaman_t::init_procs()
   proc.maelstrom_weapon_sm    = get_proc( "Maelstrom Weapon: Swirling Maelstrom" );
   proc.maelstrom_weapon_pw    = get_proc( "Maelstrom Weapon: Primordial Wave" );
   proc.maelstrom_weapon_sa    = get_proc( "Maelstrom Weapon: Static Accumulation" );
+  proc.maelstrom_weapon_4pc_enh = get_proc( "Maelstrom Weapon: Enhancement Tier30 4PC" );
   proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
@@ -10811,6 +11010,20 @@ void shaman_t::reset()
   action.totemic_recall_totem = nullptr;
 
   assert( active_flame_shock.empty() );
+}
+
+
+// shaman_t::arise ==========================================================
+
+void shaman_t::arise()
+{
+  player_t::arise();
+
+  if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B2 ) )
+  {
+    last_t30_proc = timespan_t::min();
+    buff.t30_2pc_ele_driver->trigger();
+  }
 }
 
 // shaman_t::merge ==========================================================

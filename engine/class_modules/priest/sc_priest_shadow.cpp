@@ -1434,7 +1434,6 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.weakening_reality->trigger();
     }
-
   }
 
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
@@ -2379,22 +2378,40 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct ancient_madness_t final : public priest_buff_t<buff_t>
 {
-  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.talents.shadow.ancient_madness )
+  ancient_madness_t( priest_t& p, const spell_data_t* s ) : base_t( p, "ancient_madness", s )
   {
     if ( !data().ok() )
       return;
 
+    // Since we are using data from VF/DA make sure the name in the report does not confuse people
+    s_data_reporting = p.talents.shadow.ancient_madness.spell();
+
+    if ( p.talents.shadow.dark_ascension.enabled() )
+    {
+      set_period( p.talents.shadow.dark_ascension->effectN( 3 ).period() );
+      set_duration( p.talents.shadow.dark_ascension->duration() );
+    }
+
+    if ( p.talents.shadow.void_eruption.enabled() )
+    {
+      set_period( p.specs.voidform->effectN( p.is_ptr() ? 4 : 5 ).period() );
+      set_duration( p.specs.voidform->duration() );
+    }
+
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
     set_reverse( true );
-    set_period( timespan_t::from_seconds( 1 ) );
-    set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
+    set_max_stack( 20 );
+    cooldown->duration = 0_s;
 
     if ( p.is_ptr() )
-      set_default_value( data().effectN( 2 ).percent() / 10 );  // 0.5%/1%
+    {
+      set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10 );
+    }
     else
-      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
-    set_max_stack( 20 );                                   // 20/20;
+    {
+      set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
+    }
   }
 };
 
@@ -2414,7 +2431,7 @@ struct dispersion_t final : public priest_buff_t<buff_t>
 // Fury of Elune AP =========================================================
 struct devoured_despair_buff_t : public priest_buff_t<buff_t>
 {
-  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_depair", p.talents.shadow.devoured_despair )
+  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_despair", p.talents.shadow.devoured_despair )
   {
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
@@ -2477,7 +2494,15 @@ void priest_t::create_buffs_shadow()
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
+  if ( talents.shadow.dark_ascension.enabled() )
+  {
+    buffs.ancient_madness = make_buff<buffs::ancient_madness_t>( *this, talents.shadow.dark_ascension );
+  }
+  else
+  {
+    buffs.ancient_madness = make_buff<buffs::ancient_madness_t>( *this, specs.voidform );
+  }
+
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.unfurling_darkness =
       make_buff( this, "unfurling_darkness", talents.shadow.unfurling_darkness->effectN( 1 ).trigger() );
@@ -2536,7 +2561,6 @@ void priest_t::create_buffs_shadow()
   if ( !is_ptr() )
     buffs.devoured_pride->set_duration( 0_ms );
 
-
   buffs.devoured_despair = make_buff<buffs::devoured_despair_buff_t>( *this );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
@@ -2592,8 +2616,7 @@ void priest_t::create_buffs_shadow()
           } );
 
   if ( weakening_reality->ok() )
-    buffs.weakening_reality->set_expire_at_max_stack( true ); // Avoid sim warning
-
+    buffs.weakening_reality->set_expire_at_max_stack( true );  // Avoid sim warning
 }
 
 void priest_t::init_rng_shadow()

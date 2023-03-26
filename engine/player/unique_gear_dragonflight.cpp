@@ -3438,13 +3438,69 @@ void winterpelt_totem( special_effect_t& effect )
                            { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
 }
 
-void seething_black_dragonscale( special_effect_t& effect )
+void seething_black_dragonscale_equip( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
                            ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.item ) )
                            ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect.item ) );
   
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void seething_black_dragonscale_use( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
+  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
+
+  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  {
+    effect.execute_action = damage;
+  }
+}
+
+// Anshuul the Cosmic Wanderer
+// 402583 Driver
+// 402574 Damage Value 
+void anshuul_the_cosmic_wanderer( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "anshuul_the_cosmic_wanderer", effect, "anshuul_the_cosmic_wanderer", effect.driver(), true );
+  damage -> base_dd_min = damage -> base_dd_max = effect.trigger() -> effectN( 1 ).average( effect.item );
+  damage -> set_school( SCHOOL_COSMIC ); // Manually set the spell school, School set to none in data.
+  effect.execute_action = damage;
+}
+
+// Zaqali Chaos Grapnel
+// 400956 Driver
+// 400955 Damage Values
+// 406558 Missile
+void zaqali_chaos_grapnel( special_effect_t& effect )
+{
+  struct zaqali_chaos_grapnel_missile_t : public generic_aoe_proc_t
+  {
+    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "impaling_grapnel_missile", e.player -> find_spell( 406558 ), true )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 2 ).average( e.item );
+    }
+  };
+
+  struct zaqali_chaos_grapnel_t : public generic_proc_t
+  {
+    action_t* missile;
+    zaqali_chaos_grapnel_t( const special_effect_t& e ) : generic_proc_t( e, "impaling_grapnel", e.driver() ),
+        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "impaling_grapnel_missile", e ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 1 ).average( e.item );
+      add_child( missile );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      missile -> execute();
+    }
+  };
+
+  effect.execute_action = create_proc_action<zaqali_chaos_grapnel_t>( "impaling_grapnel", effect );
 }
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
@@ -4105,6 +4161,51 @@ void hood_of_surging_time( special_effect_t& effect )
     }
   } );
 }
+// Voice of the Silent Star
+// 409434 Driver
+// 409447 Stat Buff
+// 409442 Stacking Buff
+void voice_of_the_silent_star( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+  effect, { "power_beyond_imagination_crit_rating", "power_beyond_imagination_mastery_rating", "power_beyond_imagination_haste_rating",
+                "power_beyond_imagination_versatility_rating" } ) )
+  return;
+
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver() -> effectN( 1 ).average( effect.item ) + ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver() -> effectN( 4 ).base_value() );
+
+  for ( auto stat : ratings )
+  {
+    auto name    = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
+             ->add_stat( stat, amount );
+    }
+    ( *buffs )[ stat ] = buff;
+  }
+
+  auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
+                 ->set_expire_at_max_stack( true )
+                 ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
+                   if ( !new_ )
+                   {
+                      stat_e max_stat = util::highest_stat( effect.player, ratings );
+                      ( *buffs )[ max_stat ] -> trigger();
+                   }
+                 } );
+
+  effect.custom_buff = stack_buff;
+  effect.proc_flags_ = PF_ALL_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  new dbc_proc_callback_t( effect.player, effect );
+}
 
 }  // namespace items
 
@@ -4302,7 +4403,7 @@ enum primordial_stone_drivers_e
   PESTILENT_PLAGUE_STONE   = 402952,
   OBSCURE_PASTEL_STONE     = 402955,
   DESIROUS_BLOOD_STONE     = 402957,
-  PROPHETIC_TWILIGHT_STONE = 402959, // NYI
+  PROPHETIC_TWILIGHT_STONE = 402959,
 };
 
 enum primordial_stone_family_e
@@ -4399,6 +4500,7 @@ action_t* find_primordial_stone_action( player_t* player, unsigned driver )
     case STORM_INFUSED_STONE:
       return player->find_action( "storm_infused_stone" );
     case ECHOING_THUNDER_STONE:
+    case 403170: // The Echoing Thunder Stone effect will have this driver after it is initialized.
       return player->find_action( "uncontainable_charge" );
     case FLAME_LICKED_STONE:
       return player->find_action( "flame_licked_stone" );
@@ -4526,6 +4628,8 @@ struct absorb_stone_t : public absorb_t
 
 struct primordial_stone_cb_t : public dbc_proc_callback_t
 {
+  action_t* twilight_action = nullptr;
+
   primordial_stone_cb_t( player_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
 
   void initialize() override
@@ -4533,57 +4637,42 @@ struct primordial_stone_cb_t : public dbc_proc_callback_t
     dbc_proc_callback_t::initialize();
 
     // if the current callback has an action and we find a prophetic twilight stone
-    if ( !proc_action )
-      return;
-
-    if ( !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
+    if ( !proc_action || !find_special_effect( listener, PROPHETIC_TWILIGHT_STONE ) )
       return;
 
     auto type = get_stone_type( effect );
-    auto prophetic_driver = 0;
 
     // depending on the type of the current callback's effect, find the opposite stone type
     if ( type == PRIMORDIAL_TYPE_HEAL )
     {
-      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
-        return get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE;
-      } );
-
-      if ( it != effect.item->parsed.special_effects.end() )
-        prophetic_driver = ( *it )->driver()->id();
+      for ( auto e : effect.item->parsed.special_effects )
+      {
+        if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_DAMAGE )
+        {
+          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          break;
+        }
+      }
     }
     else if ( type == PRIMORDIAL_TYPE_DAMAGE )
     {
-      auto it = range::find_if( effect.item->parsed.special_effects, []( special_effect_t* e ) {
-        return get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL;
-      } );
-
-      if ( it != effect.item->parsed.special_effects.end() )
-        prophetic_driver = ( *it )->driver()->id();
+      for ( auto e : effect.item->parsed.special_effects )
+      {
+        if ( get_stone_type( *e ) == PRIMORDIAL_TYPE_HEAL )
+        {
+          twilight_action = find_primordial_stone_action( e->player, e->driver()->id() );
+          break;
+        }
+      }
     }
+  }
 
-    // manual override for echoing thunder stone
-    if ( prophetic_driver == ECHOING_THUNDER_STONE )
-      prophetic_driver = 403170;
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    dbc_proc_callback_t::execute( a, s );
 
-    // if we've found the opposite stone type driver
-    if ( prophetic_driver )
-    {
-      auto execute_fn = []( action_t* a, action_state_t* s, const dbc_proc_callback_t* cb ) {
-        a->set_target( cb->target( s ) );
-        auto state = a->get_state();
-        state->target = a->target;
-        a->snapshot_state( state, a->amount_type( state ) );
-        a->schedule_execute( state );
-      };
-
-      // override the opposite driver's callback to also execute the current driver's action
-      listener->callbacks.register_callback_execute_function(
-          prophetic_driver, [ execute_fn, this ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
-            execute_fn( cb->proc_action, s, cb );
-            execute_fn( proc_action, s, cb );
-          } );
-    }
+    if ( twilight_action )
+      twilight_action->execute_on_target( s->target );
   }
 };
 
@@ -4628,10 +4717,10 @@ struct storm_infused_stone_t : public damage_stone_t
   }
 };
 
-struct searing_smokey_stone_t : public generic_aoe_proc_t
+struct searing_smokey_stone_t : public damage_stone_t
 {
   searing_smokey_stone_t( const special_effect_t &e ) :
-    generic_aoe_proc_t( e, "searing_smokey_stone", 403257 )
+    damage_stone_t( e, "searing_smokey_stone", 403257 )
   {
     auto driver = e.player->find_spell( SEARING_SMOKEY_STONE );
     base_dd_min = base_dd_max = driver->effectN( 1 ).average( e.item );
@@ -4954,7 +5043,7 @@ void humming_arcane_stone( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
         return a->get_school() != SCHOOL_PHYSICAL;
       } );
 }
@@ -5110,8 +5199,11 @@ void register_special_effects()
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
   register_special_effect( 398292, items::winterpelt_totem );
-  register_special_effect( 401468, items::seething_black_dragonscale );
+  register_special_effect( 401468, items::seething_black_dragonscale_equip);
+  register_special_effect( 405940, items::seething_black_dragonscale_use);
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
+  register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
+  register_special_effect( 400956, items::zaqali_chaos_grapnel );
 
 
   // Weapons
@@ -5138,6 +5230,7 @@ void register_special_effects()
   register_special_effect( 395959, items::allied_wristguards_of_companionship );
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
+  register_special_effect( 409434, items::voice_of_the_silent_star, true );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );

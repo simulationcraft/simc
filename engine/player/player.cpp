@@ -2703,9 +2703,17 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-        return a.first->selection_index < b.first->selection_index;
-      } );
+      // it is possible to have multiple entries per node that are not choice node, in which case the higher trait node
+      // entry id seems to take precedence
+      if ( node.size() > 1 )
+      {
+        range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+          if ( a.first->selection_index != -1 && b.first->selection_index != -1 )
+            return a.first->selection_index < b.first->selection_index;
+          else
+            return a.first->id_trait_node_entry > b.first->id_trait_node_entry;
+        } );
+      }
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;

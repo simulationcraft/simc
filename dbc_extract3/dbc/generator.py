@@ -1418,6 +1418,7 @@ class SpellDataGenerator(DataGenerator):
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
+            ( 405580, 0 ),          # Fury 10.1 Class Set 4pc (buff)
         ),
 
         # Paladin:
@@ -2175,6 +2176,7 @@ class SpellDataGenerator(DataGenerator):
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
+          ( 409877, 2 ), # T30 4pc Recrimination buff
        ),
 
        # Evoker:

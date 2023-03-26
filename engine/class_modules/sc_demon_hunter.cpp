@@ -236,6 +236,8 @@ public:
     damage_buff_t* t29_havoc_4pc;
     buff_t* t30_havoc_2pc;
     buff_t* t30_havoc_4pc;
+    buff_t* t30_vengeance_2pc;
+    buff_t* t30_vengeance_4pc;
   } buff;
 
   // Talents
@@ -549,6 +551,8 @@ public:
     const spell_data_t* t30_havoc_4pc_refund;
     const spell_data_t* t30_havoc_4pc_buff;
     double t30_havoc_2pc_fury_tracker = 0.0;
+    const spell_data_t* t30_vengeance_2pc_buff;
+    const spell_data_t* t30_vengeance_4pc_buff;
   } set_bonuses;
 
   // Mastery Spells
@@ -1418,6 +1422,9 @@ public:
     {
       // Rank Passives
 
+      // Set Bonus Passives
+      ab::apply_affecting_aura( p->set_bonuses.t30_vengeance_4pc );
+
       // Talents
       if ( p->talent.vengeance.vulnerability->ok() )
       {
@@ -1708,7 +1715,7 @@ public:
       }
 
       if ( p()->set_bonuses.t30_havoc_2pc->ok() )
-      {       
+      {
         p()->set_bonuses.t30_havoc_2pc_fury_tracker += ab::last_resource_cost;
         const double threshold = p()->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value();
         p()->sim->print_debug( "{} spent {} toward Seething Fury ({}/{})", *p(), ab::last_resource_cost,
@@ -1719,7 +1726,7 @@ public:
           p()->buff.t30_havoc_2pc->trigger();
           p()->sim->print_debug( "{} procced Seething Fury ({}/{})", *p(), p()->set_bonuses.t30_havoc_2pc_fury_tracker, threshold );
           if ( p()->set_bonuses.t30_havoc_4pc->ok() )
-          {            
+          {
             p()->buff.t30_havoc_4pc->trigger();
             p()->resource_gain( RESOURCE_FURY, p()->set_bonuses.t30_havoc_4pc_refund->effectN( 1 ).base_value(), p()->gain.seething_fury );
           }
@@ -2249,7 +2256,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       return m;
     }
-    
+
     double composite_persistent_multiplier( const action_state_t* state ) const override
     {
       double m = demon_hunter_spell_t::composite_persistent_multiplier( state );
@@ -2313,7 +2320,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
-    
+
     p()->buff.t30_havoc_4pc->expire();
 
     // Since Demonic triggers Meta with 6s + hasted duration, need to extend by the hasted duration after have an execute_state
@@ -5761,11 +5768,20 @@ void demon_hunter_t::create_buffs()
                          set_bonuses.t30_havoc_2pc->ok() ? set_bonuses.t30_havoc_2pc_buff : spell_data_t::not_found() )
           ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
           ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
-  
+
   buff.t30_havoc_4pc =
       make_buff<buff_t>( this, "seething_potential",
                          set_bonuses.t30_havoc_4pc->ok() ? set_bonuses.t30_havoc_4pc_buff : spell_data_t::not_found() )
           ->set_default_value_from_effect( 1 );
+
+  buff.t30_vengeance_2pc = make_buff<buff_t>( this, "fires_of_fel",
+                                              set_bonuses.t30_vengeance_2pc->ok() ? set_bonuses.t30_vengeance_2pc_buff
+                                                                                  : spell_data_t::not_found() )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.t30_vengeance_4pc = make_buff<buff_t>(
+      this, "recrimination", set_bonuses.t30_vengeance_4pc->ok() ? set_bonuses.t30_vengeance_4pc_buff : spell_data_t::not_found() );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -6507,11 +6523,13 @@ void demon_hunter_t::init_spells()
   set_bonuses.t30_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, T30, B4 );
   set_bonuses.t30_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B2 );
   set_bonuses.t30_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, T30, B4 );
-  
-  // Set Bonus Auxilliary 
+
+  // Set Bonus Auxilliary
   set_bonuses.t30_havoc_2pc_buff = set_bonuses.t30_havoc_2pc->ok() ? find_spell( 408737 ) : spell_data_t::not_found();
   set_bonuses.t30_havoc_4pc_buff = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408754 ) : spell_data_t::not_found();
   set_bonuses.t30_havoc_4pc_refund = set_bonuses.t30_havoc_4pc->ok() ? find_spell( 408757 ) : spell_data_t::not_found();
+  set_bonuses.t30_vengeance_2pc_buff = set_bonuses.t30_vengeance_2pc->ok() ? find_spell( 409645 ) : spell_data_t::not_found();
+  set_bonuses.t30_vengeance_4pc_buff = set_bonuses.t30_vengeance_4pc->ok() ? find_spell( 409877 ) : spell_data_t::not_found();
 
   // Spell Initialization ===================================================
 
@@ -6938,6 +6956,12 @@ double demon_hunter_t::composite_parry_rating() const
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+  if ( set_bonuses.t30_vengeance_2pc->ok() &&
+       set_bonuses.t30_vengeance_2pc_buff->effectN( 1 ).has_common_school( school ) )
+  {
+    m *= 1.0 + buff.t30_vengeance_2pc->check_stack_value();
+  }
 
   return m;
 }
@@ -7406,9 +7430,11 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
   {
     it->consume( heal );
     souls_consumed++;
-    if (talent.vengeance.soul_furnace->ok()) {
+    if ( talent.vengeance.soul_furnace->ok() )
+    {
       buff.soul_furnace_stack->trigger();
-      if (buff.soul_furnace_stack->at_max_stacks()) {
+      if ( buff.soul_furnace_stack->at_max_stacks() )
+      {
         buff.soul_furnace_stack->expire();
         buff.soul_furnace_damage_amp->trigger();
       }
@@ -7531,6 +7557,10 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
   {
     soul_fragments.push_back( new soul_fragment_t( this, type, consume_on_activation ) );
     soul_proc->occur();
+    if ( set_bonuses.t30_vengeance_2pc->ok() )
+    {
+      buff.t30_vengeance_2pc->trigger();
+    }
   }
 
   if ( sim->debug )

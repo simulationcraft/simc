@@ -145,6 +145,9 @@ actions.cooldowns+=/any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(bu
 
 # Obliteration Active Rotation
 actions.obliteration=remorseless_winter,if=active_enemies>3
+actions.obliteration+=/howling_blast,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&buff.rime.react
+actions.obliteration+=/frost_strike,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd
+actions.obliteration+=/glacial_advance,if=buff.killing_machine.stack<2&buff.pillar_of_frost.remains<gcd&!death_and_decay.ticking
 actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&!variable.frostscythe_priority
 actions.obliteration+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
 actions.obliteration+=/howling_blast,if=!dot.frost_fever.ticking&!buff.killing_machine.react
@@ -172,8 +175,8 @@ actions.racials+=/bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&
 # Single Target Rotation
 actions.single_target=remorseless_winter,if=variable.rw_buffs|variable.adds_remain
 actions.single_target+=/frost_strike,if=buff.killing_machine.stack<2&runic_power.deficit<20&!variable.2h_check
-actions.single_target+=/frostscythe,if=!variable.pooling_runes&buff.killing_machine.react&variable.frostscythe_priority
-actions.single_target+=/obliterate,if=!variable.pooling_runes&buff.killing_machine.react
+actions.single_target+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
+actions.single_target+=/obliterate,if=buff.killing_machine.react
 actions.single_target+=/howling_blast,if=buff.rime.react&talent.icebreaker.rank=2
 actions.single_target+=/horn_of_winter,if=rune<4&runic_power.deficit>25&talent.obliteration&talent.breath_of_sindragosa
 actions.single_target+=/frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25|debuff.razorice.stack=5&talent.shattering_blade)

@@ -3395,6 +3395,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     {
     }
 
+    // todo: account for divine resonance, crusading strikes, divine auxiliary
     double evaluate() override
     {
       if ( paladin.specialization() == PALADIN_PROTECTION )
@@ -3481,13 +3482,45 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     return aw_expr;
   }
 
-  return player_t::create_expression( name_str );
-
-
- if ( specialization() == PALADIN_PROTECTION && (  splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
+  struct time_until_next_csaa_expr_t : public paladin_expr_t
   {
-  splits[ 1 ] = talents.sentinel->ok()? "sentinel" : "avenging_wrath";
+    time_until_next_csaa_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
+    {
+    }
 
+    double evaluate() override
+    {
+      if ( !paladin.talents.crusading_strikes->ok() )
+      {
+        return std::numeric_limits<double>::infinity();
+      }
+
+      if ( paladin.melee_swing_count % 2 == 0 )
+      {
+        if ( paladin.main_hand_attack && paladin.main_hand_attack->execute_event )
+        {
+          return paladin.main_hand_attack->execute_event->remains().total_seconds() + paladin.main_hand_attack->execute_time().total_seconds();
+        }
+
+        return std::numeric_limits<double>::infinity();
+      }
+      else
+      {
+        if ( paladin.main_hand_attack && paladin.main_hand_attack->execute_event )
+          return paladin.main_hand_attack->execute_event->remains().total_seconds();
+        return std::numeric_limits<double>::infinity();
+      }
+    }
+  };
+
+  if ( specialization() == PALADIN_RETRIBUTION && util::str_compare_ci( splits[ 0 ], "time_to_next_csaa_hopo" ) )
+  {
+    return std::make_unique<time_until_next_csaa_expr_t>( name_str, *this );
+  }
+
+  if ( specialization() == PALADIN_PROTECTION && ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
+  {
+    splits[ 1 ] = talents.sentinel->ok() ? "sentinel" : "avenging_wrath";
     return paladin_t::create_expression( util::string_join( splits, "." ) );
   }
 

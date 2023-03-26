@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -18244,10 +18244,11 @@ Effects          :
 Description      : Rising Sun Kick grants a stack of Elusive Brawler. When you dodge, the damage and critical strike chance of your next Blackout Kick or Rising Sun Kick is increased by $408503s1%, stacking up to $408503U times.
 
 Name             : Soulfang Infusion (id=405541) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Proc Chance (5 -> 4), Description, Tooltip
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Proc Chance      : 5%
+Proc Chance      : 4%
 Proc Flags       : ........ ......x. .....x.. ........   ........ ........ ........ ........   
                  : Magic Heal, Helpful Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -18262,8 +18263,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053879)  : Apply Aura (6) | Proc Trigger Spell (42): Soulfang Infusion
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 410007 | Target: Self (1)
-Description      : Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec. 
-Tooltip          : Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec.
+Description      : Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.
+Tooltip          : Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.
 
 Name             : Soulfang Vitality (id=405542) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -18541,10 +18542,11 @@ Description      : Rising Sun Kick grants a stack of Elusive Brawler, and when y
 Tooltip          : The damage and critical strike chance of your next Blackout Kick or Rising Sun Kick is increased by $s1%.
 
 Name             : Soulfang Infusion (id=410007) [Spell Family (53)] 
+Hotfixed         : Description, Tooltip
 Class            : Monk
 School           : Shadowfrost
 Spell Type       : None
-Duration         : 5 seconds
+Duration         : 3 seconds
 Triggered by     : Soulfang Infusion (405541)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -18557,8 +18559,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1075290)  : Apply Aura (6) | Periodic Power% Regen (21)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 5 sec. 
-Tooltip          : Renewing Mists has a chance to grant Soulfang Infusion, granting 5% of your maximum Mana over 6 sec.
+Description      : Renewing Mists has a chance to grant Soulfang Infusion, granting ${$o1}.2% of your maximum Mana over $d.
+Tooltip          : Restoring $o1 mana over $d.
 
 Name             : Soulfang Vitality (id=410082) [Spell Family (53)] 
 Class            : Monk
