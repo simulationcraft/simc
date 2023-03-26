@@ -16,7 +16,7 @@ namespace actions::spells
 struct holy_word_sanctify_t final : public priest_spell_t
 {
   holy_word_sanctify_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "holy_word_sanctify", p, p.talents.holy.holy_word_serenity )
+    : priest_spell_t( "holy_word_sanctify", p, p.talents.holy.holy_word_sanctify )
   {
     parse_options( options_str );
     harmful = false;
@@ -378,15 +378,21 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new holy_fire_t( *this );
   }
-
   if ( name == "apotheosis" )
   {
     return new apotheosis_t( *this, options_str );
   }
-
   if ( name == "holy_word_chastise" )
   {
     return new holy_word_chastise_t( *this, options_str );
+  }
+  if ( name == "holy_word_serenity" )
+  {
+    return new holy_word_serenity_t( *this, options_str );
+  }
+  if ( name == "holy_word_sanctify" )
+  {
+    return new holy_word_sanctify_t( *this, options_str );
   }
   if ( name == "empyreal_blaze" )
   {

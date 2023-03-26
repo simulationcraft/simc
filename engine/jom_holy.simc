@@ -18,6 +18,8 @@ optimal_raid=0
 # RUN ACTIONS
 # actions+=/shadow_word_pain,if=!ticking
 # actions+=/divine_word
+actions+=/holy_word_serenity
+actions+=/holy_word_sanctify
 actions+=/holy_word_chastise
 # actions+=/holy_fire,if=!ticking
 actions+=/smite
