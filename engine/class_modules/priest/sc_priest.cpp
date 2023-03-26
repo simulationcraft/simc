@@ -579,7 +579,7 @@ struct smite_t final : public priest_spell_t
       sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze_of_light",
                         priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
-    if ( priest().talents.holy.searing_light.enabled() && td->dots.holy_fire->is_ticking() )
+    if ( td && priest().talents.holy.searing_light.enabled() && td->dots.holy_fire->is_ticking() )
     {
       auto adjust_percent = priest().talents.holy.searing_light->effectN( 1 ).percent();
       d *= 1.0 + adjust_percent;
