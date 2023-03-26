@@ -13,18 +13,28 @@ namespace priestspace
 namespace actions::spells
 {
 
-struct holy_word_sanctify_t final : public priest_spell_t
+struct holy_word_sanctify_t final : public priest_heal_t
 {
   holy_word_sanctify_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "holy_word_sanctify", p, p.talents.holy.holy_word_sanctify )
+    : priest_heal_t( "holy_word_sanctify", p, p.talents.holy.holy_word_sanctify )
   {
     parse_options( options_str );
     harmful = false;
   }
 
+  double cost() const override
+  {
+    if ( priest().buffs.apotheosis->check() )
+    {
+      return 0;
+    }
+
+    return priest_heal_t::cost();
+  }
+
   void execute() override
   {
-    priest_spell_t::execute();
+    priest_heal_t::execute();
     if ( priest().talents.holy.divine_image.enabled() )
     {
       priest().buffs.divine_image->trigger();
@@ -32,18 +42,28 @@ struct holy_word_sanctify_t final : public priest_spell_t
   }
 };
 
-struct holy_word_serenity_t final : public priest_spell_t
+struct holy_word_serenity_t final : public priest_heal_t
 {
   holy_word_serenity_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "holy_word_serenity", p, p.talents.holy.holy_word_serenity )
+    : priest_heal_t( "holy_word_serenity", p, p.talents.holy.holy_word_serenity )
   {
     parse_options( options_str );
     harmful = false;
   }
 
+  double cost() const override
+  {
+    if ( priest().buffs.apotheosis->check() )
+    {
+      return 0;
+    }
+
+    return priest_heal_t::cost();
+  }
+
   void execute() override
   {
-    priest_spell_t::execute();
+    priest_heal_t::execute();
     if ( priest().talents.holy.divine_image.enabled() )
     {
       priest().buffs.divine_image->trigger();
@@ -65,11 +85,11 @@ struct apotheosis_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.apotheosis->trigger();
-    sim->print_debug( "starting apotheosis. ", priest() );
+    sim->print_debug( "starting apotheosis. " );
     priest().cooldowns.holy_word_chastise->reset( false );
-    priest().cooldowns.holy_word_serenity->reset( false );
-    priest().cooldowns.holy_word_sanctify->reset( false );
-    sim->print_debug( "apotheosis reset holy_word_chastise cooldown. ", priest() );
+    priest().cooldowns.holy_word_serenity->reset( false, -1 );
+    priest().cooldowns.holy_word_sanctify->reset( false, -1 );
+    sim->print_debug( "apotheosis reset holy word cooldowns." );
   }
 };
 
@@ -282,9 +302,9 @@ struct holy_word_chastise_t final : public priest_spell_t
     double d = priest_spell_t::composite_da_multiplier( s );
     if ( priest().buffs.divine_word->check() )
     {
-      d *= 1.0 + priest().buffs.divine_word->data().effectN( 1 ).percent();
+      d *= 1.0 + priest().talents.holy.divine_word->effectN( 1 ).percent();
       sim->print_debug( "divine_favor increasing holy_word_chastise damage by {}, total: {}",
-                        priest().buffs.divine_word->data().effectN( 1 ).percent(), d );
+                        priest().talents.holy.divine_word->effectN( 1 ).percent(), d );
     }
     return d;
   }

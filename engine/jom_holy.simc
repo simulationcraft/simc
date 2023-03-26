@@ -12,26 +12,45 @@ level=70
 race=blood_elf
 role=spell
 position=ranged_back
-talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA
+talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA
 
-profileset."Divine Image2"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
-profileset."Divine Image + Miracle"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
-profileset."Divine Word"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA"
-profileset."Divine Image"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA"
+profileset."Image,Miracle | All DPS talents"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Image,Miracle | No Apotheosis"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhWIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Image,Miracle | No Naaru"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJRKhkEJhASiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Image,Miracle | No Harmonius"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJRKIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."No Image, No Word"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQRJRKKSSkECIJiSSCAAAAgEAKJkIFikkEBFplkkQA"
+profileset."Image,Miracle | No BurningVehemence"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQRiSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Image,Miracle | No BurningVehemence"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQRiSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Image,Miracle | No SearingLight"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQhoESSkECkkIpkkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Image,Miracle | No SearingLight, No Empyreal"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQhoESSkECkkUSKJBAAAAgEAKJkIFikkEBFplkkQA"
+profileset."Image,Miracle | No Chastise, No SearingLight, No Empyreal"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQhoESSiECkkUSKJUAAAAASAokQiUISSSEUkWSSCBA"
+profileset."Image,Miracle | All DPS talents, no Mindgames"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEHoESSkECkkIKJJAAAAAAgSCiUISSSEUkWSSCBA"
+profileset."Image,Miracle | All DPS talents, no Rhapsody"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEHoESSkECkkIKJJAAAAASAokQiUISSEBFplkkQA"
+profileset."Image-only | All DPS talents"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEHoESSkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA"
+profileset."Word | All DPS talents"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Word | No Naaru"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJkSIJRSIgkUSKJBAAAAgEAKJkIFikkEBFplkkQA"
+profileset."Word | No Harmonius"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJkCSSkECkkUSKJBAAAAgEAKJkIFikkEBFplkkQA"
+profileset."Word | No Apotheosis"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJkGSSkECkkUSKJBAAAAgEAKJkIFikkEBFplkkQA"
+profileset."Word | No BurningVehemence"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQRiSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Word | No SearingLight"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJoESSkECkkIpkkAAAAAIBgSCJShIJJRQRaJJJEA"
+profileset."Word | No EmpyrealBlaze"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJoESSkECkkUSKJBAAAAgEAKJkIFikkEBFplkkQA"
+profileset."FAQ recommendation"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQRAAAAAAAAFiWIJhESJkkUokElAAAAAQSahSSCShQSQQphkIkCA"
+
+
 
 # Overrides
 optimal_raid=0
 fight_style=DungeonSlice
-# potion=elemental_potion_of_ultimate_power_3
-# flask=phial_of_tepid_versatility_3
-# food=fated_fortune_cookie
-# augmentation=draconic_augment_rune
-# temporary_enchant=main_hand:howling_rune_3
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_tepid_versatility_3
+food=fated_fortune_cookie
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
 
 # Executed before combat begins. Accepts non-harmful actions only.
-# actions.precombat=flask
-# actions.precombat+=/food
-# actions.precombat+=/augmentation
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 

@@ -1601,6 +1601,8 @@ void priest_t::create_cooldowns()
 {
   cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
   cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
+  cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
+  cooldowns.holy_word_sanctify            = get_cooldown( "holy_word_sanctify" );
   cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
