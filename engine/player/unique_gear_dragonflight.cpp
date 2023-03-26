@@ -4866,6 +4866,7 @@ struct gleaming_iron_stone_t : public absorb_stone_t
                       unique_gear::create_buff<absorb_buff_t>( e.player, e.player->find_spell( 403376 ), e.item ) )
   {
     aa_buff = unique_gear::create_buff<buff_t>( player, "gleaming_iron_stone_autoattack", player->find_spell( 405001 ) )
+      ->set_default_value( e.driver()->effectN( 2 ).average( e.item ) )
       ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
         if ( new_ )
         {
