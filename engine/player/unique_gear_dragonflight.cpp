@@ -4386,13 +4386,13 @@ enum primordial_stone_drivers_e
   RAGING_MAGMA_STONE       = 402931, // NYI (requires getting hit, damage)
   SEARING_SMOKEY_STONE     = 402932,
   ENTROPIC_FEL_STONE       = 402934,
-  INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
-  SHINING_OBSIDIAN_STONE   = 402936, // no absorbs are implemented to trigger this
+  INDOMITABLE_EARTH_STONE  = 402935,
+  SHINING_OBSIDIAN_STONE   = 402936,
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
-  GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
+  GLEAMING_IRON_STONE      = 402938,
   DELUGING_WATER_STONE     = 402939, // NYI (heal)
   FREEZING_ICE_STONE       = 402940,
-  COLD_FROST_STONE         = 402941, // NYI (absorb)
+  COLD_FROST_STONE         = 402941,
   EXUDING_STEAM_STONE      = 402942, // NYI (procs on receiving heals)
   SPARKLING_MANA_STONE     = 402943, // NYI (restores mana)
   SWIRLING_MOJO_STONE      = 402944, // NYI (requires creature deaths, gives the player an item to activate its buff)
@@ -4841,6 +4841,52 @@ struct shining_obsidian_stone_t : public aoe_damage_stone_t
   }
 };
 
+struct cold_frost_stone_t : public absorb_stone_t
+{
+  cold_frost_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "cold_frost_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.trigger(), e.item ) )
+  {}
+};
+
+struct indomitable_earth_stone_t : public absorb_stone_t
+{
+  indomitable_earth_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "indomitable_earth_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.trigger(), e.item ) )
+  {}
+};
+
+struct gleaming_iron_stone_t : public absorb_stone_t
+{
+  buff_t* aa_buff;
+
+  gleaming_iron_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "gleaming_iron_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.player->find_spell( 403376 ), e.item ) )
+  {
+    aa_buff = unique_gear::create_buff<buff_t>( player, "gleaming_iron_stone_autoattack", player->find_spell( 405001 ) )
+      ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+        if ( new_ )
+        {
+          player->auto_attack_modifier += b->default_value;
+        }
+        else
+        {
+          player->auto_attack_modifier -= b->default_value;
+          make_event( b->sim, 3_s, [ this ] { execute(); });
+        }
+      } );
+  }
+
+  void execute() override
+  {
+    absorb_stone_t::execute();
+
+    aa_buff->trigger();
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4881,9 +4927,11 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
 
     // absorb stones
     case COLD_FROST_STONE:
-      return nullptr;
+      return new cold_frost_stone_t( effect );
     case INDOMITABLE_EARTH_STONE:
-      return nullptr;
+      return new indomitable_earth_stone_t( effect );
+    case GLEAMING_IRON_STONE:
+      return new gleaming_iron_stone_t( effect );
 
     // misc
     case HARMONIC_MUSIC_STONE:
@@ -5051,6 +5099,36 @@ void humming_arcane_stone( special_effect_t& effect )
 void shining_obsidian_stone( special_effect_t& effect )
 {
   create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
+}
+
+void cold_frost_stone( special_effect_t& effect )
+{
+  // TODO slow NYI
+  auto shield = create_primordial_stone_action( effect, COLD_FROST_STONE );
+  timespan_t period = effect.driver()->effectN( 1 ).period();
+
+  effect.player->register_combat_begin( [ shield, period ]( player_t* p ) {
+    make_event( p->sim, p->rng().real() * period, [ p, period, shield ] {
+      shield->execute();
+      make_repeating_event( p->sim, period, [ shield ] { shield->execute(); } );
+    } );
+  } );
+}
+
+void indomitable_earth_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, INDOMITABLE_EARTH_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void gleaming_iron_stone( special_effect_t& effect )
+{
+  auto shield = create_primordial_stone_action( effect, GLEAMING_IRON_STONE );
+
+  effect.player->register_combat_begin( [ shield ]( player_t* p ) {
+    make_event( p->sim, 3_s, [ shield ] { shield->execute(); } );
+  } );
 }
 
 void obscure_pastel_stone( special_effect_t& effect )
@@ -5250,6 +5328,9 @@ void register_special_effects()
   register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE,   primordial_stones::shining_obsidian_stone );
   register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,     primordial_stones::obscure_pastel_stone );
   register_special_effect( primordial_stones::SEARING_SMOKEY_STONE,     primordial_stones::searing_smokey_stone );
+  register_special_effect( primordial_stones::COLD_FROST_STONE,         primordial_stones::cold_frost_stone );
+  register_special_effect( primordial_stones::INDOMITABLE_EARTH_STONE,  primordial_stones::indomitable_earth_stone );
+  register_special_effect( primordial_stones::GLEAMING_IRON_STONE,      primordial_stones::gleaming_iron_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,       DISABLED_EFFECT ); // Necessary for other gems to find the driver.
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 

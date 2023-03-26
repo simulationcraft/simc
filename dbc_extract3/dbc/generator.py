@@ -2176,6 +2176,7 @@ class SpellDataGenerator(DataGenerator):
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
+          ( 409877, 2 ), # T30 4pc Recrimination buff
        ),
 
        # Evoker:
