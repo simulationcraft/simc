@@ -228,7 +228,7 @@ struct holy_fire_t final : public priest_spell_t
       }
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
-        sim->print_debug( "searing_light triggered by holy_fire: {}", priest().buffs.divine_image->up() );
+        sim->print_debug( "searing_light triggered by holy_fire" );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
@@ -288,7 +288,7 @@ struct holy_word_chastise_t final : public priest_spell_t
     {
       priest().buffs.divine_image->trigger();
       // Activating cast also immediately executes searing light
-      sim->print_debug( "searing_light triggered by holy_word_chastise: {}", priest().buffs.divine_image->up() );
+      sim->print_debug( "searing_light triggered by holy_word_chastise" );
       for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_searing_light->execute();
@@ -302,7 +302,7 @@ struct holy_word_chastise_t final : public priest_spell_t
     sim->print_debug( "divine_image_buff: {}", priest().buffs.divine_image->up() );
     if ( child_searing_light && priest().buffs.divine_image->up() )
     {
-      sim->print_debug( "searing_light triggered by holy_word_chastise: {}", priest().buffs.divine_image->up() );
+      sim->print_debug( "searing_light triggered by holy_word_chastise" );
       for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_searing_light->execute();

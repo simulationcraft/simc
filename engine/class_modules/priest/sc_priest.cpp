@@ -656,7 +656,7 @@ struct smite_t final : public priest_spell_t
       }
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
-        sim->print_debug( "searing_light triggered by smite: {}", priest().buffs.divine_image->up() );
+        sim->print_debug( "searing_light triggered by smite" );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
@@ -935,6 +935,7 @@ struct shadow_word_death_t final : public priest_spell_t
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
+  propagate_const<action_t*> child_searing_light;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
@@ -942,7 +943,8 @@ struct shadow_word_death_t final : public priest_spell_t
       execute_modifier( data().effectN( 3 ).percent() +
                         ( priest().is_ptr() ? priest().specs.shadow_priest->effectN( 25 ).percent() : 0 ) ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
-      child_expiation( nullptr )
+      child_expiation( nullptr ),
+      child_searing_light( nullptr )
   {
     parse_options( options_str );
 
@@ -952,6 +954,11 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       child_expiation             = new expiation_t( priest() );
       child_expiation->background = true;
+    }
+
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      child_searing_light = priest().background_actions.searing_light;
     }
 
     if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
@@ -1063,6 +1070,15 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         child_expiation->target = s->target;
         child_expiation->execute();
+      }
+
+      if ( child_searing_light && priest().buffs.divine_image->up() )
+      {
+        sim->print_debug( "searing_light triggered by shadow_word_death" );
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
       }
     }
   }
