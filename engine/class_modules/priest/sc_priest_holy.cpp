@@ -123,13 +123,24 @@ struct burning_vehemence_t final : public priest_spell_t
   burning_vehemence_t( priest_t& p ) : priest_spell_t( "burning_vehemence", p, p.talents.holy.burning_vehemence_damage )
   {
     background          = true;
-    dual                = true;
     may_crit            = false;
     may_miss            = false;
     aoe                 = -1;
+    full_amount_targets = priest().talents.holy.burning_vehemence_damage->effectN( 2 ).percent();
     reduced_aoe_targets = priest().talents.holy.burning_vehemence_damage->effectN( 2 ).base_value();
     base_multiplier     = priest().talents.holy.burning_vehemence->effectN( 3 ).percent();
   }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    priest_spell_t::available_targets( tl );
+
+    // Remove the main target, this only hits everything else in range.
+    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) { return t == this->target; } ), tl.end() );
+
+    return tl.size();
+  }
+
   void trigger( double initial_hit_damage )
   {
     double bv_damage = initial_hit_damage * base_multiplier;

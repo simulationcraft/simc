@@ -13,6 +13,13 @@ race=blood_elf
 role=spell
 position=ranged_back
 talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAgEKhkkkECkkIKJJAAAAASAokQiUISSSEUkWSSCBA
+
+# Custom Enemies
+enemy="Target Dummy"
+enemy_fixed_health_percentage=100
+
+# Overrides
+desired_targets=5
 optimal_raid=0
 
 # RUN ACTIONS
