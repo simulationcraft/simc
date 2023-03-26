@@ -621,7 +621,8 @@ struct smite_t final : public priest_spell_t
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
     // If we have divine word, have triggered divine favor: chastise, and proc the holy fire effect
-    if ( priest().talents.holy.divine_word.enabled() && priest().buffs.divine_favor_chastise->check() &&
+    if ( child_holy_fire && priest().talents.holy.divine_word.enabled() &&
+         priest().buffs.divine_favor_chastise->check() &&
          rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) )
     {
       priest().procs.divine_favor_chastise->occur();
@@ -653,7 +654,6 @@ struct smite_t final : public priest_spell_t
 
         priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
       }
-      sim->print_debug( "smite test: divine_image: {}", priest().buffs.divine_image->up() );
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
         sim->print_debug( "searing_light triggered by smite: {}", priest().buffs.divine_image->up() );
