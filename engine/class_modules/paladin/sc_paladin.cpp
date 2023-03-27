@@ -1002,19 +1002,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       timespan_t cm_cdr = p()->talents.crusaders_might->effectN( 1 ).time_value();
       p()->cooldowns.holy_shock->adjust( cm_cdr );
     }
-
-    // Special things that happen when CS connects
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talents.empyrean_power->ok() )
-      {
-        if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
-        {
-          p()->procs.empyrean_power->occur();
-          p()->buffs.empyrean_power->trigger();
-        }
-      }
-    }
   }
 
   void execute() override
@@ -1032,6 +1019,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
+    }
+
+    if ( p()->talents.empyrean_power->ok() )
+    {
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
+      {
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
+      }
     }
   }
 
