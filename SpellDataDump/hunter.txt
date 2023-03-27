@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -13041,7 +13041,6 @@ Effects          :
 Description      : Barbed Shot's recharge time is reduced by ${-$s2/1000} sec, and its damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Chimaera Shot (id=342049) [Spell Family (9)] 
-Hotfixed         : Attributes
 Replaces         : Arcane Shot (id=185358)
 Talent Entry     : Marksmanship [tree=spec, row=3, col=3, max_rank=1, req_points=0, replace="Arcane Shot" (id=185358)]
 Class            : Hunter
@@ -13066,7 +13065,6 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=842821)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
-Hotfixed         : Chain Targets (3 -> 2)
 Description      : A two-headed shot that hits your primary target for $344120sw1 Nature damage and another nearby target for ${$344121sw1*($s1/100)} Frost damage.$?s260393[
 
 Chimaera Shot has a $260393h% chance to reduce the cooldown of Rapid Fire by ${$260393m1/10}.1 sec.][]
@@ -16152,7 +16150,6 @@ Effects          :
 Description      : $?s137015[Cobra Shot]?s137016[Aimed Shot]?s259387[Mongoose Bite][Raptor Strike] has a chance to fling an Arctic Bola at your target, dealing ${$@traitentryrank100514*$390232s1} Frost damage and snaring the target by $390232s2% for $390232d. The Arctic Bola strikes up to $s1 $Ltarget:targets;.
 
 Name             : Arctic Bola (id=390232) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Frost
 Spell Type       : Ranged

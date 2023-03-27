@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -55,7 +55,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=830260)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13800 | PvP Coefficient: 1.10000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -363,7 +362,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01407 | PvP Coefficient: 1.10000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1015,7 +1013,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.25000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.3 -> 1.25)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -1423,7 +1420,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.57990 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.13 -> 1)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1998,7 +1994,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.16500 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : Siphons the target's life essence, dealing $o1 Shadow damage over $d and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and siphoning life to the casting Warlock.
 
@@ -3715,7 +3710,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -3737,7 +3731,6 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.10000 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -4866,7 +4859,6 @@ Effects          :
 #3 (id=1074552)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Unknown(38)
                    Base Value: 12900 | Scaled Value: 12900 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 2335 (Label) | Target: Self (1)
                    Affected Spells (Label): Mayhem (387506)
-Hotfixed         : NEW EFFECT
 Description      : $?a387506[Your single target spells have a $387506s1% chance to curse][Curses] the ground with a demonic bane, causing all of your single target spells to also strike targets marked with the bane for  $80240s1% of the damage dealt. Lasts $?a387506[${$387506s3/1000} sec][$d].
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -7928,7 +7920,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=719405)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.53625 | PvP Coefficient: 1.25000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.75 -> 1.25)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Inferno (id=270545) [Spell Family (5), Passive] 
@@ -13345,7 +13336,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021228)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (193 -> 4), Target 1 (5 -> 1)
 #2 (id=1021229)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Grimoire of Sacrifice (196100)
@@ -13372,7 +13362,6 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021243)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (79 -> 429), Misc Value (127 -> 0), Target 1 (5 -> 1)
 #2 (id=1021244)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Grimoire of Sacrifice (196100)
@@ -16772,7 +16761,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1043910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66700 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : Malefic Rapture deals $s1% increased damage to targets suffering from Unstable Affliction.
 
 Name             : Dark Virtuosity (id=405327) [Spell Family (5), Passive] 
@@ -16796,12 +16784,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Soul Swap (86211), Drain Soul (198590)
                    Family Flags: 0, 23
-Hotfixed         : Base Value (15 -> 5)
 #2 (id=1053532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soul Swap (86211), Drain Soul (198590)
                    Family Flags: 23
-Hotfixed         : Base Value (15 -> 5)
 Description      : Shadow Bolt and Drain Soul deal an additional $s1% damage.
 
 Name             : Kindled Malice (id=405330) [Spell Family (5), Passive] 
@@ -16824,7 +16810,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Seed of Corruption (27285), Malefic Rapture (324540)
                    Family Flags: 47, 73
-Hotfixed         : Base Value (8 -> 4)
 Description      : Malefic Rapture and Seed of Corruption deal an additional $s1% damage.
 
 Name             : Immutable Hatred (id=405670) [Spell Family (5), Passive, Hidden] 

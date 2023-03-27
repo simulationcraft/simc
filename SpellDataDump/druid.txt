@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -10159,7 +10159,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Balance [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -15654,7 +15654,6 @@ Effects          :
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
-Hotfixed         : Proc Flags 1 (0 -> 69648)
 Talent Entry     : Guardian [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
@@ -17651,7 +17650,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Maim (22570), Thrash (77758), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Thrash (106832), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Sickle of the Lion (363830), Fury of Elune (365640), Tear (391356), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111)
                    Family Flags: 18, 26, 40, 80, 86, 91, 98
-Hotfixed         : Affects Spells
 #4 (id=1029777)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
@@ -18892,7 +18890,7 @@ Description      : $@spelldesc338661
 Tooltip          : Your next Starsurge costs no Astral Power.
 
 Name             : Rattle the Stars (id=393954) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Balance [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None
