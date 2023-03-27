@@ -4553,16 +4553,12 @@ struct damage_stone_base_t : public BASE
     entropic_fel_stone_multiplier()
   {
     // If Entropic Fel Stone is equipped, Fire damage stones are changed to Chaos.
-    if ( ( dbc::get_school_mask( BASE::get_school() ) & dbc::get_school_mask( SCHOOL_FIRE ) ) != 0 )
+    if ( ( dbc::get_school_mask( BASE::get_school() ) & dbc::get_school_mask( SCHOOL_FIRE ) ) != 0)
     {
-      for ( const auto e : effect.item->parsed.special_effects )
+      if ( auto e = find_special_effect( effect.player, ENTROPIC_FEL_STONE ) )
       {
-        if ( e->type == SPECIAL_EFFECT_EQUIP && e->driver()->id() == ENTROPIC_FEL_STONE )
-        {
-          entropic_fel_stone_multiplier = e->driver()->effectN( 1 ).percent();
-          BASE::set_school( SCHOOL_CHAOS ); // TODO: Verify that SCHOOL_CHAOS here is correct in game.
-          break;
-        }
+        entropic_fel_stone_multiplier = e->driver()->effectN( 1 ).percent();
+        BASE::set_school( SCHOOL_CHAOS );
       }
     }
   }
