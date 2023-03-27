@@ -2472,7 +2472,7 @@ static void parse_traits(
       {
         if ( std::get<2>( *it ) != std::get<2>( entry ) )
         {
-          player->sim->error( "Overwriting talent {} ({}), rank {} -> {}",
+          player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}",
             trait_obj->name, trait_obj->id_trait_node_entry,
             std::get<2>( *it ), std::get<2>( entry ) );
         }
