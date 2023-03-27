@@ -2,8 +2,6 @@
 # SimC Addon 10.0.5-01
 # WoW 10.0.5.48317, TOC 100005
 # Requires SimulationCraft 1000-01 or newer
-debug=1
-use_item_verification=0
 html="jom.html"
 priest="Jom"
 source=default
@@ -13,6 +11,27 @@ race=blood_elf
 role=spell
 position=ranged_back
 talents=BEQAAAAAAAAAAAAAAAAAAAAAAQDAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA
+calculate_scale_factors=1
+scale_only=intellect,crit,mastery,vers,haste
+iterations=100000
+fight_style=DungeonSlice
+
+
+head=,id=200327,gem_id=192945,bonus_id=6652/7935/8828/9130/7977/1495/8767
+neck=,id=193001,gem_id=192945/192945/192984,bonus_id=8836/8840/8902/8960/8784/8782/8802/8790/8846,crafted_stats=40/36
+shoulder=,id=200329,bonus_id=6652/8826/7977/8973/1489/8767
+back=,id=193511,enchant_id=6598,bonus_id=8836/8840/8902/8802/8846/8790/8932/8960,crafted_stats=36/32
+chest=,id=200324,enchant_id=6619,bonus_id=6652/7977/8974/8830/1495
+wrist=,id=134310,enchant_id=6580,gem_id=192945,bonus_id=7977/6652/7935/8822/8819/9144/8973/3294/8767
+hands=,id=193713,bonus_id=7977/6652/8822/8817/9144/8973/1637/8767
+waist=,id=137488,bonus_id=7977/6652/7936/8822/8818/9144/8973/3294/8767
+legs=,id=200328,enchant_id=6544,bonus_id=6652/7977/8827/8973/1498/8767
+feet=,id=134308,enchant_id=6613,bonus_id=9130/7977/6652/8822/8818/9144/3300/8767
+finger1=,id=192999,enchant_id=6556,gem_id=192945,bonus_id=8836/8840/8902/8780/8802/8790/8846,crafted_stats=49/36
+finger2=,id=195526,enchant_id=6556,bonus_id=6652/7937/7980/1485/8767
+trinket1=,id=110007,bonus_id=7977/6652/9144/8973/3300/8767
+trinket2=,id=193677,bonus_id=7977/6652/9144/8973/1637/8767
+main_hand=,id=193699,enchant_id=6643,bonus_id=9130/7977/6652/9147/1643/8767
 
 profileset."Image,Miracle | All DPS talents"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhSIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
 profileset."Image,Miracle | No Apotheosis"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAQJhWIJRSIQSiokkAAAAAIBgSCJShIJJRQRaJJJEA"
@@ -39,8 +58,6 @@ profileset."FAQ recommendation"+="talents=BEQAAAAAAAAAAAAAAAAAAAAAAQRAAAAAAAAFiW
 
 
 # Overrides
-optimal_raid=0
-fight_style=DungeonSlice
 potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie

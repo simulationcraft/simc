@@ -257,7 +257,7 @@ struct holy_fire_t final : public priest_spell_t
                           priest(), chastise_cdr, priest().talents.holy.harmonious_apparatus.enabled(),
                           ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
 
-        priest().cooldowns.holy_word_chastise->adjust( chastise_cdr );
+        priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
       }
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
