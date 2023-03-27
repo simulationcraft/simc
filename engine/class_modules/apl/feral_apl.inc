@@ -7,7 +7,6 @@ action_priority_list_t* builder = get_action_priority_list( "builder" );
 action_priority_list_t* clearcasting = get_action_priority_list( "clearcasting" );
 action_priority_list_t* cooldown = get_action_priority_list( "cooldown" );
 action_priority_list_t* finisher = get_action_priority_list( "finisher" );
-action_priority_list_t* owlweaving = get_action_priority_list( "owlweaving" );
 
 precombat->add_action( "heart_of_the_wild" );
 precombat->add_action( "use_item,name=algethar_puzzle_box" );
@@ -20,7 +19,6 @@ def->add_action( "variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bl
 def->add_action( "variable,name=align_3minutes,value=spell_targets.swipe_cat=1&!fight_style.dungeonslice" );
 def->add_action( "variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))","determine if there is only 1 more usage of a cd in a fight" );
 def->add_action( "variable,name=lastZerk,value=fight_remains>(25+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))","im using a 'rough' calculation to estimate remaining berserk cd of 0.6s cdr every second, this would likely need adjusted up in AoE" );
-def->add_action( "variable,name=lastPotion,value=fight_remains>(cooldown.potion.remains+8)&(fight_remains<(cooldown.potion.remains+300))" );
 def->add_action( "tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.up|energy.deficit>65)" );
 def->add_action( "tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))" );
 def->add_action( "rake,if=buff.prowl.up|buff.shadowmeld.up" );
@@ -84,19 +82,14 @@ clearcasting->add_action( "swipe_cat,if=spell_targets.swipe_cat>1" );
 clearcasting->add_action( "brutal_slash,if=spell_targets.brutal_slash>2" );
 clearcasting->add_action( "shred" );
 
-cooldown->add_action( "incarnation,if=!variable.lastZerk|fight_remains<35|cooldown.potion.remains=0|buff.potion.up|!variable.lastPotion|fight_remains<(cooldown.potion.remains+10)" );
-cooldown->add_action( "berserk,if=(!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastPotion&!variable.lastConvoke)" );
-cooldown->add_action( "berserk,if=(variable.lastConvoke&variable.lastPotion&(cooldown.potion.remains=0|buff.potion.up)&cooldown.convoke_the_spirits.remains<10)" );
-cooldown->add_action( "berserk,if=(variable.lastPotion&!variable.lastConvoke&(cooldown.potion.remains=0|buff.potion.up))" );
-cooldown->add_action( "berserk,if=(variable.lastConvoke&!variable.lastPotion&cooldown.convoke_the_spirits.remains<10)" );
+cooldown->add_action( "incarnation" );
+cooldown->add_action( "berserk,if=(!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastConvoke)" );
+cooldown->add_action( "berserk,if=(variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)" );
 cooldown->add_action( "use_item,name=algethar_puzzle_box,if=fight_remains<25|(!variable.align_3minutes)" );
-cooldown->add_action( "use_item,name=algethar_puzzle_box,if=(!variable.lastZerk&cooldown.bs_inc.remains<3)|(buff.bs_inc.up&energy.deficit>25)","send box with incarn/zerk in st" );
+cooldown->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13))" );
 cooldown->add_action( "berserking,if=!variable.align_3minutes|buff.bs_inc.up" );
-cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<cooldown.bs_inc.remains&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)","use potion with berserk, or convoke if it has to" );
-cooldown->add_action( "convoke_the_spirits,if=fight_remains<5" );
-cooldown->add_action( "convoke_the_spirits,if=dot.rip.duration>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points<4))&((!variable.lastConvoke)|(!variable.lastPotion&!variable.lastZerk))","use convoke on cd, lining last use with as many buffs as possible" );
-cooldown->add_action( "convoke_the_spirits,if=dot.rip.duration>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points<4))&(buff.bs_inc.up&buff.potion.up)","use convoke if buffs are up" );
-cooldown->add_action( "convoke_the_spirits,if=dot.rip.duration>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points<4))&(!variable.lastPotion&buff.bs_inc.up)","use convoke if zerk is up and potion wont be" );
+cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<cooldown.bs_inc.remains&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)" );
+cooldown->add_action( "convoke_the_spirits,if=fight_remains<5|(dot.rip.duration>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up))" );
 cooldown->add_action( "shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5" );
 cooldown->add_action( "use_item,name=manic_grieftorch,if=energy.deficit>40" );
 cooldown->add_action( "use_items" );
@@ -107,5 +100,3 @@ finisher->add_action( "rip,target_if=refreshable" );
 finisher->add_action( "pool_resource,for_next=1,if=!action.tigers_fury.ready" );
 finisher->add_action( "ferocious_bite,max_energy=1,if=!buff.bs_inc.up|(buff.bs_inc.up&!talent.soul_of_the_forest.enabled)" );
 finisher->add_action( "ferocious_bite,if=(buff.bs_inc.up&talent.soul_of_the_forest.enabled)" );
-
-owlweaving->add_action( "sunfire,line_cd=4*gcd" );
