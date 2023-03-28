@@ -6880,21 +6880,26 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
       t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury", p );
-      execute_action = t30_frostwyrm;
       add_child( t30_frostwyrm );
     }
 
-    if ( p->talent.frost.frostwhelps_aid.ok() )
+    if ( p -> talent.frost.frostwhelps_aid.ok() )
     {
       whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
-      execute_action = whelp;
     }
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
-
+    if ( p() -> talent.frost.frostwhelps_aid.ok() )
+    {
+      whelp -> execute();
+    }
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+        t30_frostwyrm->execute();
+    }
     p() -> buffs.pillar_of_frost -> trigger();
   }
 private:
