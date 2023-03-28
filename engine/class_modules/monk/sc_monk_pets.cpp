@@ -1856,8 +1856,6 @@ struct shadowflame_monk_t : public monk_pet_t
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {
       merge_report  = false;
-
-      //apply_affecting_aura( o()->passives.shadowflame_spirit );
     }
 
   };
