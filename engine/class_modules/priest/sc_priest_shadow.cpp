@@ -2623,7 +2623,7 @@ void priest_t::create_buffs_shadow()
   // TODO: Wire up spell data, split into helper function.
 
   auto darkflame_embers  = find_spell( 409502 );
-  buffs.darkflame_embers = make_buff( this, "weakening_reality", darkflame_embers )
+  buffs.darkflame_embers = make_buff( this, "darkflame_embers", darkflame_embers )
                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
                                ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
                                  if ( old == b->max_stack() )
