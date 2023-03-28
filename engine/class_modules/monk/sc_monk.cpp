@@ -644,7 +644,7 @@ namespace monk
 
           p()->trigger_empowered_tiger_lightning( s, true );
 
-          if( get_td( s->target )->debuff.bonedust_brew->up() )
+          if ( get_td( s->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( s );
 
           p()->trigger_shadowflame_monk( s );
