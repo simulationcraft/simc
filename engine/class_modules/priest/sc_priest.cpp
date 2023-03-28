@@ -644,7 +644,7 @@ struct smite_t final : public priest_spell_t
       {
         timespan_t chastise_cdr =
             timespan_t::from_seconds( priest().talents.holy.holy_word_chastise->effectN( 2 ).base_value() );
-        if ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() )
+        if ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->check() )
         {
           chastise_cdr *= ( 1 + priest().talents.holy.apotheosis->effectN( 1 ).percent() );
         }
@@ -654,11 +654,11 @@ struct smite_t final : public priest_spell_t
         }
         sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with light_of_the_naaru: {}, apotheosis: {}",
                           priest(), chastise_cdr, priest().talents.holy.light_of_the_naaru.enabled(),
-                          ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
+                          ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->check() ) );
 
         priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
       }
-      if ( child_searing_light && priest().buffs.divine_image->up() )
+      if ( child_searing_light && priest().buffs.divine_image->check() )
       {
         sim->print_debug( "{} searing_light triggered by smite", priest() );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
@@ -1076,7 +1076,7 @@ struct shadow_word_death_t final : public priest_spell_t
         child_expiation->execute();
       }
 
-      if ( child_searing_light && priest().buffs.divine_image->up() )
+      if ( child_searing_light && priest().buffs.divine_image->check() )
       {
         sim->print_debug( "{} searing_light triggered by shadow_word_death", priest() );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
