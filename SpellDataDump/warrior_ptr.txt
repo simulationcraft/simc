@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -296,17 +296,17 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #5), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #1, #2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #1, #2), Impale (383430 effect#1), Storm of Swords (388903 effects: #2, #4, #5, #6), Barbaric Training (390674 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Improved Slam (400205 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Arms 10.1 Class Set 4pc (410138 effect#1), Warrior Arms 10.1 Class Set 4pc (410191 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #5), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1), Will of the Berserker (335597 effect#1), Crushing Force (382764 effects: #1, #2), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Barbaric Training (383082 effects: #1, #2), Impale (383430 effect#1), Storm of Swords (388903 effects: #2, #4, #5, #6), Barbaric Training (390674 effects: #1, #2), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Improved Slam (400205 effects: #1, #2), Avatar (401150 effects: #1, #9), Crushing Advance (410138 effect#1), Crushing Advance (410191 effect#1)
 Family Flags     : 8, 9, 18, 21, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Melee Chain Targeting (172), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=462)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
@@ -1124,7 +1124,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires armor   : Shield 
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Last Stand (12975 effect#3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Shield Block (132404 effects: #2, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Heavy Repercussions (203177 effect#2), Kakushan's Stormscale Gauntlets (207844 effects: #1, #3), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), The Wall (335239 effect#2), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Outburst (364010 effects: #1, #3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Unnerving Focus (384043 effect#4), Impenetrable Wall (384072 effect#2), Brace For Impact (386029 effect#1), Violent Outburst (386478 effects: #1, #3), Crushing Force (390642 effects: #1, #2), Honed Reflexes (391271 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Protection 10.1 Class Set 2pc (405581 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Last Stand (12975 effect#3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #4), Shield Block (132404 effects: #2, #4), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Heavy Repercussions (203177 effect#2), Kakushan's Stormscale Gauntlets (207844 effects: #1, #3), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effects: #2, #5), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), The Wall (335239 effect#2), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Outburst (364010 effects: #1, #3), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Unnerving Focus (384043 effect#4), Impenetrable Wall (384072 effect#2), Brace For Impact (386029 effect#1), Violent Outburst (386478 effects: #1, #3), Crushing Force (390642 effects: #1, #2), Honed Reflexes (391271 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Earthen Tenacity (405581 effect#1)
 Family Flags     : 8, 9, 18, 41, 52
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -3522,7 +3522,7 @@ Resource         : 80 Rage (1) (id=10117)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Warrior (137047 effect#2), Simmering Rage (278757 effect#2), Unbridled Ferocity (288056 effect#2), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Warrior Fury 10.1 Class Set 2pc (405579 effects: #1, #2)
+Affecting spells : Warrior (137047 effect#2), Simmering Rage (278757 effect#2), Unbridled Ferocity (288056 effect#2), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Merciless Assault (405579 effects: #1, #2)
 Family Flags     : 8, 108, 123
 Attributes       : ........ ........ x.x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ x....... 
@@ -3555,7 +3555,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Fury 10.1 Class Set 2pc (405579 effects: #1, #2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (405579 effects: #1, #2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -3580,7 +3580,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Fury 10.1 Class Set 2pc (405579 effects: #1, #2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (405579 effects: #1, #2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4014,7 +4014,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Fury 10.1 Class Set 2pc (405579 effects: #1, #2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (405579 effects: #1, #2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108, 119
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4039,7 +4039,7 @@ Spell Level      : 1
 Range            : 8 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear, Off Hand
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Warrior Fury 10.1 Class Set 2pc (405579 effects: #1, #2)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), Unbridled Ferocity (288056 effect#2), Will of the Berserker (335597 effect#1), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Slaughtering Strikes (393931 effect#1), Slaughtering Strikes (393943 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Merciless Assault (405579 effects: #1, #2)
 Triggered by     : Rampage (184367)
 Family Flags     : 9, 108
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -5814,7 +5814,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1075479)  : Apply Aura (6) | Modify Crit Chance% from Caster (306)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : Base Value (50 -> 5)
 #5 (id=1075480)  : Apply Aura (6) | Modify Crit Damage Done% from Caster's Spells (501)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Nature's Fury (354163), Spear of Bastion (376080), Annihilator (383915), Titanic Throw (384090), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury (385061), Odyn's Fury (385062), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunder Clap (396719), Thunderous Roar (397364)
@@ -12994,7 +12993,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
-Duration         : 120 seconds
+Duration         : 180 seconds
 Stacks           : 999 maximum
 Proc Chance      : 101%
 Proc Flags       : .....x.. ........ ........ ........   ........ ........ ........ ........   
@@ -17344,7 +17343,7 @@ Description      : Transform into a colossus for $d, causing you to deal $s1% in
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Tooltip          : Damage done increased by $s1%.
 
-Name             : Warrior Arms 10.1 Class Set 2pc (id=405577) [Spell Family (4), Passive, Hidden] 
+Name             : Crushing Advance (id=405577) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17362,7 +17361,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Deep Wounds increases your chance to critically strike and critical strike damage dealt to afflicted targets by $262115s4%.
 
-Name             : Warrior Arms 10.1 Class Set 4pc (id=405578) [Spell Family (4), Passive, Hidden] 
+Name             : Crushing Advance (id=405578) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17380,17 +17379,19 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1053919)  : Apply Aura (6) | Proc Trigger Spell (42): Warrior Arms 10.1 Class Set 4pc
+#1 (id=1053919)  : Apply Aura (6) | Proc Trigger Spell (42): Crushing Advance
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 410138 | Target: Self (1)
 #2 (id=1075534)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1075576)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
-#4 (id=1075624)  : Apply Aura (6) | Proc Trigger Spell (42): Warrior Arms 10.1 Class Set 4pc
+#4 (id=1075624)  : Apply Aura (6) | Proc Trigger Spell (42): Crushing Advance
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 410191 | Target: Self (1)
-Description      : Deep Wounds critical strikes have a chance to increase the damage of your next Slam by $410138s1%, stacking 10 times, and cause it to strike up to $410138u additional targets for 50% damage.
+#5 (id=1077158)  : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : Deep Wounds critical strikes have a chance to increase the damage of your next Slam by $410138s1%. This stacks up to $s5 times, and causes Slam to damage up to $s3 additional targets for 50% of its damage.
 
-Name             : Warrior Fury 10.1 Class Set 2pc (id=405579) [Spell Family (4), Passive, Hidden] 
+Name             : Merciless Assault (id=405579) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17414,10 +17415,11 @@ Effects          :
                    Family Flags: 108
 Description      : Rampage damage and critical strike chance increased by $s1%.
 
-Name             : Warrior Fury 10.1 Class Set 4pc (id=405580) [Spell Family (4), Passive, Hidden] 
+Name             : Merciless Assault (id=405580) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
@@ -17435,7 +17437,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Rampage critical strikes against your primary target cause your next Bloodthirst to deal 50% increased damage and generate 2 additional Rage, stacking up to 4 times. It also has a 100% chance to critically strike.
 
-Name             : Warrior Protection 10.1 Class Set 2pc (id=405581) [Spell Family (4), Passive, Hidden] 
+Name             : Earthen Tenacity (id=405581) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17459,7 +17461,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Shield Slam deals $s1% increased damage and reduces the cooldown of Last Stand by $s2 sec. During Last Stand these effects are doubled.
 
-Name             : Warrior Protection 10.1 Class Set 4pc (id=405582) [Spell Family (4), Passive, Hidden] 
+Name             : Earthen Tenacity (id=405582) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17562,7 +17564,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Enables Worgen to switch between Worgen and Human forms.
 
-Name             : Warrior Arms 10.1 Class Set 4pc (id=410138) [Spell Family (4)] 
+Name             : Crushing Advance (id=410138) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17571,7 +17573,7 @@ Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
-Triggered by     : Warrior Arms 10.1 Class Set 4pc (405578)
+Triggered by     : Crushing Advance (405578)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17591,9 +17593,9 @@ Effects          :
 #3 (id=1075625)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : $@spelldesc405578
-Tooltip          : Damage of you next Slam increased by $s1% and Slam strikes up to 4 additional targets for 50% damage.
+Tooltip          : Damage of you next Slam increased by $s1% and Slam strikes up to $s~2 additional targets for $s~3% damage.
 
-Name             : Warrior Arms 10.1 Class Set 4pc (id=410191) [Spell Family (4)] 
+Name             : Crushing Advance (id=410191) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
@@ -17602,7 +17604,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
-Triggered by     : Warrior Arms 10.1 Class Set 4pc (405578)
+Triggered by     : Crushing Advance (405578)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17617,7 +17619,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Slam (1464)
                    Family Flags: 21
-Description      : $@spelldesc405578
-Tooltip          : Damage of you next Slam increased by $s1% and Slam strikes up to 4 additional targets for ${$1464s1/2} damage.
+Tooltip          : .
 
 

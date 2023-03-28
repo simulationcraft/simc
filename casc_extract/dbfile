@@ -1064,3 +1064,4 @@
 5011999, DBFilesClient\UIArrowCallout.db2
 5015219, DBFilesClient\ItemGroupIlvlScalingEntry.db2
 5049814, DBFilesClient\CraftingReagentRequirement.db2
+5128111, DBFilesClient\ItemCondition.db2

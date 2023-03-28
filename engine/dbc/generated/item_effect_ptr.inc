@@ -1,5 +1,5 @@
-// Item effects, wow build 10.1.0.48661
-static const std::array<item_effect_t, 8396> __ptr_item_effect_data { {
+// Item effects, wow build 10.1.0.48776
+static const std::array<item_effect_t, 8407> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8378,9 +8378,9 @@ static const std::array<item_effect_t, 8396> __ptr_item_effect_data { {
   { 174146, 407903, 204811,   0,   1,    0,      -1,      -1 }, // Drogbar Stones
   { 174240, 407939, 204811,   1,   1,    0,      -1,      -1 }, // Might of the Drogbar
   { 174196, 407523, 204901,   0,   1,    0,      -1,      -1 }, // Firecaller's Focus
-  { 174373, 408391, 205025,   0,   1,    0,      -1,      -1 }, // Undulating Sporecloak
+  { 174373, 410230, 205025,   0,   1,    0,      -1,      -1 }, // Undulating Sporecloak
   { 174372, 408711, 205046,   0,   0,    0,      -1,      -1 }, // [DNT] Hellsteel Bunker Buster
-  { 174374, 408392, 205168,   0,   1,    0,      -1,      -1 }, // Hellsteel Impact Buckler
+  { 174374, 408392, 205168,   0,   1,    0,      -1,      -1 }, // Shadowed Impact Buckler
   { 174389, 408607, 205191,   0,   1,    0,      -1,      -1 }, // Underlight Globe
   { 174390, 408609, 205192,   0,   1,    0,      -1,      -1 }, // Volatile Crystal Shard
   { 174391, 408612, 205193,   0,   0,    0,      -1,      -1 }, // Sturdy Deepflayer Scute
@@ -8396,9 +8396,20 @@ static const std::array<item_effect_t, 8396> __ptr_item_effect_data { {
   { 174459, 409269, 205262,   1,   1,    0,      -1,      -1 }, // Magmaclaw Lure
   { 174463, 409309, 205276,   0,   0,    0,      -1,      -1 }, // Deepflayer Lure
   { 174474, 409308, 205276,   1,   1,    0,      -1,      -1 }, // Deepflayer Lure
+  { 174558, 410267, 205684,   0,   0,   11,       0,       0 }, // Agonizing Refreshment
+  { 178173, 345228, 205708,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 178174, 345229, 205709,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 178175, 345231, 205710,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 178176, 336126, 205711,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 178177, 336135, 205712,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 178178, 345228, 205778,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 178179, 336126, 205779,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 178180, 345229, 205780,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 178181, 345231, 205781,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 178182, 336135, 205782,   0,   1,    0,      -1,      -1 }, // Adaptation
 } };
 
-static const std::array<uint16_t, 8396> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8407> __ptr_item_effect_id_index { {
     414,   415,   416,   417,   418,   419,   420,   423,
     424,   425,   426,   427,   428,   429,   430,   431,
     432,   433,   434,   435,   438,   439,   440,   441,
@@ -9448,6 +9459,7 @@ static const std::array<uint16_t, 8396> __ptr_item_effect_id_index { {
    8376,  8374,  8379,  8378,  8380,  8381,  8382,  8383,
    8384,  8385,  8386,  8387,  8389,  8246,  8247,  8245,
    8243,  8244,  8390,  8391,  8388,  8392,  8393,  8394,
-   8395,  8355,   339,   340,
+   8395,  8355,   339,   340,  8396,  8397,  8398,  8399,
+   8400,  8401,  8402,  8403,  8404,  8405,  8406,
 } };
 
