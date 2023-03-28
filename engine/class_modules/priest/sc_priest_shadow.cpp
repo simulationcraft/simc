@@ -671,6 +671,15 @@ public:
       }
     }
 
+    double composite_da_multiplier (const action_state_t* s) const override
+    {
+      double m = priest_spell_t::composite_da_multiplier(s);
+      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && priest().buffs.darkflame_shroud->check() )
+      {
+        m *= 1 + priest().buffs.darkflame_shroud->default_value;
+      }
+    }
+
     double composite_target_multiplier( player_t* t ) const override
     {
       double m = priest_spell_t::composite_target_multiplier( t );
@@ -1292,6 +1301,11 @@ struct devouring_plague_t final : public priest_spell_t
     apply_affecting_aura( p.talents.shadow.voidtouched );
     apply_affecting_aura( p.talents.shadow.minds_eye );
     apply_affecting_aura( p.talents.shadow.distorted_reality );
+    apply_affecting_aura( p.talents.shadow.distorted_reality );
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
+    {
+      apply_affecting_aura( p.sets->set( PRIEST_SHADOW, T30, B4 ) );
+    }
   }
 
   action_state_t* new_state() override
@@ -1432,7 +1446,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
     {
-      priest().buffs.weakening_reality->trigger();
+      priest().buffs.darkflame_embers->trigger();
     }
   }
 
@@ -2605,26 +2619,22 @@ void priest_t::create_buffs_shadow()
 
   // TODO: Wire up spell data, split into helper function.
 
-  auto weakening_reality = find_spell( 409502 );
-  buffs.weakening_reality =
-      make_buff( this, "weakening_reality", weakening_reality )
+  auto darkflame_embers = find_spell( 409502 );
+  buffs.darkflame_embers =
+      make_buff( this, "weakening_reality", darkflame_embers )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
           ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
             if ( old == b->max_stack() )
             {
-              auto duration =
-                  timespan_t::from_seconds( sets->set( PRIEST_SHADOW, T30, B4 )->effectN( 2 ).base_value() );
-
-              auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
-
-              pet_spawner.spawn( duration );
-
-              make_event( b->sim, [ this ] { trigger_idol_of_yshaarj( target ); } );
+              buffs.darkflame_shroud->trigger();
             }
           } );
 
-  if ( weakening_reality->ok() )
-    buffs.weakening_reality->set_expire_at_max_stack( true );  // Avoid sim warning
+  if ( darkflame_embers->ok() )
+    buffs.darkflame_embers->set_expire_at_max_stack( true );  // Avoid sim warning
+
+  buffs.darkflame_shroud =
+      make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
 }
 
 void priest_t::init_rng_shadow()
