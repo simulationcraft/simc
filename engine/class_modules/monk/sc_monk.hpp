@@ -906,6 +906,7 @@ public:
     const spell_data_t* fists_of_flowing_momentum;
 
     // Tier 30
+    const spell_data_t *shadowflame_nova;
     const spell_data_t *shadowflame_spirit;
     const spell_data_t *shadowflame_spirit_summon;
 
