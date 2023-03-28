@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -686,7 +686,7 @@ Cooldown         : 120 seconds
 Category         : 44
 Labels           : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
 Category Cooldown: 120 seconds
-Affecting spells : Improved Sprint (231691 effect#1)
+Affecting spells : Maneuverability (197000 effects: #1, #2), Improved Sprint (231691 effect#1)
 Family Flags     : 6
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15655,7 +15655,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : Reduces the duration of movement slowing effects $s1%.
 
-Name             : Rogue Assassination 10.1 Class Set 2pc (id=405559) [Spell Family (8), Passive, Hidden] 
+Name             : Poisoned Edges (id=405559) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15673,9 +15673,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1053897)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Rupture and Crimson Tempest deal an additional $s1% damage as Nature. 
-Tooltip          : Rupture and Crimson Tempest deal an additional $w1% damage as Nature.
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1077238)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Rupture deals an additional $s1% damage as Nature. Crimson Tempest deals an additional $s2% damage as Nature.
+Tooltip          : Rupture deals an additional $s1% damage as Nature. Crimson Tempest deals an additional $s2% damage as Nature.
 
 Name             : Rogue Assassination 10.1 Class Set 4pc (id=405560) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
