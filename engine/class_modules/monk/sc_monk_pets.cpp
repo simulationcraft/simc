@@ -1851,13 +1851,15 @@ struct shadowflame_monk_t : public monk_pet_t
 
   struct shadowflame_damage_t : public pet_spell_t
   {
+
     shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {
-      merge_report = false;
+      merge_report  = false;
 
-      apply_affecting_aura( o()->passives.shadowflame_spirit );
+      //apply_affecting_aura( o()->passives.shadowflame_spirit );
     }
+
   };
 
   // Pet spell vector
@@ -1932,6 +1934,23 @@ struct shadowflame_monk_t : public monk_pet_t
     if ( pet_action == this->sf_action_list.end() )
       return;
 
+    // Copy the owner state
+    ( *pet_action )->base_dd_multiplier = s->action->base_dd_multiplier;
+    ( *pet_action )->base_td_multiplier = s->action->base_td_multiplier;
+
+    // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
+    // this is verifiable by logs but not attributable to any spell effect
+    // hard coding this for now
+    if ( o()->buff.storm_earth_and_fire->up() )
+    {
+      ( *pet_action )->base_dd_multiplier *= 1.0 + 1.0;
+      ( *pet_action )->base_td_multiplier *= 1.0 + 1.0;
+    }
+
+    // Apply the affecting SFS effect aura
+    ( *pet_action )->apply_affecting_aura( o()->passives.shadowflame_spirit );
+    
+    // Execute action
     ( *pet_action )->set_target( s->target );
     ( *pet_action )->execute();
   }
