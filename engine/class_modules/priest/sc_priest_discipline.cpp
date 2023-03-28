@@ -43,9 +43,10 @@ struct purge_the_wicked_t final : public priest_spell_t
   {
     // Manually create the dot effect because "ticking" is not present on
     // primary spell
-    purge_the_wicked_dot_t( priest_t& p )
+    purge_the_wicked_dot_t( priest_t& p, util::string_view options_str )
       : priest_spell_t( "purge_the_wicked", p, p.talents.discipline.purge_the_wicked->effectN( 2 ).trigger() )
     {
+      parse_options( options_str );
       background = true;
       // 3% / 5% damage increase
       apply_affecting_aura( priest().talents.throes_of_pain );
@@ -72,7 +73,7 @@ struct purge_the_wicked_t final : public priest_spell_t
   {
     parse_options( options_str );
     tick_zero      = false;
-    execute_action = new purge_the_wicked_dot_t( p );
+    execute_action = new purge_the_wicked_dot_t( p, "" );
     // 3% / 5% damage increase
     apply_affecting_aura( priest().talents.throes_of_pain );
     // 5% damage increase
