@@ -548,6 +548,7 @@ public:
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
     propagate_const<proc_t*> divine_favor_chastise;
+    propagate_const<proc_t*> divine_image;
   } procs;
 
   // Special

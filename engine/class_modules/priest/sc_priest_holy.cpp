@@ -38,6 +38,7 @@ struct holy_word_sanctify_t final : public priest_heal_t
     if ( priest().talents.holy.divine_image.enabled() )
     {
       priest().buffs.divine_image->trigger();
+      priest().procs.divine_image->occur();
     }
   }
 };
@@ -67,6 +68,7 @@ struct holy_word_serenity_t final : public priest_heal_t
     if ( priest().talents.holy.divine_image.enabled() )
     {
       priest().buffs.divine_image->trigger();
+      priest().procs.divine_image->occur();
     }
   }
 };
@@ -85,11 +87,9 @@ struct apotheosis_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.apotheosis->trigger();
-    sim->print_debug( "starting apotheosis. " );
     priest().cooldowns.holy_word_chastise->reset( false );
     priest().cooldowns.holy_word_serenity->reset( false, -1 );
     priest().cooldowns.holy_word_sanctify->reset( false, -1 );
-    sim->print_debug( "apotheosis reset holy word cooldowns." );
   }
 };
 
@@ -107,7 +107,6 @@ struct divine_word_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.divine_word->trigger();
-    sim->print_debug( "starting divine_word." );
   }
 };
 
@@ -134,8 +133,6 @@ struct empyreal_blaze_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
-
-    sim->print_debug( "{} starting empyreal_blaze. ", priest() );
     priest().buffs.empyreal_blaze->trigger();
   }
 };
@@ -180,12 +177,13 @@ struct holy_fire_t final : public priest_spell_t
   propagate_const<burning_vehemence_t*> child_burning_vehemence;
   propagate_const<searing_light_t*> child_searing_light;
 
-  holy_fire_t( priest_t& p )
+  holy_fire_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       child_burning_vehemence( nullptr ),
       child_searing_light( nullptr )
   {
+    parse_options( options_str );
     apply_affecting_aura( p.talents.holy.burning_vehemence );
     if ( p.talents.holy.empyreal_blaze.enabled() )
     {
@@ -261,7 +259,6 @@ struct holy_fire_t final : public priest_spell_t
       }
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
-        sim->print_debug( "searing_light triggered by holy_fire" );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
@@ -320,8 +317,8 @@ struct holy_word_chastise_t final : public priest_spell_t
     if ( priest().talents.holy.divine_image.enabled() )
     {
       priest().buffs.divine_image->trigger();
+      priest().procs.divine_image->occur();
       // Activating cast also immediately executes searing light
-      sim->print_debug( "searing_light triggered by holy_word_chastise" );
       for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_searing_light->execute();
@@ -335,7 +332,6 @@ struct holy_word_chastise_t final : public priest_spell_t
     sim->print_debug( "divine_image_buff: {}", priest().buffs.divine_image->up() );
     if ( child_searing_light && priest().buffs.divine_image->up() )
     {
-      sim->print_debug( "searing_light triggered by holy_word_chastise" );
       for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
       {
         child_searing_light->execute();
@@ -409,7 +405,7 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
 
   if ( name == "holy_fire" )
   {
-    return new holy_fire_t( *this );
+    return new holy_fire_t( *this, options_str );
   }
   if ( name == "apotheosis" )
   {
@@ -445,7 +441,7 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
 
 void priest_t::init_background_actions_holy()
 {
-  background_actions.holy_fire     = new actions::spells::holy_fire_t( *this );
+  background_actions.holy_fire     = new actions::spells::holy_fire_t( *this, "" );
   background_actions.searing_light = new actions::spells::searing_light_t( *this );
 }
 

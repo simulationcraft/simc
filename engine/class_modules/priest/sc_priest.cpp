@@ -1674,6 +1674,7 @@ void priest_t::create_procs()
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
   procs.divine_favor_chastise          = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
+  procs.divine_image                   = get_proc( "Divine Image from Holy Words" );
 }
 
 /** Construct priest benefits */
