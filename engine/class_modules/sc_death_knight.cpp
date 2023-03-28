@@ -1218,6 +1218,7 @@ public:
   double    composite_spell_crit_chance() const override;
   double    composite_crit_avoidance() const override;
   double    composite_mastery_value() const override;
+  double    composite_player_critical_damage_multiplier( const action_state_t* /* s */ ) const override;
   void      combat_begin() override;
   void      activate() override;
   void      reset() override;
@@ -6898,7 +6899,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     }
     if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
-        t30_frostwyrm->execute();
+      t30_frostwyrm->execute();
     }
     p() -> buffs.pillar_of_frost -> trigger();
   }
@@ -10459,11 +10460,6 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + ( td->debuff.unholy_blight->check() * talent.unholy.morbidity->effectN(1).percent() );
   }
 
-  if ( td && RESULT_CRIT )
-  {
-    m *= 1.0 + ( td -> debuff.wrath_of_the_frostwyrm_crit -> stack_value() );
-  }
-
   return m;
 }
 
@@ -10629,6 +10625,20 @@ double death_knight_t::composite_mastery_value() const
   m += buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
 
   m += buffs.defile_buff -> check_stack_value();
+
+  return m;
+}
+
+double death_knight_t::composite_player_critical_damage_multiplier( const action_state_t* s ) const
+{
+  double m = player_t::composite_player_critical_damage_multiplier( s );
+
+  const death_knight_td_t* td = find_target_data( target );
+
+  if ( td && RESULT_CRIT )
+  {
+    m *= 1.0 + ( td -> debuff.wrath_of_the_frostwyrm_crit -> stack_value() );
+  }
 
   return m;
 }
