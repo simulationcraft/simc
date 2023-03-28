@@ -656,7 +656,7 @@ struct smite_t final : public priest_spell_t
       }
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
-        sim->print_debug( "searing_light triggered by smite" );
+        sim->print_debug( "{} searing_light triggered by smite", priest() );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
