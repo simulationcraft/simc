@@ -2334,7 +2334,14 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
   {
     // BUG: RPPM value not found in spelldata
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/956
-    set_rppm( RPPM_HASTE, 2.4 );
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) )
+    {
+      set_rppm( RPPM_HASTE, 2.4 * ( 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 3 ).percent() ) );
+    }
+    else
+    {
+      set_rppm( RPPM_HASTE, 2.4 );
+    }
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
