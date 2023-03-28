@@ -671,13 +671,16 @@ public:
       }
     }
 
-    double composite_da_multiplier (const action_state_t* s) const override
+    double composite_da_multiplier( const action_state_t* s ) const override
     {
-      double m = priest_spell_t::composite_da_multiplier(s);
+      double m = priest_spell_t::composite_da_multiplier( s );
+
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && priest().buffs.darkflame_shroud->check() )
       {
         m *= 1 + priest().buffs.darkflame_shroud->default_value;
       }
+
+      return m;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -2619,16 +2622,15 @@ void priest_t::create_buffs_shadow()
 
   // TODO: Wire up spell data, split into helper function.
 
-  auto darkflame_embers = find_spell( 409502 );
-  buffs.darkflame_embers =
-      make_buff( this, "weakening_reality", darkflame_embers )
-          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
-            if ( old == b->max_stack() )
-            {
-              buffs.darkflame_shroud->trigger();
-            }
-          } );
+  auto darkflame_embers  = find_spell( 409502 );
+  buffs.darkflame_embers = make_buff( this, "weakening_reality", darkflame_embers )
+                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
+                                 if ( old == b->max_stack() )
+                                 {
+                                   buffs.darkflame_shroud->trigger();
+                                 }
+                               } );
 
   if ( darkflame_embers->ok() )
     buffs.darkflame_embers->set_expire_at_max_stack( true );  // Avoid sim warning
