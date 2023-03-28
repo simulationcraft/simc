@@ -811,7 +811,7 @@ struct summon_fiend_t final : public priest_spell_t
       spawner->spawn( default_duration );
   }
 
-  void impact( action_state_t* s )
+  void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
     make_event( sim, [ this, s ] { priest().trigger_idol_of_yshaarj( s->target ); } );
