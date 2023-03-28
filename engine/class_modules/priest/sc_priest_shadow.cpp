@@ -669,18 +669,9 @@ public:
       {
         coalescing_shadows_chance = priest().talents.shadow.puppet_master->proc_chance();
       }
-    }
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = priest_spell_t::composite_da_multiplier( s );
-
-      if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) && priest().buffs.darkflame_shroud->check() )
-      {
-        m *= 1 + priest().buffs.darkflame_shroud->default_value;
-      }
-
-      return m;
+      da_multiplier_buffeffects.emplace_back( nullptr, priest().buffs.darkflame_shroud->default_value, false, false,
+                                              [ this ] { return priest().buffs.darkflame_shroud->check(); } );
     }
 
     double composite_target_multiplier( player_t* t ) const override
