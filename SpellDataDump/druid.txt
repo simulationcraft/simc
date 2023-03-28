@@ -19322,7 +19322,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
