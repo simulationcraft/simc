@@ -601,7 +601,7 @@ struct judgment_prot_t : public judgment_t
       heartfire(nullptr)
   {
     parse_options( options_str );
-    if (p->tier_sets.heartfire_sentinels_authority_4pc->ok() )
+    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) )
     {
         heartfire = new heartfire_t( p );
     }
