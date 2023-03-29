@@ -3220,7 +3220,7 @@ struct death_knight_action_t : public Base
   {
     double m = action_base_t::composite_target_crit_damage_bonus_multiplier( target );
 
-    const death_knight_td_t* td = find_td( target );
+    const death_knight_td_t* td = get_td( target );
 
     if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() );
     {
