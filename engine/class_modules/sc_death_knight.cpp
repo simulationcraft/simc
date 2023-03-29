@@ -5290,16 +5290,18 @@ struct death_coil_t final : public death_knight_spell_t
     {
       p() -> buffs.unholy_t30_2pc_stacking -> trigger();
 
-      if ( p() -> buffs.sudden_doom -> up() )
+      if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.sudden_doom -> up() )
       {
         p() -> buffs.unholy_t30_2pc_stacking -> trigger();
         
-        if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.unholy_t30_2pc_mastery -> up() )
-        {
-          p() -> buffs.unholy_t30_4pc_mastery -> trigger();
-        }
       }
     }
+
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.sudden_doom -> check() )
+    {
+      p() -> buffs.unholy_t30_4pc_mastery -> trigger();
+    }
+
     p() -> buffs.sudden_doom -> decrement();
   }
 
@@ -9995,16 +9997,16 @@ void death_knight_t::create_buffs()
           -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
-      -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+          -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
-      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
-      -> add_invalidate( CACHE_MASTERY );
+          -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
+          -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-      -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
-      -> set_max_stack( spell.unholy_t30_2pc_stacking -> max_stacks() )
-      -> add_invalidate( CACHE_MASTERY );
+          -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
+          -> set_max_stack( spell.unholy_t30_2pc_stacking -> max_stacks() )
+          -> add_invalidate( CACHE_MASTERY );
   }
 }
 
@@ -10637,7 +10639,9 @@ double death_knight_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  m += buffs.unholy_t30_2pc_mastery -> stack_value() + buffs.unholy_t30_4pc_mastery -> stack_value();
+  m += buffs.unholy_t30_2pc_mastery -> stack_value();
+
+  m += buffs.unholy_t30_4pc_mastery -> stack_value();
 
   m += buffs.defile_buff -> check_stack_value();
 
