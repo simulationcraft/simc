@@ -3222,7 +3222,7 @@ struct death_knight_action_t : public Base
 
     const death_knight_td_t* td = find_td( target );
 
-    if ( td && td -> debuff.lingering_chill -> check() && affected_by.lingering_chill );
+    if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() );
     {
       m *= 1.0 + ( td -> debuff.lingering_chill -> stack_value() );
     }
@@ -10002,7 +10002,7 @@ void death_knight_t::create_buffs()
       -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-      -> set_default_value( 0.1 ) // Mastery % Value missing from spell Data, hard coding 1% for now
+      -> set_default_value( 0.01 ) // Mastery % Value missing from spell Data, hard coding 1% for now
       -> set_max_stack( 20 )
       -> add_invalidate( CACHE_MASTERY );
   }
