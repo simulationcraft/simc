@@ -433,6 +433,7 @@ struct death_knight_td_t : public actor_target_data_t {
     // Frost
     propagate_const<buff_t*> piercing_chill;
     propagate_const<buff_t*> everfrost;
+    buff_t* lingering_chill;
 	
     // Unholy
     propagate_const<buff_t*> festering_wound;
@@ -983,7 +984,7 @@ public:
     const spell_data_t* avalanche_damage;
     const spell_data_t* frostwhelps_aid_damage;
     const spell_data_t* enduring_strength_cooldown;
-
+    const spell_data_t* lingering_chill;
     const spell_data_t* frost_t30_2pc; // TODO rename when blizz gives it a name
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
 
@@ -1344,7 +1345,11 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                             -> set_default_value_from_effect( 1 );
 
   debuff.everfrost = make_buff( *this, "everfrost", p -> talent.frost.everfrost -> effectN( 1 ).trigger() )
-                    -> set_default_value( p -> talent.frost.everfrost -> effectN( 1 ).percent() );
+                            -> set_default_value( p -> talent.frost.everfrost -> effectN( 1 ).percent() );
+
+  debuff.lingering_chill = make_buff( *this, "lingering_chill", p -> spell.lingering_chill )
+                            -> set_default_value( p -> spell.lingering_chill -> effectN( 1 ).percent() );
+
   // Unholy
   debuff.festering_wound  = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_cooldown( 0_ms )  // Handled by death_knight_t::trigger_festering_wound()
@@ -3049,6 +3054,8 @@ struct death_knight_action_t : public Base
     // Tier 29
     bool ghoulish_infusion;
     bool vigorous_lifeblood_4pc;
+    // Tier 30
+    bool lingering_chill;
   } affected_by;
 
   // Cooldown tracking
@@ -3097,6 +3104,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.death_rot = this -> data().affected_by( p -> spell.death_rot_debuff -> effectN( 1 ) );
     this -> affected_by.ghoulish_infusion = this -> data().affected_by( p -> spell.ghoulish_infusion -> effectN( 1 ) );
     this -> affected_by.vigorous_lifeblood_4pc = this -> data().affected_by( p -> spell.vigorous_lifeblood_4pc -> effectN( 1 ) );
+    this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3207,6 +3215,21 @@ struct death_knight_action_t : public Base
 
     return m;
   }
+
+  double composite_target_crit_damage_bonus_multiplier( player_t* target ) const override
+  {
+    double m = action_base_t::composite_target_crit_damage_bonus_multiplier( target );
+
+    const death_knight_td_t* td = get_td( target );
+
+    if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() );
+    {
+      m *= 1.0 + td -> debuff.lingering_chill -> stack_value();
+    }
+
+    return m;
+  }
+
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
@@ -4150,6 +4173,10 @@ struct army_of_the_dead_t final : public death_knight_spell_t
     if ( p() -> talent.unholy.magus_of_the_dead.ok() )
       p() -> pets.magus_of_the_dead.spawn( summon_duration - timespan_t::from_seconds( precombat_time ), 1 );
 
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) )
+    {
+      p() -> buffs.unholy_t30_2pc_stacking -> trigger( 20 );
+    }
   }
 };
 
@@ -4848,6 +4875,12 @@ struct dark_transformation_t final : public death_knight_spell_t
     if ( p() -> talent.unholy.commander_of_the_dead.ok() )
     {
       p() -> buffs.commander_of_the_dead -> trigger();
+    }
+
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
+    {
+      p() -> buffs.unholy_t30_2pc_mastery -> trigger( p() -> buffs.unholy_t30_2pc_stacking -> check() );
+      p() -> buffs.unholy_t30_2pc_stacking -> expire();
     }
   }
 
@@ -5970,21 +6003,32 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
     background = true;
     cooldown -> duration = 0_ms; // handled by the actions
   }
-};
-
-struct wrath_of_the_frostwyrm_buff_t : public buff_t
-{
-  action_t* fwf;
-  wrath_of_the_frostwyrm_buff_t ( death_knight_t* p ) : buff_t ( p, "wrath_of_the_frostwyrm", p -> find_spell ( 408368 ) ), 
-      fwf ( get_action<frostwyrms_fury_damage_t> ( "frostwyrms_fury", p ) )
+  
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    cooldown->duration = 0_ms;
-    expire_at_max_stack = true;
+    double m = death_knight_spell_t::composite_da_multiplier( s );
+    
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      m *= 1.0 + p() -> buffs.wrath_of_the_frostwyrm -> check_stack_value();
+    }
+
+    return m;
   }
 
-  void expire_override( int, timespan_t ) override
+  void execute() override
   {
-    fwf -> execute();
+    death_knight_spell_t::execute();
+    p() -> buffs.wrath_of_the_frostwyrm -> expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
+    {
+      get_td( s -> target ) -> debuff.lingering_chill -> trigger();
+    }
   }
 };
 
@@ -6356,11 +6400,6 @@ struct howling_blast_t final : public death_knight_spell_t
       m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> talent.frost.improved_rime -> effectN( 1 ).percent();
     }
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) ) 
-    {
-      m *= 1.0 + p() -> spell.frost_t30_2pc -> effectN( 1 ).percent();
-    }
-
     return m;
   }
 
@@ -6441,12 +6480,7 @@ struct howling_blast_t final : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> check() &&  p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
-      p() -> cooldown.frostwyrms_fury -> adjust( timespan_t::from_millis( -p() -> spell.frost_t30_2pc -> effectN( 3 ).base_value() ) );
-
-      if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
-      {
-        p() -> buffs.wrath_of_the_frostwyrm -> trigger();
-      }
+      p() -> buffs.wrath_of_the_frostwyrm -> trigger();
     }
 
     p() -> buffs.rime -> decrement();
@@ -6810,6 +6844,45 @@ struct frostwhelps_aid_t final : public death_knight_spell_t
   }
 };
 
+struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
+{
+  wrath_of_the_frostwyrm_damage_t( util::string_view name, death_knight_t* p) :
+    death_knight_spell_t( name, p,  p -> spell.frostwyrms_fury_damage )
+  {
+    aoe = -1;
+    background = true;
+    cooldown -> duration = 0_ms; // handled by the actions
+    base_dd_multiplier = p -> spell.frost_t30_2pc -> effectN( 2 ).percent();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( s );
+    
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      m *= 1.0 + p() -> buffs.wrath_of_the_frostwyrm -> check_stack_value();
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    p() -> buffs.wrath_of_the_frostwyrm -> expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
+    {
+      get_td( s -> target ) -> debuff.lingering_chill -> trigger();
+    }
+  }
+};
+
 struct pillar_of_frost_t final : public death_knight_spell_t
 {
   pillar_of_frost_t( death_knight_t* p, util::string_view options_str ) :
@@ -6819,21 +6892,35 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 
     harmful = false;
 
-    if ( p->talent.frost.frostwhelps_aid.ok() )
+    if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury", p );
+      add_child( t30_frostwyrm );
+    }
+
+    if ( p -> talent.frost.frostwhelps_aid.ok() )
     {
       whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
-      execute_action = whelp;
+      add_child( whelp );
     }
   }
 
   void execute() override
   {
     death_knight_spell_t::execute();
-
+    if ( p() -> talent.frost.frostwhelps_aid.ok() )
+    {
+      whelp -> execute();
+    }
+    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      t30_frostwyrm->execute();
+    }
     p() -> buffs.pillar_of_frost -> trigger();
   }
 private:
     propagate_const<action_t*> whelp;
+    propagate_const<action_t*> t30_frostwyrm;
 };
 
 // Vile Contagion =============================================================
@@ -9459,8 +9546,9 @@ void death_knight_t::init_spells()
   spell.piercing_chill_debuff       = find_spell( 377359 );
   spell.runic_empowerment_chance    = find_spell( 81229 );
   // T30 Frost
-  spell.frost_t30_2pc = find_spell( 405501 );
-  spell.frost_t30_4pc = find_spell( 405502 );
+  spell.frost_t30_2pc   = find_spell( 405501 );
+  spell.frost_t30_4pc   = find_spell( 405502 );
+  spell.lingering_chill = find_spell( 410879 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
@@ -9852,7 +9940,9 @@ void death_knight_t::create_buffs()
       -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
-  buffs.wrath_of_the_frostwyrm = new wrath_of_the_frostwyrm_buff_t( this );
+  buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", find_spell ( 408368 ) )
+      -> set_default_value( find_spell ( 408368 ) -> effectN( 1 ).percent() );
+
   }
 
   // Unholy
@@ -9905,22 +9995,15 @@ void death_knight_t::create_buffs()
           -> set_default_value( spell.defile_buff -> effectN( 1 ).percent() );
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
-      -> set_duration( 0_s ) // seems to have a 30s duration in spell data, overriding to emulate in game behavior
-      -> set_stack_change_callback( [ this ] ( buff_t*, int old_, int new_ )
-          {
-            if( buffs.unholy_t30_2pc_stacking -> at_max_stacks() )
-            {
-              buffs.unholy_t30_2pc_stacking -> expire();
-              buffs.unholy_t30_2pc_mastery -> trigger();
-            }
-          } );
+      -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-  buffs.unholy_t30_4pc_mastery = make_buff( this, "death_dealer_4pc", spell.unholy_t30_4pc_mastery )
+  buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
       -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-      -> set_default_value( spell.unholy_t30_2pc_mastery -> effectN( 1 ).percent() )
+      -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
+      -> set_max_stack( spell.unholy_t30_2pc_stacking -> max_stacks() )
       -> add_invalidate( CACHE_MASTERY );
   }
 }
