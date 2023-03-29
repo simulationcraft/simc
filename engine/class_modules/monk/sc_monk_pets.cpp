@@ -1854,7 +1854,9 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
     shadowflame_damage_t( spirit_of_forged_vermillion_t *p, action_t *source_action )
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {
-      merge_report  = false;
+      // This damage is triggered when the player deals damage so we can ignore GCD tracking
+      // set this to zero on initializiation to prevent any potential headaches
+      trigger_gcd = timespan_t::zero();
     }
 
   };
@@ -1934,6 +1936,8 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
     // Copy the owner state
     ( *pet_action )->base_dd_multiplier = s->action->base_dd_multiplier;
     ( *pet_action )->base_td_multiplier = s->action->base_td_multiplier;
+    ( *pet_action )->base_tick_time     = s->action->base_tick_time;
+    ( *pet_action )->dot_duration       = s->action->dot_duration;
 
     // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
     // this is verifiable by logs but not attributable to any spell effect
