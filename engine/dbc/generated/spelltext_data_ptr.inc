@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19800> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19803> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -5581,6 +5581,7 @@ static const std::array<spelltext_data_t, 19800> __ptr_spelltext_data { {
   { 180755, "Restores $160598o1 health and ${$160599m2/5*$160599d} mana over $160598d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $s3 Stamina for $180750d.", 0, 0 },
   { 180756, "Restores $160598o1 health and ${$160599m2/5*$160599d} mana over $160598d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $s3 haste for $180750d.", 0, 0 },
   { 181068, "Drains the Blood Moon and becomes a Glowing Blood Crystal.", 0, 0 },
+  { 181098, "Summons Annihilon to your garrison (Recommended: 10-40 players).", 0, 0 },
   { 181405, "Open the bag.", 0, 0 },
   { 181625, "Transmutes Sorcerous Fire to Sorcerous Earth.", 0, 0 },
   { 181627, "Transmutes Sorcerous Fire to Sorcerous Air.", 0, 0 },
@@ -16826,6 +16827,7 @@ static const std::array<spelltext_data_t, 19800> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
+  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -19774,6 +19776,7 @@ static const std::array<spelltext_data_t, 19800> __ptr_spelltext_data { {
   { 409915, "Heals $o1 damage over $d.", "Healing $w1 damage every second.", 0 },
   { 409923, "Increases healing done by Dragon Isles Bandages by $M1% and they no longer are interrupted by damage. Only usable in the Dragon Isles.", "Duration of Dragon Isles meals increased by $w%. Well Fed persists through death.", 0 },
   { 409964, "$@spelldesc405535", "Phoenix Flames refunds a charge on use and its damage is increased by $w1%.", 0 },
+  { 409983, "$@spelldesc405580", "Bloodthirst generates $s1 additional Rage, deals $s2% increased damage and is a guaranteed critical strike.", 0 },
   { 410007, "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$o1}.2% of your maximum Mana over $d.", "Restoring $o1 mana over $d.", 0 },
   { 410018, "$@spelldesc405566", "Maelstrom generated from Lava Burst, Lightning Bolt, Icefury, and Frost Shock increased by $s1%.\r\nCritical damage dealt by Earthquake, Chain Lightning, and Lava Beam increased by $s2%.", 0 },
   { 410082, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", 0 },
