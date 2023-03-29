@@ -1129,7 +1129,11 @@ public:
     // Handles both holy and ret judgment
     if ( affected_by.judgment && td->debuff.judgment->up() )
     {
-      ctm *= 1.0 + p()->spells.judgment_debuff->effectN( 1 ).percent();
+      double judg_mul = 1.0 + p()->spells.judgment_debuff->effectN( 1 ).percent();
+      if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
+        judg_mul += p()->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 1 ).percent();
+
+      ctm *= judg_mul;
     }
 
     if ( affected_by.final_reckoning && td->debuff.final_reckoning->up() )
