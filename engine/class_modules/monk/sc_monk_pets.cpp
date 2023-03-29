@@ -1859,7 +1859,7 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
       weapon_power_mod  = source_action->weapon_power_mod;
       spell_power_mod   = source_action->spell_power_mod;
       attack_power_mod  = source_action->attack_power_mod;
-      amount_delta      =  source_action->amount_delta;
+      amount_delta      = source_action->amount_delta;
 
       // Override inherited owner options
       background  = true;
