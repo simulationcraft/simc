@@ -1586,13 +1586,6 @@ namespace monk
 
           apply_dual_wield_two_handed_scaling();
         }
-
-        void execute() override
-        {
-          monk_melee_attack_t::execute();
-
-          p()->proc.shadowflame_nova->occur();
-        }
       };
 
       // Rising Sun Kick Damage Trigger ===========================================
@@ -1747,7 +1740,7 @@ namespace monk
           }
 
           // T30 Set Bonus
-          if ( rng().roll( p()->sets->set( MONK_WINDWALKER, T30, B2 )->proc_chance() ) )
+          if ( p()->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
           {
             nova->target = p()->target;
             nova->execute();
@@ -8086,7 +8079,6 @@ namespace monk
 
     // Tier 30
     proc.spirit_of_forged_vermillion_spawn = get_proc( "Shadow Flame Monk Summon" );
-    proc.shadowflame_nova = get_proc( "Rising Sun Kick - Shadowflame Nova" );
   }
 
   // monk_t::init_assessors ===================================================
