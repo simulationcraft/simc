@@ -1854,9 +1854,25 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
     shadowflame_damage_t( spirit_of_forged_vermillion_t *p, action_t *source_action )
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {
+      // Inherit some relevant owner options
+      may_crit          = source_action->may_crit;
+      weapon_power_mod  = source_action->weapon_power_mod;
+      spell_power_mod   = source_action->spell_power_mod;
+      attack_power_mod  = source_action->attack_power_mod;
+      amount_delta      =  source_action->amount_delta;
+
+      // Override inherited owner options
+      background  = true;
+      quiet       = false;
+
+      // Inherit action name from owner for channeled abilities
+      if ( source_action->parent_dot && o()->find_action( source_action->parent_dot->name_str )->channeled )
+        name_str_reporting = source_action->parent_dot->name_str;
+
       // This damage is triggered when the player deals damage so we can ignore GCD tracking
       // set this to zero on initializiation to prevent any potential headaches
-      trigger_gcd = timespan_t::zero();
+      trigger_gcd        = timespan_t::zero();
+      cooldown->duration = timespan_t::zero();
     }
 
   };
@@ -1936,8 +1952,6 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
     // Copy the owner state
     ( *pet_action )->base_dd_multiplier = s->action->base_dd_multiplier;
     ( *pet_action )->base_td_multiplier = s->action->base_td_multiplier;
-    ( *pet_action )->base_tick_time     = s->action->base_tick_time;
-    ( *pet_action )->dot_duration       = s->action->dot_duration;
 
     // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
     // this is verifiable by logs but not attributable to any spell effect
@@ -1950,7 +1964,7 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
 
     // Apply the affecting SFS effect aura
     ( *pet_action )->apply_affecting_aura( o()->passives.shadowflame_spirit );
-    
+
     // Execute action
     ( *pet_action )->set_target( s->target );
     ( *pet_action )->execute();
