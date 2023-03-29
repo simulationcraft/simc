@@ -3224,7 +3224,7 @@ struct death_knight_action_t : public Base
 
     if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() );
     {
-      m *= 1.0 + ( td -> debuff.lingering_chill -> stack_value() );
+      m *= 1.0 + td -> debuff.lingering_chill -> stack_value();
     }
 
     return m;
