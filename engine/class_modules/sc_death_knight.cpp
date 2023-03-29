@@ -9998,15 +9998,29 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_t30_2pc_stacking = make_buff( this, "master_of_death", spell.unholy_t30_2pc_stacking )
           -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+      -> set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
           -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
           -> add_invalidate( CACHE_MASTERY );
+  buffs.unholy_t30_4pc_mastery = make_buff( this, "doom_dealer", spell.unholy_t30_4pc_mastery )
+      -> set_default_value( spell.unholy_t30_4pc_mastery -> effectN( 1 ).percent() )
+      -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
           -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
           -> set_max_stack( spell.unholy_t30_2pc_stacking -> max_stacks() )
           -> add_invalidate( CACHE_MASTERY );
+      -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
+      -> set_max_stack( spell.unholy_t30_2pc_stacking -> max_stacks() )
+      -> add_invalidate( CACHE_MASTERY )
+      -> set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
+      {
+      if ( !new_ )
+      {
+        buffs.unholy_t30_4pc_mastery -> expire();
+      }
+    } );
   }
 }
 
