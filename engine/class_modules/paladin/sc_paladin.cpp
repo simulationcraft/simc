@@ -1634,7 +1634,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
     {
       aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
-      base_aoe_multiplier = p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
+      base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
     }
   }
 
