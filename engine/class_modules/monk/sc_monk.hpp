@@ -427,7 +427,6 @@ public:
 
     // Tier 30
     propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
-    propagate_const<proc_t *> shadowflame_nova;
 
   } proc;
 
