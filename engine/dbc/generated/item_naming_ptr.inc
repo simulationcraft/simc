@@ -1,4 +1,4 @@
-// Item name descriptions, wow build 10.1.0.48661
+// Item name descriptions, wow build 10.1.0.48776
 static const std::array<item_name_description_t, 737> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
@@ -728,14 +728,14 @@ static const std::array<item_name_description_t, 737> __ptr_item_name_descriptio
   { 13996, "Shadowlands Season 1"                        },
   { 13997, "Elemental Reagent"                           },
   { 13998, "Mystic"                                      },
-  { 13999, "Dragonflight Season 1"                       },
+  { 13999, "Ingenuity Crafted"                           },
   { 14000, "Impressive"                                  },
   { 14001, "Remarkable"                                  },
   { 14002, "Primal Empowered"                            },
   { 14003, "Zskera Vaults"                               },
   { 14004, "Primordial Stone"                            },
   { 14005, "Artisan Curios"                              },
-  { 14008, "Dragonflight Season 2"                       },
+  { 14008, "Shadowflame Crafted"                         },
   { 14009, "The Forbidden Reach"                         },
 } };
 

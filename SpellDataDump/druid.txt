@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-25/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -6053,6 +6053,7 @@ Description      : Hurl a ball of energy at the target, dealing $s1 Nature damag
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r][]
 
 Name             : Starfall (id=191034) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Balance [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
@@ -6067,13 +6068,13 @@ Affecting spells : Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lun
 Family Flags     : 55, 119
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Extra Initial Period (169), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=280153)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4756 | Target: Self (1)
@@ -6113,7 +6114,8 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), PvP Enabling (96), Not a Proc (105), Allow Aura While Dead (116), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.08779 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.087793 -> 0.1)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -10159,7 +10161,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Balance [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -15654,7 +15656,6 @@ Effects          :
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
-Hotfixed         : Proc Flags 1 (0 -> 69648)
 Talent Entry     : Guardian [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
@@ -17651,7 +17652,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Maim (22570), Thrash (77758), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Thrash (106832), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Sickle of the Lion (363830), Fury of Elune (365640), Tear (391356), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111)
                    Family Flags: 18, 26, 40, 80, 86, 91, 98
-Hotfixed         : Affects Spells
 #4 (id=1029777)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
@@ -18892,7 +18892,7 @@ Description      : $@spelldesc338661
 Tooltip          : Your next Starsurge costs no Astral Power.
 
 Name             : Rattle the Stars (id=393954) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Balance [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -19324,7 +19324,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 

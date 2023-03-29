@@ -669,6 +669,9 @@ public:
       {
         coalescing_shadows_chance = priest().talents.shadow.puppet_master->proc_chance();
       }
+
+      da_multiplier_buffeffects.emplace_back( nullptr, priest().buffs.darkflame_shroud->default_value, false, false,
+                                              [ this ] { return priest().buffs.darkflame_shroud->check(); } );
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -1305,6 +1308,11 @@ struct devouring_plague_t final : public priest_spell_t
     apply_affecting_aura( p.talents.shadow.voidtouched );
     apply_affecting_aura( p.talents.shadow.minds_eye );
     apply_affecting_aura( p.talents.shadow.distorted_reality );
+    apply_affecting_aura( p.talents.shadow.distorted_reality );
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
+    {
+      apply_affecting_aura( p.sets->set( PRIEST_SHADOW, T30, B4 ) );
+    }
   }
 
   action_state_t* new_state() override
@@ -1445,7 +1453,7 @@ struct devouring_plague_t final : public priest_spell_t
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
     {
-      priest().buffs.weakening_reality->trigger();
+      priest().buffs.darkflame_embers->trigger();
     }
   }
 
@@ -2347,7 +2355,14 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
   {
     // BUG: RPPM value not found in spelldata
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/956
-    set_rppm( RPPM_HASTE, 2.4 );
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) )
+    {
+      set_rppm( RPPM_HASTE, 2.4 * ( 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 3 ).percent() ) );
+    }
+    else
+    {
+      set_rppm( RPPM_HASTE, 2.4 );
+    }
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
@@ -2611,26 +2626,21 @@ void priest_t::create_buffs_shadow()
 
   // TODO: Wire up spell data, split into helper function.
 
-  auto weakening_reality = find_spell( 409502 );
-  buffs.weakening_reality =
-      make_buff( this, "weakening_reality", weakening_reality )
-          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
-            if ( old == b->max_stack() )
-            {
-              auto duration =
-                  timespan_t::from_seconds( sets->set( PRIEST_SHADOW, T30, B4 )->effectN( 2 ).base_value() );
+  auto darkflame_embers  = find_spell( 409502 );
+  buffs.darkflame_embers = make_buff( this, "darkflame_embers", darkflame_embers )
+                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
+                                 if ( old == b->max_stack() )
+                                 {
+                                   buffs.darkflame_shroud->trigger();
+                                 }
+                               } );
 
-              auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
+  if ( darkflame_embers->ok() )
+    buffs.darkflame_embers->set_expire_at_max_stack( true );  // Avoid sim warning
 
-              pet_spawner.spawn( duration );
-
-              make_event( b->sim, [ this ] { trigger_idol_of_yshaarj( target ); } );
-            }
-          } );
-
-  if ( weakening_reality->ok() )
-    buffs.weakening_reality->set_expire_at_max_stack( true );  // Avoid sim warning
+  buffs.darkflame_shroud =
+      make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
 }
 
 void priest_t::init_rng_shadow()

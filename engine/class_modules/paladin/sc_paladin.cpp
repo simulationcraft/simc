@@ -1624,6 +1624,18 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       add_child( p->active.background_blessed_hammer );
     }
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
+    {
+      crit_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
+    }
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
+    {
+      aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
+      base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -1686,10 +1698,15 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.adjudication->ok() )
     {
-      if ( s->result == RESULT_CRIT )
+      if ( s->result == RESULT_CRIT && s->chain_target == 0 )
       {
         p()->active.background_blessed_hammer->schedule_execute();
       }
+    }
+
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
+    {
+      td( s->target )->debuff.judgment->trigger();
     }
   }
 

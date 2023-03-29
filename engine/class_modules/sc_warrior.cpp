@@ -203,7 +203,7 @@ public:
     // Tier
     buff_t* strike_vulnerabilities;
     buff_t* vanguards_determination;
-    buff_t* t30_fury_4p;
+    buff_t* merciless_assault;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -1369,9 +1369,9 @@ public:
       dm *= 1.0 + p()->buff.vanguards_determination->check_value();
     }
 
-    if ( affected_by.t30_fury_4pc && p()->buff.t30_fury_4p->up() )
+    if ( affected_by.t30_fury_4pc && p()->buff.merciless_assault->up() )
     {
-      dm *= 1.0 + p()->buff.t30_fury_4p->stack_value();
+      dm *= 1.0 + p()->buff.merciless_assault->stack_value();
     }
 
     return dm;
@@ -2821,7 +2821,7 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.meat_cleaver->decrement();
-    p()->buff.t30_fury_4p->expire();
+    p()->buff.merciless_assault->expire();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -4858,7 +4858,7 @@ struct rampage_attack_t : public warrior_attack_t
       if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT &&
            target == s->target )
       {
-        p()->buff.t30_fury_4p->trigger();
+        p()->buff.merciless_assault->trigger();
       }
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
@@ -6841,6 +6841,8 @@ struct spear_of_bastion_t : public warrior_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
+    aoe = -1;
+    reduced_aoe_targets               = 5.0;
     if ( p->active.spear_of_bastion_attack )
     {
       execute_action = p->active.spear_of_bastion_attack;
@@ -9597,7 +9599,7 @@ void warrior_t::create_buffs()
                                     ->set_default_value( find_spell( 394056 )->effectN( 1 ).percent());
 
   // T30 Tier Effects ===============================================================================================================
-  buff.t30_fury_4p = make_buff( this, "t30_fury_4p", tier_set.t30_fury_4pc->ok() ? 
+  buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
                                 find_spell( 409983 ) : spell_data_t::not_found() )
                     ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
                     ->set_duration( find_spell( 409983 )->duration() );

@@ -673,6 +673,12 @@ struct judgment_ret_t : public judgment_t
     {
       base_crit += p->talents.judge_jury_and_executioner->effectN( 1 ).percent();
     }
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
+    {
+      crit_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
+    }
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :

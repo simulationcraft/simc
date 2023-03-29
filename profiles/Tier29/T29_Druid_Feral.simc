@@ -27,6 +27,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/heart_of_the_wild
 actions.precombat+=/use_item,name=algethar_puzzle_box
 actions.precombat+=/cat_form
 actions.precombat+=/prowl
@@ -35,34 +36,39 @@ actions.precombat+=/prowl
 actions=prowl,if=buff.bs_inc.down
 actions+=/invoke_external_buff,name=power_infusion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains
 actions+=/variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bloodtalons.down
-actions+=/tigers_fury
+actions+=/variable,name=align_3minutes,value=spell_targets.swipe_cat=1&!fight_style.dungeonslice
+# determine if there is only 1 more usage of a cd in a fight
+actions+=/variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))
+# im using a 'rough' calculation to estimate remaining berserk cd of 0.6s cdr every second, this would likely need adjusted up in AoE
+actions+=/variable,name=lastZerk,value=fight_remains>(25+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))
+actions+=/tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.up|energy.deficit>65)
+actions+=/tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))
 actions+=/rake,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/cat_form,if=!buff.cat_form.up
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
-actions+=/call_action_list,name=cooldown
 actions+=/adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5
+actions+=/call_action_list,name=cooldown
 actions+=/feral_frenzy,if=combo_points<2|combo_points=2&buff.bs_inc.up
 actions+=/run_action_list,name=aoe,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled
 actions+=/ferocious_bite,if=buff.apex_predators_craving.up
-actions+=/call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up
-actions+=/call_action_list,name=finisher,if=(combo_points>3&talent.lions_strength.enabled)|combo_points=5&!talent.lions_strength.enabled
+actions+=/call_action_list,name=finisher,if=(combo_points>3&!talent.bloodtalons.enabled)|(combo_points=5&talent.bloodtalons.enabled)
+actions+=/call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up&combo_points<5
 actions+=/call_action_list,name=berserk_builders,if=combo_points<5&buff.bs_inc.up
-actions+=/call_action_list,name=builder,if=combo_points<5
+actions+=/call_action_list,name=builder,if=combo_points<5&!buff.bs_inc.up
 
-# AoE ---play with this some
 actions.aoe=pool_resource,for_next=1
 actions.aoe+=/primal_wrath,if=combo_points>3
 actions.aoe+=/ferocious_bite,if=buff.apex_predators_craving.up&(!buff.sabertooth.up|(!buff.bloodtalons.stack=1))
-actions.aoe+=/run_action_list,name=bloodtalons_aoe,if=variable.need_bt&active_bt_triggers>=1
+actions.aoe+=/run_action_list,name=bloodtalons,if=variable.need_bt&active_bt_triggers>=1
 actions.aoe+=/pool_resource,for_next=1
 actions.aoe+=/thrash_cat,target_if=refreshable
 # At this target count BRS also crushes everything except full thrashes
 actions.aoe+=/brutal_slash
-# This means that a full rake (5.5+ ticks) is stronger up to 10ish targets
 actions.aoe+=/pool_resource,for_next=1
+# This means that a full rake (5.5+ ticks) is stronger up to 10ish targets
 actions.aoe+=/rake,target_if=max:dot.rake.ticks_gained_on_refresh.pmult,if=((dot.rake.ticks_gained_on_refresh.pmult*(1+talent.doubleclawed_rake.enabled))>(spell_targets.swipe_cat*0.216+3.32))
 # Full Lis beat Swipe up til around 3-ish targets depending on haste
-actions.aoe+=/lunar_inspiration,target_if=max:((ticks_gained_on_refresh+1)-(spell_targets.swipe_cat*2.492))
+actions.aoe+=/moonfire_cat,target_if=max:((ticks_gained_on_refresh+1)-(spell_targets.swipe_cat*2.492))
 actions.aoe+=/swipe_cat
 # If we have BrS and nothing better to cast, check if Thrash DD beats Shred
 actions.aoe+=/shred,if=action.shred.damage>action.thrash_cat.damage
@@ -72,35 +78,29 @@ actions.berserk_builders=rake,target_if=refreshable
 actions.berserk_builders+=/swipe_cat,if=spell_targets.swipe_cat>1
 actions.berserk_builders+=/shred,if=active_bt_triggers=2&buff.bt_shred.down
 actions.berserk_builders+=/brutal_slash,if=active_bt_triggers=2&buff.bt_brutal_slash.down
-actions.berserk_builders+=/moonfire_cat,target_if=refreshable
 actions.berserk_builders+=/shred
 
 actions.bloodtalons=rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|1.4*persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down
-actions.bloodtalons+=/shred,if=buff.bt_shred.down&buff.clearcasting.up&spell_targets.swipe_cat=1
-actions.bloodtalons+=/lunar_inspiration,if=refreshable&buff.bt_moonfire.down
-actions.bloodtalons+=/shred,if=buff.bt_shred.down
-actions.bloodtalons+=/thrash_cat,target_if=refreshable&buff.bt_thrash.down
+actions.bloodtalons+=/shred,if=buff.bt_shred.down&buff.clearcasting.react&spell_targets.swipe_cat=1
+actions.bloodtalons+=/thrash_cat,target_if=refreshable,if=buff.bt_thrash.down&buff.clearcasting.react&spell_targets.swipe_cat=1
 actions.bloodtalons+=/brutal_slash,if=buff.bt_brutal_slash.down
-actions.bloodtalons+=/swipe_cat,if=spell_targets.swipe_cat>1&buff.bt_swipe.down
+actions.bloodtalons+=/moonfire_cat,if=refreshable&buff.bt_moonfire.down&spell_targets.swipe_cat=1
+actions.bloodtalons+=/thrash_cat,target_if=refreshable,if=buff.bt_thrash.down
+actions.bloodtalons+=/shred,if=buff.bt_shred.down&spell_targets.swipe_cat=1
+actions.bloodtalons+=/moonfire_cat,target_if=max:((ticks_gained_on_refresh+1)-(spell_targets.swipe_cat*2.492)),if=buff.bt_moonfire.down
 actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down
+actions.bloodtalons+=/moonfire_cat,if=buff.bt_moonfire.down
+# If we have BrS and nothing better to cast, check if shred beats thrash DD
+actions.bloodtalons+=/shred,if=action.shred.damage>action.thrash_cat.damage&buff.bt_shred.down
 actions.bloodtalons+=/thrash_cat,if=buff.bt_thrash.down
-actions.bloodtalons+=/rake,if=buff.bt_rake.down&combo_points>4
-
-actions.bloodtalons_aoe=rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|1.4*persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down
-actions.bloodtalons_aoe+=/lunar_inspiration,if=refreshable&buff.bt_moonfire.down
-actions.bloodtalons_aoe+=/shred,if=buff.bt_shred.down&buff.clearcasting.up&spell_targets.swipe_cat=1
-actions.bloodtalons_aoe+=/brutal_slash,if=buff.bt_brutal_slash.down
-actions.bloodtalons_aoe+=/thrash_cat,target_if=refreshable&buff.bt_thrash.down
-actions.bloodtalons_aoe+=/swipe_cat,if=spell_targets.swipe_cat>1&buff.bt_swipe.down
-actions.bloodtalons_aoe+=/shred,if=buff.bt_shred.down
-actions.bloodtalons_aoe+=/swipe_cat,if=buff.bt_swipe.down
-actions.bloodtalons_aoe+=/thrash_cat,if=buff.bt_thrash.down
-actions.bloodtalons_aoe+=/rake,if=buff.bt_rake.down&combo_points>4
 
 actions.builder=run_action_list,name=clearcasting,if=buff.clearcasting.react
+# stop pooling if we can use a clearcasting proc
+actions.builder+=/pool_resource,if=!action.rake.ready&(dot.rake.refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.duration>6))&!buff.clearcasting.up
 actions.builder+=/rake,target_if=max:ticks_gained_on_refresh,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.duration>6)
+# repeating here is necessary, otherwise moonfire will occasionally be casted instead
+actions.builder+=/run_action_list,name=clearcasting,if=buff.clearcasting.react
 actions.builder+=/moonfire_cat,target_if=refreshable
-actions.builder+=/pool_resource,for_next=1
 actions.builder+=/thrash_cat,target_if=refreshable
 actions.builder+=/brutal_slash
 actions.builder+=/swipe_cat,if=spell_targets.swipe_cat>1
@@ -108,14 +108,17 @@ actions.builder+=/shred
 
 actions.clearcasting=thrash_cat,if=refreshable
 actions.clearcasting+=/swipe_cat,if=spell_targets.swipe_cat>1
-actions.clearcasting+=/brutal_slash,if=spell_targets.brutal_slash>2&talent.moment_of_clarity.enabled
+actions.clearcasting+=/brutal_slash,if=spell_targets.brutal_slash>2
 actions.clearcasting+=/shred
 
 actions.cooldown=incarnation
-actions.cooldown+=/berserk,if=!talent.convoke_the_spirits.enabled|talent.convoke_the_spirits.enabled&!(fight_remains<cooldown.convoke_the_spirits.remains)|talent.convoke_the_spirits.enabled&cooldown.convoke_the_spirits.remains<10|talent.convoke_the_spirits.enabled&fight_remains>120&cooldown.convoke_the_spirits.remains>25
-actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|buff.tigers_fury.up&cooldown.convoke_the_spirits.up&talent.convoke_the_spirits.enabled&fight_remains<cooldown.bs_inc.remains
-actions.cooldown+=/convoke_the_spirits,if=dot.rip.duration>5&(buff.tigers_fury.up&combo_points<4&cooldown.bs_inc.remains>20|fight_remains<5)
-actions.cooldown+=/berserking,if=buff.bs_inc.up|fight_remains<15
+actions.cooldown+=/berserk,if=(!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastConvoke)
+actions.cooldown+=/berserk,if=(variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
+actions.cooldown+=/use_item,name=algethar_puzzle_box,if=fight_remains<25|(!variable.align_3minutes)
+actions.cooldown+=/use_item,name=algethar_puzzle_box,if=cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13))
+actions.cooldown+=/berserking,if=!variable.align_3minutes|buff.bs_inc.up
+actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<cooldown.bs_inc.remains&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
+actions.cooldown+=/convoke_the_spirits,if=fight_remains<5|(dot.rip.duration>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up))
 actions.cooldown+=/shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5
 actions.cooldown+=/use_item,name=manic_grieftorch,if=energy.deficit>40
 actions.cooldown+=/use_items
@@ -123,11 +126,9 @@ actions.cooldown+=/use_items
 actions.finisher=primal_wrath,if=spell_targets.primal_wrath>2
 actions.finisher+=/primal_wrath,target_if=refreshable,if=spell_targets.primal_wrath>1
 actions.finisher+=/rip,target_if=refreshable
-actions.finisher+=/pool_resource,for_next=1
+actions.finisher+=/pool_resource,for_next=1,if=!action.tigers_fury.ready
 actions.finisher+=/ferocious_bite,max_energy=1,if=!buff.bs_inc.up|(buff.bs_inc.up&!talent.soul_of_the_forest.enabled)
 actions.finisher+=/ferocious_bite,if=(buff.bs_inc.up&talent.soul_of_the_forest.enabled)
-
-actions.owlweaving=sunfire,line_cd=4*gcd
 
 head=flaring_cowl,id=193494,ilevel=418,gem_id=192958,crafted_stats=32/49
 neck=wolfstride_pendant,id=133633,ilevel=421,gem_id=192988/192958/192958,crafted_stats=32/49

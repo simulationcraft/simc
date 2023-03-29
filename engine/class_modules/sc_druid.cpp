@@ -10162,7 +10162,6 @@ void druid_t::create_buffs()
 
   buff.starfall = make_buff( this, "starfall", find_spell( 191034 ) )  // lookup via spellid for convoke
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_tick_on_application( true )  // TODO: confirm true?
     ->set_freeze_stacks( true )
     ->set_partial_tick( true )  // TODO: confirm true?
     ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?

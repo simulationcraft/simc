@@ -166,7 +166,8 @@ public:
     propagate_const<buff_t*> gathering_shadows;
     propagate_const<buff_t*> dark_reveries;
     propagate_const<buff_t*> light_weaving;
-    propagate_const<buff_t*> weakening_reality;
+    propagate_const<buff_t*> darkflame_embers;
+    propagate_const<buff_t*> darkflame_shroud;
   } buffs;
 
   // Talents
