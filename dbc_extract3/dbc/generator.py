@@ -1418,7 +1418,7 @@ class SpellDataGenerator(DataGenerator):
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
-            ( 405580, 0 ),          # Fury 10.1 Class Set 4pc (buff)
+            ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
         ),
 
         # Paladin:
