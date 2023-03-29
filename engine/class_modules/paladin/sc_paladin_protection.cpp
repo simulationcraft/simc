@@ -601,11 +601,9 @@ struct judgment_prot_t : public judgment_t
       heartfire(nullptr)
   {
     parse_options( options_str );
+    if (p->tier_sets.heartfire_sentinels_authority_4pc->ok() )
     {
-        if (p->tier_sets.heartfire_sentinels_authority_4pc->ok() )
-        {
-            heartfire = new heartfire_t( p );
-        }
+        heartfire = new heartfire_t( p );
     }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
   }
