@@ -434,6 +434,7 @@ struct shadow_covenant_t final : public priest_spell_t
       heal( new shadow_covenant_heal_t( p ) )
   {
     parse_options( options_str );
+    harmful = false;
     add_child( heal );
   }
 

@@ -1044,12 +1044,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
     if ( priest().talents.discipline.twilight_equilibrium.enabled() )
     {
-      if ( s->action->school == SCHOOL_SHADOW )
+      // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
+      // Non-harmful actions don't apply this buff
+      if ( s->action->school == SCHOOL_SHADOW && s->action->id != 34433 && s->action->id != 123040 &&
+           s->action->harmful == true )
       {
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
-      if ( s->action->school == SCHOOL_HOLY || s->action->school == SCHOOL_HOLYFIRE )
+      // Holy and Radiant (holyfire) applies this buff
+      // Non-harmful actions don't apply this buff
+      if ( ( s->action->school == SCHOOL_HOLY || s->action->school == SCHOOL_HOLYFIRE ) && s->action->harmful == true )
       {
         priest().buffs.twilight_equilibrium_shadow_amp->trigger();
         priest().buffs.twilight_equilibrium_holy_amp->expire();
