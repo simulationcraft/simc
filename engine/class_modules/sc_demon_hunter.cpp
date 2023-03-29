@@ -522,7 +522,6 @@ public:
     const spell_data_t* demonic_wards_2;
     const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_debuff;
-    const spell_data_t* fiery_brand_dot_damage;
     const spell_data_t* frailty_debuff;
     const spell_data_t* charred_flesh_debuff;
     const spell_data_t* riposte;
@@ -2533,7 +2532,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_dot_t : public demon_hunter_spell_t
   {
     fiery_brand_dot_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.fiery_brand_dot_damage )
+      : demon_hunter_spell_t( name, p, p->spec.fiery_brand_debuff )
     {
       background = dual = true;
 
@@ -6488,13 +6487,12 @@ void demon_hunter_t::init_spells()
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
 
-  spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
-  spec.fiery_brand_dot_damage = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
-  spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
+  spec.fiery_brand_debuff   = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
+  spec.frailty_debuff       = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
   spec.charred_flesh_debuff = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
-  spec.painbringer_buff = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
-  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ): spell_data_t::not_found();
-  spec.soul_furnace_stack = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ): spell_data_t::not_found();
+  spec.painbringer_buff     = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
+  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
+  spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
