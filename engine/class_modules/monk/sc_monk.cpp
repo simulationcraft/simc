@@ -1709,7 +1709,7 @@ namespace monk
             add_child( gotd );
           }
 
-          if ( p()->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
+          if ( p->sets->set( MONK_WINDWALKER, T30, B2 )->ok() )
           {
             nova = new shadowflame_nova_t( p );
 
