@@ -647,7 +647,7 @@ namespace monk
           if ( get_td( s->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( s );
 
-          p()->trigger_shadowflame_monk( s );
+          p()->trigger_spirit_of_forged_vermillion( s );
         }
       }
 
@@ -2938,8 +2938,8 @@ namespace monk
             // Tier 30 Windwalker 
             if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) && p()->rppm.shadowflame_spirit->trigger() )
             {
-              p()->pets.shadowflame_monk.spawn( p()->passives.shadowflame_spirit_summon->duration(), 1 );
-              p()->proc.shadowflame_monk_spawn->occur();
+              p()->pets.spirit_of_forged_vermillion.spawn( p()->passives.shadowflame_spirit_summon->duration(), 1 );
+              p()->proc.spirit_of_forged_vermillion_spawn->occur();
             }
           }
         }
@@ -8085,7 +8085,7 @@ namespace monk
     proc.xuens_battlegear_reduction = get_proc( "Xuen's Battlegear CD Reduction" );
 
     // Tier 30
-    proc.shadowflame_monk_spawn = get_proc( "Shadow Flame Monk Summon" );
+    proc.spirit_of_forged_vermillion_spawn = get_proc( "Shadow Flame Monk Summon" );
     proc.shadowflame_nova = get_proc( "Rising Sun Kick - Shadowflame Nova" );
   }
 

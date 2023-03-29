@@ -1843,16 +1843,15 @@ public:
 };
 
 // ==========================================================================
-// Shadowflame Spirit
+// Spirit of Forged Vermillion
 // ==========================================================================
-struct shadowflame_monk_t : public monk_pet_t
+struct spirit_of_forged_vermillion_t : public monk_pet_t
 {
   private:
 
   struct shadowflame_damage_t : public pet_spell_t
   {
-
-    shadowflame_damage_t( shadowflame_monk_t *p, action_t *source_action )
+    shadowflame_damage_t( spirit_of_forged_vermillion_t *p, action_t *source_action )
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {
       merge_report  = false;
@@ -1865,7 +1864,7 @@ struct shadowflame_monk_t : public monk_pet_t
 
   struct melee_t : public pet_melee_t
   {
-    melee_t( util::string_view n, shadowflame_monk_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
+    melee_t( util::string_view n, spirit_of_forged_vermillion_t *player, weapon_t *weapon ) : pet_melee_t( n, player, weapon )
     {
       background        = repeating = may_crit = may_glance = true;
       weapon            = weapon;
@@ -1879,7 +1878,7 @@ struct shadowflame_monk_t : public monk_pet_t
 
   struct auto_attack_t : public pet_auto_attack_t
   {
-    auto_attack_t( shadowflame_monk_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
+    auto_attack_t( spirit_of_forged_vermillion_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
     {
       parse_options( options_str );
 
@@ -1890,7 +1889,7 @@ struct shadowflame_monk_t : public monk_pet_t
 
   public:
 
-  shadowflame_monk_t( monk_t *owner ) : monk_pet_t( owner, "shadowflame_monk", PET_MONK, false, true )
+  spirit_of_forged_vermillion_t( monk_t *owner ) : monk_pet_t( owner, "spirit_of_forged_vermillion", PET_MONK, false, true )
   {
     npc_id  = owner->passives.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
     _spec   = owner->specialization();
@@ -1973,7 +1972,7 @@ monk_t::pets_t::pets_t( monk_t* p )
     white_tiger_statue( "white_tiger_statue", p, []( monk_t* p ) { return new pets::white_tiger_statue_t( p ); } ),
     fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t* p ) { return new pets::fury_of_xuen_pet_t( p ); }),
     call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
-    shadowflame_monk( "shadowflame_monk", p, []( monk_t* p ) { return new pets::shadowflame_monk_t( p ); } )
+    spirit_of_forged_vermillion( "spirit_of_forged_vermillion", p, []( monk_t* p ) { return new pets::spirit_of_forged_vermillion_t( p ); } )
 {
 }
 
@@ -2016,16 +2015,16 @@ void monk_t::create_pets()
   }
 }
 
-void monk_t::trigger_shadowflame_monk( action_state_t *s )
+void monk_t::trigger_spirit_of_forged_vermillion( action_state_t *s )
 {
-  for ( int i = 0; i <= pets.shadowflame_monk.max_pets(); i++ )
+  for ( int i = 0; i <= pets.spirit_of_forged_vermillion.max_pets(); i++ )
   {
-    auto shadowflame_monk = ( pets::shadowflame_monk_t * )pets.shadowflame_monk.active_pet( i );
+    auto spirit_of_forged_vermillion = ( pets::spirit_of_forged_vermillion_t * )pets.spirit_of_forged_vermillion.active_pet( i );
 
-    if ( !shadowflame_monk )
+    if ( !spirit_of_forged_vermillion )
       break;
 
-    shadowflame_monk->trigger_attack( s );
+    spirit_of_forged_vermillion->trigger_attack( s );
   }
 }
 
