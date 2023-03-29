@@ -639,7 +639,6 @@ struct judgment_prot_t : public judgment_t
             heartfire, s->target,
             s->result_amount * p()->tier_sets.heartfire_sentinels_authority_2pc->effectN( 2 ).percent() );
         td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
-        {
           p()->trigger_grand_crusader( GC_JUDGMENT );
       }
     }
