@@ -1295,7 +1295,7 @@ struct devouring_plague_t final : public priest_spell_t
     apply_affecting_aura( p.talents.shadow.voidtouched );
     apply_affecting_aura( p.talents.shadow.minds_eye );
     apply_affecting_aura( p.talents.shadow.distorted_reality );
-    apply_affecting_aura( p.talents.shadow.distorted_reality );
+
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
     {
       apply_affecting_aura( p.sets->set( PRIEST_SHADOW, T30, B4 ) );
