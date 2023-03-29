@@ -1698,7 +1698,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.adjudication->ok() )
     {
-      if ( s->result == RESULT_CRIT )
+      if ( s->result == RESULT_CRIT && s->chain_target == 0 )
       {
         p()->active.background_blessed_hammer->schedule_execute();
       }
