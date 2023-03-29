@@ -6901,6 +6901,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     if ( p -> talent.frost.frostwhelps_aid.ok() )
     {
       whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
+      add_child( whelp );
     }
   }
 
