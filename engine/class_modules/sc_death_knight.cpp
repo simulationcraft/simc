@@ -6852,7 +6852,7 @@ struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
     aoe = -1;
     background = true;
     cooldown -> duration = 0_ms; // handled by the actions
-    base_dd_multiplier = 0.4;
+    base_dd_multiplier = p -> spell.frost_t30_2pc -> effectN( 2 ).percent();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -9941,8 +9941,7 @@ void death_knight_t::create_buffs()
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   buffs.wrath_of_the_frostwyrm = make_buff( this, "wrath_of_the_frostwyrm", find_spell ( 408368 ) )
-      -> set_max_stack( 10 )
-      -> set_default_value( 0.05 );
+      -> set_default_value( find_spell ( 408368 ) -> effectN( 1 ).percent() );
 
   }
 
@@ -10003,8 +10002,8 @@ void death_knight_t::create_buffs()
       -> add_invalidate( CACHE_MASTERY );
 
   buffs.unholy_t30_2pc_mastery = make_buff( this, "death_dealer", spell.unholy_t30_2pc_mastery )
-      -> set_default_value( 0.01 ) // Mastery % Value missing from spell Data, hard coding 1% for now
-      -> set_max_stack( 20 )
+      -> set_default_value( spell.unholy_t30_2pc_stacking -> effectN( 1 ).percent() )
+      -> set_max_stack( spell.unholy_t30_2pc_stacking -> max_stacks() )
       -> add_invalidate( CACHE_MASTERY );
   }
 }
