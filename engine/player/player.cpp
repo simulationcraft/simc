@@ -14473,3 +14473,19 @@ bool player_t::is_ptr() const
 {
   return maybe_ptr(dbc->ptr);
 }
+
+void player_t::init_dungeon_fight_style( sim_t *sim )
+{
+  // Based on the Hero Dungeon setup
+  sim->desired_targets = 1;
+  sim->max_time = timespan_t::from_seconds( 360.0 );
+
+  sim->shadowlands_opts.enable_rune_words = false;
+  sim->ignore_invulnerable_targets = true;
+
+  sim->raid_events_str +=
+    "/invulnerable,cooldown=500,duration=500,retarget=1"
+    "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
+    "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
+    "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
+}
