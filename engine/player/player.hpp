@@ -937,6 +937,7 @@ public:
   virtual void create_buffs();
   virtual void create_special_effects();
   virtual void init_special_effects();
+  virtual void init_dungeon_fight_style( sim_t *sim );
   /// Modify generic special effect initialization
   ///
   /// Intended to allow modifications to some aspects of the special effect (or buffs,
