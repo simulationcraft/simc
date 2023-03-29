@@ -2509,6 +2509,41 @@ static bool generate_tree_nodes( player_t* player,
   return true;
 }
 
+// Different entries within the same node are allowed to have non-unique selection indices. Every new build, it seems
+// random which node becomes the first choice. Manually resolve such conflicts here.
+// ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
+{
+  auto get_index = [ is_ptr ]( const trait_data_t* t ) -> short {
+    if ( t->selection_index != -1 )
+    {
+      switch ( t->id_trait_node_entry )
+      {
+        // Balance Druid overrides
+        case 109873:  // starweaver
+          return is_ptr ? 200 : 200;
+        case 109872:  // rattle the stars
+          return is_ptr ? 100 : 100;
+        case 109859:  // fury of elune
+          return is_ptr ? 200 : 100;
+        case 109860:  // new moon
+          return is_ptr ? 100 : 200;
+        default:
+          break;
+      }
+    }
+    return t->selection_index;
+  };
+
+  auto a_idx = get_index( a );
+  auto b_idx = get_index( b );
+
+  if ( a_idx != -1 && b_idx != -1 )
+    return a_idx < b_idx;
+  else
+    return a->id_trait_node_entry > b->id_trait_node_entry;
+}
+
 namespace
 {
 const std::string base64_char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -2578,9 +2613,12 @@ static std::string generate_traits_hash( player_t* player )
 
   for ( auto& [ id, node ] : tree_nodes )
   {
-    range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-      return a.first->selection_index < b.first->selection_index;
-    } );
+    if ( node.size() > 1 )
+    {
+      range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+        return sort_node_entries( a.first, b.first, player->is_ptr() );
+      } );
+    }
 
     const trait_data_t* trait = nullptr;
     unsigned rank = 0;
@@ -2707,11 +2745,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       // entry id seems to take precedence
       if ( node.size() > 1 )
       {
-        range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-          if ( a.first->selection_index != -1 && b.first->selection_index != -1 )
-            return a.first->selection_index < b.first->selection_index;
-          else
-            return a.first->id_trait_node_entry > b.first->id_trait_node_entry;
+        range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+          return sort_node_entries( a.first, b.first, player->is_ptr() );
         } );
       }
 
