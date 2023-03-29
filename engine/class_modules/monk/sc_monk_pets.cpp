@@ -1854,7 +1854,25 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
     shadowflame_damage_t( spirit_of_forged_vermillion_t *p, action_t *source_action )
       : pet_spell_t( source_action->name_str, p, source_action->s_data )
     {
-      merge_report  = false;
+      // Inherit some relevant owner options
+      may_crit          = source_action->may_crit;
+      weapon_power_mod  = source_action->weapon_power_mod;
+      spell_power_mod   = source_action->spell_power_mod;
+      attack_power_mod  = source_action->attack_power_mod;
+      amount_delta      = source_action->amount_delta;
+
+      // Override inherited owner options
+      background  = true;
+      quiet       = false;
+
+      // Inherit action name from owner for channeled abilities
+      if ( source_action->parent_dot && o()->find_action( source_action->parent_dot->name_str )->channeled )
+        name_str_reporting = source_action->parent_dot->name_str;
+
+      // This damage is triggered when the player deals damage so we can ignore GCD tracking
+      // set this to zero on initializiation to prevent any potential headaches
+      trigger_gcd        = timespan_t::zero();
+      cooldown->duration = timespan_t::zero();
     }
 
   };
@@ -1932,21 +1950,25 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
       return;
 
     // Copy the owner state
-    ( *pet_action )->base_dd_multiplier = s->action->base_dd_multiplier;
-    ( *pet_action )->base_td_multiplier = s->action->base_td_multiplier;
+    ( *pet_action )->base_dd_multiplier = s->da_multiplier;
+    ( *pet_action )->base_td_multiplier = s->ta_multiplier;
 
-    // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
-    // this is verifiable by logs but not attributable to any spell effect
-    // hard coding this for now
-    if ( o()->buff.storm_earth_and_fire->up() )
+    if ( o()->buff.storm_earth_and_fire->up() && o()->affected_by_sef( s->action->data() ) )
     {
+      // The pet damage is not modified by SEF, so we need to divide here to bring the inheritied modifier back to normal levels
+      ( *pet_action )->base_dd_multiplier /= 1 + o()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      ( *pet_action )->base_td_multiplier /= 1 + o()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+
+      // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
+      // this is verifiable by logs but not attributable to any spell effect
+      // hard coding this for now
       ( *pet_action )->base_dd_multiplier *= 1.0 + 1.0;
       ( *pet_action )->base_td_multiplier *= 1.0 + 1.0;
     }
 
     // Apply the affecting SFS effect aura
     ( *pet_action )->apply_affecting_aura( o()->passives.shadowflame_spirit );
-    
+
     // Execute action
     ( *pet_action )->set_target( s->target );
     ( *pet_action )->execute();

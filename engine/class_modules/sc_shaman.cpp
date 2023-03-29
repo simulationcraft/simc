@@ -4596,6 +4596,13 @@ struct lava_beam_overload_t : public chained_overload_base_t
     return t;
   }
 
+  void execute() override
+  {
+    chained_overload_base_t::execute();
+
+    p()->buff.t29_2pc_ele->trigger();
+  }
+
   void impact( action_state_t* state ) override
   {
     chained_overload_base_t::impact( state );
@@ -4931,15 +4938,14 @@ struct lava_beam_t : public chained_base_t
     return t;
   }
 
-
   void execute() override
   {
     chained_base_t::execute();
 
     p()->buff.surge_of_power->decrement();
+
+    p()->buff.t29_2pc_ele->trigger();
   }
-
-
 
   void impact( action_state_t* state ) override
   {
@@ -6088,6 +6094,18 @@ struct icefury_overload_t : public elemental_overload_spell_t
     affected_by_master_of_the_elements = true;
     maelstrom_gain = p->spec.maelstrom->effectN( 9 ).resource( RESOURCE_MAELSTROM );
   }
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
+
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 7 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct icefury_t : public shaman_spell_t
@@ -6943,14 +6961,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    double if_multi = p()->buff.icefury->value();
-    // bug, instead this should apply to the maelstrom generation
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      if_multi += 1.0 * p()->spell.t30_4pc_ele->effectN( 7 ).percent();
-    }
-
-    m *= 1.0 + if_multi;
+    m *= 1.0 + p()->buff.icefury->value();
 
     m *= 1.0 + p()->buff.hailstorm->stack_value();
 
@@ -6979,6 +6990,19 @@ struct frost_shock_t : public shaman_spell_t
     }
 
     return t;
+  }
+
+  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
+  {
+    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
+
+    if ( p()->buff.t30_4pc_ele->up() )
+    {
+      // not exactly labeled to match, but only effect left and very likely to be for FrS ms generation
+      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 8 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
