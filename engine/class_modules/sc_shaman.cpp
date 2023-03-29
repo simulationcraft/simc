@@ -4596,6 +4596,13 @@ struct lava_beam_overload_t : public chained_overload_base_t
     return t;
   }
 
+  void execute() override
+  {
+    chained_overload_base_t::execute();
+
+    p()->buff.t29_2pc_ele->trigger();
+  }
+
   void impact( action_state_t* state ) override
   {
     chained_overload_base_t::impact( state );
@@ -4931,15 +4938,14 @@ struct lava_beam_t : public chained_base_t
     return t;
   }
 
-
   void execute() override
   {
     chained_base_t::execute();
 
     p()->buff.surge_of_power->decrement();
+
+    p()->buff.t29_2pc_ele->trigger();
   }
-
-
 
   void impact( action_state_t* state ) override
   {
