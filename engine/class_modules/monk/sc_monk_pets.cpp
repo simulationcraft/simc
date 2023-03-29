@@ -1859,7 +1859,7 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
       weapon_power_mod  = source_action->weapon_power_mod;
       spell_power_mod   = source_action->spell_power_mod;
       attack_power_mod  = source_action->attack_power_mod;
-      amount_delta      = source_action->amount_delta;
+      amount_delta      =  source_action->amount_delta;
 
       // Override inherited owner options
       background  = true;
@@ -1950,14 +1950,18 @@ struct spirit_of_forged_vermillion_t : public monk_pet_t
       return;
 
     // Copy the owner state
-    ( *pet_action )->base_dd_multiplier = s->action->base_dd_multiplier;
-    ( *pet_action )->base_td_multiplier = s->action->base_td_multiplier;
+    ( *pet_action )->base_dd_multiplier = s->da_multiplier;
+    ( *pet_action )->base_td_multiplier = s->ta_multiplier;
 
-    // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
-    // this is verifiable by logs but not attributable to any spell effect
-    // hard coding this for now
-    if ( o()->buff.storm_earth_and_fire->up() )
+    if ( o()->buff.storm_earth_and_fire->up() && o()->affected_by_sef( s->action->data() ) )
     {
+      // The pet damage is not modified by SEF, so we need to divide here to bring the inheritied modifier back to normal levels
+      ( *pet_action )->base_dd_multiplier /= 1 + o()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      ( *pet_action )->base_td_multiplier /= 1 + o()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+
+      // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
+      // this is verifiable by logs but not attributable to any spell effect
+      // hard coding this for now
       ( *pet_action )->base_dd_multiplier *= 1.0 + 1.0;
       ( *pet_action )->base_td_multiplier *= 1.0 + 1.0;
     }
