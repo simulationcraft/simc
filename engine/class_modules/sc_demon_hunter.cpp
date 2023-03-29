@@ -4727,7 +4727,7 @@ struct fracture_t : public demon_hunter_attack_t
       if ( p()->buff.t30_vengeance_4pc->up() )
       {
         p()->active.fiery_brand_t30->execute_on_target( s->target );
-        p()->buff.t30_vengeance_4pc->reset();
+        p()->buff.t30_vengeance_4pc->expire();
       }
       oh->execute();
 
@@ -4802,7 +4802,7 @@ struct shear_t : public demon_hunter_attack_t
     if ( p()->buff.t30_vengeance_4pc->up() )
     {
       p()->active.fiery_brand_t30->execute_on_target( s->target );
-      p()->buff.t30_vengeance_4pc->reset();
+      p()->buff.t30_vengeance_4pc->expire();
     }
   }
 
@@ -7322,17 +7322,18 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up         = nullptr;
-  frailty_driver                = nullptr;
-  exit_melee_event              = nullptr;
-  next_fragment_spawn           = 0;
-  metamorphosis_health          = 0;
-  frailty_accumulator           = 0.0;
-  ragefire_accumulator          = 0.0;
-  ragefire_crit_accumulator     = 0;
-  shattered_destiny_accumulator = 0.0;
-  darkglare_boon_cdr_roll       = 0.0;
-  set_bonuses.t30_havoc_2pc_fury_tracker = 0.0;
+  soul_fragment_pick_up                                = nullptr;
+  frailty_driver                                       = nullptr;
+  exit_melee_event                                     = nullptr;
+  next_fragment_spawn                                  = 0;
+  metamorphosis_health                                 = 0;
+  frailty_accumulator                                  = 0.0;
+  ragefire_accumulator                                 = 0.0;
+  ragefire_crit_accumulator                            = 0;
+  shattered_destiny_accumulator                        = 0.0;
+  darkglare_boon_cdr_roll                              = 0.0;
+  set_bonuses.t30_havoc_2pc_fury_tracker               = 0.0;
+  set_bonuses.t30_vengeance_4pc_soul_fragments_tracker = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
