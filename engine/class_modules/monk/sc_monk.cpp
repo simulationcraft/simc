@@ -516,7 +516,7 @@ namespace monk
 
         if ( current_resource() == RESOURCE_CHI )
         {
-            // Dance of Chi-Ji talent triggers from spending chi
+          // Dance of Chi-Ji talent triggers from spending chi
           p()->buff.dance_of_chiji->trigger();
 
           if ( ab::cost() > 0 )
@@ -531,7 +531,7 @@ namespace monk
                   p()->cooldown.storm_earth_and_fire->adjust( -1 *
                   p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
 
-          // Serenity brings all spells down to 0 chi spent so don't reduce while Serenity is up
+                // Serenity brings all spells down to 0 chi spent so don't reduce while Serenity is up
                 if ( p()->talent.windwalker.serenity->ok() && !p()->buff.serenity->up() )
                   p()->cooldown.serenity->adjust( -1 * p()->talent.windwalker.spiritual_focus->effectN( 3 ).time_value() );
 
@@ -639,7 +639,7 @@ namespace monk
         }
 
         if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-        {
+        {         
           trigger_exploding_keg_proc( s );
 
           p()->trigger_empowered_tiger_lightning( s, true );
@@ -1579,7 +1579,7 @@ namespace monk
       struct shadowflame_nova_t : public monk_melee_attack_t
       {
         shadowflame_nova_t( monk_t *p )
-          : monk_melee_attack_t( "shadowflame_nova", p, p->find_spell( 410139 ) )
+          : monk_melee_attack_t( "shadowflame_nova", p, p->passives.shadowflame_nova )
         {
           background = true;
           aoe = -1;
@@ -1749,7 +1749,7 @@ namespace monk
           // T30 Set Bonus
           if ( rng().roll( p()->sets->set( MONK_WINDWALKER, T30, B2 )->proc_chance() ) )
           {
-            nova->set_target( target );
+            nova->target = p()->target;
             nova->execute();
           }
 
@@ -7535,6 +7535,7 @@ namespace monk
     passives.fists_of_flowing_momentum = find_spell( 394949 );
 
     // Tier 30
+    passives.shadowflame_nova = find_spell( 410139 );
     passives.shadowflame_spirit = find_spell( 410159 );
     passives.shadowflame_spirit_summon = find_spell( 410153 );
 
@@ -8161,17 +8162,11 @@ namespace monk
 
     if ( talent.general.resonant_fists.ok() )
     {
-
       create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
       {
-        if ( state->action->id == p->active_actions.resonant_fists->id )
-          return false;
-
         p->active_actions.resonant_fists->set_target( state->target );
-
         return true;
       } );
-
     }
 
     // ======================================
@@ -8292,17 +8287,17 @@ namespace monk
 
   void monk_t::bonedust_brew_assessor( action_state_t *s )
   {
-      // TODO: Update Whitelist with new spells and verify with logs
+    /// TODO: Update Whitelist with new spells and verify with logs
 
-      // Ignore events with 0 amount
+    // Ignore events with 0 amount
     if ( s->result_amount <= 0 )
       return;
 
     switch ( s->action->id )
     {
 
-        // Whitelist
-        // General
+      // Whitelist
+      // General
       case 0:  // auto attack
       case 1:  // melee_off_hand
       case 185099:  // rising_sun_kick_dmg
@@ -8323,7 +8318,7 @@ namespace monk
       case 158221: // whirling_dragon_punch_tick
       case 100784: // blackout_kick
       case 101545: // flying_serpent_kick
-      case 122470: // touch_of_karma
+      case 124280: // touch_of_karma
       case 261947: // fist_of_the_white_tiger_offhand
       case 261977: // fist_of_the_white_tiger_mainhand
       case 337342: // chi_explosion
@@ -8333,6 +8328,7 @@ namespace monk
       case 392959: // glory_of_the_dawn
       case 345727: // faeline_stomp_dmg
       case 327264: // faeline_stomp_ww_dmg
+      case 410139: // shadowflame_nova
       // Brewmaster
       case 205523: // blackout_kick_brm
       case 123725: // breath_of_fire_dot
@@ -8345,8 +8341,8 @@ namespace monk
       case 393786: // chi_surge
         break;
 
-    // Known blacklist
-    // we don't need to log these
+      // Known blacklist
+      // we don't need to log these
 
       case 325217: // bonedust_brew_dmg
       case 325218: // bonedust_brew_heal
@@ -8356,7 +8352,7 @@ namespace monk
         return;
 
       default:
-        sim->print_debug( "Unknown spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id );
+        sim->print_debug( "Unknown spell passed to BDB Assessor: {}, id: {}", s->action->name_str, s->action->id );
 
         if ( specialization() == MONK_WINDWALKER || specialization() == MONK_BREWMASTER )
           return;
@@ -8371,7 +8367,6 @@ namespace monk
         double damage = s->result_amount * shared.bonedust_brew->effectN( 1 ).percent();
 
         damage *= 1 + shared.attenuation->effectN( 1 ).percent();
-
 
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
