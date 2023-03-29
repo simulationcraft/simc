@@ -1582,6 +1582,7 @@ class SpellDataGenerator(DataGenerator):
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
+            ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
         ),
 
         # Priest:
