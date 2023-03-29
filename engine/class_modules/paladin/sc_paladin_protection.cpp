@@ -626,7 +626,7 @@ struct judgment_prot_t : public judgment_t
       if( hopo > 0 )
         p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
-          p()->trigger_grand_crusader();
+          p()->trigger_grand_crusader( GC_JUDGMENT );
     }
   }
 };
@@ -998,7 +998,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 }
 
-void paladin_t::trigger_grand_crusader()
+void paladin_t::trigger_grand_crusader( grand_crusader_source source )
 {
   // escape if we don't have Grand Crusader
   if ( ! talents.grand_crusader->ok() )
@@ -1008,6 +1008,12 @@ void paladin_t::trigger_grand_crusader()
   if ( talents.inspiring_vanguard->ok() )
   {
     gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
+  }
+
+  if ( source == GC_JUDGMENT )
+  {
+    // TODO: according to Woliance; proc chance not obvious in spelldata
+    gc_proc_chance = 0.5;
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard

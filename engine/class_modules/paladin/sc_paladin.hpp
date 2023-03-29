@@ -35,6 +35,11 @@ enum consecration_source : unsigned int {
   SEARING_LIGHT = 2,
 };
 
+enum grand_crusader_source : unsigned int {
+  GC_NORMAL = 0,
+  GC_JUDGMENT = 1,
+};
+
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
@@ -618,7 +623,7 @@ public:
   virtual void      combat_begin() override;
   virtual void      copy_from( player_t* ) override;
 
-  void    trigger_grand_crusader();
+  void    trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    heartfire( action_state_t* s );
