@@ -641,7 +641,6 @@ struct judgment_prot_t : public judgment_t
         td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
         {
           p()->trigger_grand_crusader( GC_JUDGMENT );
-        }
       }
     }
   }
