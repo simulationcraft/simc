@@ -2185,7 +2185,6 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
   action.apply_affecting_aura( talents.discipline.expiation );
-  action.apply_affecting_aura( talents.discipline.expiation );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
