@@ -330,6 +330,7 @@ public:
   {
     // shared between all three specs
     buff_t* ascendance;
+    buff_t* deeply_rooted_elements_bad_luck;
     buff_t* ghost_wolf;
     buff_t* flurry;
     buff_t* natures_swiftness;
@@ -417,6 +418,7 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
+    bool dre_post_change = false;
   } options;
 
   // Cooldowns
@@ -8729,6 +8731,7 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
+  add_option( opt_bool( "shaman.dre_post_change", options.dre_post_change ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -9561,9 +9564,21 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
     return;
   }
 
+  if ( is_ptr() && options.dre_post_change ) {
+    proc_chance = buff.deeply_rooted_elements_bad_luck->stack_value();
+  }
+
   if ( !rng().roll( proc_chance ) )
   {
+    if ( is_ptr() && options.dre_post_change ) {
+      buff.deeply_rooted_elements_bad_luck->increment();
+    }
+
     return;
+  }
+
+  if ( is_ptr() && options.dre_post_change ) {
+    buff.deeply_rooted_elements_bad_luck->expire();
   }
 
   action.dre_ascendance->set_target( state->target );
@@ -9852,6 +9867,10 @@ void shaman_t::create_buffs()
   // Shared
   //
   buff.ascendance = new ascendance_buff_t( this );
+  // fake buffs are fake, creating this to mirror 10.1 change made to Deeply Rooted Elements proc behaviour
+  buff.deeply_rooted_elements_bad_luck = make_buff(this, "deeply_rooted_elements_bad_luck")
+    ->set_default_value(0.01)
+    ->set_max_stack(102);
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
   buff.flurry = make_buff( this, "flurry", talent.flurry->effectN( 1 ).trigger() )
     ->set_default_value( talent.flurry->effectN( 1 ).trigger()->effectN( 1 ).percent() )
