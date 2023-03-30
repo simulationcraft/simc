@@ -9565,7 +9565,8 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   }
 
   if ( is_ptr() && options.dre_post_change ) {
-    proc_chance = buff.deeply_rooted_elements_bad_luck->stack_value();
+    // proc curve is pushed down by 2%
+    proc_chance = buff.deeply_rooted_elements_bad_luck->stack_value() - 0.02;
   }
 
   if ( !rng().roll( proc_chance ) )
