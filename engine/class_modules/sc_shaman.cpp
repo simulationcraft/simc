@@ -8758,6 +8758,7 @@ void shaman_t::copy_from( player_t* source )
   shaman_t* p  = debug_cast<shaman_t*>( source );
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
+  options.dre_post_change = p->options.dre_post_change;
 }
 
 // shaman_t::create_special_effects ========================================
