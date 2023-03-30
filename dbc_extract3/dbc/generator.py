@@ -1709,6 +1709,7 @@ class SpellDataGenerator(DataGenerator):
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
           ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
+          ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
         ),
 
         # Shaman:

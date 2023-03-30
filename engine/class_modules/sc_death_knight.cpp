@@ -987,6 +987,7 @@ public:
     const spell_data_t* lingering_chill;
     const spell_data_t* frost_t30_2pc; // TODO rename when blizz gives it a name
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
+    const spell_data_t* wrath_of_the_frostwyrm_damage;
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -6849,7 +6850,7 @@ struct frostwhelps_aid_t final : public death_knight_spell_t
 struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
 {
   wrath_of_the_frostwyrm_damage_t( util::string_view name, death_knight_t* p) :
-    death_knight_spell_t( "frostwyrms_fury_t30", p,  p -> spell.frostwyrms_fury_damage )
+    death_knight_spell_t( "frostwyrms_fury_t30", p,  p -> spell.wrath_of_the_frostwyrm_damage )
   {
     aoe = -1;
     background = true;
@@ -9543,14 +9544,15 @@ void death_knight_t::init_spells()
   spell.avalanche_damage              = find_spell( 207150 );
   spell.frostwhelps_aid_damage        = find_spell( 377245 );
   spell.enduring_strength_cooldown    = find_spell( 377192 );
-  spell.murderous_efficiency_gain   = find_spell( 207062 );
-  spell.rage_of_the_frozen_champion = find_spell( 341725 );
-  spell.piercing_chill_debuff       = find_spell( 377359 );
-  spell.runic_empowerment_chance    = find_spell( 81229 );
+  spell.murderous_efficiency_gain     = find_spell( 207062 );
+  spell.rage_of_the_frozen_champion   = find_spell( 341725 );
+  spell.piercing_chill_debuff         = find_spell( 377359 );
+  spell.runic_empowerment_chance      = find_spell( 81229 );
   // T30 Frost
-  spell.frost_t30_2pc   = find_spell( 405501 );
-  spell.frost_t30_4pc   = find_spell( 405502 );
-  spell.lingering_chill = find_spell( 410879 );
+  spell.frost_t30_2pc                 = find_spell( 405501 );
+  spell.frost_t30_4pc                 = find_spell( 405502 );
+  spell.lingering_chill               = find_spell( 410879 );
+  spell.wrath_of_the_frostwyrm_damage = find_spell( 410790 );
 
   // Unholy
   spell.runic_corruption           = find_spell( 51460 );
