@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19806> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19804> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18401,7 +18401,6 @@ static const std::array<spelltext_data_t, 19806> __ptr_spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
-  { 390961, "$@spelldesc390990", 0, 0 },
   { 390964, "$@spelldesc120517", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390971, "$@spelldesc120517", 0, 0 },
@@ -18412,12 +18411,10 @@ static const std::array<spelltext_data_t, 19806> __ptr_spelltext_data { {
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390981, "$@spelldesc110744", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
-  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast, Mind Flay, and Mind Spike]?a137031[Smite and Holy Fire][Smite, Power Word: Solace, Mind Blast, and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
-  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -19799,6 +19796,7 @@ static const std::array<spelltext_data_t, 19806> __ptr_spelltext_data { {
   { 410276, "Reduce all secondary stats by $s1 for $d.", "Reduce all secondary stats by $s1 for $d.", 0 },
   { 410290, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
   { 410668, "Restores ${$m1/5*$d} health over $d.  Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
+  { 410790, "$@spelldesc279302", "Movement speed slowed by $s2%.", 0 },
   { 410871, "$@spelldesc405558\r\n", "The damage of conjured Shadowy Apparitions is increased by $s1%.", 0 },
   { 410879, "$@spelldesc405502", "Taking ${$w1/2}% additional critical strike damage from $@auracaster.", 0 },
   { 411013, "Add the Entangling affix to a Mythic Keystone.", 0, 0 },
