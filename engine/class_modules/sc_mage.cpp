@@ -6548,7 +6548,8 @@ void mage_t::create_buffs()
 
   // Set Bonuses
   buffs.arcane_overload = make_buff( this, "arcane_overload", find_spell( 409022 ) )
-                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) );
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
+                            ->set_affects_regen( true );
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
@@ -6767,6 +6768,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
     reg *= 1.0 + buffs.evocation->check_value();
+    reg *= 1.0 + buffs.arcane_overload->check() * buffs.arcane_overload->data().effectN( 2 ).percent();
   }
 
   return reg;
