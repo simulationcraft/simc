@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749, git build dragonflight 769123c487)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -15889,6 +15889,47 @@ Effects          :
                    Affected School(s): Nature
 Description      : Nature damage increased by $s1%.
 Tooltip          : Nature damage increased by $w1%.
+
+Name             : Soulrip (id=409604) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Rolling Periodic (334)
+Effects          :
+#1 (id=1074591)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Damage you inflict applies a Soulrip, dealing 5% of all damage you deal as physical damage over 8 sec.
+Tooltip          : Dealing $w1 Physical damage over $d.
+
+Name             : Soulreave (id=409605) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126)
+Effects          :
+#1 (id=1074592)  : School Damage (2): physical
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc405562
+Tooltip          : $@spelldesc405562
 
 Name             : Soulripper (id=409606) [Spell Family (8)] 
 Class            : Rogue
