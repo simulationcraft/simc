@@ -6021,11 +6021,11 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    death_knight_spell_t::impact( s );
-    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
+    if ( p ()->sets->has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
     {
-      get_td( s -> target ) -> debuff.lingering_chill -> trigger();
+      get_td ( s->target )->debuff.lingering_chill->trigger ();
     }
+    death_knight_spell_t::impact( s );    
   }
 };
 
@@ -6877,11 +6877,11 @@ struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
 
   void impact( action_state_t* s ) override
   {
-    death_knight_spell_t::impact( s );
-    if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
+    if ( p ()->sets->has_set_bonus ( DEATH_KNIGHT_FROST, T30, B4 ) )
     {
-      get_td( s -> target ) -> debuff.lingering_chill -> trigger();
+      get_td ( s->target )->debuff.lingering_chill->trigger ();
     }
+    death_knight_spell_t::impact( s );
   }
 };
 
