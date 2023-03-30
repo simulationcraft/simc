@@ -6849,7 +6849,7 @@ struct frostwhelps_aid_t final : public death_knight_spell_t
 struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
 {
   wrath_of_the_frostwyrm_damage_t( util::string_view name, death_knight_t* p) :
-    death_knight_spell_t( name, p,  p -> spell.frostwyrms_fury_damage )
+    death_knight_spell_t( "frostwyrms_fury_t30", p,  p -> spell.frostwyrms_fury_damage )
   {
     aoe = -1;
     background = true;
