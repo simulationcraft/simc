@@ -5287,14 +5287,14 @@ struct death_coil_t final : public death_knight_spell_t
 
       if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.sudden_doom -> up() )
       {
-        p() -> buffs.unholy_t30_2pc_stacking -> trigger();
+        p() -> buffs.unholy_t30_2pc_stacking -> trigger( p() -> find_spell( 405505 ) -> effectN( 1 ).base_value() );
         
       }
     }
 
     if( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B4 ) && p() -> buffs.sudden_doom -> check() )
     {
-      p() -> buffs.unholy_t30_4pc_mastery -> trigger( p() -> find_spell( 405505 ) -> effectN( 1 ).base_value()  );
+      p() -> buffs.unholy_t30_4pc_mastery -> trigger();
     }
 
     p() -> buffs.sudden_doom -> decrement();
