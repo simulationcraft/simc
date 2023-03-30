@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19807> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19806> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19508,7 +19508,6 @@ static const std::array<spelltext_data_t, 19807> __ptr_spelltext_data { {
   { 405541, "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.", "Renewing Mists has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.", 0 },
   { 405542, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", 0 },
   { 405543, "Rising Sun Kick deals $s1% increased damage and goes nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1.", "Rising Sun Kick deals $s1% increased damage and goes nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1.", 0 },
-  { 405544, "Your melee auto-attacks have a chance to launch a Shadowflame spirit at your enemy that duplicates your abilities at ${$s1+$410159s2}% effectiveness for the next $410153d.", "Your melee auto-attacks have a chance to launch a Shadowflame spirit at your enemy that duplicates your abilities at ${$s1+$410159s2}% effectiveness for the next $410153d.", 0 },
   { 405545, "Holy Shock's critical strikes heal for $s1% more and reduce the cooldown of Light's Hammer by $s2 sec, or Holy Prism by $s3 sec.", 0, 0 },
   { 405546, "Light's Hammer heals $s2% more frequently and generates $s6 Holy Power every $122773t2 sec. Holy Prism's healing is increased by $s3% and it generates $s4 Holy Power if cast on an enemy target, or $s5 if cast on an ally.", 0, 0 },
   { 405547, "Avenger's Shield causes targets struck to burn with Heartfire, dealing an additional $s2% of damage dealt over $408399d. Heartfire heals you for $s3% of the damage it deals.", "Avenger's Shield causes targets struck to burn for $408399d seconds with Heartfire, dealing an additional $w2% damage over time and healing you for $w3% of the damage dealt by your Heartfire.", 0 },
@@ -19787,8 +19786,6 @@ static const std::array<spelltext_data_t, 19807> __ptr_spelltext_data { {
   { 410138, "$@spelldesc405578", "Damage of you next Slam increased by $s1% and Slam strikes up to $s~2 additional targets for $s~3% damage.", 0 },
   { 410139, "Deals $s1 Shadowflame damage to all enemies within $A1.", 0, 0 },
   { 410147, "$@spelldesc405528", "Damage of your next Kill Command increased by $s1%.", 0 },
-  { 410153, "$@spelldesc137639", 0, 0 },
-  { 410159, "Cause the current target to clone the caster.", 0, 0 },
   { 410167, "$@spelldesc405530", "Damage taken from Wildfire Bomb increased by $s1%.", 0 },
   { 410191, 0, ".", 0 },
   { 410220, "Heals $s1 damage over $409915d", 0, 0 },
@@ -19807,6 +19804,8 @@ static const std::array<spelltext_data_t, 19807> __ptr_spelltext_data { {
   { 411013, "Add the Entangling affix to a Mythic Keystone.", 0, 0 },
   { 411014, "Add the Afflicted affix to a Mythic Keystone.", 0, 0 },
   { 411015, "Add the Incorporeal affix to a Mythic Keystone.", 0, 0 },
+  { 411375, "Fists of Fury deals $s1% increased damage to the primary target and increases Shadow and Fire damage you deal to all targets hit by $411376s2% for $411376d.", "Fists of Fury deals $s1% increased damage to the primary target and increases Shadow and Fire damage you deal to all targets hit by $411376s2% for $411376d.", 0 },
+  { 411376, "$@spelldesc411375", "Shadowflame damage dealt by $@auracaster increased by $w1%.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.48776

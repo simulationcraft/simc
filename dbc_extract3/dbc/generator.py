@@ -2030,7 +2030,10 @@ class SpellDataGenerator(DataGenerator):
           ( 363924, 3 ), # WW 4-piece Primordial Power
 
           # Tier 29
-          ( 394951, 3 ) # WW 4-piece Versatility buff
+          ( 394951, 3 ), # WW 4-piece Versatility buff
+
+          # Tier 30
+          ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
         ),
 
         # Druid:
