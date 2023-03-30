@@ -2485,6 +2485,8 @@ namespace monk
 
           if ( target != p()->target )
             m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
+          else
+            m *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B4 )->effectN( 1 ).percent();
 
           return m;
         }
@@ -2517,6 +2519,8 @@ namespace monk
           monk_melee_attack_t::impact( s );
 
           p()->buff.chi_energy->trigger();
+
+          get_td( s->target )->debuff.shadowflame_vulnerability->trigger();
         }
       };
 
@@ -6689,6 +6693,11 @@ namespace monk
       ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
       ->set_cooldown( timespan_t::zero() );
 
+    debuff.shadowflame_vulnerability = make_buff( *this, "shadowflame_vulnerability", p->find_spell( 411376 ) )
+      ->set_trigger_spell( p->sets->set( MONK_BREWMASTER, T30, B4 ) )
+      ->set_default_value_from_effect( 1 )
+      ->set_schools_from_effect( 1 );
+
     dots.breath_of_fire = target->get_dot( "breath_of_fire_dot", p );
     dots.enveloping_mist = target->get_dot( "enveloping_mist", p );
     dots.eye_of_the_tiger_damage = target->get_dot( "eye_of_the_tiger_damage", p );
@@ -8745,6 +8754,10 @@ namespace monk
 
     if ( td && td->debuff.weapons_of_order->check() )
       multiplier *= 1 + td->debuff.weapons_of_order->check_stack_value();
+
+    if ( td && td->debuff.shadowflame_vulnerability->check() &&
+         td->debuff.shadowflame_vulnerability->has_common_school( school ) )
+      multiplier *= 1 + td->debuff.shadowflame_vulnerability->check_value();
 
     return multiplier;
   }

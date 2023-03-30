@@ -113,6 +113,9 @@ public:
     propagate_const<buff_t*> fae_exposure;
     propagate_const<buff_t*> keefers_skyreach;
     propagate_const<buff_t*> skyreach_exhaustion;
+
+    // Tier 30
+    propagate_const<buff_t*> shadowflame_vulnerability;
   } debuff;
 
   monk_t& monk;
