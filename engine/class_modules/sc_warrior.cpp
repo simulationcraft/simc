@@ -2733,13 +2733,15 @@ struct bloodthirst_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
+  double merciless_assault_crit;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
   {
     parse_options( options_str );
 
@@ -2787,6 +2789,18 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     return am;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p()->buff.merciless_assault->check() )
+    {
+      cc += merciless_assault_crit;
+    }
+
+    return cc;
   }
 
   void impact( action_state_t* s ) override
@@ -4855,8 +4869,9 @@ struct rampage_attack_t : public warrior_attack_t
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
 
-      if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT &&
-           target == s->target )
+       // s->target will only activate on strikes against the primary target, ignoring cleaved attacks.
+      //if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT && target == s->target ) // remove ICD from buff
+      if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT )
       {
         p()->buff.merciless_assault->trigger();
       }
@@ -9601,6 +9616,7 @@ void warrior_t::create_buffs()
   // T30 Tier Effects ===============================================================================================================
   buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
                                 find_spell( 409983 ) : spell_data_t::not_found() )
+                    ->set_cooldown( 0.7_s ) // faux implementation to limit 1 stack per cast - not in spell data
                     ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
                     ->set_duration( find_spell( 409983 )->duration() );
 }
