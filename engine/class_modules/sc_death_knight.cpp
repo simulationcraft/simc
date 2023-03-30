@@ -3528,11 +3528,6 @@ struct frost_fever_t final : public death_knight_disease_t
     // Value calculated from testing, may change without notice
     if ( superstrain )
       base_multiplier *= 1.0 + ( p -> talent.unholy.superstrain -> effectN( 2 ).percent() );
-
-    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> spell.frost_t30_2pc -> effectN( 2 ).percent();
-    }
   }
 
   timespan_t tick_time ( const action_state_t* ) const override
@@ -6400,6 +6395,11 @@ struct howling_blast_t final : public death_knight_spell_t
     if ( p() -> buffs.rime -> up() )
     {
       m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> talent.frost.improved_rime -> effectN( 1 ).percent();
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T30, B2 ) )
+    {
+      m *= 1.0 + p() -> spell.frost_t30_2pc -> effectN( 1 ).percent();
     }
 
     return m;
