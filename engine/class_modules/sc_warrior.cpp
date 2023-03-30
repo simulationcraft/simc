@@ -2880,13 +2880,15 @@ struct bloodbath_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
+  double merciless_assault_crit;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
   {
     parse_options( options_str );
 
@@ -2917,6 +2919,18 @@ struct bloodbath_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p()->buff.merciless_assault->check() )
+    {
+      cc += merciless_assault_crit;
+    }
+
+    return cc;
   }
 
   void impact( action_state_t* s ) override
@@ -2958,6 +2972,7 @@ struct bloodbath_t : public warrior_attack_t
     p()->buff.reckless_abandon->decrement();
 
     p()->buff.meat_cleaver->decrement();
+    p()->buff.merciless_assault->expire();
 
     if ( result_is_hit( execute_state->result ) )
     {
