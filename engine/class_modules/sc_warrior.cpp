@@ -9631,7 +9631,7 @@ void warrior_t::create_buffs()
   // T30 Tier Effects ===============================================================================================================
   buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
                                 find_spell( 409983 ) : spell_data_t::not_found() )
-                    ->set_cooldown( 0.7_s ) // faux implementation to limit 1 stack per cast - not in spell data
+                    ->set_cooldown( 1.0_s ) // faux implementation to limit 1 stack per cast - not in spell data
                     ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
                     ->set_duration( find_spell( 409983 )->duration() );
 }
