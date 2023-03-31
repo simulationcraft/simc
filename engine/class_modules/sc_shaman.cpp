@@ -256,6 +256,9 @@ public:
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
 
+  /// Failed Deeply Rooted Elements attempts
+  unsigned deeply_rooted_elements_failures;
+
   // Options
   bool raptor_glyph;
 
@@ -330,6 +333,7 @@ public:
   {
     // shared between all three specs
     buff_t* ascendance;
+    buff_t* deeply_rooted_elements_bad_luck;
     buff_t* ghost_wolf;
     buff_t* flurry;
     buff_t* natures_swiftness;
@@ -417,6 +421,7 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
+    bool dre_post_change = false;
   } options;
 
   // Cooldowns
@@ -461,6 +466,9 @@ public:
   // Tracked Procs
   struct
   {
+    // Shared
+    std::array<proc_t*, 102> deeply_rooted_elements_attempts_until_success;
+
     // Elemental, Restoration
     proc_t* lava_surge;
     proc_t* wasted_lava_surge;
@@ -747,6 +755,7 @@ public:
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       lotfw_counter( 0U ),
+      deeply_rooted_elements_failures( 0U ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -8729,6 +8738,7 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
+  add_option( opt_bool( "shaman.dre_post_change", options.dre_post_change ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -8755,6 +8765,7 @@ void shaman_t::copy_from( player_t* source )
   shaman_t* p  = debug_cast<shaman_t*>( source );
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
+  options.dre_post_change = p->options.dre_post_change;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -9561,9 +9572,21 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
     return;
   }
 
+  if ( is_ptr() && options.dre_post_change ) {
+    deeply_rooted_elements_failures++;
+    // per attempt there exists an ever growing 1% chance
+    // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
+    proc_chance = deeply_rooted_elements_failures * 0.01 - 0.02;
+  }
+
   if ( !rng().roll( proc_chance ) )
   {
     return;
+  }
+
+  if ( is_ptr() && options.dre_post_change ) {
+    proc.deeply_rooted_elements_attempts_until_success[deeply_rooted_elements_failures]->occur();
+    deeply_rooted_elements_failures = 0U;
   }
 
   action.dre_ascendance->set_target( state->target );
@@ -10111,6 +10134,11 @@ void shaman_t::init_gains()
 void shaman_t::init_procs()
 {
   player_t::init_procs();
+
+  for ( size_t i = 0; i < proc.deeply_rooted_elements_attempts_until_success.size(); i++ )
+  {
+    proc.deeply_rooted_elements_attempts_until_success[ i ] = get_proc( fmt::format( "Deeply Rooted Elements attempt until success {}", i ) );
+  }
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_primordial_surge              = get_proc( "Lava Surge: Primordial Surge" );
