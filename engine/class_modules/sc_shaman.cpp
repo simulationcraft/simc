@@ -11094,6 +11094,7 @@ void shaman_t::reset()
   lava_surge_during_lvb = false;
 
   lotfw_counter = 0U;
+  deeply_rooted_elements_failures = 0U;
   action.ti_trigger = nullptr;
   action.totemic_recall_totem = nullptr;
 
