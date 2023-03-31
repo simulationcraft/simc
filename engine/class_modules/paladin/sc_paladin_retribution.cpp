@@ -676,7 +676,7 @@ struct judgment_ret_t : public judgment_t
 
     if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
     {
-      crit_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
+      crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
       base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
     }
   }
@@ -1064,7 +1064,7 @@ struct base_templar_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.heart_of_the_crusader->ok() )
     {
-      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
   }

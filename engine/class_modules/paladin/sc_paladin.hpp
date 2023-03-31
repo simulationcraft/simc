@@ -932,7 +932,7 @@ public:
 
     if ( p->talents.adjudication->ok() && this->data().affected_by( p->talents.adjudication->effectN( 1 ) ) )
     {
-      ab::crit_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
+      ab::crit_bonus_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
     }
 
     if ( p->talents.vanguard_of_justice->ok() && this->data().affected_by( p->talents.vanguard_of_justice->effectN( 2 ) ) )
