@@ -256,6 +256,9 @@ public:
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
 
+  /// Failed Deeply Rooted Elements attempts
+  unsigned deeply_rooted_elements_failures;
+
   // Options
   bool raptor_glyph;
 
@@ -463,6 +466,9 @@ public:
   // Tracked Procs
   struct
   {
+    // Shared
+    std::array<proc_t*, 102> deeply_rooted_elements_attempts_until_success;
+
     // Elemental, Restoration
     proc_t* lava_surge;
     proc_t* wasted_lava_surge;
@@ -749,6 +755,7 @@ public:
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       lotfw_counter( 0U ),
+      deeply_rooted_elements_failures( 0U ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -9566,9 +9573,10 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   }
 
   if ( is_ptr() && options.dre_post_change ) {
-    buff.deeply_rooted_elements_bad_luck->increment();
-    // proc curve is pushed down by 2%
-    proc_chance = buff.deeply_rooted_elements_bad_luck->stack_value() - 0.02;
+    deeply_rooted_elements_failures++;
+    // per attempt there exists an ever growing 1% chance
+    // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
+    proc_chance = deeply_rooted_elements_failures * 0.01 - 0.02;
   }
 
   if ( !rng().roll( proc_chance ) )
@@ -9577,7 +9585,8 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   }
 
   if ( is_ptr() && options.dre_post_change ) {
-    buff.deeply_rooted_elements_bad_luck->expire();
+    proc.deeply_rooted_elements_attempts_until_success[deeply_rooted_elements_failures]->occur();
+    deeply_rooted_elements_failures = 0U;
   }
 
   action.dre_ascendance->set_target( state->target );
@@ -9866,10 +9875,6 @@ void shaman_t::create_buffs()
   // Shared
   //
   buff.ascendance = new ascendance_buff_t( this );
-  // fake buffs are fake, creating this to mirror 10.1 change made to Deeply Rooted Elements proc behaviour
-  buff.deeply_rooted_elements_bad_luck = make_buff(this, "deeply_rooted_elements_bad_luck")
-    ->set_default_value(0.01)
-    ->set_max_stack(102);
   buff.ghost_wolf = make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
   buff.flurry = make_buff( this, "flurry", talent.flurry->effectN( 1 ).trigger() )
     ->set_default_value( talent.flurry->effectN( 1 ).trigger()->effectN( 1 ).percent() )
@@ -10129,6 +10134,11 @@ void shaman_t::init_gains()
 void shaman_t::init_procs()
 {
   player_t::init_procs();
+
+  for ( size_t i = 0; i < proc.deeply_rooted_elements_attempts_until_success.size(); i++ )
+  {
+    proc.deeply_rooted_elements_attempts_until_success[ i ] = get_proc( fmt::format( "Deeply Rooted Elements attempt until success {}", i ) );
+  }
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_primordial_surge              = get_proc( "Lava Surge: Primordial Surge" );
