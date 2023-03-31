@@ -6694,7 +6694,7 @@ namespace monk
       ->set_cooldown( timespan_t::zero() );
 
     debuff.shadowflame_vulnerability = make_buff( *this, "shadowflame_vulnerability", p->find_spell( 411376 ) )
-      ->set_trigger_spell( p->sets->set( MONK_BREWMASTER, T30, B4 ) )
+      ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
       ->set_default_value_from_effect( 1 )
       ->set_schools_from_effect( 1 );
 
