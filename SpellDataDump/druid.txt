@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48838 Live (hotfix 2023-03-31/48838, git build dragonflight 769123c487)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -6053,7 +6053,6 @@ Description      : Hurl a ball of energy at the target, dealing $s1 Nature damag
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r][]
 
 Name             : Starfall (id=191034) [Spell Family (7)] 
-Hotfixed         : Attributes
 Talent Entry     : Balance [tree=spec, row=3, col=4, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
@@ -6115,7 +6114,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.087793 -> 0.1)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -19356,7 +19354,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1033432)  : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 198489 | Misc Value 2: 0x1585 | Radius: 0 - 10 yards | Target: Custom (18) -> Unknown(72)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 198489 | Misc Value 2: 0x1585 | Radius: 0 - 5 yards | Target: Custom (18) -> Unknown(72)
 Description      : $@spelldesc394065
 
 Name             : Friend of the Fae (id=394081) [Spell Family (7), Passive] 

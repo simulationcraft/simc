@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48838 Live (hotfix 2023-03-31/48838, git build dragonflight 769123c487)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -2916,39 +2916,30 @@ Effects          :
 #24 (id=1074162)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.50000 | Misc Value: 12 | Misc Value 2: 2608 (Label) | Target: Self (1)
                    Affected Spells (Label): Fading Light (405768)
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 #25 (id=1077080)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2596 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessing of Dawn (385127)
-Hotfixed         : NEW EFFECT
 #26 (id=1077081)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2596 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessing of Dawn (385127)
-Hotfixed         : NEW EFFECT
 #27 (id=1077086)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2627 (Label) | Target: Self (1)
                    Affected Spells (Label): Empyrean Legacy (387170)
-Hotfixed         : NEW EFFECT
 #28 (id=1077087)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 2627 (Label) | Target: Self (1)
                    Affected Spells (Label): Empyrean Legacy (387170)
-Hotfixed         : NEW EFFECT
 #29 (id=1077113)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath (384376)
-Hotfixed         : NEW EFFECT
 #30 (id=1077114)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath (384376)
-Hotfixed         : NEW EFFECT
 #31 (id=1077116)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
-Hotfixed         : NEW EFFECT
 #32 (id=1077117)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
-Hotfixed         : NEW EFFECT
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
@@ -3733,7 +3724,6 @@ Spell Level      : 26
 GCD              : 0.75 seconds
 Duration         : 15 seconds
 Cooldown         : 90 seconds
-Labels           : 1284: Symbol of Hope (265144 effect#2)
 Mechanic         : Shield
 Affecting spells : Unbreakable Spirit (114154 effect#1), Aegis of Protection (403654 effect#2)
 Family Flags     : 118
@@ -5034,7 +5024,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.51612 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=320675)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #3 (id=1072493)  : Trigger Spell (64): Justicar's Vengeance
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 408394 | Target: Self (1)
 Description      : Focuses Holy energy to deliver a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage, and restores $408394s1% of your maximum health.
@@ -15257,7 +15246,6 @@ Effects          :
 Description      : Hammer of Wrath and Judgment deal $s2% additional damage and extend the duration of $?s384092[Crusade]?s394088[Avenging Crusader]?s385438[Sentinel][Avenging Wrath] by ${$s1/1000}.1 sec.
 
 Name             : Retribution Aura (id=392503) [Spell Family (7), Hidden] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15274,7 +15262,6 @@ Attributes       : .......x ........ ........ ..x..x.x   ........ ........ .....
 Effects          :
 #1 (id=1030763)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Type (65 -> 6)
 Description      : $@spelldesc183435
 Tooltip          : You have recently gained Seraphim from Retribution Aura.
 
@@ -16300,7 +16287,6 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1049758)  : Direct Heal% (136)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc403042
 
 Name             : Vanguard's Momentum (id=403081) [Spell Family (10)] 
@@ -16499,7 +16485,6 @@ Effects          :
 Description      : Blade of Justice and Expurgation now deal Holy damage.
 
 Name             : Truth's Wake (id=403695) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -16521,10 +16506,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=1050802)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 14 yards | Mechanic: Snare | Target: Cone Front (104)
-Hotfixed         : Target 1 (18 -> 104), Target 2 (104 -> 0)
 #2 (id=1050803)  : Apply Aura (6) | Periodic Damage (3): holyfire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42500 | PvP Coefficient: 1.00000 | Radius: 14 yards | Target: Cone Front (104)
-Hotfixed         : Target 1 (18 -> 104), Target 2 (104 -> 0)
 Description      : Wake of Ashes slows targets by $s1% and burns the target for an additional $o2 Radiant damage over $383351d.
 
 Tooltip          : $?(s403696)[Burning for $w2 damage every $t2 sec and movement speed reduced by $s1%.] [Movement speed reduced by $s1%.]
@@ -16688,7 +16671,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239)
                    Family Flags: 49
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc403975
 Tooltip          : Your next Divine Storm deals $s1% increased damage.
 
@@ -17404,7 +17386,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 49, 77, 88
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : Your damaging Holy Power abilities cost $s1 additional Holy Power and deal $s2% increased damage.
 
 Name             : Templar Strikes (id=406646) [Spell Family (10), Passive, Hidden] 
@@ -17638,7 +17619,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1070163)  : School Damage (2): holystrike
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.75000 | PvP Coefficient: 0.75000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=1070182)  : School Damage (2): holystrike
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc 404306
@@ -17866,7 +17846,6 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1072494)  : Direct Heal% (136)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc215661
 
 Name             : Divine Purpose (id=408458) [Spell Family (10)] 
