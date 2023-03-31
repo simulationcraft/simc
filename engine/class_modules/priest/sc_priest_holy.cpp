@@ -88,8 +88,8 @@ struct apotheosis_t final : public priest_spell_t
 
     priest().buffs.apotheosis->trigger();
     priest().cooldowns.holy_word_chastise->reset( false );
-    priest().cooldowns.holy_word_serenity->reset( false, -1 );
-    priest().cooldowns.holy_word_sanctify->reset( false, -1 );
+    priest().cooldowns.holy_word_serenity->reset( false, 1 );
+    priest().cooldowns.holy_word_sanctify->reset( false, 1 );
   }
 };
 
