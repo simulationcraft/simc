@@ -490,6 +490,7 @@ public:
     std::array<proc_t*, 6> t29_2pc_ele;
 
     proc_t* surge_of_power_lightning_bolt;
+    proc_t* surge_of_power_sk_lightning_bolt;
     proc_t* surge_of_power_lava_burst;
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
@@ -5885,6 +5886,11 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( exec_type == execute_type::NORMAL &&
          p()->buff.surge_of_power->check() )
     {
+      if ( p()->buff.stormkeeper->check() )
+      {
+        p()->proc.surge_of_power_sk_lightning_bolt->occur();
+      }
+
       p()->proc.surge_of_power_lightning_bolt->occur();
 
       for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
@@ -5893,6 +5899,8 @@ struct lightning_bolt_t : public shaman_spell_t
       }
       p()->buff.surge_of_power->decrement();
     }
+
+
 
     shaman_spell_t::schedule_travel( s );
   }
@@ -5932,7 +5940,7 @@ void trigger_elemental_blast_proc( shaman_t* p )
 
   // if for some reason (Ineffable Truth, corruption) Elemental Blast can trigger four times, just let it overwrite
   // something
-  if ( !p->buff.elemental_blast_crit->check() && !p->buff.elemental_blast_haste->check() &&
+  if ( !p->buff.elemental_blast_crit->check() || !p->buff.elemental_blast_haste->check() ||
        !p->buff.elemental_blast_mastery->check() )
   {
     // EB can no longer proc the same buff twice
@@ -10148,6 +10156,7 @@ void shaman_t::init_procs()
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
 
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
+  proc.surge_of_power_sk_lightning_bolt = get_proc( "Surge of Power: SK Lightning Bolt" );
   proc.surge_of_power_lava_burst     = get_proc( "Surge of Power: Lava Burst" );
   proc.surge_of_power_frost_shock    = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock    = get_proc( "Surge of Power: Flame Shock" );
