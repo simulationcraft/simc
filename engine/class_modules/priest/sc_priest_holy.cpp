@@ -175,13 +175,13 @@ struct holy_fire_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
   propagate_const<burning_vehemence_t*> child_burning_vehemence;
-  propagate_const<searing_light_t*> child_searing_light;
+  action_t* child_searing_light;
 
   holy_fire_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       child_burning_vehemence( nullptr ),
-      child_searing_light( nullptr )
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
     apply_affecting_aura( p.talents.holy.burning_vehemence );
@@ -193,10 +193,6 @@ struct holy_fire_t final : public priest_spell_t
     {
       child_burning_vehemence = new burning_vehemence_t( priest() );
       add_child( child_burning_vehemence );
-    }
-    if ( priest().talents.holy.divine_image.enabled() )
-    {
-      child_searing_light = new searing_light_t( priest() );
     }
   }
 
@@ -275,15 +271,12 @@ struct holy_fire_t final : public priest_spell_t
 
 struct holy_word_chastise_t final : public priest_spell_t
 {
-  propagate_const<searing_light_t*> child_searing_light;
+  action_t* child_searing_light;
   holy_word_chastise_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "holy_word_chastise", p, p.talents.holy.holy_word_chastise ), child_searing_light( nullptr )
+    : priest_spell_t( "holy_word_chastise", p, p.talents.holy.holy_word_chastise ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
-    if ( priest().talents.holy.divine_image.enabled() )
-    {
-      child_searing_light = new searing_light_t( priest() );
-    }
   }
   double cost() const override
   {
@@ -441,8 +434,14 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
 
 void priest_t::init_background_actions_holy()
 {
-  background_actions.holy_fire     = new actions::spells::holy_fire_t( *this, "" );
-  background_actions.searing_light = new actions::spells::searing_light_t( *this );
+  if ( talents.holy.divine_word.enabled() )
+  {
+    background_actions.holy_fire = new actions::spells::holy_fire_t( *this, "" );
+  }
+  if ( talents.holy.divine_image.enabled() )
+  {
+    background_actions.searing_light = new actions::spells::searing_light_t( *this );
+  }
 }
 
 expr_t* priest_t::create_expression_holy( action_t*, util::string_view /*name_str*/ )

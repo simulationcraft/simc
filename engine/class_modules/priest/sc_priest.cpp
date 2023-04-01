@@ -533,25 +533,20 @@ struct smite_t final : public priest_spell_t
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
   propagate_const<action_t*> child_holy_fire;
-  propagate_const<action_t*> child_searing_light;
+  action_t* child_searing_light;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
-      child_holy_fire( nullptr ),
-      child_searing_light( nullptr )
+      child_holy_fire( priest().background_actions.holy_fire ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
     if ( priest().talents.holy.divine_word.enabled() )
     {
-      child_holy_fire             = priest().background_actions.holy_fire;
       child_holy_fire->background = true;
-    }
-    if ( priest().talents.holy.divine_image.enabled() )
-    {
-      child_searing_light = priest().background_actions.searing_light;
     }
   }
 
@@ -939,7 +934,7 @@ struct shadow_word_death_t final : public priest_spell_t
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
-  propagate_const<action_t*> child_searing_light;
+  action_t* child_searing_light;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
@@ -948,7 +943,7 @@ struct shadow_word_death_t final : public priest_spell_t
                         ( priest().is_ptr() ? priest().specs.shadow_priest->effectN( 25 ).percent() : 0 ) ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
-      child_searing_light( nullptr )
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
 
@@ -958,11 +953,6 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       child_expiation             = new expiation_t( priest() );
       child_expiation->background = true;
-    }
-
-    if ( priest().talents.holy.divine_image.enabled() )
-    {
-      child_searing_light = priest().background_actions.searing_light;
     }
 
     if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
