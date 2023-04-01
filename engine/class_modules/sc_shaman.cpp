@@ -1158,6 +1158,38 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 // Shaman Action Base Template
 // ==========================================================================
 
+struct shaman_action_state_t : public action_state_t
+{
+  execute_type exec_type = execute_type::NORMAL;
+
+  shaman_action_state_t( action_t* action_, player_t* target_ ) :
+    action_state_t( action_, target_ )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    exec_type = execute_type::NORMAL;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+
+    auto lbs = debug_cast<const shaman_action_state_t*>( s );
+    exec_type = lbs->exec_type;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " exec_type=" << static_cast<unsigned>( exec_type );
+
+    return s;
+  }
+};
+
 template <class Base>
 struct shaman_action_t : public Base
 {
@@ -1165,6 +1197,9 @@ private:
   using ab = Base;  // action base, eg. spell_t
 public:
   using base_t = shaman_action_t<Base>;
+
+  // General things
+  execute_type exec_type;
 
   // Cooldown tracking
   bool track_cd_waste;
@@ -1201,6 +1236,7 @@ public:
 
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
+      exec_type( execute_type::NORMAL ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
@@ -1328,6 +1364,22 @@ public:
     }
   }
 
+  static shaman_action_state_t* cast_state( action_state_t* s )
+  { return debug_cast<shaman_action_state_t*>( s ); }
+
+  static const shaman_action_state_t* cast_state( const action_state_t* s )
+  { return debug_cast<const shaman_action_state_t*>( s ); }
+
+  action_state_t* new_state() override
+  { return new shaman_action_state_t( this, this->target ); }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    ab::snapshot_internal( s, flags, rt );
+
+    cast_state( s )->exec_type = this->exec_type;
+  }
+
   double composite_attack_power() const override
   {
     double m = ab::composite_attack_power();
@@ -1393,7 +1445,8 @@ public:
       }
     }
 
-    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->check() )
+    if ( exec_type != execute_type::PRIMORDIAL_WAVE && affected_by_enh_t29_2pc &&
+         p()->buff.t29_2pc_enh->check() )
     {
       m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
@@ -1962,38 +2015,6 @@ public:
 // Shaman Offensive Spell
 // ==========================================================================
 
-struct shaman_spell_state_t : public action_state_t
-{
-  execute_type exec_type = execute_type::NORMAL;
-
-  shaman_spell_state_t( action_t* action_, player_t* target_ ) :
-    action_state_t( action_, target_ )
-  { }
-
-  void initialize() override
-  {
-    action_state_t::initialize();
-    exec_type = execute_type::NORMAL;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    action_state_t::copy_state( s );
-
-    auto lbs = debug_cast<const shaman_spell_state_t*>( s );
-    exec_type = lbs->exec_type;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    action_state_t::debug_str( s );
-
-    s << " exec_type=" << static_cast<unsigned>( exec_type );
-
-    return s;
-  }
-};
-
 struct elemental_overload_event_t : public event_t
 {
   action_state_t* state;
@@ -2031,33 +2052,13 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   bool affected_by_stormkeeper_cast_time  = false;
   bool affected_by_stormkeeper_damage     = false;
 
-  // General things
-  execute_type exec_type;
-
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr ),
-    exec_type( execute_type::NORMAL )
+    base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr )
   {
     affected_by_stormkeeper_cast_time = data().affected_by( p->find_spell( 191634 )->effectN( 1 ) );
     affected_by_stormkeeper_damage = data().affected_by( p->find_spell( 191634 )->effectN( 2 ) );
 
     may_proc_stormbringer = false;
-  }
-
-  static shaman_spell_state_t* cast_state( action_state_t* s )
-  { return debug_cast<shaman_spell_state_t*>( s ); }
-
-  static const shaman_spell_state_t* cast_state( const action_state_t* s )
-  { return debug_cast<const shaman_spell_state_t*>( s ); }
-
-  action_state_t* new_state() override
-  { return new shaman_spell_state_t( this, target ); }
-
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    base_t::snapshot_internal( s, flags, rt );
-
-    cast_state( s )->exec_type = exec_type;
   }
 
   void init_finished() override
@@ -3166,24 +3167,24 @@ struct icy_edge_attack_t : public shaman_attack_t
   }
 };
 
-struct stormstrike_attack_state_t : public action_state_t
+struct stormstrike_attack_state_t : public shaman_action_state_t
 {
   bool stormbringer;
 
   stormstrike_attack_state_t( action_t* action_, player_t* target_ ) :
-    action_state_t( action_, target_ ), stormbringer( false )
+    shaman_action_state_t( action_, target_ ), stormbringer( false )
   { }
 
   void initialize() override
   {
-    action_state_t::initialize();
+    shaman_action_state_t::initialize();
 
     stormbringer = false;
   }
 
   void copy_state( const action_state_t* s ) override
   {
-    action_state_t::copy_state( s );
+    shaman_action_state_t::copy_state( s );
 
     auto lbs = debug_cast<const stormstrike_attack_state_t*>( s );
     stormbringer= lbs->stormbringer;
@@ -3191,7 +3192,7 @@ struct stormstrike_attack_state_t : public action_state_t
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    action_state_t::debug_str( s );
+    shaman_action_state_t::debug_str( s );
 
     s << " stormbringer=" << stormbringer;
 
@@ -4962,18 +4963,18 @@ struct lava_beam_t : public chained_base_t
 
 // Lava Burst Spell =========================================================
 
-struct lava_burst_state_t : public shaman_spell_state_t
+struct lava_burst_state_t : public shaman_action_state_t
 {
   bool wlr_buffed;
   bool ps_buffed;
 
   lava_burst_state_t( action_t* action_, player_t* target_ ) :
-    shaman_spell_state_t( action_, target_ ), wlr_buffed( false ), ps_buffed( false )
+    shaman_action_state_t( action_, target_ ), wlr_buffed( false ), ps_buffed( false )
   { }
 
   void initialize() override
   {
-    shaman_spell_state_t::initialize();
+    shaman_action_state_t::initialize();
 
     wlr_buffed = false;
     ps_buffed = false;
@@ -4981,7 +4982,7 @@ struct lava_burst_state_t : public shaman_spell_state_t
 
   void copy_state( const action_state_t* s ) override
   {
-    shaman_spell_state_t::copy_state( s );
+    shaman_action_state_t::copy_state( s );
 
     auto lbs = debug_cast<const lava_burst_state_t*>( s );
     wlr_buffed = lbs->wlr_buffed;
@@ -4990,7 +4991,7 @@ struct lava_burst_state_t : public shaman_spell_state_t
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
-    shaman_spell_state_t::debug_str( s );
+    shaman_action_state_t::debug_str( s );
 
     s << " wlr_buffed=" << wlr_buffed;
     s << " ps_buffed=" << ps_buffed;
