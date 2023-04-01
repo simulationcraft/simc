@@ -5,6 +5,7 @@
 
 #include "player/pet_spawner.hpp"
 #include "action/action_callback.hpp"
+#include "report/highchart.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -278,8 +279,7 @@ public:
   std::vector<std::pair<mw_proc_state, proc_t*>> mw_proc_state_list;
 
   /// Maelstrom generator tracking
-  std::vector<simple_sample_data_t> mw_source_list;
-  simple_sample_data_t mw_source_overflow;
+  std::vector<std::pair<simple_sample_data_t, simple_sample_data_t>> mw_source_list;
 
   // Cached actions
   struct actions_t
@@ -919,6 +919,7 @@ public:
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
+  void analyze( sim_t& sim ) override;
 
   // APL releated methods
   void init_action_list() override;
@@ -6184,7 +6185,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
     harmful = false;
 
     // Cache pointer for MW tracking uses
-    p()->action.ascendance = this;
+    p()->action.feral_spirits = this;
   }
 
   void execute() override
@@ -8835,7 +8836,8 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
 
     if ( triggered )
     {
-      shaman->buff.maelstrom_weapon->increment();
+      shaman->trigger_maelstrom_weapon( state );
+      //shaman->buff.maelstrom_weapon->increment();
       auto proc = shaman->get_mw_proc_state_counter( state->action );
       if ( proc != nullptr )
       {
@@ -8889,6 +8891,30 @@ void shaman_t::action_init_finished( action_t& action )
   if ( get_mw_proc_state( action ) == mw_proc_state::DEFAULT )
   {
     set_mw_proc_state( action, mw_proc_state::DISABLED );
+  }
+}
+
+void shaman_t::analyze( sim_t& sim )
+{
+  player_t::analyze( sim );
+
+  int iterations = collected_data.total_iterations > 0
+    ? collected_data.total_iterations
+    : sim.iterations;
+
+  if ( iterations > 1 )
+  {
+    // Re-use MW stack containers to report iteration average of stacks generated
+    range::for_each( mw_source_list, [ iterations ]( auto& container ) {
+      auto sum_actual = container.first.sum();
+      auto sum_overflow = container.second.sum();
+
+      container.first.reset();
+      container.first.add( sum_actual / as<double>( iterations ) );
+
+      container.second.reset();
+      container.second.add( sum_overflow / as<double>( iterations ) );
+    } );
   }
 }
 
@@ -9682,6 +9708,8 @@ void shaman_t::trigger_maelstrom_weapon( const action_t* action, int stacks )
   auto stacks_added = std::min( stacks_avail, stacks );
   auto overflow = stacks_avail >= stacks ? 0 : stacks - stacks_avail;
 
+  assert( action );
+
   if ( action != nullptr )
   {
     if ( as<unsigned>( action->internal_id ) >= mw_source_list.size() )
@@ -9689,11 +9717,11 @@ void shaman_t::trigger_maelstrom_weapon( const action_t* action, int stacks )
       mw_source_list.resize( action->internal_id + 1 );
     }
 
-    mw_source_list[ action->internal_id ].add( as<double>( stacks_added ) );
+    mw_source_list[ action->internal_id ].first.add( as<double>( stacks_added ) );
 
     if ( overflow > 0 )
     {
-      mw_source_overflow.add( as<double>( overflow ) );
+      mw_source_list[ action->internal_id ].second.add( as<double>( overflow ) );
     }
   }
 
@@ -11204,7 +11232,8 @@ void shaman_t::merge( player_t& other )
 
   for ( auto i = 0U; i < mw_source_list.size(); ++i )
   {
-    mw_source_list[ i ].merge( s.mw_source_list[ i ] );
+    mw_source_list[ i ].first.merge( s.mw_source_list[ i ].first );
+    mw_source_list[ i ].second.merge( s.mw_source_list[ i ].second );
   }
 }
 
@@ -11302,6 +11331,138 @@ public:
   shaman_report_t( shaman_t& player ) : p( player )
   { }
 
+  void mw_table_header( report::sc_html_stream& os )
+  {
+    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+       << "<tr>\n"
+       << "<th colspan=\"5\"><strong>Maelstrom Weapon Sources</strong></th>\n"
+       << "</tr>\n"
+       << "<tr>\n"
+       << "<th>Ability</th>\n"
+       << "<th>Actual</th>\n"
+       << "<th>Overflow</th>\n"
+       << "<th>% Actual</th>\n"
+       << "<th>% Overflow</th>\n"
+       << "</tr>\n";
+  }
+
+  void mw_piechart_contents( report::sc_html_stream& os )
+  {
+    highchart::pie_chart_t mw_src( highchart::build_id( p, "mw_src" ), *p.sim );
+    mw_src.set_title( "Maelstrom Weapon Sources" );
+    mw_src.set( "plotOptions.pie.dataLabels.format", "<b>{point.name}</b>: {point.y:.1f}" );
+
+    double overflow = 0.0;
+    std::vector<std::pair<action_t*, double>> processed_data;
+
+    for ( size_t i = 0; i < p.mw_source_list.size(); ++i )
+    {
+      const auto& entry = p.mw_source_list[ i ];
+      overflow += entry.second.sum();
+
+      if ( entry.first.sum() == 0.0 )
+      {
+        continue;
+      }
+
+      auto action_it = range::find_if( p.action_list, [ i ]( const action_t* action ) {
+        return action->internal_id == as<int>( i );
+      } );
+
+      processed_data.emplace_back( *action_it, entry.first.sum() );
+    }
+
+    range::sort( processed_data, []( const auto& left, const auto& right ) {
+      if ( left.second == right.second )
+      {
+        return left.first->name_str < right.first->name_str;
+      }
+
+      return left.second > right.second;
+    } );
+
+    range::for_each( processed_data, [ this, &mw_src ]( const auto& entry ) {
+      color::rgb color = color::school_color( entry.first->school );
+
+      js::sc_js_t e;
+      e.set( "color", color.str() );
+      e.set( "y", util::round( entry.second, p.sim->report_precision ) );
+      std::string name = entry.first->data().ok()
+        ? entry.first->data().name_cstr()
+        : entry.first->name_str;
+      e.set( "name", report_decorators::decorate_html_string( util::encode_html( name ), color ) );
+
+      mw_src.add( "series.0.data", e );
+    } );
+
+    if ( overflow > 0.0 )
+    {
+      js::sc_js_t e;
+      e.set( "color", color::WHITE.str() );
+      e.set( "y", util::round( overflow, p.sim->report_precision ) );
+      e.set( "name", "Overflow" );
+      mw_src.add( "series.0.data", e );
+    }
+
+    os << mw_src.to_target_div();
+    p.sim->add_chart_data( mw_src );
+  }
+
+  void mw_table_contents( report::sc_html_stream& os )
+  {
+      int row = 0;
+      std::string row_class_str;
+      double actual = 0.0, overflow = 0.0;
+
+      range::for_each( p.mw_source_list,  [ &actual, &overflow ]( const auto& entry ) {
+        actual += entry.first.sum();
+        overflow += entry.second.sum();
+      } );
+
+      for ( auto i = 0; i < as<int>( p.mw_source_list.size() ); ++i )
+      {
+        const auto& ref = p.mw_source_list[ i ];
+
+        if ( ref.first.sum() == 0.0 && ref.second.sum() == 0.0 )
+        {
+          continue;
+        }
+
+        auto action = range::find_if( p.action_list, [ i ]( const action_t* action ) {
+          return action->internal_id == i;
+        } );
+
+        os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
+        os << fmt::format( "<td class=\"left\">{}</td>", report_decorators::decorated_action( **action ) );
+        os << fmt::format( "<td class=\"left\">{:.1f}</td>", ref.first.sum() );
+        os << fmt::format( "<td class=\"left\">{:.1f}</td>", ref.second.sum() );
+        os << fmt::format( "<td class=\"left\">{:.2f}%</td>",
+                          100.0 * ref.first.sum() / actual );
+        os << fmt::format( "<td class=\"left\">{:.2f}%</td>",
+                          100.0 * ref.second.sum() / overflow );
+        os << "</tr>\n";
+      }
+
+      os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
+      os << fmt::format( "<td class=\"left\"><strong>Overflow Stacks</strong></td>" );
+      os << fmt::format( "<td class=\"left\">{:.1f}</td>", 0.0 );
+      os << fmt::format( "<td class=\"left\">{:.1f}</td>", overflow );
+      os << fmt::format( "<td class=\"left\">{:.2f}%</td>", 0.0 );
+      os << fmt::format( "<td class=\"left\">{:.2f}%</td>", 100.0 * overflow / ( actual + overflow ) );
+
+      os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
+      os << fmt::format( "<td class=\"left\"><strong>Actual Stacks</strong></td>" );
+      os << fmt::format( "<td class=\"left\">{:.1f}</td>", actual );
+      os << fmt::format( "<td class=\"left\">{:.1f}</td>", 0.0 );
+      os << fmt::format( "<td class=\"left\">{:.2f}%</td>", 100.0 * actual / ( actual + overflow ) );
+      os << fmt::format( "<td class=\"left\">{:.2f}%</td>", 0.0 );
+  }
+
+  void mw_table_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
   void cdwaste_table_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
@@ -11385,6 +11546,24 @@ public:
     }
 
     os << "\t\t\t\t\t</div>\n";
+
+    if ( p.talent.maelstrom_weapon.ok() )
+    {
+      os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Maelstrom Weapon details</h3>\n"
+         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+      mw_table_header( os );
+      mw_table_contents( os );
+      mw_piechart_contents( os );
+      mw_table_footer( os );
+
+      os << "\t\t\t\t\t</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+
+      os << "\t\t\t\t\t</div>\n";
+    }
   }
 
 private:
