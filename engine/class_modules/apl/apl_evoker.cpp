@@ -106,7 +106,7 @@ void devastation( player_t* p )
   aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=4&((buff.charged_blast.stack>=12)|(talent.raging_inferno&cooldown.firestorm.remains>=gcd.max*6))" );
   aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre=3&buff.charged_blast.stack>=16" );
   aoe->add_action( "use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down" );
-  aoe->add_action( "disintegrate,chain=1,if=!talent.shattering_star|cooldown.shattering_star.remains>5|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack" );
+  aoe->add_action( "disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2&(evoker.use_clipping|cooldown.fire_breath.up|cooldown.eternity_surge.up),if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)" );
   aoe->add_action( "living_flame,if=talent.snapfire&buff.burnout.up" );
   aoe->add_action( "azure_strike" );
 
