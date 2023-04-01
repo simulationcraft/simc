@@ -952,6 +952,7 @@ public:
     uptime_t* eclipse_lunar;
     uptime_t* eclipse_none;
     uptime_t* friend_of_the_fae;
+    uptime_t* incarnation_cat;
     uptime_t* primordial_arcanic_pulsar;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
@@ -1561,12 +1562,23 @@ struct berserk_cat_buff_t : public druid_buff_t
     }
   }
 
+  void start( int s, double v, timespan_t d ) override
+  {
+    base_t::start( s, v, d );
+
+    if ( inc )
+      p()->uptime.incarnation_cat->update( true, sim->current_time() );
+  }
+
   void expire_override( int s, timespan_t d ) override
   {
     base_t::expire_override( s, d );
 
     p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
+
+    if ( inc )
+      p()->uptime.incarnation_cat->update( false, sim->current_time() );
   }
 };
 
@@ -10946,7 +10958,7 @@ void druid_t::init_procs()
   proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
-  proc.ashamanes_guidance   = get_proc( "Ashamane's Guidance" );
+  proc.ashamanes_guidance   = get_proc( "Ashamane's Guidance" )->collect_count();
   proc.predator             = get_proc( "Predator" );
   proc.predator_wasted      = get_proc( "Predator (Wasted)" );
   proc.primal_claws         = get_proc( "Primal Claws" );
@@ -10977,6 +10989,7 @@ void druid_t::init_uptimes()
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
   uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim );
+  uptime.incarnation_cat           = get_uptime( "Incarnation: Avatar of Ashamane" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
@@ -11071,27 +11084,6 @@ void druid_t::init_special_effects()
 
   if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() )
   {
-    struct ashamanes_guidance_cb_t : public dbc_proc_callback_t
-    {
-      druid_t* druid;
-      timespan_t dur;
-
-      ashamanes_guidance_cb_t( druid_t* p, const special_effect_t& e )
-        : dbc_proc_callback_t( p, e ),
-          druid( p ),
-          dur( timespan_t::from_seconds( p->spec.ashamanes_guidance->effectN( 1 ).base_value() ) )
-      {}
-
-      void execute( action_t*, action_state_t* ) override
-      {
-        if ( druid->buff.incarnation_cat->check() )
-          return;
-
-        druid->buff.incarnation_cat->trigger( dur );
-        druid->proc.ashamanes_guidance->occur();
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = "ashamanes_guidance_driver";
     driver->spell_id = spec.ashamanes_guidance->id();
@@ -11099,8 +11091,22 @@ void druid_t::init_special_effects()
     driver->ppm_ = -0.95;
     special_effects.push_back( driver );
 
-    auto cb = new ashamanes_guidance_cb_t( this, *driver );
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->initialize();
+
+    auto dur = timespan_t::from_seconds( spec.ashamanes_guidance->effectN( 1 ).base_value() );
+    callbacks.register_callback_execute_function(
+        driver->spell_id, [ dur, this ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+          buff.incarnation_cat->trigger( dur );
+          proc.ashamanes_guidance->occur();
+        } );
+
+    buff.incarnation_cat->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
   }
 
   if ( unique_gear::find_special_effect( this, 388069 ) )
