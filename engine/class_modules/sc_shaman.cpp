@@ -1556,7 +1556,7 @@ public:
       p()->buff.natures_swiftness->decrement();
     }
 
-    if ( !this->background && this->p()->buff.t29_2pc_enh->up() && affected_by_enh_t29_2pc )
+    if ( this->p()->buff.t29_2pc_enh->up() && affected_by_enh_t29_2pc )
     {
       this->p()->generate_maelstrom_weapon( this->execute_state );
       //this->p()->buff.maelstrom_weapon->increment( 1 );
