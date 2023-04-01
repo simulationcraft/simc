@@ -8527,6 +8527,13 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
+  if ( util::str_compare_ci( name, "t30_2pc_timer.next_tick" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+      return last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000 - sim->current_time();
+    } );
+  }
+
   auto splits = util::string_split<util::string_view>( name, "." );
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "pet" ) )
@@ -9918,13 +9925,19 @@ void shaman_t::create_buffs()
   buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
       ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
         // spell data says "40", but means 40s
-        timespan_t test = sim->current_time() - spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
-        if ( last_t30_proc <= test )
+        bool can_proc = false;
+        timespan_t next_proc = last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
+        if ( next_proc > sim->current_time() && !can_proc )
+        {
+          can_proc = true;
+          last_t30_proc = sim->current_time();
+        }
+        if ( can_proc )
         {
           if ( !buff.stormkeeper->up() )
-          {
-            last_t30_proc = sim->current_time();
+          {   
             buff.stormkeeper->trigger( 2 );
+            can_proc = false;
           }
         }
       } );
