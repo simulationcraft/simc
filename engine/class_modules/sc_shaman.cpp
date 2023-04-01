@@ -277,6 +277,10 @@ public:
   /// Maelstrom Weapon blocklist, allowlist; (spell_id, { override_state, proc tracking object })
   std::vector<std::pair<mw_proc_state, proc_t*>> mw_proc_state_list;
 
+  /// Maelstrom generator tracking
+  std::vector<simple_sample_data_t> mw_source_list;
+  simple_sample_data_t mw_source_overflow;
+
   // Cached actions
   struct actions_t
   {
@@ -296,6 +300,10 @@ public:
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
+
+    // Cached action pointers
+    action_t* feral_spirits; // MW Tracking
+    action_t* ascendance; // MW Tracking
   } action;
 
   // Pets
@@ -875,6 +883,8 @@ public:
 
   // triggers
   void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
+  void trigger_maelstrom_weapon( const action_t* action, int stacks = 1 );
+  void trigger_maelstrom_weapon( const action_state_t* state, int stacks = 1 );
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
@@ -883,7 +893,7 @@ public:
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
   void trigger_lightning_rod_damage( const action_state_t* state );
-  void trigger_swirling_maelstrom();
+  void trigger_swirling_maelstrom( const action_state_t* state );
   void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
 
   // Legendary
@@ -3967,8 +3977,9 @@ struct stormstrike_base_t : public shaman_attack_t
         p()->rng().roll( p()->talent.elemental_assault->effectN( 3 ).percent() ) )
     {
       make_event( sim, 0_s, [ this ]() {
-        p()->buff.maelstrom_weapon->trigger(
+        p()->trigger_maelstrom_weapon( execute_state,
           p()->talent.elemental_assault->effectN( 2 ).base_value() );
+          //p()->buff.maelstrom_weapon->trigger( p()->talent.elemental_assault->effectN( 2 ).base_value() );
         p()->proc.maelstrom_weapon_ea->occur();
       } );
     }
@@ -4105,7 +4116,7 @@ struct ice_strike_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    p()->trigger_swirling_maelstrom();
+    p()->trigger_swirling_maelstrom( execute_state );
     p()->buff.ice_strike->trigger();
 
     if ( result_is_hit( execute_state->result ) && p()->buff.crash_lightning->up() )
@@ -4877,7 +4888,8 @@ struct chain_lightning_t : public chained_base_t
       auto refunded = as<int>(
         std::ceil( mw_consumed_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
 
-      p()->buff.maelstrom_weapon->trigger( refunded );
+      p()->trigger_maelstrom_weapon( execute_state, refunded );
+      //p()->buff.maelstrom_weapon->trigger( refunded );
       for ( auto i = 0; i < refunded; ++i )
       {
         p()->proc.maelstrom_weapon_4pc_enh->occur();
@@ -5321,7 +5333,7 @@ struct fire_nova_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    p()->trigger_swirling_maelstrom();
+    p()->trigger_swirling_maelstrom( state );
   }
 };
 
@@ -6170,6 +6182,9 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     parse_options( options_str );
     harmful = false;
+
+    // Cache pointer for MW tracking uses
+    p()->action.ascendance = this;
   }
 
   void execute() override
@@ -7034,7 +7049,7 @@ struct frost_shock_t : public shaman_spell_t
     if ( p()->buff.hailstorm->check() >=
          p()->talent.swirling_maelstrom->effectN( 2 ).base_value() )
     {
-      p()->trigger_swirling_maelstrom();
+      p()->trigger_swirling_maelstrom( execute_state );
     }
 
     p()->buff.flux_melting->trigger();
@@ -7130,6 +7145,9 @@ struct ascendance_t : public shaman_spell_t
     }
     // Periodic effect for Enhancement handled by the buff
     dot_duration = base_tick_time = timespan_t::zero();
+
+    // Cache pointer for MW tracking uses
+    p()->action.ascendance = this;
   }
 
   void init() override
@@ -8143,7 +8161,9 @@ struct primordial_wave_t : public shaman_spell_t
 
     if ( p()->talent.primal_maelstrom.ok() )
     {
-      p()->buff.maelstrom_weapon->trigger( p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
+      p()->trigger_maelstrom_weapon( execute_state,
+                                    p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
+      //p()->buff.maelstrom_weapon->trigger( p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
       for ( auto i = 0; i < p()->talent.primal_maelstrom->effectN( 1 ).base_value(); ++i )
       {
         p()->proc.maelstrom_weapon_pw->occur();
@@ -9651,6 +9671,40 @@ void shaman_t::trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain )
   resource_gain( RESOURCE_MAELSTROM, g, gain );
 }
 
+void shaman_t::trigger_maelstrom_weapon( const action_t* action, int stacks )
+{
+  if ( !talent.maelstrom_weapon.ok() )
+  {
+    return;
+  }
+
+  auto stacks_avail = buff.maelstrom_weapon->max_stack() - buff.maelstrom_weapon->check();
+  auto stacks_added = std::min( stacks_avail, stacks );
+  auto overflow = stacks_avail >= stacks ? 0 : stacks - stacks_avail;
+
+  if ( action != nullptr )
+  {
+    if ( as<unsigned>( action->internal_id ) >= mw_source_list.size() )
+    {
+      mw_source_list.resize( action->internal_id + 1 );
+    }
+
+    mw_source_list[ action->internal_id ].add( as<double>( stacks_added ) );
+
+    if ( overflow > 0 )
+    {
+      mw_source_overflow.add( as<double>( overflow ) );
+    }
+  }
+
+  buff.maelstrom_weapon->trigger( stacks );
+}
+
+void shaman_t::trigger_maelstrom_weapon( const action_state_t* state, int stacks )
+{
+  trigger_maelstrom_weapon( state->action, stacks );
+}
+
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -9839,21 +9893,22 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
   } );
 }
 
-void shaman_t::trigger_swirling_maelstrom()
+void shaman_t::trigger_swirling_maelstrom( const action_state_t* state )
 {
   if ( !talent.swirling_maelstrom.ok() )
   {
     return;
   }
 
-  buff.maelstrom_weapon->trigger( talent.swirling_maelstrom->effectN( 1 ).base_value() );
+  //buff.maelstrom_weapon->trigger( talent.swirling_maelstrom->effectN( 1 ).base_value() );
+  trigger_maelstrom_weapon( state, talent.swirling_maelstrom->effectN( 1 ).base_value() );
   for ( auto i = 0; i < talent.swirling_maelstrom->effectN( 1 ).base_value(); ++i )
   {
     proc.maelstrom_weapon_sm->occur();
   }
 }
 
-void shaman_t::trigger_static_accumulation_refund( const action_state_t* /* state */, int mw_stacks )
+void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks )
 {
   if ( !dbc->ptr || !talent.static_accumulation.ok() || mw_stacks == 0 )
   {
@@ -9865,7 +9920,8 @@ void shaman_t::trigger_static_accumulation_refund( const action_state_t* /* stat
     return;
   }
 
-  buff.maelstrom_weapon->trigger( mw_stacks );
+  trigger_maelstrom_weapon( state, mw_stacks );
+  //buff.maelstrom_weapon->trigger( mw_stacks );
 
   for ( auto i = 0; i < mw_stacks; ++i )
   {
@@ -10012,7 +10068,9 @@ void shaman_t::create_buffs()
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-                                      buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
+                                      trigger_maelstrom_weapon( action.feral_spirits,
+                                                               b->data().effectN( 1 ).base_value() );
+                                      //buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
                                       proc.maelstrom_weapon_fs->occur();
                                     } );
 
@@ -10083,7 +10141,8 @@ void shaman_t::create_buffs()
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-      buff.maelstrom_weapon->trigger( b->value() );
+      trigger_maelstrom_weapon( action.ascendance, b->value() );
+      //buff.maelstrom_weapon->trigger( b->value() );
       for ( int i = 0; i < b->check_value(); ++i )
       {
         proc.maelstrom_weapon_sa->occur();
@@ -11136,6 +11195,16 @@ void shaman_t::merge( player_t& other )
   {
     cd_waste_exec[ i ]->second.merge( s.cd_waste_exec[ i ]->second );
     cd_waste_cumulative[ i ]->second.merge( s.cd_waste_cumulative[ i ]->second );
+  }
+
+  if ( s.mw_source_list.size() > mw_source_list.size() )
+  {
+    mw_source_list.resize( s.mw_source_list.size() );
+  }
+
+  for ( auto i = 0U; i < mw_source_list.size(); ++i )
+  {
+    mw_source_list[ i ].merge( s.mw_source_list[ i ] );
   }
 }
 
