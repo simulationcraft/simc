@@ -120,15 +120,15 @@ public:
 
   void reset() override
   {
-    priest_spell_t::reset();
-
-    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
-    // buffs up.
+    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up. Do this before calling reset as that will also reset the cooldown.
     if ( priest().specialization() == PRIEST_SHADOW && !priest().is_ptr() )
     {
       cooldown->charges =
           data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
     }
+
+    priest_spell_t::reset();
   }
 
   bool insidious_ire_active() const
@@ -977,14 +977,14 @@ struct shadow_word_death_t final : public priest_spell_t
 
   void reset() override
   {
-    priest_spell_t::reset();
-
-    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
-    // buffs up.
+    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up. Do this before calling reset as that will also reset the cooldown.
     if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
     {
       cooldown->charges = data().charges();
     }
+
+    priest_spell_t::reset();
   }
 
   void impact( action_state_t* s ) override
@@ -2503,7 +2503,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
