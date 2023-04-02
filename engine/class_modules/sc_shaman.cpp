@@ -27,9 +27,6 @@
 namespace
 {  // UNNAMED NAMESPACE
 
-using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
-using simple_data_t = std::pair<std::string, simple_sample_data_t>;
-
 struct shaman_t;
 
 enum class mw_proc_state
@@ -1332,31 +1329,14 @@ public:
     return n.empty() ? ab::name_str : n;
   }
 
-  void init() override
+  void init_finished() override
   {
-    ab::init();
+    ab::init_finished();
 
     if ( track_cd_waste )
     {
       cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
     }
-
-    // Setup Hasted CD for Enhancement
-    if ( ab::data().affected_by( p()->spec.shaman->effectN( 2 ) ) )
-    {
-      ab::cooldown->hasted = true;
-    }
-
-    // Setup Hasted GCD for Enhancement
-    if ( ab::data().affected_by( p()->spec.shaman->effectN( 3 ) ) )
-    {
-      ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
-    }
-  }
-
-  void init_finished() override
-  {
-    ab::init_finished();
 
     if ( this->cooldown->duration > timespan_t::zero() )
     {
