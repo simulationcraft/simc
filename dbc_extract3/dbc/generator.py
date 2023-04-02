@@ -2381,6 +2381,7 @@ class SpellDataGenerator(DataGenerator):
         ( 143, 'misc_value_1' ),
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
+        ( 507, 'misc_value_1' ),
     ]
 
     _spell_blacklist = [

@@ -442,7 +442,10 @@ bool spell_data_t::affected_by_category( int category_ ) const
 
 bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
 {
-  return affected_by_label(effect.misc_value2());
+  if ( effect.subtype() == A_MOD_RECHARGE_RATE_LABEL || effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    return affected_by_label( effect.misc_value1() );
+  else
+    return affected_by_label( effect.misc_value2() );
 }
 
 bool spell_data_t::affected_by_label( int label ) const

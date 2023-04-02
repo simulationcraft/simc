@@ -1140,6 +1140,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 485, "Resist Forced Movement%"                      },
   { 493, "Hunter Animal Companion"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
+  { 507, "Modify Damage Taken% from Caster's Spells (Label)" },
   { 531, "Modify Guardian Damage Done%"                 },
 } );
 
@@ -1487,6 +1488,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e -> misc_value1() );
     else if ( e -> type() == E_ENERGIZE )
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
+    else if ( e -> subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e -> misc_value1() );
     else
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e -> misc_value1() );
     s << " | Misc Value: " << tmp_buffer.data();
@@ -1592,7 +1595,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_RECHARGE_RATE_LABEL )
+  if ( e->type() == E_APPLY_AURA &&
+       ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
   {
     auto str = label_str( e -> misc_value1(), dbc );
     if ( str != "" )
