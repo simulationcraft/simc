@@ -195,6 +195,19 @@ static std::string action_name( util::string_view name, execute_type t )
   }
 }
 
+static util::string_view exec_type_str( execute_type t )
+{
+  switch ( t )
+  {
+    case execute_type::ASCENDANCE: return "ascendance";
+    case execute_type::DEEPLY_ROOTED_ELEMENTS: return "deeply_rooted_elements";
+    case execute_type::SHAKE_THE_FOUNDATIONS: return "shake_the_foundations";
+    case execute_type::PRIMORDIAL_WAVE: return "primordial_wave";
+    case execute_type::THORIMS_INVOCATION: return "thorims_invocation";
+    default: return "normal";
+  }
+}
+
 struct shaman_attack_t;
 struct shaman_spell_t;
 struct shaman_heal_t;
@@ -1184,6 +1197,7 @@ struct shaman_action_state_t : public action_state_t
   {
     action_state_t::debug_str( s );
 
+    //s << " exec_type=" << exec_type_str( exec_type );
     s << " exec_type=" << static_cast<unsigned>( exec_type );
 
     return s;
@@ -1234,9 +1248,10 @@ public:
   bool affected_by_enh_t30_4pc_da;
   bool affected_by_enh_t30_4pc_ta;
 
-  shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
+  shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
+                  execute_type type_ = execute_type::NORMAL )
     : ab( n, player, s ),
-      exec_type( execute_type::NORMAL ),
+      exec_type( type_ ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
@@ -1445,8 +1460,7 @@ public:
       }
     }
 
-    if ( exec_type != execute_type::PRIMORDIAL_WAVE && affected_by_enh_t29_2pc &&
-         p()->buff.t29_2pc_enh->check() )
+    if ( affected_by_enh_t29_2pc && p()->buff.t29_2pc_enh->check() )
     {
       m *= 1.0 + p()->buff.t29_2pc_enh->value();
     }
@@ -1609,7 +1623,8 @@ public:
       p()->buff.natures_swiftness->decrement();
     }
 
-    if ( this->p()->buff.t29_2pc_enh->up() && affected_by_enh_t29_2pc )
+    if ( exec_type != execute_type::PRIMORDIAL_WAVE && affected_by_enh_t29_2pc &&
+         this->p()->buff.t29_2pc_enh->up() )
     {
       this->p()->generate_maelstrom_weapon( this->execute_state );
       //this->p()->buff.maelstrom_weapon->increment( 1 );
@@ -1881,8 +1896,9 @@ public:
   double mw_multiplier;
 
   shaman_spell_base_t( util::string_view n, shaman_t* player,
-                       const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ), mw_consume_max_stack( 0 ), mw_consumed_stacks( 0 ),
+                       const spell_data_t* s = spell_data_t::nil(),
+                       execute_type type_ = execute_type::NORMAL )
+    : ab( n, player, s, type_ ), mw_consume_max_stack( 0 ), mw_consumed_stacks( 0 ),
       mw_affected_stacks( 0 ), mw_multiplier( 0.0 )
   {
     if ( this->data().affected_by( player->spell.maelstrom_weapon->effectN( 1 ) ) )
@@ -2052,8 +2068,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   bool affected_by_stormkeeper_cast_time  = false;
   bool affected_by_stormkeeper_damage     = false;
 
-  shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr )
+  shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
+                 execute_type type_ = execute_type::NORMAL ) :
+    base_t( token, p, s, type_ ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr )
   {
     affected_by_stormkeeper_cast_time = data().affected_by( p->find_spell( 191634 )->effectN( 1 ) );
     affected_by_stormkeeper_damage = data().affected_by( p->find_spell( 191634 )->effectN( 2 ) );
@@ -3370,8 +3387,10 @@ struct elemental_overload_spell_t : public shaman_spell_t
 {
   shaman_spell_t* parent;
 
-  elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s, shaman_spell_t* parent_, double multiplier = -1.0 )
-    : shaman_spell_t( name, p, s ), parent( parent_ )
+  elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s,
+                              shaman_spell_t* parent_, double multiplier = -1.0,
+                              execute_type type_ = execute_type::NORMAL )
+    : shaman_spell_t( name, p, s, type_ ), parent( parent_ )
   {
     base_execute_time = timespan_t::zero();
     background        = true;
@@ -4499,7 +4518,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 {
   chained_overload_base_t( shaman_t* p, util::string_view name, execute_type t,
                            const spell_data_t* spell, double mg, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( p, ::action_name( name, t ), spell, parent_ )
+    : elemental_overload_spell_t( p, ::action_name( name, t ), spell, parent_, -1.0, t )
   {
     if ( data().effectN( 1 ).chain_multiplier() != 0 )
     {
@@ -5004,14 +5023,13 @@ struct lava_burst_state_t : public shaman_action_state_t
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
-  execute_type type;
   bool wlr_buffed_impact;
   bool ps_buffed_impact;
 
   lava_burst_overload_t( shaman_t* player, execute_type type, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( player, ::action_name( "lava_burst_overload", type ),
-        player->find_spell( 285466 ), parent_ ),
-      impact_flags(), type(type), wlr_buffed_impact( false ), ps_buffed_impact( false )
+        player->find_spell( 285466 ), parent_, -1.0, type ),
+      impact_flags(), wlr_buffed_impact( false ), ps_buffed_impact( false )
   {
     maelstrom_gain = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     maelstrom_gain += player->talent.flow_of_power->effectN( 4 ).base_value();
@@ -5070,7 +5088,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( type == execute_type::PRIMORDIAL_WAVE )
+    if ( exec_type == execute_type::PRIMORDIAL_WAVE )
     {
       if ( p()->talent.primordial_wave->ok() )
       {
@@ -5315,14 +5333,13 @@ struct fire_nova_t : public shaman_spell_t
  */
 struct lava_burst_t : public shaman_spell_t
 {
-  execute_type type;
   unsigned impact_flags;
   bool wlr_buffed_impact;
   bool ps_buffed_impact;
 
   lava_burst_t( shaman_t* player, execute_type type_, util::string_view options_str = {} )
-    : shaman_spell_t( ::action_name( "lava_burst", type_ ), player, player->talent.lava_burst ),
-      type( type_ ), impact_flags(), wlr_buffed_impact( false ), ps_buffed_impact( false )
+    : shaman_spell_t( ::action_name( "lava_burst", type_ ), player, player->talent.lava_burst, type_ ),
+      impact_flags(), wlr_buffed_impact( false ), ps_buffed_impact( false )
   {
     parse_options( options_str );
     // Manacost is only for resto
@@ -5336,18 +5353,18 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_burst_overload_t( player, type, this );
+      overload = new lava_burst_overload_t( player, exec_type, this );
     }
 
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
 
-    if ( type != execute_type::NORMAL )
+    if ( exec_type != execute_type::NORMAL )
     {
       aoe = -1;
       background = true;
       base_execute_time = 0_s;
       cooldown->duration = 0_s;
-      switch ( type )
+      switch ( exec_type )
       {
         case execute_type::PRIMORDIAL_WAVE:
           if ( auto pw_action = p()->find_action( "primordial_wave" ) )
@@ -5474,7 +5491,7 @@ struct lava_burst_t : public shaman_spell_t
 
     // Note, only Elemental Shaman gets the primordial_wave state set, so don't need
     // separate specialization checks here
-    if ( type == execute_type::PRIMORDIAL_WAVE )
+    if ( exec_type == execute_type::PRIMORDIAL_WAVE )
     {
       if ( p()->talent.primordial_wave->ok() )
       {
@@ -5565,7 +5582,7 @@ struct lava_burst_t : public shaman_spell_t
     p()->lava_surge_during_lvb = false;
 
     // Trigger primordial wave if there's targets to trigger it on
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && type == execute_type::NORMAL &&
+    if ( p()->specialization() == SHAMAN_ELEMENTAL && exec_type == execute_type::NORMAL &&
          p()->buff.primordial_wave->up() && p()->action.lava_burst_pw )
     {
       p()->buff.primordial_wave->decrement();
@@ -5577,7 +5594,7 @@ struct lava_burst_t : public shaman_spell_t
       p()->trigger_splintered_elements( p()->action.lava_burst_pw );
     }
 
-    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    if ( exec_type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
     }
@@ -5644,7 +5661,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   lightning_bolt_overload_t( shaman_t* p, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
-    maelstrom_gain                     = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain  = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     maelstrom_gain += p->talent.flow_of_power->effectN( 4 ).base_value();
 
     affected_by_master_of_the_elements = true;
@@ -5682,12 +5699,9 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  execute_type type;
-
   lightning_bolt_t( shaman_t* player, execute_type type_, util::string_view options_str = {} ) :
     shaman_spell_t( ::action_name( "lightning_bolt", type_ ),
-        player, player->find_class_spell( "Lightning Bolt" ) ),
-    type( type_ )
+        player, player->find_class_spell( "Lightning Bolt" ), type_ )
   {
     parse_options( options_str );
     if ( player->specialization() == SHAMAN_ELEMENTAL )
@@ -5704,7 +5718,7 @@ struct lightning_bolt_t : public shaman_spell_t
       //add_child( overload );
     }
 
-    switch ( type_ )
+    switch ( exec_type )
     {
       case execute_type::PRIMORDIAL_WAVE:
       {
@@ -5735,7 +5749,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   bool consume_maelstrom_weapon() const override
   {
-    if ( type == execute_type::THORIMS_INVOCATION )
+    if ( exec_type == execute_type::THORIMS_INVOCATION )
     {
       return true;
     }
@@ -5747,7 +5761,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     auto mw_stacks = shaman_spell_t::maelstrom_weapon_stacks();
 
-    if ( type == execute_type::THORIMS_INVOCATION )
+    if ( exec_type == execute_type::THORIMS_INVOCATION )
     {
       mw_stacks = std::min( mw_stacks,
                             as<int>( p()->talent.thorims_invocation->effectN( 1 ).base_value() ) );
@@ -5808,7 +5822,7 @@ struct lightning_bolt_t : public shaman_spell_t
     // PW needs to execute before the primary spell executes so we can retain proper
     // Maelstrom Weapon stacks for the AoE Lightning Bolt
     if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
-         type == execute_type::NORMAL && p()->buff.primordial_wave->up() )
+         exec_type == execute_type::NORMAL && p()->buff.primordial_wave->up() )
     {
       p()->action.lightning_bolt_pw->set_target( target );
       if ( !p()->action.lightning_bolt_pw->target_list().empty() )
@@ -5836,7 +5850,7 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    if ( type == execute_type::NORMAL &&
+    if ( exec_type == execute_type::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
       if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
@@ -5851,7 +5865,7 @@ struct lightning_bolt_t : public shaman_spell_t
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && type == execute_type::NORMAL )
+    if ( p()->talent.thorims_invocation.ok() && exec_type == execute_type::NORMAL )
     {
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
@@ -9583,7 +9597,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     auto lvb = debug_cast<lava_burst_t*>( state->action );
-    if ( lvb->type != execute_type::NORMAL )
+    if ( lvb->exec_type != execute_type::NORMAL )
     {
       return;
     }
