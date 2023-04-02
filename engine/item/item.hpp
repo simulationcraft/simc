@@ -121,6 +121,10 @@ struct item_t
     std::vector<unsigned>                            azerite_ids;
     std::vector<int>                                 crafted_stat_mod;
 
+    // Priority state tracking for item bonuses
+    int base_level_priority;
+    int scaling_level_priority;
+
     parsed_input_t();
     ~parsed_input_t();
   } parsed;

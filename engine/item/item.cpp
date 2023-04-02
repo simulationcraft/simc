@@ -79,7 +79,9 @@ item_t::parsed_input_t::parsed_input_t()
     azerite_level( 0 ),
     data(),
     initial_cd( timespan_t::zero() ),
-    drop_level( 0 )
+    drop_level( 0 ),
+    base_level_priority( std::numeric_limits<int>::max() ),
+    scaling_level_priority( std::numeric_limits<int>::max() )
 {
   range::fill( stat_val, 0 );
   range::fill( gem_id, 0 );
