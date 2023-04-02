@@ -4626,11 +4626,9 @@ struct lava_beam_overload_t : public chained_overload_base_t
 
 struct chained_base_t : public shaman_spell_t
 {
-  execute_type type;
-
   chained_base_t( shaman_t* player, util::string_view name, execute_type t,
                   const spell_data_t* spell, double mg, util::string_view options_str )
-    : shaman_spell_t( ::action_name( name, t ), player, spell ), type( t )
+    : shaman_spell_t( ::action_name( name, t ), player, spell, t )
   {
     parse_options( options_str );
 
@@ -4701,7 +4699,7 @@ struct chain_lightning_t : public chained_base_t
 
     affected_by_master_of_the_elements = true;
 
-    switch ( type )
+    switch ( exec_type )
     {
       case execute_type::THORIMS_INVOCATION:
       {
@@ -4870,7 +4868,7 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && type == execute_type::NORMAL )
+    if ( p()->talent.thorims_invocation.ok() && exec_type == execute_type::NORMAL )
     {
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
