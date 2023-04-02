@@ -97,13 +97,13 @@ void devastation( player_t* p )
   aoe->add_action( "shattering_star" );
   aoe->add_action( "azure_strike,if=cooldown.dragonrage.remains<gcd.max*6&cooldown.fire_breath.remains<6*gcd.max&cooldown.eternity_surge.remains<6*gcd.max" );
   aoe->add_action( "firestorm" );
-  aoe->add_action( "pyre,if=talent.volatility&talent.raging_inferno&cooldown.firestorm.remains>=gcd.max*6", "Pyre logic with volatility." );
+  aoe->add_action( "pyre,if=talent.volatility&(talent.raging_inferno&debuff.in_firestorm.up)", "Pyre logic with volatility." );
   aoe->add_action( "pyre,if=talent.volatility&buff.charged_blast.stack>=10" );
   aoe->add_action( "pyre,if=talent.volatility&spell_targets.pyre>=4" );
   aoe->add_action( "living_flame,if=buff.burnout.up&buff.leaping_flames.up&!buff.essence_burst.up" );
   aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=6", "Pyre logic without volatility." );
-  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=5&((buff.charged_blast.stack>=3)|(talent.raging_inferno&cooldown.firestorm.remains>=gcd.max*6))" );
-  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=4&((buff.charged_blast.stack>=12)|(talent.raging_inferno&cooldown.firestorm.remains>=gcd.max*6))" );
+  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=5&((buff.charged_blast.stack>=3)|(talent.raging_inferno&debuff.in_firestorm.up))" );
+  aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre>=4&((buff.charged_blast.stack>=12)|(talent.raging_inferno&debuff.in_firestorm.up))" );
   aoe->add_action( "pyre,if=cooldown.dragonrage.remains>=10&spell_targets.pyre=3&buff.charged_blast.stack>=16" );
   aoe->add_action( "use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down" );
   aoe->add_action( "disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2,interrupt_if=buff.dragonrage.up&ticks>=2&(evoker.use_clipping|cooldown.fire_breath.up|cooldown.eternity_surge.up),if=buff.dragonrage.up|(!talent.shattering_star|cooldown.shattering_star.remains>6|essence>essence.max-1|buff.essence_burst.stack==buff.essence_burst.max_stack)" );
