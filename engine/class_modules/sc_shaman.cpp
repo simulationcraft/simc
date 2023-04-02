@@ -4435,6 +4435,7 @@ struct bloodlust_t : public shaman_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    track_cd_waste = false;
   }
 
   void execute() override
@@ -11281,21 +11282,26 @@ stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
  */
 class shaman_report_t : public player_report_extension_t
 {
+private:
+  shaman_t& p;
+
 public:
   shaman_report_t( shaman_t& player ) : p( player )
   { }
 
   void mw_consumer_header( report::sc_html_stream& os )
   {
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+    os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
+       << "<thead>\n"
        << "<tr>\n"
        << "<th colspan=\"5\"><strong>Maelstrom Weapon Consumers</strong></th>\n"
        << "</tr>\n"
        << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Actual</th>\n"
-       << "<th>% Total</th>\n"
-       << "</tr>\n";
+       << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+       << "<th class=\"toggle-sort\">Actual</th>\n"
+       << "<th class=\"toggle-sort\">% Total</th>\n"
+       << "</tr>\n"
+       << "</thead>\n";
   }
 
   void mw_consumer_contents( report::sc_html_stream& os )
@@ -11390,17 +11396,19 @@ public:
 
   void mw_generator_header( report::sc_html_stream& os )
   {
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+    os << "<table class=\"sc sort even\" style=\"float: left;margin-right: 10px;\">\n"
+       << "<thead>\n"
        << "<tr>\n"
        << "<th colspan=\"5\"><strong>Maelstrom Weapon Sources</strong></th>\n"
        << "</tr>\n"
        << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Actual</th>\n"
-       << "<th>Overflow</th>\n"
-       << "<th>% Actual</th>\n"
-       << "<th>% Overflow</th>\n"
-       << "</tr>\n";
+       << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+       << "<th class=\"toggle-sort\">Actual</th>\n"
+       << "<th class=\"toggle-sort\">Overflow</th>\n"
+       << "<th class=\"toggle-sort\">% Actual</th>\n"
+       << "<th class=\"toggle-sort\">% Overflow</th>\n"
+       << "</tr>\n"
+       << "</thead>\n";
   }
 
   void mw_generator_piechart_contents( report::sc_html_stream& os )
@@ -11632,9 +11640,6 @@ public:
           "</div>\n"
           "</div>\n";
   }
-
-private:
-  shaman_t& p;
 };
 
 // SHAMAN MODULE INTERFACE ==================================================
