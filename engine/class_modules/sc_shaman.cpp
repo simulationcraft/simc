@@ -276,10 +276,6 @@ public:
   // Options
   bool raptor_glyph;
 
-  // Data collection for cooldown waste
-  auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
-  auto_dispose<std::vector<simple_data_t*> > cd_waste_iter;
-
   // A vector of action objects that need target cache invalidation whenever the number of
   // Flame Shocks change
   std::vector<action_t*> flame_shock_dependants;
@@ -982,9 +978,6 @@ public:
   void merge( player_t& other ) override;
   void copy_from( player_t* ) override;
 
-  void datacollection_begin() override;
-  void datacollection_end() override;
-
   target_specific_t<shaman_td_t> target_data;
 
   const shaman_td_t* find_target_data( const player_t* target ) const override
@@ -1217,8 +1210,7 @@ public:
 
   // Cooldown tracking
   bool track_cd_waste;
-  simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
-  simple_sample_data_t* cd_wasted_iter;
+  cooldown_waste_data_t* cd_waste;
 
   // Ghost wolf unshift
   bool unshift_ghost_wolf;
@@ -1253,9 +1245,7 @@ public:
     : ab( n, player, s ),
       exec_type( type_ ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
-      cd_wasted_exec( nullptr ),
-      cd_wasted_cumulative( nullptr ),
-      cd_wasted_iter( nullptr ),
+      cd_waste( nullptr ),
       unshift_ghost_wolf( true ),
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
@@ -1348,12 +1338,7 @@ public:
 
     if ( track_cd_waste )
     {
-      cd_wasted_exec =
-          p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p()->cd_waste_exec );
-      cd_wasted_cumulative = p()->template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
-          ab::name_str, p()->cd_waste_cumulative );
-      cd_wasted_iter =
-          p()->template get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
+      cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
     }
 
     // Setup Hasted CD for Enhancement
@@ -1604,6 +1589,14 @@ public:
     return c;
   }
 
+  void update_ready( timespan_t cd ) override
+  {
+    if ( cd_waste )
+      cd_waste->add( cd, ab::time_to_execute );
+
+    ab::update_ready( cd );
+  }
+
   void execute() override
   {
     ab::execute();
@@ -1647,31 +1640,6 @@ public:
     }
 
     ab::schedule_execute( execute_state );
-  }
-
-  void update_ready( timespan_t cd ) override
-  {
-    if ( cd_wasted_exec &&
-         ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && ab::cooldown->duration > timespan_t::zero() ) ) &&
-         ab::cooldown->current_charge == ab::cooldown->charges && ab::cooldown->last_charged > timespan_t::zero() &&
-         ab::cooldown->last_charged < ab::sim->current_time() )
-    {
-      double time_ = ( ab::sim->current_time() - ab::cooldown->last_charged ).total_seconds();
-      if ( p()->sim->debug )
-      {
-        p()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", p()->name(), ab::name(),
-                                    time_, ab::time_to_execute.total_seconds() );
-      }
-      time_ -= ab::time_to_execute.total_seconds();
-
-      if ( time_ > 0 )
-      {
-        cd_wasted_exec->add( time_ );
-        cd_wasted_iter->add( time_ );
-      }
-    }
-
-    ab::update_ready( cd );
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
@@ -11251,12 +11219,6 @@ void shaman_t::merge( player_t& other )
 
   const shaman_t& s = static_cast<shaman_t&>( other );
 
-  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
-  {
-    cd_waste_exec[ i ]->second.merge( s.cd_waste_exec[ i ]->second );
-    cd_waste_cumulative[ i ]->second.merge( s.cd_waste_cumulative[ i ]->second );
-  }
-
   if ( s.mw_source_list.size() > mw_source_list.size() )
   {
     mw_source_list.resize( s.mw_source_list.size() );
@@ -11277,36 +11239,6 @@ void shaman_t::merge( player_t& other )
   {
     mw_spend_list[ i ].merge( s.mw_spend_list[ i ] );
   }
-}
-
-// shaman_t::datacollection_begin ===========================================
-
-void shaman_t::datacollection_begin()
-{
-  if ( active_during_iteration )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_iter[ i ]->second.reset();
-    }
-  }
-
-  player_t::datacollection_begin();
-}
-
-// shaman_t::datacollection_end =============================================
-
-void shaman_t::datacollection_end()
-{
-  if ( requires_data_collection() )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_cumulative[ i ]->second.add( cd_waste_iter[ i ]->second.sum() );
-    }
-  }
-
-  player_t::datacollection_end();
 }
 
 // shaman_t::primary_role ===================================================
@@ -11606,90 +11538,9 @@ public:
     os << "</table>\n";
   }
 
-  void cdwaste_table_header( report::sc_html_stream& os )
-  {
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
-       << "<tr>\n"
-       << "<th></th>\n"
-       << "<th colspan=\"3\">Seconds per Execute</th>\n"
-       << "<th colspan=\"3\">Seconds per Iteration</th>\n"
-       << "</tr>\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "</tr>\n";
-  }
-
-  void cdwaste_table_footer( report::sc_html_stream& os )
-  {
-    os << "</table>\n";
-  }
-
-  void cdwaste_table_contents( report::sc_html_stream& os )
-  {
-    size_t n = 0;
-    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
-    {
-      const data_t* entry = p.cd_waste_exec[ i ];
-      if ( entry->second.count() == 0 )
-      {
-        continue;
-      }
-
-      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
-
-      action_t* a          = p.find_action( entry->first );
-      std::string name_str = entry->first;
-      if ( a )
-      {
-        name_str = report_decorators::decorated_action( *a );
-      }
-      else
-      {
-        name_str = util::encode_html( name_str );
-      }
-
-      std::string row_class_str;
-      if ( ++n & 1 )
-        row_class_str = " class=\"odd\"";
-
-      os.printf( "<tr%s>", row_class_str.c_str() );
-      os << "<td class=\"left\">" << name_str << "</td>";
-      os.printf( "<td class=\"right\">%.3f</td>", entry->second.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", entry->second.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", entry->second.max() );
-      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.max() );
-      os << "</tr>\n";
-    }
-  }
-
   void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( !p.cd_waste_exec.empty() )
-    {
-      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
-         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-      cdwaste_table_header( os );
-      cdwaste_table_contents( os );
-      cdwaste_table_footer( os );
-
-      os << "\t\t\t\t\t</div>\n";
-
-      os << "<div class=\"clear\"></div>\n";
-    }
-
-    os << "\t\t\t\t\t</div>\n";
-
     if ( p.talent.maelstrom_weapon.ok() )
     {
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
@@ -11714,6 +11565,92 @@ public:
 
       os << "\t\t\t\t\t</div>\n";
     }
+
+    html_customsection_cd_waste( os );
+  }
+
+  void html_customsection_cd_waste( report::sc_html_stream& os )
+  {
+    if ( p.cooldown_waste_data_list.empty() )
+      return;
+
+    os << "<div class=\"player-section custom_section\">\n"
+          "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
+          "<div class=\"toggle-content\">\n"
+          "<table class=\"sc sort even\">\n"
+          "<thead>\n"
+          "<tr>\n"
+          "<th></th>\n"
+          "<th colspan=\"3\">Seconds per Execute</th>\n"
+          "<th colspan=\"3\">Seconds per Iteration</th>\n"
+          "</tr>\n"
+          "<tr>\n"
+          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+          "<th class=\"toggle-sort\">Average</th>\n"
+          "<th class=\"toggle-sort\">Minimum</th>\n"
+          "<th class=\"toggle-sort\">Maximum</th>\n"
+          "<th class=\"toggle-sort\">Average</th>\n"
+          "<th class=\"toggle-sort\">Minimum</th>\n"
+          "<th class=\"toggle-sort\">Maximum</th>\n"
+          "</tr>\n"
+          "</thead>\n";
+
+    for ( const auto& data : p.cooldown_waste_data_list )
+    {
+      if ( !data->active() )
+        continue;
+
+      std::string name = data->cd->name_str;
+      if ( action_t* a = p.find_action( name ) )
+      {
+        name = report_decorators::decorated_action( *a );
+      }
+      else
+      {
+        std::vector<const action_t*> actions;
+        range::for_each( p.action_list, [ &actions, &data ]( const action_t* a ) {
+          if ( data->cd == a->cooldown )
+          {
+            auto it = range::find_if( actions, [ a ]( const action_t* action ) {
+              return action->internal_id == a->internal_id;
+            } );
+
+            if ( it == actions.end() )
+            {
+              actions.emplace_back( a );
+            }
+          }
+        } );
+
+        if ( actions.size() > 0 )
+        {
+          std::vector<std::string> names;
+          range::for_each( actions, [ &names ]( const action_t* a ) {
+            names.emplace_back( report_decorators::decorated_action( *a ) );
+          } );
+
+          name = util::string_join( names, "<br/>" );
+        }
+        else
+        {
+          name = util::encode_html( name );
+        }
+      }
+
+      os << "<tr>";
+      fmt::print( os, "<td class=\"left\">{}</td>", name );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
+      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
+      os << "</tr>\n";
+    }
+
+    os << "</table>\n"
+          "</div>\n"
+          "</div>\n";
   }
 
 private:
