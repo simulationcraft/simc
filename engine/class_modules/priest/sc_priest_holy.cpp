@@ -339,6 +339,27 @@ void priest_t::create_buffs_holy()
 {
   buffs.apotheosis = make_buff( this, "apotheosis", talents.holy.apotheosis );
 
+  buffs.answered_prayers =
+      make_buff( this, "answered_prayers", talents.holy.apotheosis )
+          ->set_max_stack( 1 )
+          ->set_cooldown( timespan_t::from_seconds( talents.holy.answered_prayers->effectN( 2 ).base_value() ) )
+          ->set_duration( timespan_t::from_seconds( talents.holy.answered_prayers->effectN( 2 ).base_value() ) );
+
+  buffs.answered_prayers_timer =
+      make_buff( this, "answered_prayers_timer", talents.holy.answered_prayers )
+          ->set_quiet( true )
+          // Option default: Prayer of mending bounces onces every 1.5 seconds
+          // duration = Required # of bounces * bounce rate
+          ->set_duration( timespan_t::from_seconds( talents.holy.answered_prayers->effectN( 1 ).base_value() *
+                                                    options.prayer_of_mending_bounce_rate ) )
+          ->set_stack_change_callback( ( [ this ]( buff_t*, int, int new_ ) {
+            if ( new_ == 0 )
+            {
+              buffs.answered_prayers->trigger();
+              buffs.answered_prayers_timer->trigger();
+            }
+          } ) );
+
   buffs.empyreal_blaze = make_buff( this, "empyreal_blaze", talents.holy.empyreal_blaze->effectN( 2 ).trigger() )
                              ->set_trigger_spell( talents.holy.empyreal_blaze )
                              ->set_reverse( true )
@@ -379,6 +400,7 @@ void priest_t::init_spells_holy()
   talents.holy.burning_vehemence_damage = find_spell( 400370 );
   talents.holy.harmonious_apparatus     = ST( "harmonious Apparatus" );
   talents.holy.light_of_the_naaru       = ST( "Light of the Naaru" );
+  talents.holy.answered_prayers         = ST( "Answered Prayers" );
   // Row 10
   talents.holy.divine_word                = ST( "Divine Word" );
   talents.holy.divine_favor_chastise      = find_spell( 372761 );

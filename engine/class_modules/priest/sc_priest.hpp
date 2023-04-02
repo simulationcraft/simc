@@ -132,6 +132,8 @@ public:
     propagate_const<buff_t*> divine_word;
     propagate_const<buff_t*> divine_favor_chastise;
     propagate_const<buff_t*> divine_image;
+    propagate_const<buff_t*> answered_prayers;
+    propagate_const<buff_t*> answered_prayers_timer;
 
     // Shadow
     propagate_const<buff_t*> dispersion;
@@ -395,6 +397,7 @@ public:
       const spell_data_t* burning_vehemence_damage;
       player_talent_t harmonious_apparatus;
       player_talent_t light_of_the_naaru;
+      player_talent_t answered_prayers;
       // Row 10
       player_talent_t divine_word;
       const spell_data_t* divine_favor_chastise;
@@ -610,6 +613,9 @@ public:
 
     // Last tick of Mind Sear does not get buffed by Gathering Shadows
     bool gathering_shadows_bug = true;
+
+    // Time in seconds between prayer of mending bounces
+    double prayer_of_mending_bounce_rate = 1.5;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

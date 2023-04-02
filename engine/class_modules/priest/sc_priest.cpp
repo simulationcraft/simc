@@ -2343,10 +2343,13 @@ void priest_t::init_action_list()
 void priest_t::combat_begin()
 {
   player_t::combat_begin();
-
   if ( talents.rhapsody.enabled() )
   {
     buffs.rhapsody_timer->trigger();
+  }
+  if ( talents.holy.answered_prayers.enabled() )
+  {
+    buffs.answered_prayers_timer->trigger();
   }
   if ( specialization() == PRIEST_DISCIPLINE )
   {
