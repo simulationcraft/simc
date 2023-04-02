@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4720,8 +4720,8 @@ bonus_id={ 9358 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9359 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9362 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9363 }, quality={ epic }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
-bonus_id={ 9365 }, base_ilevel={ 382 }, desc={ Dragonflight Season 1 }
-bonus_id={ 9366 }, base_ilevel={ 411 }, desc={ Dragonflight Season 2 }
+bonus_id={ 9365 }, base_ilevel={ 382 }, desc={ Ingenuity Crafted }
+bonus_id={ 9366 }, base_ilevel={ 411 }, desc={ Shadowflame Crafted }
 bonus_id={ 9367 }, base_ilevel={ 411 }
 bonus_id={ 9368 }, ilevel_adjust={ 7 }
 bonus_id={ 9369 }, ilevel_adjust={ 13 }

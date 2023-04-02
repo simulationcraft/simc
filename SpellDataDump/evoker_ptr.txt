@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749, git build dragonflight 769123c487)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -7245,6 +7245,7 @@ Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 8 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
+2615
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
                  : .......x x......x ....x... ........   ........ ........ .......x ........ 
@@ -7257,8 +7258,9 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
 Effects          :
 #1 (id=1074863)  : Apply Aura (6) | Periodic Damage (3): firestorm every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1075094)  : Apply Aura (6) | Unknown(507)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 2615 | Target: Enemy (6)
+#2 (id=1075094)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 2615 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Obsidian Shards (409776)
 Description      : $@spelldesc405518
 Tooltip          : Deals $w1 Volcanic damage every $t1 sec.
 
