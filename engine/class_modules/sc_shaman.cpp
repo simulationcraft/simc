@@ -1187,8 +1187,7 @@ struct shaman_action_state_t : public action_state_t
   {
     action_state_t::debug_str( s );
 
-    //s << " exec_type=" << exec_type_str( exec_type );
-    s << " exec_type=" << static_cast<unsigned>( exec_type );
+    s << " exec_type=" << exec_type_str( exec_type );
 
     return s;
   }
@@ -1390,7 +1389,7 @@ public:
 
     if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() )
     {
-      m *= 1.0 + p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
+      m *= 1.0 + p()->buff.legacy_of_the_frost_witch->value();
     }
 
     if ( affected_by_molten_weapon_da && p()->buff.molten_weapon->check() )
@@ -1449,7 +1448,7 @@ public:
 
     if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() )
     {
-      m *= 1.0 + p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
+      m *= 1.0 + p()->buff.legacy_of_the_frost_witch->value();
     }
 
     if ( affected_by_molten_weapon_ta && p()->buff.molten_weapon->check() )
@@ -2576,10 +2575,14 @@ struct spirit_bomb_t : public pet_melee_attack_t<T>
   {
     double m = pet_melee_attack_t<T>::action_da_multiplier();
 
-    if ( this->o()->buff.legacy_of_the_frost_witch->check() )
+    m *= 1.0 + this->o()->buff.legacy_of_the_frost_witch->value();
+
+    for ( int x = 1; x <= this->o()->buff.earthen_weapon->check(); x++ )
     {
-      m *= 1.0 + this->o()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
+      m *= 1.0 + this->o()->buff.earthen_weapon->value();
     }
+
+    m *= 1.0 + this->o()->buff.t30_4pc_enh_damage->value();
 
     return m;
   }
@@ -10172,9 +10175,8 @@ void shaman_t::create_buffs()
 
 
   // Legendary buffs
-  buff.legacy_of_the_frost_witch = make_buff<buff_t>( this, "legacy_of_the_frost_witch",
-      find_spell( 384451 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  buff.legacy_of_the_frost_witch = make_buff<buff_t>( this, "legacy_of_the_frost_witch", find_spell( 384451 ) )
+    ->set_default_value( talent.legacy_of_the_frost_witch->effectN( 1 ).percent() );
   buff.elemental_equilibrium = make_buff<buff_t>( this, "elemental_equilibrium",
       find_spell( 347348 ) )
     ->set_default_value( talent.elemental_equilibrium->effectN( 4 ).percent() )
