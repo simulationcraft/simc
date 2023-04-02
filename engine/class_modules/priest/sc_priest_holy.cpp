@@ -24,7 +24,7 @@ struct holy_word_sanctify_t final : public priest_heal_t
 
   double cost() const override
   {
-    if ( priest().buffs.apotheosis->check() )
+    if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
     {
       return 0;
     }
@@ -54,7 +54,7 @@ struct holy_word_serenity_t final : public priest_heal_t
 
   double cost() const override
   {
-    if ( priest().buffs.apotheosis->check() )
+    if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
     {
       return 0;
     }
@@ -249,7 +249,7 @@ struct holy_fire_t final : public priest_spell_t
         }
         sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with harmonious_apparatus: {}, apotheosis: {}",
                           priest(), chastise_cdr, priest().talents.holy.harmonious_apparatus.enabled(),
-                          ( priest().talents.holy.apotheosis.enabled() && priest().buffs.apotheosis->up() ) );
+                          ( priest().buffs.apotheosis->up() || priest().buffs.answered_prayers->check() ) );
 
         priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
       }
@@ -280,7 +280,7 @@ struct holy_word_chastise_t final : public priest_spell_t
   }
   double cost() const override
   {
-    if ( priest().buffs.apotheosis->check() )
+    if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
     {
       return 0;
     }
