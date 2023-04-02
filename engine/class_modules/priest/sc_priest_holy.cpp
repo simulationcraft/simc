@@ -341,7 +341,6 @@ void priest_t::create_buffs_holy()
 
   buffs.answered_prayers =
       make_buff( this, "answered_prayers", talents.holy.apotheosis )
-          ->set_max_stack( 1 )
           ->set_cooldown( timespan_t::from_seconds( talents.holy.answered_prayers->effectN( 2 ).base_value() ) )
           ->set_duration( timespan_t::from_seconds( talents.holy.answered_prayers->effectN( 2 ).base_value() ) );
 
