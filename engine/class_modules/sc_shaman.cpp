@@ -1337,7 +1337,23 @@ public:
       cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
     }
 
-    if ( this->cooldown->duration > timespan_t::zero() )
+    // Set hasted cooldown here; Note, apply_affecting_auras cannot be used for this, since
+    // Shamans have shared cooldowns, and the forementioned method gets called in action
+    // constructor.
+    if ( ab::data().affected_by( p()->spec.shaman->effectN( 2 ) ) )
+    {
+      ab::cooldown->hasted = true;
+    }
+
+    // Set hasted GCD here; Note, apply_affecting_auras cannot be used for this, since
+    // Shamans have shared cooldowns, and the forementioned method gets called in action
+    // constructor.
+    if ( ab::data().affected_by( p()->spec.shaman->effectN( 3 ) ) )
+    {
+      ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
+    }
+
+    if ( ab::cooldown->duration > timespan_t::zero() )
     {
       p()->ability_cooldowns.push_back( this->cooldown );
     }
