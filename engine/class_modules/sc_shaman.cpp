@@ -1204,10 +1204,6 @@ public:
   // General things
   execute_type exec_type;
 
-  // Cooldown tracking
-  bool track_cd_waste;
-  cooldown_waste_data_t* cd_waste;
-
   // Ghost wolf unshift
   bool unshift_ghost_wolf;
 
@@ -1240,8 +1236,6 @@ public:
                   execute_type type_ = execute_type::NORMAL )
     : ab( n, player, s ),
       exec_type( type_ ),
-      track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
-      cd_waste( nullptr ),
       unshift_ghost_wolf( true ),
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
@@ -1265,6 +1259,7 @@ public:
       affected_by_enh_t30_4pc_ta( false )
   {
     ab::may_crit = true;
+    ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
 
     // Auto-parse maelstrom gain from energize
     for ( size_t i = 1; i <= ab::data().effect_count(); i++ )
@@ -1331,11 +1326,6 @@ public:
   void init_finished() override
   {
     ab::init_finished();
-
-    if ( track_cd_waste )
-    {
-      cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
-    }
 
     // Set hasted cooldown here; Note, apply_affecting_auras cannot be used for this, since
     // Shamans have shared cooldowns, and the forementioned method gets called in action
@@ -1582,14 +1572,6 @@ public:
     }
 
     return c;
-  }
-
-  void update_ready( timespan_t cd ) override
-  {
-    if ( cd_waste )
-      cd_waste->add( cd, ab::time_to_execute );
-
-    ab::update_ready( cd );
   }
 
   void execute() override
@@ -11571,92 +11553,6 @@ public:
 
       os << "\t\t\t\t\t</div>\n";
     }
-
-    html_customsection_cd_waste( os );
-  }
-
-  void html_customsection_cd_waste( report::sc_html_stream& os )
-  {
-    if ( p.cooldown_waste_data_list.empty() )
-      return;
-
-    os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
-          "<div class=\"toggle-content\">\n"
-          "<table class=\"sc sort even\">\n"
-          "<thead>\n"
-          "<tr>\n"
-          "<th></th>\n"
-          "<th colspan=\"3\">Seconds per Execute</th>\n"
-          "<th colspan=\"3\">Seconds per Iteration</th>\n"
-          "</tr>\n"
-          "<tr>\n"
-          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-          "<th class=\"toggle-sort\">Average</th>\n"
-          "<th class=\"toggle-sort\">Minimum</th>\n"
-          "<th class=\"toggle-sort\">Maximum</th>\n"
-          "<th class=\"toggle-sort\">Average</th>\n"
-          "<th class=\"toggle-sort\">Minimum</th>\n"
-          "<th class=\"toggle-sort\">Maximum</th>\n"
-          "</tr>\n"
-          "</thead>\n";
-
-    for ( const auto& data : p.cooldown_waste_data_list )
-    {
-      if ( !data->active() )
-        continue;
-
-      std::string name = data->cd->name_str;
-      if ( action_t* a = p.find_action( name ) )
-      {
-        name = report_decorators::decorated_action( *a );
-      }
-      else
-      {
-        std::vector<const action_t*> actions;
-        range::for_each( p.action_list, [ &actions, &data ]( const action_t* a ) {
-          if ( data->cd == a->cooldown )
-          {
-            auto it = range::find_if( actions, [ a ]( const action_t* action ) {
-              return action->internal_id == a->internal_id;
-            } );
-
-            if ( it == actions.end() )
-            {
-              actions.emplace_back( a );
-            }
-          }
-        } );
-
-        if ( actions.size() > 0 )
-        {
-          std::vector<std::string> names;
-          range::for_each( actions, [ &names ]( const action_t* a ) {
-            names.emplace_back( report_decorators::decorated_action( *a ) );
-          } );
-
-          name = util::string_join( names, "<br/>" );
-        }
-        else
-        {
-          name = util::encode_html( name );
-        }
-      }
-
-      os << "<tr>";
-      fmt::print( os, "<td class=\"left\">{}</td>", name );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
-      os << "</tr>\n";
-    }
-
-    os << "</table>\n"
-          "</div>\n"
-          "</div>\n";
   }
 };
 

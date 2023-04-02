@@ -3,6 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#pragma once
+
 #include "util/generic.hpp"
 #include "util/sample_data.hpp"
 #include "util/timespan.hpp"

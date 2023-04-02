@@ -4833,6 +4833,89 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
      << "</div>\n";
 }
 
+void print_html_player_cooldown_waste( report::sc_html_stream& os, const player_t& p )
+{
+  if ( p.cooldown_waste_data_list.empty() )
+    return;
+
+  os << "<div class=\"player-section custom_section\">\n"
+        "<h3 class=\"toggle open\">Cooldown Waste</h3>\n"
+        "<div class=\"toggle-content\">\n"
+        "<table class=\"sc sort even\">\n"
+        "<thead>\n"
+        "<tr>\n"
+        "<th></th>\n"
+        "<th colspan=\"3\">Seconds per Execute</th>\n"
+        "<th colspan=\"3\">Seconds per Iteration</th>\n"
+        "</tr>\n"
+        "<tr>\n"
+        "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+        "<th class=\"toggle-sort\">Average</th>\n"
+        "<th class=\"toggle-sort\">Minimum</th>\n"
+        "<th class=\"toggle-sort\">Maximum</th>\n"
+        "<th class=\"toggle-sort\">Average</th>\n"
+        "<th class=\"toggle-sort\">Minimum</th>\n"
+        "<th class=\"toggle-sort\">Maximum</th>\n"
+        "</tr>\n"
+        "</thead>\n";
+
+  for ( const auto& data : p.cooldown_waste_data_list )
+  {
+    if ( !data->active() )
+      continue;
+
+    std::string name = data->cd->name_str;
+    if ( action_t* a = p.find_action( name ) )
+    {
+      name = report_decorators::decorated_action( *a );
+    }
+    else
+    {
+      std::vector<const action_t*> actions;
+      range::for_each( p.action_list, [ &actions, &data ] ( const action_t* a )
+      {
+        if ( data->cd == a->cooldown )
+        {
+          auto it = range::find( actions, a->internal_id, &action_t::internal_id );
+          if ( it == actions.end() )
+          {
+            actions.emplace_back( a );
+          }
+        }
+      } );
+
+      if ( actions.size() > 0 )
+      {
+        std::vector<std::string> names;
+        range::for_each( actions, [ &names ] ( const action_t* a )
+        {
+          names.emplace_back( report_decorators::decorated_action( *a ) );
+        } );
+
+        name = util::string_join( names, "<br/>" );
+      }
+      else
+      {
+        name = util::encode_html( name );
+      }
+    }
+
+    os << "<tr>";
+    fmt::print( os, "<td class=\"left\">{}</td>", name );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
+    os << "</tr>\n";
+  }
+
+  os << "</table>\n"
+        "</div>\n"
+        "</div>\n";
+}
+
 // print_html_player_deaths =================================================
 
 void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
@@ -4918,6 +5001,8 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
   print_html_player_buffs( os, p, p.report_information );
 
   print_html_player_procs( os, p );
+
+  print_html_player_cooldown_waste( os, p );
 
   print_html_player_custom_section( os, p, p.report_information );
 
