@@ -1012,6 +1012,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
+    
+    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
   }
 
   bool usable_moving() const override
