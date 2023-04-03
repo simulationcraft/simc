@@ -501,6 +501,7 @@ public:
     propagate_const<buff_t*> tombstone;
     propagate_const<buff_t*> vampiric_blood;
     buff_t* vigorous_lifeblood_4pc;  // T29 4pc
+    propagate_const<buff_t*> vampiric_strength; // T30 4pc str buff
     propagate_const<buff_t*> voracious;
 
     // Frost
@@ -1017,6 +1018,9 @@ public:
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
     const spell_data_t* vigorous_lifeblood_energize; // Rune refund
+
+    // T30 Blood
+    const spell_data_t* vampiric_strength; // Str buff
   } spell;
 
   // Pet Abilities
@@ -2677,6 +2681,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       aoe = -1;
       cooldown -> duration = 0_ms;
       this -> impact_action = p -> ability.blood_plague;
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+      {
+        this -> base_multiplier *= 1.0 + dk() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
+      }
     }
   };
 
@@ -2740,6 +2748,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       blood_strike_rp_generation( dk() -> pet_spell.drw_heart_strike_rp_gen -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
       this -> base_multiplier *= 1.0 + dk() -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+      {
+        this -> base_multiplier *= 1.0 + dk() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN( 1 ).percent();
+      }
     }
 
     int n_targets() const override
@@ -4148,8 +4160,13 @@ struct blood_boil_t final : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
-    impact_action = get_action<blood_plague_t>( "blood_plague", p );
     track_cd_waste = true;
+    impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
+    }
   }
 
   void execute() override
@@ -4162,6 +4179,28 @@ struct blood_boil_t final : public death_knight_spell_t
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.blood_boil -> execute_on_target( target );
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      if ( p() -> rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 2 ).percent() ) )
+      {
+        // If vamp str is up, we proc an extension, or if vamp str and vamp blood are down, we proc.  We do not proc if vamp str is down, but vamp blood is still up
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) )
+        {
+          if ( p() -> buffs.vampiric_strength -> up() || ( !p() -> buffs.vampiric_blood -> up() && !p() -> buffs.vampiric_strength -> up() ) )
+          {
+            p() -> buffs.vampiric_strength -> extend_duration_or_trigger();
+          }
+        }
+
+        p() -> buffs.vampiric_blood -> extend_duration_or_trigger( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 3 ).time_value() );
+      }
+    }
+
+    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) && p() -> buffs.vampiric_strength -> up() )
+    {
+      p() -> buffs.vampiric_strength -> extend_duration( p(), p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
     }
   }
 
@@ -6238,6 +6277,10 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
+    }
   }
 
   int n_targets() const override
@@ -6258,6 +6301,28 @@ struct heart_strike_t final : public death_knight_melee_attack_t
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      if ( p() -> rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 2 ).percent() ) )
+      {
+        // If vamp str is up, we proc an extension, or if vamp str and vamp blood are down, we proc.  We do not proc if vamp str is down, but vamp blood is still up
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) )
+        {
+          if ( p() -> buffs.vampiric_strength -> up() || ( !p() -> buffs.vampiric_blood -> up() && !p() -> buffs.vampiric_strength -> up() ) )
+          {
+            p() -> buffs.vampiric_strength -> extend_duration_or_trigger();
+          }
+        }
+
+        p() -> buffs.vampiric_blood -> extend_duration_or_trigger( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 3 ).time_value() );
+      }
+    }
+
+    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) && p() -> buffs.vampiric_strength -> up() )
+    {
+      p() -> buffs.vampiric_strength -> extend_duration( p(), p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
     }
   }
 
@@ -7983,6 +8048,9 @@ struct vampiric_blood_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.vampiric_blood -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) )
+      p() -> buffs.vampiric_strength -> trigger();
   }
 };
 
@@ -9484,8 +9552,10 @@ void death_knight_t::init_spells()
   spell.leeching_strike_damage               = find_spell( 377633 );
   spell.shattering_bone_damage               = find_spell( 377642 );
   // T29 Blood
-  spell.vigorous_lifeblood_4pc      = find_spell( 394570 );
-  spell.vigorous_lifeblood_energize = find_spell( 394559 );
+  spell.vigorous_lifeblood_4pc               = find_spell( 394570 );
+  spell.vigorous_lifeblood_energize          = find_spell( 394559 );
+  // T30 Blood
+  spell.vampiric_strength                    = find_spell( 408356 );
 
   // Frost
   spell.murderous_efficiency_gain     = find_spell( 207062 );
@@ -9818,6 +9888,10 @@ void death_knight_t::create_buffs()
                         old_max_health, resources.max[ RESOURCE_HEALTH ] );
             }
           } );
+
+  buffs.vampiric_strength = make_buff( this, "vampiric_strength", spell.vampiric_strength )
+        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
   buffs.vigorous_lifeblood_4pc = make_buff( this, "vigorous_lifeblood", spell.vigorous_lifeblood_4pc )
         -> set_default_value_from_effect_type( A_HASTE_ALL )
