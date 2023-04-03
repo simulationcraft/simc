@@ -505,6 +505,7 @@ public:
     propagate_const<buff_t*> tombstone;
     propagate_const<buff_t*> vampiric_blood;
     buff_t* vigorous_lifeblood_4pc;  // T29 4pc
+    propagate_const<buff_t*> vampiric_strength; // T30 4pc str buff
     propagate_const<buff_t*> voracious;
 
     // Frost
@@ -1021,6 +1022,9 @@ public:
     // T29 Blood
     const spell_data_t* vigorous_lifeblood_4pc; // Damage and haste buff
     const spell_data_t* vigorous_lifeblood_energize; // Rune refund
+
+    // T30 Blood
+    const spell_data_t* vampiric_strength; // Str buff
   } spell;
 
   // Pet Abilities
@@ -4218,8 +4222,22 @@ struct blood_boil_t final : public death_knight_spell_t
     {
       if ( p() -> rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 2 ).percent() ) )
       {
+        // If vamp str is up, we proc an extension, or if vamp str and vamp blood are down, we proc.  We do not proc if vamp str is down, but vamp blood is still up
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) )
+        {
+          if ( p() -> buffs.vampiric_strength -> up() || ( !p() -> buffs.vampiric_blood -> up() && !p() -> buffs.vampiric_strength -> up() ) )
+          {
+            p() -> buffs.vampiric_strength -> extend_duration_or_trigger();
+          }
+        }
+
         p() -> buffs.vampiric_blood -> extend_duration_or_trigger( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 3 ).time_value() );
       }
+    }
+
+    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) && p() -> buffs.vampiric_strength -> up() )
+    {
+      p() -> buffs.vampiric_strength -> extend_duration( p(), p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
     }
   }
 
@@ -6317,8 +6335,22 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     {
       if ( p() -> rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 2 ).percent() ) )
       {
+        // If vamp str is up, we proc an extension, or if vamp str and vamp blood are down, we proc.  We do not proc if vamp str is down, but vamp blood is still up
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) )
+        {
+          if ( p() -> buffs.vampiric_strength -> up() || ( !p() -> buffs.vampiric_blood -> up() && !p() -> buffs.vampiric_strength -> up() ) )
+          {
+            p() -> buffs.vampiric_strength -> extend_duration_or_trigger();
+          }
+        }
+
         p() -> buffs.vampiric_blood -> extend_duration_or_trigger( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 3 ).time_value() );
       }
+    }
+
+    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) && p() -> buffs.vampiric_strength -> up() )
+    {
+      p() -> buffs.vampiric_strength -> extend_duration( p(), p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B4 )->effectN( 1 ).time_value() );
     }
   }
 
@@ -8030,6 +8062,9 @@ struct vampiric_blood_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.vampiric_blood -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B4 ) )
+      p() -> buffs.vampiric_strength -> trigger();
   }
 };
 
@@ -9552,8 +9587,10 @@ void death_knight_t::init_spells()
   spell.leeching_strike_damage               = find_spell( 377633 );
   spell.shattering_bone_damage               = find_spell( 377642 );
   // T29 Blood
-  spell.vigorous_lifeblood_4pc      = find_spell( 394570 );
-  spell.vigorous_lifeblood_energize = find_spell( 394559 );
+  spell.vigorous_lifeblood_4pc               = find_spell( 394570 );
+  spell.vigorous_lifeblood_energize          = find_spell( 394559 );
+  // T30 Blood
+  spell.vampiric_strength                    = find_spell( 408356 );
 
   // Frost
   spell.murderous_efficiency_gain     = find_spell( 207062 );
@@ -9886,6 +9923,10 @@ void death_knight_t::create_buffs()
                         old_max_health, resources.max[ RESOURCE_HEALTH ] );
             }
           } );
+
+  buffs.vampiric_strength = make_buff( this, "vampiric_strength", spell.vampiric_strength )
+        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
   buffs.vigorous_lifeblood_4pc = make_buff( this, "vigorous_lifeblood", spell.vigorous_lifeblood_4pc )
         -> set_default_value_from_effect_type( A_HASTE_ALL )
