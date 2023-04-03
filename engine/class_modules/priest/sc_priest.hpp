@@ -615,7 +615,7 @@ public:
     bool gathering_shadows_bug = true;
 
     // Time in seconds between prayer of mending bounces
-    double prayer_of_mending_bounce_rate = 1.5;
+    double prayer_of_mending_bounce_rate = 2;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

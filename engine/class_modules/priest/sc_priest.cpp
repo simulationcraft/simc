@@ -655,7 +655,6 @@ struct smite_t final : public priest_spell_t
       }
       if ( child_searing_light && priest().buffs.divine_image->check() )
       {
-        sim->print_debug( "{} searing_light triggered by smite", priest() );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
@@ -1068,7 +1067,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
       if ( child_searing_light && priest().buffs.divine_image->check() )
       {
-        sim->print_debug( "{} searing_light triggered by shadow_word_death", priest() );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
@@ -2397,7 +2395,8 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
   add_option( opt_bool( "priest.t30_multiple_bender", options.t30_multiple_bender ) );
   add_option( opt_bool( "priest.t30_yshaarj", options.t30_yshaarj ) );
-  add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate ) );
+  // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
+  add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
 }
 
 std::string priest_t::create_profile( save_e type )
