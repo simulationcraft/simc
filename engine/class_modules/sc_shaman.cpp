@@ -4271,7 +4271,7 @@ struct crash_lightning_t : public shaman_attack_t
       }
     }
 
-    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
+    for ( auto pet : p()->pet.spirit_wolves )
     {
       debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
     }
@@ -4812,7 +4812,7 @@ struct chain_lightning_t : public chained_base_t
     p()->trigger_flash_of_lightning();
     p()->buff.surge_of_power->decrement();
 
-    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
+    for ( auto pet : p()->pet.spirit_wolves )
     {
       debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
     }
