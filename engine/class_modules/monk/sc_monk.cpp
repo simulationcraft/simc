@@ -639,7 +639,7 @@ namespace monk
         }
 
         if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-        {         
+        {
           trigger_exploding_keg_proc( s );
 
           p()->trigger_empowered_tiger_lightning( s, true );
@@ -2938,7 +2938,7 @@ namespace monk
               p()->passive_actions.thunderfist->schedule_execute();
             }
 
-            // Tier 30 Windwalker 
+            // Tier 30 Windwalker
 //            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) && p()->rppm.shadowflame_spirit->trigger() )
 //            {
 //              p()->pets.spirit_of_forged_vermillion.spawn( p()->passives.shadowflame_spirit_summon->duration(), 1 );
@@ -7252,7 +7252,7 @@ namespace monk
     talent.brewmaster.invoke_niuzao_the_black_ox = _ST( "Invoke Niuzao, the Black Ox" );
     talent.brewmaster.light_brewing = _ST( "Light Brewing" );
     talent.brewmaster.training_of_niuzao = _ST( "Training of Niuzao" );
-    talent.brewmaster.pretense_of_instability = _ST( "Pretense of Instability" );
+    talent.brewmaster.pretense_of_instability = _STID( 393516 );
     talent.brewmaster.face_palm = _ST( "Face Palm" );
     // Row 8
     talent.brewmaster.dragonfire_brew = _ST( "Dragonfire Brew" );
@@ -8649,7 +8649,7 @@ namespace monk
     {
       d += buff.elusive_brawler->current_stack * cache.mastery_value();
 
-      d += buff.pretense_of_instability->data().effectN( 1 ).percent();
+      d += buff.pretense_of_instability->check() * buff.pretense_of_instability->data().effectN( 1 ).percent();
     }
 
     if ( buff.fortifying_brew->check() )
