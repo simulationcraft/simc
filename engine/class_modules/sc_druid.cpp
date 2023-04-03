@@ -3465,6 +3465,7 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    track_cd_waste = true;
 
     if ( p->talent.merciless_claws.ok() )
       bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
@@ -3631,6 +3632,8 @@ struct feral_frenzy_t : public cat_attack_t
   feral_frenzy_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_attack_t( n, p, s, opt )
   {
+    track_cd_waste = true;
+
     if ( data().ok() )
     {
       tick_action = p->get_secondary_action_n<feral_frenzy_tick_t>( name_str + "_tick" );
@@ -4309,6 +4312,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = false;
     energize_type = action_energize::ON_CAST;
+    track_cd_waste = true;
 
     form_mask = CAT_FORM;
     autoshift = p->active.shift_to_cat;
@@ -4738,6 +4742,8 @@ struct mangle_t : public bear_attack_t
       healing( nullptr ),
       inc_targets( 0 )
   {
+    track_cd_waste = true;
+
     if ( p->talent.mangle.ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
@@ -5093,6 +5099,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
     aoe = -1;
     impact_action = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     impact_action->stats = stats;
+    track_cd_waste = true;
 
     dot_name = "thrash_bear";
 
@@ -6655,6 +6662,8 @@ struct fury_of_elune_t : public druid_spell_t
       energize( b ),
       tick_period( p->query_aura_effect( &b->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
   {
+    track_cd_waste = true;
+
     form_mask |= NO_FORM; // can be cast without form
     dot_duration = 0_ms;  // AP gain handled via buffs
 
@@ -6814,7 +6823,10 @@ struct moon_base_t : public druid_spell_t
   void init() override
   {
     if ( !is_free_proc() )
+    {
       cooldown = p()->cooldown.moon_cd;
+      track_cd_waste = true;
+    }
 
     druid_spell_t::init();
 
@@ -8252,6 +8264,7 @@ struct warrior_of_elune_t : public druid_spell_t
     : druid_spell_t( "warrior_of_elune", p, p->talent.warrior_of_elune, opt )
   {
     harmful = may_miss = false;
+    track_cd_waste = true;
   }
 
   timespan_t cooldown_duration() const override
