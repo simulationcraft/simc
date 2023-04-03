@@ -2681,6 +2681,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       aoe = -1;
       cooldown -> duration = 0_ms;
       this -> impact_action = p -> ability.blood_plague;
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+      {
+        this -> base_multiplier *= 1.0 + dk() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
+      }
     }
   };
 
@@ -2744,6 +2748,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       blood_strike_rp_generation( dk() -> pet_spell.drw_heart_strike_rp_gen -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
       this -> base_multiplier *= 1.0 + dk() -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+      {
+        this -> base_multiplier *= 1.0 + dk() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN( 1 ).percent();
+      }
     }
 
     int n_targets() const override
@@ -4188,6 +4196,10 @@ struct blood_boil_t final : public death_knight_spell_t
     aoe = -1;
     cooldown -> hasted = true;
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
+    }
   }
 
   void execute() override
@@ -4200,6 +4212,14 @@ struct blood_boil_t final : public death_knight_spell_t
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.blood_boil -> execute_on_target( target );
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      if ( p() -> rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 2 ).percent() ) )
+      {
+        p() -> buffs.vampiric_blood -> extend_duration_or_trigger( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 3 ).time_value() );
+      }
     }
   }
 
@@ -6267,6 +6287,10 @@ struct heart_strike_t final : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
+    }
   }
 
   int n_targets() const override
@@ -6287,6 +6311,14 @@ struct heart_strike_t final : public death_knight_melee_attack_t
 
       if ( p() -> talent.blood.everlasting_bond.ok() )
         p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
+    }
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
+    {
+      if ( p() -> rng().roll( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 2 ).percent() ) )
+      {
+        p() -> buffs.vampiric_blood -> extend_duration_or_trigger( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 )->effectN( 3 ).time_value() );
+      }
     }
   }
 
