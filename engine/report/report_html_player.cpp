@@ -4835,7 +4835,7 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
 
 void print_html_player_cooldown_waste( report::sc_html_stream& os, const player_t& p )
 {
-  if ( p.cooldown_waste_data_list.empty() )
+  if ( !range::contains( p.cooldown_waste_data_list, true, &cooldown_waste_data_t::active ) )
     return;
 
   os << "<div class=\"player-section custom_section\">\n"
