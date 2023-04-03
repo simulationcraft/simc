@@ -468,10 +468,6 @@ public:
   stats_t* antimagic_shell;
   stats_t* antimagic_zone;
 
-  // Data collection for cooldown waste
-  auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
-  auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
-
   // Buffs
   struct buffs_t {
     // Shared
@@ -3059,17 +3055,10 @@ struct death_knight_action_t : public Base
     bool lingering_chill;
   } affected_by;
 
-  // Cooldown tracking
-  simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
-  simple_sample_data_t* cd_wasted_iter;
-
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ),
     hasted_gcd( false ),
-    affected_by(),
-    cd_wasted_exec( nullptr ),
-    cd_wasted_cumulative( nullptr ),
-    cd_wasted_iter( nullptr )
+    affected_by()
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -3300,26 +3289,6 @@ struct death_knight_action_t : public Base
 
   void update_ready( timespan_t cd ) override
   {
-    if ( cd_wasted_exec &&
-      ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && Base::cooldown->duration > timespan_t::zero() ) ) &&
-         Base::cooldown->current_charge == Base::cooldown->charges && Base::cooldown->last_charged > timespan_t::zero() &&
-         Base::cooldown->last_charged < Base::sim->current_time() )
-    {
-      double time_ = ( Base::sim->current_time() - Base::cooldown->last_charged ).total_seconds();
-      if ( p()->sim->debug )
-      {
-        p()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", p()->name(), Base::name(),
-                                    time_, Base::time_to_execute.total_seconds() );
-      }
-      time_ -= Base::time_to_execute.total_seconds();
-
-      if ( time_ > 0 )
-      {
-        cd_wasted_exec->add( time_ );
-        cd_wasted_iter->add( time_ );
-      }
-    }
-
     Base::update_ready( cd );
   }
 };
@@ -8416,25 +8385,12 @@ void death_knight_t::merge( player_t& other )
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
 
-  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
-  {
-    cd_waste_exec[ i ]->second.merge( dk.cd_waste_exec[ i ]->second );
-    cd_waste_cumulative[ i ]->second.merge( dk.cd_waste_cumulative[ i ]->second );
-  }
 }
 
 // death_knight_t::datacollection_begin ===========================================
 
 void death_knight_t::datacollection_begin()
 {
-  if ( active_during_iteration )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_iter[ i ]->second.reset();
-    }
-  }
-
   player_t::datacollection_begin();
 }
 
@@ -8442,14 +8398,6 @@ void death_knight_t::datacollection_begin()
 
 void death_knight_t::datacollection_end()
 {
-  if ( requires_data_collection() )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_cumulative[ i ]->second.add( cd_waste_iter[ i ]->second.sum() );
-    }
-  }
-
   player_t::datacollection_end();
 }
 
