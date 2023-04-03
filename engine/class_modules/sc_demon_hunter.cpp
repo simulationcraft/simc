@@ -1433,14 +1433,9 @@ public:
       }
       if ( p->talent.vengeance.fiery_demise->ok() )
       {
-        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) );
-
-        // Fracture/Shear turned into fire damage by T30 4pc is affected by Fiery Demise but it's not in the spell data
-        // anywhere. This means we probably need to find a new way to get the whitelist for Fiery Demise.
-        if ( ab::data().affected_by( p->set_bonuses.t30_vengeance_4pc->effectN( 3 ) ) )
-        {
-          affected_by.fiery_demise = true;
-        }
+        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) ) ||
+                                   ( p->set_bonuses.t30_vengeance_4pc->ok() &&
+                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 3 ) ) );
       }
     }
   }
