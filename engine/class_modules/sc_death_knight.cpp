@@ -468,10 +468,6 @@ public:
   stats_t* antimagic_shell;
   stats_t* antimagic_zone;
 
-  // Data collection for cooldown waste
-  auto_dispose<std::vector<data_t*>> cd_waste_exec, cd_waste_cumulative;
-  auto_dispose<std::vector<simple_data_t*>> cd_waste_iter;
-
   // Buffs
   struct buffs_t {
     // Shared
@@ -3071,19 +3067,10 @@ struct death_knight_action_t : public Base
     bool lingering_chill;
   } affected_by;
 
-  // Cooldown tracking
-  bool track_cd_waste;
-  simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
-  simple_sample_data_t* cd_wasted_iter;
-
   death_knight_action_t( util::string_view n, death_knight_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     action_base_t( n, p, s ), gain( nullptr ),
     hasted_gcd( false ),
-    affected_by(),
-    track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
-    cd_wasted_exec( nullptr ),
-    cd_wasted_cumulative( nullptr ),
-    cd_wasted_iter( nullptr )
+    affected_by()
   {
     this -> may_crit   = true;
     this -> may_glance = false;
@@ -3259,16 +3246,6 @@ struct death_knight_action_t : public Base
   void init() override
   {
     action_base_t::init();
-
-    if ( track_cd_waste )
-    {
-      cd_wasted_exec =
-        p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>( Base::name_str, p()->cd_waste_exec );
-      cd_wasted_cumulative = p()-> template get_data_entry<simple_sample_data_with_min_max_t, data_t>(
-        Base::name_str, p()->cd_waste_cumulative );
-      cd_wasted_iter =
-        p()-> template get_data_entry<simple_sample_data_t, simple_data_t>( Base::name_str, p()->cd_waste_iter );
-    }
   }
 
   void init_finished() override
@@ -3324,26 +3301,6 @@ struct death_knight_action_t : public Base
 
   void update_ready( timespan_t cd ) override
   {
-    if ( cd_wasted_exec &&
-      ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && Base::cooldown->duration > timespan_t::zero() ) ) &&
-         Base::cooldown->current_charge == Base::cooldown->charges && Base::cooldown->last_charged > timespan_t::zero() &&
-         Base::cooldown->last_charged < Base::sim->current_time() )
-    {
-      double time_ = ( Base::sim->current_time() - Base::cooldown->last_charged ).total_seconds();
-      if ( p()->sim->debug )
-      {
-        p()->sim->out_debug.printf( "%s %s cooldown waste tracking waste=%.3f exec_time=%.3f", p()->name(), Base::name(),
-                                    time_, Base::time_to_execute.total_seconds() );
-      }
-      time_ -= Base::time_to_execute.total_seconds();
-
-      if ( time_ > 0 )
-      {
-        cd_wasted_exec->add( time_ );
-        cd_wasted_iter->add( time_ );
-      }
-    }
-
     Base::update_ready( cd );
   }
 };
@@ -3980,6 +3937,8 @@ struct abomination_limb_t : public death_knight_spell_t
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
 
+    track_cd_waste = true;
+
     if ( action_t* abomination_limb_damage = p -> find_action( "abomination_limb_damage" ) )
     {
       add_child( abomination_limb_damage );
@@ -4015,6 +3974,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
       cooldown -> duration += p -> talent.unholy.army_of_the_damned->effectN( 3 ).time_value();
     }
 
+    track_cd_waste = true;
   }
 
   void impact( action_state_t* state ) override
@@ -4100,6 +4060,7 @@ struct army_of_the_dead_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+    track_cd_waste = true;
   }
 
   void init_finished() override
@@ -4199,7 +4160,9 @@ struct blood_boil_t final : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
+    track_cd_waste = true;
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T30, B2 ) )
     {
       base_multiplier *= 1.0 + p -> sets -> set( DEATH_KNIGHT_BLOOD, T30, B2 ) -> effectN(1).percent();
@@ -4258,6 +4221,7 @@ struct blood_tap_t final : public death_knight_spell_t
     death_knight_spell_t( "blood_tap", p, p -> talent.blood.blood_tap )
   {
     parse_options( options_str );
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -4323,7 +4287,7 @@ struct blooddrinker_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     tick_may_crit = channeled = hasted_ticks = tick_zero = true;
-
+    track_cd_waste = true;
     base_tick_time = 1.0_s;
   }
 
@@ -4398,6 +4362,7 @@ struct bonestorm_t final : public death_knight_spell_t
     parse_options( options_str );
     hasted_ticks = false;
     tick_action = get_action<bonestorm_damage_t>( "bonestorm_damage", p );
+    track_cd_waste = true;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -4543,6 +4508,7 @@ struct breath_of_sindragosa_t final : public death_knight_spell_t
     parse_options( options_str );
     base_tick_time = 0_ms; // Handled by the buff
     add_child( get_action<breath_of_sindragosa_tick_t>( "breath_of_sindragosa_tick", p ) );
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -4681,6 +4647,7 @@ struct chill_streak_t final : public death_knight_spell_t
     add_child( damage );
     impact_action = damage;
     aoe = 0;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -4702,6 +4669,7 @@ struct consumption_t final : public death_knight_melee_attack_t
     parse_options( options_str );
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -4729,7 +4697,7 @@ struct dancing_rune_weapon_t final : public death_knight_spell_t
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
     if ( p -> talent.blood.insatiable_blade.ok() )
       bone_shield_stack_gain += p -> talent.blood.insatiable_blade -> effectN( 2 ).base_value();
-
+    track_cd_waste = true;
     parse_options( options_str );
   }
 
@@ -4872,6 +4840,7 @@ struct dark_transformation_t final : public death_knight_spell_t
   {
     add_option( opt_bool( "precombat_frenzy", precombat_frenzy ) );
     harmful = false;
+    track_cd_waste = true;
 
     // Don't create and use the damage if the spell is used for precombat frenzy
     if ( ! precombat_frenzy )
@@ -5033,7 +5002,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     // Note, radius and ground_aoe flag needs to be set in base so spell_targets expression works
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
-
+    track_cd_waste = true;
     // Set the player-stored death and decay cooldown to this action's cooldown
     p -> cooldown.death_and_decay_dynamic = cooldown;
 
@@ -5190,6 +5159,7 @@ struct deaths_caress_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -5640,6 +5610,7 @@ struct empower_rune_weapon_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+    track_cd_waste = true;
 
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
@@ -6075,6 +6046,7 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     execute_action = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury", p );
+    track_cd_waste = true;
 
     if ( p -> talent.frost.absolute_zero -> ok() )
     {
@@ -6259,7 +6231,7 @@ struct gorefiends_grasp_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-
+    track_cd_waste = true;
     cooldown->duration += p -> talent.blood.tightening_grasp -> effectN( 1 ).time_value();
   }
 
@@ -6381,6 +6353,7 @@ struct horn_of_winter_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -6597,7 +6570,7 @@ struct mind_freeze_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = is_interrupt = true;
-
+    track_cd_waste = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
@@ -6958,6 +6931,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
+    track_cd_waste = true;
 
     if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
@@ -6999,6 +6973,7 @@ struct vile_contagion_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     aoe = p->talent.unholy.vile_contagion->effectN(1).base_value();
+    track_cd_waste = true;
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -7041,6 +7016,7 @@ struct raise_dead_t final : public death_knight_spell_t
     cooldown -> duration += p -> talent.unholy.all_will_serve -> effectN( 1 ).time_value();
 
     harmful = false;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -7182,6 +7158,7 @@ struct remorseless_winter_t final : public death_knight_spell_t
 
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
+    track_cd_waste = true;
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
@@ -7207,6 +7184,7 @@ struct sacrificial_pact_damage_t final : public death_knight_spell_t
     background = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    track_cd_waste = true;
   }
 };
 
@@ -7446,6 +7424,7 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
 
     hasted_ticks = false;
     dot_behavior = DOT_EXTEND;
+    track_cd_waste = true;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -7508,6 +7487,7 @@ struct summon_gargoyle_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -7529,6 +7509,7 @@ struct tombstone_t final : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = may_crit = false;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -7638,6 +7619,7 @@ struct unholy_blight_t : public death_knight_spell_t
   {
     may_crit = may_miss = may_dodge = may_parry = hasted_ticks = false;
     tick_zero = true;
+    track_cd_waste = true;
     parse_options( options_str );
 
     aoe = -1;
@@ -7676,6 +7658,7 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
     death_knight_melee_attack_t( "unholy_assault", p, p -> talent.unholy.unholy_assault )
   {
     parse_options( options_str );
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -8016,6 +7999,7 @@ struct mark_of_blood_t final : public death_knight_spell_t
     death_knight_spell_t( "mark_of_blood", p, p -> talent.blood.mark_of_blood )
   {
     parse_options( options_str );
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -8035,6 +8019,7 @@ struct rune_tap_t final : public death_knight_spell_t
   {
     parse_options( options_str );
     use_off_gcd = true;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -8055,6 +8040,7 @@ struct vampiric_blood_t final : public death_knight_spell_t
 
     harmful = false;
     base_dd_min = base_dd_max = 0;
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -8467,25 +8453,12 @@ void death_knight_t::merge( player_t& other )
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
 
-  for ( size_t i = 0, end = cd_waste_exec.size(); i < end; i++ )
-  {
-    cd_waste_exec[ i ]->second.merge( dk.cd_waste_exec[ i ]->second );
-    cd_waste_cumulative[ i ]->second.merge( dk.cd_waste_cumulative[ i ]->second );
-  }
 }
 
 // death_knight_t::datacollection_begin ===========================================
 
 void death_knight_t::datacollection_begin()
 {
-  if ( active_during_iteration )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_iter[ i ]->second.reset();
-    }
-  }
-
   player_t::datacollection_begin();
 }
 
@@ -8493,14 +8466,6 @@ void death_knight_t::datacollection_begin()
 
 void death_knight_t::datacollection_end()
 {
-  if ( requires_data_collection() )
-  {
-    for ( size_t i = 0, end = cd_waste_iter.size(); i < end; ++i )
-    {
-      cd_waste_cumulative[ i ]->second.add( cd_waste_iter[ i ]->second.sum() );
-    }
-  }
-
   player_t::datacollection_end();
 }
 
@@ -10926,70 +10891,6 @@ public:
     os << "</div>\n";
   }
 
-  void cdwaste_table_header( report::sc_html_stream& os )
-  {
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
-      << "<tr>\n"
-      << "<th></th>\n"
-      << "<th colspan=\"3\">Seconds per Execute</th>\n"
-      << "<th colspan=\"3\">Seconds per Iteration</th>\n"
-      << "</tr>\n"
-      << "<tr>\n"
-      << "<th>Ability</th>\n"
-      << "<th>Average</th>\n"
-      << "<th>Minimum</th>\n"
-      << "<th>Maximum</th>\n"
-      << "<th>Average</th>\n"
-      << "<th>Minimum</th>\n"
-      << "<th>Maximum</th>\n"
-      << "</tr>\n";
-  }
-
-  void cdwaste_table_footer( report::sc_html_stream& os )
-  {
-    os << "</table>\n";
-  }
-
-  void cdwaste_table_contents( report::sc_html_stream& os )
-  {
-    size_t n = 0;
-    for ( size_t i = 0; i < p.cd_waste_exec.size(); i++ )
-    {
-      const data_t* entry = p.cd_waste_exec[ i ];
-      if ( entry->second.count() == 0 )
-      {
-        continue;
-      }
-
-      const data_t* iter_entry = p.cd_waste_cumulative[ i ];
-
-      action_t* a = p.find_action( entry->first );
-      std::string name_str = entry->first;
-      if ( a )
-      {
-        name_str = report_decorators::decorated_action(*a);
-      }
-      else
-      {
-        name_str = util::encode_html( name_str );
-      }
-
-      std::string row_class_str;
-      if ( ++n & 1 )
-        row_class_str = " class=\"odd\"";
-
-      os.printf( "<tr%s>", row_class_str.c_str() );
-      os << "<td class=\"left\">" << name_str << "</td>";
-      os.printf( "<td class=\"right\">%.3f</td>", entry->second.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", entry->second.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", entry->second.max() );
-      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.max() );
-      os << "</tr>\n";
-    }
-  }
-
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p._runes.cumulative_waste.percentile( .5 ) > 0 )
@@ -10997,20 +10898,6 @@ public:
       os << "<div class=\"player-section custom_section\">\n";
       html_rune_waste( os );
       os << "<div class=\"clear\"></div>\n";
-
-      if ( !p.cd_waste_exec.empty() )
-      {
-        os  << "<h3 class=\"toggle open\">Cooldown Waste Details</h3>\n"
-            << "<div class=\"toggle-content\">\n";
-
-        cdwaste_table_header( os );
-        cdwaste_table_contents( os );
-        cdwaste_table_footer( os );
-
-        os << "</div>\n";
-        os << "<div class=\"clear\"></div>\n";
-      }
-
       os << "</div>\n";
     }
   }
