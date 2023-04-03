@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19804> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19805> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19770,6 +19770,7 @@ static const std::array<spelltext_data_t, 19804> __ptr_spelltext_data { {
   { 409848, "$@spelldesc405519", "Obsidian Shards dealing $405519s3% increased damage.", 0 },
   { 409870, "Hoist your Explorer's Banner in the air!", "Proudly displaying your Explorer's Banner.", 0 },
   { 409877, "$@spelldesc405509", "Next Shear or Fracture applies Fiery Brand.", 0 },
+  { 409890, "$@spelldesc196447", 0, 0 },
   { 409895, "$@spelldesc367226", "Healing for $w1 every $t1 sec.", 0 },
   { 409898, "$@spelldesc401183", "Your healing spells have a chance to draw power from the Heart, restoring $401183w3 mana over X seconds to you and healing your target for an additional $401183w1 per second for $401186d.", 0 },
   { 409899, 0, "Gaining Esssence Burst every $t1 sec.", 0 },
