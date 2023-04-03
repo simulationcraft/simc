@@ -997,6 +997,7 @@ namespace monk
           cast_during_sck = true;
           trigger_gcd = timespan_t::zero();
           callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
+          track_cd_waste = true;
         }
 
         void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -1696,6 +1697,7 @@ namespace monk
           affected_by.serenity = true;
           ap_type = attack_power_type::NONE;
           cast_during_sck = true;
+          track_cd_waste = true;
 
           attack_power_mod.direct = 0;
 
@@ -1913,6 +1915,8 @@ namespace monk
             case MONK_BREWMASTER:
             {
               apply_dual_wield_two_handed_scaling();
+
+              track_cd_waste = true;
               break;
             }
             case MONK_WINDWALKER:
@@ -1922,6 +1926,11 @@ namespace monk
                 base_costs[RESOURCE_CHI] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
 
               apply_dual_wield_two_handed_scaling();
+              break;
+            }
+            case MONK_MISTWEAVER:
+            {
+              track_cd_waste = true;
               break;
             }
             default:
@@ -2118,6 +2127,7 @@ namespace monk
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
           gcd_type = gcd_haste_type::NONE;
+          track_cd_waste = true;
 
           // Set dot data to 0, since we handle everything through the buff.
           base_tick_time = timespan_t::zero();
@@ -2540,6 +2550,7 @@ namespace monk
 
           channeled = tick_zero = true;
           interrupt_auto_attack = true;
+          track_cd_waste        = true;
 
           attack_power_mod.direct = 0;
           weapon_power_mod = 0;
@@ -2630,7 +2641,8 @@ namespace monk
           ww_mastery = true;
           trigger_faeline_stomp = true;
 
-          background = true;
+          background     = true;
+          track_cd_waste = true;
           aoe = -1;
           radius = s->effectN( 1 ).radius();
           apply_dual_wield_two_handed_scaling();
@@ -2774,6 +2786,7 @@ namespace monk
           aoe = -1;
           may_dodge = may_parry = may_block = may_miss = true;
           dual = background = true;
+          track_cd_waste    = true;
         }
 
         // Damage must be divided on non-main target by the number of targets
@@ -3011,6 +3024,7 @@ namespace monk
 
           attack_power_mod.direct = p.talent.brewmaster.keg_smash->effectN( 2 ).ap_coeff();
           radius = p.talent.brewmaster.keg_smash->effectN( 2 ).radius();
+          track_cd_waste = true;
 
           cooldown->duration = p.talent.brewmaster.keg_smash->cooldown();
           cooldown->duration = p.talent.brewmaster.keg_smash->charge_cooldown();
@@ -3110,7 +3124,8 @@ namespace monk
           may_combo_strike = true;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
-          cast_during_sck = true;
+          cast_during_sck         = true;
+          track_cd_waste          = true;
           parse_options( options_str );
 
           cooldown->duration = data().cooldown();
@@ -3645,7 +3660,8 @@ namespace monk
 
           harmful = false;
           cast_during_sck = true;
-          trigger_gcd = timespan_t::zero();
+          trigger_gcd     = timespan_t::zero();
+          track_cd_waste  = true;
         }
 
         void execute() override
@@ -3804,7 +3820,8 @@ namespace monk
 
           aoe = -1;
           reduced_aoe_targets = 1.0;
-          full_amount_targets = 1;
+          full_amount_targets    = 1;
+          track_cd_waste         = true;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
           cast_during_sck = true;
@@ -3946,7 +3963,8 @@ namespace monk
           aoe = -1;
           radius = data().effectN( 1 ).radius();
           range = data().max_range();
-          gcd_type = gcd_haste_type::NONE;
+          gcd_type       = gcd_haste_type::NONE;
+          track_cd_waste = true;
 
           add_child( p.active_actions.exploding_keg );
         }
@@ -4244,6 +4262,7 @@ namespace monk
           harmful = false;
           cast_during_sck = true;
           use_off_gcd = true;
+          track_cd_waste = true;
 
           cooldown->charges += ( int )p.talent.brewmaster.improved_purifying_brew->effectN( 1 ).base_value();
 
@@ -4427,6 +4446,7 @@ namespace monk
           cast_during_sck = true;
           harmful = false;
           gcd_type = gcd_haste_type::NONE;
+          track_cd_waste = true;
         }
 
         void execute() override
@@ -4505,6 +4525,7 @@ namespace monk
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
+          track_cd_waste = true;
         }
 
         void execute() override
@@ -4589,6 +4610,7 @@ namespace monk
           harmful = false;
           trigger_faeline_stomp = true;
           gcd_type = gcd_haste_type::NONE;
+          track_cd_waste = true;
         }
 
         void execute() override
@@ -4658,6 +4680,7 @@ namespace monk
           base_dd_min = 0;
           base_dd_max = 0;
           cast_during_sck = true;
+          track_cd_waste = true;
 
           add_child( chi_surge );
         }
@@ -4743,7 +4766,8 @@ namespace monk
           cast_during_sck = true;
           may_miss = false;
           may_parry = true;
-          gcd_type = gcd_haste_type::NONE;
+          gcd_type         = gcd_haste_type::NONE;
+          track_cd_waste   = true;
 
           if ( p.talent.windwalker.dust_in_the_wind->ok() )
             radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
@@ -5342,6 +5366,7 @@ namespace monk
 
           target = player;
           may_combo_strike = true;
+          track_cd_waste   = true;
 
           cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
 
@@ -5618,7 +5643,8 @@ namespace monk
           add_child( damage );
           tick_zero = true;
           radius = player->find_spell( 132466 )->effectN( 2 ).base_value();
-          gcd_type = gcd_haste_type::SPELL_HASTE;
+          gcd_type       = gcd_haste_type::SPELL_HASTE;
+          track_cd_waste = true;
         }
 
         void impact( action_state_t *s ) override
@@ -5727,7 +5753,8 @@ namespace monk
           cooldown->hasted = false;
 
           attack_power_mod.direct = 0;
-          weapon_power_mod = 0;
+          weapon_power_mod        = 0;
+          track_cd_waste          = true;
 
           interrupt_auto_attack = false;
           // Forcing the minimum GCD to 750 milliseconds for all 3 specs
@@ -5771,6 +5798,7 @@ namespace monk
           harmful = may_crit = false;
           target = &p;
           base_pct_heal = data().effectN( 1 ).percent();
+          track_cd_waste = true;
         }
       };
 
@@ -5851,6 +5879,7 @@ namespace monk
           aoe = -1;
           attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
           radius = data().effectN( 1 ).radius();
+          track_cd_waste = true;
         }
 
         timespan_t travel_time() const override
