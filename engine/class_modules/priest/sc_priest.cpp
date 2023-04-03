@@ -529,21 +529,25 @@ struct power_word_fortitude_t final : public priest_spell_t
 // ==========================================================================
 struct smite_t final : public priest_spell_t
 {
-  const spell_data_t* holy_word_chastise;
-  propagate_const<cooldown_t*> holy_word_chastise_cooldown;
   timespan_t manipulation_cdr;
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
+  propagate_const<action_t*> child_holy_fire;
+  action_t* child_searing_light;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
-      holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
-      holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       void_summoner_cdr( priest().talents.discipline.void_summoner->effectN( 2 ).time_value() ),
-      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() )
+      train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
+      child_holy_fire( priest().background_actions.holy_fire ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
+    if ( priest().talents.holy.divine_word.enabled() )
+    {
+      child_holy_fire->background = true;
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -569,6 +573,17 @@ struct smite_t final : public priest_spell_t
       sim->print_debug( "Smite damage modified by {} (new total: {}), from blaze_of_light",
                         priest().talents.discipline.blaze_of_light->effectN( 1 ).percent(), d );
     }
+    if ( priest().talents.holy.searing_light.enabled() )
+    {
+      const priest_td_t* td = priest().find_target_data( s->target );
+      if ( td && td->dots.holy_fire->is_ticking() )
+      {
+        auto adjust_percent = priest().talents.holy.searing_light->effectN( 1 ).percent();
+        d *= 1.0 + adjust_percent;
+        sim->print_debug( "searing_light modifies Smite damage by {} (new total: {})", adjust_percent, d );
+      }
+    }
+
     return d;
   }
 
@@ -604,32 +619,47 @@ struct smite_t final : public priest_spell_t
     {
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
+    // If we have divine word, have triggered divine favor: chastise, and proc the holy fire effect
+    if ( child_holy_fire && priest().talents.holy.divine_word.enabled() &&
+         priest().buffs.divine_favor_chastise->check() &&
+         rng().roll( priest().talents.holy.divine_favor_chastise->effectN( 3 ).percent() ) )
+    {
+      priest().procs.divine_favor_chastise->occur();
+      child_holy_fire->execute();
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    sim->print_debug( "{} checking for Apotheosis buff and Light of the Naaru talent.", priest() );
-    auto cooldown_base_reduction = -timespan_t::from_seconds( holy_word_chastise->effectN( 2 ).base_value() );
-    if ( s->result_amount > 0 && priest().buffs.apotheosis->up() )
-    {
-      auto cd1 = cooldown_base_reduction * ( 100 + priest().talents.apotheosis->effectN( 1 ).base_value() ) / 100.0;
-      holy_word_chastise_cooldown->adjust( cd1 );
 
-      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Apotheosis.", priest(), cd1 );
-    }
-    else if ( s->result_amount > 0 && priest().talents.light_of_the_naaru->ok() )
+    if ( result_is_hit( s->result ) )
     {
-      auto cd2 =
-          cooldown_base_reduction * ( 100 + priest().talents.light_of_the_naaru->effectN( 1 ).base_value() ) / 100.0;
-      holy_word_chastise_cooldown->adjust( cd2 );
-      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with Light of the Naaru.", priest(), cd2 );
-    }
-    else if ( s->result_amount > 0 )
-    {
-      holy_word_chastise_cooldown->adjust( cooldown_base_reduction );
-      sim->print_debug( "{} adjusted cooldown of Chastise, by {}, without Apotheosis.", priest(),
-                        cooldown_base_reduction );
+      if ( priest().talents.holy.holy_word_chastise.enabled() )
+      {
+        timespan_t chastise_cdr =
+            timespan_t::from_seconds( priest().talents.holy.holy_word_chastise->effectN( 2 ).base_value() );
+        if ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() )
+        {
+          chastise_cdr *= ( 1 + priest().talents.holy.apotheosis->effectN( 1 ).percent() );
+        }
+        if ( priest().talents.holy.light_of_the_naaru.enabled() )
+        {
+          chastise_cdr *= ( 1 + priest().talents.holy.light_of_the_naaru->effectN( 1 ).percent() );
+        }
+        sim->print_debug( "{} adjusted cooldown of Chastise, by {}, with light_of_the_naaru: {}, apotheosis: {}",
+                          priest(), chastise_cdr, priest().talents.holy.light_of_the_naaru.enabled(),
+                          ( priest().buffs.apotheosis->check() || priest().buffs.answered_prayers->check() ) );
+
+        priest().cooldowns.holy_word_chastise->adjust( -chastise_cdr );
+      }
+      if ( child_searing_light && priest().buffs.divine_image->check() )
+      {
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
+      }
     }
     if ( priest().talents.discipline.harsh_discipline.enabled() )
     {
@@ -784,7 +814,6 @@ struct mindgames_t final : public priest_spell_t
 // Summon Shadowfiend
 //
 // Summon Mindbender
-// TODO: confirm Holy/Disc versions work as expected
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
@@ -904,6 +933,7 @@ struct shadow_word_death_t final : public priest_spell_t
   double execute_modifier;
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
   propagate_const<expiation_t*> child_expiation;
+  action_t* child_searing_light;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
@@ -911,7 +941,8 @@ struct shadow_word_death_t final : public priest_spell_t
       execute_modifier( data().effectN( 3 ).percent() +
                         ( priest().is_ptr() ? priest().specs.shadow_priest->effectN( 25 ).percent() : 0 ) ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
-      child_expiation( nullptr )
+      child_expiation( nullptr ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
 
@@ -1033,6 +1064,14 @@ struct shadow_word_death_t final : public priest_spell_t
         child_expiation->target = s->target;
         child_expiation->execute();
       }
+
+      if ( child_searing_light && priest().buffs.divine_image->check() )
+      {
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
+      }
     }
   }
 };
@@ -1151,7 +1190,6 @@ struct flash_heal_t final : public priest_heal_t
   {
     priest_heal_t::impact( s );
 
-    priest().adjust_holy_word_serenity_cooldown();
     priest().buffs.from_darkness_comes_light->expire();
   }
 };
@@ -1457,6 +1495,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.mind_sear          = target->get_dot( "mind_sear", &p );
   dots.void_torrent       = target->get_dot( "void_torrent", &p );
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
+  dots.holy_fire          = target->get_dot( "holy_fire", &p );
 
   buffs.schism                   = make_buff( *this, "schism", p.talents.discipline.schism );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
@@ -1553,7 +1592,9 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
 void priest_t::create_cooldowns()
 {
   cooldowns.holy_fire                     = get_cooldown( "holy_fire" );
+  cooldowns.holy_word_chastise            = get_cooldown( "holy_word_chastise" );
   cooldowns.holy_word_serenity            = get_cooldown( "holy_word_serenity" );
+  cooldowns.holy_word_sanctify            = get_cooldown( "holy_word_sanctify" );
   cooldowns.void_bolt                     = get_cooldown( "void_bolt" );
   cooldowns.mind_blast                    = get_cooldown( "mind_blast" );
   cooldowns.void_eruption                 = get_cooldown( "void_eruption" );
@@ -1620,6 +1661,8 @@ void priest_t::create_procs()
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
+  procs.divine_favor_chastise          = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
+  procs.divine_image                   = get_proc( "Divine Image from Holy Words" );
 }
 
 /** Construct priest benefits */
@@ -1967,8 +2010,6 @@ void priest_t::init_base_stats()
     resources.base[ RESOURCE_INSANITY ] =
         100.0 + talents.shadow.voidtouched->effectN( 1 ).resource( RESOURCE_INSANITY );
   }
-
-  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment->effectN( 1 ).percent();
 }
 
 void priest_t::init_resources( bool force )
@@ -2015,7 +2056,6 @@ void priest_t::init_spells()
 
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
-  mastery_spells.echo_of_light  = find_mastery_spell( PRIEST_HOLY );
   mastery_spells.shadow_weaving = find_mastery_spell( PRIEST_SHADOW );
 
   // Priest Tree Talents
@@ -2158,9 +2198,9 @@ void priest_t::init_rng()
 void priest_t::init_background_actions()
 {
   background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
-
   init_background_actions_shadow();
   init_background_actions_discipline();
+  init_background_actions_holy();
 }
 
 void priest_t::do_dynamic_regen( bool forced )
@@ -2185,6 +2225,9 @@ void priest_t::apply_affecting_auras( action_t& action )
   // Discipline Talents
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
   action.apply_affecting_aura( talents.discipline.expiation );
+
+  // Holy Talents
+  action.apply_affecting_aura( talents.holy.miracle_worker );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
@@ -2289,10 +2332,13 @@ void priest_t::init_action_list()
 void priest_t::combat_begin()
 {
   player_t::combat_begin();
-
   if ( talents.rhapsody.enabled() )
   {
     buffs.rhapsody_timer->trigger();
+  }
+  if ( talents.holy.answered_prayers.enabled() )
+  {
+    buffs.answered_prayers_timer->trigger();
   }
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -2349,6 +2395,8 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
   add_option( opt_bool( "priest.t30_multiple_bender", options.t30_multiple_bender ) );
   add_option( opt_bool( "priest.t30_yshaarj", options.t30_yshaarj ) );
+  // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
+  add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
 }
 
 std::string priest_t::create_profile( save_e type )
