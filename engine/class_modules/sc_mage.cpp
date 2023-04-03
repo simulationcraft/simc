@@ -325,6 +325,7 @@ public:
     buff_t* bursting_energy;
 
     buff_t* volatile_flame;
+    buff_t* flames_fury;
 
     buff_t* touch_of_ice;
   } buffs;
@@ -1662,23 +1663,14 @@ public:
       return;
 
     p()->buffs.volatile_flame->trigger();
-    if ( p()->buffs.volatile_flame->check() < p()->buffs.volatile_flame->max_stack() )
-      return;
-
-    p()->buffs.volatile_flame->expire();
-    // When a crit generates a Hot Streak, the Hyperthermia talent will trigger before Volatile Flame.
-    make_event( sim, 30_ms, [ this ]
+    if ( p()->buffs.volatile_flame->at_max_stacks() )
     {
-      timespan_t d = timespan_t::from_seconds( p()->sets->set( MAGE_FIRE, T30, B4 )->effectN( 1 ).base_value() );
-      if ( p()->buffs.hyperthermia->check() )
-      {
-        p()->buffs.hyperthermia->extend_duration( p(), d );
-      }
-      else
-      {
-        p()->buffs.hyperthermia->execute( -1, buff_t::DEFAULT_VALUE(), d );
-      }
-    } );
+      p()->buffs.volatile_flame->expire();
+      // Trigger the buff outside of impact processing so that Phoenix Flames
+      // doesn't benefit from the buff it just triggered.
+      // TODO: refreshing Flame's Fury buff doesn't add stacks, only refreshes duration
+      make_event( *sim, [ b = p()->buffs.flames_fury ] { b->trigger( b->max_stack() ); } );
+    }
   }
 };
 
@@ -4900,6 +4892,15 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     if ( result_is_hit( s->result ) )
       get_td( s->target )->debuffs.charring_embers->trigger();
   }
+
+  double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.flames_fury->check_value();
+
+    return am;
+  }
 };
 
 struct phoenix_flames_t final : public fire_mage_spell_t
@@ -4942,6 +4943,14 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       spread_ignite( s->target );
 
     fire_mage_spell_t::impact( s );
+
+    if ( p()->buffs.flames_fury->check() )
+    {
+      // Make sure the cooldown reset happens even if the travel time
+      // somehow ends up being zero.
+      make_event( *sim, [ this ] { cooldown->reset( false ); } );
+      p()->buffs.flames_fury->decrement();
+    }
   }
 };
 
@@ -6535,6 +6544,8 @@ void mage_t::create_buffs()
 
   buffs.volatile_flame = make_buff( this, "volatile_flame", find_spell( 408673 ) )
                            ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
+  buffs.flames_fury    = make_buff( this, "flames_fury", find_spell( 409964 ) )
+                           ->set_default_value_from_effect( 1 );
 
   buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
                          ->set_default_value_from_effect( 1 )
