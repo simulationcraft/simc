@@ -423,23 +423,23 @@ std::vector<T*> pet_spawner_t<T, O>::spawn( timespan_t duration, unsigned n )
 // Access
 
 template <typename T, typename O>
-std::vector<T*> pet_spawner_t<T, O>::active_pets()
+std::vector<T*>& pet_spawner_t<T, O>::active_pets()
 {
   update_state();
 
-  return { m_active_pets };
+  return m_active_pets;
 }
 
 template <typename T, typename O>
-std::vector<T*> pet_spawner_t<T, O>::pets()
+std::vector<T*>& pet_spawner_t<T, O>::pets()
 {
-  return { m_pets };
+  return m_pets;
 }
 
 template <typename T, typename O>
-std::vector<const T*> pet_spawner_t<T, O>::pets() const
+std::vector<const T*>& pet_spawner_t<T, O>::pets() const
 {
-  return { m_pets };
+  return m_pets;
 }
 
 template <typename T, typename O>

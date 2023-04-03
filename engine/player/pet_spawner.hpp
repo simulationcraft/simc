@@ -185,11 +185,11 @@ public:
   // Access
 
   /// All pets
-  std::vector<T*> pets();
+  std::vector<T*>& pets();
   /// All pets (read only)
-  std::vector<const T*> pets() const;
+  std::vector<const T*>& pets() const;
   /// All currently active pets
-  std::vector<T*> active_pets();
+  std::vector<T*>& active_pets();
   /// Access the zero-indexth created pet, nullptr if no pets are created
   T* pet( size_t index = 0 ) const;
   /// Access the zero-indexth active pet, nullptr if no pet of index active
