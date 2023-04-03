@@ -865,7 +865,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
       if ( child_searing_light && priest().buffs.divine_image->up() )
       {
-        sim->print_debug( "searing_light triggered by shadow_word_pain" );
         for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
         {
           child_searing_light->execute();
