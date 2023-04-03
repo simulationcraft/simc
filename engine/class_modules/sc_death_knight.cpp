@@ -9881,7 +9881,15 @@ void death_knight_t::create_buffs()
         -> set_chance( 1.0 )
         -> set_default_value_from_effect( 1 )
         -> set_max_stack( talent.frost.killing_machine.ok() ?
-                   as<unsigned int>( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() ) : 1 );
+                   as<unsigned int>( talent.frost.killing_machine -> effectN( 1 ).trigger() -> max_stacks() + talent.frost.fatal_fixation -> effectN( 1 ).base_value() ) : 1 )
+        -> set_stack_change_callback( [ this ] ( buff_t* buff_, int old_, int new_ )
+            {
+              // in 10.0.7 killing machine has a behavior where dropping from 2 -> 1 stacks will also refresh your buff
+              if ( buff_ -> check() && old_ > new_ )
+              {
+                buff_ -> refresh();
+              }
+            } );
 
   buffs.pillar_of_frost = make_buff( this, "pillar_of_frost", talent.frost.pillar_of_frost)
       ->set_cooldown( 0_ms )
