@@ -2199,19 +2199,10 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
-    init_background_actions_shadow();
-  }
-  else if ( specialization() == PRIEST_DISCIPLINE )
-  {
-    init_background_actions_discipline();
-  }
-  else if ( specialization() == PRIEST_HOLY )
-  {
-    init_background_actions_holy();
-  }
+  background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
+  init_background_actions_shadow();
+  init_background_actions_discipline();
+  init_background_actions_holy();
 }
 
 void priest_t::do_dynamic_regen( bool forced )
