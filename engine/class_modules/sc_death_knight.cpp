@@ -9885,7 +9885,7 @@ void death_knight_t::create_buffs()
         -> set_stack_change_callback( [ this ] ( buff_t* buff_, int old_, int new_ )
             {
               // in 10.0.7 killing machine has a behavior where dropping from 2 -> 1 stacks will also refresh your buff
-              if ( buff_ -> check() && old_ > new_ )
+              if ( new_ > 0 && buff_ -> check() && old_ > new_ )
               {
                 buff_ -> refresh();
               }
