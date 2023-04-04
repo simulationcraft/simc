@@ -484,6 +484,7 @@ public:
 
     // Demonology
     const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
+    const spell_data_t* rite_of_ruvaraad; // T30 4pc buff which increases pet damage while Grimoire: Felguard is active
 
     // Destruction 
     const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
@@ -503,6 +504,7 @@ public:
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine
+    propagate_const<cooldown_t*> grimoire_felguard;
   } cooldowns;
 
   // Buffs
@@ -555,6 +557,7 @@ public:
     propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
     propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
+    propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
