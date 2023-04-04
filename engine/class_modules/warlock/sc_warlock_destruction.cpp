@@ -77,7 +77,7 @@ public:
     if ( p()->talents.roaring_blaze->ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
       m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
-    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) && p()->buffs.umbrafire_embers->check() )
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) && p()->buffs.umbrafire_embers->check() )
     {
       // Umbrafire Embers has a whitelist split into two effects for direct damage/periodic damage
       if ( data().affected_by( p()->tier.umbrafire_embers->effectN( 1 ) ) || data().affected_by( p()->tier.umbrafire_embers->effectN( 2 ) ) )
