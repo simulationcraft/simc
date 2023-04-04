@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19815> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19817> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19701,6 +19701,7 @@ static const std::array<spelltext_data_t, 19815> __ptr_spelltext_data { {
   { 408571, "$@spelldesc405517", "Receiving $m1% increased healing from your spells.", 0 },
   { 408572, "Increases the damage of Lightning Bolt, Chain Lightning, and Lava Burst by $s1%.\r\n\r\nLava Surge has an additional $s2% chance to trigger and instead reduces the cast time of your next Lightning Bolt, Chain Lightning, or Lava Burst by $408575s1%, stacking up to $408575U times.", 0, "PvP Talent" },
   { 408575, "$@spelldesc408572", "The cast time of Lightning Bolt and Lava Burst is reduced by $w1%.", "PvP Talent" },
+  { 408578, "$@spelldesc401306", "Echoed Flare's damage increased by $401303s3%.", 0 },
   { 408584, "$@spelldesc401303", 0, 0 },
   { 408595, "Combine $M2 Dracothyst Shards into a whole Dracothyst.", 0, 0 },
   { 408607, "Your abilities have a chance to light the globe, drawing the attention of underlight moths. Collecting an attracted moth grants you Underlight Harmony, increasing your $pri by $s1 for $408983d.", 0, 0 },
@@ -19803,6 +19804,7 @@ static const std::array<spelltext_data_t, 19815> __ptr_spelltext_data { {
   { 410231, "$@spelldesc410230", "Healing for $w1 every $t sec.", 0 },
   { 410232, "$@spelldesc355313", "Absorbing $w1 damage.", 0 },
   { 410233, "Symbiotic Spores cannot assist you.", "Symbiotic Spores cannot assist you.", 0 },
+  { 410264, "$@spelldesc401306", "Echoed Flare's damage increased by $401303s3%.", 0 },
   { 410267, "$@spelldesc407013 If you spend at least 10 seconds eating, you will be in Agonizing Pain, reducing your lifespan and all secondary stats by $410276s1.", 0, 0 },
   { 410276, "Reduce all secondary stats by $s1 for $d.", "Reduce all secondary stats by $s1 for $d.", 0 },
   { 410290, "Attune yourself to the energies of the targeted Vault of the Incarnates raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
