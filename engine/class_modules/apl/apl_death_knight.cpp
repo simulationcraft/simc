@@ -438,7 +438,7 @@ void unholy( player_t* p )
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=!variable.pop_wounds" );
   aoe->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.epidemic" );
 
-  cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead.up", "ST/Cleave Cooldowns" );
+  cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead", "ST/Cleave Cooldowns" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   cooldowns->add_action( "dark_transformation,if=cooldown.apocalypse.remains<5" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.st_planning&debuff.festering_wound.stack>=4" );
