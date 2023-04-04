@@ -830,6 +830,7 @@ public:
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
   timespan_t last_t30_proc;
+  bool t30_proc_possible;
 
   std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t* action, mw_proc_state state )
   {
@@ -9991,20 +9992,17 @@ void shaman_t::create_buffs()
   buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
       ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
         // spell data says "40", but means 40s
-        bool can_proc = false;
+
         timespan_t next_proc = last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
-        if ( next_proc > sim->current_time() && !can_proc )
+        if ( next_proc > sim->current_time() && !t30_proc_possible )
         {
-          can_proc = true;
+          t30_proc_possible = true;
           last_t30_proc = sim->current_time();
         }
-        if ( can_proc )
+        if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
-          if ( !buff.stormkeeper->up() )
-          {   
             buff.stormkeeper->trigger( 2 );
-            can_proc = false;
-          }
+            t30_proc_possible = false;
         }
       } );
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
@@ -11201,6 +11199,7 @@ void shaman_t::arise()
   if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B2 ) )
   {
     last_t30_proc = timespan_t::min();
+    t30_proc_possible = false;
     buff.t30_2pc_ele_driver->trigger();
   }
 }
