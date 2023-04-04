@@ -1397,6 +1397,7 @@ class SpellDataGenerator(DataGenerator):
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
          408815, 408832, 408835, 408836, # Djaruun
+         401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408587, # Elemntium Pocket Anvil 
         ),
 
         # Warrior:

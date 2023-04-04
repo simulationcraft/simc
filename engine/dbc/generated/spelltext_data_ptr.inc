@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19805> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19815> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19687,11 +19687,21 @@ static const std::array<spelltext_data_t, 19805> __ptr_spelltext_data { {
   { 408487, "$@spelldesc403366", "$w1", 0 },
   { 408503, "Rising Sun Kick grants a stack of Elusive Brawler, and when you dodge, the damage and critical strike chance of your next Spinning Crane Kick or Rising Sun Kick is increased by $s1%, stacking up to $U.", "The damage and critical strike chance of your next Spinning Crane Kick or Rising Sun Kick is increased by $s1%.", 0 },
   { 408504, "$@spelldesc405514", "Healing for $w1 every $t1 sec. Mangle and Thrash damage and rage generation increased by $s2.", 0 },
+  { 408513, "$@spelldesc401303", 0, 0 },
   { 408522, "$@spelldesc405515", "Maximum health increased by $s1%.", 0 },
+  { 408533, "$@spelldesc401306", "Echoed Flare's damage increased by $401303s3%.", 0 },
+  { 408534, "$@spelldesc401303", 0, 0 },
+  { 408535, "$@spelldesc401303", 0, 0 },
+  { 408536, "$@spelldesc401303", 0, 0 },
+  { 408537, "$@spelldesc401303", 0, 0 },
+  { 408538, "$@spelldesc401303", 0, 0 },
+  { 408539, "$@spelldesc401303", 0, 0 },
+  { 408540, "$@spelldesc401303", 0, 0 },
   { 408546, "$@spelldesc405517", "Heal over time spells are healing $m3% faster.", 0 },
   { 408571, "$@spelldesc405517", "Receiving $m1% increased healing from your spells.", 0 },
   { 408572, "Increases the damage of Lightning Bolt, Chain Lightning, and Lava Burst by $s1%.\r\n\r\nLava Surge has an additional $s2% chance to trigger and instead reduces the cast time of your next Lightning Bolt, Chain Lightning, or Lava Burst by $408575s1%, stacking up to $408575U times.", 0, "PvP Talent" },
   { 408575, "$@spelldesc408572", "The cast time of Lightning Bolt and Lava Burst is reduced by $w1%.", "PvP Talent" },
+  { 408584, "$@spelldesc401303", 0, 0 },
   { 408595, "Combine $M2 Dracothyst Shards into a whole Dracothyst.", 0, 0 },
   { 408607, "Your abilities have a chance to light the globe, drawing the attention of underlight moths. Collecting an attracted moth grants you Underlight Harmony, increasing your $pri by $s1 for $408983d.", 0, 0 },
   { 408609, "Your damaging spells have a chance to launch the crystal shard at your target which shatters on impact with an enemy, dealing $s1 Physical damage split between nearby enemies.", 0, 0 },
