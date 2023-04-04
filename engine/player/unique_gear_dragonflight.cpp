@@ -3540,6 +3540,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // 401303 Main Spell/Value Container
 // 401306 On use Cast time/Cooldown
 // 408578 On use Damage
+// 401324 Equip Damage
 // 408533 Stacking Buff
 // 408513 Warrior Driver
 // 408534 Rogue Driver
@@ -3553,17 +3554,16 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // TODO - Implement proccing only off specific abilities per spec. Right now using the default proc flags for every driver. 
 void elementium_pocket_anvil_equip( special_effect_t& e )
 {
-  struct elementium_pocket_anvil_equip_t : public generic_aoe_proc_t
+  struct elementium_pocket_anvil_equip_t : public generic_proc_t
   {
-    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "elementium_pocket_anvil", e.player -> find_spell( 401303 ) )
+    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_proc_t( e, "echoed_flare", e.player -> find_spell( 401324 ) )
     {
-      split_aoe_damage = false;
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
     {
-      double m = generic_aoe_proc_t::composite_da_multiplier( state );
+      double m = generic_proc_t::composite_da_multiplier( state );
 
       if ( player -> buffs.anvil_strike -> check() )
       {
@@ -3609,7 +3609,7 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
   }
 
   e.spell_id = driver_id;
-  e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "elementium_pocket_anvil", e );
+  e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
 
   new dbc_proc_callback_t( e.player, e );
 }

@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48776
-static const std::array<spelltext_data_t, 19817> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19818> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19253,6 +19253,7 @@ static const std::array<spelltext_data_t, 19817> __ptr_spelltext_data { {
   { 401257, "$@spelldesc401256", "Suffering $w2 Shadowflame damage every $t2 sec.", 0 },
   { 401303, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike and Crusading Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137010[Mangle][]$?a137011[Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137012|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a137017|$a137016|$a137015|$a356809|$a137013|[melee damage dealer specialization's main class ability][] a chance to deal $s1 additional Shadowflame damage on-hit.\r\n\r\n", 0, 0 },
   { 401306, "Strike your weapon against the anvil to strengthen it further, dealing $401303s2 Shadowflame damage to nearby enemies and increasing the on-hit damage by $401303s3% until shortly after leaving combat. Stacks $u times.", "Echoed Flare's damage increased by $401303s3%.", 0 },
+  { 401324, "$@spelldesc401303", 0, 0 },
   { 401367, "Less effective mechanically aided flight system.", "Falling speed reduced.", 0 },
   { 401375, "Activate the Dragon Pack to propel you forward in the air. Usable in Zskera Vaults and the Forbidden Reach.", 0, 0 },
   { 401394, "$@spelldesc401395", "Haste Rating increased by $w3. Suffering $w2 Fire damage every $t2 sec.", 0 },
