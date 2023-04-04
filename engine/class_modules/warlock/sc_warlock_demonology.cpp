@@ -270,6 +270,11 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+    {
+      p()->cooldowns.grimoire_felguard->adjust( timespan_t::from_seconds( -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).base_value() ) );
+    }
+
     if ( p()->talents.power_siphon->ok() )
       p()->buffs.power_siphon->decrement();
 
@@ -315,6 +320,9 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
       m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
 
     return m;
   }

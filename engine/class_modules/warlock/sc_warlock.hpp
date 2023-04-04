@@ -503,6 +503,7 @@ public:
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine
+    propagate_const<cooldown_t*> grimoire_felguard;
   } cooldowns;
 
   // Buffs
