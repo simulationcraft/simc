@@ -1012,7 +1012,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
-    
+
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
   }
 
@@ -1043,16 +1043,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
       // Non-harmful actions don't apply this buff
-      if ( execute_state->action->school == SCHOOL_SHADOW && execute_state->action->id != 34433 &&
-           execute_state->action->id != 123040 && execute_state->action->harmful == true )
+      if ( this->school == SCHOOL_SHADOW && this->id != 34433 && this->id != 123040 && this->harmful == true )
       {
         priest().buffs.twilight_equilibrium_holy_amp->trigger();
         priest().buffs.twilight_equilibrium_shadow_amp->expire();
       }
       // Holy and Radiant (holyfire) applies this buff
       // Non-harmful actions don't apply this buff
-      if ( ( execute_state->action->school == SCHOOL_HOLY || execute_state->action->school == SCHOOL_HOLYFIRE ) &&
-           execute_state->action->harmful == true )
+      if ( ( this->school == SCHOOL_HOLY || this->school == SCHOOL_HOLYFIRE ) && this->harmful == true )
       {
         priest().buffs.twilight_equilibrium_shadow_amp->trigger();
         priest().buffs.twilight_equilibrium_holy_amp->expire();
