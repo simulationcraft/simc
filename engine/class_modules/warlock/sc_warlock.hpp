@@ -50,6 +50,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_dread_touch;
   propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
+  propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -477,16 +478,17 @@ public:
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* cruel_inspiration; // 2pc procs haste buff
-    const spell_data_t* cruel_epiphany; // 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
+    const spell_data_t* cruel_inspiration; // T29 2pc procs haste buff
+    const spell_data_t* cruel_epiphany; // T29 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
+    const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
 
     // Demonology
-    const spell_data_t* blazing_meteor; // 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
+    const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
 
     // Destruction 
-    const spell_data_t* chaos_maelstrom; // 2pc procs crit chance buff
-    const spell_data_t* channel_demonfire; // 2pc damage proc is separate from talent version
-    const spell_data_t* umbrafire_embers; // 4pc enables stacking buff on 2pc procs
+    const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
+    const spell_data_t* channel_demonfire; // T30 2pc damage proc is separate from talent version
+    const spell_data_t* umbrafire_embers; // T30 4pc enables stacking buff on 2pc procs
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
