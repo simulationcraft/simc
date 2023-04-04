@@ -1402,6 +1402,7 @@ class SpellDataGenerator(DataGenerator):
          408667, 408671, 408675, 408770 # Dragonfire Bomb Dispenser
          406244, 378758, 407090 # Spore Colony Shoulderguards
          407949, 408015, # Tinker: Shadowflame Rockets
+         406753, 406764, 406770, # Shadowflame Wreathe
         ),
 
         # Warrior:
