@@ -596,6 +596,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     if ( p()->buffs.grimoire_felguard->check() )
     {
       p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
+        p()->buffs.rite_of_ruvaraad->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.vilefiend->check() )
     {
@@ -1213,6 +1216,9 @@ void warlock_t::create_buffs_demonology()
   buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
                              ->set_default_value_from_effect( 1 );
 
+  buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
+                               ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
+
   // Pet tracking buffs
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
@@ -1346,6 +1352,9 @@ void warlock_t::init_spells_demonology()
 
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
+  tier.rite_of_ruvaraad = find_spell( 409725 );
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
 

@@ -1276,6 +1276,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( talents.summon_demonic_tyrant->ok() )
       m *= 1.0 + buffs.demonic_power->check_value();
+
+    if ( buffs.rite_of_ruvaraad->check() )
+      m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
