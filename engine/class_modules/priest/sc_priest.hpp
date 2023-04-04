@@ -29,6 +29,7 @@ struct psychic_link_t;
 struct pain_of_death_t;
 struct shadow_weaving_t;
 struct echoing_void_t;
+struct echoing_void_demise_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
@@ -562,6 +563,7 @@ public:
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
+    propagate_const<actions::spells::echoing_void_demise_t*> echoing_void_demise;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
@@ -1012,7 +1014,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
-    
+
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
   }
 
