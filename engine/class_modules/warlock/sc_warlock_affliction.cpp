@@ -528,7 +528,6 @@ struct phantom_singularity_t : public affliction_spell_t
     {
       affliction_spell_t::impact( s );
 
-      // Do before impact, since ticks benefit from it being up
       if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
       {
         // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
