@@ -5952,8 +5952,8 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
   } 
   else if ( util::str_compare_ci( name_str, "seething_fury_spent" ) )
   {
-    return make_fn_expr( "seething_fury_spent",
-                         [ this ] { return this->set_bonuses.t30_havoc_2pc_fury_tracker; } );
+    return make_mem_fn_expr( "seething_fury_spent", this->set_bonuses,
+                             &demon_hunter_t::set_bonuses_t::t30_havoc_2pc_fury_tracker );
   }
   else if ( util::str_compare_ci( name_str, "seething_fury_deficit" ) )
   {
