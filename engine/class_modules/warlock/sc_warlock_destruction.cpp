@@ -77,6 +77,13 @@ public:
     if ( p()->talents.roaring_blaze->ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
       m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) && p()->buffs.umbrafire_embers->check() )
+    {
+      // Umbrafire Embers has a whitelist split into two effects for direct damage/periodic damage
+      if ( data().affected_by( p()->tier.umbrafire_embers->effectN( 1 ) ) || data().affected_by( p()->tier.umbrafire_embers->effectN( 2 ) ) )
+        m *= 1.0 + p()->buffs.umbrafire_embers->check_stack_value();
+    }
+
     return m;
   }
 
@@ -994,6 +1001,7 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 
+  // TOCHECK: As of 2023-04-03, PTR is not canceling/resetting the Umbrafire buff when starting CDF. Presumably this will change before Live
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
@@ -1018,6 +1026,9 @@ struct channel_demonfire_tick_t : public destruction_spell_t
         p()->procs.channel_demonfire->occur();
         p()->cdf_accumulator -= 1.0;
       }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
+        p()->buffs.umbrafire_embers->trigger();
     }
   }
 };
