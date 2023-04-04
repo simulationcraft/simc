@@ -1036,6 +1036,30 @@ struct priest_spell_t : public priest_action_t<spell_t>
     base_t::last_tick( d );
   }
 
+  void execute() override
+  {
+    base_t::execute();
+    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
+    {
+      // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
+      // Non-harmful actions don't apply this buff
+      if ( execute_state->action->school == SCHOOL_SHADOW && execute_state->action->id != 34433 &&
+           execute_state->action->id != 123040 && execute_state->action->harmful == true )
+      {
+        priest().buffs.twilight_equilibrium_holy_amp->trigger();
+        priest().buffs.twilight_equilibrium_shadow_amp->expire();
+      }
+      // Holy and Radiant (holyfire) applies this buff
+      // Non-harmful actions don't apply this buff
+      if ( ( execute_state->action->school == SCHOOL_HOLY || execute_state->action->school == SCHOOL_HOLYFIRE ) &&
+           execute_state->action->harmful == true )
+      {
+        priest().buffs.twilight_equilibrium_shadow_amp->trigger();
+        priest().buffs.twilight_equilibrium_holy_amp->expire();
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     double save_health_percentage = s->target->health_percentage();
@@ -1049,24 +1073,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
-      }
-    }
-    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
-    {
-      // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
-      // Non-harmful actions don't apply this buff
-      if ( s->action->school == SCHOOL_SHADOW && s->action->id != 34433 && s->action->id != 123040 &&
-           s->action->harmful == true )
-      {
-        priest().buffs.twilight_equilibrium_holy_amp->trigger();
-        priest().buffs.twilight_equilibrium_shadow_amp->expire();
-      }
-      // Holy and Radiant (holyfire) applies this buff
-      // Non-harmful actions don't apply this buff
-      if ( ( s->action->school == SCHOOL_HOLY || s->action->school == SCHOOL_HOLYFIRE ) && s->action->harmful == true )
-      {
-        priest().buffs.twilight_equilibrium_shadow_amp->trigger();
-        priest().buffs.twilight_equilibrium_holy_amp->expire();
       }
     }
   }
