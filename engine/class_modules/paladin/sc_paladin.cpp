@@ -805,7 +805,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.heart_of_the_crusader->ok() )
     {
-      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
   }
@@ -983,7 +983,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.heart_of_the_crusader->ok() )
     {
-      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
 
@@ -1002,19 +1002,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
       timespan_t cm_cdr = p()->talents.crusaders_might->effectN( 1 ).time_value();
       p()->cooldowns.holy_shock->adjust( cm_cdr );
     }
-
-    // Special things that happen when CS connects
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talents.empyrean_power->ok() )
-      {
-        if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
-        {
-          p()->procs.empyrean_power->occur();
-          p()->buffs.empyrean_power->trigger();
-        }
-      }
-    }
   }
 
   void execute() override
@@ -1032,6 +1019,15 @@ struct crusader_strike_t : public paladin_melee_attack_t
     if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
     {
       p()->t29_4p_prot();
+    }
+
+    if ( p()->talents.empyrean_power->ok() )
+    {
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
+      {
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
+      }
     }
   }
 
@@ -1628,6 +1624,18 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       add_child( p->active.background_blessed_hammer );
     }
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
+    {
+      crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
+    }
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
+    {
+      aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
+      base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -1690,10 +1698,15 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
 
     if ( p()->talents.adjudication->ok() )
     {
-      if ( s->result == RESULT_CRIT )
+      if ( s->result == RESULT_CRIT && s->chain_target == 0 )
       {
         p()->active.background_blessed_hammer->schedule_execute();
       }
+    }
+
+    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
+    {
+      td( s->target )->debuff.judgment->trigger();
     }
   }
 
@@ -2335,7 +2348,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 50 ) ? "phial_of_static_empowerment_3" : "disabled";
+  std::string protection_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -3091,9 +3104,14 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
     if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ) )
     {
       holy_power_generators_used++;
+      // 23-03-25 Judgment generates two hidden stacks for Dawn, if Protection
+      if ( bugs && specialization() == PALADIN_PROTECTION && source->name_str == "judgment" )
+        holy_power_generators_used++;
+
       int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
-      if ( holy_power_generators_used % hpGensNeeded == 0 )
+      if ( holy_power_generators_used >= hpGensNeeded )
       {
+        holy_power_generators_used -= hpGensNeeded;
         buffs.blessing_of_dawn->trigger();
       }
     }
@@ -3390,6 +3408,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     {
     }
 
+    // todo: account for divine resonance, crusading strikes, divine auxiliary
     double evaluate() override
     {
       if ( paladin.specialization() == PALADIN_PROTECTION )
@@ -3476,13 +3495,45 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
     return aw_expr;
   }
 
-  return player_t::create_expression( name_str );
-
-
- if ( specialization() == PALADIN_PROTECTION && (  splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
+  struct time_until_next_csaa_expr_t : public paladin_expr_t
   {
-  splits[ 1 ] = talents.sentinel->ok()? "sentinel" : "avenging_wrath";
+    time_until_next_csaa_expr_t( util::string_view n, paladin_t& p ) : paladin_expr_t( n, p )
+    {
+    }
 
+    double evaluate() override
+    {
+      if ( !paladin.talents.crusading_strikes->ok() )
+      {
+        return std::numeric_limits<double>::infinity();
+      }
+
+      if ( paladin.melee_swing_count % 2 == 0 )
+      {
+        if ( paladin.main_hand_attack && paladin.main_hand_attack->execute_event )
+        {
+          return paladin.main_hand_attack->execute_event->remains().total_seconds() + paladin.main_hand_attack->execute_time().total_seconds();
+        }
+
+        return std::numeric_limits<double>::infinity();
+      }
+      else
+      {
+        if ( paladin.main_hand_attack && paladin.main_hand_attack->execute_event )
+          return paladin.main_hand_attack->execute_event->remains().total_seconds();
+        return std::numeric_limits<double>::infinity();
+      }
+    }
+  };
+
+  if ( specialization() == PALADIN_RETRIBUTION && util::str_compare_ci( splits[ 0 ], "time_to_next_csaa_hopo" ) )
+  {
+    return std::make_unique<time_until_next_csaa_expr_t>( name_str, *this );
+  }
+
+  if ( specialization() == PALADIN_PROTECTION && ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "avenging_wrath" ) ) )
+  {
+    splits[ 1 ] = talents.sentinel->ok() ? "sentinel" : "avenging_wrath";
     return paladin_t::create_expression( util::string_join( splits, "." ) );
   }
 
@@ -3508,78 +3559,8 @@ public:
   paladin_report_t( paladin_t& player ) : p( player )
   {
   }
-
-  void cdwaste_table_header( report::sc_html_stream& os )
-  {
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
-       << "<tr>\n"
-       << "<th></th>\n"
-       << "<th colspan=\"3\">Seconds per Execute</th>\n"
-       << "<th colspan=\"3\">Seconds per Iteration</th>\n"
-       << "</tr>\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "</tr>\n";
-  }
-
-  void cdwaste_table_footer( report::sc_html_stream& os )
-  {
-    os << "</table>\n";
-  }
-
-  void cdwaste_table_contents( report::sc_html_stream& os )
-  {
-    size_t row = 0;
-    for ( const auto& data : p.cooldown_waste_data_list )
-    {
-      if ( !data->active() )
-        continue;
-
-      std::string name = data->cd->name_str;
-      if ( action_t* a = p.find_action( name ) )
-        name = report_decorators::decorated_action( *a );
-      else
-        name = util::encode_html( name );
-
-      std::string row_class;
-      if ( ++row & 1 )
-        row_class = " class=\"odd\"";
-      os.printf( "<tr%s>", row_class.c_str() );
-      os << "<td class=\"left\">" << name << "</td>";
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.max() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.max() );
-      os << "</tr>\n";
-    }
-  }
-
   void html_customsection( report::sc_html_stream& os ) override
   {
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( !p.cooldown_waste_data_list.empty() )
-    {
-      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
-         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-      cdwaste_table_header( os );
-      cdwaste_table_contents( os );
-      cdwaste_table_footer( os );
-
-      os << "\t\t\t\t\t</div>\n";
-
-      os << "<div class=\"clear\"></div>\n";
-    }
-
-    os << "\t\t\t\t\t</div>\n";
   }
 
 private:

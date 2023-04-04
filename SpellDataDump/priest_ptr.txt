@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -230,7 +230,7 @@ GCD              : 1.5 seconds
 Duration         : 16 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Screams of the Void (393919 effect#1)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #7, #8), Discipline Priest (137032 effects: #7, #8, #12, #13), Shadow Priest (137033 effects: #1, #2, #4, #5, #11, #12), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Torment of Torments (269555 effects: #1, #2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3)
 Family Flags     : 15, 72
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4990,7 +4990,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3)
 Family Flags     : 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5016,7 +5016,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Revel in Purity (373003 effects: #1, #3), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twilight Equilibrium (390706 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effect#4), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3)
 Triggered by     : Purge the Wicked (204197)
 Family Flags     : 72, 100
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -9735,7 +9735,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Category         : 691
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Voidtouched (407430 effects: #2, #3), Mind's Eye (407470 effect#1), Distorted Reality (409044 effects: #2, #3, #4, #5)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2, #17, #18), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#2), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Hungering Void (345219 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Mind Devourer (373204 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #4), Priest Shadow 10.1 Class Set 4pc (405558 effects: #1, #2), Voidtouched (407430 effects: #2, #3), Mind's Eye (407470 effect#1), Distorted Reality (409044 effects: #2, #3, #4, #5)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16196,21 +16196,21 @@ Description      : When you use a Holy Word spell, you summon an image of a Naar
 
 If an image has already been summoned, that image is empowered instead.
 
-Name             : Divine Image (id=392990) [Spell Family (6), Hidden] 
+Name             : Divine Image (id=392990) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+                 : No Aura Icon (60), Include In Advanced Combat Log (72), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031612)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 198236 | Misc Value 2: 0x1580 | Radius: 3 yards | Target: Unknown(91)
@@ -16735,9 +16735,6 @@ Name             : Priest Discipline 10.1 Class Set 2pc (id=405551) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -16748,11 +16745,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1053889)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1053889)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Purge the Wicked (204197), Purge the Wicked (204213)
+                   Family Flags: 15, 100
 #2 (id=1073956)  : None (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
-Description      : Casting Penance on an enemy also heals a nearby injured ally at $s1% effectiveness. Casting Penance on an ally also damages a nearby enemy at $s2% effectiveness.
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+#3 (id=1076404)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Shadow Word: Pain (589), Purge the Wicked (204197), Purge the Wicked (204213)
+                   Family Flags: 15, 100
+Description      : $?s204197[Purge the Wicked][Shadow Word: Pain] damage increased by $s1%. Power Word: Shield absorbs $s2% additional damage.
 
 Name             : Priest Discipline 10.1 Class Set 4pc (id=405553) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -16774,8 +16777,10 @@ Effects          :
 #1 (id=1053891)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1073964)  : None (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Every $s1 casts of Penance grants you Shadow Covenant for $s2 sec and converts that Penance to a Shadow spell.
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+#3 (id=1076429)  : None (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Every $s1 casts of Power Word: Shield cause your next Atonement granted by Power Word: Shield to last an additional $s2 sec and heal $s3% more.
 
 Name             : Priest Holy 10.1 Class Set 2pc (id=405554) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -16828,20 +16833,22 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053895)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2610 (Label) | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2610 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadowy Insight (375981)
 #2 (id=1074377)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2610 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadowy Insight (375981)
-Description      : When consuming Shadowy Insight, Mind Blast deals $s1% increased damage and generates ${$s2/100} additional Insanity.
+#3 (id=1076946)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases the chance for Shadowy Insight to trigger by $s3%. When consuming Shadowy Insight, Mind Blast deals $s1% increased damage and generates ${$s2/100} additional Insanity.
 
 Name             : Priest Shadow 10.1 Class Set 4pc (id=405558) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -16852,11 +16859,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1053896)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1074369)  : None (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Every $s1 Insanity spent summons $?s200174[Mindbender][Shadowfiend] for $s2 sec.
+#1 (id=1053896)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+#2 (id=1077001)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+Description      : Devouring Plague damage increased by $s1%. Every $409502u casts of Devouring Plague increases the damage of Shadowy Apparitions conjured within the next $410871d by $410871s1%.
 
 Name             : Shadowy Apparition (id=405746) [Spell Family (6)] 
 Class            : Priest
@@ -17251,5 +17262,49 @@ Effects          :
                    Family Flags: 10, 21, 28, 69
 Description      : $@spelldesc405556
 Tooltip          : The damage and healing of your next Holy Word is increased by $s1%.
+
+Name             : Darkflame Embers (id=409502) [Spell Family (6)] 
+Class            : Priest
+School           : Shadowflame
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 4 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1074409)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc405558
+
+Tooltip          : Every $409502u casts of Devouring Plague increases the damage of Shadowy Apparitions conjured within the next $410871d by $410871s1%.
+
+Name             : Darkflame Shroud (id=410871) [Spell Family (6)] 
+Class            : Priest
+School           : Shadowflame
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1076950)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc405558
+
+Tooltip          : The damage of conjured Shadowy Apparitions is increased by $s1%.
 
 

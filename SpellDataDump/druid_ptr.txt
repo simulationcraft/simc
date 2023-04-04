@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4245,11 +4245,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Eclipse (Solar) (48517)
                    Family Flags: 59
 #2 (id=325445)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1070146)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Solar Eclipse increases Wrath's Astral power generation by $s1% and Lunar Eclipse increases Starfire's damage and Astral Power generation by $s2% for each target hit beyond the first, up to ${$s2*$s3}%.
@@ -6161,7 +6161,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.54000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -7242,7 +7242,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Spell Haste Affects Periodic (173), Do Not Log on Learn (355)
 Effects          :
 #1 (id=298290)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17 | Scaled Value: 17 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Moonfire and Sunfire damage over time has a chance to call down a falling star, dealing $202497s1 Astral damage and generating ${$202497m2/10} Astral Power.
 
 Name             : Starlord (id=202345) [Spell Family (7), Passive] 
@@ -7292,11 +7292,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=298295)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage (3): astral every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=739525)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d. If dispelled, causes $356474s1 damage to the dispeller and blast them upwards.
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -7514,7 +7514,7 @@ Effects          :
 #2 (id=298968)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6887 | Radius: 1.25 yards | Target: Unknown(148)
 #3 (id=726656)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
 Description      : Calls down a beam of pure celestial energy that follows the enemy, dealing up to $<dmg> Astral damage over $d within its area. Damage reduced on secondary targets.
 
 |cFFFFFFFFGenerates ${$m3/10/$t3*$d} Astral Power over its duration.|r
@@ -10250,7 +10250,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Balance [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -10277,7 +10277,7 @@ Effects          :
 #2 (id=726523)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726524)   : Energize Power (30)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Deals $m1 Astral damage to the target and empowers New Moon to become Half Moon. 
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -10309,7 +10309,7 @@ Effects          :
 #2 (id=726526)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=726527)   : Energize Power (30)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 240 | Scaled Value: 240 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Deals $s1 Astral damage to the target and empowers Half Moon to become Full Moon.
 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
@@ -10339,7 +10339,7 @@ Effects          :
 #1 (id=726528)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.00000 | PvP Coefficient: 1.20000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=726529)   : Energize Power (30)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 #3 (id=726530)   : Dummy (3)
                    Base Value: 202788 | Scaled Value: 202788 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=726531)   : Dummy (3)
@@ -15728,6 +15728,8 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15986,8 +15988,8 @@ Description      : Increases the damage and radius of Thrash by $s1%.
 
 Name             : Reinvigoration (id=372945) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Guardian [tree=spec, row=5, col=1, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(-15, -30)]
-                 : Effect#2 [op=set, values=(-15, -30)]
+                 : Effect#1 [op=set, values=(-20, -40)]
+                 : Effect#2 [op=set, values=(-20, -40)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -16714,7 +16716,8 @@ Description      : Go Berserk for $106951d, causing Rake and Shred to deal damag
 
 Name             : Layered Mane (id=384721) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Guardian [tree=spec, row=5, col=3, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(10, 20)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18957,7 +18960,7 @@ Description      : $@spelldesc338661
 Tooltip          : Your next Starsurge costs no Astral Power.
 
 Name             : Rattle the Stars (id=393954) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Balance [tree=spec, row=8, col=6, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18982,7 +18985,7 @@ Name             : Rattled Stars (id=393955) [Spell Family (7)]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Duration         : 5 seconds
+Duration         : 6 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
 Triggered by     : Rattle the Stars (393954)
@@ -18993,7 +18996,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
+                 : ........ ........ .x...... ........   
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1033219)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -19001,7 +19004,7 @@ Effects          :
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
 #2 (id=1033220)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
 Description      : $@spelldesc393954
@@ -19254,7 +19257,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033385)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.78900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.71000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deals $m1 Arcane damage.
 Tooltip          : Deals $m1 Arcane damage.
 
@@ -19389,7 +19392,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1 (Haste multiplier)
 Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
                  : Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -19545,7 +19548,7 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
                  : Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Always Hit (114), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1033501)  : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
 Description      : $@spelldesc394094
 Tooltip          : Generating ${($o1/10)*($394094s1/100)} Astral Power over $d.
 
@@ -20543,11 +20546,11 @@ Effects          :
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
 #2 (id=1072380)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815), Shooting Stars (202497), Crashing Star (408310)
                    Family Flags: 92, 116, 127
 #3 (id=1072381)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815), Shooting Stars (202497), Crashing Star (408310)
                    Family Flags: 92, 116, 127
 Description      : Sunfire radius increased by $s1 yds. Sunfire, Moonfire and Shooting Stars damage increased by $s2%.
@@ -20615,7 +20618,6 @@ Effects          :
 Description      : When a Shadows of the Predator application resets stacks, you gain $408468s1% increased Agility and you generate $408468s2 combo point every $408468t2 secs for $408468d.
 
 Name             : Druid Guardian 10.1 Class Set 2pc (id=405514) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -20676,15 +20678,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
 #2 (id=1072740)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Lifebloom (33763), Lifebloom (33778), Rejuvenation (Germination) (155777), Lifebloom (188550)
                    Family Flags: 4, 36
 #3 (id=1072741)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 Description      : Rejuvenation and Lifebloom healing increased by $s1%. Regrowth healing over time increased by $s3%.
@@ -20879,7 +20881,7 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Allow While Sitting (27), No Reflection (39), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), No Harmful Threat (132), Not In Spellbook (143), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1072361)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.72000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.76500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1072362)  : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
 Description      : $@spelldesc405511
@@ -21004,14 +21006,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1072743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -28.5 | Scaled Value: -28.5 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: -23.1 | Scaled Value: -23.1 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Grove Tending (383193)
                    Family Flags: 4, 6, 7, 8, 44, 58, 106
 #2 (id=1072744)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
-                   Base Value: -28.5 | Scaled Value: -28.5 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
+                   Base Value: -23.1 | Scaled Value: -23.1 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
                    Affected Spells (Label): Adaptive Swarm (325748), Adaptive Swarm (391891)
 #3 (id=1072756)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : $@spelldesc405517
 Tooltip          : Heal over time spells are healing $m3% faster.
 

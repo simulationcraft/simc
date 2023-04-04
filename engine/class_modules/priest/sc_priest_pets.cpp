@@ -244,11 +244,27 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
   {
     // using S = const spell_data_t*;
 
-    parse_buff_effects( p().o().buffs.voidform );
+    parse_buff_effects( p().o().buffs.voidform, 0x4U, false, false );  // Skip E3 for AM
     parse_buff_effects( p().o().buffs.shadowform );
     parse_buff_effects( p().o().buffs.twist_of_fate, p().o().talents.twist_of_fate );
     parse_buff_effects( p().o().buffs.devoured_pride );
-    parse_buff_effects( p().o().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
+    parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, false );  // Buffs non-periodic spells - Skip E4
+
+    if ( p().o().is_ptr() )
+    {
+      if ( p().o().talents.shadow.ancient_madness.enabled() )
+      {
+        // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
+        if ( p().o().talents.shadow.dark_ascension.enabled() )
+        {
+          parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, true );  // Skip E1
+        }
+        else
+        {
+          parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
+        }
+      }
+    }
   }
 
   priest_pet_t& p()
@@ -408,7 +424,12 @@ struct base_fiend_pet_t : public priest_pet_t
   void demise() override
   {
     priest_pet_t::demise();
-    o().buffs.devoured_pride->decrement();
+
+    if ( !is_ptr() )
+    {
+      o().buffs.devoured_pride->expire();
+      o().buffs.devoured_despair->expire();
+    }
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -547,6 +568,13 @@ struct fiend_melee_t : public priest_pet_melee_t
     return static_cast<base_fiend_pet_t&>( *player );
   }
 
+  void init() override
+  {
+    priest_pet_melee_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "Mindbender" );
+  }
+
   timespan_t execute_time() const override
   {
     if ( base_execute_time == timespan_t::zero() )
@@ -618,10 +646,17 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
-    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 4 ).percent() );
+    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
-    spell_power_mod.direct *= ( 1 + p.o().specs.shadow_priest->effectN( 14 ).percent() );
+    apply_affecting_aura( p.o().specs.shadow_priest );
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "Mindbender" );
   }
 };
 
@@ -634,7 +669,8 @@ struct inescapable_torment_t final : public priest_pet_spell_t
 
   inescapable_torment_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
-      duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
+      duration( p.is_ptr() ? data().effectN( 2 ).time_value()
+                           : timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
@@ -659,6 +695,13 @@ struct inescapable_torment_t final : public priest_pet_spell_t
                         duration, new_duration, remaining_duration );
       current_pet.expiration->reschedule( new_duration );
     }
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "Mindbender" );
   }
 };
 }  // namespace actions
@@ -732,7 +775,7 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
 
     // BUG: This talent is cursed
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    if ( p.o().bugs && !p.o().is_ptr())
+    if ( p.o().bugs && !p.o().is_ptr() )
     {
       if ( p.o().level() == 70 )
       {
@@ -830,7 +873,11 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
     if ( p.o().bugs )
     {
-      spell_power_mod.direct *= 0.6;
+      if ( !p.o().is_ptr() )
+      {
+        spell_power_mod.direct *= 0.6;
+      }
+
       da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
     }
   }
@@ -877,6 +924,13 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 
     p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear,
                                d->state->action );
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
   }
 };
 
@@ -1036,31 +1090,62 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
-spawner::pet_spawner_t<pet_t, priest_t>* get_current_main_pet( priest_t& priest )
+spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.shadow.mindbender.enabled() ? &priest.pets.mindbender : &priest.pets.shadowfiend;
+  return priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
 }
 
 }  // namespace
 
 namespace priestspace
 {
-
 void priest_t::trigger_inescapable_torment( player_t* target )
 {
-  auto current_pets = get_current_main_pet( *this );
+  if ( !talents.shadow.inescapable_torment.enabled() )
+    return;
 
-  for ( auto a_pet : current_pets->active_pets() )
+  if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
-    if ( pet && !pet->is_sleeping() )
+    if ( is_ptr() )
     {
-      if ( pet->o().talents.shadow.inescapable_torment.enabled() )
-      {
-        assert( pet->inescapable_torment );
-        pet->inescapable_torment->set_target( target );
-        pet->inescapable_torment->execute();
-      }
+      auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
+      buffs.devoured_pride->extend_duration( this, extend );
+      buffs.devoured_despair->extend_duration( this, extend );
+    }
+
+    for ( auto a_pet : get_current_main_pet( *this ) )
+    {
+      auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
+      assert( pet->inescapable_torment );
+      pet->inescapable_torment->set_target( target );
+      pet->inescapable_torment->execute();
+    }
+  }
+}
+
+void priest_t::trigger_idol_of_yshaarj( player_t* target )
+{
+  if ( !talents.shadow.idol_of_yshaarj.enabled() )
+    return;
+
+  // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
+
+  if ( target->buffs.stunned->check() )
+  {
+    buffs.devoured_despair->trigger();
+  }
+  else if ( target->health_percentage() >= 80.0 )
+  {
+    buffs.devoured_pride->trigger();
+  }
+  else
+  {
+    auto duration      = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+
+    for ( auto pet : get_current_main_pet( *this ) )
+    {
+      pet->adjust_duration( duration );
+      procs.idol_of_yshaarj_extra_duration->occur();
     }
   }
 }
@@ -1078,9 +1163,9 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
     {
       // pet.fiend.X refers to either shadowfiend or mindbender
-      auto pets = get_current_main_pet( *this );
 
-      auto expr = pets->create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      auto expr =
+          get_current_main_pet( *this ).create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;

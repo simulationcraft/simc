@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -15382,10 +15382,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053871)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20000 | Scaled Value: 20000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 24000 | Scaled Value: 24000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1073548)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : For every $s1 mana spent on and during Arcane Surge, your Spell Damage is increased by $409022s1% for 12 seconds after Arcane Surge fades, stacking up to $s2 times.
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : For every $s1 mana spent on and during Arcane Surge, your Spell Damage is increased by $409022s1% for $409022d after Arcane Surge fades, stacking up to $s2 times. Your Mana Regeneration is increased by $409022s2% for this time.
 
 Name             : Mage Fire 10.1 Class Set 2pc (id=405534) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -15561,16 +15561,16 @@ Class            : Mage
 School           : Fire
 Spell Type       : None
 Range            : 50000 yards
-Duration         : 10 seconds
+Duration         : 12 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ....x... ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : DoT Stacking Rule (103), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : DoT Stacking Rule (103), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1072915)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15665,8 +15665,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445)
                    Family Flags: 3
+#2 (id=1076677)  : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc405533
-Tooltip          : Spell Damage increased by $w1%.
+Tooltip          : Spell damage increased by $w1% and Mana Regeneration increase $w2%.
 
 Name             : Flame's Fury (id=409964) [Spell Family (3)] 
 Class            : Mage

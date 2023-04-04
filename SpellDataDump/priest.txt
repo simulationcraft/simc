@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -67,7 +67,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32000 | PvP Coefficient: 1.22000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.15 -> 1.22)
 #2 (id=256131)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Twist Magic (280198), Holy Nova (281265), Shadow Covenant (314867), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Lightwell Renew (372847), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187)
@@ -400,7 +399,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=612)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.80250 | PvP Coefficient: 1.43000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.35 -> 1.43)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -1121,7 +1119,6 @@ Attributes       : ........ ........ ..x..... ...x....   ........ ........ .....
 Effects          :
 #1 (id=22918)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.61000 | PvP Coefficient: 1.06000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 1.06)
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
@@ -3571,12 +3568,10 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (-5 -> -6), PvP Coefficient (1 -> 0)
 #17 (id=1074585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -6702,7 +6697,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: mana | Radius: 40 yards | Target: Raid Members (56)
 #2 (id=759288)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Shield of Vengeance (184662), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Obsidian Scales (363916), Divine Protection (403876)
+                   Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Obsidian Scales (363916), Divine Protection (403876)
 #3 (id=888372)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Shield Wall (871)
@@ -14565,7 +14560,6 @@ Effects          :
                    Family Flags: 49
 #2 (id=1027980)  : Apply Aura (6) | Periodic Trigger Spell (23): Rhapsody every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390636 | Target: Self (1)
-Hotfixed         : Period (5000 -> 2000)
 #3 (id=1030043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Nova (281265)
@@ -15709,8 +15703,8 @@ Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Triggered by     : Mind Melt (391090)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16657,22 +16651,22 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 392990 | Target: Self (1)
 Description      : When you use a Holy Word spell, you summon an image of a Naaru at your side. For $392990d, whenever you cast a healing or damaging spell, the Naaru will cast a similar spell.
 
-Name             : Divine Image (id=392990) [Spell Family (6), Hidden] 
+Name             : Divine Image (id=392990) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Duration         : 9 seconds
 Triggered by     : Divine Image (392988)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+                 : No Aura Icon (60), Include In Advanced Combat Log (72), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1031612)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 198236 | Misc Value 2: 0x1580 | Radius: 3 yards | Target: Unknown(91)

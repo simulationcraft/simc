@@ -946,11 +946,13 @@ public:
 
   struct uptimes_t
   {
+    uptime_t* astral_smolder;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse_solar;
     uptime_t* eclipse_lunar;
     uptime_t* eclipse_none;
     uptime_t* friend_of_the_fae;
+    uptime_t* incarnation_cat;
     uptime_t* primordial_arcanic_pulsar;
     uptime_t* tooth_and_claw_debuff;
   } uptime;
@@ -1298,21 +1300,21 @@ struct force_of_nature_t : public pet_t
     owner_coeff.ap_from_sp = 0.6;
 
     // From ExpectedStat.db2
-    double base_dps = 2834;  // @70
+    double base_dps = 3706;  // @70
 
     switch ( o()->true_level )
     {
       case 70: break;
-      case 69: base_dps = 2715; break;
-      case 68: base_dps = 2553; break;
-      case 67: base_dps = 2313; break;
-      case 66: base_dps = 1981; break;
-      case 65: base_dps = 1696; break;
-      case 64: base_dps = 1451; break;
-      case 63: base_dps = 1241; break;
-      case 62: base_dps = 1061; break;
-      case 61: base_dps = 905;  break;
-      default: base_dps = 520;  break;
+      case 69: base_dps = 3447; break;
+      case 68: base_dps = 3143; break;
+      case 67: base_dps = 2774; break;
+      case 66: base_dps = 2341; break;
+      case 65: base_dps = 1973; break;
+      case 64: base_dps = 1660; break;
+      case 63: base_dps = 1394; break;
+      case 62: base_dps = 1169; break;
+      case 61: base_dps = 977;  break;
+      default: base_dps = 523;  break;
     }
 
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
@@ -1560,12 +1562,23 @@ struct berserk_cat_buff_t : public druid_buff_t
     }
   }
 
+  void start( int s, double v, timespan_t d ) override
+  {
+    base_t::start( s, v, d );
+
+    if ( inc )
+      p()->uptime.incarnation_cat->update( true, sim->current_time() );
+  }
+
   void expire_override( int s, timespan_t d ) override
   {
     base_t::expire_override( s, d );
 
     p()->gain.overflowing_power->overflow[ RESOURCE_COMBO_POINT ]+= p()->buff.overflowing_power->check();
     p()->buff.overflowing_power->expire();
+
+    if ( inc )
+      p()->uptime.incarnation_cat->update( false, sim->current_time() );
   }
 };
 
@@ -3452,6 +3465,7 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    track_cd_waste = true;
 
     if ( p->talent.merciless_claws.ok() )
       bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
@@ -3618,6 +3632,8 @@ struct feral_frenzy_t : public cat_attack_t
   feral_frenzy_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_attack_t( n, p, s, opt )
   {
+    track_cd_waste = true;
+
     if ( data().ok() )
     {
       tick_action = p->get_secondary_action_n<feral_frenzy_tick_t>( name_str + "_tick" );
@@ -4296,6 +4312,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = false;
     energize_type = action_energize::ON_CAST;
+    track_cd_waste = true;
 
     form_mask = CAT_FORM;
     autoshift = p->active.shift_to_cat;
@@ -4725,6 +4742,8 @@ struct mangle_t : public bear_attack_t
       healing( nullptr ),
       inc_targets( 0 )
   {
+    track_cd_waste = true;
+
     if ( p->talent.mangle.ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
@@ -5080,6 +5099,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
     aoe = -1;
     impact_action = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     impact_action->stats = stats;
+    track_cd_waste = true;
 
     dot_name = "thrash_bear";
 
@@ -6374,6 +6394,20 @@ struct astral_smolder_t
   : public residual_action::residual_periodic_action_t<trigger_waning_twilight_t<druid_spell_t>>
 {
   astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) ) {}
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    residual_action_t::trigger_dot( s );
+
+    p()->uptime.astral_smolder->update( true, sim->current_time() );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    residual_action_t::last_tick( d );
+
+    p()->uptime.astral_smolder->update( false, sim->current_time() );
+  }
 };
 
 // Barkskin =================================================================
@@ -6628,6 +6662,8 @@ struct fury_of_elune_t : public druid_spell_t
       energize( b ),
       tick_period( p->query_aura_effect( &b->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
   {
+    track_cd_waste = true;
+
     form_mask |= NO_FORM; // can be cast without form
     dot_duration = 0_ms;  // AP gain handled via buffs
 
@@ -6787,7 +6823,10 @@ struct moon_base_t : public druid_spell_t
   void init() override
   {
     if ( !is_free_proc() )
+    {
       cooldown = p()->cooldown.moon_cd;
+      track_cd_waste = true;
+    }
 
     druid_spell_t::init();
 
@@ -7122,10 +7161,7 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack_moonfire->expire();
         }
 
-        auto rage = p()->buff.galactic_guardian->check_value();
-        if ( !p()->is_ptr() )
-          rage *= num_targets_hit;
-
+        auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
         p()->resource_gain( RESOURCE_RAGE, rage, gain );
 
         if ( !is_free() )
@@ -8228,6 +8264,7 @@ struct warrior_of_elune_t : public druid_spell_t
     : druid_spell_t( "warrior_of_elune", p, p->talent.warrior_of_elune, opt )
   {
     harmful = may_miss = false;
+    track_cd_waste = true;
   }
 
   timespan_t cooldown_duration() const override
@@ -10150,7 +10187,6 @@ void druid_t::create_buffs()
 
   buff.starfall = make_buff( this, "starfall", find_spell( 191034 ) )  // lookup via spellid for convoke
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-    ->set_tick_on_application( true )  // TODO: confirm true?
     ->set_freeze_stacks( true )
     ->set_partial_tick( true )  // TODO: confirm true?
     ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
@@ -10935,7 +10971,7 @@ void druid_t::init_procs()
   proc.pulsar               = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
-  proc.ashamanes_guidance   = get_proc( "Ashamane's Guidance" );
+  proc.ashamanes_guidance   = get_proc( "Ashamane's Guidance" )->collect_count();
   proc.predator             = get_proc( "Predator" );
   proc.predator_wasted      = get_proc( "Predator (Wasted)" );
   proc.primal_claws         = get_proc( "Primal Claws" );
@@ -10959,12 +10995,14 @@ void druid_t::init_uptimes()
 
   std::string ca_inc_str = talent.incarnation_moonkin.ok() ? "Incarnation" : "Celestial Alignment";
 
+  uptime.astral_smolder            = get_uptime( "Astral Smolder" )->collect_uptime( *sim );
   uptime.combined_ca_inc           = get_uptime( ca_inc_str + " (Total)" )->collect_uptime( *sim )->collect_duration( *sim );
   uptime.primordial_arcanic_pulsar = get_uptime( ca_inc_str + " (Pulsar)" )->collect_uptime( *sim );
   uptime.eclipse_lunar             = get_uptime( "Lunar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_solar             = get_uptime( "Solar Eclipse Only" )->collect_uptime( *sim );
   uptime.eclipse_none              = get_uptime( "No Eclipse" )->collect_uptime( *sim );
   uptime.friend_of_the_fae         = get_uptime( "Friend of the Fae" )->collect_uptime( *sim );
+  uptime.incarnation_cat           = get_uptime( "Incarnation: Avatar of Ashamane" )->collect_uptime( *sim );
   uptime.tooth_and_claw_debuff     = get_uptime( "Tooth and Claw Debuff" )->collect_uptime( *sim );
 }
 
@@ -11059,27 +11097,6 @@ void druid_t::init_special_effects()
 
   if ( talent.ashamanes_guidance.ok() && talent.incarnation_cat.ok() )
   {
-    struct ashamanes_guidance_cb_t : public dbc_proc_callback_t
-    {
-      druid_t* druid;
-      timespan_t dur;
-
-      ashamanes_guidance_cb_t( druid_t* p, const special_effect_t& e )
-        : dbc_proc_callback_t( p, e ),
-          druid( p ),
-          dur( timespan_t::from_seconds( p->spec.ashamanes_guidance->effectN( 1 ).base_value() ) )
-      {}
-
-      void execute( action_t*, action_state_t* ) override
-      {
-        if ( druid->buff.incarnation_cat->check() )
-          return;
-
-        druid->buff.incarnation_cat->trigger( dur );
-        druid->proc.ashamanes_guidance->occur();
-      }
-    };
-
     const auto driver = new special_effect_t( this );
     driver->name_str = "ashamanes_guidance_driver";
     driver->spell_id = spec.ashamanes_guidance->id();
@@ -11087,8 +11104,22 @@ void druid_t::init_special_effects()
     driver->ppm_ = -0.95;
     special_effects.push_back( driver );
 
-    auto cb = new ashamanes_guidance_cb_t( this, *driver );
+    auto cb = new dbc_proc_callback_t( this, *driver );
     cb->initialize();
+
+    auto dur = timespan_t::from_seconds( spec.ashamanes_guidance->effectN( 1 ).base_value() );
+    callbacks.register_callback_execute_function(
+        driver->spell_id, [ dur, this ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+          buff.incarnation_cat->trigger( dur );
+          proc.ashamanes_guidance->occur();
+        } );
+
+    buff.incarnation_cat->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
   }
 
   if ( unique_gear::find_special_effect( this, 388069 ) )

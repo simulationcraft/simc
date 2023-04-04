@@ -35,6 +35,11 @@ enum consecration_source : unsigned int {
   SEARING_LIGHT = 2,
 };
 
+enum grand_crusader_source : unsigned int {
+  GC_NORMAL = 0,
+  GC_JUDGMENT = 1,
+};
+
 // ==========================================================================
 // Paladin Target Data
 // ==========================================================================
@@ -618,7 +623,7 @@ public:
   virtual void      combat_begin() override;
   virtual void      copy_from( player_t* ) override;
 
-  void    trigger_grand_crusader();
+  void    trigger_grand_crusader( grand_crusader_source source = GC_NORMAL );
   void    trigger_holy_shield( action_state_t* s );
   void    trigger_tyrs_enforcer( action_state_t* s );
   void    heartfire( action_state_t* s );
@@ -853,9 +858,6 @@ private:
 public:
   typedef paladin_action_t base_t;
 
-  bool track_cd_waste;
-  cooldown_waste_data_t* cd_waste;
-
   // Damage increase whitelists
   struct affected_by_t
   {
@@ -875,13 +877,13 @@ public:
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
-    track_cd_waste( s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms ),
-    cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
     searing_light_disabled( false ),
     clears_judgment( false )
   {
+    ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
+
     // Spec aura damage increase
     if ( p->specialization() == PALADIN_RETRIBUTION )
     {
@@ -927,7 +929,7 @@ public:
 
     if ( p->talents.adjudication->ok() && this->data().affected_by( p->talents.adjudication->effectN( 1 ) ) )
     {
-      ab::crit_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
+      ab::crit_bonus_multiplier *= 1.0 + p->talents.adjudication->effectN( 1 ).percent();
     }
 
     if ( p->talents.vanguard_of_justice->ok() && this->data().affected_by( p->talents.vanguard_of_justice->effectN( 2 ) ) )
@@ -969,11 +971,6 @@ public:
   void init() override
   {
     ab::init();
-
-    if ( track_cd_waste && ab::sim->report_details != 0 )
-    {
-      cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
-    }
 
     if ( hasted_cd )
     {
@@ -1124,7 +1121,11 @@ public:
     // Handles both holy and ret judgment
     if ( affected_by.judgment && td->debuff.judgment->up() )
     {
-      ctm *= 1.0 + p()->spells.judgment_debuff->effectN( 1 ).percent();
+      double judg_mul = 1.0 + p()->spells.judgment_debuff->effectN( 1 ).percent();
+      if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
+        judg_mul += p()->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 1 ).percent();
+
+      ctm *= judg_mul;
     }
 
     if ( affected_by.final_reckoning && td->debuff.final_reckoning->up() )
@@ -1133,12 +1134,6 @@ public:
     }
 
     return ctm;
-  }
-
-  virtual void update_ready( timespan_t cd = timespan_t::min() ) override
-  {
-    if ( cd_waste ) cd_waste->add( cd, ab::time_to_execute );
-    ab::update_ready( cd );
   }
 
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
@@ -1366,10 +1361,12 @@ struct holy_power_consumer_t : public Base
       p->buffs.crusade->trigger( num_hopo_spent );
     }
 
-    if ( p->talents.righteous_protector->ok()
-      && !ab::background
-      && p->cooldowns.righteous_protector_icd->up())
+    if ( p->talents.righteous_protector->ok() )
     {
+      // 23-03-23 Not sure when this bug was introduced, but free Holy Power Spenders ignore RP ICD
+      if ( p->cooldowns.righteous_protector_icd->up() ||
+           ( p->bugs && ( isFreeSLDPSpender || p->buffs.bastion_of_light->up() ) ) )
+      {
         timespan_t reduction = timespan_t::from_seconds(
             // Why is this in deciseconds?
             -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 10 );
@@ -1383,6 +1380,7 @@ struct holy_power_consumer_t : public Base
         p->cooldowns.guardian_of_ancient_kings->adjust( reduction );
 
         p->cooldowns.righteous_protector_icd->start();
+      }
     }
 
     // 2022-10-25 Resolute Defender, spend 3 HP to reduce AD/DS cooldown

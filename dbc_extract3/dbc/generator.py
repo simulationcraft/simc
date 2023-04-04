@@ -1397,6 +1397,7 @@ class SpellDataGenerator(DataGenerator):
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
          408815, 408832, 408835, 408836, # Djaruun
+         401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil 
         ),
 
         # Warrior:
@@ -1418,6 +1419,7 @@ class SpellDataGenerator(DataGenerator):
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
+            ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
         ),
 
         # Paladin:
@@ -1581,6 +1583,7 @@ class SpellDataGenerator(DataGenerator):
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
+            ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
         ),
 
         # Priest:
@@ -1637,6 +1640,7 @@ class SpellDataGenerator(DataGenerator):
             ( 373213, 0 ),          # Insidious Ire Buff
             ( 407468, 0 ),          # Mind Spike Insanity Buff
             ( 391232, 0 ),          # Maddening Touch Insanity
+            ( 409502, 0 ),          # Priest Shadow Class Set 2-set - Weakening Reality
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1706,6 +1710,7 @@ class SpellDataGenerator(DataGenerator):
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
           ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
+          ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
         ),
 
         # Shaman:
@@ -1907,6 +1912,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387413, 0 ),    # Madness Rain of Fire aura
           ( 387414, 0 ),    # Madness Shadowburn aura
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
+          ( 409890, 0 ),    # T30 - Channel Demonfire
         ),
 
         # Monk:
@@ -2027,7 +2033,10 @@ class SpellDataGenerator(DataGenerator):
           ( 363924, 3 ), # WW 4-piece Primordial Power
 
           # Tier 29
-          ( 394951, 3 ) # WW 4-piece Versatility buff
+          ( 394951, 3 ), # WW 4-piece Versatility buff
+
+          # Tier 30
+          ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
         ),
 
         # Druid:
@@ -2174,6 +2183,7 @@ class SpellDataGenerator(DataGenerator):
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
           ( 336640, 2 ), # Charred Flesh
           ( 203981, 2 ), # Soul Fragments
+          ( 409877, 2 ), # T30 4pc Recrimination buff
        ),
 
        # Evoker:
@@ -2373,6 +2383,7 @@ class SpellDataGenerator(DataGenerator):
         ( 143, 'misc_value_1' ),
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
+        ( 507, 'misc_value_1' ),
     ]
 
     _spell_blacklist = [

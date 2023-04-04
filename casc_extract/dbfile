@@ -894,6 +894,7 @@
 3534056, DBFilesClient\GarrTalentMapPOI.db2
 3536417, DBFilesClient\ChrModelTextureTarget.db2
 3548976, DBFilesClient\ChrModelTextureLayer.db2
+3549053, DBFilesClient\SpellMemorizeCost.db2
 3556601, DBFilesClient\UIScriptedAnimationEffect.db2
 3565753, DBFilesClient\GameObjectAnimGroupMember.db2
 3566562, DBFilesClient\ChrModelMaterial.db2
@@ -1059,6 +1060,8 @@
 4872513, DBFilesClient\PerksVendorItemXInterval.db2
 4913557, DBFilesClient\MapDifficultyRedirect.db2
 4999865, DBFilesClient\ProfTraitTreeHighlight.db2
+5008306, DBFilesClient\GameMode.db2
 5011999, DBFilesClient\UIArrowCallout.db2
 5015219, DBFilesClient\ItemGroupIlvlScalingEntry.db2
 5049814, DBFilesClient\CraftingReagentRequirement.db2
+5128111, DBFilesClient\ItemCondition.db2

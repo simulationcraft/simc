@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -55,7 +55,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
 #3 (id=830260)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13800 | PvP Coefficient: 1.10000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : Corrupts the target, causing$?s334342[ $s3 Shadow damage and an additional][] $146739o1 Shadow damage over $146739d.
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -363,7 +362,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01407 | PvP Coefficient: 1.10000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -1015,7 +1013,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.80000 | PvP Coefficient: 1.25000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.3 -> 1.25)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -1423,7 +1420,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.57990 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1.13 -> 1)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1998,7 +1994,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.16500 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : Siphons the target's life essence, dealing $o1 Shadow damage over $d and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and siphoning life to the casting Warlock.
 
@@ -3573,15 +3568,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Deliberate Corruption (367831), Pandemic Invocation (386760), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Fel Barrage (388070), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802)
                    Family Flags: 49
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Deliberate Corruption (367831), Pandemic Invocation (386760), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Fel Barrage (388070), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802)
                    Family Flags: 49
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191033)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1166 (Label) | Target: Self (1)
                    Affected Spells (Label): Demon Armor (285933)
@@ -3594,7 +3589,7 @@ Effects          :
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831)
                    Family Flags: 1
 #7 (id=261078)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=261079)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=261080)   : Apply Aura (6) | Dummy (4)
@@ -3726,17 +3721,16 @@ Triggered by     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
-                 : x......x .......x ....x... ........   ...x.... .x...x.. .xx..... ........ 
+                 : x......x .......x ....x... ........   ...x.... .....x.. .xx..... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : .....x.. .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ .....x.. ..x..... 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+                 : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.10000 | Target: Unknown(25)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -4269,7 +4263,7 @@ Attributes       : ........ ........ ........ ........   .......x ........ .....
                  : No Reflection (39), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=287832)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.37188 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc108503
 
 Name             : Writhe in Agony (id=196102) [Spell Family (5), Passive] 
@@ -4805,9 +4799,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293541)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1022907)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 1883 (Label) | Target: Self (1)
-                   Affected Spells (Label): Soul Flame (199581)
+#2 (id=1077715)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1035404)  : Apply Aura (6) | Proc Trigger Spell (42): Soul Flame
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 395157 | Target: Self (1)
 #4 (id=1040180)  : None (0)
@@ -4819,18 +4812,17 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 1883: Soul Flame (199471 effect#2)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293697)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -4865,7 +4857,6 @@ Effects          :
 #3 (id=1074552)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Unknown(38)
                    Base Value: 12900 | Scaled Value: 12900 | PvP Coefficient: 1.00000 | Misc Value: 38 | Misc Value 2: 2335 (Label) | Target: Self (1)
                    Affected Spells (Label): Mayhem (387506)
-Hotfixed         : NEW EFFECT
 Description      : $?a387506[Your single target spells have a $387506s1% chance to curse][Curses] the ground with a demonic bane, causing all of your single target spells to also strike targets marked with the bane for  $80240s1% of the damage dealt. Lasts $?a387506[${$387506s3/1000} sec][$d].
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -5103,7 +5094,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Limit N (165), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302930)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Eye Beam (id=205231) [Spell Family (5)] 
@@ -5123,7 +5114,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Bouncy Chain Missiles (146), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302984)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.54777 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43821 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Fires an eye beam that deals $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
@@ -7000,7 +6991,7 @@ Effects          :
 #1 (id=713654)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=720184)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 0.37500 | Misc Value: 127 | Target: Active Pet (5)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Active Pet (5)
 Description      : Infuse your Felguard with demonic strength and command it to charge your target and unleash a Felstorm that will deal $s2% increased damage.
 Tooltip          : Your next Felstorm will deal $s2% increased damage.
 
@@ -7927,7 +7918,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=719405)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.53625 | PvP Coefficient: 1.25000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.75 -> 1.25)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Inferno (id=270545) [Spell Family (5), Passive] 
@@ -8081,7 +8071,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=722506)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 0.90000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Shadow Slash (id=272012) 
@@ -13344,9 +13334,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021228)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (193 -> 4), Target 1 (5 -> 1)
 #2 (id=1021229)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Grimoire of Sacrifice (196100)
                    Family Flags: 116
 Description      : Increases the attack speed of your primary pet by $s1%. $?a137044[][
@@ -13371,9 +13360,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021243)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (79 -> 429), Misc Value (127 -> 0), Target 1 (5 -> 1)
 #2 (id=1021244)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Grimoire of Sacrifice (196100)
                    Family Flags: 116
 Description      : Increases the damage done by your primary pet by $s1%. $?a137044[][
@@ -16771,7 +16759,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1043910)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66700 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.667)
 Description      : Malefic Rapture deals $s1% increased damage to targets suffering from Unstable Affliction.
 
 Name             : Dark Virtuosity (id=405327) [Spell Family (5), Passive] 
@@ -16795,12 +16782,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Soul Swap (86211), Drain Soul (198590)
                    Family Flags: 0, 23
-Hotfixed         : Base Value (15 -> 5)
 #2 (id=1053532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soul Swap (86211), Drain Soul (198590)
                    Family Flags: 23
-Hotfixed         : Base Value (15 -> 5)
 Description      : Shadow Bolt and Drain Soul deal an additional $s1% damage.
 
 Name             : Kindled Malice (id=405330) [Spell Family (5), Passive] 
@@ -16823,7 +16808,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Seed of Corruption (27285), Malefic Rapture (324540)
                    Family Flags: 47, 73
-Hotfixed         : Base Value (8 -> 4)
 Description      : Malefic Rapture and Seed of Corruption deal an additional $s1% damage.
 
 Name             : Immutable Hatred (id=405670) [Spell Family (5), Passive, Hidden] 
@@ -16893,9 +16877,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1054252)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1070728)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2583 (Label) | Target: Self (1)
-                   Affected Spells (Label): Umbral Blaze (405802)
+#2 (id=1078213)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Hand of Gul'dan has a $s1% chance to burn its target for ${$405802s1*(1+$s2/100)} additional Shadowflame damage every $405802t1 sec for $405802d.
 
 Name             : Umbral Blaze (id=405802) [Spell Family (5)] 
@@ -16904,7 +16887,6 @@ School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 2583: Umbral Blaze (405798 effect#2)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 

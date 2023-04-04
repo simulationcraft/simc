@@ -508,6 +508,7 @@ public:
     const spell_data_t* prey_on_the_weak_debuff;
     const spell_data_t* sepsis_buff;
     const spell_data_t* sepsis_expire_damage;
+    const spell_data_t* shadowstep_buff;
     const spell_data_t* subterfuge_buff;
     const spell_data_t* vanish_buff;
 
@@ -8968,7 +8969,7 @@ void rogue_t::init_spells()
   };
 
   talent.shared.sepsis = find_shared_talent( { &talent.assassination.sepsis, &talent.outlaw.sepsis, &talent.subtlety.sepsis } );
-  talent.shared.shadowstep = find_shared_talent( { &talent.assassination.shadowstep, &talent.subtlety.shadowstep } );
+  talent.shared.shadowstep = find_shared_talent( { &talent.rogue.shadowstep, &talent.assassination.shadowstep, &talent.subtlety.shadowstep } );
 
   // Class Background Spells
   spell.alacrity_buff = talent.rogue.alacrity->ok() ? find_spell( 193538 ) : spell_data_t::not_found();
@@ -8979,6 +8980,7 @@ void rogue_t::init_spells()
   spell.prey_on_the_weak_debuff = talent.rogue.prey_on_the_weak->ok() ? find_spell( 255909 ) : spell_data_t::not_found();
   spell.sepsis_buff = talent.shared.sepsis->ok() ? find_spell( 375939 ) : spell_data_t::not_found();
   spell.sepsis_expire_damage = talent.shared.sepsis->ok() ? find_spell( 394026 ) : spell_data_t::not_found();
+  spell.shadowstep_buff = talent.shared.shadowstep->ok() ? find_spell( 36554 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
 
@@ -9327,11 +9329,14 @@ void rogue_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->set_duration( talent.rogue.feint->duration() );
 
-  buffs.shadowstep = make_buff( this, "shadowstep", talent.rogue.shadowstep )
-    ->set_cooldown( timespan_t::zero() );
+  buffs.shadowstep = make_buff( this, "shadowstep", spell.shadowstep_buff )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->add_invalidate( CACHE_RUN_SPEED );
 
   buffs.sprint = make_buff( this, "sprint", spell.sprint )
     ->set_cooldown( timespan_t::zero() )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
     ->add_invalidate( CACHE_RUN_SPEED );
 
   buffs.slice_and_dice = new buffs::slice_and_dice_t( this );
@@ -10167,10 +10172,10 @@ double rogue_t::temporary_movement_modifier() const
   double temporary = player_t::temporary_movement_modifier();
 
   if ( buffs.sprint->up() )
-    temporary = std::max( buffs.sprint->data().effectN( 1 ).percent(), temporary );
+    temporary = std::max( buffs.sprint->check_value(), temporary );
 
   if ( buffs.shadowstep->up() )
-    temporary = std::max( buffs.shadowstep->data().effectN( 2 ).percent(), temporary );
+    temporary = std::max( buffs.shadowstep->check_value(), temporary );
 
   return temporary;
 }

@@ -561,19 +561,10 @@ class TraitSet(DataSet):
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
                     if node['node'].type == 2:
-                        # It's possible to have nodes with entries that have the same selection index.
-                        # In such cases it seems random which entry the game assigns as the first entry,
-                        # and this can vary build by build with no changes to the underlying data. For 
-                        # such cases we temporarily implement a manual override until a more permanent 
-                        # solution can be found.
-                        if key == 109860: # new moon
-                            sel_idx = 200
-                        elif key == 109872: # rattle the stars
-                            sel_idx = 200
-                        else:
-                            sel_idx = entry.child_ref('TraitNodeXTraitNodeEntry').index
-
-                        _traits[key]['selection_index'] = sel_idx
+                        # Note that it's possible to have nodes with entries that have the same selection index.
+                        # In such cases it seems random which entry the game assigns as the first entry, and this
+                        # can vary build by build with no changes to the underlying data. 
+                        _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
 
         _coords = {}
         for entry in _traits.values():

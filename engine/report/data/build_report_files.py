@@ -16,8 +16,7 @@ def get_file_as_lines( input, out_line_length ):
             total_line_len = out_line_length
             if eaten_chars + out_line_length > len(str):
                 total_line_len = len(str) - eaten_chars
-                out_line_length = total_line_len
-            while str[eaten_chars + out_line_length - (total_line_len - out_line_length) - 1] == '\\':
+            while str[eaten_chars + total_line_len - 1] == '\\':
                 total_line_len += 1
             out.append(str[eaten_chars:eaten_chars + total_line_len])
             eaten_chars += total_line_len
@@ -46,7 +45,7 @@ def main():
         f.write( "\n\n" )
         f.write( print_as_char_array( "__highcharts_include", get_file_as_lines( "highcharts.inc", line_length ) ) )
         f.write( "\n\n" )
-        f.write( print_as_char_array( "__jquery_include", get_file_as_lines( "jquery-3.4.1.min.js", line_length ) ) )
+        f.write( print_as_char_array( "__jquery_include", get_file_as_lines( "jquery-3.6.4.min.js", line_length ) ) )
     print( "done")
     
 if __name__ == "__main__":

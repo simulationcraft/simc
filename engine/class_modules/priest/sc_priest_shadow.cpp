@@ -669,6 +669,9 @@ public:
       {
         coalescing_shadows_chance = priest().talents.shadow.puppet_master->proc_chance();
       }
+
+      da_multiplier_buffeffects.emplace_back( nullptr, priest().buffs.darkflame_shroud->default_value, false, false,
+                                              [ this ] { return priest().buffs.darkflame_shroud->check(); } );
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -709,7 +712,7 @@ public:
         if ( priest().is_ptr() )
         {
           // TODO: 10.1 PTR TUNE SPIRITS CHANCE
-          auto chance = 0.78 * std::pow( cast_state( s )->number_spawned, -0.78 );
+          auto chance = 0.8 * std::pow( cast_state( s )->number_spawned, -0.8 );
           if ( rng().roll( chance ) )
           {
             priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
@@ -793,11 +796,11 @@ public:
 struct shadow_word_pain_t final : public priest_spell_t
 {
   bool casted;
-
   double coalescing_shadows_chance = 0.0;
+  propagate_const<action_t*> child_searing_light;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain )
+    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain ), child_searing_light( nullptr )
   {
     affected_by_shadow_weaving = true;
     casted                     = _casted;
@@ -825,6 +828,10 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 1 ).percent() +
                                   priest().talents.shadow.harnessed_shadows->effectN( 2 ).percent();
+    }
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      child_searing_light = priest().background_actions.searing_light;
     }
   }
 
@@ -855,6 +862,14 @@ struct shadow_word_pain_t final : public priest_spell_t
       }
 
       priest().refresh_insidious_ire_buff( s );
+
+      if ( child_searing_light && priest().buffs.divine_image->up() )
+      {
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
+      }
     }
   }
 
@@ -1145,13 +1160,16 @@ struct vampiric_touch_t final : public priest_spell_t
       if ( priest().talents.shadow.maddening_touch.enabled() )
       {
         // TODO: 10.1 Proc Chance is not in Spell Data, this is a massive guess.
-        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() &&
-             rng().roll( 0.25 / sqrt( priest().get_active_dots( internal_id ) ) ) )
+        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() )
         {
-          priest().cooldowns.maddening_touch_icd->start();
-          priest().generate_insanity(
-              priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
-              priest().gains.insanity_maddening_touch, d->state->action );
+          auto chance = 0.25 * std::pow( priest().get_active_dots( internal_id ), -0.6 );
+          if ( rng().roll( chance ) )
+          {
+            priest().cooldowns.maddening_touch_icd->start();
+            priest().generate_insanity(
+                priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
+                priest().gains.insanity_maddening_touch, d->state->action );
+          }
         }
         else if ( rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
         {
@@ -1292,6 +1310,11 @@ struct devouring_plague_t final : public priest_spell_t
     apply_affecting_aura( p.talents.shadow.voidtouched );
     apply_affecting_aura( p.talents.shadow.minds_eye );
     apply_affecting_aura( p.talents.shadow.distorted_reality );
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
+    {
+      apply_affecting_aura( p.sets->set( PRIEST_SHADOW, T30, B4 ) );
+    }
   }
 
   action_state_t* new_state() override
@@ -1428,6 +1451,11 @@ struct devouring_plague_t final : public priest_spell_t
     if ( priest().is_ptr() && priest().talents.shadow.screams_of_the_void.enabled() )
     {
       priest().buffs.screams_of_the_void->trigger();
+    }
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B4 ) )
+    {
+      priest().buffs.darkflame_embers->trigger();
     }
   }
 
@@ -1746,6 +1774,8 @@ struct psychic_horror_t final : public priest_spell_t
     {
       priest_td_t& td = get_td( s->target );
       td.buffs.psychic_horror->trigger();
+      s->target->buffs.stunned->trigger( data().duration() );
+      s->target->stun();
     }
   }
 
@@ -1862,6 +1892,16 @@ struct void_torrent_t final : public priest_spell_t
 
     priest().buffs.void_torrent->trigger();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().is_ptr() )
+    {
+      priest().spawn_idol_of_cthun( s );
+    }
+  }
 };
 
 // ==========================================================================
@@ -1906,7 +1946,7 @@ struct psychic_link_t final : public priest_spell_t
       _pl_void_bolt( new psychic_link_base_t( "psychic_link_void_bolt", p, p.talents.shadow.psychic_link ) ),
       _pl_void_torrent( new psychic_link_base_t( "psychic_link_void_torrent", p, p.talents.shadow.psychic_link ) ),
       _pl_shadow_word_death(
-          new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow_word_death ) )
+          new psychic_link_base_t( "psychic_link_shadow_word_death", p, p.talents.shadow.psychic_link ) )
   {
     background  = true;
     radius      = data().effectN( 1 ).radius_max();
@@ -1922,6 +1962,7 @@ struct psychic_link_t final : public priest_spell_t
     add_child( _pl_mindgames );
     add_child( _pl_void_bolt );
     add_child( _pl_void_torrent );
+    add_child( _pl_shadow_word_death );
   }
 
   void trigger( player_t* target, double original_amount, std::string action_name )
@@ -2316,7 +2357,14 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
   {
     // BUG: RPPM value not found in spelldata
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/956
-    set_rppm( RPPM_HASTE, 2.4 );
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) )
+    {
+      set_rppm( RPPM_HASTE, 2.4 * ( 1 + priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 3 ).percent() ) );
+    }
+    else
+    {
+      set_rppm( RPPM_HASTE, 2.4 );
+    }
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
@@ -2361,22 +2409,40 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct ancient_madness_t final : public priest_buff_t<buff_t>
 {
-  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.talents.shadow.ancient_madness )
+  ancient_madness_t( priest_t& p, const spell_data_t* s ) : base_t( p, "ancient_madness", s )
   {
     if ( !data().ok() )
       return;
 
+    // Since we are using data from VF/DA make sure the name in the report does not confuse people
+    s_data_reporting = p.talents.shadow.ancient_madness.spell();
+
+    if ( p.talents.shadow.dark_ascension.enabled() )
+    {
+      set_period( p.talents.shadow.dark_ascension->effectN( 3 ).period() );
+      set_duration( p.talents.shadow.dark_ascension->duration() );
+    }
+
+    if ( p.talents.shadow.void_eruption.enabled() )
+    {
+      set_period( p.specs.voidform->effectN( p.is_ptr() ? 4 : 5 ).period() );
+      set_duration( p.specs.voidform->duration() );
+    }
+
     add_invalidate( CACHE_CRIT_CHANCE );
     add_invalidate( CACHE_SPELL_CRIT_CHANCE );
     set_reverse( true );
-    set_period( timespan_t::from_seconds( 1 ) );
-    set_duration( p.specs.voidform->duration() );  // Uses the same duration as Voidform for tooltip
+    set_max_stack( 20 );
+    cooldown->duration = 0_s;
 
     if ( p.is_ptr() )
-      set_default_value( data().effectN( 2 ).percent() / 10 );  // 0.5%/1%
+    {
+      set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() / 10 );
+    }
     else
-      set_default_value( data().effectN( 2 ).percent() );  // 0.5%/1%
-    set_max_stack( 20 );                                   // 20/20;
+    {
+      set_default_value( priest().talents.shadow.ancient_madness->effectN( 2 ).percent() );
+    }
   }
 };
 
@@ -2390,6 +2456,26 @@ struct dispersion_t final : public priest_buff_t<buff_t>
     : base_t( p, "dispersion", p.find_class_spell( "Dispersion" ) ),
       rank2( p.find_specialization_spell( 322108, PRIEST_SHADOW ) )
   {
+  }
+};
+
+// Fury of Elune AP =========================================================
+struct devoured_despair_buff_t : public priest_buff_t<buff_t>
+{
+  devoured_despair_buff_t( priest_t& p ) : base_t( p, "devoured_despair", p.talents.shadow.devoured_despair )
+  {
+    set_cooldown( 0_ms );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_trigger_spell( p.talents.shadow.idol_of_yshaarj );
+    set_duration( p.talents.shadow.devoured_pride->duration() );
+
+    auto eff = &data().effectN( 1 );
+    auto ap  = eff->resource( RESOURCE_INSANITY );
+    set_default_value( ap / eff->period().total_seconds() );
+
+    auto gain = p.get_gain( "devoured_despair" );
+    set_tick_callback(
+        [ ap, gain, this ]( buff_t*, int, timespan_t ) { player->resource_gain( RESOURCE_INSANITY, ap, gain ); } );
   }
 };
 
@@ -2439,7 +2525,15 @@ void priest_t::create_buffs_shadow()
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
+  if ( talents.shadow.dark_ascension.enabled() )
+  {
+    buffs.ancient_madness = make_buff<buffs::ancient_madness_t>( *this, talents.shadow.dark_ascension );
+  }
+  else
+  {
+    buffs.ancient_madness = make_buff<buffs::ancient_madness_t>( *this, specs.voidform );
+  }
+
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
   buffs.unfurling_darkness =
       make_buff( this, "unfurling_darkness", talents.shadow.unfurling_darkness->effectN( 1 ).trigger() );
@@ -2492,10 +2586,13 @@ void priest_t::create_buffs_shadow()
                                      ->set_trigger_spell( talents.shadow.coalescing_shadows_buff );
 
   buffs.devoured_pride = make_buff( this, "devoured_pride", talents.shadow.devoured_pride )
-                             ->set_duration( timespan_t::zero() )
                              ->set_trigger_spell( talents.shadow.idol_of_yshaarj )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                             ->set_max_stack( 5 );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  if ( !is_ptr() )
+    buffs.devoured_pride->set_duration( 0_ms );
+
+  buffs.devoured_despair = make_buff<buffs::devoured_despair_buff_t>( *this );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( is_ptr() ? 2 : 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
@@ -2530,46 +2627,22 @@ void priest_t::create_buffs_shadow()
           ->set_default_value_from_effect( 1 );
 
   // TODO: Wire up spell data, split into helper function.
-  buffs.t30_4pc =
-      make_buff( this, "t30_4pc_tracker" )
-          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->set_max_stack( 500 )
-          ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) {
-            if ( cur >= 400 )
-            {
-              make_event( b->sim, [ this, b ] {
-                b->decrement( 400 );
 
-                auto duration = 5_s;
+  auto darkflame_embers  = find_spell( 409502 );
+  buffs.darkflame_embers = make_buff( this, "darkflame_embers", darkflame_embers )
+                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                               ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
+                                 if ( old == b->max_stack() )
+                                 {
+                                   buffs.darkflame_shroud->trigger();
+                                 }
+                               } );
 
-                if ( talents.shadow.idol_of_yshaarj.enabled() && options.t30_yshaarj )
-                {
-                  // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
-                  if ( target->health_percentage() >= 80.0 )
-                  {
-                    buffs.devoured_pride->trigger();
-                  }
-                  else
-                  {
-                    duration += timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
-                    procs.idol_of_yshaarj_extra_duration->occur();
-                  }
-                }
+  if ( darkflame_embers->ok() )
+    buffs.darkflame_embers->set_expire_at_max_stack( true );  // Avoid sim warning
 
-                auto& pet_spawner = talents.shadow.mindbender.enabled() ? pets.mindbender : pets.shadowfiend;
-
-                auto pet = pet_spawner.active_pet_min_remains();
-                if ( pet && !pet->is_sleeping() && !options.t30_multiple_bender )
-                {
-                  pet->adjust_duration( 5_s );
-                }
-                else
-                {
-                  pet_spawner.spawn( duration );
-                }
-              } );
-            }
-          } );
+  buffs.darkflame_shroud =
+      make_buff( this, "darkflame_shroud", find_spell( 410871 ) )->set_default_value_from_effect( 1 );
 }
 
 void priest_t::init_rng_shadow()

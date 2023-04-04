@@ -203,6 +203,7 @@ public:
     // Tier
     buff_t* strike_vulnerabilities;
     buff_t* vanguards_determination;
+    buff_t* merciless_assault;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -670,6 +671,12 @@ public:
     const spell_data_t* t29_fury_4pc;
     const spell_data_t* t29_prot_2pc;
     const spell_data_t* t29_prot_4pc;
+    const spell_data_t* t30_arms_2pc;
+    const spell_data_t* t30_arms_4pc;
+    const spell_data_t* t30_fury_2pc;
+    const spell_data_t* t30_fury_4pc;
+    const spell_data_t* t30_prot_2pc;
+    const spell_data_t* t30_prot_4pc;
   } tier_set;
 
   struct legendary_t
@@ -873,6 +880,7 @@ public:
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
   // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  double composite_player_target_crit_chance( player_t* target ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_speed() const override;
   double composite_melee_haste() const override;
@@ -1005,6 +1013,8 @@ struct warrior_action_t : public Base
     // tier
     bool t29_arms_4pc;
     bool t29_prot_2pc;
+    bool t30_arms_2pc;
+    bool t30_fury_4pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
 
@@ -1027,6 +1037,8 @@ struct warrior_action_t : public Base
         juggernaut_prot( false ),
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
+        t30_arms_2pc( false ),
+        t30_fury_4pc( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
     {
@@ -1146,6 +1158,7 @@ public:
    // set bonus
     ab::apply_affecting_aura( p()->tier_set.t29_arms_2pc );  
     ab::apply_affecting_aura( p()->tier_set.t29_fury_2pc );  
+    ab::apply_affecting_aura( p()->tier_set.t30_fury_2pc );
 
 
 
@@ -1168,6 +1181,9 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
+    if ( p()->dbc->ptr )
+      affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
     initialized = true;
   }
@@ -1260,12 +1276,14 @@ public:
   {
     double tcdbm = ab::composite_target_crit_damage_bonus_multiplier( target );
 
-    //warrior_td_t* td = p()->get_target_data( target ); ?
+    warrior_td_t* td = p()->get_target_data( target );
 
-    //if ( affected_by.impale )
-    //{
-      //tcdbm *= 1.0 + ( p()->talents.arms.impale->effectN( 1 ).percent() );
-    //}
+    // needs adjusting - this is actually a TOTAL crit damage increase, not extra - current implementation does not support
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() &&
+         affected_by.t30_arms_2pc )
+    {
+      tcdbm *= 1.0 + ( p()->find_spell( 262115 )->effectN( 5 ).percent() );
+    }
 
     return tcdbm;
   }
@@ -1349,6 +1367,11 @@ public:
     if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
     {
       dm *= 1.0 + p()->buff.vanguards_determination->check_value();
+    }
+
+    if ( affected_by.t30_fury_4pc && p()->buff.merciless_assault->up() )
+    {
+      dm *= 1.0 + p()->buff.merciless_assault->stack_value();
     }
 
     return dm;
@@ -2710,13 +2733,15 @@ struct bloodthirst_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
+  double merciless_assault_crit;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
   {
     parse_options( options_str );
 
@@ -2766,6 +2791,18 @@ struct bloodthirst_t : public warrior_attack_t
     return am;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p()->buff.merciless_assault->check() )
+    {
+      cc += merciless_assault_crit;
+    }
+
+    return cc;
+  }
+
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -2778,6 +2815,11 @@ struct bloodthirst_t : public warrior_attack_t
     {
       gushing_wound->set_target( s->target );
       gushing_wound->execute();
+    }
+
+    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
@@ -2793,6 +2835,7 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.meat_cleaver->decrement();
+    p()->buff.merciless_assault->expire();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2837,13 +2880,15 @@ struct bloodbath_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
+  double merciless_assault_crit;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
-      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 )
+      rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
+      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
   {
     parse_options( options_str );
 
@@ -2874,6 +2919,18 @@ struct bloodbath_t : public warrior_attack_t
       return aoe_targets + 1;
     }
     return warrior_attack_t::n_targets();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = warrior_attack_t::composite_crit_chance();
+
+    if ( p()->buff.merciless_assault->check() )
+    {
+      cc += merciless_assault_crit;
+    }
+
+    return cc;
   }
 
   void impact( action_state_t* s ) override
@@ -2915,6 +2972,7 @@ struct bloodbath_t : public warrior_attack_t
     p()->buff.reckless_abandon->decrement();
 
     p()->buff.meat_cleaver->decrement();
+    p()->buff.merciless_assault->expire();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -4826,6 +4884,12 @@ struct rampage_attack_t : public warrior_attack_t
        // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
 
+       // s->target will only activate on strikes against the primary target, ignoring cleaved attacks.
+      //if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT && target == s->target ) // remove ICD from buff
+      if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT )
+      {
+        p()->buff.merciless_assault->trigger();
+      }
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
       {
@@ -5376,15 +5440,6 @@ struct shield_charge_damage_t : public warrior_attack_t
     return c;
   }
 
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
-
-    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
-
-    return cm;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5457,15 +5512,6 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
     c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
 
     return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = warrior_attack_t::composite_crit_damage_bonus_multiplier();
-
-    cm += p()->talents.protection.battering_ram->effectN( 3 ).percent();
-
-    return cm;
   }
 };
 
@@ -6825,6 +6871,8 @@ struct spear_of_bastion_t : public warrior_attack_t
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
+    aoe = -1;
+    reduced_aoe_targets               = 5.0;
     if ( p->active.spear_of_bastion_attack )
     {
       execute_action = p->active.spear_of_bastion_attack;
@@ -8261,6 +8309,12 @@ void warrior_t::init_spells()
   tier_set.t29_fury_4pc               = sets->set( WARRIOR_FURY, T29, B4 );
   tier_set.t29_prot_2pc               = sets->set( WARRIOR_PROTECTION, T29, B2 );
   tier_set.t29_prot_4pc               = sets->set( WARRIOR_PROTECTION, T29, B4 );
+  tier_set.t30_arms_2pc               = sets->set( WARRIOR_ARMS, T30, B2 );
+  tier_set.t30_arms_4pc               = sets->set( WARRIOR_ARMS, T30, B4 );
+  tier_set.t30_fury_2pc               = sets->set( WARRIOR_FURY, T30, B2 );
+  tier_set.t30_fury_4pc               = sets->set( WARRIOR_FURY, T30, B4 );
+  tier_set.t30_prot_2pc               = sets->set( WARRIOR_PROTECTION, T30, B2 );
+  tier_set.t30_prot_4pc               = sets->set( WARRIOR_PROTECTION, T30, B4 );
 
   // Active spells
   //active.ancient_aftershock_pulse = nullptr;
@@ -9573,6 +9627,13 @@ void warrior_t::create_buffs()
   buff.vanguards_determination = make_buff( this, "vanguards_determination", tier_set.t29_prot_2pc->ok() ?
                                             find_spell( 394056 ) : spell_data_t::not_found() )
                                     ->set_default_value( find_spell( 394056 )->effectN( 1 ).percent());
+
+  // T30 Tier Effects ===============================================================================================================
+  buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
+                                find_spell( 409983 ) : spell_data_t::not_found() )
+                    ->set_cooldown( 1.0_s ) // faux implementation to limit 1 stack per cast - not in spell data
+                    ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
+                    ->set_duration( find_spell( 409983 )->duration() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -9991,6 +10052,21 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+// rogue_t::composite_player_target_crit_chance =============================
+
+double warrior_t::composite_player_target_crit_chance( player_t* target ) const
+{
+  double c = player_t::composite_player_target_crit_chance( target );
+
+  auto td = get_target_data( target );
+
+  // crit chance bonus is not currently whitelisted in data
+  if ( sets->has_set_bonus( WARRIOR_ARMS, T30, B2 ) && td->dots_deep_wounds->is_ticking() )
+  c += find_spell( 262115 )->effectN( 4 ).percent();
+
+  return c;
+}
+
 // warrior_t::composite_attack_speed ===========================================
 
 double warrior_t::composite_melee_speed() const
@@ -10379,6 +10455,9 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 
   cdm *= 1.0 + buff.elysian_might->check_value();
 
+  if ( s->action->school == SCHOOL_PHYSICAL )
+    cdm *= 1.0 + talents.protection.battering_ram->effectN( 3 ).percent();
+
   return cdm;
 }
 
@@ -10606,14 +10685,7 @@ stat_e warrior_t::convert_hybrid_stat( stat_e s ) const
     case STAT_SPIRIT:
       return STAT_NONE;
     case STAT_BONUS_ARMOR:
-      if ( specialization() == WARRIOR_PROTECTION )
-      {
         return s;
-      }
-      else
-      {
-        return STAT_NONE;
-      }
     default:
       return s;
   }

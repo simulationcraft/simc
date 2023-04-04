@@ -1,4 +1,4 @@
-// 574 talents, wow build 10.1.0.48661
+// 574 talents, wow build 10.1.0.48776
 static std::array<talent_data_t, 574> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -401,7 +401,7 @@ static std::array<talent_data_t, 574> __ptr_talent_data { {
   { "Living Bomb"                       , 22472, 0x00, 0x0080,   63,   2,   5,   44457,       0,  0 },
   { "Comet Storm"                       , 22473, 0x00, 0x0080,   64,   2,   5,  153595,       0,  0 },
   { "Supernova"                         , 22474, 0x00, 0x0080,   62,   2,   5,  157980,       0,  0 },
-  { "From the Shadows"                  , 22477, 0x00, 0x0100,  266,   0,   3,  267170,       0,  0 },
+  { "The Houndmaster's Stratagem"       , 22477, 0x00, 0x0100,  266,   0,   3,  267170,       0,  0 },
   { "Demonic Consumption"               , 22479, 0x00, 0x0100,  266,   1,   6,  267215,       0,  0 },
   { "Inferno"                           , 22480, 0x00, 0x0100,  267,   0,   3,  270545,       0,  0 },
   { "Justicar's Vengeance"              , 22483, 0x00, 0x0002,   70,   1,   5,  215661,       0,  0 },

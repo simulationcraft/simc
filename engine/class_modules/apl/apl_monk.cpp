@@ -161,7 +161,7 @@ namespace monk_apl
         break;
       case MONK_WINDWALKER:
         if ( p->true_level > 60 )
-          return "main_hand:primal_whetstone_3/off_hand:primal_whetstone_3";
+          return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
         else if ( p->true_level > 50 )
           return "main_hand:shaded_weightstone/off_hand:shaded_weightstone";
         else

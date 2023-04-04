@@ -316,6 +316,7 @@ struct evoker_t : public player_t
   void init_base_stats() override;
   // void init_resources( bool ) override;
   void init_benefits() override;
+  resource_e primary_resource() const override { return RESOURCE_ESSENCE; }
   role_e primary_role() const override;
   void init_gains() override;
   void init_procs() override;

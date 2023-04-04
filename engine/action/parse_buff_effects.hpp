@@ -139,13 +139,13 @@ public:
 
   // Syntax: parse_buff_effects( buff[, ignore_mask|use_stacks[, use_default]][, spell][,...] )
   //  buff = buff to be checked for to see if effect applies
-  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit, must be typed as unsigned
   //  use_stacks = optional, default true, whether to multiply value by stacks, mutually exclusive with ignore parameters
   //  use_default = optional, default false, whether to use buff's default value over effect's value
   //  spell = optional list of spell with redirect effects that modify the effects on the buff
   //
   // Example 1: Parse buff1, ignore effects #1 #3 #5, modify by talent1, modify by tier1:
-  //  parse_buff_effects<S,S>( buff1, 0b10101, talent1, tier1 );
+  //  parse_buff_effects<S,S>( buff1, 0b10101U, talent1, tier1 );
   //
   // Example 2: Parse buff2, don't multiply by stacks, use the default value set on the buff instead of effect value:
   //  parse_buff_effects( buff2, false, true );

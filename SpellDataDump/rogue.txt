@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48676 Live (hotfix 2023-03-22/48676)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -25,7 +25,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=31)       : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #4 (id=297239)   : Dummy (3)
@@ -4840,7 +4839,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=295616)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65352 | PvP Coefficient: 1.20000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=295617)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]
@@ -5399,17 +5397,14 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.80000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=479894)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.80000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #3 (id=479895)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.80000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : Shadow Dance increases damage by an additional $s1%.
 
 Name             : Sprint (desc=Rank 3) (id=245751) [Spell Family (8), Passive] 
@@ -14660,12 +14655,10 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.67000 | Target: Self (1)
                    Affected Spells: Backstab (53), Kidney Shot (408), Gouge (1776), Cheap Shot (1833), Rupture (1943), Slice and Dice (5171), Shiv (5938), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Shadowstrike (345121), Echoing Reprimand (354838), Rupture (360826), Sepsis (375936), Sepsis (385408), Echoing Reprimand (385616), Sepsis (394026), Rupture (394031)
                    Family Flags: 2, 3, 10, 17, 18, 20, 21, 29, 32, 44, 75, 82, 92, 104, 109, 118, 127
-Hotfixed         : PvP Coefficient (1 -> 0.67)
 #2 (id=1033246)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.67000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Kidney Shot (408), Gouge (1776), Cheap Shot (1833), Rupture (1943), Slice and Dice (5171), Shiv (5938), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Shadowstrike (345121), Echoing Reprimand (354838), Rupture (360826), Sepsis (375936), Sepsis (385408), Echoing Reprimand (385616), Sepsis (394026), Rupture (394031)
                    Family Flags: 2, 3, 10, 17, 18, 20, 21, 29, 32, 44, 75, 82, 92, 104, 109, 118, 127
-Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : $@spelldesc382528
 Tooltip          : Attacks that generate or spend combo points deal $w1% increased damage.
 
@@ -15004,7 +14997,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Backstab (53), Gloomblade (200758)
                    Family Flags: 2, 109
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc382518
 Tooltip          : Damage of your next $?s200758[Gloomblade][Backstab] increased by $w1%.
 

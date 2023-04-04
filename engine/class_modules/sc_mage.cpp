@@ -325,6 +325,7 @@ public:
     buff_t* bursting_energy;
 
     buff_t* volatile_flame;
+    buff_t* flames_fury;
 
     buff_t* touch_of_ice;
   } buffs;
@@ -1331,16 +1332,11 @@ struct mage_spell_t : public spell_t
     target_trigger_type_e volatile_flame = TT_NONE;
   } triggers;
 
-  bool track_cd_waste;
-  cooldown_waste_data_t* cd_waste;
-
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
-    triggers(),
-    track_cd_waste(),
-    cd_waste()
+    triggers()
   {
     may_crit = tick_may_crit = true;
     weapon_multiplier = 0.0;
@@ -1412,14 +1408,6 @@ public:
 
     if ( affected_by.time_manipulation && !range::contains( p()->time_manipulation_cooldowns, cooldown ) )
       p()->time_manipulation_cooldowns.push_back( cooldown );
-  }
-
-  void init_finished() override
-  {
-    if ( track_cd_waste && sim->report_details != 0 )
-      cd_waste = p()->get_cooldown_waste_data( cooldown );
-
-    spell_t::init_finished();
   }
 
   double action_multiplier() const override
@@ -1532,14 +1520,6 @@ public:
 
     if ( flags & ( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ) && p()->talents.touch_of_the_magi.ok() )
       cast_state( s )->totm_factor = composite_target_damage_vulnerability( s->target );
-  }
-
-  void update_ready( timespan_t cd ) override
-  {
-    if ( cd_waste )
-      cd_waste->add( cd, time_to_execute );
-
-    spell_t::update_ready( cd );
   }
 
   bool usable_moving() const override
@@ -1683,23 +1663,14 @@ public:
       return;
 
     p()->buffs.volatile_flame->trigger();
-    if ( p()->buffs.volatile_flame->check() < p()->buffs.volatile_flame->max_stack() )
-      return;
-
-    p()->buffs.volatile_flame->expire();
-    // When a crit generates a Hot Streak, the Hyperthermia talent will trigger before Volatile Flame.
-    make_event( sim, 30_ms, [ this ]
+    if ( p()->buffs.volatile_flame->at_max_stacks() )
     {
-      timespan_t d = timespan_t::from_seconds( p()->sets->set( MAGE_FIRE, T30, B4 )->effectN( 1 ).base_value() );
-      if ( p()->buffs.hyperthermia->check() )
-      {
-        p()->buffs.hyperthermia->extend_duration( p(), d );
-      }
-      else
-      {
-        p()->buffs.hyperthermia->execute( -1, buff_t::DEFAULT_VALUE(), d );
-      }
-    } );
+      p()->buffs.volatile_flame->expire();
+      // Trigger the buff outside of impact processing so that Phoenix Flames
+      // doesn't benefit from the buff it just triggered.
+      // TODO: refreshing Flame's Fury buff doesn't add stacks, only refreshes duration
+      make_event( *sim, [ b = p()->buffs.flames_fury ] { b->trigger( b->max_stack() ); } );
+    }
   }
 };
 
@@ -4921,6 +4892,15 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     if ( result_is_hit( s->result ) )
       get_td( s->target )->debuffs.charring_embers->trigger();
   }
+
+  double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.flames_fury->check_value();
+
+    return am;
+  }
 };
 
 struct phoenix_flames_t final : public fire_mage_spell_t
@@ -4963,6 +4943,14 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       spread_ignite( s->target );
 
     fire_mage_spell_t::impact( s );
+
+    if ( p()->buffs.flames_fury->check() )
+    {
+      // Make sure the cooldown reset happens even if the travel time
+      // somehow ends up being zero.
+      make_event( *sim, [ this ] { cooldown->reset( false ); } );
+      p()->buffs.flames_fury->decrement();
+    }
   }
 };
 
@@ -6548,13 +6536,16 @@ void mage_t::create_buffs()
 
   // Set Bonuses
   buffs.arcane_overload = make_buff( this, "arcane_overload", find_spell( 409022 ) )
-                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) );
+                            ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T30, B4 ) )
+                            ->set_affects_regen( true );
   buffs.bursting_energy = make_buff( this, "bursting_energy", find_spell( 395006 ) )
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
 
   buffs.volatile_flame = make_buff( this, "volatile_flame", find_spell( 408673 ) )
                            ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
+  buffs.flames_fury    = make_buff( this, "flames_fury", find_spell( 409964 ) )
+                           ->set_default_value_from_effect( 1 );
 
   buffs.touch_of_ice = make_buff( this, "touch_of_ice", find_spell( 394994 ) )
                          ->set_default_value_from_effect( 1 )
@@ -6767,6 +6758,7 @@ double mage_t::resource_regen_per_second( resource_e rt ) const
     reg *= 1.0 + cache.mastery() * spec.savant->effectN( 1 ).mastery_value();
     reg *= 1.0 + buffs.enlightened_mana->check_value();
     reg *= 1.0 + buffs.evocation->check_value();
+    reg *= 1.0 + buffs.arcane_overload->check() * buffs.arcane_overload->data().effectN( 2 ).percent();
   }
 
   return reg;
@@ -7529,59 +7521,6 @@ public:
     p( player )
   { }
 
-  void html_customsection_cd_waste( report::sc_html_stream& os )
-  {
-    if ( p.cooldown_waste_data_list.empty() )
-      return;
-
-    os << "<div class=\"player-section custom_section\">\n"
-          "<h3 class=\"toggle open\">Cooldown waste</h3>\n"
-          "<div class=\"toggle-content\">\n"
-          "<table class=\"sc sort even\">\n"
-          "<thead>\n"
-          "<tr>\n"
-          "<th></th>\n"
-          "<th colspan=\"3\">Seconds per Execute</th>\n"
-          "<th colspan=\"3\">Seconds per Iteration</th>\n"
-          "</tr>\n"
-          "<tr>\n"
-          "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
-          "<th class=\"toggle-sort\">Average</th>\n"
-          "<th class=\"toggle-sort\">Minimum</th>\n"
-          "<th class=\"toggle-sort\">Maximum</th>\n"
-          "<th class=\"toggle-sort\">Average</th>\n"
-          "<th class=\"toggle-sort\">Minimum</th>\n"
-          "<th class=\"toggle-sort\">Maximum</th>\n"
-          "</tr>\n"
-          "</thead>\n";
-
-    for ( const auto& data : p.cooldown_waste_data_list )
-    {
-      if ( !data->active() )
-        continue;
-
-      std::string name = data->cd->name_str;
-      if ( action_t* a = p.find_action( name ) )
-        name = report_decorators::decorated_action( *a );
-      else
-        name = util::encode_html( name );
-
-      os << "<tr>";
-      fmt::print( os, "<td class=\"left\">{}</td>", name );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
-      fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
-      os << "</tr>\n";
-    }
-
-    os << "</table>\n"
-          "</div>\n"
-          "</div>\n";
-  }
-
   void html_customsection_icy_veins( report::sc_html_stream& os )
   {
     os << "<div class=\"player-section custom_section\">\n"
@@ -7676,7 +7615,6 @@ public:
     if ( p.sim->report_details == 0 )
       return;
 
-    html_customsection_cd_waste( os );
     switch ( p.specialization() )
     {
       case MAGE_FROST:
