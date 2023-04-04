@@ -165,7 +165,8 @@ void item_database::apply_item_scaling( item_t& item, unsigned curve_id, unsigne
         scaled_result, base_value );
   }
 
-  item.parsed.data.level = static_cast<unsigned>( util::round( scaled_result, 0 ) );
+  item.parsed.data.level = static_cast<unsigned>( util::round( scaled_result, 0 ) ) +
+    item.parsed.data.bonus_level;
 }
 
 bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& entry )
@@ -198,10 +199,16 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         break;
       }
 
-      item.sim->print_debug( "Player {} item '{}' setting ilevel to {} (old={} new={})", item.player->name(),
-                             item.name(), entry.value_1, item.parsed.data.level,
-                             entry.value_1 + item.parsed.data.bonus_level );
-      item.parsed.data.level = entry.value_1 + item.parsed.data.bonus_level;
+      if ( entry.value_2 < item.parsed.base_level_priority )
+      {
+        item.sim->print_debug( "Player {} item '{}' setting base ilevel to {} (old={} new={})",
+                               item.player->name(),
+                               item.name(), entry.value_1, item.parsed.data.level,
+                               entry.value_1 + item.parsed.data.bonus_level );
+
+        item.parsed.data.level = entry.value_1 + item.parsed.data.bonus_level;
+        item.parsed.base_level_priority = entry.value_2;
+      }
       break;
     // Add new item stats. Value_1 has the item modifier, value_2 has the
     // allocation percent. This bonus type is the reason we don't really
@@ -308,7 +315,11 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // ITEM_BONUS_SCALING_2).
     case ITEM_BONUS_SCALING:
     {
-      item_database::apply_item_scaling( item, entry.value_4, item.player -> level() );
+      if ( entry.value_2 < item.parsed.scaling_level_priority )
+      {
+        item_database::apply_item_scaling( item, entry.value_4, item.player -> level() );
+        item.parsed.scaling_level_priority = entry.value_2;
+      }
       break;
     }
     // This bonus type uses a curve point to scale the base item level, however it seems to also
@@ -320,9 +331,10 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Simulationcraft will scale relics purely by using the (seemingly often) present item level
     // adjustment bonus type.
     case ITEM_BONUS_SCALING_2:
-      if ( item.parsed.drop_level > 0 )
+      if ( item.parsed.drop_level > 0 && entry.value_2 < item.parsed.scaling_level_priority )
       {
         item_database::apply_item_scaling( item, entry.value_4, item.parsed.drop_level );
+        item.parsed.scaling_level_priority = entry.value_2;
       }
       break;
     case ITEM_BONUS_ADD_ITEM_EFFECT:

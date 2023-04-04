@@ -1397,6 +1397,7 @@ class SpellDataGenerator(DataGenerator):
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
          408815, 408832, 408835, 408836, # Djaruun
+         401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil 
         ),
 
         # Warrior:
@@ -1911,6 +1912,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387413, 0 ),    # Madness Rain of Fire aura
           ( 387414, 0 ),    # Madness Shadowburn aura
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
+          ( 409890, 0 ),    # T30 - Channel Demonfire
         ),
 
         # Monk:
@@ -2381,6 +2383,7 @@ class SpellDataGenerator(DataGenerator):
         ( 143, 'misc_value_1' ),
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
+        ( 507, 'misc_value_1' ),
     ]
 
     _spell_blacklist = [

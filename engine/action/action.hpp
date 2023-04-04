@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/generic.hpp"
@@ -236,6 +237,10 @@ public:
 
   /// Used with tick_action, tells tick_action to update state on every tick.
   bool dynamic_tick_action;
+
+  /// Track time spent with fully charged cooldown before the action is used.
+  bool track_cd_waste;
+  cooldown_waste_data_t* cd_waste_data;
 
 
   /// Did a channel action have an interrupt_immediate used to cancel it on it

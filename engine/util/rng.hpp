@@ -15,6 +15,9 @@
 #include <cmath>
 #include <cstdint>
 #include <iterator>
+#ifdef RNG_STREAM_DEBUG
+#include <iostream>
+#endif
 
 #include "util/timespan.hpp"
 
@@ -106,6 +109,9 @@ private:
   // Allow re-use of unused ( but necessary ) random number of a previous call to gauss()
   double gauss_pair_value = 0.0;
   bool   gauss_pair_use = false;
+#ifdef RNG_STREAM_DEBUG
+  uint64_t n = 0U;
+#endif
 };
 
 /// Reseed using current state
@@ -113,6 +119,11 @@ template <typename Engine>
 uint64_t basic_rng_t<Engine>::reseed()
 {
   const uint64_t s = engine.next();
+#ifdef RNG_STREAM_DEBUG
+  ++n;
+  std::cout << fmt::format( "[RNG] fn=reseed() engine={} n={} next={}",
+                           engine.name(), n, s ) << std::endl;
+#endif
   seed( s );
   reset();
   return s;
@@ -124,6 +135,9 @@ void basic_rng_t<Engine>::reset()
 {
   gauss_pair_value = 0;
   gauss_pair_use = false;
+#ifdef RNG_STREAM_DEBUG
+  n = 0U;
+#endif
 }
 
 // ==========================================================================
@@ -136,10 +150,18 @@ inline double basic_rng_t<Engine>::real()
 {
   /// MAGIC! http://en.wikipedia.org/wiki/Double-precision_floating-point_format
   uint64_t ui64 = engine.next();
+#ifdef RNG_STREAM_DEBUG
+  auto u64raw = ui64;
+#endif
   ui64 &= 0x000fffffffffffff;
   ui64 |= 0x3ff0000000000000;
   union { uint64_t ui64; double d; } u;
   u.ui64 = ui64;
+#ifdef RNG_STREAM_DEBUG
+  ++n;
+  std::cout << fmt::format( "[RNG] fn=real() engine={} n={} next={} value={}",
+                           engine.name(), n, u64raw, u.d - 1.0 ) << std::endl;
+#endif
   return u.d - 1.0;
 }
 

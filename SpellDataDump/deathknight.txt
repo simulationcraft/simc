@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48838 Live (hotfix 2023-03-31/48838, git build dragonflight 769123c487)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -5056,6 +5056,7 @@ Spell Type       : Magic
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.3 seconds
+Labels           : 1615
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
@@ -14778,8 +14779,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1005150)  : Apply Aura (6) | Unknown(507)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1615 | Target: Enemy (6)
+#1 (id=1005150)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1615 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Chill Streak (204167)
 Description      : $@spelldesc377351
 
 Tooltip          : Damage taken from $@auracaster's Chill Streak increased by $s1%.

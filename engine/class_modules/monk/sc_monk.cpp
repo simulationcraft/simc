@@ -639,7 +639,7 @@ namespace monk
         }
 
         if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
-        {         
+        {
           trigger_exploding_keg_proc( s );
 
           p()->trigger_empowered_tiger_lightning( s, true );
@@ -783,6 +783,7 @@ namespace monk
         : base_t( n, player, s )
       {
         ap_type = attack_power_type::WEAPON_MAINHAND;
+        track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
       }
 
       double composite_target_crit_chance( player_t *target ) const override
@@ -835,6 +836,7 @@ namespace monk
       {
         harmful = false;
         ap_type = attack_power_type::WEAPON_MAINHAND;
+        track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
       }
 
       double composite_target_multiplier( player_t *target ) const override
@@ -919,6 +921,7 @@ namespace monk
       monk_absorb_t( util::string_view n, monk_t &player, const spell_data_t *s = spell_data_t::nil() )
         : base_t( n, &player, s )
       {
+        track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
       }
     };
 
@@ -1092,6 +1095,8 @@ namespace monk
         {
           special = true;
           may_glance = false;
+
+          track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
         }
 
         void init_finished() override
@@ -1913,6 +1918,7 @@ namespace monk
             case MONK_BREWMASTER:
             {
               apply_dual_wield_two_handed_scaling();
+
               break;
             }
             case MONK_WINDWALKER:
@@ -2630,7 +2636,7 @@ namespace monk
           ww_mastery = true;
           trigger_faeline_stomp = true;
 
-          background = true;
+          background     = true;
           aoe = -1;
           radius = s->effectN( 1 ).radius();
           apply_dual_wield_two_handed_scaling();
@@ -2932,7 +2938,7 @@ namespace monk
               p()->passive_actions.thunderfist->schedule_execute();
             }
 
-            // Tier 30 Windwalker 
+            // Tier 30 Windwalker
 //            if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T30, B4 ) && p()->rppm.shadowflame_spirit->trigger() )
 //            {
 //              p()->pets.spirit_of_forged_vermillion.spawn( p()->passives.shadowflame_spirit_summon->duration(), 1 );
@@ -3110,7 +3116,7 @@ namespace monk
           may_combo_strike = true;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
-          cast_during_sck = true;
+          cast_during_sck         = true;
           parse_options( options_str );
 
           cooldown->duration = data().cooldown();
@@ -3645,7 +3651,7 @@ namespace monk
 
           harmful = false;
           cast_during_sck = true;
-          trigger_gcd = timespan_t::zero();
+          trigger_gcd     = timespan_t::zero();
         }
 
         void execute() override
@@ -3804,7 +3810,7 @@ namespace monk
 
           aoe = -1;
           reduced_aoe_targets = 1.0;
-          full_amount_targets = 1;
+          full_amount_targets    = 1;
           trigger_faeline_stomp = true;
           trigger_bountiful_brew = true;
           cast_during_sck = true;
@@ -3946,7 +3952,7 @@ namespace monk
           aoe = -1;
           radius = data().effectN( 1 ).radius();
           range = data().max_range();
-          gcd_type = gcd_haste_type::NONE;
+          gcd_type       = gcd_haste_type::NONE;
 
           add_child( p.active_actions.exploding_keg );
         }
@@ -4743,7 +4749,7 @@ namespace monk
           cast_during_sck = true;
           may_miss = false;
           may_parry = true;
-          gcd_type = gcd_haste_type::NONE;
+          gcd_type         = gcd_haste_type::NONE;
 
           if ( p.talent.windwalker.dust_in_the_wind->ok() )
             radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
@@ -5618,7 +5624,7 @@ namespace monk
           add_child( damage );
           tick_zero = true;
           radius = player->find_spell( 132466 )->effectN( 2 ).base_value();
-          gcd_type = gcd_haste_type::SPELL_HASTE;
+          gcd_type       = gcd_haste_type::SPELL_HASTE;
         }
 
         void impact( action_state_t *s ) override
@@ -5727,7 +5733,7 @@ namespace monk
           cooldown->hasted = false;
 
           attack_power_mod.direct = 0;
-          weapon_power_mod = 0;
+          weapon_power_mod        = 0;
 
           interrupt_auto_attack = false;
           // Forcing the minimum GCD to 750 milliseconds for all 3 specs
@@ -7246,7 +7252,7 @@ namespace monk
     talent.brewmaster.invoke_niuzao_the_black_ox = _ST( "Invoke Niuzao, the Black Ox" );
     talent.brewmaster.light_brewing = _ST( "Light Brewing" );
     talent.brewmaster.training_of_niuzao = _ST( "Training of Niuzao" );
-    talent.brewmaster.pretense_of_instability = _ST( "Pretense of Instability" );
+    talent.brewmaster.pretense_of_instability = _STID( 393516 );
     talent.brewmaster.face_palm = _ST( "Face Palm" );
     // Row 8
     talent.brewmaster.dragonfire_brew = _ST( "Dragonfire Brew" );
@@ -8643,7 +8649,7 @@ namespace monk
     {
       d += buff.elusive_brawler->current_stack * cache.mastery_value();
 
-      d += buff.pretense_of_instability->data().effectN( 1 ).percent();
+      d += buff.pretense_of_instability->check() * buff.pretense_of_instability->data().effectN( 1 ).percent();
     }
 
     if ( buff.fortifying_brew->check() )
