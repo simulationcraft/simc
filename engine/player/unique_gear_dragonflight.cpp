@@ -3536,6 +3536,113 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Elementium Pocket Anvil
+// 401303 Main Spell/Value Container
+// 401306 On use Cast time/Cooldown
+// 408578 On use Damage
+// 408533 Stacking Buff
+// 408513 Warrior Driver
+// 408534 Rogue Driver
+// 408535 Paladin Driver
+// 408536 Monk Driver
+// 408537 Demon Hunter Driver
+// 408538 Death Knight Driver
+// 408539 Druid Driver
+// 408540 Hunter Driver
+// 408584 Shaman Driver
+// TODO - Implement proccing only off specific abilities per spec. Right now using the default proc flags for every driver. 
+void elementium_pocket_anvil_equip( special_effect_t& e )
+{
+  struct elementium_pocket_anvil_equip_t : public generic_aoe_proc_t
+  {
+    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "elementium_pocket_anvil", e.player -> find_spell( 401303 ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_aoe_proc_t::composite_da_multiplier( state );
+
+      if ( player -> buffs.anvil_strike -> check() )
+      {
+        m *= 1.0 + player -> buffs.anvil_strike -> check_stack_value();
+      }
+
+      return m;
+    }
+  };
+
+  int driver_id = e.spell_id;
+  switch ( e.player->type )
+  {
+    case DEATH_KNIGHT:
+      driver_id = 408538;
+      break;
+    case DEMON_HUNTER:
+      driver_id = 408537;
+      break;
+    case DRUID:
+      driver_id = 408539;
+      break;
+    case HUNTER:
+      driver_id = 408540;
+      break;
+    case MONK:
+      driver_id = 408536;
+      break;
+    case PALADIN:
+      driver_id = 408535;
+      break;
+    case ROGUE:
+      driver_id = 408534;
+      break;
+    case SHAMAN:
+      driver_id = 408584;
+      break;
+    case WARRIOR:
+      driver_id = 408513;
+      break;
+    default:
+      return;
+  }
+
+  e.spell_id = driver_id;
+  e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "elementium_pocket_anvil", e );
+
+  new dbc_proc_callback_t( e.player, e );
+}
+
+void elementium_pocket_anvil_use ( special_effect_t& e )
+{
+  auto buff = buff_t::find( e.player, "anvil_strike" );
+
+  if(! buff )
+  {
+    buff = create_buff<buff_t>( e.player, e.player->find_spell( 408533 ) )
+                         -> set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() )
+                         -> set_duration( 0_ms ); // Duration set to 15s in spell data, in game it is infinite
+  }
+  e.player -> buffs.anvil_strike = buff;
+
+  struct elementium_pocket_anvil_use_t : public generic_aoe_proc_t
+  {
+    buff_t* buff;
+    elementium_pocket_anvil_use_t( const special_effect_t& e, buff_t* b ) : generic_aoe_proc_t( e, "anvil_strike", e.player -> find_spell( 408578 ) ), buff( b )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+      buff -> trigger();
+    }
+  };
+
+  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e, buff );
+}
+
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
@@ -5283,6 +5390,8 @@ void register_special_effects()
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
+  register_special_effect( 401303, items::elementium_pocket_anvil_equip );
+  register_special_effect( 401306, items::elementium_pocket_anvil_use );
 
 
   // Weapons
