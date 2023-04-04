@@ -983,6 +983,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
 
+  debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
+                          ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() );
+
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
 
@@ -1216,6 +1219,9 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
     if ( talents.shadow_embrace->ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+
+    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
@@ -1295,6 +1301,12 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     if ( talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value(); // Talent spell sets default value according to rank
+    }
+
+    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) && !guardian )
+    {
+      // TOCHECK: Guardian effect is missing from spell data as of 2023-04-04
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
     }
   }
 

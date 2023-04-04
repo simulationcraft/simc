@@ -1651,6 +1651,8 @@ void warlock_t::init_spells_destruction()
 
   // T29 (Vault of the Incarnates)
   tier.chaos_maelstrom = find_spell( 394679 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
   tier.channel_demonfire = find_spell( 409890 );
   tier.umbrafire_embers = find_spell( 409652 );
 

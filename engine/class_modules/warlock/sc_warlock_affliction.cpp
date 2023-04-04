@@ -550,6 +550,18 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      // TOCHECK: Is this only on initial application, or per-tick refresh?
+      // How does this interact with Darkglare extensions?
+      td( s->target )->debuffs_infirmity->trigger( composite_dot_duration( s ) );
+    }
+  }
 };
 
 struct vile_taint_t : public affliction_spell_t
@@ -586,6 +598,16 @@ struct vile_taint_t : public affliction_spell_t
     {
       impact_action->execute_action = nullptr; // Only want to apply Vile Taint DoT, not secondary effects
       aoe = 1;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    affliction_spell_t::impact( s );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+    {
+      td( s->target )->debuffs_infirmity->trigger( timespan_t::from_seconds( p()->sets->set( WARLOCK_AFFLICTION, T30, B4 )->effectN( 1 ).base_value() ) );
     }
   }
 };
@@ -990,6 +1012,9 @@ void warlock_t::init_spells_affliction()
   // T29 (Vault of the Incarnates)
   tier.cruel_inspiration = find_spell( 394215 );
   tier.cruel_epiphany = find_spell( 394253 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
+  tier.infirmity = find_spell( 409765 );
 }
 
 void warlock_t::create_soul_swap_actions()
