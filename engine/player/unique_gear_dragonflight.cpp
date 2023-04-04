@@ -3557,6 +3557,7 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
   {
     elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "elementium_pocket_anvil", e.player -> find_spell( 401303 ) )
     {
+      split_aoe_damage = false;
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
     }
 
@@ -3631,6 +3632,7 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
     elementium_pocket_anvil_use_damage_t( const special_effect_t& e, buff_t* b ) : generic_aoe_proc_t( e, "anvil_strike_damage", e.player -> find_spell( 408578 ) ), buff( b )
     {
       background = true;
+      split_aoe_damage = false;
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
     }
 
