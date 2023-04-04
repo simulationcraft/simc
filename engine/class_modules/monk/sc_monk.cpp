@@ -8773,6 +8773,10 @@ namespace monk
   {
     double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
+    // Currently is a bug that Ferocity of Xuen is not getting applied to pets. Getting fixed in 10.1
+    if ( bugs && !is_ptr() )
+      multiplier /= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+
     multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
     multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
@@ -9770,6 +9774,7 @@ namespace monk
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
       ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
       ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
+      ReportIssue( "Ferocity of Xuen not increasing your summoned pet damage", "2023-04-04", true );
 
       // =================================================
 
