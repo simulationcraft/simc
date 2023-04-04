@@ -3625,11 +3625,12 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
   }
   e.player -> buffs.anvil_strike = buff;
 
-  struct elementium_pocket_anvil_use_t : public generic_aoe_proc_t
+  struct elementium_pocket_anvil_use_damage_t : public generic_aoe_proc_t
   {
     buff_t* buff;
-    elementium_pocket_anvil_use_t( const special_effect_t& e, buff_t* b ) : generic_aoe_proc_t( e, "anvil_strike", e.player -> find_spell( 408578 ) ), buff( b )
+    elementium_pocket_anvil_use_damage_t( const special_effect_t& e, buff_t* b ) : generic_aoe_proc_t( e, "anvil_strike_damage", e.player -> find_spell( 408578 ) ), buff( b )
     {
+      background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
     }
 
@@ -3640,7 +3641,26 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
     }
   };
 
-  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e, buff );
+  struct elementium_pocket_anvil_use_t : public generic_proc_t
+  {
+    buff_t* buff;
+    action_t* damage;
+
+    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() ),
+        buff( buff_t::find( e.player, "anvil_strike" ) ),
+        damage( create_proc_action<elementium_pocket_anvil_use_damage_t>( "anvil_strike_damage", e, buff ) )
+    {
+      add_child( damage );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      damage -> execute();
+    }
+  };
+
+  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
 
 
