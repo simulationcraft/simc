@@ -1158,6 +1158,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
+    cdf_accumulator( 0.0 ),
+    incinerate_last_target_count( 0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -1856,6 +1858,8 @@ void warlock_t::reset()
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 );
+  cdf_accumulator                    = rng().range( 0.0, 0.99 );
+  incinerate_last_target_count       = 0;
   wild_imp_spawns.clear();
 }
 

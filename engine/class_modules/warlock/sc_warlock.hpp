@@ -111,6 +111,8 @@ public:
   std::vector<action_t*> havoc_spells; // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
+  double cdf_accumulator; // For T30 Destruction tier set
+  int incinerate_last_target_count; // For use with T30 Destruction tier set
   std::vector<event_t*> wild_imp_spawns; // Used for tracking incoming imps from HoG
 
   unsigned active_pets;
@@ -469,6 +471,7 @@ public:
     action_t* avatar_of_destruction; // Triggered when Ritual of Ruin is consumed
     action_t* soul_combustion; // Summon Soulkeeper AoE tick
     action_t* fel_barrage; // Inquisitor's Eye spell (new as of 10.0.5)
+    action_t* channel_demonfire; // Destruction T30 proc
   } proc_actions;
 
   struct tier_sets_t
@@ -482,6 +485,8 @@ public:
 
     // Destruction 
     const spell_data_t* chaos_maelstrom; // 2pc procs crit chance buff
+    const spell_data_t* channel_demonfire; // 2pc damage proc is separate from talent version
+    const spell_data_t* umbrafire_embers; // 4pc enables stacking buff on 2pc procs
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -567,6 +572,7 @@ public:
     propagate_const<buff_t*> madness_rof_snapshot; // (Dummy buff) 2022-10-16: For Rain of Fire, Madness of the Azj'Aqir affects ALL active events until the next cast of Rain of Fire
     propagate_const<buff_t*> burn_to_ashes;
     propagate_const<buff_t*> chaos_maelstrom; // T29 2pc buff
+    propagate_const<buff_t*> umbrafire_embers; // T30 4pc buff
   } buffs;
 
   // Gains - Many are automatically handled
@@ -640,6 +646,7 @@ public:
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
     proc_t* chaos_maelstrom; // T29 2pc
+    proc_t* channel_demonfire; // T30 2pc
   } procs;
 
   int initial_soul_shards;
