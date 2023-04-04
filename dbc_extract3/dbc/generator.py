@@ -1401,7 +1401,7 @@ class SpellDataGenerator(DataGenerator):
          408821, 403545 # Djaruun, Pillar of the Elder Flame
          408667, 408671, 408675, 408770 # Dragonfire Bomb Dispenser
          406244, 378758, 407090 # Spore Colony Shoulderguards
-         407949, 408015 # Tinker: Shadowflame Rockets
+         407949, 408015, # Tinker: Shadowflame Rockets
         ),
 
         # Warrior:
