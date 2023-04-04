@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.1.0.48776
-static const std::array<temporary_enchant_entry_t, 74> __ptr_temporary_enchant_data { {
+// Temporary item enchants, wow build 10.1.0.48898
+static const std::array<temporary_enchant_entry_t, 73> __ptr_temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
   {  3265,  0,  45395, "blessed_weapon_coating"       },
@@ -67,7 +67,6 @@ static const std::array<temporary_enchant_entry_t, 74> __ptr_temporary_enchant_d
   {  6201,  0, 322763, "shaded_weightstone"           },
   {    25,  0,   3594, "shadow_oil"                   },
   {  6188,  0, 320798, "shadowcore_oil"               },
-  {  6840,  1, 409669, "shadowed_belt_buckle"         },
   {   483,  0,   9900, "solid_sharpening_stone"       },
   {   484,  0,   9903, "solid_weightstone"            },
   {  2677,  0,  28013, "superior_mana_oil"            },
