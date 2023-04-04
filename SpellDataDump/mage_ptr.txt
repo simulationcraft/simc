@@ -2034,7 +2034,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=85616)    : Create Area Trigger (179)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 8661 | Target: Unknown(47)
-Description      : Launches an orb of swirling ice up to $s1 yards forward which deals up to ${20*$84721s1} Frost damage to all enemies it passes through. Deals reduced damage beyond $84721s2 targets. Grants 1 charge of Fingers of Frost when it first damages an enemy.$?a382103[
+Description      : Launches an orb of swirling ice up to $s1 yards forward which deals up to ${20*$84721s1} Frost damage to all enemies it passes through over $d. Deals reduced damage beyond $84721s2 targets. Grants 1 charge of Fingers of Frost when it first damages an enemy.$?a382103[
 
 While Frozen Orb is active, you gain Fingers of Frost every $382106t1 sec.][]
 
@@ -12179,7 +12179,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Expend all of your current mana to annihilate your enemy target and nearby enemies for up to ${$s1*$s2} Arcane damage based on Mana spent. Deals reduced damage beyond $i targets.
 
-For the next $365362d, your Mana Regeneration is increased by $365362s3% and Spell Damage is increased by $365362s1%.
+For the next $365362d, your Mana regeneration is increased by $365362s3% and spell damage is increased by $365362s1%.
 
 Name             : Arcane Surge (id=365362) [Spell Family (3)] 
 Class            : Mage
@@ -15385,7 +15385,7 @@ Effects          :
                    Base Value: 24000 | Scaled Value: 24000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1073548)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : For every $s1 mana spent on and during Arcane Surge, your Spell Damage is increased by $409022s1% for $409022d after Arcane Surge fades, stacking up to $s2 times. Your Mana Regeneration is increased by $409022s2% for this time.
+Description      : For every $s1 Mana spent on and during Arcane Surge, your spell damage is increased by $409022s1% for $409022d after Arcane Surge fades, stacking up to $s2 times. Mana regeneration is increased by $409022s2% for this time.
 
 Name             : Mage Fire 10.1 Class Set 2pc (id=405534) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -15563,14 +15563,14 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 12 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : DoT Stacking Rule (103), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+                 : DoT Stacking Rule (103), Allow Aura While Dead (116), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1072915)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15668,7 +15668,7 @@ Effects          :
 #2 (id=1076677)  : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc405533
-Tooltip          : Spell damage increased by $w1% and Mana Regeneration increase $w2%.
+Tooltip          : Spell damage increased by $w1% and Mana regeneration increase $w2%.
 
 Name             : Flame's Fury (id=409964) [Spell Family (3)] 
 Class            : Mage
