@@ -984,7 +984,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
 
   debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
-                          ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() );
+                          ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
+                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
