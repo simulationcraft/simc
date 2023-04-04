@@ -8530,7 +8530,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
   if ( util::str_compare_ci( name, "t30_2pc_timer.next_tick" ) )
   {
     return make_fn_expr( name, [ this ]() {
-      return last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000 - sim->current_time();
+      return (last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000 - sim->current_time())/1000;
     } );
   }
 
