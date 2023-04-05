@@ -3638,13 +3638,19 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case PALADIN:
       driver_id = 408535;
-      e.player->sim->error( "Paladin Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
+      
       proc_spell_id = { 
         { 
-          Spell Ids, seperated by commas
+          // Shared
+          35395, // Crusader Strike
+
+          // Protection Paladin
+          53595, 204019, // Hammer of the Righteous, Blessed Hammer
+
+          // Retribution Paladin
+          404139, 404542, 406647, 407480 // Blessed Hammers, Crusading Strikes, Templar Slash, Templar Strikes
         } 
-      };*/
+      };
       break;
     case ROGUE:
       driver_id = 408534;
