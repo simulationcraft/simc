@@ -3630,13 +3630,11 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case MONK:
       driver_id = 408536;
-      e.player->sim->error( "Monk Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
-      proc_spell_id = { 
-        { 
-          Spell Ids, seperated by commas
-        } 
-      };*/
+
+      proc_spell_id = { {
+          // Tiger Palm
+          100780,
+      } };
       break;
     case PALADIN:
       driver_id = 408535;
