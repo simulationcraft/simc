@@ -3602,14 +3602,11 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       };
       break;
     case DEMON_HUNTER:
-      driver_id = 408537;
-      e.player->sim->error( "Demon Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
-      proc_spell_id = { 
-        { 
-          Spell Ids, seperated by commas
-        } 
-      };*/
+      driver_id     = 408537;
+      proc_spell_id = { { // Vengeance DH
+                          228478,
+                          // Havoc
+                          199547, 222031, 227518, 201428 } };
       break;
     case DRUID:
       driver_id = 408539;
