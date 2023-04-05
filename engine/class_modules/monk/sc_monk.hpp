@@ -916,6 +916,7 @@ public:
     const spell_data_t *shadowflame_nova;
     const spell_data_t *shadowflame_spirit;
     const spell_data_t *shadowflame_spirit_summon;
+    const spell_data_t* leverage;
 
   } passives;
 

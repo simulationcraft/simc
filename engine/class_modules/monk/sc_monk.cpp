@@ -1624,7 +1624,7 @@ namespace monk
 
           am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
 
-          am *= 1 + p()->buff.leverage->data().effectN( 2 ).percent() * p()->buff.leverage->check();
+          am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage->check();
 
           return am;
         }
@@ -1635,7 +1635,7 @@ namespace monk
 
           c += p()->buff.pressure_point->check_value();
 
-          c += p()->buff.leverage->data().effectN( 1 ).percent() * p()->buff.leverage->check();
+          c += p()->passives.leverage->effectN( 1 ).percent() * p()->buff.leverage->check();
 
           return c;
         }
@@ -2258,7 +2258,7 @@ namespace monk
         {
           double c = monk_melee_attack_t::composite_crit_chance();
 
-          c += p()->buff.leverage_helper->check_stack_value();
+          c += p()->passives.leverage->effectN( 1 ).percent() * p()->buff.leverage_helper->check();
 
           return c;
         }
@@ -2283,14 +2283,13 @@ namespace monk
 
           am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
 
-          am *= 1 + p()->buff.leverage_helper->check_stack_value();
+          am *= 1 + p()->passives.leverage->effectN( 2 ).percent() * p()->buff.leverage_helper->check();
 
           return am;
         }
 
         void execute() override
         {
-          // p()->sim->print_debug("{} leverage stacks ({}%)", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
           monk_melee_attack_t::execute();
 
           trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
@@ -2436,12 +2435,10 @@ namespace monk
 
           int leverage_stacks = p()->buff.leverage->check();
           p()->buff.leverage_helper->expire();
-          // p()->sim->print_debug("{} leverage stacks ({}%) i", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
           if ( leverage_stacks > 0 ) {
             p()->buff.leverage->expire();
             p()->buff.leverage_helper->trigger( leverage_stacks );
           }
-          // p()->sim->print_debug("{} leverage stacks ({}%) f", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
 
           if ( p()->specialization() == MONK_WINDWALKER )
           {
@@ -6636,14 +6633,12 @@ namespace monk
     {
       leverage_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
       {
-        set_trigger_spell( p.spec.spinning_crane_kick_brm );
+        set_trigger_spell( p.sets->set( MONK_BREWMASTER, T30, B4 ) );
         set_can_cancel( true );
         set_quiet( true );
         set_cooldown( timespan_t::zero() );
-        set_duration( timespan_t::from_seconds( 2 ) );
+        set_duration( p.spec.spinning_crane_kick_brm->duration() );
         set_max_stack( 5 );
-        // set_default_value( p.sets->set( MONK_BREWMASTER, T30, B4)->effectN( 1 ).percent(), 1 );
-        set_default_value( 0.05, 1 );
       }
     };
   }  // namespace buffs
@@ -7594,6 +7589,7 @@ namespace monk
     passives.fists_of_flowing_momentum = find_spell( 394949 );
 
     // Tier 30
+    passives.leverage = find_spell( 408503 );
     passives.shadowflame_nova = find_spell( 410139 );
     passives.shadowflame_spirit = find_spell( 410159 );
     passives.shadowflame_spirit_summon = find_spell( 410153 );
@@ -7925,7 +7921,7 @@ namespace monk
       ->set_trigger_spell( spec.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
-    buff.leverage = make_buff( this, "leverage", find_spell( 408503 ))
+    buff.leverage = make_buff( this, "leverage", passives.leverage )
       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ))
       ->add_invalidate( CACHE_CRIT_CHANCE )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
