@@ -2882,7 +2882,7 @@ struct bloodbath_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
-  double merciless_assault_crit;
+  double rage_from_merciless_assault;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
@@ -2890,7 +2890,7 @@ struct bloodbath_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
+      rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
 
@@ -2910,7 +2910,6 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-      //add_child( gushing_wound );
     }
   }
 
@@ -2923,16 +2922,21 @@ struct bloodbath_t : public warrior_attack_t
     return warrior_attack_t::n_targets();
   }
 
-  double composite_crit_chance() const override
+  double action_multiplier() const override
   {
-    double cc = warrior_attack_t::composite_crit_chance();
+    double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.merciless_assault->check_stack_value() )
+    if ( p()->conduit.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
     {
-      cc += merciless_assault_crit;
+      am *= 1.0 + ( p()->conduit.vicious_contempt.value() / 100.0 );
     }
 
-    return cc;
+    if ( p()->talents.fury.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
+    {
+      am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
+    }
+
+    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -2950,9 +2954,16 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound->execute();
     }
 
-    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
+    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
+         p()->cooldown.cold_steel_hot_blood_icd->up() )
     {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
+      p()->cooldown.cold_steel_hot_blood_icd->start();
+    }
+
+    if ( p()->tier_set.t30_fury_4pc->ok() && target == s->target )
+    {
+      p()->resource_gain( RESOURCE_RAGE, p()->buff.merciless_assault->stack() * rage_from_merciless_assault,
+                          p()->gain.merciless_assault );
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
@@ -2978,7 +2989,6 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      p()->buff.fujiedas_fury->trigger( 1 );
       if ( bloodthirst_heal )
       {
         bloodthirst_heal->execute();
