@@ -523,6 +523,17 @@ struct phantom_singularity_t : public affliction_spell_t
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
         base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
     }
+
+    void impact( action_state_t* s ) override
+    {
+      affliction_spell_t::impact( s );
+
+      if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
+        td( s->target )->debuffs_infirmity->trigger();
+      }
+    }
   };
   
   phantom_singularity_t( warlock_t* p, util::string_view options_str )
@@ -550,18 +561,6 @@ struct phantom_singularity_t : public affliction_spell_t
   {
     return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    affliction_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-    {
-      // TOCHECK: Is this only on initial application, or per-tick refresh?
-      // How does this interact with Darkglare extensions?
-      td( s->target )->debuffs_infirmity->trigger( composite_dot_duration( s ) );
-    }
-  }
 };
 
 struct vile_taint_t : public affliction_spell_t
@@ -578,6 +577,16 @@ struct vile_taint_t : public affliction_spell_t
 
       if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
         base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      affliction_spell_t::tick( d );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( d->target )->debuffs_infirmity->trigger();
+      }
     }
   };
 
@@ -598,16 +607,6 @@ struct vile_taint_t : public affliction_spell_t
     {
       impact_action->execute_action = nullptr; // Only want to apply Vile Taint DoT, not secondary effects
       aoe = 1;
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    affliction_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
-    {
-      td( s->target )->debuffs_infirmity->trigger( timespan_t::from_seconds( p()->sets->set( WARLOCK_AFFLICTION, T30, B4 )->effectN( 1 ).base_value() ) );
     }
   }
 };
