@@ -3551,9 +3551,9 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // 408539 Druid Driver
 // 408540 Hunter Driver
 // 408584 Shaman Driver
-// TODO - Whitelist DH, Druid, Monk, Hunter, Rogue, Shaman, Warrior
+// TODO - Whitelist Druid, Monk, Hunter, Rogue, Shaman, Warrior
 // Procs From: 
-// DK - Heart Strike( 206903 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
+// DK - Heart Strike( 206930 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
 // DH - Chaos Strike, Annihilation, Soul Cleave
 // Druid - Mangle, Maul, Shred
 // Monk - Tiger Palm
@@ -3593,7 +3593,7 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       proc_spell_id = { 
         { 
         // Blood DK
-        206903,
+        206930,
         // Frost DK
         49020, 66198, 222024, 325431,
         // Unholy DK
