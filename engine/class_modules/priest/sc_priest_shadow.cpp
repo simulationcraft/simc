@@ -712,7 +712,7 @@ public:
         if ( priest().is_ptr() )
         {
           // TODO: 10.1 PTR TUNE SPIRITS CHANCE
-          auto chance = 0.78 * std::pow( cast_state( s )->number_spawned, -0.78 );
+          auto chance = 0.8 * std::pow( cast_state( s )->number_spawned, -0.8 );
           if ( rng().roll( chance ) )
           {
             priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
@@ -796,11 +796,11 @@ public:
 struct shadow_word_pain_t final : public priest_spell_t
 {
   bool casted;
-
   double coalescing_shadows_chance = 0.0;
+  propagate_const<action_t*> child_searing_light;
 
   shadow_word_pain_t( priest_t& p, bool _casted = false )
-    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain )
+    : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain ), child_searing_light( nullptr )
   {
     affected_by_shadow_weaving = true;
     casted                     = _casted;
@@ -828,6 +828,10 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 1 ).percent() +
                                   priest().talents.shadow.harnessed_shadows->effectN( 2 ).percent();
+    }
+    if ( priest().talents.holy.divine_image.enabled() )
+    {
+      child_searing_light = priest().background_actions.searing_light;
     }
   }
 
@@ -858,6 +862,14 @@ struct shadow_word_pain_t final : public priest_spell_t
       }
 
       priest().refresh_insidious_ire_buff( s );
+
+      if ( child_searing_light && priest().buffs.divine_image->up() )
+      {
+        for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+        {
+          child_searing_light->execute();
+        }
+      }
     }
   }
 
@@ -1148,13 +1160,16 @@ struct vampiric_touch_t final : public priest_spell_t
       if ( priest().talents.shadow.maddening_touch.enabled() )
       {
         // TODO: 10.1 Proc Chance is not in Spell Data, this is a massive guess.
-        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() &&
-             rng().roll( 0.25 / sqrt( priest().get_active_dots( internal_id ) ) ) )
+        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() )
         {
-          priest().cooldowns.maddening_touch_icd->start();
-          priest().generate_insanity(
-              priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
-              priest().gains.insanity_maddening_touch, d->state->action );
+          auto chance = 0.25 * std::pow( priest().get_active_dots( internal_id ), -0.6 );
+          if ( rng().roll( chance ) )
+          {
+            priest().cooldowns.maddening_touch_icd->start();
+            priest().generate_insanity(
+                priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
+                priest().gains.insanity_maddening_touch, d->state->action );
+          }
         }
         else if ( rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
         {

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48749 Live (hotfix 2023-03-28/48749, git build dragonflight 769123c487)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1595,8 +1595,10 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #2 (id=20792)    : Trigger Spell (64): (35729)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 35729 | Target: Self (1)
+#3 (id=1078289)  : Apply Aura (6) | Modify Dodge% (49)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Provides a moment of magic immunity, instantly removing all harmful spell effects. The cloak lingers, causing you to resist harmful spells for $d.
-Tooltip          : Resisting all harmful spells.
+Tooltip          : Resisting all harmful spells.$?a198952[ Dodge chance increased by ${$w3/2}%.][]
 
 Name             : Cheat Death (id=31230) [Spell Family (8), Passive] 
 Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0, select_idx=200]
@@ -4683,6 +4685,24 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 |cFFFFFFFFAwards $s2 combo $lpoint:points; per target hit$?a121471[ plus an additional $121471s2][].|r
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
+Name             : Veil of Midnight (id=198952) [Passive, Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
+Effects          :
+#1 (id=292796)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Cloak of Shadows now also removes harmful physical effects and increases dodge chance by ${-$31224m1/2}%.
+
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
@@ -7332,29 +7352,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc121471
 
-Name             : Inevitability (id=279720) [Spell Family (8), Hidden] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
-Triggered by     : Inevitability (278683), Inevitability (382512)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
-Effects          :
-#1 (id=736191)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc278683
-
 Name             : Opportunity (id=279876) [Spell Family (8), Passive] 
 Talent Entry     : Outlaw [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Rogue
@@ -9781,7 +9778,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=840325)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : The remaining cooldown on Vendetta is reduced by $s1 sec for every $s2 Energy you expend.
+Description      : The remaining cooldown on Deathmark is reduced by $s1 sec for every $s2 Energy you expend.
 
 Name             : Greenskin's Wickers (id=340085) [Spell Family (8), Passive] 
 Class            : Rogue
@@ -11061,7 +11058,7 @@ Effects          :
 #1 (id=844787)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc343160
-Tooltip          : Shadowstrike grants up to $343160s1 sec. of Slice and Dice, and generate $343160s2 additional combo points if Slice and Dice is active.
+Tooltip          : Shadowstrike grants up to $343160s1 sec of Slice and Dice, and generate $343160s2 additional combo points if Slice and Dice is active.
 
 Name             : Riposte (id=344363) [Spell Family (8), Passive] 
 Talent Entry     : Outlaw [tree=spec, row=3, col=4, max_rank=1, req_points=0]
@@ -13412,7 +13409,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1013890)  : Apply Aura (6) | Unknown(285)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279720 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 411784 | Target: Self (1)
 #2 (id=1013891)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $?S200758[Gloomblade][Backstab] and Shadowstrike extend the duration of your Symbols of Death by ${$s2/10}.1 sec.
@@ -15655,7 +15652,7 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
 Description      : Reduces the duration of movement slowing effects $s1%.
 
-Name             : Poisoned Edges (id=405559) [Spell Family (8), Passive, Hidden] 
+Name             : Rogue Assassination 10.1 Class Set 2pc (id=405559) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15738,9 +15735,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053901)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Between the Eyes unleashes all Soulrips, dealing 200% of all remaining damage and granting $409606s1% Agility for $409606d.
-Tooltip          : Between the Eyes unleashes all Soulrips, dealing 200% of all remaining damage and granting $409606s1% Agility for $409606d.
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Between the Eyes unleashes all Soulrips, dealing $s1% of all remaining damage and granting $409606s1% Agility for $409606d.
+Tooltip          : Between the Eyes unleashes all Soulrips, dealing $s1% of all remaining damage and granting $409606s1% Agility for $409606d.
 
 Name             : Rogue Subtlety 10.1 Class Set 2pc (id=405563) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -15946,9 +15943,32 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1074593)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#1 (id=1074593)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases Agility by $s1%. 
 Tooltip          : Increases Agility by $w1%.
+
+Name             : Inevitability (id=411784) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee
+Triggered by     : Inevitability (382512)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1078583)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc382512
 
 

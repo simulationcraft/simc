@@ -2528,11 +2528,11 @@ void buff_t::expire( timespan_t delay )
   update_stack_uptime_array( sim->current_time(), old_stack );
   last_stack_change = sim->current_time();
 
-  if ( sim->target->resources.base[ RESOURCE_HEALTH ] == 0 || sim->target->resources.current[ RESOURCE_HEALTH ] > 0 )
-    if ( !overridden && constant_behavior != buff_constant_behavior::ALWAYS_CONSTANT )
-    {
-      constant = false;
-    }
+  if ( !overridden && constant_behavior != buff_constant_behavior::ALWAYS_CONSTANT &&
+       player && !player->is_sleeping() )
+  {
+    constant = false;
+  }
 
   if ( reactable && player && player->ready_type == READY_TRIGGER )
   {

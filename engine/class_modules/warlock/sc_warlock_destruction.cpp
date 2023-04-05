@@ -77,6 +77,13 @@ public:
     if ( p()->talents.roaring_blaze->ok() && td( t )->debuffs_conflagrate->check() && data().affected_by( p()->talents.conflagrate_debuff->effectN( 1 ) ) )
       m *= 1.0 + td( t )->debuffs_conflagrate->check_value();
 
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) && p()->buffs.umbrafire_embers->check() )
+    {
+      // Umbrafire Embers has a whitelist split into two effects for direct damage/periodic damage
+      if ( data().affected_by( p()->tier.umbrafire_embers->effectN( 1 ) ) || data().affected_by( p()->tier.umbrafire_embers->effectN( 2 ) ) )
+        m *= 1.0 + p()->buffs.umbrafire_embers->check_stack_value();
+    }
+
     return m;
   }
 
@@ -291,6 +298,24 @@ struct immolate_t : public destruction_spell_t
 
       if ( p()->talents.flashpoint->ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
         p()->buffs.flashpoint->trigger();
+
+      // TOCHECK: Does Immolate direct damage also proc the tier bonus? 
+      // This could affect the value for increment_max obtained from logs
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+      {
+        double increment_max = 0.07;
+
+        increment_max *= std::pow( p()->get_active_dots( internal_id ), -2.0 / 3.0 );
+
+        p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->cdf_accumulator >= 1.0 )
+        {
+          p()->proc_actions.channel_demonfire->execute_on_target( d->target );
+          p()->procs.channel_demonfire->occur();
+          p()->cdf_accumulator -= 1.0;
+        }
+      }
     }
   };
 
@@ -384,6 +409,33 @@ struct conflagrate_t : public destruction_spell_t
   }
 };
 
+struct incinerate_state_t final : public action_state_t
+{
+  int total_hit;
+
+  incinerate_state_t( action_t* action, player_t* target ) :
+    action_state_t( action, target ), total_hit( 0 )
+  {  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    total_hit = 0;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s ) << " total_hit=" << total_hit;
+    return s;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    total_hit = debug_cast<const incinerate_state_t*>( s )->total_hit;
+  }
+};
+
 struct incinerate_fnb_t : public destruction_spell_t
 {
   incinerate_fnb_t( warlock_t* p ) : destruction_spell_t( "Incinerate (Fire and Brimstone)", p, p->warlock_base.incinerate )
@@ -401,6 +453,15 @@ struct incinerate_fnb_t : public destruction_spell_t
     // F&B Incinerate's target list depends on the current Havoc target, so it
     // needs to invalidate its target list with the rest of the Havoc spells.
     p()->havoc_spells.push_back( this );
+  }
+
+  action_state_t* new_state() override
+  { return new incinerate_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    debug_cast<incinerate_state_t*>( s )->total_hit = p()->incinerate_last_target_count;
+    destruction_spell_t::snapshot_state( s, rt );
   }
 
   double cost() const override
@@ -456,6 +517,23 @@ struct incinerate_fnb_t : public destruction_spell_t
     // 2023-01-24 Fire and Brimstone crits are apparently still yielding fragments (unaffected by Diabolic Embers)
     if ( s->result == RESULT_CRIT )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_fnb_crits );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+    {
+      auto inc_state = debug_cast<incinerate_state_t*>( s );
+      double increment_max = 0.4;
+
+      increment_max *= std::pow( inc_state->total_hit, -2.0 / 3.0 );
+
+      p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->cdf_accumulator >= 1.0 )
+      {
+        p()->proc_actions.channel_demonfire->execute_on_target( inc_state->target );
+        p()->procs.channel_demonfire->occur();
+        p()->cdf_accumulator -= 1.0;
+      }
+    }
   }
 };
 
@@ -463,7 +541,7 @@ struct incinerate_t : public destruction_spell_t
 {
   double energize_mult;
   incinerate_fnb_t* fnb_action;
-
+  
   incinerate_t( warlock_t* p, util::string_view options_str )
     : destruction_spell_t( "Incinerate", p, p->warlock_base.incinerate ), fnb_action( new incinerate_fnb_t( p ) )
   {
@@ -477,6 +555,15 @@ struct incinerate_t : public destruction_spell_t
 
     energize_mult = 1.0 + p->talents.diabolic_embers->effectN( 1 ).percent();
     energize_amount *= energize_mult;
+  }
+
+  action_state_t* new_state() override
+  { return new incinerate_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    debug_cast<incinerate_state_t*>( s )->total_hit = p()->incinerate_last_target_count;
+    destruction_spell_t::snapshot_state( s, rt );
   }
 
   timespan_t execute_time() const override
@@ -507,6 +594,13 @@ struct incinerate_t : public destruction_spell_t
 
   void execute() override
   {
+    // Need to calculate and store the total number of targets from parent + child
+    // Currently only necessary for T30 2pc procs
+    int n = std::max( n_targets(), 1 );
+    if ( p()->talents.fire_and_brimstone->ok() ) 
+      n += as<int>( fnb_action->target_list().size() );
+    p()->incinerate_last_target_count = n;
+
     destruction_spell_t::execute();
 
     p()->buffs.backdraft->decrement();
@@ -530,6 +624,23 @@ struct incinerate_t : public destruction_spell_t
 
     if ( s->result == RESULT_CRIT )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+    {
+      auto inc_state = debug_cast<incinerate_state_t*>( s );
+      double increment_max = 0.4;
+
+      increment_max *= std::pow( inc_state->total_hit, -2.0 / 3.0 );
+
+      p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->cdf_accumulator >= 1.0 )
+      {
+        p()->proc_actions.channel_demonfire->execute_on_target( inc_state->target );
+        p()->procs.channel_demonfire->occur();
+        p()->cdf_accumulator -= 1.0;
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -890,6 +1001,7 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 
+  // TOCHECK: As of 2023-04-03, PTR is not canceling/resetting the Umbrafire buff when starting CDF. Presumably this will change before Live
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
@@ -898,6 +1010,25 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     if ( p()->talents.raging_demonfire->ok() && td( s->target )->dots_immolate->is_ticking() )
     {
       td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
+
+    if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B2 ) )
+    {
+      double increment_max = 0.4;
+
+      // Presumably there is no target scaling for this ability, as it only procs off the main target of the bolt
+
+      p()->cdf_accumulator += rng().range( 0.0, increment_max );
+
+      if ( p()->cdf_accumulator >= 1.0 )
+      {
+        p()->proc_actions.channel_demonfire->execute_on_target( s->target );
+        p()->procs.channel_demonfire->occur();
+        p()->cdf_accumulator -= 1.0;
+      }
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
+        p()->buffs.umbrafire_embers->trigger();
     }
   }
 };
@@ -1259,6 +1390,27 @@ struct avatar_of_destruction_t : public destruction_spell_t
   }
 };
 
+struct channel_demonfire_tier_t : public destruction_spell_t
+{
+  channel_demonfire_tier_t( warlock_t* p ) : destruction_spell_t( "Channel Demonfire (Tier)", p, p->tier.channel_demonfire )
+  {
+    background = dual = true;
+
+    spell_power_mod.direct = p->tier.channel_demonfire->effectN( 1 ).sp_coeff();
+
+    aoe = -1;
+    base_aoe_multiplier = p->tier.channel_demonfire->effectN( 2 ).sp_coeff() / p->tier.channel_demonfire->effectN( 1 ).sp_coeff();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    destruction_spell_t::impact( s );
+
+    if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
+      p()->buffs.umbrafire_embers->trigger();
+  }
+};
+
 }  // namespace actions_destruction
 
 namespace buffs
@@ -1364,6 +1516,10 @@ void warlock_t::create_buffs_destruction()
   buffs.chaos_maelstrom = make_buff( this, "chaos_maelstrom", tier.chaos_maelstrom )
                               ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                               ->set_default_value_from_effect( 1 );
+
+  buffs.umbrafire_embers = make_buff( this, "umbrafire_embers", tier.umbrafire_embers )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 }
 void warlock_t::init_spells_destruction()
 {
@@ -1496,7 +1652,13 @@ void warlock_t::init_spells_destruction()
   // T29 (Vault of the Incarnates)
   tier.chaos_maelstrom = find_spell( 394679 );
 
+  // T30 (Aberrus, the Shadowed Crucible)
+  tier.channel_demonfire = find_spell( 409890 );
+  tier.umbrafire_embers = find_spell( 409652 );
+
+  // Proc action initialization
   proc_actions.avatar_of_destruction = new avatar_of_destruction_t( this );
+  proc_actions.channel_demonfire = new channel_demonfire_tier_t( this );
 }
 
 void warlock_t::init_gains_destruction()
@@ -1522,6 +1684,7 @@ void warlock_t::init_procs_destruction()
   procs.reverse_entropy = get_proc( "reverse_entropy" );
   procs.rain_of_chaos = get_proc( "rain_of_chaos" );
   procs.chaos_maelstrom = get_proc( "chaos_maelstrom" );
+  procs.channel_demonfire = get_proc( "channel_demonfire_tier" );
 }
 
 }  // namespace warlock

@@ -1433,14 +1433,9 @@ public:
       }
       if ( p->talent.vengeance.fiery_demise->ok() )
       {
-        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) );
-
-        // Fracture/Shear turned into fire damage by T30 4pc is affected by Fiery Demise but it's not in the spell data
-        // anywhere. This means we probably need to find a new way to get the whitelist for Fiery Demise.
-        if ( ab::data().affected_by( p->set_bonuses.t30_vengeance_4pc->effectN( 3 ) ) )
-        {
-          affected_by.fiery_demise = true;
-        }
+        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) ) ||
+                                   ( p->set_bonuses.t30_vengeance_4pc->ok() &&
+                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 3 ) ) );
       }
     }
   }
@@ -5977,6 +5972,28 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
       return this->get_target_data(*primary_idx)->dots.fiery_brand->is_ticking();
     });
+  }
+  else if ( util::str_compare_ci( name_str, "seething_fury_threshold" ) )
+  {
+    return expr_t::create_constant( "seething_fury_threshold",
+                                    this->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value() );
+  } 
+  else if ( util::str_compare_ci( name_str, "seething_fury_spent" ) )
+  {
+    return make_mem_fn_expr( "seething_fury_spent", this->set_bonuses,
+                             &demon_hunter_t::set_bonuses_t::t30_havoc_2pc_fury_tracker );
+  }
+  else if ( util::str_compare_ci( name_str, "seething_fury_deficit" ) )
+  {
+    if ( this->set_bonuses.t30_havoc_2pc->ok() )
+    {
+      return make_fn_expr( "seething_fury_deficit", [ this ] {
+        return this->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value() - this->set_bonuses.t30_havoc_2pc_fury_tracker;
+      } );
+    } 
+    else {
+      return expr_t::create_constant( "seething_fury_deficit", 0.0 );
+    }
   }
 
   return player_t::create_expression( name_str );

@@ -519,6 +519,20 @@ struct phantom_singularity_t : public affliction_spell_t
       background = dual = true;
       may_miss = false;
       aoe = -1;
+
+      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+        base_dd_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 3 ).percent();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      affliction_spell_t::impact( s );
+
+      if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        // Debuff lasts 2 seconds but refreshes on every tick. 2023-04-04 PTR: Currently only applies to target with PS DoT
+        td( s->target )->debuffs_infirmity->trigger();
+      }
     }
   };
   
@@ -531,6 +545,9 @@ struct phantom_singularity_t : public affliction_spell_t
     tick_action = new phantom_singularity_tick_t( p );
 
     spell_power_mod.tick = 0;
+
+    if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+      cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 2 ).time_value();
   }
 
   void init() override
@@ -557,6 +574,19 @@ struct vile_taint_t : public affliction_spell_t
       execute_action->background = true;
       execute_action->dual = true;
       execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
+
+      if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+        base_td_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 4 ).percent();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      affliction_spell_t::tick( d );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      {
+        td( d->target )->debuffs_infirmity->trigger();
+      }
     }
   };
 
@@ -566,6 +596,9 @@ struct vile_taint_t : public affliction_spell_t
 
     impact_action = new vile_taint_dot_t( p );
     add_child( impact_action );
+
+    if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B2 ) )
+      cooldown->duration += p->sets->set( WARLOCK_AFFLICTION, T30, B2 )->effectN( 1 ).time_value();
   }
 
   vile_taint_t( warlock_t* p, util::string_view opt, bool soul_swap ) : vile_taint_t( p, opt )
@@ -978,6 +1011,9 @@ void warlock_t::init_spells_affliction()
   // T29 (Vault of the Incarnates)
   tier.cruel_inspiration = find_spell( 394215 );
   tier.cruel_epiphany = find_spell( 394253 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
+  tier.infirmity = find_spell( 409765 );
 }
 
 void warlock_t::create_soul_swap_actions()

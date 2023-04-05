@@ -375,6 +375,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     round_base_dmg( true ),
     dynamic_tick_action( true ),  // WoD updates everything on tick by default. If you need snapshotted values for a
                                   // periodic effect, use persistent multipliers.
+    track_cd_waste(),
+    cd_waste_data(),
     interrupt_immediate_occurred(),
     hit_any_target(),
     ground_aoe_duration( timespan_t::zero() ),
@@ -2167,6 +2169,9 @@ void action_t::reschedule_execute( timespan_t time )
 
 void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 {
+  if ( cd_waste_data )
+    cd_waste_data->add( cd_duration, time_to_execute );
+
   if ( ( cd_duration > timespan_t::zero() ||
          ( cd_duration == timespan_t::min() && cooldown_duration() > timespan_t::zero() ) ) &&
        !dual )
@@ -2786,6 +2791,9 @@ void action_t::init_finished()
 
   if ( action_list && action_list->name_str == "precombat" )
     is_precombat = true;
+
+  if ( track_cd_waste )
+    cd_waste_data = player->get_cooldown_waste_data( cooldown );
 }
 
 void action_t::reset()

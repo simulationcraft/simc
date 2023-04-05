@@ -1,9 +1,9 @@
 
 #include "spell_data.hpp"
 
-#include <array>
-
 #include "generated/sc_spell_data.inc"
+
+#include <array>
 #if SC_USE_PTR
 #include "generated/sc_spell_data_ptr.inc"
 #endif
@@ -11,12 +11,11 @@
 #include "dbc/client_data.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/item_database.hpp"
+#include "fmt/format.h"
 #include "item/item.hpp"
 #include "player/player.hpp"
 #include "util/generic.hpp"
 #include "util/util.hpp"
-
-#include "fmt/format.h"
 
 // ==========================================================================
 // Spell Label Data - SpellLabel.db2
@@ -53,7 +52,7 @@ util::span<const spellpower_data_t> spellpower_data_t::data( bool ptr )
 
 resource_e spelleffect_data_t::resource_gain_type() const
 {
-  return util::translate_power_type( static_cast< power_e >( misc_value1() ) );
+  return util::translate_power_type( static_cast<power_e>( misc_value1() ) );
 }
 
 double spelleffect_data_t::resource_multiplier( resource_e resource_type ) const
@@ -90,10 +89,10 @@ double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
   double m_scale = 0;
   if ( _m_delta != 0 && scaling_class() != 0 )
   {
-    unsigned scaling_level = level ? level : p -> level();
-    if ( _spell -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, _spell -> max_scaling_level() );
-    m_scale = p -> dbc->spell_scaling( scaling_class(), scaling_level );
+    unsigned scaling_level = level ? level : p->level();
+    if ( _spell->max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, _spell->max_scaling_level() );
+    m_scale = p->dbc->spell_scaling( scaling_class(), scaling_level );
   }
 
   return scaled_delta( m_scale );
@@ -103,11 +102,11 @@ double spelleffect_data_t::delta( const item_t* item ) const
 {
   double m_scale = 0;
 
-  if ( ! item )
+  if ( !item )
     return 0;
 
   if ( _m_delta != 0 )
-    m_scale = item_database::item_budget( item, _spell -> max_scaling_level() );
+    m_scale = item_database::item_budget( item, _spell->max_scaling_level() );
 
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
@@ -115,7 +114,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
   }
   else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
-    const auto& props = item -> player -> dbc->random_property( item -> item_level() );
+    const auto& props = item->player->dbc->random_property( item->item_level() );
     m_scale = props.damage_replace_stat;
   }
 
@@ -125,7 +124,7 @@ double spelleffect_data_t::delta( const item_t* item ) const
 double spelleffect_data_t::bonus( const player_t* p, unsigned level ) const
 {
   assert( p );
-  return p -> dbc->effect_bonus( id(), level ? level : p -> level() );
+  return p->dbc->effect_bonus( id(), level ? level : p->level() );
 }
 
 double spelleffect_data_t::min( const player_t* p, unsigned level ) const
@@ -193,23 +192,23 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
 double spelleffect_data_t::average( const item_t* item ) const
 {
-  if ( ! item )
+  if ( !item )
     return 0;
 
-  auto budget = item_database::item_budget( item, _spell -> max_scaling_level() );
+  auto budget = item_database::item_budget( item, _spell->max_scaling_level() );
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
     budget = item_database::apply_combat_rating_multiplier( *item, budget );
   }
   else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
-    const auto& props = item -> player -> dbc->random_property( item -> item_level() );
+    const auto& props = item->player->dbc->random_property( item->item_level() );
     budget = props.damage_replace_stat;
   }
   else if ( ( scaling_class() == PLAYER_NONE || scaling_class() == PLAYER_SPECIAL_SCALE9 ) &&
             _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
   {
-    const auto& props = item -> player -> dbc->random_property( item -> item_level() );
+    const auto& props = item->player->dbc->random_property( item->item_level() );
     budget = props.damage_secondary;
   }
 
@@ -282,7 +281,7 @@ double spelleffect_data_t::default_multiplier() const
       {
         case A_PERIODIC_TRIGGER_SPELL:
         case A_PROC_TRIGGER_SPELL:
-          return 1.0; // base_value
+          return 1.0;  // base_value
 
         case A_MOD_MAX_RESOURCE_COST:
         case A_MOD_MAX_RESOURCE:
@@ -299,19 +298,19 @@ double spelleffect_data_t::default_multiplier() const
             case P_COOLDOWN:
             case P_TICK_TIME:
             case P_GCD:
-              return 0.001; // time_value
+              return 0.001;  // time_value
 
             case P_CRIT:
             case P_CRIT_DAMAGE:
             case P_PROC_CHANCE:
-              return 0.01; // percent
+              return 0.01;  // percent
 
             case P_RESOURCE_COST:
             case P_RESOURCE_GEN:
               return resource_multiplier( resource_gain_type() );
 
             default:
-              return 1.0; // base_value
+              return 1.0;  // base_value
           }
           break;
 
@@ -320,10 +319,10 @@ double spelleffect_data_t::default_multiplier() const
 
         case A_RESTORE_HEALTH:
         case A_RESTORE_POWER:
-          return 0.2; // Resource per 5s
+          return 0.2;  // Resource per 5s
 
         default:
-          return 0.01; // percent
+          return 0.01;  // percent
       }
 
     case E_ENERGIZE:
@@ -333,7 +332,7 @@ double spelleffect_data_t::default_multiplier() const
       break;
   }
 
-  return 1.0; // base_value
+  return 1.0;  // base_value
 }
 
 unsigned spelleffect_data_t::affected_schools() const
@@ -381,7 +380,7 @@ void spelleffect_data_t::link( bool ptr )
     }
     else
     {
-      ed._spell         = spell_data_t::find( ed.spell_id(), ptr );
+      ed._spell = spell_data_t::find( ed.spell_id(), ptr );
       ed._trigger_spell = spell_data_t::find( ed.trigger_spell_id(), ptr );
     }
   }
@@ -409,7 +408,7 @@ bool spell_data_t::is_race( race_e r ) const
 
 bool spell_data_t::is_class( player_e c ) const
 {
-  if ( ! _class_mask )
+  if ( !_class_mask )
     return true;
 
   unsigned mask = util::class_id_mask( c );
@@ -418,16 +417,14 @@ bool spell_data_t::is_class( player_e c ) const
 
 std::string spell_data_t::to_str() const
 {
-  return fmt::format( " (ok={}) id={} name={} school={}",
-                      ok(), id(), name_cstr(), util::school_type_string( get_school_type() ) );
+  return fmt::format( " (ok={}) id={} name={} school={}", ok(), id(), name_cstr(),
+                      util::school_type_string( get_school_type() ) );
 }
 
 // check if spell affected by effect through either class flag, label or category
 bool spell_data_t::affected_by_all( const spelleffect_data_t& effect ) const
 {
-  return affected_by( effect ) ||
-         affected_by_label( effect ) ||
-         affected_by_category( effect );
+  return affected_by( effect ) || affected_by_label( effect ) || affected_by_category( effect );
 }
 
 bool spell_data_t::affected_by_category( const spelleffect_data_t& effect ) const
@@ -442,28 +439,31 @@ bool spell_data_t::affected_by_category( int category_ ) const
 
 bool spell_data_t::affected_by_label( const spelleffect_data_t& effect ) const
 {
-  return affected_by_label(effect.misc_value2());
+  if ( effect.subtype() == A_MOD_RECHARGE_RATE_LABEL || effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    return affected_by_label( effect.misc_value1() );
+  else
+    return affected_by_label( effect.misc_value2() );
 }
 
 bool spell_data_t::affected_by_label( int label ) const
 {
-  return range::contains(labels(), label, &spelllabel_data_t::label);
+  return range::contains( labels(), label, &spelllabel_data_t::label );
 }
 
 bool spell_data_t::affected_by( const spell_data_t* spell ) const
 {
-  if ( class_family() != spell -> class_family() )
+  if ( class_family() != spell->class_family() )
     return false;
 
   for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
   {
-    if ( ! class_flags( (int)flag_idx ) )
+    if ( !class_flags( (int)flag_idx ) )
       continue;
 
-    for ( size_t effect_idx = 1, end = spell -> effect_count(); effect_idx <= end; effect_idx++ )
+    for ( size_t effect_idx = 1, end = spell->effect_count(); effect_idx <= end; effect_idx++ )
     {
-      const spelleffect_data_t& effect = spell -> effectN( effect_idx );
-      if ( ! effect.id() )
+      const spelleffect_data_t& effect = spell->effectN( effect_idx );
+      if ( !effect.id() )
         continue;
 
       if ( class_flags( (int)flag_idx ) & effect.class_flags( (int)flag_idx ) )
@@ -476,15 +476,15 @@ bool spell_data_t::affected_by( const spell_data_t* spell ) const
 
 bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 {
-  if ( class_family() != effect -> spell() -> class_family() )
+  if ( class_family() != effect->spell()->class_family() )
     return false;
 
   for ( size_t flag_idx = 0; flag_idx < NUM_CLASS_FAMILY_FLAGS; flag_idx++ )
   {
-    if ( ! class_flags( (int)flag_idx ) )
+    if ( !class_flags( (int)flag_idx ) )
       continue;
 
-    if ( class_flags( (int)flag_idx ) & effect -> class_flags( (int)flag_idx ) )
+    if ( class_flags( (int)flag_idx ) & effect->class_flags( (int)flag_idx ) )
       return true;
   }
 
@@ -507,10 +507,10 @@ const spell_data_t* spell_data_t::find( unsigned spell_id, bool ptr )
 
 const spell_data_t* spell_data_t::find( unsigned spell_id, util::string_view confirmation, bool ptr )
 {
-  ( void )confirmation;
+  (void)confirmation;
 
   const spell_data_t* p = find( spell_id, ptr );
-  assert( p && confirmation == p -> name_cstr() );
+  assert( p && confirmation == p->name_cstr() );
   return p;
 }
 
@@ -529,11 +529,12 @@ util::span<const spell_data_t> spell_data_t::data( bool ptr )
 }
 
 template <typename T, size_t N>
-static auto spell_data_linker(util::span<T, N> data) {
-  return [index = size_t(0), data] (T*& ptr, size_t count) mutable {
+static auto spell_data_linker( util::span<T, N> data )
+{
+  return [ index = size_t( 0 ), data ]( T*& ptr, size_t count ) mutable {
     if ( count > 0 )
     {
-      ptr = &data[index];
+      ptr = &data[ index ];
       index += count;
     }
   };
@@ -543,7 +544,8 @@ void spell_data_t::link( bool ptr )
 {
   auto link_effects = spell_data_linker( spelleffect_data_t::data( ptr ) );
   auto link_power = spell_data_linker( spellpower_data_t::data( ptr ) );
-  auto link_driver = spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
+  auto link_driver =
+      spell_data_linker( SC_DBC_GET_DATA( __spelldriver_index_data, __ptr_spelldriver_index_data, ptr ) );
   auto link_labels = spell_data_linker( spelllabel_data_t::data( ptr ) );
 
   for ( spell_data_t& sd : _data( ptr ) )

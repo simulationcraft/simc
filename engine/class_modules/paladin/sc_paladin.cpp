@@ -3559,78 +3559,8 @@ public:
   paladin_report_t( paladin_t& player ) : p( player )
   {
   }
-
-  void cdwaste_table_header( report::sc_html_stream& os )
-  {
-    os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
-       << "<tr>\n"
-       << "<th></th>\n"
-       << "<th colspan=\"3\">Seconds per Execute</th>\n"
-       << "<th colspan=\"3\">Seconds per Iteration</th>\n"
-       << "</tr>\n"
-       << "<tr>\n"
-       << "<th>Ability</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "<th>Average</th>\n"
-       << "<th>Minimum</th>\n"
-       << "<th>Maximum</th>\n"
-       << "</tr>\n";
-  }
-
-  void cdwaste_table_footer( report::sc_html_stream& os )
-  {
-    os << "</table>\n";
-  }
-
-  void cdwaste_table_contents( report::sc_html_stream& os )
-  {
-    size_t row = 0;
-    for ( const auto& data : p.cooldown_waste_data_list )
-    {
-      if ( !data->active() )
-        continue;
-
-      std::string name = data->cd->name_str;
-      if ( action_t* a = p.find_action( name ) )
-        name = report_decorators::decorated_action( *a );
-      else
-        name = util::encode_html( name );
-
-      std::string row_class;
-      if ( ++row & 1 )
-        row_class = " class=\"odd\"";
-      os.printf( "<tr%s>", row_class.c_str() );
-      os << "<td class=\"left\">" << name << "</td>";
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->normal.max() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.mean() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.min() );
-      os.printf( "<td class=\"right\">%.3f</td>", data->cumulative.max() );
-      os << "</tr>\n";
-    }
-  }
-
   void html_customsection( report::sc_html_stream& os ) override
   {
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
-    if ( !p.cooldown_waste_data_list.empty() )
-    {
-      os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
-         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
-
-      cdwaste_table_header( os );
-      cdwaste_table_contents( os );
-      cdwaste_table_footer( os );
-
-      os << "\t\t\t\t\t</div>\n";
-
-      os << "<div class=\"clear\"></div>\n";
-    }
-
-    os << "\t\t\t\t\t</div>\n";
   }
 
 private:

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48838 Live (hotfix 2023-03-31/48838, git build dragonflight 769123c487)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -475,9 +475,8 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Duration         : 5 seconds
 Charges          : 1 (12 seconds cooldown)
-Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
-Labels           : 189: Avenging Crusader (216331 effect#2)
-                 : 2579: Blessed Champion (403010 effect#2)
+Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
+Labels           : 2579: Blessed Champion (403010 effect#2)
                  : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #5, #11), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2), Justification (377043 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effects: #3, #9), Sentinel (389539 effects: #1, #2, #3), Zealot's Paragon (391142 effect#3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Judgment of Justice (403495 effect#2), Blades of Light (403664 effect#1), Judge, Jury and Executioner (405607 effect#1), Adjudication (406157 effect#1)
 Family Flags     : 23, 27, 65
@@ -1020,9 +1019,8 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
-Labels           : 189: Avenging Crusader (216331 effect#2)
-                 : 2580: Divine Arbiter (404306 effect#1)
+Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Avenging Crusader (216331 effect#2), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
+Labels           : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Improved Crusader Strike (44300 effect#1), Retribution Paladin (137027 effects: #1, #2, #3, #4, #12, #14), Protection Paladin (137028 effects: #1, #2, #4, #5, #17), Holy Paladin (137029 effects: #4, #5, #10), Judgment (214222 effect#1), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Crusader Strike (342348 effect#1), Seal of Reprisal (377053 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effects: #3, #9), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Champion (403010 effect#1), Crusader's Reprieve (403042 effect#2), Blades of Light (403664 effect#1), Heart of the Crusader (406154 effects: #3, #4), Adjudication (406157 effect#1)
 Family Flags     : 47, 65
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
@@ -5058,11 +5056,14 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23, 47
-#2 (id=321879)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 189 | Target: Self (1)
-                   Affected Spells (Label): Judgment (20271), Crusader Strike (35395), Judgment (220637), Judgment (275773), Judgment (275779), Templar Slash (406647), Templar Strike (407480), Crusading Strikes (408385), Divine Auxiliary (408386)
-#3 (id=321880)   : Apply Aura (6) | Unknown(173)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 180 | Target: Self (1)
+#2 (id=321879)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+Hotfixed         : Sub Type (143 -> 454), Base Value (30 -> -30), Misc Value (189 -> 1627)
+#3 (id=321880)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
+                   Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
+Hotfixed         : Sub Type (173 -> 454), Base Value (30 -> -30), Misc Value (180 -> 1663)
 #4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=321882)   : Apply Aura (6) | Dummy (4)
@@ -5138,7 +5139,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Melee
 Spell Level      : 1
-Labels           : 189: Avenging Crusader (216331 effect#2)
 Affecting spells : Avenging Wrath (31884 effect#8), Sentinel (389539 effect#8), Boundless Judgment (405278 effect#1)
 Family Flags     : 98
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -7229,8 +7229,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
-Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
-Labels           : 189: Avenging Crusader (216331 effect#2)
+Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #5, #11), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2), Justification (377043 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effects: #3, #9), Sentinel (389539 effects: #1, #2, #3), Zealot's Paragon (391142 effect#3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Judgment of Justice (403495 effect#2), Blades of Light (403664 effect#1), Judge, Jury and Executioner (405607 effect#1), Adjudication (406157 effect#1)
 Family Flags     : 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -7258,8 +7257,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (12 seconds cooldown)
-Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
-Labels           : 189: Avenging Crusader (216331 effect#2)
+Category         : 1663: Retribution Paladin (137027 effect#7), Protection Paladin (137028 effect#3), Protection Paladin (137028 effect#6), Holy Paladin (137029 effect#6), Crusader's Judgment (204023 effect#1), Avenging Crusader (216331 effect#3), Blessing of Dusk (385126 effect#5), Seal of Alacrity (385425 effect#2), Improved Judgment (405461 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #5, #11), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Mastery: Hand of Light (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2), Justification (377043 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effects: #3, #9), Sentinel (389539 effects: #1, #2, #3), Zealot's Paragon (391142 effect#3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Judgment of Justice (403495 effect#2), Blades of Light (403664 effect#1), Judge, Jury and Executioner (405607 effect#1), Adjudication (406157 effect#1)
 Family Flags     : 3, 23, 27, 65
 Attributes       : ........ ........ x.x..x.. ........   ........ .x...... ........ ........ 
@@ -17430,8 +17428,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Labels           : 189: Avenging Crusader (216331 effect#2)
-                 : 2567: Templar Strikes (406648 effect#2)
+Labels           : 2567: Templar Strikes (406648 effect#2)
                  : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Crusade (231895 effects: #1, #2), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Champion (403010 effect#1), Crusader's Reprieve (403042 effect#2), Blades of Light (403664 effect#1), Heart of the Crusader (406154 effects: #3, #4), Adjudication (406157 effect#1)
 Family Flags     : 27, 65, 70
@@ -17721,9 +17718,8 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
-Labels           : 189: Avenging Crusader (216331 effect#2)
-                 : 2580: Divine Arbiter (404306 effect#1)
+Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Avenging Crusader (216331 effect#2), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
+Labels           : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Crusade (231895 effects: #1, #2), Mastery: Hand of Light (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Champion (403010 effect#1), Crusader's Reprieve (403042 effect#2), Blades of Light (403664 effect#1), Heart of the Crusader (406154 effects: #3, #4), Adjudication (406157 effect#1)
 Family Flags     : 27, 65, 70
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ....x... 
@@ -17781,9 +17777,8 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
-Labels           : 189: Avenging Crusader (216331 effect#2)
-                 : 2580: Divine Arbiter (404306 effect#1)
+Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Avenging Crusader (216331 effect#2), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
+Labels           : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Champion (403010 effect#1), Crusader's Reprieve (403042 effect#2), Blades of Light (403664 effect#1), Heart of the Crusader (406154 effects: #3, #4), Adjudication (406157 effect#1)
 Triggered by     : Crusading Strikes (404542)
 Family Flags     : 63, 65
@@ -17812,7 +17807,6 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Melee
 Spell Level      : 1
-Labels           : 189: Avenging Crusader (216331 effect#2)
 Family Flags     : 69
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

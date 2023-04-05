@@ -858,9 +858,6 @@ private:
 public:
   typedef paladin_action_t base_t;
 
-  bool track_cd_waste;
-  cooldown_waste_data_t* cd_waste;
-
   // Damage increase whitelists
   struct affected_by_t
   {
@@ -880,13 +877,13 @@ public:
   paladin_action_t( util::string_view n, paladin_t* p,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s ),
-    track_cd_waste( s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms ),
-    cd_waste( nullptr ),
     affected_by( affected_by_t() ),
     hasted_cd( false ), hasted_gcd( false ),
     searing_light_disabled( false ),
     clears_judgment( false )
   {
+    ab::track_cd_waste = s->cooldown() > 0_ms || s->charge_cooldown() > 0_ms;
+
     // Spec aura damage increase
     if ( p->specialization() == PALADIN_RETRIBUTION )
     {
@@ -974,11 +971,6 @@ public:
   void init() override
   {
     ab::init();
-
-    if ( track_cd_waste && ab::sim->report_details != 0 )
-    {
-      cd_waste = p()->get_cooldown_waste_data( ab::cooldown );
-    }
 
     if ( hasted_cd )
     {
@@ -1142,12 +1134,6 @@ public:
     }
 
     return ctm;
-  }
-
-  virtual void update_ready( timespan_t cd = timespan_t::min() ) override
-  {
-    if ( cd_waste ) cd_waste->add( cd, ab::time_to_execute );
-    ab::update_ready( cd );
   }
 
   virtual void assess_damage( result_amount_type typ, action_state_t* s ) override
