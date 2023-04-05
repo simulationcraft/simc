@@ -9992,17 +9992,16 @@ void shaman_t::create_buffs()
   buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
       ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
         // spell data says "40", but means 40s
-
         timespan_t next_proc = last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
-        if ( next_proc > sim->current_time() && !t30_proc_possible )
+        if ( next_proc <= sim->current_time() && !t30_proc_possible )
         {
           t30_proc_possible = true;
           last_t30_proc = sim->current_time();
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
-            buff.stormkeeper->trigger( 2 );
-            t30_proc_possible = false;
+          buff.stormkeeper->trigger( 2 );
+          t30_proc_possible = false;
         }
       } );
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
