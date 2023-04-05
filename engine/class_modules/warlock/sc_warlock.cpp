@@ -1030,6 +1030,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );
 
+  debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
+                                           ->set_default_value_from_effect( 1 );
+
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
 
@@ -1658,6 +1661,7 @@ void warlock_t::init_spells()
   talents.soulburn_buff = find_spell( 387626 );
 
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
+  version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
 }
 
 void warlock_t::init_rng()
@@ -2029,6 +2033,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_1_0:
+      return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
       return !( version_10_0_7_data == spell_data_t::not_found() );
     case VERSION_10_0_5:

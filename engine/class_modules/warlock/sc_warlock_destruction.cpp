@@ -997,7 +997,8 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
     aoe = -1;
-    base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+    if ( !( p->min_version_check( VERSION_10_1_0 ) ) )
+      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 

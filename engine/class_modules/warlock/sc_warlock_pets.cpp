@@ -1481,6 +1481,9 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     if ( p()->o()->talents.from_the_shadows->ok() )
       owner_td( s->target )->debuffs_from_the_shadows->trigger();
+
+    if ( p()->o()->talents.the_houndmasters_stratagem->ok() )
+      owner_td( s->target )->debuffs_the_houndmasters_stratagem->trigger();
   }
 };
 

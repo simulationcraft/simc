@@ -13,6 +13,7 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_10_1_0,
   VERSION_10_0_7,
   VERSION_10_0_5,
   VERSION_10_0_0,
@@ -65,6 +66,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
+  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
 
@@ -309,8 +311,10 @@ public:
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    player_talent_t from_the_shadows;
-    const spell_data_t* from_the_shadows_debuff; // Tooltip says "Shadowflame" but this contains an explicit whitelist (for the *warlock*, pets are unknown and we'll fall back to schools)
+    player_talent_t from_the_shadows; // TODO: REPLACED in 10.1
+    const spell_data_t* from_the_shadows_debuff; // TODO: REPLACED in 10.1
+    player_talent_t the_houndmasters_stratagem; // Whitelisted warlock spells do more damage to target afflicted with debuff
+    const spell_data_t* the_houndmasters_stratagem_debuff; // Debuff applied by Dreadstalker's Dreadbite
 
     player_talent_t implosion;
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
@@ -658,6 +662,7 @@ public:
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_10_0_7_data;
+  const spell_data_t* version_10_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
