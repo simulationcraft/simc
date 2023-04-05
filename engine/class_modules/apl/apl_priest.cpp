@@ -301,5 +301,23 @@ void holy( player_t* p )
   cooldowns->add_action( "shadowfiend" );
 }
 //holy_apl_end
+//nospec_apl_start
+void no_spec( player_t* p )
+{
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* def       = p->get_action_priority_list( "default" );
 
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "smite" );
+  def->add_action( "mana_potion,if=mana.pct<=75" );
+  def->add_action( "shadowfiend" );
+  def->add_action( "berserking" );
+  def->add_action( "arcane_torrent,if=mana.pct<=90" );
+  def->add_action( "shadow_word_pain,if=remains<tick_time|!ticking" );
+  def->add_action( "smite" );
+}
+//nospec_apl_end
 }  // namespace priest_apl
