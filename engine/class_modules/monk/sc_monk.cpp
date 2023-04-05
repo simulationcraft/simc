@@ -1624,7 +1624,7 @@ namespace monk
 
           am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
 
-          am *= p()->buff.leverage->data().effectN( 2 ).percent() * p()->buff.leverage->check();
+          am *= 1 + p()->buff.leverage->data().effectN( 2 ).percent() * p()->buff.leverage->check();
 
           return am;
         }
