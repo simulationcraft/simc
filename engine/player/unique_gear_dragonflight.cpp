@@ -636,7 +636,7 @@ void dragonfire_bomb_dispenser( special_effect_t &effect )
   // AoE Explosion
   auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408667 );
 
-  explode->base_dd_min = explode->base_dd_max = effect.player->find_spell( 408667 )->effectN( 2 ).average( effect.item );
+  explode->base_dd_min = explode->base_dd_max = effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
 
   effect.player->register_on_kill_callback( [ effect, explode ] ( player_t *t )
   {
@@ -652,7 +652,7 @@ void dragonfire_bomb_dispenser( special_effect_t &effect )
   struct dragonfire_bomb_st_t : public proc_spell_t
   {
     dragonfire_bomb_st_t( const special_effect_t &e ) :
-      proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408667 ), e.item )
+      proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
     {
       background = true;
       base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
@@ -709,9 +709,10 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
     struct dragonfire_bomb_debuff_t : buff_t
     {
       player_t *target;
-      player_t *source;
+      action_t *bomb;
 
-      dragonfire_bomb_debuff_t( actor_target_data_t &td, util::string_view n, const spell_data_t *s ) : buff_t( td, n, s ), target( td.target ), source ( td.source )
+      dragonfire_bomb_debuff_t( actor_target_data_t &td, util::string_view n, const spell_data_t *s ) 
+        : buff_t( td, n, s ), target( td.target ), bomb ( td.source->find_action( "dragonfire_bomb_st" ) )
       {
       }
 
@@ -719,12 +720,8 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
       {
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
-        auto damage = source->find_action( "dragonfire_bomb_st" );
-        if ( damage )
-        {          
-          damage->execute_on_target( target );
-          sim->print_debug( "Dragonfire Bomb Expire" );
-        }
+        if ( bomb )   
+          bomb->execute_on_target( target );
       }
     };
 
