@@ -1155,6 +1155,7 @@ private:
   void apl_default();
   void apl_feral();
   void apl_balance();
+  void apl_balance_ptr();
   void apl_guardian();
   void apl_restoration();
 
@@ -10815,6 +10816,11 @@ void druid_t::apl_balance()
 #include "class_modules/apl/balance_apl.inc"
 }
 
+void druid_t::apl_balance_ptr()
+{
+#include "class_modules/apl/balance_apl_ptr.inc"
+}
+
 void druid_t::apl_guardian()
 {
 #include "class_modules/apl/guardian_apl.inc"
@@ -11162,11 +11168,11 @@ void druid_t::init_action_list()
 
   switch ( specialization() )
   {
-    case DRUID_FERAL:       apl_feral();       break;
-    case DRUID_BALANCE:     apl_balance();     break;
-    case DRUID_GUARDIAN:    apl_guardian();    break;
-    case DRUID_RESTORATION: apl_restoration(); break;
-    default: apl_default(); break;
+    case DRUID_FERAL:       apl_feral();                                  break;
+    case DRUID_BALANCE:     is_ptr() ? apl_balance_ptr() : apl_balance(); break;
+    case DRUID_GUARDIAN:    apl_guardian();                               break;
+    case DRUID_RESTORATION: apl_restoration();                            break;
+    default:                apl_default();                                break;
   }
 
   use_default_action_list = true;
