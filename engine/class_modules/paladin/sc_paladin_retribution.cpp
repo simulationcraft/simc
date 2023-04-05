@@ -673,6 +673,12 @@ struct judgment_ret_t : public judgment_t
     {
       base_crit += p->talents.judge_jury_and_executioner->effectN( 1 ).percent();
     }
+
+    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
+    {
+      crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
+      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
+    }
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
@@ -1058,24 +1064,21 @@ struct base_templar_strike_t : public paladin_melee_attack_t
 
     if ( p->talents.heart_of_the_crusader->ok() )
     {
-      crit_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
+      crit_bonus_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 4 ).percent();
       base_multiplier *= 1.0 + p->talents.heart_of_the_crusader->effectN( 3 ).percent();
     }
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    paladin_melee_attack_t::impact( s );
+    paladin_melee_attack_t::execute();
 
-    if ( result_is_hit( s->result ) )
+    if ( p()->talents.empyrean_power->ok() )
     {
-      if ( p()->talents.empyrean_power->ok() )
+      if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
       {
-        if ( rng().roll( p()->talents.empyrean_power->effectN( 1 ).percent() ) )
-        {
-          p()->procs.empyrean_power->occur();
-          p()->buffs.empyrean_power->trigger();
-        }
+        p()->procs.empyrean_power->occur();
+        p()->buffs.empyrean_power->trigger();
       }
     }
   }

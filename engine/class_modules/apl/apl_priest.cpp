@@ -168,6 +168,7 @@ void shadow( player_t* p )
 }
 //shadow_apl_end
 
+//discipline_apl_start
 void discipline( player_t* p )
 {
   action_priority_list_t* def     = p->get_action_priority_list( "default" );
@@ -219,68 +220,88 @@ void discipline( player_t* p )
   def->add_action( "holy_nova,if=spell_targets.holy_nova>=3" );
   def->add_action( "shadow_word_pain" );
 }
+//discipline_apl_end
 
+//holy_apl_start
 void holy( player_t* p )
 {
-  action_priority_list_t* precombat    = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* default_list = p->get_action_priority_list( "default" );
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* main_variables = p->get_action_priority_list( "main_variables" );
+  action_priority_list_t* main = p->get_action_priority_list( "main" );
+  action_priority_list_t* divine_favor_chastise_active = p->get_action_priority_list( "divine_favor_chastise_active" );
+  action_priority_list_t* divine_favor_filler = p->get_action_priority_list( "divine_favor_filler" );
+  action_priority_list_t* divine_image = p->get_action_priority_list( "divine_image" );
+  action_priority_list_t* generic = p->get_action_priority_list( "generic" );
+  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
-  precombat->add_action( "flask" );
+  precombat->add_action( "flask", "otion=elemental_potion_of_ultimate_power_ ood=fated_fortune_cooki lask=phial_of_tepid_versatility_ ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "smite" );
 
-  // On-Use Items
-  default_list->add_action( "use_items" );
+  main_variables->add_action( "variable,name=chastise_cdr,op=set,value=((cooldown.divine_word.remains%action.smite.execute_time)*4)", "VARIABLES" );
 
-  // Professions
-  for ( const auto& profession_action : p->get_profession_actions() )
-  {
-    default_list->add_action( profession_action );
-  }
+  default_->add_action( "run_action_list,name=main", "RUN ACTIONS" );
 
-  // Potions
-  default_list->add_action(
-      "potion,if=buff.bloodlust.react|(raid_event.adds.up&(raid_event.adds.remains>20|raid_event.adds.duration<20))|"
-      "target.time_to_die<=30" );
+  main->add_action( "call_action_list,name=main_variables", "MAIN" );
+  main->add_action( "call_action_list,name=cooldowns" );
+  main->add_action( "holy_fire,if=(talent.empyreal_blaze|talent.harmonious_apparatus)|(!ticking|refreshable)", "Always use HF if we have empyreal blaze or harmonious apparatus  Otherwise, only use it if not ticking or refreshable" );
+  main->add_action( "shadow_word_pain,if=(refreshable|!ticking)&buff.apotheosis.down", "Don't cast SW:P during apotheosis" );
+  main->add_action( "divine_word,if=cooldown.holy_word_chastise.up&(!talent.empyreal_blaze|cooldown.empyreal_blaze.up)", "Divine Word only if we can sync with Chastise.  If we have Empyreal Blaze, sync with that as well." );
+  main->add_action( "holy_word_chastise,if=buff.divine_word.up", "Holy word chastise early to trigger divine favor: chastise" );
+  main->add_action( "run_action_list,name=divine_favor_chastise_active,if=buff.divine_favor_chastise.up", "Enter Divine Favor rotation with divine favor: chastise buff up" );
+  main->add_action( "run_action_list,name=divine_favor_filler,if=talent.divine_word&talent.holy_word_chastise&buff.divine_favor_chastise.down", "Run divine favor fillers rotation with buff down" );
+  main->add_action( "run_action_list,name=divine_image,if=talent.divine_image", "Run divine image rotation with divine image" );
+  main->add_action( "run_action_list,name=generic", "Otherwise generic rotation" );
 
-  // Default APL
-  default_list->add_action(
-      p, "Holy Fire",
-      "if=dot.holy_fire.ticking&(dot.holy_fire.remains<=gcd|dot.holy_fire.stack<2)&spell_targets.holy_nova<7" );
-  default_list->add_action( p, "Holy Word: Chastise", "if=spell_targets.holy_nova<5" );
-  default_list->add_action(
-      p, "Holy Fire",
-      "if=dot.holy_fire.ticking&(dot.holy_fire.refreshable|dot.holy_fire.stack<2)&spell_targets.holy_nova<7" );
-  default_list->add_action(
-      "berserking,if=raid_event.adds.in>30|raid_event.adds.remains>8|raid_event.adds.duration<8" );
-  default_list->add_action( "fireblood,if=raid_event.adds.in>20|raid_event.adds.remains>6|raid_event.adds.duration<6" );
-  default_list->add_action(
-      "ancestral_call,if=raid_event.adds.in>20|raid_event.adds.remains>10|raid_event.adds.duration<10" );
-  default_list->add_talent(
-      p, "Divine Star",
-      "if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.divine_star>1" );
-  default_list->add_talent(
-      p, "Halo",
-      "if=(raid_event.adds.in>14|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.halo>0" );
-  default_list->add_action(
-      "lights_judgment,if=raid_event.adds.in>50|raid_event.adds.remains>4|raid_event.adds.duration<4" );
-  default_list->add_action(
-      "arcane_pulse,if=(raid_event.adds.in>40|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets."
-      "arcane_pulse>2" );
-  default_list->add_action( p, "Holy Fire", "if=!dot.holy_fire.ticking&spell_targets.holy_nova<7" );
-  default_list->add_action( p, "Holy Nova", "if=spell_targets.holy_nova>3" );
-  default_list->add_talent(
-      p, "Apotheosis", "if=active_enemies<5&(raid_event.adds.in>15|raid_event.adds.in>raid_event.adds.cooldown-5)" );
-  default_list->add_action( p, "Smite" );
-  default_list->add_action( p, "Holy Fire" );
-  default_list->add_talent(
-      p, "Divine Star",
-      "if=(raid_event.adds.in>5|raid_event.adds.remains>2|raid_event.adds.duration<2)&spell_targets.divine_star>0" );
-  default_list->add_action( p, "Holy Nova", "if=raid_event.movement.remains>gcd*0.3&spell_targets.holy_nova>0" );
+  divine_favor_chastise_active->add_action( "holy_word_chastise", "Divine Favor (Active)" );
+  divine_favor_chastise_active->add_action( "empyreal_blaze" );
+  divine_favor_chastise_active->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
+  divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<50" );
+  divine_favor_chastise_active->add_action( "mindgames" );
+  divine_favor_chastise_active->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets.holy_nova>=3" );
+  divine_favor_chastise_active->add_action( "divine_star" );
+  divine_favor_chastise_active->add_action( "halo" );
+  divine_favor_chastise_active->add_action( "smite" );
+
+  divine_favor_filler->add_action( "holy_word_chastise,if=(cooldown.holy_word_chastise.duration-variable.chastise_cdr)<cooldown.divine_word.remains", "Divine Favor (Filler)" );
+  divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<50" );
+  divine_favor_filler->add_action( "mindgames" );
+  divine_favor_filler->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3" );
+  divine_favor_filler->add_action( "divine_star" );
+  divine_favor_filler->add_action( "halo" );
+  divine_favor_filler->add_action( "smite" );
+
+  divine_image->add_action( "holy_word_sanctify", "Divine Image" );
+  divine_image->add_action( "holy_word_serenity" );
+  divine_image->add_action( "holy_word_chastise" );
+  divine_image->add_action( "empyreal_blaze" );
+  divine_image->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
+  divine_image->add_action( "shadow_word_death,if=target.health.pct<50&!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "mindgames,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3&!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "divine_star,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "halo,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "smite" );
+
+  generic->add_action( "holy_word_chastise", "Generic" );
+  generic->add_action( "empyreal_blaze" );
+  generic->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
+  generic->add_action( "shadow_word_death,if=target.health.pct<50&!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "mindgames,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3&!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "divine_star,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "halo,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "smite" );
+
+  cooldowns->add_action( "power_infusion,if=!talent.divine_word|(talent.divine_word&buff.divine_favor_chastise.up)", "Cooldowns  Sync PI with divine favor: chastise if we took divine word" );
+  cooldowns->add_action( "potion,if=buff.power_infusion.up", "Only potion in sync with power infusion" );
+  cooldowns->add_action( "use_items,if=buff.power_infusion.up", "hold trinkets to use with PI" );
+  cooldowns->add_action( "shadowfiend" );
 }
-
+//holy_apl_end
+//nospec_apl_start
 void no_spec( player_t* p )
 {
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
@@ -298,5 +319,5 @@ void no_spec( player_t* p )
   def->add_action( "shadow_word_pain,if=remains<tick_time|!ticking" );
   def->add_action( "smite" );
 }
-
+//nospec_apl_end
 }  // namespace priest_apl

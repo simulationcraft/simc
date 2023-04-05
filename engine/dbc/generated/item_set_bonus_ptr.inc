@@ -1,4 +1,4 @@
-// Set bonus data, wow build 10.1.0.48661
+// Set bonus data, wow build 10.1.0.48898
 static const std::array<item_set_bonus_t, 601> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
@@ -608,7 +608,7 @@ static const std::array<item_set_bonus_t, 601> __ptr_set_bonus_data { {
   { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   2,  10,  269,  405543, { 202509, 202507, 202506, 202505, 202504,  0 } },
   { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  268,  405540, { 202509, 202507, 202506, 202505, 202504,  0 } },
   { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  270,  405542, { 202509, 202507, 202506, 202505, 202504,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  269,  405544, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  269,  411375, { 202509, 202507, 202506, 202505, 202504,  0 } },
   { "Strands of the Autumn Blaze"               , "tier30"             ,     19,  1542,   30,   2,  11,  102,  405510, { 202518, 202516, 202515, 202514, 202513,  0 } },
   { "Strands of the Autumn Blaze"               , "tier30"             ,     19,  1542,   30,   2,  11,  103,  405512, { 202518, 202516, 202515, 202514, 202513,  0 } },
   { "Strands of the Autumn Blaze"               , "tier30"             ,     19,  1542,   30,   2,  11,  104,  405514, { 202518, 202516, 202515, 202514, 202513,  0 } },

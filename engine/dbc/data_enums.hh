@@ -1272,6 +1272,7 @@ enum effect_subtype_t : unsigned {
     A_483 = 483,
     A_492 = 492,
     A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS = 501,
+    A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL = 507,
     A_MAX
 };
 

@@ -28,7 +28,7 @@ struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
 struct fury_of_xuen_pet_t;
-struct shadowflame_monk_t;
+struct spirit_of_forged_vermillion_t;
 }
 
 struct monk_t;
@@ -113,6 +113,9 @@ public:
     propagate_const<buff_t*> fae_exposure;
     propagate_const<buff_t*> keefers_skyreach;
     propagate_const<buff_t*> skyreach_exhaustion;
+
+    // Tier 30
+    propagate_const<buff_t*> shadowflame_vulnerability;
   } debuff;
 
   monk_t& monk;
@@ -362,6 +365,10 @@ public:
     propagate_const<buff_t*> fists_of_flowing_momentum;
     propagate_const<buff_t*> fists_of_flowing_momentum_fof;
     propagate_const<buff_t*> brewmasters_rhythm;
+
+    // T30 Set Bonus
+    propagate_const<buff_t*> leverage;
+    propagate_const<buff_t*> leverage_helper;
   } buff;
 
 public:
@@ -426,8 +433,8 @@ public:
     propagate_const<proc_t*> xuens_battlegear_reduction;
 
     // Tier 30
-    propagate_const<proc_t *> shadowflame_monk_spawn;
-    propagate_const<proc_t *> shadowflame_nova;
+    propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
+    propagate_const<proc_t *> elusive_brawler_preserved;
 
   } proc;
 
@@ -906,8 +913,10 @@ public:
     const spell_data_t* fists_of_flowing_momentum;
 
     // Tier 30
+    const spell_data_t *shadowflame_nova;
     const spell_data_t *shadowflame_spirit;
     const spell_data_t *shadowflame_spirit_summon;
+    const spell_data_t* leverage;
 
   } passives;
 
@@ -931,7 +940,7 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> shadowflame_monk;
+    spawner::pet_spawner_t<pet_t, monk_t> spirit_of_forged_vermillion;
 
     pet_t* bron;
 
@@ -1082,7 +1091,7 @@ public:
 
   void bonedust_brew_assessor( action_state_t* );
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability, bool combo_strike );
-  void trigger_shadowflame_monk( action_state_t *s );
+  void trigger_spirit_of_forged_vermillion( action_state_t *s );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );

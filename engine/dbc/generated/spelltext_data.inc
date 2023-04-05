@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.7.48676
-static const std::array<spelltext_data_t, 19491> __spelltext_data { {
+// Spell text, wow build 10.0.7.48865
+static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19187,6 +19187,7 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   { 398396, "$@spelldesc386578", 0, 0 },
   { 398453, "$@spelldesc396918  If you spend at least 10 seconds eating, you will become well fed, increasing all secondary stats by $398458s1 and growing in size.", 0, 0 },
   { 398458, "Increases all secondary stats by $s1 and your size for $d.", "Increases all secondary stats by $w1 and your size for $d.", 0 },
+  { 398851, "Restores ${$s1*$d/5} health over $d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $19705s1 Stamina for $19705d.", "Restores $/5;s1 health per second.", 0 },
   { 398856, "$@spelldesc198067", 0, 0 },
   { 398857, "$@spelldesc370", 0, 0 },
   { 399226, "Life Cocoon's cooldown is reduced by ${$s1/-1000} sec, but its absorb amount is reduced by $s2%. When Life Cocoon expires, it releases a burst of mist that restores $399230s2 health to $s3 nearby allies.", 0, 0 },
@@ -19253,6 +19254,7 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   { 400734, "$@spelldesc371905", "You will trigger a burst of restorative energy after spending $w1 more Rage.", 0 },
   { 400745, "$@spelldesc385414", "After spending $w1 more Holy Power, your next Word of Glory will echo onto a nearby ally at reduced effectiveness.", 0 },
   { 400783, "Shiv strikes ${$s2-1} additional nearby enemies and increases your Bleed damage done to affected targets by $s1% for $319504d.", 0, 0 },
+  { 400788, "Caber Toss!", 0, 0 },
   { 400801, "On enemies below 35% Overpower now grants ${$s2/10} Rage.", 0, 0 },
   { 400803, "Overpower has $s3% increased critical strike chance, deals $s4% increased critical strike damage and on enemies below 35% health Overpower generates ${$400806s1/10} Rage.\r\n", 0, 0 },
   { 400804, "Reduces the duration of movement slowing effects $s1%.", 0, 0 },
@@ -19493,17 +19495,11 @@ static const std::array<spelltext_data_t, 19491> __spelltext_data { {
   { 409451, "Create a piece of Crimson Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.7.48676
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __spelltext_hotfix_data { {
-  {  184575,  0, "$?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $?s403826[$404358s1][$s1] $?s403665[Holy][Physical] damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.|r", "$?s403826[Pierce enemies][Pierce an enemy] with a blade of light, dealing $?s403826[$404358s1][$s1] Holy damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.|r" },
-  {  398293,  1, "Your harmful spells and abilities deal an additional $w1 Nature damage, increased if aura wearer is a Furbolg.", "Your harmful spells and abilities deal an additional $398322w1 Nature damage, increased if aura wearer is a Furbolg." },
-  {  398320,  0, "Deal $w1 Nature damage to your current target.", "Deal $398322s1 Nature damage to your current target." },
-  {  403826,  0, "Blade of Justice now hits nearby enemies for $404358s1 Physical damage. \r\n\r\nDeals reduced damage beyond 5 targets.", "Blade of Justice now hits nearby enemies for $404358s1 Holy damage. \r\n\r\nDeals reduced damage beyond 5 targets." },
-  {  404358,  0, "Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 $?s403665[Holy][Physical] damage.\r\n\r\nDeals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFGenerates $184575s2 Holy Power.|r\r\n", "Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 Holy damage.\r\n\r\nDeals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFGenerates $184575s2 Holy Power.|r\r\n" },
-  {  404542,  0, "Crusader Strike replaces your auto-attacks and deals $408385s1 $?403664[Holystrike][Physical] damage, but now only generates $s4 Holy Power every $s3 attacks.\r\n\r\nInherits Crusader Strike benefits but cannot benefit from Windufry.", "Crusader Strike replaces your auto-attacks and deals $408385s1 $?403664[Holystrike][Physical] damage, but now only generates $s4 Holy Power every $s3 attacks.\r\n\r\nInherits Crusader Strike benefits but cannot benefit from Windfury." },
+// spelltext hotfix entries, wow build 10.0.7.48865
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.7.48676
+// Spell description variables, wow build 10.0.7.48865
 static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19881,7 +19877,7 @@ static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.7.48676
+// spelldesc_vars hotfix entries, wow build 10.0.7.48865
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

@@ -1103,7 +1103,16 @@ public:
     double c = ab::cost();
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
-      c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
+    { 
+      if( p() -> is_ptr() ) 
+      {
+        c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
+      }
+      else 
+      {
+        c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
+      }
+    }
 
     if ( c < 0 )
       return 0;
@@ -1428,9 +1437,6 @@ struct stable_pet_t : public hunter_pet_t
   {
     hunter_pet_t::summon( duration );
 
-    if ( main_hand_attack )
-      main_hand_attack -> execute();
-
     if (duration > 0_s)
       o() -> cooldowns.aspect_of_the_wild -> adjust( -o() -> talents.master_handler -> effectN( 1 ).time_value() );
   }
@@ -1608,6 +1614,14 @@ struct call_of_the_wild_pet_t final : public stable_pet_t
     stable_pet_t( owner, "call_of_the_wild_pet", PET_HUNTER )
   {
     resource_regeneration = regen_type::DISABLED;
+  }
+
+  void summon( timespan_t duration = 0_ms ) override
+  {
+    stable_pet_t::summon( duration );
+
+    if ( main_hand_attack )
+      main_hand_attack -> execute();
   }
 };
 

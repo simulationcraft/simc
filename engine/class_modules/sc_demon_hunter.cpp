@@ -522,7 +522,6 @@ public:
     const spell_data_t* demonic_wards_2;
     const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_debuff;
-    const spell_data_t* fiery_brand_dot_damage;
     const spell_data_t* frailty_debuff;
     const spell_data_t* charred_flesh_debuff;
     const spell_data_t* riposte;
@@ -553,6 +552,7 @@ public:
     double t30_havoc_2pc_fury_tracker = 0.0;
     const spell_data_t* t30_vengeance_2pc_buff;
     const spell_data_t* t30_vengeance_4pc_buff;
+    double t30_vengeance_4pc_soul_fragments_tracker = 0;
   } set_bonuses;
 
   // Mastery Spells
@@ -701,8 +701,9 @@ public:
     attack_t* relentless_onslaught_annihilation = nullptr;
 
     // Vengeance
-    spell_t* infernal_armor = nullptr;
-    heal_t* frailty_heal    = nullptr;
+    spell_t* infernal_armor  = nullptr;
+    heal_t* frailty_heal     = nullptr;
+    spell_t* fiery_brand_t30 = nullptr;
   } active;
 
   // Pets
@@ -1432,7 +1433,9 @@ public:
       }
       if ( p->talent.vengeance.fiery_demise->ok() )
       {
-        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) );
+        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) ) ||
+                                   ( p->set_bonuses.t30_vengeance_4pc->ok() &&
+                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 3 ) ) );
       }
     }
   }
@@ -2524,7 +2527,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_dot_t : public demon_hunter_spell_t
   {
     fiery_brand_dot_t( util::string_view name, demon_hunter_t* p )
-      : demon_hunter_spell_t( name, p, p->spec.fiery_brand_dot_damage )
+      : demon_hunter_spell_t( name, p, p->spec.fiery_brand_debuff )
     {
       background = dual = true;
 
@@ -2587,13 +2590,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
   fiery_brand_dot_t* dot_action;
 
-  fiery_brand_t( demon_hunter_t* p, util::string_view options_str = {} )
-    : demon_hunter_spell_t( "fiery_brand", p, p->talent.vengeance.fiery_brand, options_str ),
-      dot_action( nullptr )
+  fiery_brand_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
+    : demon_hunter_spell_t( name, p, p->talent.vengeance.fiery_brand, options_str ), dot_action( nullptr )
   {
     use_off_gcd = true;
 
-    dot_action = p->get_background_action<fiery_brand_dot_t>( "fiery_brand_dot" );
+    dot_action        = p->get_background_action<fiery_brand_dot_t>( name_str + "_dot" );
     dot_action->stats = stats;
   }
 
@@ -2609,16 +2611,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
       td( s->target )->debuffs.charred_flesh->trigger();
     }
 
-    // Technically 207744 is a variant of the DR debuff without the Rank 2 effect from the DoT
-    if ( dot_action )
-    {
-      // Trigger the initial DoT action and set the primary flag for use with Burning Alive
-      dot_action->set_target( s->target );
-      fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot_action->get_state() );
-      dot_action->snapshot_state( fb_state, result_amount_type::DMG_OVER_TIME );
-      fb_state->primary = true;
-      dot_action->schedule_execute( fb_state );
-    }
+    // Trigger the initial DoT action and set the primary flag for use with Burning Alive
+    dot_action->set_target( s->target );
+    fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot_action->get_state() );
+    dot_action->snapshot_state( fb_state, result_amount_type::DMG_OVER_TIME );
+    fb_state->primary = true;
+    dot_action->schedule_execute( fb_state );
   }
 };
 
@@ -4712,16 +4710,62 @@ struct fracture_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
     trigger_felblade( s );
 
+    /*
+     * logged event ordering for Fracture:
+     * - cast Fracture (225919 - main hand spell ID)
+     * - cast Fracture (263642 - container spell ID)
+     * - apply Fires of Fel buff to player if T30 2pc is active
+     * - apply Fiery Brand to target if player has Recrimination buff from T30 4pc
+     *   - apply Fiery Brand debuff (207771)
+     *   - Fiery Brand initial damage event (204021)
+     *   - remove Recrimination buff
+     * - cast Fracture (225921 - offhand spell ID)
+     * - apply Fires of Fel buff to player if T30 2pc is active
+     * - apply Fires of Fel buff to player if T30 2pc is active and Metamorphosis is active
+     * - apply Fires of Fel buff to player if T30 2pc is active and T29 2pc procs
+     * - generate Soul Fragment from main hand hit
+     * - generate Soul Fragment from offhand hit
+     * - generate Soul Fragment if Metamorphosis is active
+     * - generate Soul Fragment if T29 2pc procs
+     * because Fires of Fel is currently applied by calling "spawn_soul_fragment", the ordering listed above is
+     * slightly collapsed.
+     */
     if ( result_is_hit( s->result ) )
     {
-      mh->set_target( s->target );
-      oh->set_target( s->target );
-      mh->execute();
-      oh->execute();
+      int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
+      // divide the number in 2 as half come from main hand, half come from offhand.
+      int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
+      // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
+      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn_per_hit % 2;
 
-      p()->spawn_soul_fragment( soul_fragment::LESSER, as<int>( data().effectN( 1 ).base_value() ) );
-      p()->proc.soul_fragment_from_fracture->occur();
-      p()->proc.soul_fragment_from_fracture->occur();
+      mh->set_target( s->target );
+      mh->execute();
+      // we're assuming that if blizz changes Fracture to 3, that 2 of the soul fragments would come from main hand and
+      // 1 from offhand.
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit +
+                                                           number_of_soul_fragments_to_spawn_leftover );
+      for ( unsigned i = 0;
+            i < ( number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover ); i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
+
+      // t30 4pc proc happens after main hand execute but before offhand execute
+      // this matters because the offhand hit benefits from Fiery Demise that may be
+      // applied because of the t30 4pc proc
+      if ( p()->buff.t30_vengeance_4pc->up() )
+      {
+        p()->active.fiery_brand_t30->execute_on_target( s->target );
+        p()->buff.t30_vengeance_4pc->expire();
+      }
+
+      oh->set_target( s->target );
+      oh->execute();
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit );
+      for ( unsigned i = 0; i < number_of_soul_fragments_to_spawn_per_hit; i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
 
       if ( p()->buff.metamorphosis->check() )
       {
@@ -4785,6 +4829,12 @@ struct shear_t : public demon_hunter_attack_t
         p()->spawn_soul_fragment( soul_fragment::LESSER );
         p()->proc.soul_fragment_from_meta->occur();
       }
+    }
+
+    if ( p()->buff.t30_vengeance_4pc->up() )
+    {
+      p()->active.fiery_brand_t30->execute_on_target( s->target );
+      p()->buff.t30_vengeance_4pc->expire();
     }
   }
 
@@ -5618,7 +5668,7 @@ action_t* demon_hunter_t::create_action( util::string_view name, util::string_vi
   if ( name == "fel_barrage" )        return new fel_barrage_t( this, options_str );
   if ( name == "fel_eruption" )       return new fel_eruption_t( this, options_str );
   if ( name == "fel_devastation" )    return new fel_devastation_t( this, options_str );
-  if ( name == "fiery_brand" )        return new fiery_brand_t( this, options_str );
+  if ( name == "fiery_brand" )        return new fiery_brand_t( "fiery_brand", this, options_str );
   if ( name == "glaive_tempest" )     return new glaive_tempest_t( this, options_str );
   if ( name == "infernal_strike" )    return new infernal_strike_t( this, options_str );
   if ( name == "immolation_aura" )    return new immolation_aura_t( this, options_str );
@@ -5960,6 +6010,28 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
       return this->get_target_data(*primary_idx)->dots.fiery_brand->is_ticking();
     });
+  }
+  else if ( util::str_compare_ci( name_str, "seething_fury_threshold" ) )
+  {
+    return expr_t::create_constant( "seething_fury_threshold",
+                                    this->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value() );
+  } 
+  else if ( util::str_compare_ci( name_str, "seething_fury_spent" ) )
+  {
+    return make_mem_fn_expr( "seething_fury_spent", this->set_bonuses,
+                             &demon_hunter_t::set_bonuses_t::t30_havoc_2pc_fury_tracker );
+  }
+  else if ( util::str_compare_ci( name_str, "seething_fury_deficit" ) )
+  {
+    if ( this->set_bonuses.t30_havoc_2pc->ok() )
+    {
+      return make_fn_expr( "seething_fury_deficit", [ this ] {
+        return this->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value() - this->set_bonuses.t30_havoc_2pc_fury_tracker;
+      } );
+    } 
+    else {
+      return expr_t::create_constant( "seething_fury_deficit", 0.0 );
+    }
   }
 
   return player_t::create_expression( name_str );
@@ -6470,13 +6542,12 @@ void demon_hunter_t::init_spells()
   spec.tactical_retreat_buff = talent.havoc.tactical_retreat->ok() ? find_spell( 389890 ) : spell_data_t::not_found();
   spec.unbound_chaos_buff = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
 
-  spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207744 ) : spell_data_t::not_found();
-  spec.fiery_brand_dot_damage = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
-  spec.frailty_debuff = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
+  spec.fiery_brand_debuff   = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
+  spec.frailty_debuff       = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
   spec.charred_flesh_debuff = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
-  spec.painbringer_buff = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
-  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ): spell_data_t::not_found();
-  spec.soul_furnace_stack = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ): spell_data_t::not_found();
+  spec.painbringer_buff     = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
+  spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
+  spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
 
   if ( talent.havoc.elysian_decree->ok() || talent.vengeance.elysian_decree->ok() )
   {
@@ -6566,6 +6637,16 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.ragefire->ok() )
   {
     active.ragefire = get_background_action<ragefire_t>( "ragefire" );
+  }
+
+  if ( set_bonuses.t30_vengeance_4pc->ok() )
+  {
+    fiery_brand_t* fiery_brand_t30 = get_background_action<fiery_brand_t>( "fiery_brand_t30" );
+    fiery_brand_t30->internal_cooldown->base_duration = 0_s;
+    fiery_brand_t30->cooldown->base_duration = 0_s;
+    fiery_brand_t30->cooldown->charges = 0;
+    fiery_brand_t30->dot_action->dot_duration = timespan_t::from_seconds(set_bonuses.t30_vengeance_4pc->effectN(2).base_value());
+    active.fiery_brand_t30 = fiery_brand_t30;
   }
 }
 
@@ -7294,17 +7375,18 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up         = nullptr;
-  frailty_driver                = nullptr;
-  exit_melee_event              = nullptr;
-  next_fragment_spawn           = 0;
-  metamorphosis_health          = 0;
-  frailty_accumulator           = 0.0;
-  ragefire_accumulator          = 0.0;
-  ragefire_crit_accumulator     = 0;
-  shattered_destiny_accumulator = 0.0;
-  darkglare_boon_cdr_roll       = 0.0;
-  set_bonuses.t30_havoc_2pc_fury_tracker = 0.0;
+  soul_fragment_pick_up                                = nullptr;
+  frailty_driver                                       = nullptr;
+  exit_melee_event                                     = nullptr;
+  next_fragment_spawn                                  = 0;
+  metamorphosis_health                                 = 0;
+  frailty_accumulator                                  = 0.0;
+  ragefire_accumulator                                 = 0.0;
+  ragefire_crit_accumulator                            = 0;
+  shattered_destiny_accumulator                        = 0.0;
+  darkglare_boon_cdr_roll                              = 0.0;
+  set_bonuses.t30_havoc_2pc_fury_tracker               = 0.0;
+  set_bonuses.t30_vengeance_4pc_soul_fragments_tracker = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
@@ -7437,6 +7519,17 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
       {
         buff.soul_furnace_stack->expire();
         buff.soul_furnace_damage_amp->trigger();
+      }
+    }
+    if ( set_bonuses.t30_vengeance_4pc->ok())
+    {
+      set_bonuses.t30_vengeance_4pc_soul_fragments_tracker += 1;
+      if ( set_bonuses.t30_vengeance_4pc_soul_fragments_tracker >=
+           set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value() )
+      {
+        buff.t30_vengeance_4pc->trigger();
+        set_bonuses.t30_vengeance_4pc_soul_fragments_tracker -=
+            set_bonuses.t30_vengeance_4pc->effectN( 1 ).base_value();
       }
     }
     if ( souls_consumed >= max )

@@ -112,6 +112,9 @@ void warlock_pet_t::create_buffs()
                                 ->set_default_value( o()->talents.wrathful_minion->effectN( 1 ).percent() );
   }
 
+  buffs.fury_of_ruvaraad = make_buff( this, "fury_of_ruvaraad", find_spell( 409708 ) )
+                               ->set_default_value_from_effect( 1 );
+
   // To avoid clogging the buff reports, we silence the pet movement statistics since Implosion uses them regularly
   // and there are a LOT of Wild Imps. We can instead lump them into a single tracking buff on the owner.
   player_t::buffs.movement->quiet = true;
@@ -136,6 +139,7 @@ void warlock_pet_t::create_buffs()
   buffs.festering_hatred->quiet = true;
   buffs.infernal_command->quiet = true;
   buffs.embers->quiet = true;
+  buffs.fury_of_ruvaraad->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -1133,6 +1137,12 @@ grimoire_felguard_pet_t::grimoire_felguard_pet_t( warlock_t* owner )
    warlock_pet_t::arise();
 
    buffs.grimoire_of_service->trigger();
+
+   if ( o()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
+   {
+     buffs.fury_of_ruvaraad->trigger();
+     o()->buffs.rite_of_ruvaraad->trigger();
+   }
  }
 
  // TODO: Grimoire: Felguard only does a single Felstorm at most, rendering some of this unnecessary
@@ -1210,6 +1220,16 @@ action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::
     return new felstorm_t( this, options_str, false );
 
   return warlock_pet_t::create_action( name, options_str );
+}
+
+double grimoire_felguard_pet_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( buffs.fury_of_ruvaraad->check() )
+    m *= 1.0 + buffs.fury_of_ruvaraad->check_value();
+
+  return m;
 }
 
 /// Grimoire: Felguard End
@@ -1461,6 +1481,9 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     if ( p()->o()->talents.from_the_shadows->ok() )
       owner_td( s->target )->debuffs_from_the_shadows->trigger();
+
+    if ( p()->o()->talents.the_houndmasters_stratagem->ok() )
+      owner_td( s->target )->debuffs_the_houndmasters_stratagem->trigger();
   }
 };
 

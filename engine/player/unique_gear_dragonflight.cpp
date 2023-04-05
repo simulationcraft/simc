@@ -3536,6 +3536,209 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Elementium Pocket Anvil
+// 401303 Main Spell/Value Container
+// 401306 On use Cast time/Cooldown
+// 408578 On use Damage
+// 401324 Equip Damage
+// 408533 Stacking Buff
+// 408513 Warrior Driver
+// 408534 Rogue Driver
+// 408535 Paladin Driver
+// 408536 Monk Driver
+// 408537 Demon Hunter Driver
+// 408538 Death Knight Driver
+// 408539 Druid Driver
+// 408540 Hunter Driver
+// 408584 Shaman Driver
+// TODO - Whitelist Druid, Monk, Hunter, Rogue, Shaman, Warrior
+// Procs From: 
+// DK - Heart Strike( 206930 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
+// DH - Chaos Strike, Annihilation, Soul Cleave
+// Druid - Mangle, Maul, Shred
+// Monk - Tiger Palm
+// Hunter - Raptor Strike, Mongoose Bite
+// Rogue - Gloomblade, Sinister Strike, Multilate
+// Shaman - Stormstrike
+// Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
+void elementium_pocket_anvil_equip( special_effect_t& e )
+{
+  struct elementium_pocket_anvil_equip_t : public generic_proc_t
+  {
+    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_proc_t( e, "echoed_flare", e.player -> find_spell( 401324 ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      if ( player -> buffs.anvil_strike -> check() )
+      {
+        m *= 1.0 + player -> buffs.anvil_strike -> check_stack_value();
+      }
+
+      return m;
+    }
+  };
+
+  int driver_id = e.spell_id;
+  std::set<int> proc_spell_id;
+
+  switch ( e.player->type )
+  {
+    case DEATH_KNIGHT:
+      driver_id = 408538;
+      proc_spell_id = { 
+        { 
+        // Blood DK
+        206930,
+        // Frost DK
+        49020, 66198, 222024, 325431,
+        // Unholy DK
+        55090, 70890, 207311
+        } 
+      };
+      break;
+    case DEMON_HUNTER:
+      driver_id     = 408537;
+      proc_spell_id = { { // Vengeance DH
+                          228478,
+                          // Havoc
+                          199547, 222031, 227518, 201428 } };
+      break;
+    case DRUID:
+      driver_id = 408539;
+      e.player->sim->error( "Druid Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
+      break;
+    case HUNTER:
+      driver_id = 408540;
+      e.player->sim->error( "Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
+      break;
+    case MONK:
+      driver_id = 408536;
+
+      proc_spell_id = { {
+          // Tiger Palm
+          100780,
+      } };
+      break;
+    case PALADIN:
+      driver_id = 408535;
+      e.player->sim->error( "Paladin Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
+      break;
+    case ROGUE:
+      driver_id = 408534;
+      e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
+      break;
+    case SHAMAN:
+      driver_id = 408584;
+      e.player->sim->error( "Shaman Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
+      break;
+    case WARRIOR:
+      driver_id = 408513;
+      e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
+      break;
+    default:
+      return;
+  }
+
+  e.spell_id = driver_id;
+  e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
+
+  e.player->callbacks.register_callback_trigger_function(
+      driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+
+      return range::contains( proc_spell_id , a -> data().id() );
+      } );
+  new dbc_proc_callback_t( e.player, e );
+}
+
+void elementium_pocket_anvil_use ( special_effect_t& e )
+{
+  auto buff = buff_t::find( e.player, "anvil_strike" );
+
+  if(! buff )
+  {
+    buff = create_buff<buff_t>( e.player, e.player->find_spell( 408533 ) )
+                         -> set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() )
+                         -> set_duration( 0_ms ); // Duration set to 15s in spell data, in game it is infinite
+  }
+  e.player -> buffs.anvil_strike = buff;
+
+  struct elementium_pocket_anvil_use_damage_t : public generic_aoe_proc_t
+  {
+    elementium_pocket_anvil_use_damage_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "anvil_strike_damage", e.player -> find_spell( 408578 ) )
+    {
+      background = true;
+      split_aoe_damage = false;
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+      player -> buffs.anvil_strike -> trigger();
+    }
+  };
+
+  struct elementium_pocket_anvil_use_t : public generic_proc_t
+  {
+    action_t* damage;
+
+    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() ),
+        damage( create_proc_action<elementium_pocket_anvil_use_damage_t>( "anvil_strike_damage", e ) )
+    {
+      add_child( damage );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      damage -> execute();
+    }
+  };
+
+  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
+}
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
@@ -4204,6 +4407,9 @@ void voice_of_the_silent_star( special_effect_t& effect )
   effect.custom_buff = stack_buff;
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
+  // 30-3-2023, This effect appears to be proccing ~1.5x more than spell data suggests. 
+  // Modifiying RPPM data by 50% to emulate this behavior, will need to be rechecked on launch.
+  effect.rppm_modifier_ = effect.driver() -> real_ppm() * 0.5; 
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -4386,13 +4592,13 @@ enum primordial_stone_drivers_e
   RAGING_MAGMA_STONE       = 402931, // NYI (requires getting hit, damage)
   SEARING_SMOKEY_STONE     = 402932,
   ENTROPIC_FEL_STONE       = 402934,
-  INDOMITABLE_EARTH_STONE  = 402935, // NYI (requires getting hit, absorb)
-  SHINING_OBSIDIAN_STONE   = 402936, // no absorbs are implemented to trigger this
+  INDOMITABLE_EARTH_STONE  = 402935,
+  SHINING_OBSIDIAN_STONE   = 402936,
   PRODIGIOUS_SAND_STONE    = 402937, // NYI (driver does not exist)
-  GLEAMING_IRON_STONE      = 402938, // NYI (absorb + AA damage)
+  GLEAMING_IRON_STONE      = 402938,
   DELUGING_WATER_STONE     = 402939, // NYI (heal)
   FREEZING_ICE_STONE       = 402940,
-  COLD_FROST_STONE         = 402941, // NYI (absorb)
+  COLD_FROST_STONE         = 402941,
   EXUDING_STEAM_STONE      = 402942, // NYI (procs on receiving heals)
   SPARKLING_MANA_STONE     = 402943, // NYI (restores mana)
   SWIRLING_MOJO_STONE      = 402944, // NYI (requires creature deaths, gives the player an item to activate its buff)
@@ -4553,16 +4759,12 @@ struct damage_stone_base_t : public BASE
     entropic_fel_stone_multiplier()
   {
     // If Entropic Fel Stone is equipped, Fire damage stones are changed to Chaos.
-    if ( ( dbc::get_school_mask( BASE::get_school() ) & dbc::get_school_mask( SCHOOL_FIRE ) ) != 0 )
+    if ( ( dbc::get_school_mask( BASE::get_school() ) & dbc::get_school_mask( SCHOOL_FIRE ) ) != 0)
     {
-      for ( const auto e : effect.item->parsed.special_effects )
+      if ( auto e = find_special_effect( effect.player, ENTROPIC_FEL_STONE ) )
       {
-        if ( e->type == SPECIAL_EFFECT_EQUIP && e->driver()->id() == ENTROPIC_FEL_STONE )
-        {
-          entropic_fel_stone_multiplier = e->driver()->effectN( 1 ).percent();
-          BASE::set_school( SCHOOL_CHAOS ); // TODO: Verify that SCHOOL_CHAOS here is correct in game.
-          break;
-        }
+        entropic_fel_stone_multiplier = e->driver()->effectN( 1 ).percent();
+        BASE::set_school( SCHOOL_CHAOS );
       }
     }
   }
@@ -4607,7 +4809,8 @@ struct absorb_stone_t : public absorb_t
   {
     absorb_t::init_finished();
 
-    shining_obsidian_stone = find_primordial_stone_action( player, SHINING_OBSIDIAN_STONE );
+    if ( find_special_effect( player, SHINING_OBSIDIAN_STONE ) )
+      shining_obsidian_stone = find_primordial_stone_action( player, SHINING_OBSIDIAN_STONE );
   }
 
   absorb_buff_t* create_buff( const action_state_t* ) override
@@ -4841,6 +5044,53 @@ struct shining_obsidian_stone_t : public aoe_damage_stone_t
   }
 };
 
+struct cold_frost_stone_t : public absorb_stone_t
+{
+  cold_frost_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "cold_frost_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.trigger(), e.item ) )
+  {}
+};
+
+struct indomitable_earth_stone_t : public absorb_stone_t
+{
+  indomitable_earth_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "indomitable_earth_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.trigger(), e.item ) )
+  {}
+};
+
+struct gleaming_iron_stone_t : public absorb_stone_t
+{
+  buff_t* aa_buff;
+
+  gleaming_iron_stone_t( const special_effect_t& e )
+    : absorb_stone_t( "gleaming_iron_stone", e, e.trigger(),
+                      unique_gear::create_buff<absorb_buff_t>( e.player, e.player->find_spell( 403376 ), e.item ) )
+  {
+    aa_buff = unique_gear::create_buff<buff_t>( player, "gleaming_iron_stone_autoattack", player->find_spell( 405001 ) )
+      ->set_default_value( e.driver()->effectN( 2 ).average( e.item ) )
+      ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+        if ( new_ )
+        {
+          player->auto_attack_modifier += b->default_value;
+        }
+        else
+        {
+          player->auto_attack_modifier -= b->default_value;
+          make_event( b->sim, 3_s, [ this ] { execute(); });
+        }
+      } );
+  }
+
+  void execute() override
+  {
+    absorb_stone_t::execute();
+
+    aa_buff->trigger();
+  }
+};
+
 action_t* create_primordial_stone_action( const special_effect_t& effect, primordial_stone_drivers_e driver )
 {
   action_t* action = find_primordial_stone_action( effect.player, driver );
@@ -4881,9 +5131,11 @@ action_t* create_primordial_stone_action( const special_effect_t& effect, primor
 
     // absorb stones
     case COLD_FROST_STONE:
-      return nullptr;
+      return new cold_frost_stone_t( effect );
     case INDOMITABLE_EARTH_STONE:
-      return nullptr;
+      return new indomitable_earth_stone_t( effect );
+    case GLEAMING_IRON_STONE:
+      return new gleaming_iron_stone_t( effect );
 
     // misc
     case HARMONIC_MUSIC_STONE:
@@ -5053,6 +5305,36 @@ void shining_obsidian_stone( special_effect_t& effect )
   create_primordial_stone_action( effect, SHINING_OBSIDIAN_STONE );
 }
 
+void cold_frost_stone( special_effect_t& effect )
+{
+  // TODO slow NYI
+  auto shield = create_primordial_stone_action( effect, COLD_FROST_STONE );
+  timespan_t period = effect.driver()->effectN( 1 ).period();
+
+  effect.player->register_combat_begin( [ shield, period ]( player_t* p ) {
+    make_event( p->sim, p->rng().real() * period, [ p, period, shield ] {
+      shield->execute();
+      make_repeating_event( p->sim, period, [ shield ] { shield->execute(); } );
+    } );
+  } );
+}
+
+void indomitable_earth_stone( special_effect_t& effect )
+{
+  effect.execute_action = create_primordial_stone_action( effect, INDOMITABLE_EARTH_STONE );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void gleaming_iron_stone( special_effect_t& effect )
+{
+  auto shield = create_primordial_stone_action( effect, GLEAMING_IRON_STONE );
+
+  effect.player->register_combat_begin( [ shield ]( player_t* p ) {
+    make_event( p->sim, 3_s, [ shield ] { shield->execute(); } );
+  } );
+}
+
 void obscure_pastel_stone( special_effect_t& effect )
 {
   static constexpr std::array<primordial_stone_drivers_e, 14> possible_stones = {
@@ -5204,6 +5486,8 @@ void register_special_effects()
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
+  register_special_effect( 401303, items::elementium_pocket_anvil_equip );
+  register_special_effect( 401306, items::elementium_pocket_anvil_use );
 
 
   // Weapons
@@ -5250,6 +5534,9 @@ void register_special_effects()
   register_special_effect( primordial_stones::SHINING_OBSIDIAN_STONE,   primordial_stones::shining_obsidian_stone );
   register_special_effect( primordial_stones::OBSCURE_PASTEL_STONE,     primordial_stones::obscure_pastel_stone );
   register_special_effect( primordial_stones::SEARING_SMOKEY_STONE,     primordial_stones::searing_smokey_stone );
+  register_special_effect( primordial_stones::COLD_FROST_STONE,         primordial_stones::cold_frost_stone );
+  register_special_effect( primordial_stones::INDOMITABLE_EARTH_STONE,  primordial_stones::indomitable_earth_stone );
+  register_special_effect( primordial_stones::GLEAMING_IRON_STONE,      primordial_stones::gleaming_iron_stone );
   register_special_effect( primordial_stones::ENTROPIC_FEL_STONE,       DISABLED_EFFECT ); // Necessary for other gems to find the driver.
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 

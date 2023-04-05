@@ -592,13 +592,19 @@ struct eye_of_tyr_t : public paladin_spell_t
 
 struct judgment_prot_t : public judgment_t
 {
+  heartfire_t* heartfire;
   int judge_holy_power, sw_holy_power;
   judgment_prot_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
     judge_holy_power( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-    sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) )
+      sw_holy_power( as<int>( p->talents.sanctified_wrath->effectN( 3 ).base_value() ) ),
+      heartfire(nullptr)
   {
     parse_options( options_str );
+    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) )
+    {
+        heartfire = new heartfire_t( p );
+    }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
   }
 
@@ -626,7 +632,13 @@ struct judgment_prot_t : public judgment_t
       if( hopo > 0 )
         p()->resource_gain( RESOURCE_HOLY_POWER, hopo, p()->gains.judgment );
       if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
-          p()->trigger_grand_crusader();
+      {
+        residual_action::trigger(
+            heartfire, s->target,
+            s->result_amount * p()->tier_sets.heartfire_sentinels_authority_2pc->effectN( 2 ).percent() );
+        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
+        p()->trigger_grand_crusader( GC_JUDGMENT );
+      }
     }
   }
 };
@@ -998,13 +1010,20 @@ void paladin_t::target_mitigation( school_e school,
   }
 }
 
-void paladin_t::trigger_grand_crusader()
+void paladin_t::trigger_grand_crusader( grand_crusader_source source )
 {
   // escape if we don't have Grand Crusader
   if ( ! talents.grand_crusader->ok() )
     return;
 
   double gc_proc_chance = talents.grand_crusader->effectN( 1 ).percent();
+  
+  if ( source == GC_JUDGMENT )
+  {
+    // TODO: according to Woliance; proc chance not obvious in spelldata
+    gc_proc_chance = 0.5;
+  }
+
   if ( talents.inspiring_vanguard->ok() )
   {
     gc_proc_chance += talents.inspiring_vanguard->effectN( 2 ).percent();
