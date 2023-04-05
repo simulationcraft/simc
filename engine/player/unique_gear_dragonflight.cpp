@@ -3692,18 +3692,7 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
 
-        int spell_id = a -> data().id();
- 
-        bool exists = false;
-        for ( int i: proc_spell_id )
-        {
-          if ( i == spell_id ) 
-          {
-            exists = true;
-            break;
-          }
-        }
-        return exists;
+      return range::contains( proc_spell_id , a -> data().id() );
       } );
   new dbc_proc_callback_t( e.player, e );
 }
