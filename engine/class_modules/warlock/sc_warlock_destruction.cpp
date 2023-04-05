@@ -1082,6 +1082,18 @@ struct channel_demonfire_t : public destruction_spell_t
     return target_cache.list;
   }
 
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    if ( p()->buffs.umbrafire_embers->check() )
+    {
+      timespan_t base = p()->buffs.umbrafire_embers->base_buff_duration;
+      timespan_t remains = p()->buffs.umbrafire_embers->remains();
+      p()->buffs.umbrafire_embers->extend_duration( p(), base - remains ); // Buff is reset on execute, not on each bolt impact
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     // Need to invalidate the target cache to figure out immolated targets.
