@@ -2290,6 +2290,7 @@ namespace monk
 
         void execute() override
         {
+          // p()->sim->print_debug("{} leverage stacks ({}%)", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
           monk_melee_attack_t::execute();
 
           trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
@@ -2434,11 +2435,13 @@ namespace monk
           //===========
 
           int leverage_stacks = p()->buff.leverage->check();
+          p()->buff.leverage_helper->expire();
+          // p()->sim->print_debug("{} leverage stacks ({}%) i", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
           if ( leverage_stacks > 0 ) {
             p()->buff.leverage->expire();
-            p()->buff.leverage_helper->expire();
             p()->buff.leverage_helper->trigger( leverage_stacks );
           }
+          // p()->sim->print_debug("{} leverage stacks ({}%) f", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
 
           if ( p()->specialization() == MONK_WINDWALKER )
           {
@@ -6639,7 +6642,8 @@ namespace monk
         set_cooldown( timespan_t::zero() );
         set_duration( timespan_t::from_seconds( 2 ) );
         set_max_stack( 5 );
-        set_default_value( p.sets->set( MONK_BREWMASTER, T30, B4)->effectN( 1 ).percent(), 1 );
+        // set_default_value( p.sets->set( MONK_BREWMASTER, T30, B4)->effectN( 1 ).percent(), 1 );
+        set_default_value( 0.05, 1 );
       }
     };
   }  // namespace buffs
@@ -9130,6 +9134,7 @@ namespace monk
         } else {
           proc.elusive_brawler_preserved->occur();
         }
+        buff.leverage->trigger();
 
         // Saved as 5/10 base values but need it as 0.5 and 1 base values
         if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
