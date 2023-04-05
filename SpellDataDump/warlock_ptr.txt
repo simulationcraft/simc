@@ -4798,9 +4798,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293541)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1022907)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 1883 (Label) | Target: Self (1)
-                   Affected Spells (Label): Soul Flame (199581)
+#2 (id=1077715)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1035404)  : Apply Aura (6) | Proc Trigger Spell (42): Soul Flame
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 395157 | Target: Self (1)
 #4 (id=1040180)  : None (0)
@@ -4812,18 +4811,17 @@ Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
-Labels           : 1883: Soul Flame (199471 effect#2)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293697)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -11157,7 +11155,6 @@ Effects          :
 Description      : Conflagrate has $s1 additional $Lcharge:charges; and has its recharge time reduced by ${$m2/-1000}.1 sec.
 
 Name             : Madness of the Azj'Aqir (id=337169) [Spell Family (5), Passive] 
-Class            : Warlock
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
@@ -11178,7 +11175,6 @@ Effects          :
 Description      : Chaos Bolt increases the damage of Chaos Bolt by $337170s1% and reduces the cast time of Chaos Bolt by $337170s2% for $337170d.
 
 Name             : Madness of the Azj'Aqir (id=337170) [Spell Family (5)] 
-Class            : Warlock
 School           : Physical
 Spell Type       : None
 Duration         : 4 seconds
@@ -14767,11 +14763,11 @@ Effects          :
 #2 (id=1022165)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1855 (Label) | Target: Self (1)
                    Affected Spells (Label): Madness of the Azj'Aqir (387409), Madness of the Azj'Aqir (387413), Madness of the Azj'Aqir (387414)
-Description      : Chaos Bolt increases the damage of Chaos Bolt by $s1% and reduces the cast time of Chaos Bolt by $s2% for $337170d.
+Description      : Chaos Bolt increases the damage of Chaos Bolt by $s1% and reduces the cast time of Chaos Bolt by $s2% for $387409d.
 
-Rain of Fire increases the damage of Rain of Fire by $s1% for $337170d.
+Rain of Fire increases the damage of Rain of Fire by $s1% for $387413d.
 
-Shadowburn increases the damage of Shadowburn by $s1% for $337170d.
+Shadowburn increases the damage of Shadowburn by $s1% for $387414d.
 
 Name             : Fel Sunder (id=387402) [Spell Family (5)] 
 Class            : Warlock
@@ -16902,7 +16898,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053915)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Grimoire: Felguard deals $409708s1% additional damage. While Grimoire: Felguard is active, your demons deal $409725s1% additional damage.
+Description      : Grimoire: Felguard damage increased by $409708s1%. While Grimoire: Felguard is active, all of your demons deal $409725s1% additional damage.
 
 Name             : Warlock Destruction 10.1 Class Set 2pc (id=405575) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -16944,7 +16940,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053917)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 409652 | Target: Self (1)
-Description      : Demonfire bolts increase the Fire damage you deal by $409652s1% for $409652d for each bolt cast, stacking up to $409652u times. Gaining a stack does not refresh the duration.
+Description      : Demonfire bolts increase your Fire damage by $409652s1% for $409652d, stacking up to $409652u times. Gaining a stack does not refresh the duration. Casting Channel Demonfire resets this effect.
 
 Name             : Immutable Hatred (id=405670) [Spell Family (5), Passive, Hidden] 
 Talent Entry     : Demonology [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
@@ -17013,9 +17009,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1054252)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1070728)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2583 (Label) | Target: Self (1)
-                   Affected Spells (Label): Umbral Blaze (405802)
+#2 (id=1078213)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 Description      : Hand of Gul'dan has a $s1% chance to burn its target for ${$405802s1*(1+$s2/100)} additional Shadowflame damage every $405802t1 sec for $405802d.
 
 Name             : Umbral Blaze (id=405802) [Spell Family (5)] 
@@ -17024,7 +17019,6 @@ School           : Shadowflame
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 6 seconds
-Labels           : 2583: Umbral Blaze (405798 effect#2)
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Demonic Synergy (171982 effects: #2, #3), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Wrath of Consumption (387066 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17296,7 +17290,6 @@ Description      : $@spelldesc405572
 Tooltip          : Damage taken increased by $s1%.
 
 Name             : Channel Demonfire (id=409890) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic

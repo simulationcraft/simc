@@ -2515,19 +2515,19 @@ static bool generate_tree_nodes( player_t* player,
 static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
 {
   auto get_index = [ is_ptr ]( const trait_data_t* t ) -> short {
-    if ( t->selection_index != -1 )
+    if ( !is_ptr && t->selection_index != -1 )
     {
       switch ( t->id_trait_node_entry )
       {
         // Balance Druid overrides
         case 109873:  // starweaver
-          return is_ptr ? 200 : 200;
+          return 200;
         case 109872:  // rattle the stars
-          return is_ptr ? 100 : 100;
+          return 100;
         case 109859:  // fury of elune
-          return is_ptr ? 200 : 100;
+          return 100;
         case 109860:  // new moon
-          return is_ptr ? 100 : 200;
+          return 200;
         default:
           break;
       }

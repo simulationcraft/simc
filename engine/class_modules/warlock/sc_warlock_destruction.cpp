@@ -997,7 +997,8 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
     aoe = -1;
-    base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
+    if ( !( p->min_version_check( VERSION_10_1_0 ) ) )
+      base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
   }
 
@@ -1080,6 +1081,18 @@ struct channel_demonfire_t : public destruction_spell_t
         target_cache.list.erase( target_cache.list.begin() + i );
     }
     return target_cache.list;
+  }
+
+  void execute() override
+  {
+    destruction_spell_t::execute();
+
+    if ( p()->buffs.umbrafire_embers->check() )
+    {
+      timespan_t base = p()->buffs.umbrafire_embers->base_buff_duration;
+      timespan_t remains = p()->buffs.umbrafire_embers->remains();
+      p()->buffs.umbrafire_embers->extend_duration( p(), base - remains ); // Buff is reset on execute, not on each bolt impact
+    }
   }
 
   void tick( dot_t* d ) override
@@ -1651,6 +1664,8 @@ void warlock_t::init_spells_destruction()
 
   // T29 (Vault of the Incarnates)
   tier.chaos_maelstrom = find_spell( 394679 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
   tier.channel_demonfire = find_spell( 409890 );
   tier.umbrafire_embers = find_spell( 409652 );
 

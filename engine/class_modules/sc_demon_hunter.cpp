@@ -4710,24 +4710,62 @@ struct fracture_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
     trigger_felblade( s );
 
+    /*
+     * logged event ordering for Fracture:
+     * - cast Fracture (225919 - main hand spell ID)
+     * - cast Fracture (263642 - container spell ID)
+     * - apply Fires of Fel buff to player if T30 2pc is active
+     * - apply Fiery Brand to target if player has Recrimination buff from T30 4pc
+     *   - apply Fiery Brand debuff (207771)
+     *   - Fiery Brand initial damage event (204021)
+     *   - remove Recrimination buff
+     * - cast Fracture (225921 - offhand spell ID)
+     * - apply Fires of Fel buff to player if T30 2pc is active
+     * - apply Fires of Fel buff to player if T30 2pc is active and Metamorphosis is active
+     * - apply Fires of Fel buff to player if T30 2pc is active and T29 2pc procs
+     * - generate Soul Fragment from main hand hit
+     * - generate Soul Fragment from offhand hit
+     * - generate Soul Fragment if Metamorphosis is active
+     * - generate Soul Fragment if T29 2pc procs
+     * because Fires of Fel is currently applied by calling "spawn_soul_fragment", the ordering listed above is
+     * slightly collapsed.
+     */
     if ( result_is_hit( s->result ) )
     {
+      int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
+      // divide the number in 2 as half come from main hand, half come from offhand.
+      int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
+      // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
+      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn_per_hit % 2;
+
       mh->set_target( s->target );
-      oh->set_target( s->target );
       mh->execute();
-      // t30 4pc proc happens on main hand execute but before off hand execute
-      // this matters because the off hand hit benefits from Fiery Demise that may be
+      // we're assuming that if blizz changes Fracture to 3, that 2 of the soul fragments would come from main hand and
+      // 1 from offhand.
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit +
+                                                           number_of_soul_fragments_to_spawn_leftover );
+      for ( unsigned i = 0;
+            i < ( number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover ); i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
+
+      // t30 4pc proc happens after main hand execute but before offhand execute
+      // this matters because the offhand hit benefits from Fiery Demise that may be
       // applied because of the t30 4pc proc
       if ( p()->buff.t30_vengeance_4pc->up() )
       {
         p()->active.fiery_brand_t30->execute_on_target( s->target );
         p()->buff.t30_vengeance_4pc->expire();
       }
-      oh->execute();
 
-      p()->spawn_soul_fragment( soul_fragment::LESSER, as<int>( data().effectN( 1 ).base_value() ) );
-      p()->proc.soul_fragment_from_fracture->occur();
-      p()->proc.soul_fragment_from_fracture->occur();
+      oh->set_target( s->target );
+      oh->execute();
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit );
+      for ( unsigned i = 0; i < number_of_soul_fragments_to_spawn_per_hit; i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
 
       if ( p()->buff.metamorphosis->check() )
       {

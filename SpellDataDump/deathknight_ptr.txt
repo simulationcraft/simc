@@ -1610,7 +1610,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #17), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Plaguebringer (332688 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #17), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1683,7 +1683,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2, #5), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Plaguebringer (332688 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2, #5), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 58, 65, 120
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -4076,7 +4076,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x   ........ ........ ........ ........   
                  : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4147,7 +4147,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 40, 43, 78
 Attributes       : ........ ........ ........ ...x....   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ......x. ......x. 
@@ -11796,57 +11796,6 @@ Effects          :
                    Affected Spells: Death and Decay (188290)
                    Family Flags: 118
 
-Name             : Plaguebringer (id=332685) [Spell Family (15)] 
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Internal Cooldown: 0.7 seconds
-Stacks           : 5 maximum
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
-Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
-                 : x....... ........ ........ ....x...   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
-                 : ........ ........ ....x... ........   ........ ....x... ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=827450)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Marrowrend, Obliterate, and Festering Strike cause your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $332688d.
-
-Tooltip          : Marrowrend, Obliterate, and Festering Strike cause your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $332688d.
-
-Name             : Plaguebringer (id=332688) [Spell Family (15)] 
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Range            : 100 yards
-Duration         : 5 seconds
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Extra Initial Period (169), Aura Points On Client (268), Allow during spell override (404)
-Effects          :
-#1 (id=827454)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685)
-                   Family Flags: 40, 57, 58
-Description      : $@spelldesc332685
-Tooltip          : Disease damage occurring ${100*(1/(1+$s1/100)-1)}% more quickly.
-
 Name             : Rune of Razorice (id=332944) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
@@ -15671,7 +15620,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=1026801)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Trigger Spell: 390178 | Target: Self (1)
-Description      : Scourge Strike causes your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $332688d.
+Description      : Scourge Strike causes your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $390178d.
 
 
 Name             : Plaguebringer (id=390178) [Spell Family (15)] 
@@ -16502,7 +16451,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032708)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Obliterate Off-Hand (66198), Frostscythe (207230), Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623)
                    Family Flags: 7, 15, 111
 Description      : Obliterate and Frostscythe critical strike damage is increased by $s1%.
@@ -16761,7 +16710,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053833)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Howling Blast (49184), Howling Blast (237680)
                    Family Flags: 33
 #2 (id=1072443)  : Apply Aura (6) | Dummy (4)

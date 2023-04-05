@@ -267,9 +267,6 @@ public:
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
 
-  /// Failed Deeply Rooted Elements attempts
-  unsigned deeply_rooted_elements_failures;
-
   // Options
   bool raptor_glyph;
 
@@ -287,6 +284,10 @@ public:
   /// Maelstrom generator/spender tracking
   std::vector<std::pair<simple_sample_data_t, simple_sample_data_t>> mw_source_list;
   std::vector<simple_sample_data_t> mw_spend_list;
+
+  /// Deeply Rooted Elements tracking
+  extended_sample_data_t dre_samples;
+  unsigned dre_attempts;
 
   // Cached actions
   struct actions_t
@@ -348,7 +349,6 @@ public:
   {
     // shared between all three specs
     buff_t* ascendance;
-    buff_t* deeply_rooted_elements_bad_luck;
     buff_t* ghost_wolf;
     buff_t* flurry;
     buff_t* natures_swiftness;
@@ -436,7 +436,7 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
-    bool dre_post_change = false;
+    int dre_flat_chance = -1;
   } options;
 
   // Cooldowns
@@ -481,9 +481,6 @@ public:
   // Tracked Procs
   struct
   {
-    // Shared
-    std::array<proc_t*, 102> deeply_rooted_elements_attempts_until_success;
-
     // Elemental, Restoration
     proc_t* lava_surge;
     proc_t* wasted_lava_surge;
@@ -771,8 +768,9 @@ public:
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       lotfw_counter( 0U ),
-      deeply_rooted_elements_failures( 0U ),
       raptor_glyph( false ),
+      dre_samples( "dre_tracker", false ),
+      dre_attempts( 0U ),
       action(),
       pet( this ),
       constant(),
@@ -819,6 +817,8 @@ public:
       resource_regeneration = regen_type::DISABLED;
     else
       resource_regeneration = regen_type::DYNAMIC;
+
+    dre_samples.reserve( 8192 );
   }
 
   ~shaman_t() override = default;
@@ -8709,7 +8709,7 @@ void shaman_t::create_options()
     return true;
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
-  add_option( opt_bool( "shaman.dre_post_change", options.dre_post_change ) );
+  add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -8736,7 +8736,7 @@ void shaman_t::copy_from( player_t* source )
   shaman_t* p  = debug_cast<shaman_t*>( source );
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
-  options.dre_post_change = p->options.dre_post_change;
+  options.dre_flat_chance = p->options.dre_flat_chance;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -8865,6 +8865,12 @@ void shaman_t::analyze( sim_t& sim )
       container.reset();
       container.add( sum / as<double>( iterations ) );
     } );
+  }
+
+  if ( talent.deeply_rooted_elements.ok() )
+  {
+    dre_samples.analyze();
+    dre_samples.create_histogram( dre_samples.max() - dre_samples.min() + 1 );
   }
 }
 
@@ -9576,11 +9582,12 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
     return;
   }
 
-  if ( is_ptr() && options.dre_post_change ) {
-    deeply_rooted_elements_failures++;
+  dre_attempts++;
+  if ( ( options.dre_flat_chance == -1 && is_ptr() ) || options.dre_flat_chance == 0 )
+  {
     // per attempt there exists an ever growing 1% chance
     // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
-    proc_chance = deeply_rooted_elements_failures * 0.01 - 0.02;
+    proc_chance = dre_attempts * 0.01 - 0.02;
   }
 
   if ( !rng().roll( proc_chance ) )
@@ -9588,10 +9595,8 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
     return;
   }
 
-  if ( is_ptr() && options.dre_post_change ) {
-    proc.deeply_rooted_elements_attempts_until_success[deeply_rooted_elements_failures]->occur();
-    deeply_rooted_elements_failures = 0U;
-  }
+  dre_samples.add( as<double>( dre_attempts ) );
+  dre_attempts = 0U;
 
   action.dre_ascendance->set_target( state->target );
   action.dre_ascendance->execute();
@@ -9992,17 +9997,16 @@ void shaman_t::create_buffs()
   buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
       ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
         // spell data says "40", but means 40s
-
         timespan_t next_proc = last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
-        if ( next_proc > sim->current_time() && !t30_proc_possible )
+        if ( next_proc <= sim->current_time() && !t30_proc_possible )
         {
           t30_proc_possible = true;
           last_t30_proc = sim->current_time();
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
-            buff.stormkeeper->trigger( 2 );
-            t30_proc_possible = false;
+          buff.stormkeeper->trigger( 2 );
+          t30_proc_possible = false;
         }
       } );
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
@@ -10221,11 +10225,6 @@ void shaman_t::init_gains()
 void shaman_t::init_procs()
 {
   player_t::init_procs();
-
-  for ( size_t i = 0; i < proc.deeply_rooted_elements_attempts_until_success.size(); i++ )
-  {
-    proc.deeply_rooted_elements_attempts_until_success[ i ] = get_proc( fmt::format( "Deeply Rooted Elements attempt until success {}", i ) );
-  }
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_primordial_surge              = get_proc( "Lava Surge: Primordial Surge" );
@@ -11182,7 +11181,7 @@ void shaman_t::reset()
   lava_surge_during_lvb = false;
 
   lotfw_counter = 0U;
-  deeply_rooted_elements_failures = 0U;
+  dre_attempts = 0U;
   action.ti_trigger = nullptr;
   action.totemic_recall_totem = nullptr;
 
@@ -11231,6 +11230,11 @@ void shaman_t::merge( player_t& other )
   for ( auto i = 0U; i < mw_spend_list.size(); ++i )
   {
     mw_spend_list[ i ].merge( s.mw_spend_list[ i ] );
+  }
+
+  if ( talent.deeply_rooted_elements.ok() )
+  {
+    dre_samples.merge( s.dre_samples );
   }
 }
 
@@ -11538,6 +11542,30 @@ public:
     os << "</table>\n";
   }
 
+  void dre_distribution_contents( report::sc_html_stream& os )
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
+
+    chart.set( "plotOptions.column.color", color::RED.str() );
+    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? 3 : 1 );
+    chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
+                                 p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
+    chart.set( "yAxis.title.text", "# of Triggered Procs" );
+    chart.set( "xAxis.title.text", "Proc on Attempt #" );
+    chart.set( "series.0.name", "Triggered Procs" );
+
+    range::for_each( p.dre_samples.distribution, [ &chart ]( size_t n ) {
+      js::sc_js_t e;
+
+      e.set( "y", static_cast<double>( n ) );
+
+      chart.add( "series.0.data", e );
+    } );
+
+    os << chart.to_target_div();
+    p.sim->add_chart_data( chart );
+  }
+
   void html_customsection( report::sc_html_stream& os ) override
   {
     // Custom Class Section
@@ -11558,6 +11586,21 @@ public:
       mw_consumer_contents( os );
       mw_consumer_piechart_contents( os );
       mw_consumer_footer( os );
+
+      os << "\t\t\t\t\t</div>\n";
+
+      os << "<div class=\"clear\"></div>\n";
+
+      os << "\t\t\t\t\t</div>\n";
+    }
+
+    if ( p.talent.deeply_rooted_elements.ok() )
+    {
+      os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
+      os << "\t\t\t\t\t<h3 class=\"toggle open\">Deeply Rooted Elements Proc Details</h3>\n"
+         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+      dre_distribution_contents( os );
 
       os << "\t\t\t\t\t</div>\n";
 

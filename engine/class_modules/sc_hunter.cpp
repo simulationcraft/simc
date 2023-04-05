@@ -1103,7 +1103,16 @@ public:
     double c = ab::cost();
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
-      c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
+    { 
+      if( p() -> is_ptr() ) 
+      {
+        c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
+      }
+      else 
+      {
+        c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
+      }
+    }
 
     if ( c < 0 )
       return 0;

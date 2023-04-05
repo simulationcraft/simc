@@ -1398,6 +1398,11 @@ class SpellDataGenerator(DataGenerator):
          408087, # Idol of Debilitating Arrogance Priest
          408815, 408832, 408835, 408836, # Djaruun
          401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil 
+         408821, 403545, # Djaruun, Pillar of the Elder Flame
+         408667, 408671, 408675, 408770, # Dragonfire Bomb Dispenser
+         406244, 378758, 407090, # Spore Colony Shoulderguards
+         407949, 408015, # Tinker: Shadowflame Rockets
+         406753, 406764, 406770, # Shadowflame Wreathe
         ),
 
         # Warrior:
