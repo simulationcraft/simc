@@ -797,6 +797,11 @@ struct crusading_strike_t : public paladin_melee_attack_t
     background = true;
     trigger_gcd = 0_ms;
 
+    if ( p->talents.blades_of_light->ok() )
+    {
+      affected_by.hand_of_light = true;
+    }
+
     if ( p->talents.blessed_champion->ok() )
     {
       aoe = 1 + p->talents.blessed_champion->effectN( 4 ).base_value();
