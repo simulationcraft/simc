@@ -3603,27 +3603,35 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case DEMON_HUNTER:
       driver_id = 408537;
+      e.player->sim->error( "Demon Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case DRUID:
       driver_id = 408539;
+      e.player->sim->error( "Druid Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case HUNTER:
       driver_id = 408540;
+      e.player->sim->error( "Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case MONK:
       driver_id = 408536;
+      e.player->sim->error( "Monk Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case PALADIN:
       driver_id = 408535;
+      e.player->sim->error( "Paladin Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case ROGUE:
       driver_id = 408534;
+      e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case SHAMAN:
       driver_id = 408584;
+      e.player->sim->error( "Shaman Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     case WARRIOR:
       driver_id = 408513;
+      e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" );
       break;
     default:
       return;
