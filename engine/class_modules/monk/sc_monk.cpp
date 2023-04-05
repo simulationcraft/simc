@@ -2258,7 +2258,7 @@ namespace monk
         {
           double c = monk_melee_attack_t::composite_crit_chance();
 
-          c += p()->buff.spinning_crane_kick_helper->check_stack_value();
+          c += p()->buff.leverage_helper->check_stack_value();
 
           return c;
         }
@@ -2283,16 +2283,13 @@ namespace monk
 
           am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
 
-          am *= 1 + p()->buff.spinning_crane_kick_helper->check_stack_value();
+          am *= 1 + p()->buff.leverage_helper->check_stack_value();
 
           return am;
         }
 
         void execute() override
         {
-          p()->buff.leverage->expire();
-          // p()->sim->print_debug("there should be four of these zvb");
-
           monk_melee_attack_t::execute();
 
           trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
@@ -2439,10 +2436,9 @@ namespace monk
           int leverage_stacks = p()->buff.leverage->check();
           if ( leverage_stacks > 0 ) {
             p()->buff.leverage->expire();
-            p()->buff.spinning_crane_kick_helper->expire();
-            p()->buff.spinning_crane_kick_helper->trigger( leverage_stacks );
+            p()->buff.leverage_helper->expire();
+            p()->buff.leverage_helper->trigger( leverage_stacks );
           }
-          // p()->sim->print_debug("there should be one of these zvc");
 
           if ( p()->specialization() == MONK_WINDWALKER )
           {
@@ -2493,8 +2489,6 @@ namespace monk
             p()->proc.counterstrike_sck->occur();
             p()->buff.counterstrike->expire();
           }
-
-          p()->buff.spinning_crane_kick_helper->expire();
         }
       };
 
@@ -6632,12 +6626,12 @@ namespace monk
     };
 
     // ===============================================================================
-    // Tier 29 Kicks of Flowing Momentum
+    // Tier 30 Leverage SCK Helper
     // ===============================================================================
 
-    struct spinning_crane_kick_helper_t : public monk_buff_t<buff_t>
+    struct leverage_helper_t : public monk_buff_t<buff_t>
     {
-      spinning_crane_kick_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+      leverage_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
       {
         set_trigger_spell( p.spec.spinning_crane_kick_brm );
         set_can_cancel( true );
@@ -7927,12 +7921,12 @@ namespace monk
       ->set_trigger_spell( spec.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
-    buff.spinning_crane_kick_helper = new buffs::spinning_crane_kick_helper_t( *this, "spinning_crane_kick_helper", spell_data_t::nil() );
-
     buff.leverage = make_buff( this, "leverage", find_spell( 408503 ))
       ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ))
       ->add_invalidate( CACHE_CRIT_CHANCE )
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buff.leverage_helper = new buffs::leverage_helper_t( *this, "leverage_helper", spell_data_t::nil() );
+
 
   // Mistweaver
     buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) )

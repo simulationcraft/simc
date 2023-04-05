@@ -368,7 +368,7 @@ public:
 
     // T30 Set Bonus
     propagate_const<buff_t*> leverage;
-    propagate_const<buff_t*> spinning_crane_kick_helper;
+    propagate_const<buff_t*> leverage_helper;
   } buff;
 
 public:
