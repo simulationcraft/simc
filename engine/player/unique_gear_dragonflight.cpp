@@ -3551,7 +3551,16 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // 408539 Druid Driver
 // 408540 Hunter Driver
 // 408584 Shaman Driver
-// TODO - Implement proccing only off specific abilities per spec. Right now using the default proc flags for every driver. 
+// TODO - Whitelist DH, Druid, Monk, Hunter, Rogue, Shaman, Warrior
+// Procs From: 
+// DK - Heart Strike( 206903 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
+// DH - Chaos Strike, Annihilation, Soul Cleave
+// Druid - Mangle, Maul, Shred
+// Monk - Tiger Palm
+// Hunter - Raptor Strike, Mongoose Bite
+// Rogue - Gloomblade, Sinister Strike, Multilate
+// Shaman - Stormstrike
+// Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
 void elementium_pocket_anvil_equip( special_effect_t& e )
 {
   struct elementium_pocket_anvil_equip_t : public generic_proc_t
@@ -3575,34 +3584,102 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
   };
 
   int driver_id = e.spell_id;
+  std::set<int> proc_spell_id;
+
   switch ( e.player->type )
   {
     case DEATH_KNIGHT:
       driver_id = 408538;
+      proc_spell_id = { 
+        { 
+        // Blood DK
+        206903,
+        // Frost DK
+        49020, 66198, 222024, 325431,
+        // Unholy DK
+        55090, 70890, 207311
+        } 
+      };
       break;
     case DEMON_HUNTER:
       driver_id = 408537;
+      e.player->sim->error( "Demon Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case DRUID:
       driver_id = 408539;
+      e.player->sim->error( "Druid Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case HUNTER:
       driver_id = 408540;
+      e.player->sim->error( "Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case MONK:
       driver_id = 408536;
+      e.player->sim->error( "Monk Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case PALADIN:
       driver_id = 408535;
+      e.player->sim->error( "Paladin Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case ROGUE:
       driver_id = 408534;
+      e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case SHAMAN:
       driver_id = 408584;
+      e.player->sim->error( "Shaman Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case WARRIOR:
       driver_id = 408513;
+      e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     default:
       return;
@@ -3611,6 +3688,23 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
   e.spell_id = driver_id;
   e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
 
+  e.player->callbacks.register_callback_trigger_function(
+      driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+
+        int spell_id = a -> data().id();
+ 
+        bool exists = false;
+        for ( int i: proc_spell_id )
+        {
+          if ( i == spell_id ) 
+          {
+            exists = true;
+            break;
+          }
+        }
+        return exists;
+      } );
   new dbc_proc_callback_t( e.player, e );
 }
 
@@ -3644,7 +3738,6 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
   {
-    buff_t* buff;
     action_t* damage;
 
     elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() ),
@@ -3662,7 +3755,6 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
 
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
-
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
