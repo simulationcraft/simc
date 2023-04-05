@@ -50,6 +50,11 @@ public:
       m *= 1.0 + td( t )->debuffs_from_the_shadows->check_value();
     }
 
+    if ( p()->talents.the_houndmasters_stratagem->ok() && data().affected_by( p()->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) ) )
+    {
+      m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
+    }
+
     return m;
   }
 
@@ -1265,6 +1270,9 @@ void warlock_t::init_spells_demonology()
 
   talents.from_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "From the Shadows" ); // Should be ID 267170
   talents.from_the_shadows_debuff = find_spell( 270569 );
+  
+  talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
+  talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
 
   talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
   talents.implosion_aoe = find_spell( 196278 );
