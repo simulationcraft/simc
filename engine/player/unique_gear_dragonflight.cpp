@@ -3692,12 +3692,12 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
 
-        int target = a -> data().id();
+        int spell_id = a -> data().id();
  
         bool exists = false;
         for ( int i: proc_spell_id )
         {
-          if ( i == target ) 
+          if ( i == spell_id ) 
           {
             exists = true;
             break;
