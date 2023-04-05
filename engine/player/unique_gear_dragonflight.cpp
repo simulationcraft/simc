@@ -3584,54 +3584,102 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
   };
 
   int driver_id = e.spell_id;
-  std::array<int, 8> proc_spell_id;
-  proc_spell_id = { 
-    { 
-      // Blood DK - 1
-      206903,
-      // Frost DK - 4
-      49020, 66198, 222024, 325431,
-      // Unholy DK - 3
-      55090, 70890, 207311
-    } 
-  };
+  std::set<int> proc_spell_id;
 
   switch ( e.player->type )
   {
     case DEATH_KNIGHT:
       driver_id = 408538;
+      proc_spell_id = { 
+        { 
+        // Blood DK
+        206903,
+        // Frost DK
+        49020, 66198, 222024, 325431,
+        // Unholy DK
+        55090, 70890, 207311
+        } 
+      };
       break;
     case DEMON_HUNTER:
       driver_id = 408537;
       e.player->sim->error( "Demon Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case DRUID:
       driver_id = 408539;
       e.player->sim->error( "Druid Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case HUNTER:
       driver_id = 408540;
       e.player->sim->error( "Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case MONK:
       driver_id = 408536;
       e.player->sim->error( "Monk Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case PALADIN:
       driver_id = 408535;
       e.player->sim->error( "Paladin Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case ROGUE:
       driver_id = 408534;
       e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case SHAMAN:
       driver_id = 408584;
       e.player->sim->error( "Shaman Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     case WARRIOR:
       driver_id = 408513;
       e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*      
+      proc_spell_id = { 
+        { 
+          Spell Ids, seperated by commas
+        } 
+      };*/
       break;
     default:
       return;
@@ -3639,6 +3687,7 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
 
   e.spell_id = driver_id;
   e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
+
   e.player->callbacks.register_callback_trigger_function(
       driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
