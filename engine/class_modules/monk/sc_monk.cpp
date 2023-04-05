@@ -1624,6 +1624,8 @@ namespace monk
 
           am *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B2 )->effectN( 1 ).percent();
 
+          am *= p()->buff.leverage->data().effectN( 2 ).percent() * p()->buff.leverage->check();
+
           return am;
         }
 
@@ -1632,6 +1634,8 @@ namespace monk
           double c = monk_melee_attack_t::composite_crit_chance();
 
           c += p()->buff.pressure_point->check_value();
+
+          c += p()->buff.leverage->data().effectN( 1 ).percent() * p()->buff.leverage->check();
 
           return c;
         }
@@ -1658,6 +1662,11 @@ namespace monk
 
           if ( p()->talent.brewmaster.spirit_of_the_ox->ok() && p()->rppm.spirit_of_the_ox->trigger() )
             p()->buff.gift_of_the_ox->trigger();
+
+          if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T30, B4 ) )
+            p()->buff.elusive_brawler->trigger();
+
+          p()->buff.leverage->expire();
         }
 
         void impact( action_state_t *s ) override
@@ -1980,6 +1989,8 @@ namespace monk
 
           am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
 
+          am *= 1 + p()->sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 1 ).percent();
+
           return am;
         }
 
@@ -2243,6 +2254,15 @@ namespace monk
           return 0;
         }
 
+        double composite_crit_chance() const override
+        {
+          double c = monk_melee_attack_t::composite_crit_chance();
+
+          c += p()->buff.leverage_helper->check_stack_value();
+
+          return c;
+        }
+
         double action_multiplier() const override
         {
           double am = monk_melee_attack_t::action_multiplier();
@@ -2263,11 +2283,14 @@ namespace monk
 
           am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
 
+          am *= 1 + p()->buff.leverage_helper->check_stack_value();
+
           return am;
         }
 
         void execute() override
         {
+          // p()->sim->print_debug("{} leverage stacks ({}%)", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
           monk_melee_attack_t::execute();
 
           trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
@@ -2410,6 +2433,15 @@ namespace monk
           //===========
           // Pre-Execute
           //===========
+
+          int leverage_stacks = p()->buff.leverage->check();
+          p()->buff.leverage_helper->expire();
+          // p()->sim->print_debug("{} leverage stacks ({}%) i", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
+          if ( leverage_stacks > 0 ) {
+            p()->buff.leverage->expire();
+            p()->buff.leverage_helper->trigger( leverage_stacks );
+          }
+          // p()->sim->print_debug("{} leverage stacks ({}%) f", p()->buff.leverage_helper->check(), p()->buff.leverage_helper->check_stack_value());
 
           if ( p()->specialization() == MONK_WINDWALKER )
           {
@@ -6595,6 +6627,25 @@ namespace monk
         return buff_t::trigger( stacks, value, chance, duration );
       }
     };
+
+    // ===============================================================================
+    // Tier 30 Leverage SCK Helper
+    // ===============================================================================
+
+    struct leverage_helper_t : public monk_buff_t<buff_t>
+    {
+      leverage_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+      {
+        set_trigger_spell( p.spec.spinning_crane_kick_brm );
+        set_can_cancel( true );
+        set_quiet( true );
+        set_cooldown( timespan_t::zero() );
+        set_duration( timespan_t::from_seconds( 2 ) );
+        set_max_stack( 5 );
+        // set_default_value( p.sets->set( MONK_BREWMASTER, T30, B4)->effectN( 1 ).percent(), 1 );
+        set_default_value( 0.05, 1 );
+      }
+    };
   }  // namespace buffs
 
   namespace items
@@ -7874,6 +7925,13 @@ namespace monk
       ->set_trigger_spell( spec.stagger );
     buff.recent_purifies = new buffs::purifying_buff_t( *this, "recent_purifies", spell_data_t::nil() );
 
+    buff.leverage = make_buff( this, "leverage", find_spell( 408503 ))
+      ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ))
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buff.leverage_helper = new buffs::leverage_helper_t( *this, "leverage_helper", spell_data_t::nil() );
+
+
   // Mistweaver
     buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) )
       ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
@@ -8094,6 +8152,7 @@ namespace monk
 
     // Tier 30
     proc.spirit_of_forged_vermillion_spawn = get_proc( "Shadow Flame Monk Summon" );
+    proc.elusive_brawler_preserved = get_proc( "Elusive Brawler Stacks Preserved" );
   }
 
   // monk_t::init_assessors ===================================================
@@ -9073,7 +9132,13 @@ namespace monk
       {
         // In order to trigger the expire before the hit but not actually remove the buff until AFTER the hit
         // We are setting a 1 millisecond delay on the expire.
-        buff.elusive_brawler->expire( timespan_t::from_millis( 1 ) );
+
+        if ( rng().roll( 1.0 - sets->set( MONK_BREWMASTER, T30, B2 )->effectN( 2 ).percent())) {
+          buff.elusive_brawler->expire( timespan_t::from_millis( 1 ) );
+        } else {
+          proc.elusive_brawler_preserved->occur();
+        }
+        buff.leverage->trigger();
 
         // Saved as 5/10 base values but need it as 0.5 and 1 base values
         if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
