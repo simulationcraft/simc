@@ -1403,6 +1403,7 @@ class SpellDataGenerator(DataGenerator):
          406244, 378758, 407090, # Spore Colony Shoulderguards
          407949, 408015, # Tinker: Shadowflame Rockets
          406753, 406764, 406770, # Shadowflame Wreathe
+         401513, 405620, 401516, 405613, 402221, 405615, 401521, 405608, 401518, 405612, 401519, 405611, # Glimmering Chromatic orb
         ),
 
         # Warrior:
