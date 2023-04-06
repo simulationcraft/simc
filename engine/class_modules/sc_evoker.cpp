@@ -1827,7 +1827,7 @@ struct pyre_t : public essence_spell_t
     {
       essence_spell_t::impact( s );
 
-      if ( p()->talent.causality.ok() && p()->is_ptr() )
+      if ( p()->talent.causality.ok() && p()->is_ptr() && s->chain_target == 0 )
       {
         auto cdr = std::min( 5u, s->n_targets ) * p()->talent.causality->effectN( 2 ).time_value();
         p()->cooldown.eternity_surge->adjust( cdr );
