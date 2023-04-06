@@ -8829,8 +8829,13 @@ namespace monk
     double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
     // Currently is a bug that Ferocity of Xuen is not getting applied to pets. Getting fixed in 10.1
-    if ( bugs && !is_ptr() )
-      multiplier /= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+    if ( is_ptr() )
+    {
+      if ( guardian )
+        multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
+      else
+        multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
+    }
 
     multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
