@@ -319,6 +319,11 @@ struct penance_t : public priest_spell_t
     {
       priest().cooldowns.mindbender->adjust( void_summoner_cdr );
     }
+    if ( priest().talents.discipline.power_of_the_dark_side.enabled() &&
+         priest().buffs.power_of_the_dark_side->check() )
+    {
+      priest().buffs.power_of_the_dark_side->expire();
+    }
   }
 
   void impact( action_state_t* state ) override
