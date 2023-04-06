@@ -142,7 +142,6 @@ struct evoker_t : public player_t
     // Devastation
     propagate_const<buff_t*> blazing_shards;  // 4t30
     propagate_const<buff_t*> burnout;
-    propagate_const<buff_t*> causality;
     propagate_const<buff_t*> charged_blast;
     propagate_const<buff_t*> dragonrage;
     propagate_const<buff_t*> fury_of_the_aspects;
@@ -994,16 +993,6 @@ struct empowered_charge_spell_t : public empowered_base_t
     stats->iteration_total_execute_time += d->time_to_tick();
   }
 
-  double recharge_rate_multiplier( const cooldown_t& cd ) const override
-  {
-    double m = empowered_base_t::recharge_rate_multiplier( cd );
-
-    if ( &cd == cooldown )
-      m /= 1.0 + p()->buff.causality->check_value();
-
-    return m;
-  }
-
   void last_tick( dot_t* d ) override
   {
     empowered_base_t::last_tick( d );
@@ -1346,9 +1335,6 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.iridescence_blue->check() )
       p()->buff.iridescence_blue_disintegrate->trigger( num_ticks );
 
-    if ( p()->is_ptr() && p()->talent.causality->ok() )
-      p()->buff.causality->trigger();
-
     essence_spell_t::execute();
   }
 
@@ -1362,13 +1348,6 @@ struct disintegrate_t : public essence_spell_t
     ta *= 1.0 + p()->buff.iridescence_blue_disintegrate->check_value();
 
     return ta;
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    essence_spell_t::last_tick( d );
-
-    p()->buff.causality->expire();
   }
 
   void tick( dot_t* d ) override
@@ -1908,6 +1887,11 @@ struct pyre_t : public essence_spell_t
   {
     essence_spell_t::execute();
     p()->buff.charged_blast->expire();
+    if ( p()->talent.feed_the_flames.enabled() && p()->is_ptr() &&
+         ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
+    {
+      p()->buff.feed_the_flames_stacking->trigger();
+    }
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
@@ -2390,13 +2374,6 @@ void evoker_t::create_buffs()
                      ->set_cooldown( talent.burnout->internal_cooldown() )
                      ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
-  buff.causality = make_buff( this, "causality", find_spell( 375778 ) )
-                       ->set_default_value_from_effect( 1, 0.01 )
-                       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-                         cooldown.eternity_surge->adjust_recharge_multiplier();
-                         cooldown.fire_breath->adjust_recharge_multiplier();
-                       } );
-
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
@@ -2455,7 +2432,7 @@ void evoker_t::create_buffs()
         ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
           if ( old == b->max_stack() )
           {
-            buff.feed_the_flames_pyre->trigger();
+            make_event( *sim, [ this ]() { buff.feed_the_flames_pyre->trigger(); } );
           }
         } );
   }
