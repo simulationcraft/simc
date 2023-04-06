@@ -3635,7 +3635,6 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case MONK:
       driver_id = 408536;
-   
       proc_spell_id = { {
           // Tiger Palm
           100780,
