@@ -3551,7 +3551,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // 408539 Druid Driver
 // 408540 Hunter Driver
 // 408584 Shaman Driver
-// TODO - Whitelist DH, Druid, Monk, Hunter, Rogue, Shaman, Warrior
+// TODO - Whitelist Druid, Hunter, Rogue, Shaman, Warrior
 // Procs From: 
 // DK - Heart Strike( 206930 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
 // DH - Chaos Strike, Annihilation, Soul Cleave
@@ -3609,10 +3609,12 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
     case DEMON_HUNTER:
       driver_id = 408537;
       proc_spell_id = { 
-        { // Vengeance DH
+        { 
+          // Vengeance DH
           228478,
           // Havoc
-          199547, 222031, 227518, 201428 } 
+          199547, 222031, 227518, 201428 
+        } 
       };
       break;
     case DRUID:
@@ -3638,9 +3640,10 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
     case MONK:
       driver_id = 408536;
       proc_spell_id = { 
-      {
+        {
         // Tiger Palm
-        100780 } 
+        100780 
+        } 
       };
       break;
     case PALADIN:
