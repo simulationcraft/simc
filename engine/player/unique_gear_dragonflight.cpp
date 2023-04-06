@@ -3843,14 +3843,12 @@ void elementium_pocket_anvil( special_effect_t& e )
       };*/
       break;
     case SHAMAN:
-      driver_id = 408584;
-      e.player->sim->error( "Shaman Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
+      driver_id = 408584; 
       proc_spell_id = { 
         { 
-          Spell Ids, seperated by commas
+          115356, 17364
         } 
-      };*/
+      };
       break;
     case WARRIOR:
       driver_id = 408513; 
