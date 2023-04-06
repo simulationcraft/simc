@@ -2404,8 +2404,10 @@ void evoker_t::create_buffs()
   buff.power_swell = make_buff( this, "power_swell", find_spell( 376850 ) )
                          ->set_trigger_spell( talent.power_swell )
                          ->set_affects_regen( true )
-                         ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT )
-                         ->set_duration( talent.power_swell->effectN( 1 ).time_value() );
+                         ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT );
+
+  if ( !is_ptr() )
+    buff.power_swell->set_duration( talent.power_swell->effectN( 1 ).time_value() );
 
   buff.snapfire = make_buff( this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
                       ->set_chance( talent.snapfire->effectN( 1 ).percent() )
