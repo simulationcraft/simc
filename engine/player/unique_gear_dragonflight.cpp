@@ -3608,10 +3608,12 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case DEMON_HUNTER:
       driver_id = 408537;
-      proc_spell_id = { { // Vengeance DH
-                          228478,
-                          // Havoc
-                          199547, 222031, 227518, 201428 } };
+      proc_spell_id = { 
+        { // Vengeance DH
+          228478,
+          // Havoc
+          199547, 222031, 227518, 201428 } 
+      };
       break;
     case DRUID:
       driver_id = 408539;
@@ -3635,10 +3637,11 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case MONK:
       driver_id = 408536;
-      proc_spell_id = { {
-          // Tiger Palm
-          100780,
-      } };
+      proc_spell_id = { 
+      {
+        // Tiger Palm
+        100780 } 
+      };
       break;
     case PALADIN:
       driver_id = 408535;   
@@ -3754,7 +3757,7 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
           p -> buffs.anvil_strike_combat -> trigger( p -> buffs.anvil_strike_no_combat -> check() );
           p -> buffs.anvil_strike_no_combat -> expire();
         }
-        if( p ->sim -> target_non_sleeping_list.size() == 0 && p -> buffs.anvil_strike_combat -> check() )
+        if( p -> sim -> target_non_sleeping_list.size() == 0 && p -> buffs.anvil_strike_combat -> check() )
         {
           p -> buffs.anvil_strike_no_combat -> trigger( p -> buffs.anvil_strike_combat -> check() );
           p -> buffs.anvil_strike_combat -> expire();
