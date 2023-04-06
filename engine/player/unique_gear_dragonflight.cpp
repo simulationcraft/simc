@@ -3559,6 +3559,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // Monk - Tiger Palm
 // Hunter - Raptor Strike, Mongoose Bite
 // Rogue - Gloomblade, Sinister Strike, Multilate
+// Paladin - Crusader Strike, Hammer of the Righteous, Blessed Hammer, Crusading Strikes, Templar Slash, Templar Strikes
 // Shaman - Stormstrike
 // Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
 void elementium_pocket_anvil_equip( special_effect_t& e )
