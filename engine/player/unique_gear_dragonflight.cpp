@@ -3673,7 +3673,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // 408540 Hunter Driver
 // 408584 Shaman Driver
 // TODO - Whitelist Druid, Hunter, Rogue, Shaman, Warrior
-// Procs From: 
+// Procs From:
 // DK - Heart Strike( 206930 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
 // DH - Chaos Strike, Annihilation, Soul Cleave
 // Druid - Mangle, Maul, Shred
@@ -3685,48 +3685,32 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
 void elementium_pocket_anvil( special_effect_t& e )
 {
-  auto in_combat_buff = buff_t::find( e.player, "anvil_strike_combat" );
-  auto no_combat_buff = buff_t::find( e.player, "anvil_strike_no_combat" );
+  e.player->buffs.anvil_strike_combat =
+      create_buff<buff_t>( e.player, "anvil_strike_combat", e.player->find_spell( 408578 ) )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
-  if( !in_combat_buff )
-  {
-    in_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_combat", e.player -> find_spell( 408578 ) )
-                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
-  }
-  e.player -> buffs.anvil_strike_combat = in_combat_buff;
-
-  if( !no_combat_buff )
-  {
-    no_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player -> find_spell( 408533 ) )
-                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
-  }
-  e.player -> buffs.anvil_strike_no_combat = no_combat_buff;
+  e.player->buffs.anvil_strike_no_combat =
+      create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
   {
     elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() )
     {
-      aoe = -1;
-      base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 2 ).average( e.item );
+      aoe         = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
     }
 
     void execute() override
     {
       generic_proc_t::execute();
-      if( sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      if ( sim->target_non_sleeping_list.size() > 0 )
       {
-        if( sim -> target_non_sleeping_list.size() > 0 )
-        {
-          player -> buffs.anvil_strike_combat -> trigger();
-        }
-        if( sim -> target_non_sleeping_list.size() == 0 )
-        {
-          player -> buffs.anvil_strike_no_combat -> trigger();
-        }
+        player->buffs.anvil_strike_combat->trigger();
       }
-      else
+      if ( sim->target_non_sleeping_list.size() == 0 )
       {
-        player -> buffs.anvil_strike_combat -> trigger();
+        player->buffs.anvil_strike_no_combat->trigger();
       }
     }
   };
@@ -3735,10 +3719,11 @@ void elementium_pocket_anvil( special_effect_t& e )
   {
     action_t* use;
 
-    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_proc_t( e, "echoed_flare", e.player -> find_spell( 401324 ) ),
+    elementium_pocket_anvil_equip_t( const special_effect_t& e )
+      : generic_proc_t( e, "echoed_flare", e.player->find_spell( 401324 ) ),
         use( create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e ) )
     {
-      base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
       add_child( use );
     }
 
@@ -3746,14 +3731,14 @@ void elementium_pocket_anvil( special_effect_t& e )
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      if ( player -> buffs.anvil_strike_combat -> check() )
+      if ( player->buffs.anvil_strike_combat->check() )
       {
-        m *= 1.0 + player -> buffs.anvil_strike_combat -> check_stack_value();
+        m *= 1.0 + player->buffs.anvil_strike_combat->check_stack_value();
       }
 
-      if ( player -> buffs.anvil_strike_no_combat -> check() )
+      if ( player->buffs.anvil_strike_no_combat->check() )
       {
-        m *= 1.0 + player -> buffs.anvil_strike_no_combat -> check_stack_value();
+        m *= 1.0 + player->buffs.anvil_strike_no_combat->check_stack_value();
       }
 
       return m;
@@ -3766,28 +3751,20 @@ void elementium_pocket_anvil( special_effect_t& e )
   switch ( e.player->type )
   {
     case DEATH_KNIGHT:
-      driver_id = 408538;
-      proc_spell_id = { 
-        { 
-        // Blood DK
-        206930,
-        // Frost DK
-        49020, 66198, 222024, 325431,
-        // Unholy DK
-        55090, 70890, 207311
-        } 
-      };
+      driver_id     = 408538;
+      proc_spell_id = { { // Blood DK
+                          206930,
+                          // Frost DK
+                          49020, 66198, 222024, 325431,
+                          // Unholy DK
+                          55090, 70890, 207311 } };
       break;
     case DEMON_HUNTER:
-      driver_id = 408537;
-      proc_spell_id = { 
-        { 
-          // Vengeance DH
-          228478,
-          // Havoc
-          199547, 222031, 227518, 201428 
-        } 
-      };
+      driver_id     = 408537;
+      proc_spell_id = { { // Vengeance DH
+                          228478,
+                          // Havoc
+                          199547, 222031, 227518, 201428 } };
       break;
     case DRUID:
       driver_id = 408539;
@@ -3798,106 +3775,89 @@ void elementium_pocket_anvil( special_effect_t& e )
 
       break;
     case HUNTER:
-      driver_id = 408540;
-      proc_spell_id = { 
-        { 
-          //Raptor Strike (Melee, Ranged)
-          186270, //265189, 2023-04-06 - Does not work on Raptor Strike during Aspect of the Eagle buff
-          //Mongoose Bite (Melee , Ranged)
-          259387, //265888, 2023-04-06 - Does not work on Mongoose Bite during Aspect of the Eagle buff
-        } 
-      };
+      driver_id     = 408540;
+      proc_spell_id = { {
+          // Raptor Strike (Melee, Ranged)
+          186270,  // 265189, 2023-04-06 - Does not work on Raptor Strike during Aspect of the Eagle buff
+                   // Mongoose Bite (Melee , Ranged)
+          259387,  // 265888, 2023-04-06 - Does not work on Mongoose Bite during Aspect of the Eagle buff
+      } };
       break;
     case MONK:
-      driver_id = 408536;
-      proc_spell_id = { 
-        {
-        // Tiger Palm
-        100780 
-        } 
-      };
+      driver_id     = 408536;
+      proc_spell_id = { { // Tiger Palm
+                          100780 } };
       break;
     case PALADIN:
-      driver_id = 408535;   
-      proc_spell_id = { 
-        { 
+      driver_id     = 408535;
+      proc_spell_id = { {
           // Shared
-          35395, // Crusader Strike
+          35395,  // Crusader Strike
 
           // Protection Paladin
-          53595, 204019, // Hammer of the Righteous, Blessed Hammer
+          53595, 204019,  // Hammer of the Righteous, Blessed Hammer
 
           // Retribution Paladin
-          404139, 404542, 406647, 407480 // Blessed Hammers, Crusading Strikes, Templar Slash, Templar Strikes
-        } 
-      };
+          404139, 404542, 406647, 407480  // Blessed Hammers, Crusading Strikes, Templar Slash, Templar Strikes
+      } };
       break;
     case ROGUE:
       driver_id = 408534;
       e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
-      proc_spell_id = { 
-        { 
+      /*
+      proc_spell_id = {
+        {
           Spell Ids, seperated by commas
-        } 
+        }
       };*/
       break;
     case SHAMAN:
-      driver_id = 408584; 
-      proc_spell_id = { 
-        { 
-          115356, 17364
-        } 
-      };
+      driver_id     = 408584;
+      proc_spell_id = { { 115356, 17364 } };
       break;
     case WARRIOR:
-      driver_id = 408513; 
-      proc_spell_id = { 
-        { 
+      driver_id     = 408513;
+      proc_spell_id = { {
           // Protection
           23922,  // Shield Slam
-          // Arms
-          12294, // Mortal Strike
-          // Fury
-          85288, 85384, 96103, 383916, 383915 // Raging Blow & Annihilator
-        } 
-      };
+                  // Arms
+          12294,  // Mortal Strike
+                  // Fury
+          85288, 85384, 96103, 383916, 383915  // Raging Blow & Annihilator
+      } };
       break;
     default:
       return;
   }
 
-  auto equip = new special_effect_t( e.player );
-  equip -> spell_id = driver_id;
-  equip -> execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
-  equip -> type = SPECIAL_EFFECT_EQUIP;
-  e.player -> special_effects.push_back( equip );
+  auto equip            = new special_effect_t( e.player );
+  equip->spell_id       = driver_id;
+  equip->execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
+  equip->type           = SPECIAL_EFFECT_EQUIP;
+  e.player->special_effects.push_back( equip );
 
-  equip -> player -> callbacks.register_callback_trigger_function(
+  equip->player->callbacks.register_callback_trigger_function(
       driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-
-        return range::contains( proc_spell_id , a -> data().id() );
+        return range::contains( proc_spell_id, a->data().id() );
       } );
 
-  auto cb = new dbc_proc_callback_t( e.player, *equip );
-  cb -> activate();
+  new dbc_proc_callback_t( e.player, *equip );
 
   auto p = e.player;
-  
-  e.player -> register_combat_begin( [ p ]( player_t* ) {
-    p -> sim -> target_non_sleeping_list.register_callback( [ p ] ( player_t* )
-    {
-      auto enemies = as<int>( p -> sim -> target_non_sleeping_list.size() );
-      if ( enemies > 0 && p -> buffs.anvil_strike_no_combat -> check() )
+
+  e.player->register_combat_begin( [ p ]( player_t* ) {
+    p->sim->target_non_sleeping_list.register_callback( [ p ]( player_t* ) {
+      auto enemies = as<int>( p->sim->target_non_sleeping_list.size() );
+      if ( enemies > 0 && p->buffs.anvil_strike_no_combat->check() )
       {
-        p -> buffs.anvil_strike_combat -> trigger( p -> buffs.anvil_strike_no_combat -> check() );
-        p -> buffs.anvil_strike_no_combat -> expire();
+        p->buffs.anvil_strike_combat->trigger( p->buffs.anvil_strike_no_combat->check() );
+        p->buffs.anvil_strike_no_combat->expire();
       }
-      if ( enemies == 0 && p -> buffs.anvil_strike_combat -> check() )
+      if ( enemies == 0 && p->buffs.anvil_strike_combat->check() )
       {
-        p -> buffs.anvil_strike_no_combat -> trigger( p -> buffs.anvil_strike_combat -> check() );
-        p -> buffs.anvil_strike_combat -> expire();
+        p->buffs.anvil_strike_no_combat->trigger( p->buffs.anvil_strike_combat->check() );
+        p->buffs.anvil_strike_combat->expire();
       }
     } );
   } );
