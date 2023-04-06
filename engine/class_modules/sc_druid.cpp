@@ -8117,7 +8117,6 @@ struct sunfire_t : public druid_spell_t
       dual = background = true;
       aoe = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
-      radius = data().effectN( 2 ).radius();
 
       dot_name = "sunfire";
       dot_list = &p->dot_list.sunfire;
