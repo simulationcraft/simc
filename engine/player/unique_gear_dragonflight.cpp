@@ -3738,13 +3738,20 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
     void execute() override
     {
       generic_proc_t::execute();
-      if( sim -> target_non_sleeping_list.size() > 0 )
+      if( sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      {
+        if( sim -> target_non_sleeping_list.size() > 0 )
+        {
+          player -> buffs.anvil_strike_combat -> trigger();
+        }
+        if( sim -> target_non_sleeping_list.size() == 0 )
+        {
+          player -> buffs.anvil_strike_no_combat -> trigger();
+        }
+      }
+      else
       {
         player -> buffs.anvil_strike_combat -> trigger();
-      }
-      if( sim -> target_non_sleeping_list.size() == 0 )
-      {
-        player -> buffs.anvil_strike_no_combat -> trigger();
       }
     }
   };
