@@ -608,6 +608,127 @@ void temporal_spellthread( special_effect_t& effect )
 namespace items
 {
 // Trinkets
+
+void dragonfire_bomb_dispenser( special_effect_t &effect )
+{ 
+  // Skilled Restock
+  auto restock_driver = find_special_effect( effect.player, 408667 );
+  if ( restock_driver )
+  {
+    auto skilled_restock = make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item) // 408770
+      ->set_quiet( true )
+      ->set_stack_change_callback( [ & ] ( buff_t *buff, int, int )
+    {
+      if ( buff->at_max_stacks() )
+      {
+        // At 60 stacks gain a charge
+        effect.execute_action->cooldown->reset( true );
+        buff->expire();
+      }
+    } );
+
+    restock_driver->custom_buff = skilled_restock;
+    restock_driver->proc_flags2_ = PF2_CRIT;
+
+    new dbc_proc_callback_t( effect.player, *restock_driver );
+  }
+
+  // AoE Explosion
+  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408667 );
+
+  explode->base_dd_min = explode->base_dd_max = effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
+
+  effect.player->register_on_kill_callback( [ effect, explode ] ( player_t *t )
+  {
+    if ( effect.player->sim->event_mgr.canceled )
+      return;
+
+    auto td = effect.player->find_target_data( t );
+    if ( td && td->debuff.dragonfire_bomb->check() )
+      explode->execute_on_target( t );
+  } );
+
+  // ST Damage
+  struct dragonfire_bomb_st_t : public proc_spell_t
+  {
+    dragonfire_bomb_st_t( const special_effect_t &e ) :
+      proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
+    }
+  };
+
+  create_proc_action<dragonfire_bomb_st_t>( "dragonfire_bomb_st", effect );
+  
+  // DoT Driver
+  struct dragonfire_bomb_missile_t : public proc_spell_t
+  {
+    dragonfire_bomb_missile_t( const special_effect_t &e ) :
+      proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
+    {
+      background = true;
+    }
+
+    void impact( action_state_t *s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+
+      if ( td )
+      {
+        if ( td->debuff.dragonfire_bomb->up() )
+          td->debuff.dragonfire_bomb->expire();
+
+        td->debuff.dragonfire_bomb->trigger();
+      }
+    }
+
+  };
+
+  effect.execute_action = create_proc_action<dragonfire_bomb_missile_t>( "dragonfire_bomb_dispenser", effect );
+}
+
+
+struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initializer_t
+{
+
+  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 )
+  {
+  }
+  
+  void operator()( actor_target_data_t *td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.dragonfire_bomb = make_buff( *td, "dragonfire_bomb" )->set_quiet( true );
+      return;
+    }
+
+    struct dragonfire_bomb_debuff_t : buff_t
+    {
+      player_t *target;
+      action_t *bomb;
+
+      dragonfire_bomb_debuff_t( actor_target_data_t &td, util::string_view n, const spell_data_t *s ) 
+        : buff_t( td, n, s ), target( td.target ), bomb ( td.source->find_action( "dragonfire_bomb_st" ) )
+      {
+      }
+
+      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+      {
+        buff_t::expire_override( expiration_stacks, remaining_duration );
+
+        if ( bomb )   
+          bomb->execute_on_target( target );
+      }
+    };
+
+    td->debuff.dragonfire_bomb = new dragonfire_bomb_debuff_t( *td, "dragonfire_bomb", td->source->find_spell( 408675 ) ); // IT GONNA BLOW!
+    td->debuff.dragonfire_bomb->reset();
+  }
+};
   
 /* Burgeoning Seed
   * id=193634
@@ -3539,9 +3660,9 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // Elementium Pocket Anvil
 // 401303 Main Spell/Value Container
 // 401306 On use Cast time/Cooldown
-// 408578 On use Damage
 // 401324 Equip Damage
-// 408533 Stacking Buff
+// 408578 Stacking Buff In combat
+// 408533 Stacking Buff Out of Combat
 // 408513 Warrior Driver
 // 408534 Rogue Driver
 // 408535 Paladin Driver
@@ -3551,7 +3672,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // 408539 Druid Driver
 // 408540 Hunter Driver
 // 408584 Shaman Driver
-// TODO - Whitelist Druid, Monk, Hunter, Rogue, Shaman, Warrior
+// TODO - Whitelist Druid, Hunter, Rogue, Shaman, Warrior
 // Procs From: 
 // DK - Heart Strike( 206930 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
 // DH - Chaos Strike, Annihilation, Soul Cleave
@@ -3559,6 +3680,7 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // Monk - Tiger Palm
 // Hunter - Raptor Strike, Mongoose Bite
 // Rogue - Gloomblade, Sinister Strike, Multilate
+// Paladin - Crusader Strike, Hammer of the Righteous, Blessed Hammer, Crusading Strikes, Templar Slash, Templar Strikes
 // Shaman - Stormstrike
 // Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
 void elementium_pocket_anvil_equip( special_effect_t& e )
@@ -3567,16 +3689,21 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
   {
     elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_proc_t( e, "echoed_flare", e.player -> find_spell( 401324 ) )
     {
-      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
+      base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 1 ).average( e.item );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      if ( player -> buffs.anvil_strike -> check() )
+      if ( player -> buffs.anvil_strike_combat -> check() )
       {
-        m *= 1.0 + player -> buffs.anvil_strike -> check_stack_value();
+        m *= 1.0 + player -> buffs.anvil_strike_combat -> check_stack_value();
+      }
+
+      if ( player -> buffs.anvil_strike_no_combat -> check() )
+      {
+        m *= 1.0 + player -> buffs.anvil_strike_no_combat -> check_stack_value();
       }
 
       return m;
@@ -3602,11 +3729,15 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       };
       break;
     case DEMON_HUNTER:
-      driver_id     = 408537;
-      proc_spell_id = { { // Vengeance DH
-                          228478,
-                          // Havoc
-                          199547, 222031, 227518, 201428 } };
+      driver_id = 408537;
+      proc_spell_id = { 
+        { 
+          // Vengeance DH
+          228478,
+          // Havoc
+          199547, 222031, 227518, 201428 
+        } 
+      };
       break;
     case DRUID:
       driver_id = 408539;
@@ -3630,15 +3761,15 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case MONK:
       driver_id = 408536;
-
-      proc_spell_id = { {
-          // Tiger Palm
-          100780,
-      } };
+      proc_spell_id = { 
+        {
+        // Tiger Palm
+        100780 
+        } 
+      };
       break;
     case PALADIN:
-      driver_id = 408535;
-      
+      driver_id = 408535;   
       proc_spell_id = { 
         { 
           // Shared
@@ -3693,57 +3824,79 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
 
-      return range::contains( proc_spell_id , a -> data().id() );
+        return range::contains( proc_spell_id , a -> data().id() );
       } );
   new dbc_proc_callback_t( e.player, e );
 }
 
 void elementium_pocket_anvil_use ( special_effect_t& e )
 {
-  auto buff = buff_t::find( e.player, "anvil_strike" );
+  auto in_combat_buff = buff_t::find( e.player, "anvil_strike_combat" );
+  auto no_combat_buff = buff_t::find( e.player, "anvil_strike_no_combat" );
 
-  if(! buff )
+  if( !in_combat_buff )
   {
-    buff = create_buff<buff_t>( e.player, e.player->find_spell( 408533 ) )
-                         -> set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() )
-                         -> set_duration( 0_ms ); // Duration set to 15s in spell data, in game it is infinite
+    in_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_combat", e.player -> find_spell( 408578 ) )
+                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
   }
-  e.player -> buffs.anvil_strike = buff;
+  e.player -> buffs.anvil_strike_combat = in_combat_buff;
 
-  struct elementium_pocket_anvil_use_damage_t : public generic_aoe_proc_t
+  if( !no_combat_buff )
   {
-    elementium_pocket_anvil_use_damage_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "anvil_strike_damage", e.player -> find_spell( 408578 ) )
-    {
-      background = true;
-      split_aoe_damage = false;
-      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
-    }
-
-    void execute() override
-    {
-      generic_aoe_proc_t::execute();
-      player -> buffs.anvil_strike -> trigger();
-    }
-  };
+    no_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player -> find_spell( 408533 ) )
+                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
+  }
+  e.player -> buffs.anvil_strike_no_combat = no_combat_buff;
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
   {
-    action_t* damage;
-
-    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() ),
-        damage( create_proc_action<elementium_pocket_anvil_use_damage_t>( "anvil_strike_damage", e ) )
+    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() )
     {
-      add_child( damage );
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 2 ).average( e.item );
     }
 
     void execute() override
     {
       generic_proc_t::execute();
-      damage -> execute();
+      if( sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      {
+        if( sim -> target_non_sleeping_list.size() > 0 )
+        {
+          player -> buffs.anvil_strike_combat -> trigger();
+        }
+        if( sim -> target_non_sleeping_list.size() == 0 )
+        {
+          player -> buffs.anvil_strike_no_combat -> trigger();
+        }
+      }
+      else
+      {
+        player -> buffs.anvil_strike_combat -> trigger();
+      }
     }
   };
 
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
+  if( e.player -> sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+  {
+    e.player->register_combat_begin( [ in_combat_buff, no_combat_buff ]( player_t* p ) 
+    {
+      make_repeating_event( *p->sim, 1_s, [ in_combat_buff, no_combat_buff, p ] 
+      {
+        if( p -> sim -> target_non_sleeping_list.size() > 0 && p -> buffs.anvil_strike_no_combat -> check() )
+        {
+          p -> buffs.anvil_strike_combat -> trigger( p -> buffs.anvil_strike_no_combat -> check() );
+          p -> buffs.anvil_strike_no_combat -> expire();
+        }
+        if( p -> sim -> target_non_sleeping_list.size() == 0 && p -> buffs.anvil_strike_combat -> check() )
+        {
+          p -> buffs.anvil_strike_no_combat -> trigger( p -> buffs.anvil_strike_combat -> check() );
+          p -> buffs.anvil_strike_combat -> expire();
+        }
+      } );
+    } );
+  }
 }
 
 // Weapons
@@ -5434,6 +5587,7 @@ void register_special_effects()
 
 
   // Trinkets
+  register_special_effect( 408671, items::dragonfire_bomb_dispenser );
   register_special_effect( 384636, items::consume_pods );                            // burgeoning seed
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
   register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
@@ -5547,6 +5701,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 
   // Disabled
+  register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
   register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler
   register_special_effect( 382913, DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
@@ -5566,6 +5721,7 @@ void register_special_effects()
 
 void register_target_data_initializers( sim_t& sim )
 {
+  sim.register_target_data_initializer( items::dragonfire_bomb_dispenser_initializer_t() );
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
