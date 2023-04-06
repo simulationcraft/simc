@@ -1672,6 +1672,12 @@ struct obsidian_shards_t : public residual_action::residual_periodic_action_t<ev
     return ta;
   }
 
+  // Return Spell_t's multiplier as evoker's contains our mastery amp.
+  double composite_target_multiplier( player_t* t ) const override
+  {
+      return spell_t::composite_target_multiplier( t );
+  }
+
   void tick( dot_t* d ) override
   {
     residual_action_t::tick( d );
