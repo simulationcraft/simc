@@ -2188,6 +2188,62 @@ struct auto_attack_t : public warrior_attack_t
   }
 };
 
+// Rend ==============================================================
+
+struct rend_dot_t : public warrior_attack_t
+{
+  double bloodsurge_chance, rage_from_bloodsurge;
+  rend_dot_t( warrior_t* p )
+    : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
+      bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+      rage_from_bloodsurge(
+          p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = true;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+  }
+};
+
+struct rend_t : public warrior_attack_t
+{
+  warrior_attack_t* rend_dot;
+  rend_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "rend", p, p->talents.arms.rend ),
+      rend_dot( nullptr )
+  {
+    parse_options( options_str );
+    tick_may_crit = true;
+    hasted_ticks  = true;
+    rend_dot      = new rend_dot_t( p );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    rend_dot->set_target( s->target );
+    rend_dot->execute();
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
 // Mortal Strike ============================================================
 struct crushing_advance_t : warrior_attack_t
 {
@@ -2323,6 +2379,7 @@ struct mortal_strike_t : public warrior_attack_t
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
   warrior_attack_t* crushing_advance;
+  warrior_attack_t* rend_dot;
   mortal_strike_t( warrior_t* p, util::string_view options_str, bool mortal_combo = false )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
       from_mortal_combo( mortal_combo ),
@@ -2331,7 +2388,8 @@ struct mortal_strike_t : public warrior_attack_t
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 ),
-      crushing_advance( nullptr )
+      crushing_advance( nullptr ),
+      rend_dot( nullptr )
   {
     parse_options( options_str );
 
@@ -2344,6 +2402,7 @@ struct mortal_strike_t : public warrior_attack_t
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     impact_action    = p->active.deep_wounds_ARMS;
+    rend_dot = new rend_dot_t( p );
 
     if ( p->tier_set.t30_arms_4pc->ok() )
     {
@@ -2454,6 +2513,11 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
       p()->buff.strike_vulnerabilities->trigger();
+    }
+    if ( p()->dbc->ptr && p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    {
+      rend_dot->set_target( s->target );
+      rend_dot->execute();
     }
   }
 
@@ -5357,58 +5421,7 @@ struct enraged_regeneration_t : public warrior_heal_t
   }
 };
 
-// Rend ==============================================================
-
-struct rend_dot_t : public warrior_attack_t
-{
-  double bloodsurge_chance, rage_from_bloodsurge;
-  rend_dot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
-    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
-  {
-    background = tick_may_crit = true;
-    hasted_ticks               = true;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
-    {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
-    }
-  }
-};
-
-struct rend_t : public warrior_attack_t
-{
-  warrior_attack_t* rend_dot;
-  rend_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "rend", p, p->talents.arms.rend ),
-  rend_dot( nullptr )
-  {
-    parse_options( options_str );
-    tick_may_crit = true;
-    hasted_ticks  = true;
-    rend_dot = new rend_dot_t( p );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-      rend_dot->set_target( s->target );
-      rend_dot->execute();
-  }
-
-  bool ready() override
-  {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
+// Prot Rend ==============================================================
 
 struct rend_dot_prot_t : public warrior_attack_t
 {
