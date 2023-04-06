@@ -246,6 +246,7 @@ struct evoker_t : public player_t
     player_talent_t honed_aggression;
     player_talent_t eternitys_span;
     player_talent_t eye_of_infinity;
+    player_talent_t event_horizon;
     player_talent_t causality;
     player_talent_t catalyze;  // row 7
     player_talent_t tyranny;
@@ -1144,6 +1145,18 @@ struct fire_breath_t : public empowered_charge_spell_t
       return base_t::calculate_tick_amount( s, m );
     }
 
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto m = base_t::composite_da_multiplier( s );
+
+      if ( p()->is_ptr() && p()->talent.eye_of_infinity.enabled() )
+      {
+        m *= 1 + p()->talent.eye_of_infinity->effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+
     void tick( dot_t* d ) override
     {
       empowered_release_spell_t::tick( d );
@@ -1169,7 +1182,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
       : base_t( name, p, p->find_spell( 359077 ) ),
-        eoi_ess( p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
+        eoi_ess( p->is_ptr() ? 0.0 : p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
     {
     }
 
@@ -2246,6 +2259,7 @@ void evoker_t::init_spells()
   talent.honed_aggression            = ST( "Honed Aggression" );
   talent.eternitys_span              = ST( "Eternity's Span" );
   talent.eye_of_infinity             = ST( "Eye of Infinity" );
+  talent.event_horizon               = ST( "Event Horizon" );
   talent.causality                   = ST( "Causality" );
   talent.catalyze                    = ST( "Catalyze" );  // Row 7
   talent.tyranny                     = ST( "Tyranny" );
@@ -2549,6 +2563,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
+  action.apply_affecting_aura( talent.eye_of_infinity );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
 
