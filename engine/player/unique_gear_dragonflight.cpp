@@ -3802,13 +3802,13 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case WARRIOR:
       driver_id = 408513;
-      e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
+      e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" ); 
       proc_spell_id = { 
         { 
-          Spell Ids, seperated by commas
+          // Protection
+          23922  // Shield Slam
         } 
-      };*/
+      };
       break;
     default:
       return;
