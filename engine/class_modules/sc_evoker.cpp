@@ -1027,7 +1027,6 @@ struct empowered_charge_spell_t : public empowered_base_t
 struct essence_spell_t : public evoker_spell_t
 {
   timespan_t ftf_dur;
-  timespan_t ftf_dur_eb;
   double hoarded_pct;
   double titanic_mul;
   double obsidian_shards_mul;
@@ -1035,7 +1034,6 @@ struct essence_spell_t : public evoker_spell_t
   essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
     : evoker_spell_t( n, p, s, o ),
       ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
-      ftf_dur_eb( -timespan_t::from_seconds( p->is_ptr() ? p->talent.feed_the_flames->effectN( 2 ).base_value() : 0 ) ),
       hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
       titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
       obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B2 )->effectN( 1 ).percent() )
@@ -1862,25 +1860,6 @@ struct pyre_t : public essence_spell_t
   bool has_amount_result() const override
   {
     return damage->has_amount_result();
-  }
-
-  void consume_resource() override
-  {
-    if ( base_cost() && !proc && p()->is_ptr() && p()->talent.feed_the_flames.ok() )
-    {
-      if ( p()->buff.essence_burst->up() )
-      {
-        p()->cooldown.fire_breath->adjust( ftf_dur_eb );
-        p()->cooldown.eternity_surge->adjust( ftf_dur_eb );
-      }
-      else
-      {
-        p()->cooldown.fire_breath->adjust( ftf_dur );
-        p()->cooldown.eternity_surge->adjust( ftf_dur );
-      }
-    }
-
-    essence_spell_t::consume_resource();
   }
 
   void execute() override
