@@ -3849,8 +3849,7 @@ void elementium_pocket_anvil( special_effect_t& e )
         return range::contains( proc_spell_id, a->data().id() );
       } );
 
-  auto cb = new dbc_proc_callback_t( e.player, *equip );
-  cb->activate();
+  new dbc_proc_callback_t( e.player, *equip );
 
   auto p = e.player;
 
