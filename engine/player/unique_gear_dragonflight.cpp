@@ -3915,6 +3915,11 @@ void elementium_pocket_anvil( special_effect_t& e )
 void glimmering_chromatic_orb( special_effect_t& e )
 {
   buff_t* buff;
+  buff_t* obsidian_minor;
+  buff_t* ruby_minor;
+  buff_t* bronze_minor;
+  buff_t* azure_minor;
+  buff_t* emerald_minor;
   double main_value = e.driver() -> effectN( 1 ).average( e.item );
   double minor_value = e.driver() -> effectN( 2 ).average( e.item );
   const auto& flight = e.player -> sim -> dragonflight_opts.glimmering_chromatic_orb_dragonflight;
@@ -3991,27 +3996,42 @@ void glimmering_chromatic_orb( special_effect_t& e )
     else if ( util::str_compare_ci( s, "" ) )
       return;
     else
-      throw std::invalid_argument( "Invalid Option for Glimmering Chromatic Orb Allies" );
+      throw std::invalid_argument( "Invalid Option for Glimmering Chromatic Orb Allies. Your Main Dragonflight can not be entered." );
   }
 
   // Minor Buffs
-  auto obsidian_minor = create_buff<stat_buff_t>( e.player, "minor_obsidian_resonance", e.player -> find_spell( 405615 ) )
+  if( has_obsidian_minor )
+  {
+    obsidian_minor = create_buff<stat_buff_t>( e.player, "minor_obsidian_resonance", e.player -> find_spell( 405615 ) )
                          ->add_stat( STAT_CRIT_RATING, minor_value / 4 )
                          ->add_stat( STAT_MASTERY_RATING, minor_value / 4 )
                          ->add_stat( STAT_HASTE_RATING, minor_value / 4 )
                          ->add_stat( STAT_VERSATILITY_RATING, minor_value / 4 );
+  }
 
-  auto ruby_minor = create_buff<stat_buff_t>( e.player, "minor_ruby_resonance", e.player -> find_spell( 405613 ) )
+  if( has_ruby_minor )
+  {
+    ruby_minor = create_buff<stat_buff_t>( e.player, "minor_ruby_resonance", e.player -> find_spell( 405613 ) )
                          ->add_stat( STAT_VERSATILITY_RATING, minor_value );
+  }
 
-  auto bronze_minor = create_buff<stat_buff_t>( e.player, "minor_bronze_resonance", e.player -> find_spell( 405612 ) )
+  if ( has_bronze_minor )
+  {
+    bronze_minor = create_buff<stat_buff_t>( e.player, "minor_bronze_resonance", e.player -> find_spell( 405612 ) )
                          ->add_stat( STAT_HASTE_RATING, minor_value );
+  }
 
-  auto azure_minor = create_buff<stat_buff_t>( e.player, "minor_azure_resonance", e.player -> find_spell( 405611 ) )
+  if ( has_azure_minor )
+  {
+    azure_minor = create_buff<stat_buff_t>( e.player, "minor_azure_resonance", e.player -> find_spell( 405611 ) )
                          ->add_stat( STAT_MASTERY_RATING, minor_value );
+  }
 
-  auto emerald_minor = create_buff<stat_buff_t>( e.player, "minor_emerald_resonance", e.player -> find_spell( 405608 ) )
+  if ( has_emerald_minor )
+  {
+    emerald_minor = create_buff<stat_buff_t>( e.player, "minor_emerald_resonance", e.player -> find_spell( 405608 ) )
                          ->add_stat( STAT_CRIT_RATING, minor_value );
+  }
 
   if ( valid )
   {
