@@ -3741,10 +3741,11 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case DRUID:
       driver_id = 408539;
-      proc_spell_id.insert( e.player->find_action( "shred" )->data().id() );
-      proc_spell_id.insert( e.player->find_action( "mangle" )->data().id() );
-      proc_spell_id.insert( e.player->find_action( "maul" )->data().id() );
-      proc_spell_id.insert( e.player->find_action( "raze" )->data().id() );
+
+      for ( const auto& n : { "shred", "mangle", "maul", "raze" } )
+        if ( auto a = e.player->find_action( n ) )
+          proc_spell_id.insert( a->data().id() );
+
       break;
     case HUNTER:
       driver_id = 408540;
