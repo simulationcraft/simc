@@ -3905,6 +3905,133 @@ void elementium_pocket_anvil( special_effect_t& e )
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
 
+// Glimmering Chromatic Orb
+// 401513 Value Container
+// Ruby - 401513, Minor - 405613
+// Obsidian - 402221, Minor - 405615
+// Emerald - 401521, Minor - 405608
+// Bronze - 401518, Minor - 405612
+// Azure - 401519, Minor - 405611
+void glimmering_chromatic_orb( special_effect_t& e )
+{
+  buff_t* buff;
+  double main_value = e.driver() -> effectN( 1 ).average( e.item );
+  double minor_value = e.driver() -> effectN( 2 ).average( e.item );
+  const auto& flight = e.player -> sim -> dragonflight_opts.glimmering_chromatic_orb_dragonflight;
+  const auto& allies = e.player -> sim -> dragonflight_opts.glimmering_chromatic_orb_allies;
+  bool valid = false;
+
+  if( util::str_compare_ci( flight, "obsidian" ) )
+  {
+    main_value = main_value / 4; // Obsidian Dragonflight splits the total value evenly among all secondaries
+    buff = create_buff<stat_buff_t>( e.player, "obsidian_resonance", e.player -> find_spell( 402221 ) )
+                         ->add_stat( STAT_CRIT_RATING, main_value )
+                         ->add_stat( STAT_MASTERY_RATING, main_value )
+                         ->add_stat( STAT_HASTE_RATING, main_value )
+                         ->add_stat( STAT_VERSATILITY_RATING, main_value );
+    valid = true;
+  }
+
+  if( util::str_compare_ci( flight, "ruby" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "ruby_resonance", e.player -> find_spell( 401516 ) )
+                         ->add_stat( STAT_VERSATILITY_RATING, main_value );
+    valid = true;
+  }
+
+  if( util::str_compare_ci( flight, "bronze" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "bronze_resonance", e.player -> find_spell( 401518 ) )
+                         ->add_stat( STAT_HASTE_RATING, main_value );
+    valid = true;
+  }
+
+  if( util::str_compare_ci( flight, "azure" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "azure_resonance", e.player -> find_spell( 401519 ) )
+                         ->add_stat( STAT_MASTERY_RATING, main_value );
+    valid = true;
+  }
+
+  if( util::str_compare_ci( flight, "emerald" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "emerald_resonance", e.player -> find_spell( 401521 ) )
+                         ->add_stat( STAT_CRIT_RATING, main_value );
+    valid = true;
+  }
+
+  // Minor Buffs
+  auto obsidian_minor = create_buff<stat_buff_t>( e.player, "minor_obsidian_resonance", e.player -> find_spell( 405615 ) )
+                         ->add_stat( STAT_CRIT_RATING, minor_value / 4 )
+                         ->add_stat( STAT_MASTERY_RATING, minor_value / 4 )
+                         ->add_stat( STAT_HASTE_RATING, minor_value / 4 )
+                         ->add_stat( STAT_VERSATILITY_RATING, minor_value / 4 );
+
+  auto ruby_minor = create_buff<stat_buff_t>( e.player, "minor_ruby_resonance", e.player -> find_spell( 405613 ) )
+                         ->add_stat( STAT_VERSATILITY_RATING, minor_value );
+
+  auto bronze_minor = create_buff<stat_buff_t>( e.player, "minor_bronze_resonance", e.player -> find_spell( 405612 ) )
+                         ->add_stat( STAT_HASTE_RATING, minor_value );
+
+  auto azure_minor = create_buff<stat_buff_t>( e.player, "minor_azure_resonance", e.player -> find_spell( 405611 ) )
+                         ->add_stat( STAT_MASTERY_RATING, minor_value );
+
+  auto emerald_minor = create_buff<stat_buff_t>( e.player, "minor_emerald_resonance", e.player -> find_spell( 405608 ) )
+                         ->add_stat( STAT_CRIT_RATING, minor_value );
+
+  if ( valid )
+  {
+    e.player -> register_combat_begin( [ buff, allies, obsidian_minor, ruby_minor, bronze_minor, azure_minor, emerald_minor ]( player_t* p )
+    {
+      buff -> trigger();
+      bool minor_valid = false;
+      std::size_t obsidian = allies.find( "obsidian" );
+      std::size_t ruby = allies.find( "ruby" );
+      std::size_t bronze = allies.find( "bronze" );
+      std::size_t azure = allies.find( "azure" );
+      std::size_t emerald = allies.find( "emerald" );
+
+      if ( obsidian != std::string::npos )
+      {
+        obsidian_minor -> trigger();
+        minor_valid = true;
+      }
+      if ( ruby != std::string::npos )
+      {
+        ruby_minor -> trigger();
+        minor_valid = true;
+      }
+      if ( bronze != std::string::npos )
+      {
+        bronze_minor -> trigger();
+        minor_valid = true;
+      }
+      if ( azure != std::string::npos )
+      {
+        azure_minor -> trigger();
+        minor_valid = true;
+      }
+      if ( emerald != std::string::npos )
+      {
+        emerald_minor -> trigger();
+        minor_valid = true;
+      }
+      if ( util::str_compare_ci( allies, "" ) )
+      {
+        minor_valid = true;
+      }
+      if( !minor_valid )
+      {
+        p -> sim -> error( "'{}' Is not a valid Dragonflight for Glimmering Chromatic Orb Allies. Options are: obsidian, azure, emerald, ruby, or bronze", allies );
+      }
+    } );
+  }
+  else
+  {
+    e.player -> sim -> error( "'{}' Is not a valid Dragonflight for Glimmering Chromatic Orb. Options are: obsidian, azure, emerald, ruby, or bronze", flight );
+  }
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -5653,6 +5780,7 @@ void register_special_effects()
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
+  register_special_effect( 401513, items::glimmering_chromatic_orb );
 
 
   // Weapons
