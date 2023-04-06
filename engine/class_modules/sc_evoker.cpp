@@ -2302,7 +2302,7 @@ void evoker_t::create_actions()
   using namespace heals;
 
   if ( sets->has_set_bonus( EVOKER_DEVASTATION, T30, B2 ) )
-    action.obsidian_shards = get_secondary_action<obsidian_shards_t>( "obsidians_shards" );
+    action.obsidian_shards = get_secondary_action<obsidian_shards_t>( "obsidian_shards" );
 
   if ( talent.volatility.ok() )
   {
