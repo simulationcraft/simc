@@ -1735,11 +1735,21 @@ struct shattering_star_t : public evoker_spell_t
   {
     aoe = as<int>( data().effectN( 1 ).base_value() * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
 
-    if ( p->talent.arcane_vigor.ok() )
+    if ( p->talent.arcane_vigor.ok() && !p->is_ptr() )
     {
       energize_type = action_energize::ON_CAST;
       energize_amount +=
           p->find_spelleffect( p->talent.arcane_vigor, A_ADD_FLAT_MODIFIER, P_EFFECT_4, &data() )->base_value();
+    }
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    if ( p()->is_ptr() && p()->talent.arcane_vigor.ok() )
+    {
+      p()->buff.essence_burst->trigger();
     }
   }
 
