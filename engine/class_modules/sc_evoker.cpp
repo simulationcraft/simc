@@ -1371,6 +1371,13 @@ struct disintegrate_t : public essence_spell_t
       residual_action::trigger( p()->action.obsidian_shards, d->state->target,
                                 d->state->result_amount * obsidian_shards_mul );
     }
+        
+    if ( p()->talent.causality.ok() && p()->is_ptr() )
+    {
+      auto cdr = p()->talent.causality->effectN( 1 ).time_value();
+      p()->cooldown.eternity_surge->adjust( cdr );
+      p()->cooldown.fire_breath->adjust( cdr );
+    }
   }
 };
 
@@ -1781,6 +1788,7 @@ struct pyre_t : public essence_spell_t
 
   struct pyre_damage_t : public essence_spell_t
   {
+
     pyre_damage_t( evoker_t* p, std::string_view name_str ) : essence_spell_t( name_str, p, p->find_spell( 357212 ) )
     {
       dual = true;
@@ -1812,6 +1820,13 @@ struct pyre_t : public essence_spell_t
     void impact( action_state_t* s ) override
     {
       essence_spell_t::impact( s );
+
+      if ( p()->talent.causality.ok() && p()->is_ptr() )
+      {
+        auto cdr = std::min( 5u, s->n_targets ) * p()->talent.causality->effectN( 2 ).time_value();
+        p()->cooldown.eternity_surge->adjust( cdr );
+        p()->cooldown.fire_breath->adjust( cdr );
+      }
 
       if ( p()->action.obsidian_shards )
         residual_action::trigger( p()->action.obsidian_shards, s->target, s->result_amount * obsidian_shards_mul );
