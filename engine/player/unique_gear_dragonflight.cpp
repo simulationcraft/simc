@@ -3918,8 +3918,17 @@ void glimmering_chromatic_orb( special_effect_t& e )
   double main_value = e.driver() -> effectN( 1 ).average( e.item );
   double minor_value = e.driver() -> effectN( 2 ).average( e.item );
   const auto& flight = e.player -> sim -> dragonflight_opts.glimmering_chromatic_orb_dragonflight;
-  const auto& allies = e.player -> sim -> dragonflight_opts.glimmering_chromatic_orb_allies;
   bool valid = false;
+  bool has_obsidian_major = false;
+  bool has_ruby_major = false;
+  bool has_bronze_major = false;
+  bool has_azure_major = false;
+  bool has_emerald_major = false;
+  bool has_obsidian_minor = false;
+  bool has_ruby_minor = false;
+  bool has_bronze_minor = false;
+  bool has_azure_minor = false;
+  bool has_emerald_minor = false;
 
   if( util::str_compare_ci( flight, "obsidian" ) )
   {
@@ -3930,6 +3939,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
                          ->add_stat( STAT_HASTE_RATING, main_value )
                          ->add_stat( STAT_VERSATILITY_RATING, main_value );
     valid = true;
+    has_obsidian_major = true;
   }
 
   if( util::str_compare_ci( flight, "ruby" ) )
@@ -3937,6 +3947,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
     buff = create_buff<stat_buff_t>( e.player, "ruby_resonance", e.player -> find_spell( 401516 ) )
                          ->add_stat( STAT_VERSATILITY_RATING, main_value );
     valid = true;
+    has_ruby_major = true;
   }
 
   if( util::str_compare_ci( flight, "bronze" ) )
@@ -3944,6 +3955,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
     buff = create_buff<stat_buff_t>( e.player, "bronze_resonance", e.player -> find_spell( 401518 ) )
                          ->add_stat( STAT_HASTE_RATING, main_value );
     valid = true;
+    has_bronze_major = true;
   }
 
   if( util::str_compare_ci( flight, "azure" ) )
@@ -3951,6 +3963,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
     buff = create_buff<stat_buff_t>( e.player, "azure_resonance", e.player -> find_spell( 401519 ) )
                          ->add_stat( STAT_MASTERY_RATING, main_value );
     valid = true;
+    has_azure_major = true;
   }
 
   if( util::str_compare_ci( flight, "emerald" ) )
@@ -3958,6 +3971,27 @@ void glimmering_chromatic_orb( special_effect_t& e )
     buff = create_buff<stat_buff_t>( e.player, "emerald_resonance", e.player -> find_spell( 401521 ) )
                          ->add_stat( STAT_CRIT_RATING, main_value );
     valid = true;
+    has_emerald_major = true;
+  }
+
+  auto splits = util::string_split<std::string_view>(
+      e.player->sim->dragonflight_opts.glimmering_chromatic_orb_allies, "/" );
+  for ( auto s : splits )
+  {
+    if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
+      has_obsidian_minor = true;
+    else if ( util::str_compare_ci( s, "ruby" ) && !has_ruby_major )
+      has_ruby_minor = true;
+    else if ( util::str_compare_ci( s, "bronze" ) && !has_bronze_major )
+      has_bronze_minor = true;
+    else if ( util::str_compare_ci( s, "azure" ) && !has_azure_major )
+      has_azure_minor = true;
+    else if ( util::str_compare_ci( s, "emerald" ) && !has_emerald_major )
+      has_emerald_minor = true;
+    else if ( util::str_compare_ci( s, "" ) )
+      return;
+    else
+      throw std::invalid_argument( "Invalid Option for Glimmering Chromatic Orb Allies" );
   }
 
   // Minor Buffs
@@ -3981,48 +4015,29 @@ void glimmering_chromatic_orb( special_effect_t& e )
 
   if ( valid )
   {
-    e.player -> register_combat_begin( [ buff, allies, obsidian_minor, ruby_minor, bronze_minor, azure_minor, emerald_minor ]( player_t* p )
+    e.player -> register_combat_begin( [ buff, obsidian_minor, ruby_minor, bronze_minor, azure_minor, emerald_minor, has_obsidian_minor, has_ruby_minor, has_bronze_minor, has_azure_minor, has_emerald_minor ]( player_t* p )
     {
       buff -> trigger();
-      bool minor_valid = false;
-      std::size_t obsidian = allies.find( "obsidian" );
-      std::size_t ruby = allies.find( "ruby" );
-      std::size_t bronze = allies.find( "bronze" );
-      std::size_t azure = allies.find( "azure" );
-      std::size_t emerald = allies.find( "emerald" );
 
-      if ( obsidian != std::string::npos )
+      if( has_obsidian_minor )
       {
         obsidian_minor -> trigger();
-        minor_valid = true;
       }
-      if ( ruby != std::string::npos )
+      if( has_ruby_minor )
       {
         ruby_minor -> trigger();
-        minor_valid = true;
       }
-      if ( bronze != std::string::npos )
+      if( has_bronze_minor )
       {
         bronze_minor -> trigger();
-        minor_valid = true;
       }
-      if ( azure != std::string::npos )
+      if( has_azure_minor )
       {
         azure_minor -> trigger();
-        minor_valid = true;
       }
-      if ( emerald != std::string::npos )
+      if( has_emerald_minor )
       {
         emerald_minor -> trigger();
-        minor_valid = true;
-      }
-      if ( util::str_compare_ci( allies, "" ) )
-      {
-        minor_valid = true;
-      }
-      if( !minor_valid )
-      {
-        p -> sim -> error( "'{}' Is not a valid Dragonflight for Glimmering Chromatic Orb Allies. Options are: obsidian, azure, emerald, ruby, or bronze", allies );
       }
     } );
   }
