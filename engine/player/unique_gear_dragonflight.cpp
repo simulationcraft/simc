@@ -3741,13 +3741,11 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
       break;
     case DRUID:
       driver_id = 408539;
-      e.player->sim->error( "Druid Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
-      proc_spell_id = { 
-        { 
-          Spell Ids, seperated by commas
-        } 
-      };*/
+
+      for ( const auto& n : { "shred", "mangle", "maul", "raze" } )
+        if ( auto a = e.player->find_action( n ) )
+          proc_spell_id.insert( a->data().id() );
+
       break;
     case HUNTER:
       driver_id = 408540;
