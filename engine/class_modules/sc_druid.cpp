@@ -1209,6 +1209,9 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
+      if ( !o->bugs )
+        da *= 1.0 + o->buff.friend_of_the_fae->check_value();
+
       return da;
     }
 
@@ -1222,6 +1225,9 @@ struct denizen_of_the_dream_t : public pet_t
 
       if ( td->dots.sunfire->is_ticking() )
         tm *= 1.0 + o->cache_mastery_value();
+
+      if ( !o->bugs )
+        tm *= 1.0 + td->debuff.waning_twilight->check_value();
 
       return tm;
     }
@@ -11743,7 +11749,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( buff.friend_of_the_fae->has_common_school( school ) )
-    cpm *= 1.0 + buff.friend_of_the_fae->value();
+    cpm *= 1.0 + buff.friend_of_the_fae->check_value();
 
   return cpm;
 }
