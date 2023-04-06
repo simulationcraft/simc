@@ -153,6 +153,9 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> limitless_potential;
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
+    propagate_const<buff_t*> feed_the_flames_stacking;
+    propagate_const<buff_t*> feed_the_flames_pyre;
+    
 
     // Preservation
   } buff;
@@ -263,6 +266,7 @@ struct evoker_t : public player_t
     player_talent_t scintillation;
     player_talent_t power_swell;
     player_talent_t feed_the_flames;  // row 10
+    const spell_data_t* feed_the_flames_pyre_buff;
     player_talent_t everburning_flame;
     player_talent_t hoarded_power;
     player_talent_t iridescence;
@@ -1405,7 +1409,7 @@ struct firestorm_t : public evoker_spell_t
 {
   struct firestorm_tick_t : public evoker_spell_t
   {
-    firestorm_tick_t( evoker_t* p ) : evoker_spell_t( "firestorm_tick", p, p->find_spell( 369374 ) )
+    firestorm_tick_t( evoker_t* p, std::string_view n ) : evoker_spell_t( n, p, p->find_spell( 369374 ) )
     {
       dual = ground_aoe = true;
       aoe               = -1;
@@ -1426,10 +1430,14 @@ struct firestorm_t : public evoker_spell_t
 
   action_t* damage;
 
-  firestorm_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "firestorm", p, p->talent.firestorm, options_str ),
-      damage( p->get_secondary_action<firestorm_tick_t>( "firestorm_tick" ) )
+  firestorm_t( evoker_t* p, std::string_view options_str ) : firestorm_t( p, "firestorm", false, options_str )
   {
+  }
+
+  firestorm_t( evoker_t* p, std::string_view n, bool ftf, std::string_view options_str = {} )
+    : evoker_spell_t( n, p, ftf ? p->find_spell( 368847 ) : p->talent.firestorm, options_str )
+  {
+    damage        = p->get_secondary_action<firestorm_tick_t>( name_str + "_tick", name_str + "_tick" );
     damage->stats = stats;
   }
 
@@ -1835,6 +1843,7 @@ struct pyre_t : public essence_spell_t
 
   action_t* volatility;
   action_t* damage;
+  action_t* firestorm;
 
   pyre_t( evoker_t* p, std::string_view options_str ) : pyre_t( p, "pyre", p->talent.pyre, options_str )
   {
@@ -1843,9 +1852,11 @@ struct pyre_t : public essence_spell_t
   pyre_t( evoker_t* p, std::string_view n, const spell_data_t* s, std::string_view o = {} )
     : essence_spell_t( n, p, s, o ), volatility( nullptr )
   {
-    damage        = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
-    damage->stats = stats;
-    damage->proc  = true;
+    damage          = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
+    firestorm       = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
+    firestorm->proc = true;
+    damage->stats   = stats;
+    damage->proc    = true;
   }
 
   action_state_t* new_state() override
@@ -1916,6 +1927,12 @@ struct pyre_t : public essence_spell_t
   void impact( action_state_t* s ) override
   {
     essence_spell_t::impact( s );
+
+    if ( p()->buff.feed_the_flames_pyre->up() )
+    {
+      firestorm->execute_on_target( s->target );
+      p()->buff.feed_the_flames_pyre->expire();
+    }
 
     // The captured da mul is passed along to the damage action state.
     auto state = damage->get_state();
@@ -2276,6 +2293,7 @@ void evoker_t::init_spells()
   talent.scintillation               = ST( "Scintillation" );
   talent.power_swell                 = ST( "Power Swell" );
   talent.feed_the_flames             = ST( "Feed the Flames" );  // Row 10
+  talent.feed_the_flames_pyre_buff   = find_spell( 411288 );
   talent.everburning_flame           = ST( "Everburning Flame" );
   talent.hoarded_power               = ST( "Hoarded Power" );
   talent.iridescence                 = ST( "Iridescence" );
@@ -2426,6 +2444,22 @@ void evoker_t::create_buffs()
                           cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
                       } );
 
+
+  buff.feed_the_flames_stacking = make_buff( this, "feed_the_flames", find_spell( 405874 ) );
+  buff.feed_the_flames_pyre     = make_buff( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
+
+  if ( is_ptr() && talent.feed_the_flames.enabled() )
+  {
+    buff.feed_the_flames_stacking->set_max_stack( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() )
+        ->set_expire_at_max_stack( true )
+        ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
+          if ( old == b->max_stack() )
+          {
+            buff.feed_the_flames_pyre->trigger();
+          }
+        } );
+  }
+
   // Preservation
 }
 
@@ -2562,6 +2596,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
   action.apply_affecting_aura( talent.eye_of_infinity );
+  action.apply_affecting_aura( talent.font_of_magic );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
 
