@@ -3852,22 +3852,26 @@ void elementium_pocket_anvil( special_effect_t& e )
       };*/
       break;
     case WARRIOR:
-      driver_id = 408513;
-      e.player->sim->error( "Warrior Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
+      driver_id = 408513; 
       proc_spell_id = { 
         { 
-          Spell Ids, seperated by commas
+          // Protection
+          23922,  // Shield Slam
+          // Arms
+          12294, // Mortal Strike
+          // Fury
+          85288, 85384, 96103, 383916, 383915 // Raging Blow & Annihilator
         } 
-      };*/
+      };
       break;
     default:
       return;
   }
+
   auto equip = new special_effect_t( e.player );
   equip -> spell_id = driver_id;
   equip -> execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
-  equip->type = SPECIAL_EFFECT_EQUIP;
+  equip -> type = SPECIAL_EFFECT_EQUIP;
   e.player -> special_effects.push_back( equip );
 
   equip -> player -> callbacks.register_callback_trigger_function(
