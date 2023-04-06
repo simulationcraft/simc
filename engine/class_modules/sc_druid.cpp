@@ -8,6 +8,8 @@
 #include "action/parse_buff_effects.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
+#include "report/charts.hpp"
+#include "report/highchart.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -288,6 +290,8 @@ public:
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;
+  // Tier 30 stacks tracking
+  std::unique_ptr<extended_sample_data_t> predator_revealed_stacks;
   double expected_max_health;  // For Bristling Fur calculations.
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
   std::vector<player_t*> swarm_targets;
@@ -504,9 +508,11 @@ public:
     buff_t* incarnation_cat;
     buff_t* incarnation_cat_prowl;
     buff_t* overflowing_power;
+    buff_t* predator_revealed;  // 4t30
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
     buff_t* sabertooth;
+    buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
@@ -1714,6 +1720,38 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
       return;
 
     current_value = std::min( cap, current_value + amt * mul );
+  }
+};
+
+// Shadows of the Predator (Tier 30 2pc) =====================================
+struct shadows_of_the_predator_buff_t : public druid_buff_t
+{
+  int cutoff;
+  int reset;
+
+  shadows_of_the_predator_buff_t( druid_t* p, const spell_data_t* s )
+    : base_t( p, "shadows_of_the_predator", s->effectN( 1 ).trigger() ),
+      cutoff( as<int>( s->effectN( 2 ).base_value() ) ),
+      reset( as<int>( s->effectN( 3 ).base_value() ) )
+  {
+    set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+    set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+  }
+
+  void increment( int s, double v, timespan_t d ) override
+  {
+    if ( current_stack >= cutoff && rng().roll( 0.125 * ( current_stack - ( cutoff - 1 ) ) ) )
+    {
+      p()->predator_revealed_stacks->add( current_stack );
+
+      base_t::decrement( current_stack - reset, v );
+
+      p()->buff.predator_revealed->trigger();
+    }
+    else
+    {
+      base_t::increment( s, v, d );
+    }
   }
 };
 
@@ -10270,6 +10308,16 @@ void druid_t::create_buffs()
   buff.overflowing_power = make_buff( this, "overflowing_power", find_spell( 405189 ) )
     ->set_trigger_spell( talent.berserk );
 
+  buff.predator_revealed = make_buff( this, "predator_revealed", find_spell( 408468 ) )
+    ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+    ->set_trigger_spell( sets->set( DRUID_FERAL, T30, B4 ) );
+  buff.predator_revealed->set_tick_callback(
+      [ cp = buff.predator_revealed->data().effectN( 2 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+        gain = get_gain( buff.predator_revealed->name() ), this ]( buff_t*, int, timespan_t ) {
+        resource_gain( RESOURCE_COMBO_POINT, cp, gain );
+      } );
+
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_trigger_spell( talent.predatory_swiftness );
 
@@ -10283,6 +10331,8 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.sabertooth )
     ->set_default_value( talent.sabertooth->effectN( 2 ).percent() )
     ->set_max_stack( as<int>( resources.base[ RESOURCE_COMBO_POINT ] ) );
+
+  buff.shadows_of_the_predator = make_buff<shadows_of_the_predator_buff_t>( this, sets->set( DRUID_FERAL, T30, B2 ) );
 
   buff.sharpened_claws = make_buff( this, "sharpened_claws", find_spell( 394465 ) )
     ->set_trigger_spell( sets->set( DRUID_FERAL, T29, B4 ) );
@@ -10985,6 +11035,9 @@ void druid_t::init_procs()
   proc.clearcasting         = get_proc( "Clearcasting" );
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
+  if ( sets->has_set_bonus( DRUID_FERAL, T30, B2 ) )
+    predator_revealed_stacks = std::make_unique<extended_sample_data_t>( "Predator Revealed Stack", false );
+
   // Guardian
   proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
   proc.gore                 = get_proc( "Gore" )->collect_interval();
@@ -11128,6 +11181,20 @@ void druid_t::init_special_effects()
     } );
   }
 
+  if ( sets->has_set_bonus( DRUID_FERAL, T30, B2 ) )
+  {
+    auto spell = sets->set( DRUID_FERAL, T30, B2 );
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = spell->name_cstr();
+    driver->spell_id = spell->id();
+    driver->custom_buff = buff.shadows_of_the_predator;
+    special_effects.push_back( driver );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
+    cb->initialize();
+  }
+
   if ( unique_gear::find_special_effect( this, 388069 ) )
   {
     callbacks.register_callback_execute_function( 388069,
@@ -11218,6 +11285,9 @@ void druid_t::merge( player_t& other )
   for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
 
+  if ( predator_revealed_stacks )
+    predator_revealed_stacks->merge( *od.predator_revealed_stacks );
+
   eclipse_handler.merge( od.eclipse_handler );
 }
 
@@ -11241,6 +11311,9 @@ void druid_t::analyze( sim_t& sim )
     range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
 
   player_t::analyze( sim );
+
+  if ( predator_revealed_stacks )
+    predator_revealed_stacks->analyze();
 
   // GG is a major portion of guardian druid damage but skews moonfire reporting because gg has no execute time. We
   // adjust by removing the gg amount from mf stat and re-calculating dpe and dpet for moonfire.
@@ -12954,10 +13027,25 @@ public:
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.specialization() == DRUID_FERAL )
+    {
+      os << "<div class=\"player-section custom_section\">\n";
+
       feral_snapshot_table( os );
 
+      if ( p.predator_revealed_stacks )
+        predator_revealed_histogram( os );
+
+      os << "</div>\n";
+    }
+
     if ( p.specialization() == DRUID_BALANCE && p.eclipse_handler.enabled() )
+    {
+      os << "<div class=\"player-section custom_section\">\n";
+
       balance_eclipse_table( os );
+
+      os << "</div>\n";
+    }
   }
 
   void balance_print_data( report::sc_html_stream& os, const spell_data_t* spell,
@@ -12987,8 +13075,7 @@ public:
 
   void balance_eclipse_table( report::sc_html_stream& os )
   {
-    os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Eclipse Utilization</h3>\n"
+    os << "<h3 class=\"toggle open\">Eclipse Utilization</h3>\n"
        << "<div class=\"toggle-content\">\n"
        << "<table class=\"sc even\">\n"
        << "<thead><tr><th></th>\n"
@@ -13009,7 +13096,6 @@ public:
       balance_print_data( os, p.find_spell( 274283 ), *p.eclipse_handler.data.full_moon );
 
     os << "</table>\n"
-       << "</div>\n"
        << "</div>\n";
   }
 
@@ -13035,11 +13121,32 @@ public:
     }
   }
 
+  void predator_revealed_histogram( report::sc_html_stream& os )
+  {
+    // Write header
+    os << "<h3 class=\"toggle open\">Predator Revealed Chart</h3>\n"
+       << "<div class=\"toggle-content\">\n";
+
+    auto& d = *p.predator_revealed_stacks;
+    int num_buckets = 8;
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "predator_revealed_stacks" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "When Predator Revealed", d.mean(), 5, 12 ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> stacks<br/>" );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    // Write footer
+    os << "</div>\n";
+  }
+
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
-    os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
+    os << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
        << "<div class=\"toggle-content\">\n"
        << "<table class=\"sc sort even\">\n"
        << "<thead><tr><th></th>\n"
@@ -13129,7 +13236,6 @@ public:
 
     // Write footer
     os << "</table>\n"
-       << "</div>\n"
        << "</div>\n";
   }
 
