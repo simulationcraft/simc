@@ -3800,12 +3800,14 @@ void elementium_pocket_anvil( special_effect_t& e )
     case HUNTER:
       driver_id = 408540;
       e.player->sim->error( "Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*      
       proc_spell_id = { 
         { 
-          Spell Ids, seperated by commas
+          //Raptor Strike (Melee, Ranged)
+          186270, //265189, 2023-04-06 - Does not work on Raptor Strike during Aspect of the Eagle buff
+          //Mongoose Bite (Melee , Ranged)
+          259387, //265888, 2023-04-06 - Does not work on Mongoose Bite during Aspect of the Eagle buff
         } 
-      };*/
+      };
       break;
     case MONK:
       driver_id = 408536;
