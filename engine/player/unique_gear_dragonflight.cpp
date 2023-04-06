@@ -3683,13 +3683,63 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
 // Paladin - Crusader Strike, Hammer of the Righteous, Blessed Hammer, Crusading Strikes, Templar Slash, Templar Strikes
 // Shaman - Stormstrike
 // Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
-void elementium_pocket_anvil_equip( special_effect_t& e )
+void elementium_pocket_anvil( special_effect_t& e )
 {
+  auto in_combat_buff = buff_t::find( e.player, "anvil_strike_combat" );
+  auto no_combat_buff = buff_t::find( e.player, "anvil_strike_no_combat" );
+
+  if( !in_combat_buff )
+  {
+    in_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_combat", e.player -> find_spell( 408578 ) )
+                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
+  }
+  e.player -> buffs.anvil_strike_combat = in_combat_buff;
+
+  if( !no_combat_buff )
+  {
+    no_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player -> find_spell( 408533 ) )
+                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
+  }
+  e.player -> buffs.anvil_strike_no_combat = no_combat_buff;
+
+  struct elementium_pocket_anvil_use_t : public generic_proc_t
+  {
+    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() )
+    {
+      aoe = -1;
+      base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if( sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
+      {
+        if( sim -> target_non_sleeping_list.size() > 0 )
+        {
+          player -> buffs.anvil_strike_combat -> trigger();
+        }
+        if( sim -> target_non_sleeping_list.size() == 0 )
+        {
+          player -> buffs.anvil_strike_no_combat -> trigger();
+        }
+      }
+      else
+      {
+        player -> buffs.anvil_strike_combat -> trigger();
+      }
+    }
+  };
+
   struct elementium_pocket_anvil_equip_t : public generic_proc_t
   {
-    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_proc_t( e, "echoed_flare", e.player -> find_spell( 401324 ) )
+    action_t* use;
+
+    elementium_pocket_anvil_equip_t( const special_effect_t& e ) : generic_proc_t( e, "echoed_flare", e.player -> find_spell( 401324 ) ),
+        use( create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e ) )
     {
       base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 1 ).average( e.item );
+      add_child( use );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -3814,73 +3864,27 @@ void elementium_pocket_anvil_equip( special_effect_t& e )
     default:
       return;
   }
+  auto equip = new special_effect_t( e.player );
+  equip -> spell_id = driver_id;
+  equip -> execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
+  equip->type = SPECIAL_EFFECT_EQUIP;
+  e.player -> special_effects.push_back( equip );
 
-  e.spell_id = driver_id;
-  e.execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
-
-  e.player->callbacks.register_callback_trigger_function(
+  equip -> player -> callbacks.register_callback_trigger_function(
       driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
 
         return range::contains( proc_spell_id , a -> data().id() );
       } );
-  new dbc_proc_callback_t( e.player, e );
-}
 
-void elementium_pocket_anvil_use ( special_effect_t& e )
-{
-  auto in_combat_buff = buff_t::find( e.player, "anvil_strike_combat" );
-  auto no_combat_buff = buff_t::find( e.player, "anvil_strike_no_combat" );
+  auto cb = new dbc_proc_callback_t( e.player, *equip );
+  cb -> activate();
 
-  if( !in_combat_buff )
-  {
-    in_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_combat", e.player -> find_spell( 408578 ) )
-                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
-  }
-  e.player -> buffs.anvil_strike_combat = in_combat_buff;
-
-  if( !no_combat_buff )
-  {
-    no_combat_buff = create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player -> find_spell( 408533 ) )
-                         -> set_default_value( e.player -> find_spell( 401303 ) -> effectN( 3 ).percent() );
-  }
-  e.player -> buffs.anvil_strike_no_combat = no_combat_buff;
-
-  struct elementium_pocket_anvil_use_t : public generic_proc_t
-  {
-    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() )
-    {
-      aoe = -1;
-      base_dd_min = base_dd_max = e.player -> find_spell( 401303 ) -> effectN( 2 ).average( e.item );
-    }
-
-    void execute() override
-    {
-      generic_proc_t::execute();
-      if( sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-      {
-        if( sim -> target_non_sleeping_list.size() > 0 )
-        {
-          player -> buffs.anvil_strike_combat -> trigger();
-        }
-        if( sim -> target_non_sleeping_list.size() == 0 )
-        {
-          player -> buffs.anvil_strike_no_combat -> trigger();
-        }
-      }
-      else
-      {
-        player -> buffs.anvil_strike_combat -> trigger();
-      }
-    }
-  };
-
-  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
   if( e.player -> sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
-    e.player->register_combat_begin( [ in_combat_buff, no_combat_buff ]( player_t* p ) 
+    e.player->register_combat_begin( []( player_t* p ) 
     {
-      make_repeating_event( *p->sim, 1_s, [ in_combat_buff, no_combat_buff, p ] 
+      make_repeating_event( *p->sim, 1_s, [ p ] 
       {
         if( p -> sim -> target_non_sleeping_list.size() > 0 && p -> buffs.anvil_strike_no_combat -> check() )
         {
@@ -3895,6 +3899,8 @@ void elementium_pocket_anvil_use ( special_effect_t& e )
       } );
     } );
   }
+
+  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
 
 // Weapons
@@ -5644,8 +5650,7 @@ void register_special_effects()
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
-  register_special_effect( 401303, items::elementium_pocket_anvil_equip );
-  register_special_effect( 401306, items::elementium_pocket_anvil_use );
+  register_special_effect( 401306, items::elementium_pocket_anvil );
 
 
   // Weapons
