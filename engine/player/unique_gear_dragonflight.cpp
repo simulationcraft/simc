@@ -3687,7 +3687,8 @@ void elementium_pocket_anvil( special_effect_t& e )
 {
   e.player->buffs.anvil_strike_combat =
       create_buff<buff_t>( e.player, "anvil_strike_combat", e.player->find_spell( 408578 ) )
-          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() )
+          ->set_cooldown( 0_ms );
 
   e.player->buffs.anvil_strike_no_combat =
       create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) )
@@ -3834,6 +3835,23 @@ void elementium_pocket_anvil( special_effect_t& e )
   equip->spell_id       = driver_id;
   equip->execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
   equip->type           = SPECIAL_EFFECT_EQUIP;
+  equip->activation_cb  = [ p = e.player ]() {
+    p->sim->target_non_sleeping_list.register_callback( [ p ]( player_t* ) {
+      auto enemies = p->sim->target_non_sleeping_list.size();
+      auto combat = p->buffs.anvil_strike_combat->check();
+      auto no_combat = p->buffs.anvil_strike_no_combat->check();
+      if ( enemies && no_combat )
+      {
+        p->buffs.anvil_strike_combat->trigger( no_combat );
+        p->buffs.anvil_strike_no_combat->expire();
+      }
+      else if ( !enemies && combat )
+      {
+        p->buffs.anvil_strike_no_combat->trigger( combat );
+        p->buffs.anvil_strike_combat->expire();
+      }
+    } );
+  };
   e.player->special_effects.push_back( equip );
 
   equip->player->callbacks.register_callback_trigger_function(
@@ -3843,24 +3861,6 @@ void elementium_pocket_anvil( special_effect_t& e )
       } );
 
   new dbc_proc_callback_t( e.player, *equip );
-
-  auto p = e.player;
-
-  e.player->register_combat_begin( [ p ]( player_t* ) {
-    p->sim->target_non_sleeping_list.register_callback( [ p ]( player_t* ) {
-      auto enemies = as<int>( p->sim->target_non_sleeping_list.size() );
-      if ( enemies > 0 && p->buffs.anvil_strike_no_combat->check() )
-      {
-        p->buffs.anvil_strike_combat->trigger( p->buffs.anvil_strike_no_combat->check() );
-        p->buffs.anvil_strike_no_combat->expire();
-      }
-      if ( enemies == 0 && p->buffs.anvil_strike_combat->check() )
-      {
-        p->buffs.anvil_strike_no_combat->trigger( p->buffs.anvil_strike_combat->check() );
-        p->buffs.anvil_strike_combat->expire();
-      }
-    } );
-  } );
 
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
