@@ -3884,25 +3884,24 @@ void elementium_pocket_anvil( special_effect_t& e )
   auto cb = new dbc_proc_callback_t( e.player, *equip );
   cb -> activate();
 
-  if( e.player -> sim -> fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-  {
-    e.player->register_combat_begin( []( player_t* p ) 
+  auto p = e.player;
+  
+  e.player -> register_combat_begin( [ p ]( player_t* ) {
+    p -> sim -> target_non_sleeping_list.register_callback( [ p ] ( player_t* )
     {
-      make_repeating_event( *p->sim, 1_s, [ p ] 
+      auto enemies = as<int>( p -> sim -> target_non_sleeping_list.size() );
+      if ( enemies > 0 && p -> buffs.anvil_strike_no_combat -> check() )
       {
-        if( p -> sim -> target_non_sleeping_list.size() > 0 && p -> buffs.anvil_strike_no_combat -> check() )
-        {
-          p -> buffs.anvil_strike_combat -> trigger( p -> buffs.anvil_strike_no_combat -> check() );
-          p -> buffs.anvil_strike_no_combat -> expire();
-        }
-        if( p -> sim -> target_non_sleeping_list.size() == 0 && p -> buffs.anvil_strike_combat -> check() )
-        {
-          p -> buffs.anvil_strike_no_combat -> trigger( p -> buffs.anvil_strike_combat -> check() );
-          p -> buffs.anvil_strike_combat -> expire();
-        }
-      } );
+        p -> buffs.anvil_strike_combat -> trigger( p -> buffs.anvil_strike_no_combat -> check() );
+        p -> buffs.anvil_strike_no_combat -> expire();
+      }
+      if ( enemies == 0 && p -> buffs.anvil_strike_combat -> check() )
+      {
+        p -> buffs.anvil_strike_no_combat -> trigger( p -> buffs.anvil_strike_combat -> check() );
+        p -> buffs.anvil_strike_combat -> expire();
+      }
     } );
-  }
+  } );
 
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
