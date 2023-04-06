@@ -59,7 +59,6 @@ struct evoker_td_t : public actor_target_data_t
   struct debuffs_t
   {
     buff_t* shattering_star;
-    buff_t* imminent_destruction;
     buff_t* in_firestorm;
   } debuffs;
 
@@ -261,7 +260,6 @@ struct evoker_t : public player_t
     player_talent_t arcane_vigor;
     player_talent_t burnout;  // row 9
     player_talent_t imminent_destruction;
-    const spell_data_t* imminent_destruction_debuff;
     player_talent_t scintillation;
     player_talent_t power_swell;
     player_talent_t feed_the_flames;  // row 10
@@ -515,7 +513,7 @@ public:
 
     if ( p()->is_ptr() )
     {
-      parse_buff_effects( p()->buff.imminent_destruction, p()->talent.imminent_destruction );
+      parse_buff_effects( p()->buff.imminent_destruction );
     }
   }
 
@@ -530,12 +528,6 @@ public:
 
     parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.shattering_star->check(); },
                           p()->talent.shattering_star );
-
-    if ( p()->is_ptr() )
-    {
-      parse_debuff_effects( []( evoker_td_t* t ) { return t->debuffs.imminent_destruction->check(); },
-                            p()->talent.imminent_destruction_debuff, p()->talent.imminent_destruction );
-    }
   }
 
   double cost() const override
@@ -1277,7 +1269,6 @@ struct deep_breath_t : public evoker_spell_t
       if ( p()->is_ptr() )
       {
         auto td = p()->get_target_data( s->target );
-        td->debuffs.imminent_destruction->trigger();
       }
     }
 
@@ -2010,8 +2001,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->set_cooldown( 0_ms )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
-  debuffs.imminent_destruction = make_buff( *this, "imminent_destruction", evoker->talent.imminent_destruction_debuff );
-
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 }
 
@@ -2284,7 +2273,6 @@ void evoker_t::init_spells()
   talent.arcane_vigor                = ST( "Arcane Vigor" );
   talent.burnout                     = ST( "Burnout" );  // Row 9
   talent.imminent_destruction        = ST( "Imminent Destruction" );
-  talent.imminent_destruction_debuff = find_spell( 405652 );
   talent.scintillation               = ST( "Scintillation" );
   talent.power_swell                 = ST( "Power Swell" );
   talent.feed_the_flames             = ST( "Feed the Flames" );  // Row 10
@@ -2402,7 +2390,7 @@ void evoker_t::create_buffs()
                                  ->set_cooldown( 0_s )
                                  ->add_invalidate( CACHE_HASTE );
 
-  buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 405651 ) );
+  buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 411055 ) );
 
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_trigger_spell( talent.iridescence )
