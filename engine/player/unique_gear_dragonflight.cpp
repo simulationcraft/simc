@@ -3799,7 +3799,6 @@ void elementium_pocket_anvil( special_effect_t& e )
       break;
     case HUNTER:
       driver_id = 408540;
-      e.player->sim->error( "Hunter Abilities not Whitelisted in Elementium Pocket Anvil" );
       proc_spell_id = { 
         { 
           //Raptor Strike (Melee, Ranged)
