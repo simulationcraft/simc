@@ -203,6 +203,7 @@ public:
     // Tier
     buff_t* strike_vulnerabilities;
     buff_t* vanguards_determination;
+    buff_t* crushing_advance;
     buff_t* merciless_assault;
 
     // Shadowland Legendary
@@ -1016,6 +1017,7 @@ struct warrior_action_t : public Base
     bool t29_arms_4pc;
     bool t29_prot_2pc;
     bool t30_arms_2pc;
+    bool t30_arms_4pc;
     bool t30_fury_4pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
@@ -1040,6 +1042,7 @@ struct warrior_action_t : public Base
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
+        t30_arms_4pc( false ),
         t30_fury_4pc( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
@@ -1185,6 +1188,7 @@ public:
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     if ( p()->dbc->ptr )
       affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
     affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
     initialized = true;
@@ -1374,6 +1378,11 @@ public:
     if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
     {
       dm *= 1.0 + p()->buff.vanguards_determination->check_value();
+    }
+
+    if ( affected_by.t30_arms_4pc && p()->buff.crushing_advance->up() )
+    {
+      dm *= 1.0 + p()->buff.crushing_advance->stack_value();
     }
 
     if ( affected_by.t30_fury_4pc && p()->buff.merciless_assault->up() )
@@ -2180,6 +2189,15 @@ struct auto_attack_t : public warrior_attack_t
 };
 
 // Mortal Strike ============================================================
+struct crushing_advance_t : warrior_attack_t
+{
+  crushing_advance_t( warrior_t* p ) : warrior_attack_t( "crushing_advance", p, p->find_spell( 411703 ) )
+  {
+    aoe                 = -1;
+    reduced_aoe_targets = 5.0;
+    background          = true;
+  }
+};
 
 struct mortal_strike_unhinged_t : public warrior_attack_t
 {
@@ -2187,11 +2205,13 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   bool from_mortal_combo;
   double enduring_blow_chance;
   double mortal_combo_chance;
+  warrior_attack_t* crushing_advance;
   mortal_strike_unhinged_t( warrior_t* p, util::string_view name, bool mortal_combo = false )
-  : warrior_attack_t( name, p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
-  from_mortal_combo( mortal_combo ),
-  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
-  mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
+    : warrior_attack_t( name, p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
+      from_mortal_combo( mortal_combo ),
+      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
+      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
+      crushing_advance( nullptr )
   {
     background = true;
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
@@ -2201,6 +2221,12 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     }
     cooldown->duration = timespan_t::zero();
     weapon             = &( p->main_hand_weapon );
+
+    if ( p->tier_set.t30_arms_4pc->ok() )
+    {
+      crushing_advance = new crushing_advance_t( p );
+      add_child( crushing_advance );
+    }
   }
 
   double action_multiplier() const override
@@ -2233,6 +2259,14 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
     }
+
+    if ( crushing_advance && p()->buff.crushing_advance->check() )
+    {
+      // crushing_advance->set_target( s->target );
+      crushing_advance->execute();
+    }
+
+    p()->buff.crushing_advance->expire();
     p()->buff.martial_prowess->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -2288,6 +2322,7 @@ struct mortal_strike_t : public warrior_attack_t
   double exhilarating_blows_chance;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
+  warrior_attack_t* crushing_advance;
   mortal_strike_t( warrior_t* p, util::string_view options_str, bool mortal_combo = false )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
       from_mortal_combo( mortal_combo ),
@@ -2295,7 +2330,8 @@ struct mortal_strike_t : public warrior_attack_t
       mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 ),
+      crushing_advance( nullptr )
   {
     parse_options( options_str );
 
@@ -2308,6 +2344,12 @@ struct mortal_strike_t : public warrior_attack_t
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     impact_action    = p->active.deep_wounds_ARMS;
+
+    if ( p->tier_set.t30_arms_4pc->ok() )
+    {
+      crushing_advance = new crushing_advance_t( p );
+      add_child( crushing_advance );
+    }
   }
 
   double cost() const override
@@ -2372,6 +2414,13 @@ struct mortal_strike_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p()->cooldown.cleave->reset( true );
     }
+    if ( crushing_advance && p()->buff.crushing_advance->check() )
+    {
+      //crushing_advance->set_target( s->target );
+      crushing_advance->execute();
+    }
+
+    p()->buff.crushing_advance->expire();
     p()->buff.martial_prowess->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -3325,6 +3374,11 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
     if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+
+    if ( p()->tier_set.t30_arms_4pc->ok() && d->state->result == RESULT_CRIT )
+    {
+      p()->buff.crushing_advance->trigger();
     }
   }
 };
@@ -9642,10 +9696,14 @@ void warrior_t::create_buffs()
                                     ->set_default_value( find_spell( 394056 )->effectN( 1 ).percent());
 
   // T30 Tier Effects ===============================================================================================================
+  buff.crushing_advance = make_buff( this, "crushing_advance", tier_set.t30_arms_4pc->ok() ?
+                               find_spell( 410138 ) : spell_data_t::not_found() )
+                          ->set_default_value( find_spell( 410138 )->effectN( 1 ).percent() );
+
   buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
                                 find_spell( 409983 ) : spell_data_t::not_found() )
-                    ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
-                    ->set_duration( find_spell( 409983 )->duration() );
+                           ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
+                           ->set_duration( find_spell( 409983 )->duration() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
