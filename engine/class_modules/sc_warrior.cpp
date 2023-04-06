@@ -2253,6 +2253,21 @@ struct crushing_advance_t : warrior_attack_t
     reduced_aoe_targets = 5.0;
     background          = true;
   }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.crushing_advance->stack() > 1 )
+    {
+      am *= 1.0 + ( p()->buff.crushing_advance->stack() - 1 ) * 0.5;
+    }
+    // gains a 50% damage bonus for each stack beyond the first
+    // 1 stack = base damage, 2 stack = +50%, 3 stack = +100%
+    // Not in spell data
+
+    return am;
+  }
 };
 
 struct mortal_strike_unhinged_t : public warrior_attack_t
