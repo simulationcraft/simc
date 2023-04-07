@@ -4032,6 +4032,35 @@ void glimmering_chromatic_orb( special_effect_t& e )
   }
 }
 
+// Ward of the Facless Ire
+// 401238 Driver & Absorb Shield
+// 401257 DoT
+// 401239 Value container
+void ward_of_the_faceless_ire( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_proc_t>( "writhing_ire", e, "writhing_ire", e.player->find_spell( 401257 ) );
+  damage->base_td = e.player->find_spell( 401239 )->effectN( 2 ).average( e.item );
+
+  auto absorb_buff = create_buff<absorb_buff_t>( e.player, e.driver() )
+                         ->set_default_value( e.player->find_spell( 401239 )->effectN( 1 ).average( e.item ) )
+                         ->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+                           if ( !new_ )
+                           {
+                             damage->execute();
+                           }
+                         } );
+  // If the player is a tank, properly model the absorb buff by casting it on themselves
+  // Otherwise, emulate it as if the player is casting it on a player who instantly breaks the shield
+  if ( e.player->role == ROLE_TANK )
+  {
+    e.custom_buff = absorb_buff;
+  }
+  else
+  {
+    e.execute_action = damage;
+  }
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -5781,6 +5810,7 @@ void register_special_effects()
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
   register_special_effect( 401513, items::glimmering_chromatic_orb );
+  register_special_effect( 401238, items::ward_of_the_faceless_ire );
 
 
   // Weapons
