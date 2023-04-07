@@ -3956,7 +3956,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
     else if ( util::str_compare_ci( s, "" ) )
       return;
     else
-      throw std::invalid_argument(
+      e.player->sim->error(
           "Invalid Option for Glimmering Chromatic Orb Allies. Your Main Dragonflight can not be entered." );
   }
 
