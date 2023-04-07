@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48898
-static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19842> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19803,6 +19803,7 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 410219, "Shield Slam unleashes a wave of force dealing $s2 Physical damage to enemies in front of you and reducing damage they deal to you by $s3% for 5 sec.", "Dealing $s3% reduced damage to $@auracaster.", 0 },
   { 410220, "Heals $s1 damage over $409915d", 0, 0 },
   { 410226, "[NYI] Taking damage has a chance to store stacks of Hellsteel Immolation.\r\nAfter receiving 5 stacks, your next ability will release the stored energy dealing X Shadowflame damage to all enemies in a Y radius. This effect repeats for each stack of Hellsteel Immolation.", "Points!", 0 },
+  { 410227, "[NYI] Taking damage has a chance to store stacks of Hellsteel Immolation.\r\nAfter receiving 5 stacks, your next ability will release the stored energy dealing X Shadowflame damage to all enemies in a Y radius. This effect repeats for each stack of Hellsteel Immolation.", "Points!", 0 },
   { 410228, "[NYI] Taking damage has a chance to store stacks of Hellsteel Immolation.\r\nAfter receiving 5 stacks, your next ability will release the stored energy dealing X Shadowflame damage to all enemies in a Y radius. This effect repeats for each stack of Hellsteel Immolation.", "Points!", 0 },
   { 410230, "When above $s2% Health, heal for $s4 every $410231t sec.\r\n\r\nWhen your Health is below $s3% the Symbiotic Spores embedded in your cloak expand, granting a shield that absorbs $s5 damage for $410232d sec. This effect can only occur once every $410233d.", 0, 0 },
   { 410231, "$@spelldesc410230", "Healing for $w1 every $t sec.", 0 },
