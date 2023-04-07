@@ -50,6 +50,11 @@ public:
       m *= 1.0 + td( t )->debuffs_from_the_shadows->check_value();
     }
 
+    if ( p()->talents.the_houndmasters_stratagem->ok() && data().affected_by( p()->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) ) )
+    {
+      m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
+    }
+
     return m;
   }
 
@@ -270,6 +275,11 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+    {
+      p()->cooldowns.grimoire_felguard->adjust( timespan_t::from_seconds( -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).base_value() ) );
+    }
+
     if ( p()->talents.power_siphon->ok() )
       p()->buffs.power_siphon->decrement();
 
@@ -315,6 +325,9 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
       m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
 
     return m;
   }
@@ -588,6 +601,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     if ( p()->buffs.grimoire_felguard->check() )
     {
       p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
+        p()->buffs.rite_of_ruvaraad->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.vilefiend->check() )
     {
@@ -1205,6 +1221,9 @@ void warlock_t::create_buffs_demonology()
   buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
                              ->set_default_value_from_effect( 1 );
 
+  buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
+                               ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
+
   // Pet tracking buffs
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
@@ -1251,6 +1270,9 @@ void warlock_t::init_spells_demonology()
 
   talents.from_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "From the Shadows" ); // Should be ID 267170
   talents.from_the_shadows_debuff = find_spell( 270569 );
+  
+  talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
+  talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
 
   talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
   talents.implosion_aoe = find_spell( 196278 );
@@ -1338,6 +1360,9 @@ void warlock_t::init_spells_demonology()
 
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
+  tier.rite_of_ruvaraad = find_spell( 409725 );
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
 

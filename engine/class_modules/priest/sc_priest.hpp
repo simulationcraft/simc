@@ -29,6 +29,7 @@ struct psychic_link_t;
 struct pain_of_death_t;
 struct shadow_weaving_t;
 struct echoing_void_t;
+struct echoing_void_demise_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
 struct mental_fortitude_t;
@@ -562,6 +563,7 @@ public:
     propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
+    propagate_const<actions::spells::echoing_void_demise_t*> echoing_void_demise;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
@@ -1012,6 +1014,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
+
+    track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
   }
 
   bool usable_moving() const override
@@ -1034,6 +1038,28 @@ struct priest_spell_t : public priest_action_t<spell_t>
     base_t::last_tick( d );
   }
 
+  void execute() override
+  {
+    base_t::execute();
+    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
+    {
+      // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
+      // Non-harmful actions don't apply this buff
+      if ( this->school == SCHOOL_SHADOW && this->id != 34433 && this->id != 123040 && this->harmful == true )
+      {
+        priest().buffs.twilight_equilibrium_holy_amp->trigger();
+        priest().buffs.twilight_equilibrium_shadow_amp->expire();
+      }
+      // Holy and Radiant (holyfire) applies this buff
+      // Non-harmful actions don't apply this buff
+      if ( ( this->school == SCHOOL_HOLY || this->school == SCHOOL_HOLYFIRE ) && this->harmful == true )
+      {
+        priest().buffs.twilight_equilibrium_shadow_amp->trigger();
+        priest().buffs.twilight_equilibrium_holy_amp->expire();
+      }
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     double save_health_percentage = s->target->health_percentage();
@@ -1047,24 +1073,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
            ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
-      }
-    }
-    if ( priest().talents.discipline.twilight_equilibrium.enabled() )
-    {
-      // Mindbender (123040) and Shadowfiend (34433) don't apply this buff
-      // Non-harmful actions don't apply this buff
-      if ( s->action->school == SCHOOL_SHADOW && s->action->id != 34433 && s->action->id != 123040 &&
-           s->action->harmful == true )
-      {
-        priest().buffs.twilight_equilibrium_holy_amp->trigger();
-        priest().buffs.twilight_equilibrium_shadow_amp->expire();
-      }
-      // Holy and Radiant (holyfire) applies this buff
-      // Non-harmful actions don't apply this buff
-      if ( ( s->action->school == SCHOOL_HOLY || s->action->school == SCHOOL_HOLYFIRE ) && s->action->harmful == true )
-      {
-        priest().buffs.twilight_equilibrium_shadow_amp->trigger();
-        priest().buffs.twilight_equilibrium_holy_amp->expire();
       }
     }
   }

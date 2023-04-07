@@ -608,6 +608,127 @@ void temporal_spellthread( special_effect_t& effect )
 namespace items
 {
 // Trinkets
+
+void dragonfire_bomb_dispenser( special_effect_t &effect )
+{ 
+  // Skilled Restock
+  auto restock_driver = find_special_effect( effect.player, 408667 );
+  if ( restock_driver )
+  {
+    auto skilled_restock = make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item) // 408770
+      ->set_quiet( true )
+      ->set_stack_change_callback( [ & ] ( buff_t *buff, int, int )
+    {
+      if ( buff->at_max_stacks() )
+      {
+        // At 60 stacks gain a charge
+        effect.execute_action->cooldown->reset( true );
+        buff->expire();
+      }
+    } );
+
+    restock_driver->custom_buff = skilled_restock;
+    restock_driver->proc_flags2_ = PF2_CRIT;
+
+    new dbc_proc_callback_t( effect.player, *restock_driver );
+  }
+
+  // AoE Explosion
+  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408667 );
+
+  explode->base_dd_min = explode->base_dd_max = effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
+
+  effect.player->register_on_kill_callback( [ effect, explode ] ( player_t *t )
+  {
+    if ( effect.player->sim->event_mgr.canceled )
+      return;
+
+    auto td = effect.player->find_target_data( t );
+    if ( td && td->debuff.dragonfire_bomb->check() )
+      explode->execute_on_target( t );
+  } );
+
+  // ST Damage
+  struct dragonfire_bomb_st_t : public proc_spell_t
+  {
+    dragonfire_bomb_st_t( const special_effect_t &e ) :
+      proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
+    }
+  };
+
+  create_proc_action<dragonfire_bomb_st_t>( "dragonfire_bomb_st", effect );
+  
+  // DoT Driver
+  struct dragonfire_bomb_missile_t : public proc_spell_t
+  {
+    dragonfire_bomb_missile_t( const special_effect_t &e ) :
+      proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
+    {
+      background = true;
+    }
+
+    void impact( action_state_t *s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+
+      if ( td )
+      {
+        if ( td->debuff.dragonfire_bomb->up() )
+          td->debuff.dragonfire_bomb->expire();
+
+        td->debuff.dragonfire_bomb->trigger();
+      }
+    }
+
+  };
+
+  effect.execute_action = create_proc_action<dragonfire_bomb_missile_t>( "dragonfire_bomb_dispenser", effect );
+}
+
+
+struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initializer_t
+{
+
+  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 )
+  {
+  }
+  
+  void operator()( actor_target_data_t *td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.dragonfire_bomb = make_buff( *td, "dragonfire_bomb" )->set_quiet( true );
+      return;
+    }
+
+    struct dragonfire_bomb_debuff_t : buff_t
+    {
+      player_t *target;
+      action_t *bomb;
+
+      dragonfire_bomb_debuff_t( actor_target_data_t &td, util::string_view n, const spell_data_t *s ) 
+        : buff_t( td, n, s ), target( td.target ), bomb ( td.source->find_action( "dragonfire_bomb_st" ) )
+      {
+      }
+
+      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+      {
+        buff_t::expire_override( expiration_stacks, remaining_duration );
+
+        if ( bomb )   
+          bomb->execute_on_target( target );
+      }
+    };
+
+    td->debuff.dragonfire_bomb = new dragonfire_bomb_debuff_t( *td, "dragonfire_bomb", td->source->find_spell( 408675 ) ); // IT GONNA BLOW!
+    td->debuff.dragonfire_bomb->reset();
+  }
+};
   
 /* Burgeoning Seed
   * id=193634
@@ -3536,6 +3657,425 @@ void idol_of_debilitating_arrogance( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Elementium Pocket Anvil
+// 401303 Main Spell/Value Container
+// 401306 On use Cast time/Cooldown
+// 401324 Equip Damage
+// 408578 Stacking Buff In combat
+// 408533 Stacking Buff Out of Combat
+// 408513 Warrior Driver
+// 408534 Rogue Driver
+// 408535 Paladin Driver
+// 408536 Monk Driver
+// 408537 Demon Hunter Driver
+// 408538 Death Knight Driver
+// 408539 Druid Driver
+// 408540 Hunter Driver
+// 408584 Shaman Driver
+// TODO - Whitelist Druid, Hunter, Rogue, Shaman, Warrior
+// Procs From:
+// DK - Heart Strike( 206930 ), Obliterate( 49020, 66198, 222024, 325431 ), Scourge Strike( 55090, 70890, 207311 )
+// DH - Chaos Strike, Annihilation, Soul Cleave
+// Druid - Mangle, Maul, Shred
+// Monk - Tiger Palm
+// Hunter - Raptor Strike, Mongoose Bite
+// Rogue - Gloomblade, Sinister Strike, Multilate
+// Paladin - Crusader Strike, Hammer of the Righteous, Blessed Hammer, Crusading Strikes, Templar Slash, Templar Strikes
+// Shaman - Stormstrike
+// Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
+void elementium_pocket_anvil( special_effect_t& e )
+{
+  e.player->buffs.anvil_strike_combat =
+      create_buff<buff_t>( e.player, "anvil_strike_combat", e.player->find_spell( 408578 ) )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() )
+          ->set_cooldown( 0_ms );
+
+  e.player->buffs.anvil_strike_no_combat =
+      create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
+
+  struct elementium_pocket_anvil_use_t : public generic_proc_t
+  {
+    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() )
+    {
+      aoe         = -1;
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( sim->target_non_sleeping_list.size() > 0 )
+      {
+        player->buffs.anvil_strike_combat->trigger();
+      }
+      if ( sim->target_non_sleeping_list.size() == 0 )
+      {
+        player->buffs.anvil_strike_no_combat->trigger();
+      }
+    }
+  };
+
+  struct elementium_pocket_anvil_equip_t : public generic_proc_t
+  {
+    action_t* use;
+
+    elementium_pocket_anvil_equip_t( const special_effect_t& e )
+      : generic_proc_t( e, "echoed_flare", e.player->find_spell( 401324 ) ),
+        use( create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e ) )
+    {
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
+      add_child( use );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      if ( player->buffs.anvil_strike_combat->check() )
+      {
+        m *= 1.0 + player->buffs.anvil_strike_combat->check_stack_value();
+      }
+
+      if ( player->buffs.anvil_strike_no_combat->check() )
+      {
+        m *= 1.0 + player->buffs.anvil_strike_no_combat->check_stack_value();
+      }
+
+      return m;
+    }
+  };
+
+  int driver_id = e.spell_id;
+  std::set<int> proc_spell_id;
+
+  switch ( e.player->type )
+  {
+    case DEATH_KNIGHT:
+      driver_id     = 408538;
+      proc_spell_id = { { // Blood DK
+                          206930,
+                          // Frost DK
+                          49020, 66198, 222024, 325431,
+                          // Unholy DK
+                          55090, 70890, 207311 } };
+      break;
+    case DEMON_HUNTER:
+      driver_id     = 408537;
+      proc_spell_id = { { // Vengeance DH
+                          228478,
+                          // Havoc
+                          199547, 222031, 227518, 201428 } };
+      break;
+    case DRUID:
+      driver_id = 408539;
+
+      for ( const auto& n : { "shred", "mangle", "maul", "raze" } )
+        if ( auto a = e.player->find_action( n ) )
+          proc_spell_id.insert( a->data().id() );
+
+      break;
+    case HUNTER:
+      driver_id     = 408540;
+      proc_spell_id = { {
+          // Raptor Strike (Melee, Ranged)
+          186270,  // 265189, 2023-04-06 - Does not work on Raptor Strike during Aspect of the Eagle buff
+                   // Mongoose Bite (Melee , Ranged)
+          259387,  // 265888, 2023-04-06 - Does not work on Mongoose Bite during Aspect of the Eagle buff
+      } };
+      break;
+    case MONK:
+      driver_id     = 408536;
+      proc_spell_id = { { // Tiger Palm
+                          100780 } };
+      break;
+    case PALADIN:
+      driver_id     = 408535;
+      proc_spell_id = { {
+          // Shared
+          35395,  // Crusader Strike
+
+          // Protection Paladin
+          53595, 204019,  // Hammer of the Righteous, Blessed Hammer
+
+          // Retribution Paladin
+          404139, 404542, 406647, 407480  // Blessed Hammers, Crusading Strikes, Templar Slash, Templar Strikes
+      } };
+      break;
+    case ROGUE:
+      driver_id = 408534;
+      e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
+      /*
+      proc_spell_id = {
+        {
+          Spell Ids, seperated by commas
+        }
+      };*/
+      break;
+    case SHAMAN:
+      driver_id     = 408584;
+      proc_spell_id = { { 115356, 17364 } };
+      break;
+    case WARRIOR:
+      driver_id     = 408513;
+      proc_spell_id = { {
+          // Protection
+          23922,  // Shield Slam
+                  // Arms
+          12294,  // Mortal Strike
+                  // Fury
+          85288, 85384, 96103, 383916, 383915  // Raging Blow & Annihilator
+      } };
+      break;
+    default:
+      return;
+  }
+
+  auto equip            = new special_effect_t( e.player );
+  equip->spell_id       = driver_id;
+  equip->execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
+  equip->type           = SPECIAL_EFFECT_EQUIP;
+  equip->activation_cb  = [ p = e.player ]() {
+    p->sim->target_non_sleeping_list.register_callback( [ p ]( player_t* ) {
+      auto enemies = p->sim->target_non_sleeping_list.size();
+      auto combat = p->buffs.anvil_strike_combat->check();
+      auto no_combat = p->buffs.anvil_strike_no_combat->check();
+      if ( enemies && no_combat )
+      {
+        p->buffs.anvil_strike_combat->trigger( no_combat );
+        p->buffs.anvil_strike_no_combat->expire();
+      }
+      else if ( !enemies && combat )
+      {
+        p->buffs.anvil_strike_no_combat->trigger( combat );
+        p->buffs.anvil_strike_combat->expire();
+      }
+    } );
+  };
+  e.player->special_effects.push_back( equip );
+
+  equip->player->callbacks.register_callback_trigger_function(
+      driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        return range::contains( proc_spell_id, a->data().id() );
+      } );
+
+  new dbc_proc_callback_t( e.player, *equip );
+
+  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
+}
+
+// Glimmering Chromatic Orb
+// 401513 Value Container
+// Ruby - 401513, Minor - 405613
+// Obsidian - 402221, Minor - 405615
+// Emerald - 401521, Minor - 405608
+// Bronze - 401518, Minor - 405612
+// Azure - 401519, Minor - 405611
+void glimmering_chromatic_orb( special_effect_t& e )
+{
+  buff_t* buff;
+  buff_t* obsidian_minor;
+  buff_t* ruby_minor;
+  buff_t* bronze_minor;
+  buff_t* azure_minor;
+  buff_t* emerald_minor;
+  double main_value       = e.driver()->effectN( 1 ).average( e.item );
+  double minor_value      = e.driver()->effectN( 2 ).average( e.item );
+  const auto& flight      = e.player->sim->dragonflight_opts.glimmering_chromatic_orb_dragonflight;
+  bool valid              = false;
+  bool has_obsidian_major = false;
+  bool has_ruby_major     = false;
+  bool has_bronze_major   = false;
+  bool has_azure_major    = false;
+  bool has_emerald_major  = false;
+  bool has_obsidian_minor = false;
+  bool has_ruby_minor     = false;
+  bool has_bronze_minor   = false;
+  bool has_azure_minor    = false;
+  bool has_emerald_minor  = false;
+
+  if ( util::str_compare_ci( flight, "obsidian" ) )
+  {
+    main_value = main_value / 4;  // Obsidian Dragonflight splits the total value evenly among all secondaries
+    buff       = create_buff<stat_buff_t>( e.player, "obsidian_resonance", e.player->find_spell( 402221 ) )
+               ->add_stat_from_effect( 2, main_value )
+               ->add_stat_from_effect( 3, main_value )
+               ->add_stat_from_effect( 4, main_value )
+               ->add_stat_from_effect( 5, main_value );
+    valid              = true;
+    has_obsidian_major = true;
+  }
+
+  if ( util::str_compare_ci( flight, "ruby" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "ruby_resonance", e.player->find_spell( 401516 ) )
+               ->add_stat_from_effect( 2, main_value );
+    valid          = true;
+    has_ruby_major = true;
+  }
+
+  if ( util::str_compare_ci( flight, "bronze" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "bronze_resonance", e.player->find_spell( 401518 ) )
+               ->add_stat_from_effect( 2, main_value );
+    valid            = true;
+    has_bronze_major = true;
+  }
+
+  if ( util::str_compare_ci( flight, "azure" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "azure_resonance", e.player->find_spell( 401519 ) )
+               ->add_stat_from_effect( 2, main_value );
+    valid           = true;
+    has_azure_major = true;
+  }
+
+  if ( util::str_compare_ci( flight, "emerald" ) )
+  {
+    buff = create_buff<stat_buff_t>( e.player, "emerald_resonance", e.player->find_spell( 401521 ) )
+               ->add_stat_from_effect( 2, main_value );
+    valid             = true;
+    has_emerald_major = true;
+  }
+
+  auto splits =
+      util::string_split<std::string_view>( e.player->sim->dragonflight_opts.glimmering_chromatic_orb_allies, "/" );
+  for ( auto s : splits )
+  {
+    if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
+      has_obsidian_minor = true;
+    else if ( util::str_compare_ci( s, "ruby" ) && !has_ruby_major )
+      has_ruby_minor = true;
+    else if ( util::str_compare_ci( s, "bronze" ) && !has_bronze_major )
+      has_bronze_minor = true;
+    else if ( util::str_compare_ci( s, "azure" ) && !has_azure_major )
+      has_azure_minor = true;
+    else if ( util::str_compare_ci( s, "emerald" ) && !has_emerald_major )
+      has_emerald_minor = true;
+    else if ( util::str_compare_ci( s, "" ) )
+      return;
+    else
+      e.player->sim->error(
+          "Invalid Option for Glimmering Chromatic Orb Allies. Your Main Dragonflight can not be entered." );
+  }
+
+  // Minor Buffs
+  if ( has_obsidian_minor )
+  {
+    obsidian_minor = create_buff<stat_buff_t>( e.player, "minor_obsidian_resonance", e.player->find_spell( 405615 ) )
+                         ->add_stat_from_effect( 2, minor_value / 4 )
+                         ->add_stat_from_effect( 3, minor_value / 4 )
+                         ->add_stat_from_effect( 4, minor_value / 4 )
+                         ->add_stat_from_effect( 5, minor_value / 4 );
+  }
+
+  if ( has_ruby_minor )
+  {
+    ruby_minor = create_buff<stat_buff_t>( e.player, "minor_ruby_resonance", e.player->find_spell( 405613 ) )
+                     ->add_stat_from_effect( 2, minor_value );
+  }
+
+  if ( has_bronze_minor )
+  {
+    bronze_minor = create_buff<stat_buff_t>( e.player, "minor_bronze_resonance", e.player->find_spell( 405612 ) )
+                       ->add_stat_from_effect( 2, minor_value );
+  }
+
+  if ( has_azure_minor )
+  {
+    azure_minor = create_buff<stat_buff_t>( e.player, "minor_azure_resonance", e.player->find_spell( 405611 ) )
+                      ->add_stat_from_effect( 2, minor_value );
+  }
+
+  if ( has_emerald_minor )
+  {
+    emerald_minor = create_buff<stat_buff_t>( e.player, "minor_emerald_resonance", e.player->find_spell( 405608 ) )
+                        ->add_stat_from_effect( 2, minor_value );
+  }
+
+  if ( valid )
+  {
+    e.player->register_combat_begin( [ buff, obsidian_minor, ruby_minor, bronze_minor, azure_minor, emerald_minor,
+                                       has_obsidian_minor, has_ruby_minor, has_bronze_minor, has_azure_minor,
+                                       has_emerald_minor ]( player_t* p ) {
+      buff->trigger();
+
+      if ( has_obsidian_minor )
+      {
+        obsidian_minor->trigger();
+      }
+      if ( has_ruby_minor )
+      {
+        ruby_minor->trigger();
+      }
+      if ( has_bronze_minor )
+      {
+        bronze_minor->trigger();
+      }
+      if ( has_azure_minor )
+      {
+        azure_minor->trigger();
+      }
+      if ( has_emerald_minor )
+      {
+        emerald_minor->trigger();
+      }
+    } );
+  }
+  else
+  {
+    e.player->sim->error(
+        "'{}' Is not a valid Dragonflight for Glimmering Chromatic Orb. Options are: obsidian, azure, emerald, ruby, "
+        "or bronze",
+        flight );
+  }
+}
+
+// Ward of the Facless Ire
+// 401238 Driver & Absorb Shield
+// 401257 DoT
+// 401239 Value container
+void ward_of_the_faceless_ire( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_proc_t>( "writhing_ire", e, "writhing_ire", e.player->find_spell( 401257 ) );
+  damage->base_td = e.player->find_spell( 401239 )->effectN( 2 ).average( e.item );
+
+  auto absorb_buff = create_buff<absorb_buff_t>( e.player, e.driver() )
+                         ->set_default_value( e.player->find_spell( 401239 )->effectN( 1 ).average( e.item ) )
+                         ->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+                           if ( !new_ )
+                           {
+                             damage->execute();
+                           }
+                         } );
+  // If the player is a tank, properly model the absorb buff by casting it on themselves
+  // Otherwise, emulate it as if the player is casting it on a player who instantly breaks the shield
+  if ( e.player->role == ROLE_TANK )
+  {
+    e.custom_buff = absorb_buff;
+  }
+  else
+  {
+    e.execute_action = damage;
+  }
+}
+
+// Treemouth's Festering Splinter
+void treemouths_festering_splinter( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_proc_t>( "treemouths_festering_splinter", e, "treemouths_festering_splinter",
+                                                    e.driver() );
+  damage->base_dd_min = damage->base_dd_max =
+      0;  // Override the damage to 0 as this is dealt to the player, not the target.
+          // Letting Simc auto parse this portion makes it think the damage is dealt to the target.
+  auto absorb_buff = create_buff<absorb_buff_t>( e.player, e.driver() )
+      ->set_default_value_from_effect( 2 )
+      ->set_cooldown( 0_ms ); // Overriding Cooldown as its handled by the action
+
+  e.execute_action = damage;
+  e.custom_buff    = absorb_buff;
+}
 
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
@@ -4208,6 +4748,60 @@ void voice_of_the_silent_star( special_effect_t& effect )
   // Modifiying RPPM data by 50% to emulate this behavior, will need to be rechecked on launch.
   effect.rppm_modifier_ = effect.driver() -> real_ppm() * 0.5; 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Shadowflame-Tempered Armor Patch
+// 406254 Driver
+// 406251 Damage
+// 406887 Buff
+void roiling_shadowflame( special_effect_t& e )
+{
+  auto stack_buff = buff_t::find( e.player, "roused_shadowflame" );
+  if ( !stack_buff )
+  {
+    stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) );
+    // Buff value and RPPM double with multiple instances of the item
+    e.name_str += "_2";
+  }
+  stack_buff->set_default_value( stack_buff -> default_value + e.driver() -> effectN( 4 ).percent() );
+
+  struct roiling_shadowflame_t : public generic_proc_t
+  {
+    buff_t* buff;
+
+    roiling_shadowflame_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "roiling_shadowflame", e.player->find_spell( 406251 ) ), buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + buff->check_stack_value();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      if ( buff->at_max_stacks() )
+      {
+        buff->expire();
+      }
+      else
+      {
+        buff->trigger();
+      }
+    }
+  };
+
+  auto damage      = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
+  e.execute_action = damage;
+
+  new dbc_proc_callback_t( e.player, e );
 }
 
 }  // namespace items
@@ -5225,6 +5819,7 @@ void register_special_effects()
 
 
   // Trinkets
+  register_special_effect( 408671, items::dragonfire_bomb_dispenser );
   register_special_effect( 384636, items::consume_pods );                            // burgeoning seed
   register_special_effect( 376636, items::idol_of_the_aspects( "neltharite" ) );     // idol of the earth warder
   register_special_effect( 376638, items::idol_of_the_aspects( "ysemerald" ) );      // idol of the dreamer
@@ -5283,6 +5878,10 @@ void register_special_effects()
   register_special_effect( 403385, items::idol_of_debilitating_arrogance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
+  register_special_effect( 401306, items::elementium_pocket_anvil );
+  register_special_effect( 401513, items::glimmering_chromatic_orb );
+  register_special_effect( 401238, items::ward_of_the_faceless_ire );
+  register_special_effect( 395175, items::treemouths_festering_splinter );
 
 
   // Weapons
@@ -5310,6 +5909,7 @@ void register_special_effects()
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
+  register_special_effect( 406254, items::roiling_shadowflame );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
@@ -5336,6 +5936,7 @@ void register_special_effects()
   register_special_effect( primordial_stones::PROPHETIC_TWILIGHT_STONE, DISABLED_EFFECT );
 
   // Disabled
+  register_special_effect( 408667, DISABLED_EFFECT );  // dragonfire bomb dispenser (skilled restock)
   register_special_effect( 382108, DISABLED_EFFECT );  // burgeoning seed
   register_special_effect( 382958, DISABLED_EFFECT );  // df darkmoon deck shuffler
   register_special_effect( 382913, DISABLED_EFFECT );  // bronzescale sigil (faster shuffle)
@@ -5355,6 +5956,7 @@ void register_special_effects()
 
 void register_target_data_initializers( sim_t& sim )
 {
+  sim.register_target_data_initializer( items::dragonfire_bomb_dispenser_initializer_t() );
   sim.register_target_data_initializer( items::awakening_rime_initializer_t() );
   sim.register_target_data_initializer( items::skewering_cold_initializer_t() );
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );

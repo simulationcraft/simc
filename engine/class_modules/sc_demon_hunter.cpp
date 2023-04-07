@@ -1433,14 +1433,9 @@ public:
       }
       if ( p->talent.vengeance.fiery_demise->ok() )
       {
-        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) );
-
-        // Fracture/Shear turned into fire damage by T30 4pc is affected by Fiery Demise but it's not in the spell data
-        // anywhere. This means we probably need to find a new way to get the whitelist for Fiery Demise.
-        if ( ab::data().affected_by( p->set_bonuses.t30_vengeance_4pc->effectN( 3 ) ) )
-        {
-          affected_by.fiery_demise = true;
-        }
+        affected_by.fiery_demise = ab::data().affected_by( p->spec.fiery_brand_debuff->effectN( 2 ) ) ||
+                                   ( p->set_bonuses.t30_vengeance_4pc->ok() &&
+                                     ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 3 ) ) );
       }
     }
   }
@@ -4715,24 +4710,62 @@ struct fracture_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
     trigger_felblade( s );
 
+    /*
+     * logged event ordering for Fracture:
+     * - cast Fracture (225919 - main hand spell ID)
+     * - cast Fracture (263642 - container spell ID)
+     * - apply Fires of Fel buff to player if T30 2pc is active
+     * - apply Fiery Brand to target if player has Recrimination buff from T30 4pc
+     *   - apply Fiery Brand debuff (207771)
+     *   - Fiery Brand initial damage event (204021)
+     *   - remove Recrimination buff
+     * - cast Fracture (225921 - offhand spell ID)
+     * - apply Fires of Fel buff to player if T30 2pc is active
+     * - apply Fires of Fel buff to player if T30 2pc is active and Metamorphosis is active
+     * - apply Fires of Fel buff to player if T30 2pc is active and T29 2pc procs
+     * - generate Soul Fragment from main hand hit
+     * - generate Soul Fragment from offhand hit
+     * - generate Soul Fragment if Metamorphosis is active
+     * - generate Soul Fragment if T29 2pc procs
+     * because Fires of Fel is currently applied by calling "spawn_soul_fragment", the ordering listed above is
+     * slightly collapsed.
+     */
     if ( result_is_hit( s->result ) )
     {
+      int number_of_soul_fragments_to_spawn = as<int>( data().effectN( 1 ).base_value() );
+      // divide the number in 2 as half come from main hand, half come from offhand.
+      int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
+      // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
+      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn_per_hit % 2;
+
       mh->set_target( s->target );
-      oh->set_target( s->target );
       mh->execute();
-      // t30 4pc proc happens on main hand execute but before off hand execute
-      // this matters because the off hand hit benefits from Fiery Demise that may be
+      // we're assuming that if blizz changes Fracture to 3, that 2 of the soul fragments would come from main hand and
+      // 1 from offhand.
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit +
+                                                           number_of_soul_fragments_to_spawn_leftover );
+      for ( unsigned i = 0;
+            i < ( number_of_soul_fragments_to_spawn_per_hit + number_of_soul_fragments_to_spawn_leftover ); i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
+
+      // t30 4pc proc happens after main hand execute but before offhand execute
+      // this matters because the offhand hit benefits from Fiery Demise that may be
       // applied because of the t30 4pc proc
       if ( p()->buff.t30_vengeance_4pc->up() )
       {
         p()->active.fiery_brand_t30->execute_on_target( s->target );
         p()->buff.t30_vengeance_4pc->expire();
       }
-      oh->execute();
 
-      p()->spawn_soul_fragment( soul_fragment::LESSER, as<int>( data().effectN( 1 ).base_value() ) );
-      p()->proc.soul_fragment_from_fracture->occur();
-      p()->proc.soul_fragment_from_fracture->occur();
+      oh->set_target( s->target );
+      oh->execute();
+      p()->spawn_soul_fragment( soul_fragment::LESSER, number_of_soul_fragments_to_spawn_per_hit );
+      for ( unsigned i = 0; i < number_of_soul_fragments_to_spawn_per_hit; i++ )
+      {
+        p()->proc.soul_fragment_from_fracture->occur();
+      }
 
       if ( p()->buff.metamorphosis->check() )
       {
@@ -5977,6 +6010,28 @@ std::unique_ptr<expr_t> demon_hunter_t::create_expression( util::string_view nam
 
       return this->get_target_data(*primary_idx)->dots.fiery_brand->is_ticking();
     });
+  }
+  else if ( util::str_compare_ci( name_str, "seething_fury_threshold" ) )
+  {
+    return expr_t::create_constant( "seething_fury_threshold",
+                                    this->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value() );
+  } 
+  else if ( util::str_compare_ci( name_str, "seething_fury_spent" ) )
+  {
+    return make_mem_fn_expr( "seething_fury_spent", this->set_bonuses,
+                             &demon_hunter_t::set_bonuses_t::t30_havoc_2pc_fury_tracker );
+  }
+  else if ( util::str_compare_ci( name_str, "seething_fury_deficit" ) )
+  {
+    if ( this->set_bonuses.t30_havoc_2pc->ok() )
+    {
+      return make_fn_expr( "seething_fury_deficit", [ this ] {
+        return this->set_bonuses.t30_havoc_2pc->effectN( 1 ).base_value() - this->set_bonuses.t30_havoc_2pc_fury_tracker;
+      } );
+    } 
+    else {
+      return expr_t::create_constant( "seething_fury_deficit", 0.0 );
+    }
   }
 
   return player_t::create_expression( name_str );

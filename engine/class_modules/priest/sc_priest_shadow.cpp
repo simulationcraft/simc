@@ -712,7 +712,7 @@ public:
         if ( priest().is_ptr() )
         {
           // TODO: 10.1 PTR TUNE SPIRITS CHANCE
-          auto chance = 0.78 * std::pow( cast_state( s )->number_spawned, -0.78 );
+          auto chance = 0.8 * std::pow( cast_state( s )->number_spawned, -0.8 );
           if ( rng().roll( chance ) )
           {
             priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
@@ -1160,13 +1160,16 @@ struct vampiric_touch_t final : public priest_spell_t
       if ( priest().talents.shadow.maddening_touch.enabled() )
       {
         // TODO: 10.1 Proc Chance is not in Spell Data, this is a massive guess.
-        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() &&
-             rng().roll( 0.25 / sqrt( priest().get_active_dots( internal_id ) ) ) )
+        if ( priest().is_ptr() && priest().cooldowns.maddening_touch_icd->up() )
         {
-          priest().cooldowns.maddening_touch_icd->start();
-          priest().generate_insanity(
-              priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
-              priest().gains.insanity_maddening_touch, d->state->action );
+          auto chance = 0.25 * std::pow( priest().get_active_dots( internal_id ), -0.6 );
+          if ( rng().roll( chance ) )
+          {
+            priest().cooldowns.maddening_touch_icd->start();
+            priest().generate_insanity(
+                priest().talents.shadow.maddening_touch->effectN( 2 ).resource( RESOURCE_INSANITY ),
+                priest().gains.insanity_maddening_touch, d->state->action );
+          }
         }
         else if ( rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
         {

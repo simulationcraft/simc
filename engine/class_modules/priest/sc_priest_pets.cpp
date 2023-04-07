@@ -1090,9 +1090,9 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
-spawner::pet_spawner_t<pet_t, priest_t>* get_current_main_pet( priest_t& priest )
+spawner::pet_spawner_t<pet_t, priest_t>& get_current_main_pet( priest_t& priest )
 {
-  return priest.talents.shadow.mindbender.enabled() ? &priest.pets.mindbender : &priest.pets.shadowfiend;
+  return priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
 }
 
 }  // namespace
@@ -1104,20 +1104,18 @@ void priest_t::trigger_inescapable_torment( player_t* target )
   if ( !talents.shadow.inescapable_torment.enabled() )
     return;
 
-  auto current_pets = get_current_main_pet( *this );
-
-  if ( is_ptr() && current_pets->n_active_pets() > 0 )
+  if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
-    buffs.devoured_pride->extend_duration( this, extend );
-    buffs.devoured_despair->extend_duration( this, extend );
-  }
-
-  for ( auto a_pet : current_pets->active_pets() )
-  {
-    auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
-    if ( pet && !pet->is_sleeping() )
+    if ( is_ptr() )
     {
+      auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
+      buffs.devoured_pride->extend_duration( this, extend );
+      buffs.devoured_despair->extend_duration( this, extend );
+    }
+
+    for ( auto a_pet : get_current_main_pet( *this ) )
+    {
+      auto pet = debug_cast<fiend::base_fiend_pet_t*>( a_pet );
       assert( pet->inescapable_torment );
       pet->inescapable_torment->set_target( target );
       pet->inescapable_torment->execute();
@@ -1142,16 +1140,12 @@ void priest_t::trigger_idol_of_yshaarj( player_t* target )
   }
   else
   {
-    auto current_pets = get_current_main_pet( *this );
-    auto duration     = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+    auto duration      = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
 
-    for ( auto pet : current_pets->active_pets() )
+    for ( auto pet : get_current_main_pet( *this ) )
     {
-      if ( pet && !pet->is_sleeping() )
-      {
-        pet->adjust_duration( duration );
-        procs.idol_of_yshaarj_extra_duration->occur();
-      }
+      pet->adjust_duration( duration );
+      procs.idol_of_yshaarj_extra_duration->occur();
     }
   }
 }
@@ -1169,9 +1163,9 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     if ( util::str_compare_ci( splits[ 1 ], "fiend" ) )
     {
       // pet.fiend.X refers to either shadowfiend or mindbender
-      auto pets = get_current_main_pet( *this );
 
-      auto expr = pets->create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      auto expr =
+          get_current_main_pet( *this ).create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;

@@ -107,7 +107,15 @@ void blood( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "raise_dead" );
   default_->add_action( "icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)");
-  default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
+  if( p -> is_ptr() )
+  {
+    default_->add_action( "vampiric_blood,if=!(buff.vampiric_blood.up|buff.vampiric_strength.up)");
+    default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up|buff.vampiric_blood.up|buff.vampiric_strength.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
+  }
+  else
+  {
+    default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
+  }
   default_->add_action( "deaths_caress,if=!buff.bone_shield.up" );
   default_->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.unholy_ground|talent.sanguine_ground|spell_targets.death_and_decay>3|buff.crimson_scourge.up)" );
   default_->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd|runic_power>=variable.death_strike_dump_amount|runic_power.deficit<=variable.heart_strike_rp|target.time_to_die<10" );
@@ -430,7 +438,7 @@ void unholy( player_t* p )
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=!variable.pop_wounds" );
   aoe->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.epidemic" );
 
-  cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead.up", "ST/Cleave Cooldowns" );
+  cooldowns->add_action( "summon_gargoyle,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead", "ST/Cleave Cooldowns" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
   cooldowns->add_action( "dark_transformation,if=cooldown.apocalypse.remains<5" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.st_planning&debuff.festering_wound.stack>=4" );
@@ -449,7 +457,7 @@ void unholy( player_t* p )
   garg_setup->add_action( "potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60|cooldown.summon_gargoyle.ready)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)" );
   garg_setup->add_action( "dark_transformation,if=talent.commander_of_the_dead&runic_power>40|!talent.commander_of_the_dead" );
   garg_setup->add_action( "any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0" );
-  garg_setup->add_action( "festering_strike,if=debuff.festering_wound.stack=0" );
+  garg_setup->add_action( "festering_strike,if=debuff.festering_wound.stack=0|!talent.apocalypse" );
   garg_setup->add_action( "death_coil,if=rune<=1" );
 
   generic->add_action( "death_coil,if=!variable.epidemic_priority&(!variable.pooling_runic_power&(rune<3|pet.gargoyle.active|buff.sudden_doom.react|cooldown.apocalypse.remains<10&debuff.festering_wound.stack>3)|fight_remains<10)", "Generic" );

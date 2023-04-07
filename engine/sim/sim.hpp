@@ -508,6 +508,10 @@ struct sim_t : private sc_thread_t
     timespan_t blue_silken_lining_update_interval = 5_s;
     // Enable or Disable Seething Black Dragonscale's damage
     bool seething_black_dragonscale_damage = false;
+    // Set the dragonflight for Glimmering Chromatic Orb
+    std::string glimmering_chromatic_orb_dragonflight = "obsidian";
+    // Set the allies dragonflights for Glimmering Chromatic Orb
+    std::string glimmering_chromatic_orb_allies = "";
   } dragonflight_opts;
 
   // Auras and De-Buffs

@@ -574,6 +574,10 @@ struct player_t : public actor_t
     buff_t* stormeaters_boon;
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
 
+    // 10.1 buffs
+    buff_t* anvil_strike_combat;
+    buff_t* anvil_strike_no_combat;
+
     // Season 1 Thundering M+ Affix
     buff_t* mark_of_lightning;
   } buffs;

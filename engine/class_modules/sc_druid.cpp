@@ -8,6 +8,8 @@
 #include "action/parse_buff_effects.hpp"
 #include "player/covenant.hpp"
 #include "player/pet_spawner.hpp"
+#include "report/charts.hpp"
+#include "report/highchart.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -288,6 +290,8 @@ public:
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;
+  // Tier 30 stacks tracking
+  std::unique_ptr<extended_sample_data_t> predator_revealed_stacks;
   double expected_max_health;  // For Bristling Fur calculations.
   std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
   std::vector<player_t*> swarm_targets;
@@ -504,9 +508,11 @@ public:
     buff_t* incarnation_cat;
     buff_t* incarnation_cat_prowl;
     buff_t* overflowing_power;
+    buff_t* predator_revealed;  // 4t30
     buff_t* predatory_swiftness;
     buff_t* protective_growth;
     buff_t* sabertooth;
+    buff_t* shadows_of_the_predator;  // 2t30
     buff_t* sharpened_claws;  // 4t29
     buff_t* sudden_ambush;
     buff_t* tigers_fury;
@@ -1155,6 +1161,7 @@ private:
   void apl_default();
   void apl_feral();
   void apl_balance();
+  void apl_balance_ptr();
   void apl_guardian();
   void apl_restoration();
 
@@ -1202,6 +1209,9 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
+      if ( !o->bugs )
+        da *= 1.0 + o->buff.friend_of_the_fae->check_value();
+
       return da;
     }
 
@@ -1215,6 +1225,9 @@ struct denizen_of_the_dream_t : public pet_t
 
       if ( td->dots.sunfire->is_ticking() )
         tm *= 1.0 + o->cache_mastery_value();
+
+      if ( !o->bugs )
+        tm *= 1.0 + td->debuff.waning_twilight->check_value();
 
       return tm;
     }
@@ -1713,6 +1726,38 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
       return;
 
     current_value = std::min( cap, current_value + amt * mul );
+  }
+};
+
+// Shadows of the Predator (Tier 30 2pc) =====================================
+struct shadows_of_the_predator_buff_t : public druid_buff_t
+{
+  int cutoff;
+  int reset;
+
+  shadows_of_the_predator_buff_t( druid_t* p, const spell_data_t* s )
+    : base_t( p, "shadows_of_the_predator", s->effectN( 1 ).trigger() ),
+      cutoff( as<int>( s->effectN( 2 ).base_value() ) ),
+      reset( as<int>( s->effectN( 3 ).base_value() ) )
+  {
+    set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE );
+    set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+  }
+
+  void increment( int s, double v, timespan_t d ) override
+  {
+    if ( current_stack >= cutoff && rng().roll( 0.125 * ( current_stack - ( cutoff - 1 ) ) ) )
+    {
+      p()->predator_revealed_stacks->add( current_stack );
+
+      base_t::decrement( current_stack - reset, v );
+
+      p()->buff.predator_revealed->trigger();
+    }
+    else
+    {
+      base_t::increment( s, v, d );
+    }
   }
 };
 
@@ -2510,11 +2555,6 @@ public:
       p_time( timespan_t::from_seconds( p->talent.primordial_arcanic_pulsar->effectN( 2 ).base_value() ) ),
       p_cap( p->talent.primordial_arcanic_pulsar->effectN( 1 ).base_value() )
   {}
-
-  bool procced_pulsar()
-  {
-    return p()->bugs && p()->talent.primordial_arcanic_pulsar.ok() && p_buff->current_value + base_cost() >= p_cap;
-  }
 
   void consume_resource() override
   {
@@ -3465,6 +3505,7 @@ struct brutal_slash_t : public trigger_thrashing_claws_t<cat_attack_t>
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+    track_cd_waste = true;
 
     if ( p->talent.merciless_claws.ok() )
       bleed_mul = p->talent.merciless_claws->effectN( 1 ).percent();
@@ -3631,6 +3672,8 @@ struct feral_frenzy_t : public cat_attack_t
   feral_frenzy_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_attack_t( n, p, s, opt )
   {
+    track_cd_waste = true;
+
     if ( data().ok() )
     {
       tick_action = p->get_secondary_action_n<feral_frenzy_tick_t>( name_str + "_tick" );
@@ -3943,6 +3986,9 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
 
   std::vector<player_t*>& target_list() const override
   {
+    if ( !target_cache.is_valid )
+      bleed->target_cache.is_valid = false;
+
     auto& tl = base_t::target_list();
 
     // When Double-Clawed Rake is active, this is an AoE action meaning it will impact onto the first 2 targets in the
@@ -4309,6 +4355,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     harmful = false;
     energize_type = action_energize::ON_CAST;
+    track_cd_waste = true;
 
     form_mask = CAT_FORM;
     autoshift = p->active.shift_to_cat;
@@ -4374,14 +4421,6 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
-  }
-
-  bool has_amount_result() const override
-  {
-    if ( !p()->is_ptr() )
-      return cat_attack_t::has_amount_result();
-    else
-      return impact_action->has_amount_result();
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -4738,6 +4777,8 @@ struct mangle_t : public bear_attack_t
       healing( nullptr ),
       inc_targets( 0 )
   {
+    track_cd_waste = true;
+
     if ( p->talent.mangle.ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
@@ -5093,6 +5134,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
     aoe = -1;
     impact_action = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     impact_action->stats = stats;
+    track_cd_waste = true;
 
     dot_name = "thrash_bear";
 
@@ -6655,6 +6697,8 @@ struct fury_of_elune_t : public druid_spell_t
       energize( b ),
       tick_period( p->query_aura_effect( &b->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
   {
+    track_cd_waste = true;
+
     form_mask |= NO_FORM; // can be cast without form
     dot_duration = 0_ms;  // AP gain handled via buffs
 
@@ -6662,6 +6706,7 @@ struct fury_of_elune_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void execute() override
@@ -6764,6 +6809,7 @@ struct lunar_beam_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void execute() override
@@ -6814,7 +6860,10 @@ struct moon_base_t : public druid_spell_t
   void init() override
   {
     if ( !is_free_proc() )
+    {
       cooldown = p()->cooldown.moon_cd;
+      track_cd_waste = true;
+    }
 
     druid_spell_t::init();
 
@@ -7194,7 +7243,16 @@ struct moonfire_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
+
+  std::vector<player_t*>& target_list() const
+  {
+    if ( !target_cache.is_valid )
+      damage->target_cache.is_valid = false;
+
+    return druid_spell_t::target_list();
+  }
 
   void init() override
   {
@@ -7765,13 +7823,8 @@ struct starfall_t : public astral_power_spender_t
 
     if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
     {
-      auto bug = procced_pulsar();
-
       p()->active.starfall_starweaver->execute_on_target( target );
-
-      if ( !bug )
-        p()->buff.starweavers_warp->expire();
-
+      p()->buff.starweavers_warp->expire();
       return;
     }
 
@@ -8017,13 +8070,8 @@ struct starsurge_t : public astral_power_spender_t
 
     if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
     {
-      auto bug = procced_pulsar();
-
       p()->active.starsurge_starweaver->execute_on_target( target );
-
-      if ( !bug )
-        p()->buff.starweavers_weft->expire();
-
+      p()->buff.starweavers_weft->expire();
       return;
     }
 
@@ -8075,7 +8123,6 @@ struct sunfire_t : public druid_spell_t
       dual = background = true;
       aoe = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
-      radius = data().effectN( 2 ).radius();
 
       dot_name = "sunfire";
       dot_list = &p->dot_list.sunfire;
@@ -8094,7 +8141,16 @@ struct sunfire_t : public druid_spell_t
     energize_amount += p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
+
+  std::vector<player_t*>& target_list() const
+  {
+    if ( !target_cache.is_valid )
+      damage->target_cache.is_valid = false;
+
+    return druid_spell_t::target_list();
+  }
 
   void gain_energize_resource( resource_e rt, double amt, gain_t* gain ) override
   {
@@ -8252,6 +8308,7 @@ struct warrior_of_elune_t : public druid_spell_t
     : druid_spell_t( "warrior_of_elune", p, p->talent.warrior_of_elune, opt )
   {
     harmful = may_miss = false;
+    track_cd_waste = true;
   }
 
   timespan_t cooldown_duration() const override
@@ -10256,6 +10313,16 @@ void druid_t::create_buffs()
   buff.overflowing_power = make_buff( this, "overflowing_power", find_spell( 405189 ) )
     ->set_trigger_spell( talent.berserk );
 
+  buff.predator_revealed = make_buff( this, "predator_revealed", find_spell( 408468 ) )
+    ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+    ->set_trigger_spell( sets->set( DRUID_FERAL, T30, B4 ) );
+  buff.predator_revealed->set_tick_callback(
+      [ cp = buff.predator_revealed->data().effectN( 2 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
+        gain = get_gain( buff.predator_revealed->name() ), this ]( buff_t*, int, timespan_t ) {
+        resource_gain( RESOURCE_COMBO_POINT, cp, gain );
+      } );
+
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_trigger_spell( talent.predatory_swiftness );
 
@@ -10269,6 +10336,8 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.sabertooth )
     ->set_default_value( talent.sabertooth->effectN( 2 ).percent() )
     ->set_max_stack( as<int>( resources.base[ RESOURCE_COMBO_POINT ] ) );
+
+  buff.shadows_of_the_predator = make_buff<shadows_of_the_predator_buff_t>( this, sets->set( DRUID_FERAL, T30, B2 ) );
 
   buff.sharpened_claws = make_buff( this, "sharpened_claws", find_spell( 394465 ) )
     ->set_trigger_spell( sets->set( DRUID_FERAL, T29, B4 ) );
@@ -10802,6 +10871,11 @@ void druid_t::apl_balance()
 #include "class_modules/apl/balance_apl.inc"
 }
 
+void druid_t::apl_balance_ptr()
+{
+#include "class_modules/apl/balance_apl_ptr.inc"
+}
+
 void druid_t::apl_guardian()
 {
 #include "class_modules/apl/guardian_apl.inc"
@@ -10966,6 +11040,9 @@ void druid_t::init_procs()
   proc.clearcasting         = get_proc( "Clearcasting" );
   proc.clearcasting_wasted  = get_proc( "Clearcasting (Wasted)" );
 
+  if ( sets->has_set_bonus( DRUID_FERAL, T30, B2 ) )
+    predator_revealed_stacks = std::make_unique<extended_sample_data_t>( "Predator Revealed Stack", false );
+
   // Guardian
   proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
   proc.gore                 = get_proc( "Gore" )->collect_interval();
@@ -11109,6 +11186,20 @@ void druid_t::init_special_effects()
     } );
   }
 
+  if ( sets->has_set_bonus( DRUID_FERAL, T30, B2 ) )
+  {
+    auto spell = sets->set( DRUID_FERAL, T30, B2 );
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = spell->name_cstr();
+    driver->spell_id = spell->id();
+    driver->custom_buff = buff.shadows_of_the_predator;
+    special_effects.push_back( driver );
+
+    auto cb = new dbc_proc_callback_t( this, *driver );
+    cb->initialize();
+  }
+
   if ( unique_gear::find_special_effect( this, 388069 ) )
   {
     callbacks.register_callback_execute_function( 388069,
@@ -11149,11 +11240,11 @@ void druid_t::init_action_list()
 
   switch ( specialization() )
   {
-    case DRUID_FERAL:       apl_feral();       break;
-    case DRUID_BALANCE:     apl_balance();     break;
-    case DRUID_GUARDIAN:    apl_guardian();    break;
-    case DRUID_RESTORATION: apl_restoration(); break;
-    default: apl_default(); break;
+    case DRUID_FERAL:       apl_feral();                                  break;
+    case DRUID_BALANCE:     is_ptr() ? apl_balance_ptr() : apl_balance(); break;
+    case DRUID_GUARDIAN:    apl_guardian();                               break;
+    case DRUID_RESTORATION: apl_restoration();                            break;
+    default:                apl_default();                                break;
   }
 
   use_default_action_list = true;
@@ -11199,6 +11290,9 @@ void druid_t::merge( player_t& other )
   for ( size_t i = 0; i < counters.size(); i++ )
     counters[ i ]->merge( *od.counters[ i ] );
 
+  if ( predator_revealed_stacks )
+    predator_revealed_stacks->merge( *od.predator_revealed_stacks );
+
   eclipse_handler.merge( od.eclipse_handler );
 }
 
@@ -11222,6 +11316,9 @@ void druid_t::analyze( sim_t& sim )
     range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
 
   player_t::analyze( sim );
+
+  if ( predator_revealed_stacks )
+    predator_revealed_stacks->analyze();
 
   // GG is a major portion of guardian druid damage but skews moonfire reporting because gg has no execute time. We
   // adjust by removing the gg amount from mf stat and re-calculating dpe and dpet for moonfire.
@@ -11651,7 +11748,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( buff.friend_of_the_fae->has_common_school( school ) )
-    cpm *= 1.0 + buff.friend_of_the_fae->value();
+    cpm *= 1.0 + buff.friend_of_the_fae->check_value();
 
   return cpm;
 }
@@ -12935,10 +13032,25 @@ public:
   void html_customsection( report::sc_html_stream& os ) override
   {
     if ( p.specialization() == DRUID_FERAL )
+    {
+      os << "<div class=\"player-section custom_section\">\n";
+
       feral_snapshot_table( os );
 
+      if ( p.predator_revealed_stacks )
+        predator_revealed_histogram( os );
+
+      os << "</div>\n";
+    }
+
     if ( p.specialization() == DRUID_BALANCE && p.eclipse_handler.enabled() )
+    {
+      os << "<div class=\"player-section custom_section\">\n";
+
       balance_eclipse_table( os );
+
+      os << "</div>\n";
+    }
   }
 
   void balance_print_data( report::sc_html_stream& os, const spell_data_t* spell,
@@ -12968,8 +13080,7 @@ public:
 
   void balance_eclipse_table( report::sc_html_stream& os )
   {
-    os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Eclipse Utilization</h3>\n"
+    os << "<h3 class=\"toggle open\">Eclipse Utilization</h3>\n"
        << "<div class=\"toggle-content\">\n"
        << "<table class=\"sc even\">\n"
        << "<thead><tr><th></th>\n"
@@ -12990,7 +13101,6 @@ public:
       balance_print_data( os, p.find_spell( 274283 ), *p.eclipse_handler.data.full_moon );
 
     os << "</table>\n"
-       << "</div>\n"
        << "</div>\n";
   }
 
@@ -13016,11 +13126,32 @@ public:
     }
   }
 
+  void predator_revealed_histogram( report::sc_html_stream& os )
+  {
+    // Write header
+    os << "<h3 class=\"toggle open\">Predator Revealed Chart</h3>\n"
+       << "<div class=\"toggle-content\">\n";
+
+    auto& d = *p.predator_revealed_stacks;
+    int num_buckets = 8;
+    d.create_histogram( num_buckets );
+
+    highchart::histogram_chart_t chart( highchart::build_id( p, "predator_revealed_stacks" ), *p.sim );
+    if ( chart::generate_distribution( chart, &p, d.distribution, "When Predator Revealed", d.mean(), 5, 12 ) )
+    {
+      chart.set( "tooltip.headerFormat", "<b>{point.key}</b> stacks<br/>" );
+      os << chart.to_target_div();
+      p.sim->add_chart_data( chart );
+    }
+
+    // Write footer
+    os << "</div>\n";
+  }
+
   void feral_snapshot_table( report::sc_html_stream& os )
   {
     // Write header
-    os << "<div class=\"player-section custom_section\">\n"
-       << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
+    os << "<h3 class=\"toggle open\">Snapshot Table</h3>\n"
        << "<div class=\"toggle-content\">\n"
        << "<table class=\"sc sort even\">\n"
        << "<thead><tr><th></th>\n"
@@ -13110,7 +13241,6 @@ public:
 
     // Write footer
     os << "</table>\n"
-       << "</div>\n"
        << "</div>\n";
   }
 
