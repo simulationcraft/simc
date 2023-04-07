@@ -4756,8 +4756,8 @@ void voice_of_the_silent_star( special_effect_t& effect )
 // 406887 Buff
 void roiling_shadowflame( special_effect_t& e )
 {
-  auto stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) )
-                        ->set_default_value( e.driver()->effectN( 4 ).percent() );
+  auto stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) );
+  stack_buff->set_default_value( stack_buff -> default_value + e.driver() -> effectN( 4 ).percent() );
 
   struct rolling_shadowflame_t : public generic_proc_t
   {
@@ -4794,6 +4794,7 @@ void roiling_shadowflame( special_effect_t& e )
 
   auto damage      = create_proc_action<rolling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
   e.execute_action = damage;
+
   new dbc_proc_callback_t( e.player, e );
 }
 
