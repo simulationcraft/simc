@@ -4750,6 +4750,47 @@ void voice_of_the_silent_star( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Shadowflame-Tempered Armor Patch
+// 406254 Driver
+// 406251 Damage
+// 406887 Buff
+void roiling_shadowfflame( special_effect_t& e )
+{
+  auto stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) )
+                        ->set_expire_at_max_stack( true )
+                        ->set_default_value( e.driver()->effectN( 4 ).percent() );
+
+  struct rolling_shadowflame_t : public generic_proc_t
+  {
+    buff_t* buff;
+
+    rolling_shadowflame_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "roiling_shadowflame", e.player->find_spell( 406251 ) ), buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = generic_proc_t::composite_da_multiplier( state );
+
+      m *= 1.0 + buff->check_stack_value();
+
+      return m;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      buff->trigger();
+    }
+  };
+
+  auto damage      = create_proc_action<rolling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
+  e.execute_action = damage;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace items
 
 namespace sets
@@ -5855,6 +5896,7 @@ void register_special_effects()
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
+  register_special_effect( 406254, items::roiling_shadowfflame );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
