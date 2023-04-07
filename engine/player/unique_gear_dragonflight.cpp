@@ -4754,7 +4754,7 @@ void voice_of_the_silent_star( special_effect_t& effect )
 // 406254 Driver
 // 406251 Damage
 // 406887 Buff
-void roiling_shadowfflame( special_effect_t& e )
+void roiling_shadowflame( special_effect_t& e )
 {
   auto stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) )
                         ->set_expire_at_max_stack( true )
@@ -5896,7 +5896,7 @@ void register_special_effects()
   register_special_effect( 378134, items::allied_chestplate_of_generosity );
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
-  register_special_effect( 406254, items::roiling_shadowfflame );
+  register_special_effect( 406254, items::roiling_shadowflame );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
