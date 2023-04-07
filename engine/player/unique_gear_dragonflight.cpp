@@ -4276,7 +4276,7 @@ void shadowed_razing_annihilator( special_effect_t& e )
     shadowed_razing_annihilator_residual_t( const special_effect_t& e )
       : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ) )
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
     }
   };
 
