@@ -1198,7 +1198,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
 // print_html_action_resource ===============================================
 
-void print_html_action_resource( report::sc_html_stream& os, const stats_t& s )
+void print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
+                                 std::array<double, RESOURCE_MAX>& total_usage )
 {
   std::string decorated_name = report_decorators::decorated_action( *s.action_list.front() );
 
@@ -1209,12 +1210,14 @@ void print_html_action_resource( report::sc_html_stream& os, const stats_t& s )
       os.format( "<tr><td class=\"left\">{}</td><td class=\"left\">{}</td>\n"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}%</td>"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td></tr>\n",
                  decorated_name, util::inverse_tokenize( util::resource_type_string( i ) ),
                  s.resource_gain.count[ i ],
                  s.resource_gain.actual[ i ],
+                 ( s.resource_gain.actual[ i ] ? s.resource_gain.actual[ i ] / total_usage[ i ] * 100.0 : 0.0 ),
                  s.resource_gain.actual[ i ] / s.resource_gain.count[ i ],
                  s.rpe[ i ],
                  s.apr[ i ] );
@@ -2007,7 +2010,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle\">Talents</h3>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  int num_players = p.sim->players_by_name.size();
+  auto num_players = p.sim->players_by_name.size();
   if ( num_players == 1 )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
@@ -2868,8 +2871,18 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
      << "</table>\n";
 }
 
+void get_total_player_usage( const player_t& p, std::array<double, RESOURCE_MAX>& total_usage )
+{
+  for ( const auto& stat : p.stats_list )
+    for ( size_t j = 0; j < total_usage.size(); ++j )
+      total_usage[ j ] += stat->resource_gain.actual[ j ];
+}
+
 void print_html_resource_usage_table( report::sc_html_stream& os, const player_t& p )
 {
+  std::array<double, RESOURCE_MAX> total_player_usage = std::array<double, RESOURCE_MAX>();
+  get_total_player_usage( p, total_player_usage );
+
   os << "<table class=\"sc sort even\">\n"
     << "<thead>\n"
     << "<tr>\n";
@@ -2878,6 +2891,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
   sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Total" );
+  sorttable_header( os, "Tot%" );
   sorttable_header( os, "Avg" );
   sorttable_header( os, "RPE" );
   sorttable_header( os, "APR" );
@@ -2893,12 +2907,15 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
   {
     if ( stat->rpe_sum > 0 )
     {
-      print_html_action_resource( os, *stat );
+      print_html_action_resource( os, *stat, total_player_usage );
     }
   }
 
   for ( const auto& pet : p.pet_list )
   {
+    std::array<double, RESOURCE_MAX> total_pet_usage = std::array<double, RESOURCE_MAX>();
+    get_total_player_usage( *pet, total_pet_usage );
+
     bool first = true;
 
     for ( const auto& stat : pet->stats_list )
@@ -2913,7 +2930,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
           fmt::print(os, "</tr>\n");
 
         }
-        print_html_action_resource( os, *stat );
+        print_html_action_resource( os, *stat, total_pet_usage );
       }
     }
   }
