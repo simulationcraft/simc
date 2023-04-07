@@ -4280,12 +4280,28 @@ void shadowed_razing_annihilator( special_effect_t& e )
     }
   };
 
+  auto aoe_damage =
+      create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e );
+  auto buff = create_buff<buff_t>( e.player, e.driver() )
+                  ->set_quiet( true )
+                  ->set_duration( 4_s ) // Random Number for now til we have in game testing data
+                  ->set_stack_change_callback( [ aoe_damage ]( buff_t*, int, int new_ ) {
+                    if ( !new_ )
+                    {
+                      aoe_damage->execute();
+                    }
+                  } );
+  ;
+
   struct shadowed_razing_annihilator_t : public generic_proc_t
   {
     action_t* aoe;
-    shadowed_razing_annihilator_t( const special_effect_t& e )
+    buff_t* buff;
+
+    shadowed_razing_annihilator_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "shadowed_razing_annihilator", e.driver() ),
-        aoe( create_proc_action<shadowed_razing_annihilator_residual_t>( "impaling_grapnel_missile", e ) )
+        aoe( create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e ) ),
+        buff( b )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
       add_child( aoe );
@@ -4294,11 +4310,11 @@ void shadowed_razing_annihilator( special_effect_t& e )
     void impact( action_state_t* s ) override
     {
       generic_proc_t::impact( s );
-      aoe->execute();
+      buff->trigger();
     }
   };
 
-  e.execute_action = create_proc_action<shadowed_razing_annihilator_t>( "shadowed_razing_annihilator", e );
+  e.execute_action = create_proc_action<shadowed_razing_annihilator_t>( "shadowed_razing_annihilator", e, buff );
 }
 
 // Armor
