@@ -983,6 +983,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
 
+  debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
+                          ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
+                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
 
@@ -1025,6 +1029,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );
+
+  debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
+                                           ->set_default_value_from_effect( 1 );
 
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
@@ -1181,6 +1188,7 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
+  cooldowns.grimoire_felguard = get_cooldown( "grimoire_felguard" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
@@ -1216,6 +1224,9 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
     if ( talents.shadow_embrace->ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+
+    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
@@ -1269,6 +1280,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( talents.summon_demonic_tyrant->ok() )
       m *= 1.0 + buffs.demonic_power->check_value();
+
+    if ( buffs.rite_of_ruvaraad->check() )
+      m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -1295,6 +1309,12 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     if ( talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value(); // Talent spell sets default value according to rank
+    }
+
+    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) && !guardian )
+    {
+      // TOCHECK: Guardian effect is missing from spell data as of 2023-04-04
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
     }
   }
 
@@ -1641,6 +1661,7 @@ void warlock_t::init_spells()
   talents.soulburn_buff = find_spell( 387626 );
 
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
+  version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
 }
 
 void warlock_t::init_rng()
@@ -2012,6 +2033,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_1_0:
+      return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
       return !( version_10_0_7_data == spell_data_t::not_found() );
     case VERSION_10_0_5:

@@ -365,6 +365,10 @@ public:
     propagate_const<buff_t*> fists_of_flowing_momentum;
     propagate_const<buff_t*> fists_of_flowing_momentum_fof;
     propagate_const<buff_t*> brewmasters_rhythm;
+
+    // T30 Set Bonus
+    propagate_const<buff_t*> leverage;
+    propagate_const<buff_t*> leverage_helper;
   } buff;
 
 public:
@@ -430,6 +434,7 @@ public:
 
     // Tier 30
     propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
+    propagate_const<proc_t *> elusive_brawler_preserved;
 
   } proc;
 
@@ -911,6 +916,7 @@ public:
     const spell_data_t *shadowflame_nova;
     const spell_data_t *shadowflame_spirit;
     const spell_data_t *shadowflame_spirit_summon;
+    const spell_data_t* leverage;
 
   } passives;
 

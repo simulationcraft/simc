@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 10.1.0.48776
-static const std::array<permanent_enchant_entry_t, 775> __ptr_permanent_enchant_data { {
+// Permanent item enchants, wow build 10.1.0.48898
+static const std::array<permanent_enchant_entry_t, 778> __ptr_permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -374,7 +374,7 @@ static const std::array<permanent_enchant_entry_t, 775> __ptr_permanent_enchant_
   { 5935,  0,  4, 0x00000400, 0x0000001f, "kul_tiran_surveying"               },
   { 6828,  1,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
   { 6829,  2,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
-  { 6490,  3,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
+  { 6830,  3,  4, 0x00000080, 0x0000001e, "lambent_armor_kit"                 },
   { 4099,  0,  2, 0x00000000, 0x000ae7f3, "landslide"                         },
   { 4104,  0,  4, 0x00000100, 0x0000001e, "lavawalker"                        },
   { 5444,  0,  4, 0x00000400, 0x0000001f, "legion_herbalism"                  },
@@ -601,6 +601,9 @@ static const std::array<permanent_enchant_entry_t, 775> __ptr_permanent_enchant_
   { 6222,  0,  4, 0x00000200, 0x0000001f, "shaded_hearthing"                  },
   { 3256,  0,  4, 0x00010000, 0x0000001e, "shadow_armor"                      },
   { 2614,  0,  4, 0x00000400, 0x0000001f, "shadow_power"                      },
+  { 6906,  1,  4, 0x00000040, 0x0000001e, "shadowed_belt_buckle"              },
+  { 6905,  2,  4, 0x00000040, 0x0000001e, "shadowed_belt_buckle"              },
+  { 6904,  3,  4, 0x00000040, 0x0000001e, "shadowed_belt_buckle"              },
   { 6205,  0,  4, 0x00000400, 0x0000001f, "shadowlands_gathering"             },
   { 4822,  0,  4, 0x00000080, 0x0000001f, "shadowleather_leg_armor"           },
   { 4871,  0,  4, 0x00000080, 0x0000001f, "shatouched_leg_armor"              },

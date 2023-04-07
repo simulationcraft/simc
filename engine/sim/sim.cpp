@@ -3923,6 +3923,8 @@ void sim_t::create_options()
   add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
   add_option( opt_bool( "dragonflight.seething_black_dragonscale_damage", dragonflight_opts.seething_black_dragonscale_damage ) );
+  add_option( opt_string( "dragonflight.glimmering_chromatic_orb_dragonflight", dragonflight_opts.glimmering_chromatic_orb_dragonflight ) );
+  add_option( opt_string( "dragonflight.glimmering_chromatic_orb_allies", dragonflight_opts.glimmering_chromatic_orb_allies ) );
 }
 
 // sim_t::parse_option ======================================================

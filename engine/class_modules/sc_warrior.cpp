@@ -203,6 +203,7 @@ public:
     // Tier
     buff_t* strike_vulnerabilities;
     buff_t* vanguards_determination;
+    buff_t* crushing_advance;
     buff_t* merciless_assault;
 
     // Shadowland Legendary
@@ -263,6 +264,7 @@ public:
     cooldown_t* spear_of_bastion;
     cooldown_t* signet_of_tormented_kings;
     cooldown_t* berserkers_torment;
+    cooldown_t* cold_steel_hot_blood_icd;
   } cooldown;
 
   // Gains
@@ -306,6 +308,7 @@ public:
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
     gain_t* conquerors_banner;
+    gain_t* merciless_assault;
   } gain;
 
   // Spells
@@ -1014,6 +1017,7 @@ struct warrior_action_t : public Base
     bool t29_arms_4pc;
     bool t29_prot_2pc;
     bool t30_arms_2pc;
+    bool t30_arms_4pc;
     bool t30_fury_4pc;
     // azerite & conduit
     bool crushing_assault, ashen_juggernaut_conduit;
@@ -1038,6 +1042,7 @@ struct warrior_action_t : public Base
         t29_arms_4pc ( false ),
         t29_prot_2pc( false ),
         t30_arms_2pc( false ),
+        t30_arms_4pc( false ),
         t30_fury_4pc( false ),
         crushing_assault( false ),
         ashen_juggernaut_conduit( false )
@@ -1183,6 +1188,7 @@ public:
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
     if ( p()->dbc->ptr )
       affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
     affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
     initialized = true;
@@ -1301,6 +1307,11 @@ public:
       c += p()->buff.ashen_juggernaut_conduit->stack_value();
     }
 
+    if( affected_by.t30_fury_4pc )
+    {
+      c += p()->buff.merciless_assault->stack() * p()->find_spell( 409983 )->effectN( 3 ).percent();
+    }
+
     if( affected_by.bloodcraze )
     {
       c += p()->buff.bloodcraze->stack_value();
@@ -1367,6 +1378,11 @@ public:
     if ( affected_by.t29_prot_2pc && p()->buff.vanguards_determination->up() )
     {
       dm *= 1.0 + p()->buff.vanguards_determination->check_value();
+    }
+
+    if ( affected_by.t30_arms_4pc && p()->buff.crushing_advance->up() )
+    {
+      dm *= 1.0 + p()->buff.crushing_advance->stack_value();
     }
 
     if ( affected_by.t30_fury_4pc && p()->buff.merciless_assault->up() )
@@ -2172,7 +2188,87 @@ struct auto_attack_t : public warrior_attack_t
   }
 };
 
+// Rend ==============================================================
+
+struct rend_dot_t : public warrior_attack_t
+{
+  double bloodsurge_chance, rage_from_bloodsurge;
+  rend_dot_t( warrior_t* p )
+    : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
+      bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
+      rage_from_bloodsurge(
+          p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
+  {
+    background = tick_may_crit = true;
+    hasted_ticks               = true;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    warrior_attack_t::tick( d );
+    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+  }
+};
+
+struct rend_t : public warrior_attack_t
+{
+  warrior_attack_t* rend_dot;
+  rend_t( warrior_t* p, util::string_view options_str )
+    : warrior_attack_t( "rend", p, p->talents.arms.rend ),
+      rend_dot( nullptr )
+  {
+    parse_options( options_str );
+    tick_may_crit = true;
+    hasted_ticks  = true;
+    rend_dot      = new rend_dot_t( p );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warrior_attack_t::impact( s );
+
+    rend_dot->set_target( s->target );
+    rend_dot->execute();
+  }
+
+  bool ready() override
+  {
+    if ( p()->main_hand_weapon.type == WEAPON_NONE )
+    {
+      return false;
+    }
+    return warrior_attack_t::ready();
+  }
+};
+
 // Mortal Strike ============================================================
+struct crushing_advance_t : warrior_attack_t
+{
+  crushing_advance_t( warrior_t* p ) : warrior_attack_t( "crushing_advance", p, p->find_spell( 411703 ) )
+  {
+    aoe                 = -1;
+    reduced_aoe_targets = 5.0;
+    background          = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    if ( p()->buff.crushing_advance->stack() > 1 )
+    {
+      am *= 1.0 + ( p()->buff.crushing_advance->stack() - 1 ) * 0.5;
+    }
+    // gains a 50% damage bonus for each stack beyond the first
+    // 1 stack = base damage, 2 stack = +50%, 3 stack = +100%
+    // Not in spell data
+
+    return am;
+  }
+};
 
 struct mortal_strike_unhinged_t : public warrior_attack_t
 {
@@ -2180,11 +2276,13 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
   bool from_mortal_combo;
   double enduring_blow_chance;
   double mortal_combo_chance;
+  warrior_attack_t* crushing_advance;
   mortal_strike_unhinged_t( warrior_t* p, util::string_view name, bool mortal_combo = false )
-  : warrior_attack_t( name, p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
-  from_mortal_combo( mortal_combo ),
-  enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
-  mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() )
+    : warrior_attack_t( name, p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
+      from_mortal_combo( mortal_combo ),
+      enduring_blow_chance( p->legendary.enduring_blow->proc_chance() ),
+      mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
+      crushing_advance( nullptr )
   {
     background = true;
     if ( p->conduit.mortal_combo->ok() && !from_mortal_combo )
@@ -2194,6 +2292,12 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
     }
     cooldown->duration = timespan_t::zero();
     weapon             = &( p->main_hand_weapon );
+
+    if ( p->tier_set.t30_arms_4pc->ok() )
+    {
+      crushing_advance = new crushing_advance_t( p );
+      add_child( crushing_advance );
+    }
   }
 
   double action_multiplier() const override
@@ -2226,6 +2330,14 @@ struct mortal_strike_unhinged_t : public warrior_attack_t
         execute_state->target->debuffs.mortal_wounds->trigger();
       }
     }
+
+    if ( crushing_advance && p()->buff.crushing_advance->check() )
+    {
+      // crushing_advance->set_target( s->target );
+      crushing_advance->execute();
+    }
+
+    p()->buff.crushing_advance->expire();
     p()->buff.martial_prowess->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -2281,6 +2393,8 @@ struct mortal_strike_t : public warrior_attack_t
   double exhilarating_blows_chance;
   double frothing_berserker_chance;
   double rage_from_frothing_berserker;
+  warrior_attack_t* crushing_advance;
+  warrior_attack_t* rend_dot;
   mortal_strike_t( warrior_t* p, util::string_view options_str, bool mortal_combo = false )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ), mortal_combo_strike( nullptr ),
       from_mortal_combo( mortal_combo ),
@@ -2288,7 +2402,9 @@ struct mortal_strike_t : public warrior_attack_t
       mortal_combo_chance( mortal_combo ? 0.0 : p->conduit.mortal_combo.percent() ),
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
-      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 )
+      rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).base_value() / 100.0 ),
+      crushing_advance( nullptr ),
+      rend_dot( nullptr )
   {
     parse_options( options_str );
 
@@ -2301,6 +2417,13 @@ struct mortal_strike_t : public warrior_attack_t
     weapon           = &( p->main_hand_weapon );
     cooldown->hasted = true;  // Doesn't show up in spelldata for some reason.
     impact_action    = p->active.deep_wounds_ARMS;
+    rend_dot = new rend_dot_t( p );
+
+    if ( p->tier_set.t30_arms_4pc->ok() )
+    {
+      crushing_advance = new crushing_advance_t( p );
+      add_child( crushing_advance );
+    }
   }
 
   double cost() const override
@@ -2365,6 +2488,13 @@ struct mortal_strike_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p()->cooldown.cleave->reset( true );
     }
+    if ( crushing_advance && p()->buff.crushing_advance->check() )
+    {
+      //crushing_advance->set_target( s->target );
+      crushing_advance->execute();
+    }
+
+    p()->buff.crushing_advance->expire();
     p()->buff.martial_prowess->expire();
 
     warrior_td_t* td = this->td( execute_state->target );
@@ -2398,6 +2528,11 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
       p()->buff.strike_vulnerabilities->trigger();
+    }
+    if ( p()->dbc->ptr && p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    {
+      rend_dot->set_target( s->target );
+      rend_dot->execute();
     }
   }
 
@@ -2733,7 +2868,7 @@ struct bloodthirst_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
-  double merciless_assault_crit;
+  double rage_from_merciless_assault;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
@@ -2741,7 +2876,7 @@ struct bloodthirst_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
+      rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
 
@@ -2761,7 +2896,6 @@ struct bloodthirst_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-      //add_child( gushing_wound );
     }
   }
 
@@ -2791,18 +2925,6 @@ struct bloodthirst_t : public warrior_attack_t
     return am;
   }
 
-  double composite_crit_chance() const override
-  {
-    double cc = warrior_attack_t::composite_crit_chance();
-
-    if ( p()->buff.merciless_assault->check() )
-    {
-      cc += merciless_assault_crit;
-    }
-
-    return cc;
-  }
-
   void impact( action_state_t* s ) override
   {
     warrior_attack_t::impact( s );
@@ -2817,9 +2939,17 @@ struct bloodthirst_t : public warrior_attack_t
       gushing_wound->execute();
     }
 
-    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
+    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
+         p()->cooldown.cold_steel_hot_blood_icd->up() )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
+      p() -> cooldown.cold_steel_hot_blood_icd->start();
+    }
+
+    if ( p()->tier_set.t30_fury_4pc->ok() && target == s->target )
+    {
+      p()->resource_gain( RESOURCE_RAGE, p()->buff.merciless_assault->stack() * rage_from_merciless_assault,
+                          p()->gain.merciless_assault );
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
@@ -2880,7 +3010,7 @@ struct bloodbath_t : public warrior_attack_t
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
-  double merciless_assault_crit;
+  double rage_from_merciless_assault;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
@@ -2888,7 +3018,7 @@ struct bloodbath_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      merciless_assault_crit( p->find_spell( 409983 )->effectN( 3 ).base_value() )
+      rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 )
   {
     parse_options( options_str );
 
@@ -2908,7 +3038,6 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
-      //add_child( gushing_wound );
     }
   }
 
@@ -2921,16 +3050,21 @@ struct bloodbath_t : public warrior_attack_t
     return warrior_attack_t::n_targets();
   }
 
-  double composite_crit_chance() const override
+  double action_multiplier() const override
   {
-    double cc = warrior_attack_t::composite_crit_chance();
+    double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.merciless_assault->check() )
+    if ( p()->conduit.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
     {
-      cc += merciless_assault_crit;
+      am *= 1.0 + ( p()->conduit.vicious_contempt.value() / 100.0 );
     }
 
-    return cc;
+    if ( p()->talents.fury.vicious_contempt->ok() && ( target->health_percentage() < 35 ) )
+    {
+      am *= 1.0 + ( p()->talents.fury.vicious_contempt->effectN( 1 ).percent() );
+    }
+
+    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -2948,9 +3082,16 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound->execute();
     }
 
-    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT )
+    if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
+         p()->cooldown.cold_steel_hot_blood_icd->up() )
     {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_cold_steel_hot_blood, p()->gain.cold_steel_hot_blood );
+      p()->cooldown.cold_steel_hot_blood_icd->start();
+    }
+
+    if ( p()->tier_set.t30_fury_4pc->ok() && target == s->target )
+    {
+      p()->resource_gain( RESOURCE_RAGE, p()->buff.merciless_assault->stack() * rage_from_merciless_assault,
+                          p()->gain.merciless_assault );
     }
 
     p()->buff.fujiedas_fury->trigger( 1 );
@@ -2976,7 +3117,6 @@ struct bloodbath_t : public warrior_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      p()->buff.fujiedas_fury->trigger( 1 );
       if ( bloodthirst_heal )
       {
         bloodthirst_heal->execute();
@@ -3313,6 +3453,11 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
     if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
+    }
+
+    if ( p()->tier_set.t30_arms_4pc->ok() && d->state->result == RESULT_CRIT )
+    {
+      p()->buff.crushing_advance->trigger();
     }
   }
 };
@@ -4885,11 +5030,6 @@ struct rampage_attack_t : public warrior_attack_t
       warrior_attack_t::impact( s );
 
        // s->target will only activate on strikes against the primary target, ignoring cleaved attacks.
-      //if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT && target == s->target ) // remove ICD from buff
-      if ( p()->tier_set.t30_fury_4pc->ok() && s->result == RESULT_CRIT )
-      {
-        p()->buff.merciless_assault->trigger();
-      }
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
       {
@@ -5053,6 +5193,10 @@ struct rampage_parent_t : public warrior_attack_t
     if ( p()->azerite.trample_the_weak.ok() )
     {
       p()->buff.trample_the_weak->trigger();
+    }
+    if ( p()->tier_set.t30_fury_4pc->ok() )
+    {
+      p()->buff.merciless_assault->trigger();
     }
 
     p()->enrage();
@@ -5292,58 +5436,7 @@ struct enraged_regeneration_t : public warrior_heal_t
   }
 };
 
-// Rend ==============================================================
-
-struct rend_dot_t : public warrior_attack_t
-{
-  double bloodsurge_chance, rage_from_bloodsurge;
-  rend_dot_t( warrior_t* p ) : warrior_attack_t( "rend", p, p->find_spell( 388539 ) ),
-    bloodsurge_chance( p->talents.shared.bloodsurge->proc_chance() ),
-    rage_from_bloodsurge( p->talents.shared.bloodsurge->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_RAGE ) )
-  {
-    background = tick_may_crit = true;
-    hasted_ticks               = true;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
-    {
-      p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
-    }
-  }
-};
-
-struct rend_t : public warrior_attack_t
-{
-  warrior_attack_t* rend_dot;
-  rend_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "rend", p, p->talents.arms.rend ),
-  rend_dot( nullptr )
-  {
-    parse_options( options_str );
-    tick_may_crit = true;
-    hasted_ticks  = true;
-    rend_dot = new rend_dot_t( p );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warrior_attack_t::impact( s );
-
-      rend_dot->set_target( s->target );
-      rend_dot->execute();
-  }
-
-  bool ready() override
-  {
-    if ( p()->main_hand_weapon.type == WEAPON_NONE )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
+// Prot Rend ==============================================================
 
 struct rend_dot_prot_t : public warrior_attack_t
 {
@@ -8512,6 +8605,8 @@ void warrior_t::init_spells()
   cooldown.tough_as_nails_icd -> duration   = talents.protection.tough_as_nails->effectN( 1 ).trigger() -> internal_cooldown();
   cooldown.thunder_clap                     = get_cooldown( "thunder_clap" );
   cooldown.warbreaker                       = get_cooldown( "warbreaker" );
+  cooldown.cold_steel_hot_blood_icd         = get_cooldown( "cold_steel_hot_blood" );
+  cooldown.cold_steel_hot_blood_icd -> duration = talents.fury.cold_steel_hot_blood->effectN( 2 ).trigger() -> internal_cooldown();
 }
 
 // warrior_t::init_base =====================================================
@@ -9629,11 +9724,14 @@ void warrior_t::create_buffs()
                                     ->set_default_value( find_spell( 394056 )->effectN( 1 ).percent());
 
   // T30 Tier Effects ===============================================================================================================
+  buff.crushing_advance = make_buff( this, "crushing_advance", tier_set.t30_arms_4pc->ok() ?
+                               find_spell( 410138 ) : spell_data_t::not_found() )
+                          ->set_default_value( find_spell( 410138 )->effectN( 1 ).percent() );
+
   buff.merciless_assault = make_buff( this, "merciless_assault", tier_set.t30_fury_4pc->ok() ? 
                                 find_spell( 409983 ) : spell_data_t::not_found() )
-                    ->set_cooldown( 1.0_s ) // faux implementation to limit 1 stack per cast - not in spell data
-                    ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
-                    ->set_duration( find_spell( 409983 )->duration() );
+                           ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
+                           ->set_duration( find_spell( 409983 )->duration() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -9705,6 +9803,7 @@ void warrior_t::init_gains()
 
   // Azerite
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
+  gain.merciless_assault      = get_gain( "merciless_assault" );
 }
 
 // warrior_t::init_position ====================================================

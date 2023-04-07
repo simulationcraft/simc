@@ -851,9 +851,11 @@ struct summon_fiend_t final : public priest_spell_t
 // Echoing Void
 // TODO: move to sc_priest_shadow.cpp
 // ==========================================================================
-struct echoing_void_t final : public priest_spell_t
+struct echoing_void_demise_t final : public priest_spell_t
 {
-  echoing_void_t( priest_t& p ) : priest_spell_t( "echoing_void", p, p.find_spell( 373304 ) )
+  int stacks;
+
+  echoing_void_demise_t( priest_t& p ) : priest_spell_t( "echoing_void_demise", p, p.find_spell( 373304 ) ), stacks( 1 )
   {
     background          = true;
     proc                = false;
@@ -864,6 +866,68 @@ struct echoing_void_t final : public priest_spell_t
     reduced_aoe_targets = data().effectN( 2 ).base_value();
 
     affected_by_shadow_weaving = true;
+  }
+
+  // Demise action does not hit the target we are triggering it on, only using it for the proper radius
+  std::vector<player_t*>& target_list() const override
+  {
+    target_cache.is_valid = false;
+
+    std::vector<player_t*>& tl = priest_spell_t::target_list();
+
+    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
+    return tl;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    m *= stacks;
+
+    return m;
+  }
+
+  // Demise trigger for Idol of N'Zoth
+  // When something dies that has stacks it explodes around that target
+  // based on how many stacks it has. 10 stacks == 1 explosion 10x more powerful
+  void trigger( player_t* target, int trigger_stacks )
+  {
+    if ( trigger_stacks == 0 )
+    {
+      return;
+    }
+
+    stacks = trigger_stacks;
+    sim->print_debug( "{} dies. Triggering {} stacks of echoing_void", target->name(), trigger_stacks );
+    set_target( target );
+    execute();
+  }
+};
+
+struct echoing_void_t final : public priest_spell_t
+{
+  stats_t* child_action_stats;
+
+  echoing_void_t( priest_t& p )
+    : priest_spell_t( "echoing_void", p, p.find_spell( 373304 ) ), child_action_stats( nullptr )
+  {
+    background          = true;
+    proc                = false;
+    callbacks           = true;
+    may_miss            = false;
+    aoe                 = -1;
+    range               = data().effectN( 1 ).radius_max();
+    reduced_aoe_targets = data().effectN( 2 ).base_value();
+
+    affected_by_shadow_weaving = true;
+
+    child_action_stats = priest().get_stats( "echoing_void_demise" );
+    if ( child_action_stats )
+    {
+      stats->add_child( child_action_stats );
+    }
   }
 };
 
@@ -1550,9 +1614,9 @@ void priest_td_t::target_demise()
   // Stacks of Idol of N'Zoth will detonate on death
   if ( priest().talents.shadow.idol_of_nzoth.enabled() )
   {
-    for ( int i = 0; i < buffs.echoing_void->check(); ++i )
+    if ( buffs.echoing_void->check() )
     {
-      priest().background_actions.echoing_void->execute_on_target( target );
+      priest().background_actions.echoing_void_demise->trigger( target, buffs.echoing_void->check() );
     }
   }
 
@@ -2197,7 +2261,8 @@ void priest_t::init_rng()
 
 void priest_t::init_background_actions()
 {
-  background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
+  background_actions.echoing_void        = new actions::spells::echoing_void_t( *this );
+  background_actions.echoing_void_demise = new actions::spells::echoing_void_demise_t( *this );
   init_background_actions_shadow();
   init_background_actions_discipline();
   init_background_actions_holy();
@@ -2551,7 +2616,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }

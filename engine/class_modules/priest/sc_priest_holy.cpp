@@ -373,7 +373,9 @@ void priest_t::create_buffs_holy()
 
   buffs.divine_favor_chastise = make_buff( this, "divine_favor_chastise", talents.holy.divine_favor_chastise );
 
-  buffs.divine_image = make_buff( this, "divine_image", talents.holy.divine_image_buff );
+  buffs.divine_image = make_buff( this, "divine_image", talents.holy.divine_image_buff )
+                           ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 }
 
 void priest_t::init_rng_holy()

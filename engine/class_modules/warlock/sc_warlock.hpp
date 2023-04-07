@@ -13,6 +13,7 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_10_1_0,
   VERSION_10_0_7,
   VERSION_10_0_5,
   VERSION_10_0_0,
@@ -50,6 +51,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_dread_touch;
   propagate_const<buff_t*> debuffs_cruel_epiphany; // Dummy debuff applied to primary target of Seed of Corruption for bug purposes
+  propagate_const<buff_t*> debuffs_infirmity; // T30 4pc
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -64,6 +66,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_doom;
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
+  propagate_const<buff_t*> debuffs_the_houndmasters_stratagem;
   propagate_const<buff_t*> debuffs_fel_sunder; // Done in owner target data for easier handling
   propagate_const<buff_t*> debuffs_kazaaks_final_curse; // Not an actual debuff in-game, but useful as a utility feature for Doom
 
@@ -308,8 +311,10 @@ public:
     player_talent_t bilescourge_bombers;
     const spell_data_t* bilescourge_bombers_aoe; // Ground AoE data
     player_talent_t demonic_strength;
-    player_talent_t from_the_shadows;
-    const spell_data_t* from_the_shadows_debuff; // Tooltip says "Shadowflame" but this contains an explicit whitelist (for the *warlock*, pets are unknown and we'll fall back to schools)
+    player_talent_t from_the_shadows; // TODO: REPLACED in 10.1
+    const spell_data_t* from_the_shadows_debuff; // TODO: REPLACED in 10.1
+    player_talent_t the_houndmasters_stratagem; // Whitelisted warlock spells do more damage to target afflicted with debuff
+    const spell_data_t* the_houndmasters_stratagem_debuff; // Debuff applied by Dreadstalker's Dreadbite
 
     player_talent_t implosion;
     const spell_data_t* implosion_aoe; // Note: in combat logs this is attributed to the player, not the imploding pet
@@ -477,16 +482,18 @@ public:
   struct tier_sets_t
   {
     // Affliction
-    const spell_data_t* cruel_inspiration; // 2pc procs haste buff
-    const spell_data_t* cruel_epiphany; // 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
+    const spell_data_t* cruel_inspiration; // T29 2pc procs haste buff
+    const spell_data_t* cruel_epiphany; // T29 4pc also procs stacks of this buff when 2pc procs, increases Malefic Rapture/Seed of Corruption damage
+    const spell_data_t* infirmity; // T30 4pc applies this debuff when using Vile Taint/Phantom Singularity
 
     // Demonology
-    const spell_data_t* blazing_meteor; // 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
+    const spell_data_t* blazing_meteor; // T29 4pc procs buff which makes next Hand of Gul'dan instant + increased damage
+    const spell_data_t* rite_of_ruvaraad; // T30 4pc buff which increases pet damage while Grimoire: Felguard is active
 
     // Destruction 
-    const spell_data_t* chaos_maelstrom; // 2pc procs crit chance buff
-    const spell_data_t* channel_demonfire; // 2pc damage proc is separate from talent version
-    const spell_data_t* umbrafire_embers; // 4pc enables stacking buff on 2pc procs
+    const spell_data_t* chaos_maelstrom; // T29 2pc procs crit chance buff
+    const spell_data_t* channel_demonfire; // T30 2pc damage proc is separate from talent version
+    const spell_data_t* umbrafire_embers; // T30 4pc enables stacking buff on 2pc procs
   } tier;
 
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
@@ -501,6 +508,7 @@ public:
     propagate_const<cooldown_t*> call_dreadstalkers;
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine
+    propagate_const<cooldown_t*> grimoire_felguard;
   } cooldowns;
 
   // Buffs
@@ -553,6 +561,7 @@ public:
     propagate_const<buff_t*> nether_portal_total; // Dummy buff. Used for Gul'dan's Ambition as the counter to trigger Soul Gluttony
     propagate_const<buff_t*> demonic_servitude; // From Reign of Tyranny talent
     propagate_const<buff_t*> blazing_meteor; // T29 4pc buff
+    propagate_const<buff_t*> rite_of_ruvaraad; // T30 4pc buff
 
     // Destruction Buffs
     propagate_const<buff_t*> backdraft;
@@ -653,6 +662,7 @@ public:
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_10_0_7_data;
+  const spell_data_t* version_10_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
