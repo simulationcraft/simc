@@ -4765,11 +4765,11 @@ void roiling_shadowflame( special_effect_t& e )
   }
   stack_buff->set_default_value( stack_buff -> default_value + e.driver() -> effectN( 4 ).percent() );
 
-  struct rolling_shadowflame_t : public generic_proc_t
+  struct roiling_shadowflame_t : public generic_proc_t
   {
     buff_t* buff;
 
-    rolling_shadowflame_t( const special_effect_t& e, buff_t* b )
+    roiling_shadowflame_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "roiling_shadowflame", e.player->find_spell( 406251 ) ), buff( b )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
