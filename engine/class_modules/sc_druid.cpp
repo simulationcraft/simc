@@ -3986,6 +3986,9 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
 
   std::vector<player_t*>& target_list() const override
   {
+    if ( !target_cache.is_valid )
+      bleed->target_cache.is_valid = false;
+
     auto& tl = base_t::target_list();
 
     // When Double-Clawed Rake is active, this is an AoE action meaning it will impact onto the first 2 targets in the
@@ -4418,14 +4421,6 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
-  }
-
-  bool has_amount_result() const override
-  {
-    if ( !p()->is_ptr() )
-      return cat_attack_t::has_amount_result();
-    else
-      return impact_action->has_amount_result();
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -6711,6 +6706,7 @@ struct fury_of_elune_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void execute() override
@@ -6813,6 +6809,7 @@ struct lunar_beam_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void execute() override
@@ -7246,7 +7243,16 @@ struct moonfire_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
+
+  std::vector<player_t*>& target_list() const
+  {
+    if ( !target_cache.is_valid )
+      damage->target_cache.is_valid = false;
+
+    return druid_spell_t::target_list();
+  }
 
   void init() override
   {
@@ -8135,7 +8141,16 @@ struct sunfire_t : public druid_spell_t
     energize_amount += p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
   }
 
+  // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
+
+  std::vector<player_t*>& target_list() const
+  {
+    if ( !target_cache.is_valid )
+      damage->target_cache.is_valid = false;
+
+    return druid_spell_t::target_list();
+  }
 
   void gain_energize_resource( resource_e rt, double amt, gain_t* gain ) override
   {
