@@ -4798,7 +4798,7 @@ void roiling_shadowflame( special_effect_t& e )
     }
   };
 
-  auto damage      = create_proc_action<rolling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
+  auto damage      = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
   e.execute_action = damage;
 
   new dbc_proc_callback_t( e.player, e );
