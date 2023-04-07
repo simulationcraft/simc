@@ -4804,6 +4804,36 @@ void roiling_shadowflame( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Shadowed Impact Buckler
+// 408392 Driver
+// 410226 Stacking Buff
+// 410228 Damage
+// 7-4-2023 Speculative Implementation based off Spell Data and Tooltip
+// No in game testing has been done on this yet.
+void shadowed_impact_buckler( special_effect_t& e )
+{
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "shadowed_impact_buckler", e, "shadowed_impact_buckler",
+                                                        e.player->find_spell( 410228 ) );
+  damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+
+  auto stack_buff = create_buff<buff_t>( e.player, "hellsteel_impact_buckler", e.player->find_spell( 410226 ) )
+                        ->set_expire_at_max_stack( true )
+                        ->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+                          if ( !new_ )
+                          {
+                            // Executes the damage 5 times, might be better to setup a for loop
+                            damage->execute();
+                            damage->execute();
+                            damage->execute();
+                            damage->execute();
+                            damage->execute();
+                          }
+                        } );
+
+  e.custom_buff = stack_buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace items
 
 namespace sets
@@ -5910,6 +5940,7 @@ void register_special_effects()
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
   register_special_effect( 406254, items::roiling_shadowflame );
+  register_special_effect( 408392, items::shadowed_impact_buckler );
 
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
