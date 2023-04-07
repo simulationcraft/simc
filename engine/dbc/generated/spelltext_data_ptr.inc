@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48898
-static const std::array<spelltext_data_t, 19840> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19591,6 +19591,7 @@ static const std::array<spelltext_data_t, 19840> __ptr_spelltext_data { {
   { 406158, "Final Reckoning and Execution Sentence grant $408386s1 Holy Power.", 0, 0 },
   { 406219, "Occasionally you adapt to your current situation for $406921d.\r\n\r\nTaking damage can grant you $s2 Versatility and Critical Strike. \r\n\r\nCausing critical damage or healing can grant you $s2 Mastery and Haste.", 0, 0 },
   { 406244, "Dealing damage with spells and abilities has a chance to apply a stack of Ever-Decaying Spores to your target. At 5 stacks the spores rapidly decay and inflict ${$s2*$407090d} Nature damage over $407090d.\r\n\r\nSometimes the spores will immediately decay and inflict $s2 Nature damage to you.\r\n\r\nThis effect is increased by $378758s2% if you equip an item crafted with a Toxified Armor Patch.", 0, 0 },
+  { 406251, "$@spelldesc406254", "Suffering $w1 Shadowflame damage.", 0 },
   { 406254, "Dealing damage has a chance to rouse the Shadowflame, inflicting $s2 Shadowflame damage upon your target and $s3 Shadowflame damage to yourself. Whenever this happens, you gain a stack of Roused Shadowflame.\r\n\r\nRoused Shadowflame increases this effects damage by $s4%, stacking $406887u times. Upon reaching maximum stacks, the Roused Shadowflame will subside.", 0, 0 },
   { 406295, "Apply a Lambent Armor Kit to your leg armor, causing it to permanently gain $ec1 to all Primary stats, as well as $ec2 Versatility.", 0, 0 },
   { 406298, "Apply a Lambent Armor Kit to your leg armor, causing it to permanently gain $ec1 to all Primary stats, as well as $ec2 Versatility.", 0, 0 },
