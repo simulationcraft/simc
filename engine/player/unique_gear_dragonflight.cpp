@@ -4061,6 +4061,22 @@ void ward_of_the_faceless_ire( special_effect_t& e )
   }
 }
 
+// Treemouth's Festering Splinter
+void treemouths_festering_splinter( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_proc_t>( "treemouths_festering_splinter", e, "treemouths_festering_splinter",
+                                                    e.driver() );
+  damage->base_dd_min = damage->base_dd_max =
+      0;  // Override the damage to 0 as this is dealt to the player, not the target.
+          // Letting Simc auto parse this portion makes it think the damage is dealt to the target.
+  auto absorb_buff = create_buff<absorb_buff_t>( e.player, e.driver() )
+      ->set_default_value_from_effect( 2 )
+      ->set_cooldown( 0_ms ); // Overriding Cooldown as its handled by the action
+
+  e.execute_action = damage;
+  e.custom_buff    = absorb_buff;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -5811,6 +5827,7 @@ void register_special_effects()
   register_special_effect( 401306, items::elementium_pocket_anvil );
   register_special_effect( 401513, items::glimmering_chromatic_orb );
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
+  register_special_effect( 395175, items::treemouths_festering_splinter );
 
 
   // Weapons
