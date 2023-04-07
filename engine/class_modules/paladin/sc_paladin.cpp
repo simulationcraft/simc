@@ -797,7 +797,7 @@ struct crusading_strike_t : public paladin_melee_attack_t
     background = true;
     trigger_gcd = 0_ms;
 
-    if ( p->talents.blade_of_light->ok() )
+    if ( p->talents.blades_of_light->ok() )
     {
       affected_by.hand_of_light = true;
     }
@@ -970,7 +970,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    if ( p->talents.blade_of_light->ok() )
+    if ( p->talents.blades_of_light->ok() )
     {
       affected_by.hand_of_light = true;
     }
