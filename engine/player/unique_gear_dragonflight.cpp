@@ -4757,7 +4757,6 @@ void voice_of_the_silent_star( special_effect_t& effect )
 void roiling_shadowflame( special_effect_t& e )
 {
   auto stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) )
-                        ->set_expire_at_max_stack( true )
                         ->set_default_value( e.driver()->effectN( 4 ).percent() );
 
   struct rolling_shadowflame_t : public generic_proc_t
@@ -4782,7 +4781,14 @@ void roiling_shadowflame( special_effect_t& e )
     void impact( action_state_t* s ) override
     {
       generic_proc_t::impact( s );
-      buff->trigger();
+      if ( buff->at_max_stacks() )
+      {
+        buff->expire();
+      }
+      else
+      {
+        buff->trigger();
+      }
     }
   };
 
