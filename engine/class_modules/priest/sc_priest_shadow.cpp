@@ -605,37 +605,55 @@ struct shadowy_apparition_state_t : public action_state_t
 {
   double source_crit;
   double number_spawned;
+  bool buffed_by_darkflame_shroud;
+  double darkflame_shroud_mult;
 
   shadowy_apparition_state_t( action_t* a, player_t* t )
-    : action_state_t( a, t ), source_crit( 1.0 ), number_spawned( 1.0 )
+    : action_state_t( a, t ),
+      source_crit( 1.0 ),
+      number_spawned( 1.0 ),
+      buffed_by_darkflame_shroud( false ),
+      darkflame_shroud_mult( t->find_spell( 410871 )->effectN( 1 ).percent() )
   {
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, " source_crit={}, number_spawned={}", source_crit, number_spawned );
+    fmt::print( s, " source_crit={}, number_spawned={}, buffed_by_darkflame_shroud={}", source_crit, number_spawned,
+                buffed_by_darkflame_shroud );
     return s;
   }
 
   void initialize() override
   {
     action_state_t::initialize();
-    source_crit    = 1.0;
-    number_spawned = 1.0;
+    source_crit                = 1.0;
+    number_spawned             = 1.0;
+    buffed_by_darkflame_shroud = false;
   }
 
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
-    auto other_sa_state = debug_cast<const shadowy_apparition_state_t*>( o );
-    number_spawned      = other_sa_state->number_spawned;
-    source_crit         = other_sa_state->source_crit;
+    auto other_sa_state        = debug_cast<const shadowy_apparition_state_t*>( o );
+    number_spawned             = other_sa_state->number_spawned;
+    source_crit                = other_sa_state->source_crit;
+    buffed_by_darkflame_shroud = other_sa_state->buffed_by_darkflame_shroud;
   }
 
   double composite_da_multiplier() const override
   {
-    return action_state_t::composite_da_multiplier() * source_crit;
+    double m = action_state_t::composite_da_multiplier();
+
+    m *= source_crit;
+
+    if ( buffed_by_darkflame_shroud )
+    {
+      m *= 1 + darkflame_shroud_mult;
+    }
+
+    return m;
   }
 };
 
@@ -669,9 +687,6 @@ public:
       {
         coalescing_shadows_chance = priest().talents.shadow.puppet_master->proc_chance();
       }
-
-      da_multiplier_buffeffects.emplace_back( nullptr, priest().buffs.darkflame_shroud->default_value, false, false,
-                                              [ this ] { return priest().buffs.darkflame_shroud->check(); } );
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -783,6 +798,9 @@ public:
     s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
     s->target         = target;
+
+    // Darkflame Shroud buffs Apparitions as they spawn, not on hit
+    s->buffed_by_darkflame_shroud = priest().buffs.darkflame_shroud->check();
 
     proc->occur();
 
