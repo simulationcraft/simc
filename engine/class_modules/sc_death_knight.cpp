@@ -5235,11 +5235,6 @@ struct death_coil_damage_t final : public death_knight_spell_t
       residual_action::trigger( coil_of_devastation, state -> target,
                                 state -> result_amount * p() -> talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
-
-    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
-    {
-      get_td( target ) -> debuff.rotten_touch -> trigger();
-    }
   }
 private:
     propagate_const<action_t*> coil_of_devastation;
@@ -5322,13 +5317,11 @@ struct death_coil_t final : public death_knight_spell_t
       }
     }
 
-    /*
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
          result_is_hit( state -> result ) )
     {
       get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
-    */
   }
 
 };
