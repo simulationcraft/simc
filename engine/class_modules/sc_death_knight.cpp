@@ -2273,7 +2273,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     // Note: for some dumb reason, WCL has the ghoul's AP and SP swapped
     // Running a script ingame shows the correct values
-    owner_coeff.ap_from_ap = 0.54;
+    owner_coeff.ap_from_ap = 0.594;
   }
 
   void init_gains() override
@@ -2377,7 +2377,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
-    owner_coeff.ap_from_ap = 0.424;
+    owner_coeff.ap_from_ap = 0.4664;
   }
 
   void init_action_list() override
@@ -10939,6 +10939,53 @@ struct death_knight_module_t : public module_t {
   
   void register_hotfixes() const override
   {
+      hotfix::register_spell( "Death Knight", "2023-4-7", "Gargoyle Strike Cast time increased to 2.5s", 51963, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "cast_time" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2500 )
+      .verification_value( 2000 );
+      
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Gargoyle Strike buffed by 25%", 44400, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.36 )
+      .verification_value( 0.28800 );
+            
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Scourge Strike Physical buffed by 20%", 48019, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.484476 )
+      .verification_value( 0.40373 );
+
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Scourge Strike Shadow buffed by 20%", 214692, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.26688 )
+      .verification_value( 0.22240 );
+    
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Clawing Shadows buffed by 20%", 324719, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.710568 )
+      .verification_value( 0.59214 );
+
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Death Coil buffed by 10%", 39872, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.517341 )
+      .verification_value( 0.47031 );
+
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Soul Reaper Initial buffed by 15%", 844983, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.4301 )
+      .verification_value( 0.37400 );
+
+      hotfix::register_effect( "Death Knight", "2023-4-7", "Soul Reaper Execute buffed by 15%", 844986, hotfix::HOTFIX_FLAG_LIVE )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.9734 )
+      .verification_value( 1.71600 );
   }
   
   void init( player_t* ) const override {}
