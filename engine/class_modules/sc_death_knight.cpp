@@ -5235,6 +5235,11 @@ struct death_coil_damage_t final : public death_knight_spell_t
       residual_action::trigger( coil_of_devastation, state -> target,
                                 state -> result_amount * p() -> talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
+
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      get_td( target ) -> debuff.rotten_touch -> trigger();
+    }
   }
 private:
     propagate_const<action_t*> coil_of_devastation;
@@ -5282,12 +5287,6 @@ struct death_coil_t final : public death_knight_spell_t
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
-    }
-
-    // Currently Rotten Touch only triggers on the main target
-    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
-    {
-      get_td( target ) -> debuff.rotten_touch -> trigger();
     }
 
     if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
