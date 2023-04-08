@@ -3403,11 +3403,6 @@ struct death_knight_disease_t : public death_knight_spell_t
     { 
       base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
     }
-    
-    if ( p() -> talent.blood.rapid_decomposition.ok() )
-    { 
-      base_tick_time *= 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
-    }
 
     return base_tick_time;
   }
@@ -3436,7 +3431,7 @@ struct blood_plague_t final : public death_knight_disease_t
   {
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
-
+    base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
@@ -3543,7 +3538,7 @@ struct virulent_plague_t final : public death_knight_disease_t
     dot_duration *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 2 ).percent();
 
     base_multiplier *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 3 ).percent();
-
+    base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 1 ).percent();
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
 
@@ -3559,18 +3554,6 @@ struct virulent_plague_t final : public death_knight_disease_t
         superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever", p, true ) );
       }
     }
-  }
-
-  timespan_t tick_time ( const action_state_t* a ) const override
-  {
-    timespan_t base_tick_time = death_knight_disease_t::tick_time( a );
-
-    if ( p() -> talent.unholy.ebon_fever.ok() )
-    {
-      base_tick_time *= 1.0 + p()->talent.unholy.ebon_fever->effectN(1).percent();
-    }
-
-    return base_tick_time;
   }
 };
 
