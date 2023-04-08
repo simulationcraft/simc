@@ -176,29 +176,37 @@ struct holy_fire_t final : public priest_spell_t
   timespan_t manipulation_cdr;
   propagate_const<burning_vehemence_t*> child_burning_vehemence;
   action_t* child_searing_light;
+  bool casted;
 
-  holy_fire_t( priest_t& p, util::string_view options_str )
+  holy_fire_t( priest_t& p, util::string_view options_str, bool _casted = true )
     : priest_spell_t( "holy_fire", p, p.specs.holy_fire ),
       manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) ),
       child_burning_vehemence( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
   {
-    parse_options( options_str );
-    apply_affecting_aura( p.talents.holy.burning_vehemence );
+    casted = _casted;
+    if ( !casted )
+    {
+      base_dd_max            = 0.0;
+      base_dd_min            = 0.0;
+      spell_power_mod.direct = 0;
+    }
     if ( p.talents.holy.empyreal_blaze.enabled() )
     {
       dot_behavior = DOT_EXTEND;
     }
-    if ( priest().talents.holy.burning_vehemence.enabled() )
+    if ( priest().talents.holy.burning_vehemence.enabled() && casted )
     {
       child_burning_vehemence = new burning_vehemence_t( priest() );
       add_child( child_burning_vehemence );
     }
+    apply_affecting_aura( p.talents.holy.burning_vehemence );
+    parse_options( options_str );
   }
 
   double cost() const override
   {
-    if ( priest().buffs.empyreal_blaze->check() )
+    if ( priest().buffs.empyreal_blaze->check() | !casted )
     {
       return 0;
     }
@@ -459,7 +467,7 @@ void priest_t::init_background_actions_holy()
 {
   if ( talents.holy.divine_word.enabled() )
   {
-    background_actions.holy_fire = new actions::spells::holy_fire_t( *this, "" );
+    background_actions.holy_fire = new actions::spells::holy_fire_t( *this, "", false );
   }
   if ( talents.holy.divine_image.enabled() )
   {
