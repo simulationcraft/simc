@@ -16823,7 +16823,6 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
-  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -17763,6 +17762,7 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 387108, "Conflagrate and Shadowburn have a $s1% chance to guarantee your next cast of the ability to critically strike, and increase its damage by your critical strike chance.", 0, 0 },
   { 387109, "$@spelldesc387108", "Your next Conflagrate will critically strike and your critical strike chance will increase its critical strike damage.", 0 },
   { 387110, "$@spelldesc387108", "Your next Shadowburn will critically strike and your critical strike chance will increase its critical strike damage.", 0 },
+  { 387113, "$@spelldesc343527", 0, 0 },
   { 387136, "Salvage what you can from the Rimefin Tuna.", 0, 0 },
   { 387140, "$?a393818[$@spellaura393818][Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $387142s1 Haste.]\r\n\r\n", "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $w1 Haste.", 0 },
   { 387141, "$@spelldesc387140", "A Moment of Time stored, and then another.", 0 },
@@ -19848,7 +19848,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_ho
 } };
 
 // Spell description variables, wow build 10.1.0.48898
-static const std::array<spelldesc_vars_data_t, 378> __ptr_spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -20206,6 +20206,7 @@ static const std::array<spelldesc_vars_data_t, 378> __ptr_spelldesc_vars_data { 
   {  383885, "$threshold=${35}" },
   {  384110, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  385786, "$shield=${$s1/100*$AP*(1+$@versadmg)}" },
+  {  387113, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
