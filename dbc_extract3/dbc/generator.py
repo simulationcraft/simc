@@ -1721,6 +1721,7 @@ class SpellDataGenerator(DataGenerator):
           ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
           ( 196780, 0 ), # Outbreak Intermediate AoE spell
           ( 196782, 0 ), # Outbreak Intermediate AoE spell
+          ( 281327, 0 ), # Obliteration Rune Generation Spell
         ),
 
         # Shaman:
