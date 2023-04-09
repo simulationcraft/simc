@@ -4875,6 +4875,7 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
   {
     aoe = -1;
     background = dual = true;
+    tick_zero = true;
   }
 
   void impact( action_state_t* s ) override
@@ -5008,16 +5009,6 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
   void execute() override
   {
-    // If a death and decay/defile is already active, cancel it
-    if ( p() -> active_dnd )
-    {
-      event_t::cancel( p() -> active_dnd );
-      p() -> active_dnd = nullptr;
-    }
-
-    // Reset death and decay damage's pestilence proc per cast counter
-    debug_cast<death_and_decay_damage_base_t*>( damage );
-
     death_knight_spell_t::execute();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
@@ -5037,21 +5028,22 @@ struct death_and_decay_base_t : public death_knight_spell_t
     if ( p() -> talent.unholy_ground.ok() )
     {
       p() -> buffs.unholy_ground -> trigger();
-      p() -> buffs.unholy_ground -> set_duration(data().duration() + 500_ms);
+      p() -> buffs.unholy_ground -> set_duration( data().duration() );
     }
 
     if ( p() -> talent.blood.sanguine_ground.ok() )
     {
       p() -> buffs.sanguine_ground -> trigger();
-      p() -> buffs.sanguine_ground -> set_duration(data().duration() + 500_ms);
+      p() -> buffs.sanguine_ground -> set_duration( data().duration() );
     }
 
-    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
-      // Dnd is supposed to last 10s, but a total of 11 ticks (13 with rapid decomposition) are observed so we're adding a duration of 0.5s to make it work properly
-      .duration( data().duration() + 500_ms )
+      .duration( data().duration() )
       .pulse_time( compute_tick_time() )
       .action( damage )
+      .x( target->x_position )
+      .y( target->y_position )
       // Keep track of on-going dnd events
       .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
@@ -5111,7 +5103,7 @@ struct defile_t final : public death_and_decay_base_t
   void execute() override
   {
     // Reset the damage component's increasing multiplier
-    static_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
+    debug_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
 
     death_and_decay_base_t::execute();
   }
