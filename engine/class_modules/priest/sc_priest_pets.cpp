@@ -1101,7 +1101,7 @@ namespace priestspace
 {
 void priest_t::trigger_inescapable_torment( player_t* target )
 {
-  if ( !talents.shadow.inescapable_torment.enabled() | !talents.discipline.inescapable_torment.enabled() )
+  if ( !talents.shadow.inescapable_torment.enabled() || !talents.discipline.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
