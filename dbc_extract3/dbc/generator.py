@@ -1719,6 +1719,8 @@ class SpellDataGenerator(DataGenerator):
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
           ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
           ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
+          ( 196780, 0 ), # Outbreak Intermediate AoE spell
+          ( 196782, 0 ), # Outbreak Intermediate AoE spell
         ),
 
         # Shaman:
