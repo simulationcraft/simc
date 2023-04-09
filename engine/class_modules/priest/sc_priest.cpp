@@ -48,10 +48,17 @@ struct expiation_t final : public priest_spell_t
         priest().talents.discipline.purge_the_wicked.enabled() ? td.dots.purge_the_wicked : td.dots.shadow_word_pain;
 
     auto dot_damage = priest().tick_damage_over_time( consume_time, dot );
-    sim->print_debug( "Expiation consumed {} seconds, dealing {}", consume_time, dot_damage );
-    base_dd_min = base_dd_max = dot_damage;
-    priest_spell_t::impact( s );
-    dot->adjust_duration( -consume_time );
+    if ( dot_damage > 0 )
+    {
+      sim->print_debug( "Expiation consumed {} seconds, dealing {}", consume_time, dot_damage );
+      base_dd_min = base_dd_max = dot_damage;
+      priest_spell_t::impact( s );
+      dot->adjust_duration( -consume_time );
+    }
+    else
+    {
+      priest().procs.expiation_lost_no_dot->occur();
+    }
   }
 };
 // ==========================================================================
@@ -1696,6 +1703,7 @@ void priest_t::create_procs()
   // Discipline
   procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
+  procs.expiation_lost_no_dot           = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
   procs.shadowy_apparition_vb                  = get_proc( "Shadowy Apparition from Void Bolt" );
   procs.shadowy_apparition_swp                 = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
@@ -2616,7 +2624,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }
