@@ -984,6 +984,7 @@ public:
     const spell_data_t* frost_t30_2pc; // TODO rename when blizz gives it a name
     const spell_data_t* frost_t30_4pc; // TODO rename when blizz gives it a name
     const spell_data_t* wrath_of_the_frostwyrm_damage;
+    const spell_data_t* obliteration_gains;
 
     // Unholy
     const spell_data_t* runic_corruption; // buff
@@ -6103,8 +6104,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
-        // WTB spelldata for the rune gain
-        p() -> replenish_rune( 1, p() -> gains.obliteration );
+        p() -> replenish_rune( p() -> spell.obliteration_gains -> effectN( 1 ).base_value(), p()->gains.obliteration);
       }
     }
   }
@@ -6166,8 +6166,7 @@ struct glacial_advance_t final : public death_knight_spell_t
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
-        // WTB spelldata for the rune gain
-        p() -> replenish_rune( 1, p() -> gains.obliteration );
+        p() -> replenish_rune( p() -> spell.obliteration_gains -> effectN( 1 ).base_value(), p() -> gains.obliteration );
       }
     }
   }
@@ -6454,8 +6453,7 @@ struct howling_blast_t final : public death_knight_spell_t
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
-        // WTB spelldata for the rune gain
-        p() -> replenish_rune( 1, p() -> gains.obliteration );
+        p() -> replenish_rune( p() -> spell.obliteration_gains -> effectN( 1 ).base_value(), p() -> gains.obliteration );
       }
     }
 
@@ -7428,8 +7426,7 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
       // Obliteration's rune generation
       if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
-        // WTB spelldata for the rune gain
-        p() -> replenish_rune( 1, p() -> gains.obliteration );
+        p() -> replenish_rune( p() -> spell.obliteration_gains -> effectN( 1 ).base_value(), p() -> gains.obliteration );
       }
     }
   }
@@ -9454,6 +9451,7 @@ void death_knight_t::init_spells()
   spell.rage_of_the_frozen_champion   = find_spell( 341725 );
   spell.piercing_chill_debuff         = find_spell( 377359 );
   spell.runic_empowerment_chance      = find_spell( 81229 );
+  spell.obliteration_gains            = find_spell( 281327 );
   // T30 Frost
   spell.frost_t30_2pc                 = find_spell( 405501 );
   spell.frost_t30_4pc                 = find_spell( 405502 );
