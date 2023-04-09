@@ -528,7 +528,6 @@ public:
     propagate_const<buff_t*> runic_corruption;
     propagate_const<buff_t*> sudden_doom;
     propagate_const<buff_t*> unholy_assault;
-    propagate_const<buff_t*> unholy_blight;
     propagate_const<buff_t*> unholy_pact;
     propagate_const<buff_t*> festermight;
     propagate_const<buff_t*> ghoulish_frenzy;
@@ -3568,43 +3567,12 @@ struct unholy_blight_dot_t final : public death_knight_disease_t
   }
 };
 
-struct unholy_blight_buff_t final : public buff_t
-{
-  unholy_blight_buff_t( death_knight_t* p ) :
-    buff_t( p, "unholy_blight", p -> talent.unholy.unholy_blight ),
-      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
-      vp ( get_action<virulent_plague_t>( "virulent_plague", p ) )
-  {
-    cooldown -> duration = 0_ms;
-    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
-    { 
-      dot -> execute();
-      vp -> execute();
-    } );
-  }
-
-  timespan_t tick_time() const override
-  {
-    timespan_t tt = buff_t::tick_time();
-    death_knight_t* p = debug_cast<death_knight_t*>( this -> player );
-
-    if ( p -> buffs.plaguebringer -> up() )
-    { 
-      tt *= 1.0 + p -> talent.unholy.plaguebringer->effectN( 1 ).percent();
-    }
-
-    return tt;
-  }
-private:
-    propagate_const<action_t*> dot;
-    propagate_const<action_t*> vp;
-};
-
-struct unholy_blight_t final : public death_knight_spell_t
+struct unholy_blight_t final : public death_knight_disease_t
 {
   unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
-      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) )
+    death_knight_disease_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
+      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
+      vp ( get_action<virulent_plague_t>( "virulent_plague", p ) )
   {
     may_crit = may_miss = may_dodge = may_parry = hasted_ticks = false;
     tick_zero = true;
@@ -3615,14 +3583,16 @@ struct unholy_blight_t final : public death_knight_spell_t
     add_child( dot );
   }
 
-  void execute() override
+  void tick( dot_t* d ) override
   {
-    death_knight_spell_t::execute();
+    death_knight_disease_t::tick( d );
 
-    p() -> buffs.unholy_blight -> trigger();
+    dot -> execute();
+    vp -> execute();
   }
 private:
     propagate_const<action_t*> dot;
+    propagate_const<action_t*> vp;
 };
 
 // ==========================================================================
@@ -9941,8 +9911,6 @@ void death_knight_t::create_buffs()
           -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
-
-  buffs.unholy_blight = new unholy_blight_buff_t( this );
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
           -> add_invalidate( CACHE_ATTACK_SPEED )
