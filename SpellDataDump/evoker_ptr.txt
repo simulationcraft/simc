@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865, git build dragonflight 5bbbbb4d1f)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -7158,7 +7158,10 @@ Removes $s1 Enrage effect from each enemy. Oppressing Roar's cooldown is reduced
 Tooltip          : The duration of incoming crowd control effects are increased by $s2%.
 
 Name             : Obsidian Shards (id=409776) [Spell Family (224)] 
+<<<<<<< HEAD
 Hotfixed         : Attributes, Affecting Spells
+=======
+>>>>>>> 54ff100ce0a5dde55c456d8efffa698460305276
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -7168,13 +7171,13 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
 Family Flags     : 127
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
-                 : .......x .......x ....x... ........   ........ ........ .......x ........ 
+                 : .......x x......x ....x... ........   ........ ........ .......x ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Allow Class Ability Procs (416)
+                 : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1074863)  : Apply Aura (6) | Periodic Damage (3): firestorm every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)

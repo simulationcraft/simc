@@ -3366,11 +3366,30 @@ struct death_knight_disease_t : public death_knight_spell_t
     }
   }
 
+<<<<<<< HEAD
   timespan_t tick_time ( const action_state_t* s ) const override
   {
     auto base_tick_time = death_knight_spell_t::tick_time( s );
 
     if ( p() -> buffs.plaguebringer -> up() )
+=======
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    if ( p()->talent.brittle.ok() &&
+         rng().roll( p() -> talent.brittle -> proc_chance() ) )
+    {
+      get_td( d->target ) -> debuff.brittle -> trigger();
+    }
+  }
+
+  timespan_t tick_time ( const action_state_t* s ) const override
+  {
+    auto base_tick_time = death_knight_spell_t::tick_time( s );
+
+    if ( p() -> buffs.plaguebringer -> up())
+>>>>>>> 54ff100ce0a5dde55c456d8efffa698460305276
     { 
       base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
     }
@@ -3518,6 +3537,7 @@ struct virulent_plague_t final : public death_knight_disease_t
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
   }
+<<<<<<< HEAD
   void impact( action_state_t* s ) override
   {
     death_knight_disease_t::impact( s );
@@ -3526,6 +3546,35 @@ struct virulent_plague_t final : public death_knight_disease_t
         ff->execute_on_target( s -> target );
         bp->execute_on_target( s -> target );
     }
+=======
+};
+
+// Unholy Blight DoT ====================================================
+struct unholy_blight_dot_t final : public death_knight_disease_t
+{
+  unholy_blight_dot_t( util::string_view name, death_knight_t* p ) :
+    death_knight_disease_t( name, p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
+  {
+    tick_may_crit = background = true;
+    may_miss = may_crit = hasted_ticks = false;
+  }
+};
+
+struct unholy_blight_t final : public death_knight_disease_t
+{
+  unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_disease_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
+      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
+      vp ( get_action<virulent_plague_t>( "virulent_plague", p ) )
+  {
+    may_crit = may_miss = may_dodge = may_parry = hasted_ticks = false;
+    tick_zero = true;
+    track_cd_waste = true;
+    parse_options( options_str );
+    radius = p -> spell.unholy_blight_dot -> effectN( 1 ).radius_max();
+    aoe = -1;
+    add_child( dot );
+>>>>>>> 54ff100ce0a5dde55c456d8efffa698460305276
   }
 private:
     propagate_const<action_t*> ff;
@@ -3538,6 +3587,7 @@ struct outbreak_aoe_t final : public death_knight_spell_t
     death_knight_spell_t( name, p , p -> find_spell( 196780 ) ),
       vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
   {
+<<<<<<< HEAD
     impact_action = vp;
     aoe = -1;
     radius = p -> find_spell( 196780 ) -> effectN( 1 ).radius_max();
@@ -3582,6 +3632,16 @@ struct unholy_blight_t final : public death_knight_disease_t
     vp -> execute();
   }
 private:
+=======
+    death_knight_disease_t::tick( d );
+    for( auto a : targets_in_range_list( target_list() ) )
+    {
+      dot->execute_on_target( a );
+      vp->execute_on_target( a );
+    }
+  }
+private:
+>>>>>>> 54ff100ce0a5dde55c456d8efffa698460305276
     propagate_const<action_t*> dot;
     propagate_const<action_t*> vp;
 };
@@ -6810,6 +6870,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
 };
 
 // Outbreak ================================================================
+<<<<<<< HEAD
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str ) :
@@ -6821,6 +6882,28 @@ struct outbreak_t final : public death_knight_spell_t
   }
 private:
     propagate_const<action_t*> outbreak_aoe;
+=======
+
+struct outbreak_t final : public death_knight_spell_t
+{
+  outbreak_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak ),
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
+  {
+    parse_options( options_str );
+    radius = p -> spell.virulent_plague -> effectN( 1 ).radius_max();
+  }
+  
+  void execute() override
+  {
+    for( auto a : targets_in_range_list( target_list() ) )
+    {
+      vp->execute_on_target( a );
+    }
+  }
+private:
+    propagate_const<action_t*> vp;
+>>>>>>> 54ff100ce0a5dde55c456d8efffa698460305276
 };
 
 // Rune of Apocalpyse - Pestilence ==========================================
