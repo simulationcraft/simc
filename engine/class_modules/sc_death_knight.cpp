@@ -3570,13 +3570,15 @@ struct unholy_blight_t final : public death_knight_disease_t
     aoe = -1;
     add_child( dot );
   }
-
+  
   void tick( dot_t* d ) override
   {
     death_knight_disease_t::tick( d );
-
-    dot -> execute();
-    vp -> execute();
+    for( auto a : targets_in_range_list( target_list() ) )
+    {
+      dot->execute_on_target( a );
+      vp->execute_on_target( a );
+    }
   }
 private:
     propagate_const<action_t*> dot;
