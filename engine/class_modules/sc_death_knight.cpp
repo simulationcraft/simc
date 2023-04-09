@@ -3552,19 +3552,22 @@ private:
 struct unholy_blight_dot_t final : public death_knight_disease_t
 {
   unholy_blight_dot_t( util::string_view name, death_knight_t* p ) :
-    death_knight_disease_t( name, p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
+    death_knight_disease_t( name, p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() ),
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
   {
     tick_may_crit = background = tick_on_application = true;
     may_miss = may_crit = hasted_ticks = false;
+    impact_action = vp;
   }
+private:
+    propagate_const<action_t*> vp;
 };
 
 struct unholy_blight_t final : public death_knight_disease_t
 {
   unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_disease_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
-      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
-      vp( get_action<outbreak_aoe_t>( "outbreak_aoe", p ) )
+      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) )
   {
     may_crit = may_miss = may_dodge = may_parry = hasted_ticks = harmful = false;
     tick_zero = true;
@@ -3572,13 +3575,11 @@ struct unholy_blight_t final : public death_knight_disease_t
     parse_options( options_str );
     radius = p -> spell.unholy_blight_dot -> effectN( 1 ).radius_max();
     aoe = -1;
-    execute_action = vp;
     tick_action = dot;
     add_child( dot );
   }
 private:
     propagate_const<action_t*> dot;
-    propagate_const<action_t*> vp;
 };
 
 // ==========================================================================
