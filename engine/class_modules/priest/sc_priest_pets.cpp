@@ -514,7 +514,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     base_fiend_pet_t::demise();
 
-    if ( o().talents.shadow.inescapable_torment.enabled() )
+    if ( o().talents.shadow.inescapable_torment.enabled() || o().talents.discipline.inescapable_torment.enabled() )
     {
       if ( o().cooldowns.mind_blast->is_ready() )
       {
@@ -1101,7 +1101,7 @@ namespace priestspace
 {
 void priest_t::trigger_inescapable_torment( player_t* target )
 {
-  if ( !talents.shadow.inescapable_torment.enabled() )
+  if ( !talents.shadow.inescapable_torment.enabled() | !talents.discipline.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
@@ -1140,7 +1140,7 @@ void priest_t::trigger_idol_of_yshaarj( player_t* target )
   }
   else
   {
-    auto duration      = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+    auto duration = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
 
     for ( auto pet : get_current_main_pet( *this ) )
     {

@@ -369,6 +369,7 @@ public:
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
       player_talent_t blaze_of_light;
+      player_talent_t inescapable_torment;
       // Row 10
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;
