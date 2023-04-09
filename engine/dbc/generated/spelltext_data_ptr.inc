@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48898
-static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19843> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6336,7 +6336,9 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 196771, "$@spelldesc196770", 0, 0 },
   { 196777, "Your damage and healing spells have a chance open a portal to Mardum, sending a stream of imps at your target or your target's opponent.", 0, 0 },
   { 196779, "When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.", 0, 0 },
+  { 196780, "$@spelldesc77575", 0, 0 },
   { 196781, "$@spelldesc196779", 0, 0 },
+  { 196782, "$@spelldesc77575", "Upon expiration nearby enemies are infected by Virulent Plague.", 0 },
   { 196783, "Nibble a piece of the crystal.", "Crystals are growing everywhere!", 0 },
   { 196792, "Place a Whitewater Carp to kick around. Splash!", 0, 0 },
   { 196809, "Heals the target for $s1.", 0, 0 },
