@@ -585,6 +585,7 @@ void priest_t::init_spells_discipline()
   talents.discipline.harsh_discipline       = ST( "Harsh Discipline" );
   talents.discipline.harsh_discipline_ready = find_spell( 373183 );
   talents.discipline.blaze_of_light         = ST( "Blaze of Light" );
+  talents.discipline.inescapable_torment    = ST( "Inescapable Torment" );
   // Row 10
   talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
   talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
