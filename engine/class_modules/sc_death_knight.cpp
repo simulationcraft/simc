@@ -1322,7 +1322,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.blood_plague         = target -> get_dot( "blood_plague", p );
   dot.frost_fever          = target -> get_dot( "frost_fever", p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague", p );
-  dot.unholy_blight        = target -> get_dot( "unholy_blight", p );
+  dot.unholy_blight        = target -> get_dot( "unholy_blight_dot", p );
   // Other dots
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
   
