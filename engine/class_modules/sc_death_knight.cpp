@@ -413,6 +413,7 @@ struct death_knight_td_t : public actor_target_data_t {
     // Unholy
     propagate_const<dot_t*> soul_reaper;
     propagate_const<dot_t*> virulent_plague;
+    propagate_const<dot_t*> unholy_blight;
   } dot;
 
   struct
@@ -437,7 +438,6 @@ struct death_knight_td_t : public actor_target_data_t {
 	
     // Unholy
     propagate_const<buff_t*> festering_wound;
-    propagate_const<buff_t*> unholy_blight;
     propagate_const<buff_t*> rotten_touch;
     propagate_const<buff_t*> death_rot;
 
@@ -528,7 +528,6 @@ public:
     propagate_const<buff_t*> runic_corruption;
     propagate_const<buff_t*> sudden_doom;
     propagate_const<buff_t*> unholy_assault;
-    propagate_const<buff_t*> unholy_blight;
     propagate_const<buff_t*> unholy_pact;
     propagate_const<buff_t*> festermight;
     propagate_const<buff_t*> ghoulish_frenzy;
@@ -1323,6 +1322,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.blood_plague         = target -> get_dot( "blood_plague", p );
   dot.frost_fever          = target -> get_dot( "frost_fever", p );
   dot.virulent_plague      = target -> get_dot( "virulent_plague", p );
+  dot.unholy_blight        = target -> get_dot( "unholy_blight_dot", p );
   // Other dots
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
   
@@ -1362,9 +1362,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                              else if ( new_ == 0 )
                                p -> festering_wounds_target_count--;
                            } );
-
-  debuff.unholy_blight    = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
-                           -> set_default_value_from_effect( 2 );
 						  
   debuff.rotten_touch     = make_buff( *this, "rotten_touch", p -> spell.rotten_touch_debuff )
                            -> set_default_value_from_effect( 1 );
@@ -3224,7 +3221,7 @@ struct death_knight_action_t : public Base
 
     if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() );
     {
-      m *= 1.0 + td -> debuff.lingering_chill -> stack_value();
+      m *= 1.0 + td -> debuff.lingering_chill -> check_stack_value();
     }
 
     return m;
@@ -3350,45 +3347,39 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // ==========================================================================
 // Death Knight Diseases
 // ==========================================================================
-
-// Forward declarations because superstrain zzz
-struct blood_plague_t;
-struct frost_fever_t;
-struct virulent_plague_t;
-
 // Common diseases code
 
 struct death_knight_disease_t : public death_knight_spell_t
 {
-  std::vector<action_t*> superstrain_diseases;
-
   death_knight_disease_t( util::string_view n, death_knight_t* p, const spell_data_t* s ) :
     death_knight_spell_t( n, p, s )
   { }
 
-  void impact( action_state_t* s ) override
+  void tick( dot_t* d ) override
   {
-    death_knight_spell_t::impact( s );
+    death_knight_spell_t::tick( d );
 
-    for ( auto disease : superstrain_diseases )
-      disease -> execute_on_target( s -> target );
+    if ( p()->talent.brittle.ok() &&
+         rng().roll( p() -> talent.brittle -> proc_chance() ) )
+    {
+      get_td( d->target ) -> debuff.brittle -> trigger();
+    }
   }
 
-  double bonus_ta( const action_state_t* s ) const override
+  timespan_t tick_time ( const action_state_t* s ) const override
   {
-    double ta = death_knight_spell_t::bonus_ta( s );
-    // Currently Remnants Despair affects all diseases
-    if ( const actor_target_data_t* td = debug_cast<const actor_target_data_t*>( p() -> find_target_data( s -> target ) ) )
-    {
-      ta += td -> debuff.remnants_despair -> value();
+    auto base_tick_time = death_knight_spell_t::tick_time( s );
+
+    if ( p() -> buffs.plaguebringer -> up() )
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
     }
 
-    return ta;
+    return base_tick_time;
   }
 };
 
 // Blood Plague ============================================
-
 struct blood_plague_heal_t final : public death_knight_heal_t
 {
   blood_plague_heal_t( util::string_view name, death_knight_t* p ) :
@@ -3410,7 +3401,7 @@ struct blood_plague_t final : public death_knight_disease_t
   {
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
-
+    base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
@@ -3433,26 +3424,9 @@ struct blood_plague_t final : public death_knight_disease_t
     return m;
   }
 
-  timespan_t tick_time ( const action_state_t* ) const override
-  {
-    timespan_t base_tick_time = p() -> spell.blood_plague -> effectN( 1 ).period();
-
-    if ( p() -> buffs.plaguebringer -> up())
-    { 
-      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
-    }
-    
-    if ( p() -> talent.blood.rapid_decomposition.ok() )
-    { 
-      base_tick_time *= 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
-    }
-
-    return base_tick_time;
-  }
-
   void tick( dot_t* d ) override
   {
-    death_knight_spell_t::tick( d );
+    death_knight_disease_t::tick( d );
 
     if ( d -> state -> result_amount > 0 )
     {
@@ -3461,18 +3435,12 @@ struct blood_plague_t final : public death_knight_disease_t
         d -> state -> result_amount * ( 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 3 ).percent() );
       heal -> execute();
     }
-
-    if ( p() -> talent.brittle.ok() && rng().roll( p() -> talent.brittle -> proc_chance() ) )
-    {
-      get_td( d ->target )->debuff.brittle->trigger();
-    }
   }
 private:
     propagate_const<action_t*> heal;
 };
 
 // Frost Fever =======================================================
-
 struct frost_fever_t final : public death_knight_disease_t
 {
   int rp_generation;
@@ -3500,21 +3468,9 @@ struct frost_fever_t final : public death_knight_disease_t
       base_multiplier *= 1.0 + ( p -> talent.unholy.superstrain -> effectN( 2 ).percent() );
   }
 
-  timespan_t tick_time ( const action_state_t* ) const override
-  {
-    timespan_t base_tick_time = p() -> spell.frost_fever -> effectN( 1 ).period();
-
-    if ( p() -> buffs.plaguebringer -> up())
-    { 
-      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
-    }
-
-    return base_tick_time;
-  }
-
   void tick( dot_t* d ) override
   {
-    death_knight_spell_t::tick( d );
+    death_knight_disease_t::tick( d );
 
     // TODO: Melekus, 2019-05-15: Frost fever proc chance and ICD have been removed from spelldata on PTR
     // Figure out what is up with the "30% proc chance, diminishing beyond the first target" from blue post.
@@ -3532,76 +3488,102 @@ struct frost_fever_t final : public death_knight_disease_t
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p() -> gains.frost_fever, this );
     }
-
-    if ( p()->talent.brittle.ok() &&
-         rng().roll( p() -> talent.brittle -> proc_chance() ) )
-    {
-      get_td( d->target ) -> debuff.brittle -> trigger();
-    }
   }
 };
 
 // Virulent Plague ====================================================
+struct virulent_eruption_t final : public death_knight_disease_t
+{
+  virulent_eruption_t( death_knight_t* p ) :
+    death_knight_disease_t( "virulent_eruption", p, p -> spell.virulent_erruption )
+  {
+    background = split_aoe_damage = true;
+    aoe = -1;
+  }
+};
 
 struct virulent_plague_t final : public death_knight_disease_t
 {
   virulent_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
-    death_knight_disease_t( name, p, p -> spell.virulent_plague )
+    death_knight_disease_t( name, p, p -> spell.virulent_plague ),
+      ff( get_action<frost_fever_t>( "frost_fever", p, true ) ),
+      bp( get_action<blood_plague_t>( "blood_plague", p, true ) )
   {
-    // TODO: Does VP also apply in aoe with superstrain? Keep at one target for now
-    aoe = superstrain ? 0 : -1;
-
     // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
     // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
     // Tested Oct 21 2020 in beta build 36294
     dot_duration *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 2 ).percent();
-
     base_multiplier *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 3 ).percent();
-
+    base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 1 ).percent();
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
-
-    // The "reduced effectiveness" mentionned in the tooltip is handled server side
-    // Value calculated from testing, may change without notice
-    if ( superstrain )
-      base_multiplier *= 1;
-    // Create superstrain-triggered spells if needed
-    else if ( p->talent.unholy.superstrain.ok() )
-    {
-      {
-        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague", p, true ) );
-        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever", p, true ) );
-      }
-    }
   }
-
-  timespan_t tick_time ( const action_state_t* ) const override
+  void impact( action_state_t* s ) override
   {
-    timespan_t base_tick_time = p() -> spell.virulent_plague -> effectN( 1 ).period();
-
-    if ( p() -> buffs.plaguebringer -> up())
-    { 
-      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
-    }
-
-    if (p()->talent.unholy.ebon_fever.ok())
+    death_knight_disease_t::impact( s );
+    if ( p()->talent.unholy.superstrain.ok() )
     {
-      base_tick_time *= 1.0 + p()->talent.unholy.ebon_fever->effectN(1).percent();
+        ff->execute_on_target( s -> target );
+        bp->execute_on_target( s -> target );
     }
-
-    return base_tick_time;
   }
+private:
+    propagate_const<action_t*> ff;
+    propagate_const<action_t*> bp;
+};
 
-  void tick( dot_t* d ) override
+struct outbreak_aoe_t final : public death_knight_spell_t
+{
+  outbreak_aoe_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p , p -> find_spell( 196780 ) ),
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
   {
-    death_knight_spell_t::tick( d );
-
-    if ( p()->talent.brittle.ok() &&
-         rng().roll( p() -> talent.brittle -> proc_chance() ) )
-    {
-      get_td( d->target ) -> debuff.brittle -> trigger();
-    }
+    impact_action = vp;
+    aoe = -1;
+    radius = p -> find_spell( 196780 ) -> effectN( 1 ).radius_max();
+    background = true;
   }
+private:
+    propagate_const<action_t*> vp;
+};
+
+
+// Unholy Blight DoT ====================================================
+struct unholy_blight_dot_t final : public death_knight_disease_t
+{
+  unholy_blight_dot_t( util::string_view name, death_knight_t* p ) :
+    death_knight_disease_t( name, p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
+  {
+    tick_may_crit = background = true;
+    may_miss = may_crit = hasted_ticks = false;
+  }
+};
+
+struct unholy_blight_t final : public death_knight_disease_t
+{
+  unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_disease_t( "unholy_blight", p, p -> talent.unholy.unholy_blight ),
+      dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
+      vp( get_action<outbreak_aoe_t>( "outbreak_aoe", p ) )
+  {
+    may_crit = may_miss = may_dodge = may_parry = hasted_ticks = harmful = false;
+    tick_zero = true;
+    track_cd_waste = true;
+    parse_options( options_str );
+    radius = p -> spell.unholy_blight_dot -> effectN( 1 ).radius_max();
+    aoe = -1;
+    tick_action = dot;
+    add_child( dot );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_disease_t::impact( s );
+    vp -> execute();
+  }
+private:
+    propagate_const<action_t*> dot;
+    propagate_const<action_t*> vp;
 };
 
 // ==========================================================================
@@ -6827,25 +6809,18 @@ struct obliterate_t final : public death_knight_melee_attack_t
   { return true; }
 };
 
-// Outbreak and Virulent Eruption ===========================================
-struct virulent_eruption_t final : public death_knight_spell_t
-{
-  virulent_eruption_t( death_knight_t* p ) :
-    death_knight_spell_t( "virulent_eruption", p, p -> spell.virulent_erruption )
-  {
-    background = split_aoe_damage = true;
-    aoe = -1;
-  }
-};
-
+// Outbreak ================================================================
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak )
+    death_knight_spell_t( "outbreak", p , p -> talent.unholy.outbreak ),
+      outbreak_aoe( get_action<outbreak_aoe_t>( "outbreak_aoe", p ) )
   {
     parse_options( options_str );
-    impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
+    impact_action = outbreak_aoe;
   }
+private:
+    propagate_const<action_t*> outbreak_aoe;
 };
 
 // Rune of Apocalpyse - Pestilence ==========================================
@@ -7552,93 +7527,6 @@ struct tombstone_t final : public death_knight_spell_t
       debug_cast<shattering_bone_t*>(p() -> active_spells.shattering_bone) -> boneshield_charges_consumed = charges;
       p() -> active_spells.shattering_bone -> execute_on_target( target );
     }
-  }
-};
-
-// Unholy Blight ============================================================
-
-struct unholy_blight_dot_t final : public death_knight_spell_t
-{
-  unholy_blight_dot_t( death_knight_t* p ) :
-    death_knight_spell_t( "unholy_blight_dot", p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
-  {
-    tick_may_crit = background = true;
-    may_miss = may_crit = hasted_ticks = false;
-    aoe = -1;
-    impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
-  }
-
-  timespan_t tick_time ( const action_state_t* ) const override
-  {
-    timespan_t base_tick_time = p() -> spell.unholy_blight_dot -> effectN( 1 ).period();
-
-    if ( p() -> buffs.plaguebringer -> up() )
-    { 
-      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer -> effectN( 1 ).percent();
-    }
-
-    return base_tick_time;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    get_td( state->target ) -> debuff.unholy_blight -> trigger();
-  }
-};
-
-struct unholy_blight_buff_t : public buff_t
-{
-  unholy_blight_dot_t* dot;
-
-  unholy_blight_buff_t( death_knight_t* p ) :
-    buff_t( p, "unholy_blight", p -> talent.unholy.unholy_blight ),
-    dot( new unholy_blight_dot_t( p ) )
-  {
-    cooldown -> duration = 0_ms;
-    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
-    {
-      dot -> execute();
-    } );
-  }
-};
-
-struct unholy_blight_t : public death_knight_spell_t
-{
-  unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy.unholy_blight )
-  {
-    may_crit = may_miss = may_dodge = may_parry = hasted_ticks = false;
-    tick_zero = true;
-    track_cd_waste = true;
-    parse_options( options_str );
-
-    aoe = -1;
-
-    if ( action_t* dot_damage = p -> find_action( "unholy_blight_dot" ) )
-    {
-      add_child( dot_damage );
-    }
-  }
-
-  timespan_t tick_time ( const action_state_t* ) const override
-  {
-    timespan_t base_tick_time = p() -> talent.unholy.unholy_blight -> effectN( 1 ).period();
-
-    if ( p() -> buffs.plaguebringer -> up() )
-    { 
-      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer -> effectN( 1 ).percent();
-    }
-
-    return base_tick_time;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p() -> buffs.unholy_blight -> trigger();
   }
 };
 
@@ -10008,8 +9896,6 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_pact = new unholy_pact_buff_t( this );
 
-  buffs.unholy_blight = new unholy_blight_buff_t( this );
-
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
           -> add_invalidate( CACHE_ATTACK_SPEED )
           -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -10514,7 +10400,7 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
     m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
     m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
     m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->debuff.unholy_blight->check() * talent.unholy.morbidity->effectN(1).percent() );
+    m *= 1.0 + ( td->dot.unholy_blight->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
   }
 
   return m;
@@ -10599,7 +10485,7 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
     {
       m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
       m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-      m *= 1.0 + ( td->debuff.unholy_blight->check() * talent.unholy.morbidity->effectN(1).percent() );
+      m *= 1.0 + ( td->dot.unholy_blight->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
       // Bugged as of 10/19/22 Morbidity is modifying effects 3, 4 and 5 of Blood Plague, does not include the guardian damage modifier, effect 6.
       if ( !guardian )
       {
