@@ -3578,7 +3578,7 @@ struct unholy_blight_t final : public death_knight_disease_t
     tick_zero = true;
     track_cd_waste = true;
     parse_options( options_str );
-
+    radius = p -> spell.unholy_blight_dot -> effectN( 1 ).radius_max();
     aoe = -1;
     add_child( dot );
   }
