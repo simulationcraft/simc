@@ -3532,22 +3532,6 @@ private:
     propagate_const<action_t*> bp;
 };
 
-struct outbreak_aoe_t final : public death_knight_spell_t
-{
-  outbreak_aoe_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p , p -> find_spell( 196780 ) ),
-      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
-  {
-    impact_action = vp;
-    aoe = -1;
-    radius = p -> find_spell( 196780 ) -> effectN( 1 ).radius_max();
-    background = true;
-  }
-private:
-    propagate_const<action_t*> vp;
-};
-
-
 // Unholy Blight DoT ====================================================
 struct unholy_blight_dot_t final : public death_knight_disease_t
 {
@@ -6811,6 +6795,21 @@ struct obliterate_t final : public death_knight_melee_attack_t
 };
 
 // Outbreak ================================================================
+struct outbreak_aoe_t final : public death_knight_spell_t
+{
+  outbreak_aoe_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p , p -> find_spell( 196780 ) ),
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
+  {
+    impact_action = vp;
+    aoe = -1;
+    radius = p -> find_spell( 196780 ) -> effectN( 1 ).radius_max();
+    background = true;
+  }
+private:
+    propagate_const<action_t*> vp;
+};
+
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str ) :
