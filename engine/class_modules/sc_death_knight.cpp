@@ -5037,11 +5037,13 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> buffs.sanguine_ground -> set_duration( data().duration() );
     }
 
-    make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
       .duration( data().duration() )
       .pulse_time( compute_tick_time() )
       .action( damage )
+      .x( target->x_position )
+      .y( target->y_position )
       // Keep track of on-going dnd events
       .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
@@ -5101,7 +5103,7 @@ struct defile_t final : public death_and_decay_base_t
   void execute() override
   {
     // Reset the damage component's increasing multiplier
-    static_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
+    debug_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
 
     death_and_decay_base_t::execute();
   }
