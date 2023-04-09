@@ -3554,7 +3554,7 @@ struct unholy_blight_dot_t final : public death_knight_disease_t
   unholy_blight_dot_t( util::string_view name, death_knight_t* p ) :
     death_knight_disease_t( name, p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
   {
-    tick_may_crit = background = true;
+    tick_may_crit = background = tick_on_application = true;
     may_miss = may_crit = hasted_ticks = false;
   }
 };
@@ -3572,14 +3572,9 @@ struct unholy_blight_t final : public death_knight_disease_t
     parse_options( options_str );
     radius = p -> spell.unholy_blight_dot -> effectN( 1 ).radius_max();
     aoe = -1;
+    execute_action = vp;
     tick_action = dot;
     add_child( dot );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_disease_t::impact( s );
-    vp -> execute();
   }
 private:
     propagate_const<action_t*> dot;
