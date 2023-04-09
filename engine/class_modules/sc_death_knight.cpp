@@ -3221,7 +3221,7 @@ struct death_knight_action_t : public Base
 
     if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() );
     {
-      m *= 1.0 + td -> debuff.lingering_chill -> stack_value();
+      m *= 1.0 + td -> debuff.lingering_chill -> check_stack_value();
     }
 
     return m;
@@ -3396,7 +3396,6 @@ struct death_knight_disease_t : public death_knight_spell_t
 };
 
 // Blood Plague ============================================
-
 struct blood_plague_heal_t final : public death_knight_heal_t
 {
   blood_plague_heal_t( util::string_view name, death_knight_t* p ) :
@@ -3458,7 +3457,6 @@ private:
 };
 
 // Frost Fever =======================================================
-
 struct frost_fever_t final : public death_knight_disease_t
 {
   int rp_generation;
@@ -3510,15 +3508,21 @@ struct frost_fever_t final : public death_knight_disease_t
 };
 
 // Virulent Plague ====================================================
+struct virulent_eruption_t final : public death_knight_disease_t
+{
+  virulent_eruption_t( death_knight_t* p ) :
+    death_knight_disease_t( "virulent_eruption", p, p -> spell.virulent_erruption )
+  {
+    background = split_aoe_damage = true;
+    aoe = -1;
+  }
+};
 
 struct virulent_plague_t final : public death_knight_disease_t
 {
   virulent_plague_t( util::string_view name, death_knight_t* p, bool superstrain = false ) :
     death_knight_disease_t( name, p, p -> spell.virulent_plague )
   {
-    // TODO: Does VP also apply in aoe with superstrain? Keep at one target for now
-    aoe = superstrain ? 0 : -1;
-
     // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
     // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
     // Tested Oct 21 2020 in beta build 36294
@@ -3570,7 +3574,7 @@ struct unholy_blight_t final : public death_knight_disease_t
     aoe = -1;
     add_child( dot );
   }
-  
+
   void tick( dot_t* d ) override
   {
     death_knight_disease_t::tick( d );
@@ -6808,25 +6812,27 @@ struct obliterate_t final : public death_knight_melee_attack_t
   { return true; }
 };
 
-// Outbreak and Virulent Eruption ===========================================
-struct virulent_eruption_t final : public death_knight_spell_t
-{
-  virulent_eruption_t( death_knight_t* p ) :
-    death_knight_spell_t( "virulent_eruption", p, p -> spell.virulent_erruption )
-  {
-    background = split_aoe_damage = true;
-    aoe = -1;
-  }
-};
+// Outbreak ================================================================
 
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak )
+    death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak ),
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) )
   {
     parse_options( options_str );
-    impact_action = get_action<virulent_plague_t>( "virulent_plague", p );
+    radius = p -> spell.virulent_plague -> effectN( 1 ).radius_max();
   }
+  
+  void execute() override
+  {
+    for( auto a : targets_in_range_list( target_list() ) )
+    {
+      vp->execute_on_target( a );
+    }
+  }
+private:
+    propagate_const<action_t*> vp;
 };
 
 // Rune of Apocalpyse - Pestilence ==========================================
