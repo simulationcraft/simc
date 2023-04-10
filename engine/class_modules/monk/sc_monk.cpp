@@ -1654,6 +1654,9 @@ namespace monk
           {
             p()->buff.kicks_of_flowing_momentum->decrement();
           }
+
+          if ( p()->bugs && p()->buff.weapons_of_order->up() )
+            get_td( s->target )->debuff.weapons_of_order->trigger();
         }
       };
 
@@ -5374,6 +5377,7 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
+          p()->buff.expel_harm_helper->trigger();
 
           monk_heal_t::impact( s );
 
@@ -6589,6 +6593,25 @@ namespace monk
         set_cooldown( timespan_t::zero() );
         set_duration( p.spec.spinning_crane_kick_brm->duration() );
         set_max_stack( 5 );
+      }
+    };
+
+    // ===============================================================================
+    // Tier 30 Leverage SCK Helper
+    // ===============================================================================
+
+    struct expel_harm_helper_t : public monk_buff_t<buff_t>
+    {
+      expel_harm_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+      {
+        set_trigger_spell( p.talent.brewmaster.gift_of_the_ox );
+        set_can_cancel( true );
+        set_quiet( true );
+        set_cooldown( timespan_t::zero() );
+        set_duration( timespan_t::from_millis( 1 ) );
+        set_max_stack( 1 );
+        set_default_value( 0.0 );
+
       }
     };
   }  // namespace buffs
@@ -7821,6 +7844,7 @@ namespace monk
       ->set_default_value_from_effect( 2 );
 
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+    buff.expel_harm_helper = new buffs::expel_harm_helper_t( *this, "expel_harm_helper", spell_data_t::nil() );
 
     buff.graceful_exit = make_buff( this, "graceful_exit", talent.brewmaster.graceful_exit->effectN( 1 ).trigger() )
       ->set_trigger_spell( talent.brewmaster.graceful_exit )
