@@ -3808,7 +3808,13 @@ void player_t::create_buffs()
   sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
   // Infinite-Stacking Buffs and De-Buffs for everyone
-  buffs.stunned   = make_buff( this, "stunned" )->set_max_stack( 1 );
+  buffs.stunned =
+      make_buff( this, "stunned" )->set_max_stack( 1 )->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+        {
+          schedule_ready( available() );
+        }
+      } );
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
 
   // .. for players
