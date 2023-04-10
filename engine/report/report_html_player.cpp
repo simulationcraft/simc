@@ -715,7 +715,6 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
       if ( !s.portion_aps.simple && p.sim->scaling->has_scale_factors() && s.scaling )
       {
-        int colspan = 0;
         os << "<table class=\"details\">\n";
         os << "<tr>\n"
            << "<th class=\"help\" data-help=\"#help-scale-factors\">?</th>\n";
@@ -723,12 +722,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
           if ( p.scaling->scales_with[ i ] )
           {
             os.printf( "<th>%s</th>\n", util::stat_type_abbrev( i ) );
-            colspan++;
           }
         if ( p.sim->scaling->scale_lag )
         {
           os << "<th>ms Lag</th>\n";
-          colspan++;
         }
         os << "</tr>\n";
         os << "<tr>\n"
@@ -1201,7 +1198,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
 // print_html_action_resource ===============================================
 
-void print_html_action_resource( report::sc_html_stream& os, const stats_t& s )
+void print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
+                                 std::array<double, RESOURCE_MAX>& total_usage )
 {
   std::string decorated_name = report_decorators::decorated_action( *s.action_list.front() );
 
@@ -1212,12 +1210,14 @@ void print_html_action_resource( report::sc_html_stream& os, const stats_t& s )
       os.format( "<tr><td class=\"left\">{}</td><td class=\"left\">{}</td>\n"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}%</td>"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td></tr>\n",
                  decorated_name, util::inverse_tokenize( util::resource_type_string( i ) ),
                  s.resource_gain.count[ i ],
                  s.resource_gain.actual[ i ],
+                 ( s.resource_gain.actual[ i ] ? s.resource_gain.actual[ i ] / total_usage[ i ] * 100.0 : 0.0 ),
                  s.resource_gain.actual[ i ] / s.resource_gain.count[ i ],
                  s.rpe[ i ],
                  s.apr[ i ] );
@@ -1308,10 +1308,10 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += ", enchant: " + item.parsed.encoded_enchant;
     }
 
-    if ( item.parsed.temporary_enchant_id > 0 )
+    if ( item.selected_temporary_enchant() > 0 )
     {
       const auto& temp_enchant = temporary_enchant_entry_t::find_by_enchant_id(
-          item.parsed.temporary_enchant_id, item.player->dbc->ptr );
+          item.selected_temporary_enchant(), item.player->dbc->ptr );
       const auto spell = item.player->find_spell( temp_enchant.spell_id );
       item_sim_desc += ", temporary_enchant: ";
       item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, spell, item );
@@ -1398,6 +1398,24 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
         item_sim_desc += "<br/>";
         item_sim_desc += s.str();
       }
+    }
+
+    if ( !item.parsed.gem_color.empty() && range::find( item.parsed.gem_color, SOCKET_COLOR_PRIMORDIAL ) != item.parsed.gem_color.end() )
+    {
+      item_sim_desc += ", primordial_stones: { ";
+      bool first = true;
+      for ( const auto e : item.parsed.special_effects )
+      {
+        if ( !e->driver() || !e->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
+          continue;
+
+        if ( !first )
+          item_sim_desc += ", ";
+
+        item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, e->driver(), item );
+        first = false;
+      }
+      item_sim_desc += " }";
     }
 
     {
@@ -1949,8 +1967,8 @@ int raidbots_talent_render_width( specialization_e spec, int height )
 
 std::string raidbots_talent_render_src( std::string_view talent_str, unsigned level, int width, bool mini, bool ptr )
 {
-  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?level={}&width={}{}", ptr ? "mimiron" : "www",
-                      base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
+  return fmt::format( "https://{}.raidbots.com/simbot/render/talents/{}?bgcolor=160f0b&level={}&width={}{}",
+                      ptr ? "mimiron" : "www", base64_to_url( talent_str ), level, width, mini ? "&mini=1" : "" );
 }
 
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
@@ -1992,12 +2010,17 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
      << "<h3 class=\"toggle\">Talents</h3>\n"
      << "<div class=\"toggle-content hide\">\n";
 
-  auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
-  os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
-             raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
+  auto num_players = p.sim->players_by_name.size();
+  if ( num_players == 1 )
+  {
+    auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
+    os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
+               raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
 
-  os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
-     << "<div class=\"toggle-content hide\">\n";
+    // Hide the talent table only if the Raidbots talent iframe is present.
+    os << "<h3 class=\"toggle\">Talent Tables</h3>\n"
+       << "<div class=\"toggle-content hide\">\n";
+  }
 
   os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents [{}]</th></tr>\n",
              util::player_type_string_long( p.type ),
@@ -2042,8 +2065,11 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   }
   os << "</table>\n";
 
+  // Close the talent table div only if it exists.
+  if ( num_players == 1 )
+    os << "</div>\n";
+
   os << "</div>\n"
-     << "</div>\n"
      << "</div>\n";
 }
 
@@ -2845,8 +2871,18 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
      << "</table>\n";
 }
 
+void get_total_player_usage( const player_t& p, std::array<double, RESOURCE_MAX>& total_usage )
+{
+  for ( const auto& stat : p.stats_list )
+    for ( size_t j = 0; j < total_usage.size(); ++j )
+      total_usage[ j ] += stat->resource_gain.actual[ j ];
+}
+
 void print_html_resource_usage_table( report::sc_html_stream& os, const player_t& p )
 {
+  std::array<double, RESOURCE_MAX> total_player_usage = std::array<double, RESOURCE_MAX>();
+  get_total_player_usage( p, total_player_usage );
+
   os << "<table class=\"sc sort even\">\n"
     << "<thead>\n"
     << "<tr>\n";
@@ -2855,6 +2891,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
   sorttable_header( os, "Type", SORT_FLAG_ASC | SORT_FLAG_ALPHA );
   sorttable_header( os, "Count" );
   sorttable_header( os, "Total" );
+  sorttable_header( os, "Tot%" );
   sorttable_header( os, "Avg" );
   sorttable_header( os, "RPE" );
   sorttable_header( os, "APR" );
@@ -2870,12 +2907,15 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
   {
     if ( stat->rpe_sum > 0 )
     {
-      print_html_action_resource( os, *stat );
+      print_html_action_resource( os, *stat, total_player_usage );
     }
   }
 
   for ( const auto& pet : p.pet_list )
   {
+    std::array<double, RESOURCE_MAX> total_pet_usage = std::array<double, RESOURCE_MAX>();
+    get_total_player_usage( *pet, total_pet_usage );
+
     bool first = true;
 
     for ( const auto& stat : pet->stats_list )
@@ -2890,7 +2930,7 @@ void print_html_resource_usage_table( report::sc_html_stream& os, const player_t
           fmt::print(os, "</tr>\n");
 
         }
-        print_html_action_resource( os, *stat );
+        print_html_action_resource( os, *stat, total_pet_usage );
       }
     }
   }
@@ -3607,8 +3647,8 @@ void print_html_player_description( report::sc_html_stream& os, const player_t& 
   }
 
   const std::string n = util::encode_html( p.name() );
-  if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.num_enemies > 1 ) ||
-       ( p.primary_role() == ROLE_TANK && sim.num_enemies > 1 ) )
+  if ( ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() && sim.enemy_targets > 1 ) ||
+       ( p.primary_role() == ROLE_TANK && sim.enemy_targets > 1 ) )
   {
     os.printf( "\">%s&#160;:&#160;%.0f dps, %.0f dps to main target",
                n.c_str(),
@@ -3994,10 +4034,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   {
     os << "<div>\n";
 
-    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
-    os.format(
-      "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
-      raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+    if ( p.sim->players_by_name.size() == 1 )
+    {
+      auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+      os.format(
+        "<iframe src=\"{}\" width=\"{}\" height=\"125\" style=\"float: left; margin-right: 10px; margin-top: 5px;\"></iframe>\n",
+        raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
+    }
 
     os << "<table class=\"sc spec\">\n";
 
@@ -4807,6 +4850,89 @@ void print_html_player_procs( report::sc_html_stream& os, const player_t& p )
      << "</div>\n";
 }
 
+void print_html_player_cooldown_waste( report::sc_html_stream& os, const player_t& p )
+{
+  if ( !range::contains( p.cooldown_waste_data_list, true, &cooldown_waste_data_t::active ) )
+    return;
+
+  os << "<div class=\"player-section custom_section\">\n"
+        "<h3 class=\"toggle open\">Cooldown Waste</h3>\n"
+        "<div class=\"toggle-content\">\n"
+        "<table class=\"sc sort even\">\n"
+        "<thead>\n"
+        "<tr>\n"
+        "<th></th>\n"
+        "<th colspan=\"3\">Seconds per Execute</th>\n"
+        "<th colspan=\"3\">Seconds per Iteration</th>\n"
+        "</tr>\n"
+        "<tr>\n"
+        "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
+        "<th class=\"toggle-sort\">Average</th>\n"
+        "<th class=\"toggle-sort\">Minimum</th>\n"
+        "<th class=\"toggle-sort\">Maximum</th>\n"
+        "<th class=\"toggle-sort\">Average</th>\n"
+        "<th class=\"toggle-sort\">Minimum</th>\n"
+        "<th class=\"toggle-sort\">Maximum</th>\n"
+        "</tr>\n"
+        "</thead>\n";
+
+  for ( const auto& data : p.cooldown_waste_data_list )
+  {
+    if ( !data->active() )
+      continue;
+
+    std::string name = data->cd->name_str;
+    if ( action_t* a = p.find_action( name ) )
+    {
+      name = report_decorators::decorated_action( *a );
+    }
+    else
+    {
+      std::vector<const action_t*> actions;
+      range::for_each( p.action_list, [ &actions, &data ] ( const action_t* a )
+      {
+        if ( data->cd == a->cooldown )
+        {
+          auto it = range::find( actions, a->internal_id, &action_t::internal_id );
+          if ( it == actions.end() )
+          {
+            actions.emplace_back( a );
+          }
+        }
+      } );
+
+      if ( actions.size() > 0 )
+      {
+        std::vector<std::string> names;
+        range::for_each( actions, [ &names ] ( const action_t* a )
+        {
+          names.emplace_back( report_decorators::decorated_action( *a ) );
+        } );
+
+        name = util::string_join( names, "<br/>" );
+      }
+      else
+      {
+        name = util::encode_html( name );
+      }
+    }
+
+    os << "<tr>";
+    fmt::print( os, "<td class=\"left\">{}</td>", name );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.mean() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.min() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->normal.max() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.mean() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.min() );
+    fmt::print( os, "<td class=\"right\">{:.3f}</td>", data->cumulative.max() );
+    os << "</tr>\n";
+  }
+
+  os << "</table>\n"
+        "</div>\n"
+        "</div>\n";
+}
+
 // print_html_player_deaths =================================================
 
 void print_html_player_deaths( report::sc_html_stream& os, const player_t& p,
@@ -4892,6 +5018,8 @@ void print_html_player_( report::sc_html_stream& os, const player_t& p )
   print_html_player_buffs( os, p, p.report_information );
 
   print_html_player_procs( os, p );
+
+  print_html_player_cooldown_waste( os, p );
 
   print_html_player_custom_section( os, p, p.report_information );
 

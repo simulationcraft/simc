@@ -1691,7 +1691,41 @@ void player_t::parse_temporary_enchants()
   auto split = util::string_split<util::string_view>( tench_str, "/" );
   for ( const auto& token : split )
   {
-    auto token_split = util::string_split<util::string_view>( token, ":" );
+    std::string expr_str, options_str, value_str;
+    std::unique_ptr<expr_t> if_expr;
+    std::vector<std::unique_ptr<option_t>> options;
+
+    options.emplace_back( opt_string( "if", expr_str ) );
+
+    auto cut_pt = token.find_first_of( ',' );
+    if ( cut_pt != std::string::npos )
+    {
+      options_str = token.substr( cut_pt + 1 );
+      value_str = token.substr( 0, cut_pt );
+    }
+    else
+    {
+      value_str = token;
+    }
+
+    try
+    {
+      opts::parse( sim, value_str, options, options_str );
+
+      if ( !expr_str.empty() )
+      {
+        if_expr = expr_t::parse( this, expr_str, false );
+      }
+    }
+    catch ( const std::exception& e )
+    {
+      sim->error( "Player {} Unable to parse temporary enchant string str '{}': {}",
+        name(), token, e.what() );
+      sim->cancel();
+      return;
+    }
+
+    auto token_split = util::string_split<util::string_view>( value_str, ":" );
     if ( token_split.size() != 2 )
     {
       sim->error( "Player {} invalid temporary enchant token {}, format is 'slot:name'",
@@ -1706,7 +1740,8 @@ void player_t::parse_temporary_enchants()
     if ( it != std::string_view::npos )
     {
       auto rank_str = token_split[ 1 ].substr( it + 1 );
-      auto parsed_rank = util::to_unsigned_ignore_error( rank_str, std::numeric_limits<unsigned>::max() );
+      auto parsed_rank = util::to_unsigned_ignore_error( rank_str,
+                                                        std::numeric_limits<unsigned>::max() );
 
       if ( parsed_rank != std::numeric_limits<unsigned>::max() )
       {
@@ -1723,7 +1758,7 @@ void player_t::parse_temporary_enchants()
       continue;
     }
 
-    items[ slot ].parsed.temporary_enchant_id = enchant.enchant_id;
+    items[ slot ].parsed.temporary_enchants.emplace_back( enchant.enchant_id, if_expr );
   }
 }
 
@@ -2016,17 +2051,6 @@ void player_t::create_special_effects()
     special_effect_t effect( this );
 
     unique_gear::initialize_special_effect( effect, 327942 );
-    if ( !effect.custom_init_object.empty() )
-    {
-      special_effects.push_back( new special_effect_t( effect ) );
-    }
-  }
-
-  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
-  {
-    special_effect_t effect( this );
-
-    unique_gear::initialize_special_effect( effect, 368240 );
     if ( !effect.custom_init_object.empty() )
     {
       special_effects.push_back( new special_effect_t( effect ) );
@@ -2448,7 +2472,7 @@ static void parse_traits(
       {
         if ( std::get<2>( *it ) != std::get<2>( entry ) )
         {
-          player->sim->error( "Overwriting talent {} ({}), rank {} -> {}",
+          player->sim->print_log( "Overwriting talent {} ({}), rank {} -> {}",
             trait_obj->name, trait_obj->id_trait_node_entry,
             std::get<2>( *it ), std::get<2>( entry ) );
         }
@@ -2483,6 +2507,41 @@ static bool generate_tree_nodes( player_t* player,
     tree_nodes[ trait.id_node ].emplace_back( &trait, 0 );
 
   return true;
+}
+
+// Different entries within the same node are allowed to have non-unique selection indices. Every new build, it seems
+// random which node becomes the first choice. Manually resolve such conflicts here.
+// ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
+static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
+{
+  auto get_index = [ is_ptr ]( const trait_data_t* t ) -> short {
+    if ( !is_ptr && t->selection_index != -1 )
+    {
+      switch ( t->id_trait_node_entry )
+      {
+        // Balance Druid overrides
+        case 109873:  // starweaver
+          return 200;
+        case 109872:  // rattle the stars
+          return 100;
+        case 109859:  // fury of elune
+          return 100;
+        case 109860:  // new moon
+          return 200;
+        default:
+          break;
+      }
+    }
+    return t->selection_index;
+  };
+
+  auto a_idx = get_index( a );
+  auto b_idx = get_index( b );
+
+  if ( a_idx != -1 && b_idx != -1 )
+    return a_idx < b_idx;
+  else
+    return a->id_trait_node_entry > b->id_trait_node_entry;
 }
 
 namespace
@@ -2554,9 +2613,12 @@ static std::string generate_traits_hash( player_t* player )
 
   for ( auto& [ id, node ] : tree_nodes )
   {
-    range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-      return a.first->selection_index < b.first->selection_index;
-    } );
+    if ( node.size() > 1 )
+    {
+      range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+        return sort_node_entries( a.first, b.first, player->is_ptr() );
+      } );
+    }
 
     const trait_data_t* trait = nullptr;
     unsigned rank = 0;
@@ -2639,7 +2701,10 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       val += ( byte >> bit & 0b1 ) << std::min( i, sizeof( byte ) * 8 - 1 );
       if ( bit == byte_size - 1 )
       {
-        byte = base64_char.find( talents_str[ head / byte_size ] );
+        if ( ( head / byte_size ) >= talents_str.size() )
+          byte = 0;
+        else
+          byte = base64_char.find( talents_str[ head / byte_size ] );
       }
     }
     return val;
@@ -2676,9 +2741,14 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   {
     if ( get_bit( 1 ) )  // selected
     {
-      range::sort( node, []( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
-        return a.first->selection_index < b.first->selection_index;
-      } );
+      // it is possible to have multiple entries per node that are not choice node, in which case the higher trait node
+      // entry id seems to take precedence
+      if ( node.size() > 1 )
+      {
+        range::sort( node, [ player ]( std::pair<const trait_data_t*, unsigned> a, std::pair<const trait_data_t*, unsigned> b ) {
+          return sort_node_entries( a.first, b.first, player->is_ptr() );
+        } );
+      }
 
       auto trait = node.front().first;
       size_t rank = trait->max_ranks;
@@ -2725,6 +2795,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         trait = node[ index ].first;
       }
 
+      player->sim->print_debug( "Player {} adding talent {}", player->name(), trait->name );
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
                                           as<unsigned>( rank ) );
     }
@@ -3323,7 +3394,7 @@ void player_t::init_actions()
         have_off_gcd_actions = true;
 
         auto it = range::find_if( off_gcd_cd, [action]( std::pair<const cooldown_t*, const cooldown_t*> cds ) {
-          return cds.first == action->cooldown && cds.second == action->internal_cooldown; } 
+          return cds.first == action->cooldown && cds.second == action->internal_cooldown; }
         );
 
         if ( it == off_gcd_cd.end() )
@@ -4153,7 +4224,7 @@ double player_t::composite_melee_speed() const
   if ( buffs.way_of_controlled_currents && buffs.way_of_controlled_currents->check() )
     h *= 1.0 / ( 1.0 + buffs.way_of_controlled_currents->check_stack_value() );
 
-  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->check() )
+  if ( buffs.heavens_nemesis && buffs.heavens_nemesis->data().effectN( 1 ).subtype() == A_MOD_RANGED_AND_MELEE_ATTACK_SPEED && buffs.heavens_nemesis->check() )
     h *= 1.0 / ( 1.0 + buffs.heavens_nemesis->check_stack_value() );
 
   return h;
@@ -5473,9 +5544,6 @@ void player_t::combat_begin()
   auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
     add_timed_buff_triggers( times, buff, duration );
-    if ( buff && external_buffs.seasons_of_plenty )
-      for ( auto t : times )
-        make_event( *sim, t + 10_s, [ b = buffs.equinox ] { b->trigger(); } );
   };
 
   timespan_t summer_duration = buffs.blessing_of_summer->buff_duration() * ( 1.0 + external_buffs.blessing_of_summer_duration_multiplier );
@@ -5484,7 +5552,7 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
-  if ( buffs.windfury_totem )
+  if ( buffs.windfury_totem && may_benefit_from_windfury_totem() )
   {
     buffs.windfury_totem->trigger();
   }
@@ -5548,7 +5616,7 @@ void player_t::datacollection_begin()
   // Check whether the actor was arisen at least once during the _previous_ iteration
   // Note that this check is dependant on sim_t::combat_begin() having
   // sim_t::datacollection_begin() call before the player_t::combat_begin() calls.
-  if ( !active_during_iteration )
+  if ( !requires_data_collection() )
     return;
 
   sim->print_debug( "Data collection begins for {} (id={})", *this, index );
@@ -8305,7 +8373,7 @@ struct shadowmeld_t : public racial_spell_t
     racial_spell_t::execute();
 
     player->buffs.shadowmeld->trigger();
-    
+
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
   }
@@ -9789,10 +9857,10 @@ struct invoke_external_buff_t : public action_t
   invoke_external_buff_t( player_t* player, util::string_view options_str )
     : action_t( ACTION_OTHER, "invoke_external_buff", player ),
       buff_str(),
-      buff( nullptr ),
       buff_duration( timespan_t::min() ),
       buff_stacks( -1 ),
       use_pool( true ),
+      buff( nullptr ),
       invoke_cds( nullptr )
   {
     add_option( opt_string( "name", buff_str ) );
@@ -11092,6 +11160,15 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "spell_crit" )
     return make_fn_expr( expression_str, [this] { return cache.spell_crit_chance(); } );
 
+  if ( expression_str == "parry_chance" )
+    return make_fn_expr( expression_str, [ this ] { return cache.parry(); } );
+
+  if ( expression_str == "dodge_chance" )
+    return make_fn_expr( expression_str, [ this ] { return cache.dodge(); } );
+
+  if ( expression_str == "block_chance" )
+    return make_fn_expr( expression_str, [ this ] { return cache.block(); } );
+
   if ( expression_str == "position_front" )
     return std::make_unique<position_expr_t>( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
   if ( expression_str == "position_back" )
@@ -11990,6 +12067,16 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
     }
+
+    if ( !dragonflight_opts.ruby_whelp_shell_training.empty() )
+    {
+      profile_str += "dragonflight.player.ruby_whelp_shell_training=" + dragonflight_opts.ruby_whelp_shell_training + term;
+    }
+
+    if ( !dragonflight_opts.ruby_whelp_shell_context.empty() )
+    {
+      profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12236,6 +12323,9 @@ void player_t::copy_from( player_t* source )
   class_talents_str = source->class_talents_str;
   spec_talents_str  = source->spec_talents_str;
   player_traits     = source->player_traits;
+  shadowlands_opts  = source->shadowlands_opts;
+  dragonflight_opts = source->dragonflight_opts;
+  resources.initial_opt = source->resources.initial_opt;
 
   if ( azerite )
   {
@@ -12530,7 +12620,6 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.tome_of_unstable_power", external_buffs.tome_of_unstable_power) );
 
   // Additional Options for Timed External Buffs
-  add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
   add_option( opt_func( "external_buffs.the_long_summer_rank", [ this ] ( sim_t*, util::string_view, util::string_view val )
   {
     unsigned rank = util::to_unsigned( val );
@@ -12575,6 +12664,8 @@ void player_t::create_options()
 
   // Dragonflight options
   add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
+  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
+  add_option( opt_string( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
 
   // Obsolete options
 
@@ -12614,8 +12705,15 @@ void player_t::analyze( sim_t& s )
 
   if ( quiet )
     return;
+
   if ( collected_data.fight_length.mean() == 0 )
-    return;
+  {
+    auto it = range::find_if( pet_list, []( pet_t* pet ) {
+      return pet->collected_data.fight_length.mean() > 0; } );
+
+    if ( it == pet_list.end() )
+      return;
+  }
 
   range::for_each( sample_data_list, []( sample_data_helper_t* sd ) { sd->analyze(); } );
 
@@ -12802,6 +12900,8 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       return { metric, q->collected_data.effective_theck_meloree_index };
     case SCALE_METRIC_DEATHS:
       return { metric, q->collected_data.deaths };
+    case SCALE_METRIC_TIME:
+      return { metric, q->collected_data.fight_length };
     default:
       if ( q->primary_role() == ROLE_TANK )
         return { SCALE_METRIC_DTPS, q->collected_data.dtps };
@@ -12810,6 +12910,20 @@ scaling_metric_data_t player_t::scaling_for_metric( scale_metric_e metric ) cons
       else
         return { SCALE_METRIC_DPS, q->collected_data.dps };
   }
+}
+
+bool player_t::requires_data_collection() const
+{
+  if ( active_during_iteration )
+    return true;
+
+  for ( const auto* pet : pet_list )
+  {
+    if ( pet->requires_data_collection() )
+      return true;
+  }
+
+  return false;
 }
 
 /**
@@ -14007,7 +14121,7 @@ void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
   {
     event_t::cancel( main_hand_attack->execute_event );
     main_hand_attack->schedule_execute();
-    if ( delay > timespan_t::zero() )
+    if ( delay > timespan_t::zero() && main_hand_attack->execute_event )
     {
       main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
     }
@@ -14017,7 +14131,7 @@ void player_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
   {
     event_t::cancel( off_hand_attack->execute_event );
     off_hand_attack->schedule_execute();
-    if ( delay > timespan_t::zero() )
+    if ( delay > timespan_t::zero() && off_hand_attack->execute_event )
     {
       off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
     }
@@ -14045,6 +14159,27 @@ void player_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
   {
     sim->print_debug( "Delaying OH auto attack swing timer by {} to {}", delay, off_hand_attack->execute_event->remains() + delay );
     off_hand_attack->execute_event->reschedule( off_hand_attack->execute_event->remains() + delay );
+    delayed = true;
+  }
+
+  if ( proc && delayed )
+    proc->occur();
+}
+
+/**
+* Delay ranged swing timer
+*/
+void player_t::delay_ranged_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  if ( delay == timespan_t::zero() )
+    return;
+
+  bool delayed = false;
+
+  if ( main_hand_attack && main_hand_attack->execute_event && dynamic_cast<ranged_attack_t*>(main_hand_attack) )
+  {
+    sim->print_debug( "Delaying ranged auto attack swing timer by {} to {}", delay, main_hand_attack->execute_event->remains() + delay );
+    main_hand_attack->execute_event->reschedule( main_hand_attack->execute_event->remains() + delay );
     delayed = true;
   }
 

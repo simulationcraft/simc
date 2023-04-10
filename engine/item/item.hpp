@@ -14,6 +14,7 @@
 #include "util/generic.hpp"
 #include "util/format.hpp"
 #include "util/string_view.hpp"
+#include "sim/expressions.hpp"
 
 #include <array>
 #include <vector>
@@ -59,6 +60,27 @@ struct parsed_item_data_t : dbc_item_data_t
   size_t add_effect( const item_effect_t& effect );
 };
 
+// Note, grabs ownership of passed in expression
+struct temporary_enchant_data_t
+{
+  unsigned id;
+  bool     selected;
+  expr_t*  expr;
+
+  temporary_enchant_data_t( unsigned _id, std::unique_ptr<expr_t>& _expr ) :
+    id( _id ), selected( false ), expr( _expr.release() )
+  { }
+
+  ~temporary_enchant_data_t()
+  { delete expr; }
+
+  void select()
+  { selected = true; }
+
+  bool active() const
+  { return ( expr != nullptr && expr->evaluate() != 0.0 ) || expr == nullptr; }
+};
+
 struct item_t
 {
   sim_t* sim;
@@ -74,7 +96,7 @@ struct item_t
     // Note, temporary enchant is parsed outside of item option parsing. This is due to
     // coming from player-scope option, instead of being tied to individual items
     unsigned                                         enchant_id;
-    unsigned                                         temporary_enchant_id;
+    std::vector<temporary_enchant_data_t>            temporary_enchants;
     unsigned                                         addon_id;
     int                                              armor;
     unsigned                                         azerite_level;
@@ -98,6 +120,10 @@ struct item_t
     unsigned                                         drop_level;
     std::vector<unsigned>                            azerite_ids;
     std::vector<int>                                 crafted_stat_mod;
+
+    // Priority state tracking for item bonuses
+    int base_level_priority;
+    int scaling_level_priority;
 
     parsed_input_t();
     ~parsed_input_t();
@@ -217,6 +243,9 @@ struct item_t
   bool has_use_special_effect() const
   { return has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ); }
   bool has_scaling_stat_bonus_id() const;
+
+  void evaluate_temporary_enchants();
+  unsigned selected_temporary_enchant() const;
 
   const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
   const special_effect_t* special_effect_with_name( util::string_view name, special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;

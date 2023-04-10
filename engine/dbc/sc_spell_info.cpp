@@ -6,8 +6,8 @@
 #include "sc_spell_info.hpp"
 
 #include "dbc.hpp"
-#include "dbc/item_set_bonus.hpp"
 #include "dbc/covenant_data.hpp"
+#include "dbc/item_set_bonus.hpp"
 #include "dbc/trait_data.hpp"
 #include "player/covenant.hpp"
 #include "util/static_map.hpp"
@@ -52,7 +52,7 @@ static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util:
   { 24, "Target 1" },
   { 25, "Target 2" },
   { 26, "Value Multiplier" },
-  { 27, "PvP Coefficient" }
+  { 27, "PvP Coefficient" },
 } );
 
 static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::string_view>( {
@@ -77,7 +77,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 20, "Max stacks" },
   { 21, "Proc Chance" },
   { 22, "Proc Stacks" },
-  { 23, "Proc Flags" },
+  { 23, "Proc Flags 1" },
   { 24, "Internal Cooldown" },
   { 25, "RPPM" },
   { 30, "Cast Time" },
@@ -93,7 +93,8 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 48, "Max Targets" },
   { 49, "Required Level" },
   { 50, "Travel Delay" },
-  { 51, "Min Travel Time" }
+  { 51, "Min Travel Time" },
+  { 52, "Proc Flags 2" },
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
@@ -122,35 +123,34 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
 {
   auto it = map.find( key );
   if ( it != map.end() )
-    return fmt::format( "{} ({})", it -> second, key );
+    return fmt::format( "{} ({})", it->second, key );
   return fmt::format( "Unknown({})", key );
 }
 
-void print_hotfixes( fmt::memory_buffer& buf,
-                     util::span<const hotfix::client_hotfix_entry_t> hotfixes,
+void print_hotfixes( fmt::memory_buffer& buf, util::span<const hotfix::client_hotfix_entry_t> hotfixes,
                      util::static_map_view<unsigned, util::string_view> map )
 {
   for ( const auto& hotfix : hotfixes )
   {
     if ( buf.size() > 0 )
-      fmt::format_to( std::back_inserter(buf), ", " );
+      fmt::format_to( std::back_inserter( buf ), ", " );
 
     auto entry = map.find( hotfix.field_id );
     if ( entry == map.end() )
-      fmt::format_to( std::back_inserter(buf), "Unknown({})", hotfix.field_id );
+      fmt::format_to( std::back_inserter( buf ), "Unknown({})", hotfix.field_id );
     else
-      fmt::format_to( std::back_inserter(buf), "{}", entry -> second );
+      fmt::format_to( std::back_inserter( buf ), "{}", entry->second );
 
     switch ( hotfix.field_type )
     {
       case hotfix::UINT:
-        fmt::format_to( std::back_inserter(buf), " ({} -> {})", hotfix.orig_value.u, hotfix.hotfixed_value.u );
+        fmt::format_to( std::back_inserter( buf ), " ({} -> {})", hotfix.orig_value.u, hotfix.hotfixed_value.u );
         break;
       case hotfix::INT:
-        fmt::format_to( std::back_inserter(buf), " ({} -> {})", hotfix.orig_value.i, hotfix.hotfixed_value.i );
+        fmt::format_to( std::back_inserter( buf ), " ({} -> {})", hotfix.orig_value.i, hotfix.hotfixed_value.i );
         break;
       case hotfix::FLOAT:
-        fmt::format_to( std::back_inserter(buf), " ({} -> {})", hotfix.orig_value.f, hotfix.hotfixed_value.f );
+        fmt::format_to( std::back_inserter( buf ), " ({} -> {})", hotfix.orig_value.f, hotfix.hotfixed_value.f );
         break;
       // Don't print out the changed string for now, seems pointless
       case hotfix::STRING:
@@ -171,9 +171,7 @@ std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotf
 }
 
 template <typename Range, typename Callback>
-std::string concatenate( Range&& data,
-                         Callback&& fn,
-                         const std::string& delim = ", " )
+std::string concatenate( Range&& data, Callback&& fn, const std::string& delim = ", " )
 {
   if ( data.empty() )
   {
@@ -210,40 +208,51 @@ std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifie
   return decimals;
 }
 
-struct proc_map_entry_t {
-  int flag;
+struct proc_map_entry_t
+{
+  uint64_t flag;
   util::string_view proc;
 };
-static constexpr std::array<proc_map_entry_t, 26> _proc_flag_map { {
-  { PF_KILLED,               "Killed"                      },
-  { PF_KILLING_BLOW,         "Killing Blow"                },
-  { PF_MELEE,                "White Melee"                 },
-  { PF_MELEE_TAKEN,          "White Melee Taken"           },
-  { PF_MELEE_ABILITY,        "Yellow Melee"                },
-  { PF_MELEE_ABILITY_TAKEN,  "Yellow Melee Taken"          },
-  { PF_RANGED,               "White Ranged"                },
-  { PF_RANGED_TAKEN,         "White Ranged Taken"          },
-  { PF_RANGED_ABILITY,       "Yellow Ranged"               },
-  { PF_RANGED_ABILITY_TAKEN, "Yellow Ranged Taken"         },
-  { PF_NONE_HEAL,            "Generic Heal"                },
-  { PF_NONE_HEAL_TAKEN,      "Generic Heal Taken"          },
-  { PF_NONE_SPELL,           "Generic Hostile Spell"       },
-  { PF_NONE_SPELL_TAKEN,     "Generic Hostile Spell Taken" },
-  { PF_MAGIC_HEAL,           "Magic Heal"                  },
-  { PF_MAGIC_HEAL_TAKEN,     "Magic Heal Taken"            },
-  { PF_MAGIC_SPELL,          "Magic Hostile Spell"         },
-  { PF_MAGIC_SPELL_TAKEN,    "Magic Hostile Spell Taken"   },
-  { PF_PERIODIC,             "Periodic"                    },
-  { PF_PERIODIC_TAKEN,       "Periodic Taken"              },
-  { PF_ANY_DAMAGE_TAKEN,     "Any Damage Taken"            },
-  { PF_TRAP_TRIGGERED,       "Trap Triggered"              },
-  { PF_JUMP,                 "Proc on jump"                },
-  { PF_MAINHAND,             "Melee Main-Hand"             },
-  { PF_OFFHAND,              "Melee Off-Hand"              },
-  { PF_DEATH,                "Death"                       },
+static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
+  { PF_KILLED,                 "Killed"                      },
+  { PF_KILLING_BLOW,           "Killing Blow"                },
+  { PF_MELEE,                  "White Melee"                 },
+  { PF_MELEE_TAKEN,            "White Melee Taken"           },
+  { PF_MELEE_ABILITY,          "Yellow Melee"                },
+  { PF_MELEE_ABILITY_TAKEN,    "Yellow Melee Taken"          },
+  { PF_RANGED,                 "White Ranged"                },
+  { PF_RANGED_TAKEN,           "White Ranged Taken"          },
+  { PF_RANGED_ABILITY,         "Yellow Ranged"               },
+  { PF_RANGED_ABILITY_TAKEN,   "Yellow Ranged Taken"         },
+  { PF_NONE_HEAL,              "Generic Heal"                },
+  { PF_NONE_HEAL_TAKEN,        "Generic Heal Taken"          },
+  { PF_NONE_SPELL,             "Generic Hostile Spell"       },
+  { PF_NONE_SPELL_TAKEN,       "Generic Hostile Spell Taken" },
+  { PF_MAGIC_HEAL,             "Magic Heal"                  },
+  { PF_MAGIC_HEAL_TAKEN,       "Magic Heal Taken"            },
+  { PF_MAGIC_SPELL,            "Magic Hostile Spell"         },
+  { PF_MAGIC_SPELL_TAKEN,      "Magic Hostile Spell Taken"   },
+  { PF_PERIODIC,               "Periodic"                    },
+  { PF_PERIODIC_TAKEN,         "Periodic Taken"              },
+  { PF_ANY_DAMAGE_TAKEN,       "Any Damage Taken"            },
+  { PF_HELPFUL_PERIODIC,       "Helpful Periodic"            },
+  { PF_JUMP,                   "Proc on jump"                },
+  { PF_MAINHAND,               "Melee Main-Hand"             },
+  { PF_OFFHAND,                "Melee Off-Hand"              },
+  { PF_DEATH,                  "Death"                       },
+  { PF_CLONE_SPELL,            "Proc Clone Spell"            },
+  { PF_ENTER_COMBAT,           "Enter Combat"                },
+  { PF_ENCOUNTER_START,        "Encounter Start"             },
+  { PF_CAST_ENDED,             "Cast Ended"                  },
+  { PF_LOOTED,                 "Looted"                      },
+  { PF_HELPFUL_PERIODIC_TAKEN, "Helpful Periodic Taken"      },
+  { PF_TARGET_DIES,            "Target Dies"                 },
+  { PF_KNOCKBACK,              "Knockback"                   },
+  { PF_CAST_SUCCESSFUL,        "Cast Successful"             },
 } };
 
-struct class_map_entry_t {
+struct class_map_entry_t
+{
   const char* name;
   player_e pt;
 };
@@ -289,7 +298,7 @@ static constexpr auto _race_map = util::make_static_map<unsigned, util::string_v
   { 28, "Void Elf"            },
   { 29, "Lightforged Draenei" },
   { 30, "Zandalari Troll"     },
-  { 31, "Kul Tiran"           }
+  { 31, "Kul Tiran"           },
 } );
 
 static constexpr auto _targeting_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -819,8 +828,8 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 32, "Spell Effect 4"            },
   { 33, "Spell Effect 5"            },
   { 34, "Spell Resource Generation" },
-  { 35, "Spell Chain Target Range"  },
-  { 37, "Spell Max Stacks"          },
+    { 35, "Spell Chain Target Range" },
+    { 37, "Spell Max Stacks" },
 } );
 
 static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -915,7 +924,9 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 164, "Cancel Aura"              },
   { 174, "Apply Aura Pet"           },
   { 179, "Create Area Trigger"      },
+  { 188, "Summon Multiple Hunter Pets" },
   { 202, "Apply Player/Pet Aura"    },
+  { 260, "Summon Stabled Pet"       },
   { 290, "Reduce Remaining Cooldown"},
 } );
 
@@ -1126,7 +1137,10 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 468, "Trigger Spell Based on Health%"               },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
+  { 493, "Hunter Animal Companion"                      },
   { 501, "Modify Crit Damage Done% from Caster's Spells" },
+  { 507, "Modify Damage Taken% from Caster's Spells (Label)" },
+  { 531, "Modify Guardian Damage Done%"                 },
 } );
 
 static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
@@ -1179,26 +1193,27 @@ static constexpr auto _label_strings = util::make_static_map<int, util::string_v
   { 66, "Demon Hunter Spells" },
 } );
 
-std::string mechanic_str( unsigned mechanic ) {
+std::string mechanic_str( unsigned mechanic )
+{
   auto it = _mechanic_strings.find( mechanic );
   if ( it != _mechanic_strings.end() )
   {
-    return std::string( it -> second );
+    return std::string( it->second );
   }
   return fmt::format( "Unknown({})", mechanic );
 }
 
-std::string label_str( int label, const dbc_t& dbc ) {
+std::string label_str( int label, const dbc_t& dbc )
+{
   auto it = _label_strings.find( label );
   if ( it != _label_strings.end() )
   {
-    return fmt::format( "{} ({})", it -> second, label );
+    return fmt::format( "{} ({})", it->second, label );
   }
   auto affected_spells = dbc.spells_by_label( label );
-  return concatenate( affected_spells,
-          []( std::stringstream& s, const spell_data_t* spell ) {
-            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
-          } );
+  return concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
+    fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
+  } );
 }
 
 std::string spell_flags( const spell_data_t* spell )
@@ -1207,13 +1222,13 @@ std::string spell_flags( const spell_data_t* spell )
 
   s << "[";
 
-  if ( spell -> class_family() != 0 )
-    s << "Spell Family (" << spell -> class_family() << "), ";
+  if ( spell->class_family() != 0 )
+    s << "Spell Family (" << spell->class_family() << "), ";
 
-  if ( spell -> flags( spell_attribute::SX_PASSIVE ) )
+  if ( spell->flags( spell_attribute::SX_PASSIVE ) )
     s << "Passive, ";
 
-  if ( spell -> flags( spell_attribute::SX_HIDDEN ) )
+  if ( spell->flags( spell_attribute::SX_HIDDEN ) )
     s << "Hidden, ";
 
   if ( s.tellp() > 1 )
@@ -1229,12 +1244,11 @@ std::string spell_flags( const spell_data_t* spell )
 
 void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
 {
-  if ( spell -> flags( spell_attribute::SX_PASSIVE ) )
-    parent -> add_parm( "passive", "true" );
+  if ( spell->flags( spell_attribute::SX_PASSIVE ) )
+    parent->add_parm( "passive", "true" );
 }
 
-std::string azerite_essence_str( const spell_data_t* spell,
-                             util::span<const azerite_essence_power_entry_t> data )
+std::string azerite_essence_str( const spell_data_t* spell, util::span<const azerite_essence_power_entry_t> data )
 {
   // Locate spell in the array
   auto it = range::find_if( data, [ spell ]( const azerite_essence_power_entry_t& e ) {
@@ -1275,102 +1289,97 @@ std::string azerite_essence_str( const spell_data_t* spell,
   }
   s << ", ";
 
-
   s << "Rank: " << it->rank;
-
 
   s << ")";
 
   return s.str();
 }
 
-} // unnamed namespace
+}  // unnamed namespace
 
-std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
-                                               const spell_data_t*       spell,
-                                               const spelleffect_data_t* e,
-                                               std::ostringstream&       s,
-                                               int level )
+std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* e,
+                                               std::ostringstream& s, int level )
 {
   std::streamsize ssize = s.precision( 7 );
   std::array<char, 512> tmp_buffer;
   std::array<char, 64> tmp_buffer2;
 
-  snprintf( tmp_buffer2.data(), tmp_buffer2.size(), "(id=%u)", e -> id() );
-  snprintf( tmp_buffer.data(), tmp_buffer.size(), "#%d %-*s: ", (int16_t)e -> index() + 1, 14, tmp_buffer2.data() );
+  snprintf( tmp_buffer2.data(), tmp_buffer2.size(), "(id=%u)", e->id() );
+  snprintf( tmp_buffer.data(), tmp_buffer.size(), "#%d %-*s: ", (int16_t)e->index() + 1, 14, tmp_buffer2.data() );
   s << tmp_buffer.data();
 
-  s << map_string( _effect_type_strings, e -> raw_type() );
+  s << map_string( _effect_type_strings, e->raw_type() );
   // Put some nice handling on some effect types
-  switch ( e -> type() )
+  switch ( e->type() )
   {
     case E_SCHOOL_DAMAGE:
-      s << ": " << util::school_type_string( spell -> get_school_type() );
+      s << ": " << util::school_type_string( spell->get_school_type() );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
-      if ( e -> trigger_spell_id() )
+      if ( e->trigger_spell_id() )
       {
-        if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-          s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+        if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
+          s << ": " << dbc.spell( e->trigger_spell_id() )->name_cstr();
         else
-          s << ": (" << e -> trigger_spell_id() << ")";
+          s << ": (" << e->trigger_spell_id() << ")";
       }
       break;
     default:
       break;
   }
 
-  if ( e -> subtype() > 0 )
+  if ( e->subtype() > 0 )
   {
-    s << " | " << map_string( _effect_subtype_strings, e -> raw_subtype() );
-    switch ( e -> subtype() )
+    s << " | " << map_string( _effect_subtype_strings, e->raw_subtype() );
+    switch ( e->subtype() )
     {
       case A_PERIODIC_DAMAGE:
-        s << ": " << util::school_type_string( spell -> get_school_type() );
-        if ( e -> period() != timespan_t::zero() )
-          s << " every " << e -> period().total_seconds() << " seconds";
+        s << ": " << util::school_type_string( spell->get_school_type() );
+        if ( e->period() != timespan_t::zero() )
+          s << " every " << e->period().total_seconds() << " seconds";
         break;
       case A_PERIODIC_HEAL:
       case A_PERIODIC_ENERGIZE:
       case A_PERIODIC_DUMMY:
       case A_PERIODIC_HEAL_PCT:
       case A_PERIODIC_LEECH:
-        if ( e -> period() != timespan_t::zero() )
-          s << ": every " << e -> period().total_seconds() << " seconds";
+        if ( e->period() != timespan_t::zero() )
+          s << ": every " << e->period().total_seconds() << " seconds";
         break;
       case A_PROC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
+        if ( e->trigger_spell_id() )
         {
-          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
           {
-            s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+            s << ": " << dbc.spell( e->trigger_spell_id() )->name_cstr();
           }
           else
           {
-            s << ": (" << e -> trigger_spell_id() << ")";
+            s << ": (" << e->trigger_spell_id() << ")";
           }
         }
         break;
       case A_PERIODIC_TRIGGER_SPELL:
         s << ": ";
-        if ( e -> trigger_spell_id() && dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+        if ( e->trigger_spell_id() && dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
         {
-          s << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+          s << dbc.spell( e->trigger_spell_id() )->name_cstr();
         }
         else
         {
           s << "Unknown(" << e->trigger_spell_id() << ")";
         }
 
-        if ( e -> period() != timespan_t::zero() )
-          s << " every " << e -> period().total_seconds() << " seconds";
+        if ( e->period() != timespan_t::zero() )
+          s << " every " << e->period().total_seconds() << " seconds";
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
       case A_ADD_FLAT_LABEL_MODIFIER:
-        s << ": " << map_string( _property_type_strings, e -> misc_value1() );
+        s << ": " << map_string( _property_type_strings, e->misc_value1() );
         break;
       default:
         break;
@@ -1384,7 +1393,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   s << std::endl;
 
-  s << "                   Base Value: " << e -> base_value();
+  s << "                   Base Value: " << e->base_value();
   s << " | Scaled Value: ";
 
   if ( level <= MAX_LEVEL )
@@ -1417,129 +1426,129 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       item_budget = ilevel_data.damage_secondary;
     }
 
-    s << item_budget * e -> m_coefficient() * coefficient;
-
+    s << item_budget * e->m_coefficient() * coefficient;
   }
 
-  if ( e -> m_coefficient() != 0 || e -> m_delta() != 0 )
+  if ( e->m_coefficient() != 0 || e->m_delta() != 0 )
   {
-    s << " (coefficient=" << e -> m_coefficient();
-    if ( e -> m_delta() != 0 )
-      s << ", delta coefficient=" << e -> m_delta();
+    s << " (coefficient=" << e->m_coefficient();
+    if ( e->m_delta() != 0 )
+      s << ", delta coefficient=" << e->m_delta();
     s << ")";
   }
 
   if ( level <= MAX_LEVEL )
   {
-    if ( e -> m_unk() )
+    if ( e->m_unk() )
     {
-      s << " | Bonus Value: " << dbc.effect_bonus( e -> id(), level );
-      s << " (" << e -> m_unk() << ")";
+      s << " | Bonus Value: " << dbc.effect_bonus( e->id(), level );
+      s << " (" << e->m_unk() << ")";
     }
   }
 
-  if ( e -> real_ppl() != 0 )
+  if ( e->real_ppl() != 0 )
   {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%f", e -> real_ppl() );
-    s << " | Points Per Level: " << e -> real_ppl();
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%f", e->real_ppl() );
+    s << " | Points Per Level: " << e->real_ppl();
   }
 
-  if ( e -> m_value() != 0 )
+  if ( e->m_value() != 0 )
   {
-    s << " | Value Multiplier: " << e -> m_value();
+    s << " | Value Multiplier: " << e->m_value();
   }
 
-  if ( e -> sp_coeff() != 0 )
+  if ( e->sp_coeff() != 0 )
   {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> sp_coeff() );
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e->sp_coeff() );
     s << " | SP Coefficient: " << tmp_buffer.data();
   }
 
-  if ( e -> ap_coeff() != 0 )
+  if ( e->ap_coeff() != 0 )
   {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> ap_coeff() );
+    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e->ap_coeff() );
     s << " | AP Coefficient: " << tmp_buffer.data();
   }
 
-  snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> pvp_coeff() );
+  snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e->pvp_coeff() );
   s << " | PvP Coefficient: " << tmp_buffer.data();
 
-  if ( e -> chain_target() != 0 )
-    s << " | Chain Multiplier: " << e -> chain_multiplier();
+  if ( e->chain_target() != 0 )
+    s << " | Chain Multiplier: " << e->chain_multiplier();
 
-  if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
+  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
   {
-    if ( e -> affected_schools() != 0U )
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e -> misc_value1() );
-    else if ( e -> type() == E_ENERGIZE )
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
+    if ( e->affected_schools() != 0U )
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
+    else if ( e->type() == E_ENERGIZE )
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s",
+                util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
+    else if ( e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
     else
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e -> misc_value1() );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value1() );
     s << " | Misc Value: " << tmp_buffer.data();
   }
 
-  if ( e -> misc_value2() != 0 )
+  if ( e->misc_value2() != 0 )
   {
-    if ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+    if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e -> misc_value2() );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value2() );
     }
     else
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e -> misc_value2() );
+      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value2() );
     }
     s << " | Misc Value 2: " << tmp_buffer.data();
   }
 
-  if ( e -> pp_combo_points() != 0 )
-    s << " | Points Per Combo Point: " << e -> pp_combo_points();
+  if ( e->pp_combo_points() != 0 )
+    s << " | Points Per Combo Point: " << e->pp_combo_points();
 
-  if ( e -> trigger_spell_id() != 0 )
-    s << " | Trigger Spell: " << e -> trigger_spell_id();
+  if ( e->trigger_spell_id() != 0 )
+    s << " | Trigger Spell: " << e->trigger_spell_id();
 
-  if ( e -> radius() > 0 || e -> radius_max() > 0 )
+  if ( e->radius() > 0 || e->radius_max() > 0 )
   {
-    s << " | Radius: " << e -> radius();
-    if ( e -> radius_max() > 0 && e -> radius_max() != e -> radius() )
-      s << " - " << e -> radius_max();
+    s << " | Radius: " << e->radius();
+    if ( e->radius_max() > 0 && e->radius_max() != e->radius() )
+      s << " - " << e->radius_max();
     s << " yards";
   }
 
-  if ( e -> mechanic() > 0 )
+  if ( e->mechanic() > 0 )
   {
-    s << " | Mechanic: " << mechanic_str( e -> mechanic() );
+    s << " | Mechanic: " << mechanic_str( e->mechanic() );
   }
 
-  if ( e -> chain_target() > 0 )
+  if ( e->chain_target() > 0 )
   {
-    s << " | Chain Targets: " << e -> chain_target();
+    s << " | Chain Targets: " << e->chain_target();
   }
 
-  if ( e -> target_1() != 0 || e -> target_2() != 0 )
+  if ( e->target_1() != 0 || e->target_2() != 0 )
   {
     s << " | Target: ";
-    if ( e -> target_1() && ! e -> target_2() )
+    if ( e->target_1() && !e->target_2() )
     {
-      s << map_string( _targeting_strings, e -> target_1() );
+      s << map_string( _targeting_strings, e->target_1() );
     }
-    else if ( ! e -> target_1() && e -> target_2() )
+    else if ( !e->target_1() && e->target_2() )
     {
-      s << "[" << map_string( _targeting_strings, e -> target_2() ) << "]";
+      s << "[" << map_string( _targeting_strings, e->target_2() ) << "]";
     }
     else
     {
-      s << map_string( _targeting_strings, e -> target_1() ) << " -> "
-        << map_string( _targeting_strings, e -> target_2() );
+      s << map_string( _targeting_strings, e->target_1() ) << " -> " << map_string( _targeting_strings, e->target_2() );
     }
   }
 
   s << std::endl;
 
-  if ( e -> type() == E_APPLY_AURA &&
-       e -> affected_schools() != 0U )
+  if ( e->type() == E_APPLY_AURA && e->affected_schools() != 0U )
   {
     s << "                   Affected School(s): ";
-    if ( e -> affected_schools() == 0x7f )
+    if ( e->affected_schools() == 0x7f )
     {
       s << "All";
     }
@@ -1548,7 +1557,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       std::vector<std::string> schools;
       for ( school_e school = SCHOOL_NONE; school < SCHOOL_MAX_PRIMARY; school++ )
       {
-        if ( e -> affected_schools() & dbc::get_school_mask( school ) )
+        if ( e->affected_schools() & dbc::get_school_mask( school ) )
           schools.emplace_back( util::inverse_tokenize( util::school_type_string( school ) ) );
       }
 
@@ -1558,43 +1567,41 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << std::endl;
   }
 
-
-  std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
+  std::vector<const spell_data_t*> affected_spells = dbc.effect_affects_spells( spell->class_family(), e );
   if ( !affected_spells.empty() )
   {
     s << "                   Affected Spells: ";
-    s << concatenate( affected_spells,
-          []( std::stringstream& s, const spell_data_t* spell ) {
-            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
-          } );
+    s << concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
+      fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
+    } );
     s << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA &&
-       ( e -> subtype() == A_ADD_PCT_LABEL_MODIFIER || e -> subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
+  if ( e->type() == E_APPLY_AURA &&
+       ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
-    auto str = label_str( e -> misc_value2(), dbc );
+    auto str = label_str( e->misc_value2(), dbc );
     if ( str != "" )
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && e -> subtype() == A_MOD_RECHARGE_RATE_LABEL )
+  if ( e->type() == E_APPLY_AURA &&
+       ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
   {
-    auto str = label_str( e -> misc_value1(), dbc );
+    auto str = label_str( e->misc_value1(), dbc );
     if ( str != "" )
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
-  if ( e -> type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e -> subtype() ) )
+  if ( e->type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
   {
-    auto affected_spells = dbc.spells_by_category( e -> misc_value1() );
+    auto affected_spells = dbc.spells_by_category( e->misc_value1() );
     if ( !affected_spells.empty() )
     {
       s << "                   Affected Spells (Category): ";
-      s << concatenate( affected_spells,
-          []( std::stringstream& s, const spell_data_t* spell ) {
-            fmt::print( s, "{} ({})", spell -> name_cstr(), spell -> id() );
-          } );
+      s << concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
+        fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
+      } );
       s << std::endl;
     }
   }
@@ -1629,8 +1636,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   return s;
 }
 
-static std::string trait_data_to_str( const dbc_t&                            dbc,
-                                      const spell_data_t*                     spell,
+static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spell,
                                       const std::vector<const trait_data_t*>& traits )
 {
   std::vector<std::string> strings;
@@ -1645,12 +1651,11 @@ static std::string trait_data_to_str( const dbc_t&                            db
     auto spec_idx = 0U;
     while ( trait->id_spec_starter[ spec_idx ] != 0 && spec_idx < trait->id_spec_starter.size() )
     {
-      auto specialization_str = util::inverse_tokenize( dbc::specialization_string(
-            static_cast<specialization_e>( trait->id_spec_starter[ spec_idx ] ) ) );
+      auto specialization_str = util::inverse_tokenize(
+          dbc::specialization_string( static_cast<specialization_e>( trait->id_spec_starter[ spec_idx ] ) ) );
       if ( util::str_compare_ci( specialization_str, "Unknown" ) )
       {
-        starters.emplace_back( fmt::format( "{} ({})", specialization_str,
-          trait->id_spec_starter[ spec_idx ] ) );
+        starters.emplace_back( fmt::format( "{} ({})", specialization_str, trait->id_spec_starter[ spec_idx ] ) );
       }
       else
       {
@@ -1685,27 +1690,26 @@ static std::string trait_data_to_str( const dbc_t&                            db
     if ( trait->id_replace_spell > 0 )
     {
       const auto replace_spell = dbc.spell( trait->id_replace_spell );
-      nibbles.emplace_back( fmt::format( "replace=\"{}\" (id={})",
-            replace_spell->name_cstr(), trait->id_replace_spell ) );
+      nibbles.emplace_back(
+          fmt::format( "replace=\"{}\" (id={})", replace_spell->name_cstr(), trait->id_replace_spell ) );
     }
 
     if ( trait->id_override_spell > 0 )
     {
       const auto override_spell = dbc.spell( trait->id_override_spell );
-      nibbles.emplace_back( fmt::format( "override=\"{}\" (id={})",
-            override_spell->name_cstr(), trait->id_override_spell ) );
+      nibbles.emplace_back(
+          fmt::format( "override=\"{}\" (id={})", override_spell->name_cstr(), trait->id_override_spell ) );
     }
 
     spec_idx = 0U;
     std::vector<std::string> spec_strs;
     while ( trait->id_spec[ spec_idx ] != 0 && spec_idx < trait->id_spec.size() )
     {
-      auto specialization_str = util::inverse_tokenize( dbc::specialization_string(
-            static_cast<specialization_e>( trait->id_spec[ spec_idx ] ) ) );
+      auto specialization_str = util::inverse_tokenize(
+          dbc::specialization_string( static_cast<specialization_e>( trait->id_spec[ spec_idx ] ) ) );
       if ( util::str_compare_ci( specialization_str, "Unknown" ) )
       {
-        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str,
-          trait->id_spec[ spec_idx ] ) );
+        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str, trait->id_spec[ spec_idx ] ) );
       }
       else
       {
@@ -1714,19 +1718,17 @@ static std::string trait_data_to_str( const dbc_t&                            db
       ++spec_idx;
     }
 
-    strings.emplace_back( fmt::format( "{} [{}]",
-      !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
-      util::string_join( nibbles, ", " ) ) );
+    strings.emplace_back( fmt::format( "{} [{}]", !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
+                                       util::string_join( nibbles, ", " ) ) );
 
-    const auto trait_effects = trait_definition_effect_entry_t::find( trait->id_trait_definition,
-        dbc.ptr );
+    const auto trait_effects = trait_definition_effect_entry_t::find( trait->id_trait_definition, dbc.ptr );
 
     for ( const auto trait_effect : trait_effects )
     {
       std::vector<std::string> trait_effect_nibbles;
 
-      trait_effect_nibbles.emplace_back( fmt::format( "op={}", util::trait_definition_op_string(
-              static_cast<trait_definition_op>( trait_effect.operation ) ) ) );
+      trait_effect_nibbles.emplace_back( fmt::format(
+          "op={}", util::trait_definition_op_string( static_cast<trait_definition_op>( trait_effect.operation ) ) ) );
 
       auto curve_data = curve_point_t::find( trait_effect.id_curve, dbc.ptr );
       if ( !curve_data.empty() )
@@ -1741,7 +1743,7 @@ static std::string trait_data_to_str( const dbc_t&                            db
       }
 
       strings.emplace_back( fmt::format( "Effect#{} [{}]", trait_effect.effect_index + 1,
-            util::string_join( trait_effect_nibbles, ", " ) ) );
+                                         util::string_join( trait_effect_nibbles, ", " ) ) );
     }
   }
 
@@ -1753,19 +1755,22 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   std::ostringstream s;
   player_e pt = PLAYER_NONE;
 
-  if ( spell->has_scaling_effects() && spell->level() > static_cast< unsigned >( level ) )
+  if ( spell->has_scaling_effects() && spell->level() > static_cast<unsigned>( level ) )
   {
-    s << std::endl << "Too low spell level " << level << " for " << spell -> name_cstr() << ", minimum is " << spell -> level() << "." << std::endl << std::endl;
+    s << std::endl
+      << "Too low spell level " << level << " for " << spell->name_cstr() << ", minimum is " << spell->level() << "."
+      << std::endl
+      << std::endl;
     return s.str();
   }
 
-  const spelltext_data_t& spell_text = dbc.spell_text( spell -> id() );
-  const spelldesc_vars_data_t& spelldesc_vars = dbc.spell_desc_vars( spell -> id() );
+  const spelltext_data_t& spell_text = dbc.spell_text( spell->id() );
+  const spelldesc_vars_data_t& spelldesc_vars = dbc.spell_desc_vars( spell->id() );
 
-  std::string name_str = spell -> name_cstr();
+  std::string name_str = spell->name_cstr();
   if ( spell_text.rank() )
     name_str += " (desc=" + std::string( spell_text.rank() ) + ")";
-  s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
+  s << "Name             : " << name_str << " (id=" << spell->id() << ") " << spell_flags( spell ) << std::endl;
 
   const auto hotfixes = spell_data_t::hotfixes( *spell, dbc.ptr );
   if ( !hotfixes.empty() && hotfixes.front().field_id == hotfix::NEW_ENTRY )
@@ -1782,11 +1787,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       fmt::print( s, "Hotfixed         : {}\n", to_string( hs ) );
   }
 
-  const unsigned replace_spell_id = dbc.replace_spell_id( spell -> id() );
+  const unsigned replace_spell_id = dbc.replace_spell_id( spell->id() );
   if ( replace_spell_id > 0 )
   {
-    fmt::print( s, "Replaces         : {} (id={})\n",
-                dbc.spell( replace_spell_id ) -> name_cstr(), replace_spell_id );
+    fmt::print( s, "Replaces         : {} (id={})\n", dbc.spell( replace_spell_id )->name_cstr(), replace_spell_id );
   }
 
   const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id(), 0, SPEC_NONE, dbc.ptr );
@@ -1795,15 +1799,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << "Talent Entry     : " << trait_data_to_str( dbc, spell, talents ) << std::endl;
   }
 
-  if ( spell -> class_mask() )
+  if ( spell->class_mask() )
   {
     bool pet_ability = false;
     s << "Class            : ";
 
-    if ( dbc.is_specialization_ability( spell -> id() ) )
+    if ( dbc.is_specialization_ability( spell->id() ) )
     {
       std::vector<specialization_e> spec_list;
-      dbc.ability_specialization( spell -> id(), spec_list );
+      dbc.ability_specialization( spell->id(), spec_list );
 
       for ( const specialization_e spec : spec_list )
       {
@@ -1820,10 +1824,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
     {
-      if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
+      if ( ( spell->class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
         s << _class_map[ i ].name << ", ";
-        if ( ! pt )
+        if ( !pt )
           pt = _class_map[ i ].pt;
       }
     }
@@ -1834,29 +1838,28 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> race_mask() )
+  if ( spell->race_mask() )
   {
     std::vector<util::string_view> races;
-    for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
+    for ( unsigned int i = 0; i < sizeof( spell->race_mask() ) * 8; i++ )
     {
       uint64_t mask = uint64_t( 1 ) << i;
-      if ( spell -> race_mask() & mask )
+      if ( spell->race_mask() & mask )
       {
         auto it = _race_map.find( i );
         if ( it != _race_map.end() )
-          races.push_back( it -> second );
+          races.push_back( it->second );
       }
     }
 
-    fmt::print( s, "Race             : {} (0x{:0x})\n", fmt::join( races, ", " ), spell -> race_mask() );
+    fmt::print( s, "Race             : {} (0x{:0x})\n", fmt::join( races, ", " ), spell->race_mask() );
   }
 
   const auto& covenant_spell = covenant_ability_entry_t::find( spell->name_cstr(), dbc.ptr );
   if ( covenant_spell.spell_id == spell->id() )
   {
     s << "Covenant         : ";
-    s << util::inverse_tokenize(
-        util::covenant_type_string( static_cast<covenant_e>( covenant_spell.covenant_id ) ) );
+    s << util::inverse_tokenize( util::covenant_type_string( static_cast<covenant_e>( covenant_spell.covenant_id ) ) );
     s << std::endl;
   }
 
@@ -1864,11 +1867,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( soulbind_spell.spell_id == spell->id() )
   {
     s << "Covenant         : ";
-    s << util::inverse_tokenize(
-        util::covenant_type_string( static_cast<covenant_e>( soulbind_spell.covenant_id ) ) );
+    s << util::inverse_tokenize( util::covenant_type_string( static_cast<covenant_e>( soulbind_spell.covenant_id ) ) );
     s << std::endl;
   }
-  std::string school_string = util::school_type_string( spell -> get_school_type() );
+  std::string school_string = util::school_type_string( spell->get_school_type() );
   school_string[ 0 ] = std::toupper( school_string[ 0 ] );
   s << "School           : " << school_string << std::endl;
 
@@ -1879,7 +1881,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   }
   s << "Spell Type       : " << spell_type_str << std::endl;
 
-  for ( const spellpower_data_t& pd : spell -> powers() )
+  for ( const spellpower_data_t& pd : spell->powers() )
   {
     s << "Resource         : ";
 
@@ -1893,7 +1895,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.max_cost() != 0 )
     {
       s << "- ";
-      if ( pd.type() == POWER_MANA && pd._cost_max == 0  )
+      if ( pd.type() == POWER_MANA && pd._cost_max == 0 )
         s << ( pd.cost() + pd.max_cost() ) * 100.0 << "%";
       else
         s << ( pd.cost() + pd.max_cost() );
@@ -1916,8 +1918,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     s << " (id=" << pd.id() << ")";
 
-    if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() ) -> id() == pd.aura_id() )
-      s << " w/ " << dbc.spell( pd.aura_id() ) -> name_cstr() << " (id=" << pd.aura_id() << ")";
+    if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() )->id() == pd.aura_id() )
+      s << " w/ " << dbc.spell( pd.aura_id() )->name_cstr() << " (id=" << pd.aura_id() << ")";
 
     const auto hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr );
     if ( !hotfixes.empty() )
@@ -1931,74 +1933,74 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> level() > 0 )
+  if ( spell->level() > 0 )
   {
-    s << "Spell Level      : " << ( int ) spell -> level();
-    if ( spell -> max_level() > 0 )
-      s << " (max " << ( int ) spell -> max_level() << ")";
+    s << "Spell Level      : " << (int)spell->level();
+    if ( spell->max_level() > 0 )
+      s << " (max " << (int)spell->max_level() << ")";
 
     s << std::endl;
   }
 
-  if ( spell -> max_scaling_level() > 0 )
+  if ( spell->max_scaling_level() > 0 )
   {
-    s << "Max Scaling Level: " << ( int ) spell -> max_scaling_level();
+    s << "Max Scaling Level: " << (int)spell->max_scaling_level();
     s << std::endl;
   }
 
-  if ( spell -> req_max_level() > 0 )
+  if ( spell->req_max_level() > 0 )
   {
-    s << "Req. Max Level   : " << ( int ) spell -> req_max_level();
+    s << "Req. Max Level   : " << (int)spell->req_max_level();
     s << std::endl;
   }
 
-  if ( spell -> min_range() || spell -> max_range() )
+  if ( spell->min_range() || spell->max_range() )
   {
     s << "Range            : ";
-    if ( spell -> min_range() )
-      s << ( int ) spell -> min_range() << " - ";
+    if ( spell->min_range() )
+      s << (int)spell->min_range() << " - ";
 
-    s << ( int ) spell -> max_range() << " yards" << std::endl;
+    s << (int)spell->max_range() << " yards" << std::endl;
   }
 
-  if ( spell -> max_targets() != 0 )
+  if ( spell->max_targets() != 0 )
   {
     fmt::print( s, "Max Targets      : {}{}{}\n",
-      spell -> max_targets() == -1 ? "Unlimited(" :
-        spell -> max_targets() < 0 ? "Unknown(" : "",
-      spell -> max_targets(),
-      spell -> max_targets() < 0 ? ")" : "" );
+                spell->max_targets() == -1 ? "Unlimited("
+                : spell->max_targets() < 0 ? "Unknown("
+                                           : "",
+                spell->max_targets(), spell->max_targets() < 0 ? ")" : "" );
   }
 
-  if ( spell -> cast_time() > 0_ms )
-    s << "Cast Time        : " << spell -> cast_time().total_seconds() << " seconds" << std::endl;
-  else if ( spell -> cast_time() < 0_ms )
+  if ( spell->cast_time() > 0_ms )
+    s << "Cast Time        : " << spell->cast_time().total_seconds() << " seconds" << std::endl;
+  else if ( spell->cast_time() < 0_ms )
     s << "Cast Time        : Ranged Shot" << std::endl;
 
-  if ( spell -> gcd() != timespan_t::zero() )
-    s << "GCD              : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
+  if ( spell->gcd() != timespan_t::zero() )
+    s << "GCD              : " << spell->gcd().total_seconds() << " seconds" << std::endl;
 
-  if ( spell -> missile_speed() )
+  if ( spell->missile_speed() )
   {
-    if ( spell -> flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
-      s << "Travel Time      : " << spell -> missile_speed() << " seconds"  << std::endl;
+    if ( spell->flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
+      s << "Travel Time      : " << spell->missile_speed() << " seconds" << std::endl;
     else
-      s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+      s << "Velocity         : " << spell->missile_speed() << " yards/sec" << std::endl;
   }
 
-  if ( spell -> missile_delay() )
-    s << "Travel Delay     : " << spell -> missile_delay() << " seconds"  << std::endl;
+  if ( spell->missile_delay() )
+    s << "Travel Delay     : " << spell->missile_delay() << " seconds" << std::endl;
 
-  if ( spell -> missile_min_duration() )
-    s << "Min Travel Time  : " << spell -> missile_min_duration() << " seconds"  << std::endl;
+  if ( spell->missile_min_duration() )
+    s << "Min Travel Time  : " << spell->missile_min_duration() << " seconds" << std::endl;
 
-  if ( spell -> duration() != timespan_t::zero() )
+  if ( spell->duration() != timespan_t::zero() )
   {
     s << "Duration         : ";
-    if ( spell -> duration() < timespan_t::zero() )
+    if ( spell->duration() < timespan_t::zero() )
       s << "Aura (infinite)";
     else
-      s << spell -> duration().total_seconds() << " seconds";
+      s << spell->duration().total_seconds() << " seconds";
 
     s << std::endl;
   }
@@ -2068,36 +2070,35 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
-  if ( spell -> cooldown() > timespan_t::zero() )
-    s << "Cooldown         : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;
+  if ( spell->cooldown() > timespan_t::zero() )
+    s << "Cooldown         : " << spell->cooldown().total_seconds() << " seconds" << std::endl;
 
-  if ( spell -> charges() > 0 || spell -> charge_cooldown() > timespan_t::zero() )
+  if ( spell->charges() > 0 || spell->charge_cooldown() > timespan_t::zero() )
   {
-    s << "Charges          : " << spell -> charges();
-    if ( spell -> charge_cooldown() > timespan_t::zero() )
-      s << " (" << spell -> charge_cooldown().total_seconds() << " seconds cooldown)";
+    s << "Charges          : " << spell->charges();
+    if ( spell->charge_cooldown() > timespan_t::zero() )
+      s << " (" << spell->charge_cooldown().total_seconds() << " seconds cooldown)";
     s << std::endl;
   }
 
-  if ( spell -> category() > 0 )
+  if ( spell->category() > 0 )
   {
-    s << "Category         : " << spell -> category();
+    s << "Category         : " << spell->category();
     auto affecting_effects = dbc.effect_categories_affecting_spell( spell );
     if ( !affecting_effects.empty() )
     {
       s << ": ";
-      s << concatenate( affecting_effects,
-        []( std::stringstream& s, const spelleffect_data_t* e ) {
-          s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id() << " effect#" << ( e -> index() + 1 ) << ")";
-        } );
+      s << concatenate( affecting_effects, []( std::stringstream& s, const spelleffect_data_t* e ) {
+        s << e->spell()->name_cstr() << " (" << e->spell()->id() << " effect#" << ( e->index() + 1 ) << ")";
+      } );
     }
     s << std::endl;
   }
 
   bool first_label = true;
-  for ( size_t i = 1, end = spell -> label_count(); i <= end; ++i )
+  for ( size_t i = 1, end = spell->label_count(); i <= end; ++i )
   {
-    auto label = spell -> labelN( i );
+    auto label = spell->labelN( i );
     if ( _label_strings.find( label ) != _label_strings.end() )
       continue;
 
@@ -2127,40 +2128,38 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( !affecting_effects.empty() )
     {
-      s << ": " << concatenate( affecting_effects,
-        []( std::stringstream& s, const spelleffect_data_t* e ) {
-          s << e -> spell() -> name_cstr() << " (" << e -> spell() -> id()
-            << " effect#" << ( e -> index() + 1 ) << ")";
-        } );
+      s << ": " << concatenate( affecting_effects, []( std::stringstream& s, const spelleffect_data_t* e ) {
+        s << e->spell()->name_cstr() << " (" << e->spell()->id() << " effect#" << ( e->index() + 1 ) << ")";
+      } );
     }
 
     s << std::endl;
   }
 
-  if ( spell -> category_cooldown() > timespan_t::zero() )
-    s << "Category Cooldown: " << spell -> category_cooldown().total_seconds() << " seconds" << std::endl;
+  if ( spell->category_cooldown() > timespan_t::zero() )
+    s << "Category Cooldown: " << spell->category_cooldown().total_seconds() << " seconds" << std::endl;
 
-  if ( spell -> internal_cooldown() > timespan_t::zero() )
-    s << "Internal Cooldown: " << spell -> internal_cooldown().total_seconds() << " seconds" << std::endl;
+  if ( spell->internal_cooldown() > timespan_t::zero() )
+    s << "Internal Cooldown: " << spell->internal_cooldown().total_seconds() << " seconds" << std::endl;
 
-  if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
+  if ( spell->initial_stacks() > 0 || spell->max_stacks() )
   {
     s << "Stacks           : ";
-    if ( spell -> initial_stacks() )
-      s << spell -> initial_stacks() << " initial, ";
+    if ( spell->initial_stacks() )
+      s << spell->initial_stacks() << " initial, ";
 
-    if ( spell -> max_stacks() )
-      s << spell -> max_stacks() << " maximum, ";
-    else if ( spell -> initial_stacks() && ! spell -> max_stacks() )
-      s << spell -> initial_stacks() << " maximum, ";
+    if ( spell->max_stacks() )
+      s << spell->max_stacks() << " maximum, ";
+    else if ( spell->initial_stacks() && !spell->max_stacks() )
+      s << spell->initial_stacks() << " maximum, ";
 
     s.seekp( -2, std::ios_base::cur );
 
     s << std::endl;
   }
 
-  if ( spell -> proc_chance() > 0 )
-    s << "Proc Chance      : " << spell -> proc_chance() * 100 << "%" << std::endl;
+  if ( spell->proc_chance() > 0 )
+    s << "Proc Chance      : " << spell->proc_chance() * 100 << "%" << std::endl;
 
   if ( spell->real_ppm() != 0 )
   {
@@ -2184,8 +2183,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           mods.emplace_back( "Crit multiplier" );
           break;
         case RPPM_MODIFIER_ILEVEL:
-          mods.emplace_back( fmt::format( "Itemlevel multiplier [base={}, coeff={}]",
-              modifier.type, modifier.coefficient ) );
+          mods.emplace_back(
+              fmt::format( "Itemlevel multiplier [base={}, coeff={}]", modifier.type, modifier.coefficient ) );
           break;
         case RPPM_MODIFIER_CLASS:
         {
@@ -2199,16 +2198,16 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           }
 
           s.precision( real_ppm_decimals( spell, modifier ) );
-          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str, ", "),
-            ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str, ", " ),
+                                          ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
         case RPPM_MODIFIER_SPEC:
         {
           s.precision( real_ppm_decimals( spell, modifier ) );
           mods.emplace_back( fmt::format( "{}: {}",
-                util::specialization_string( static_cast<specialization_e>( modifier.type ) ),
-                ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
+                                          util::specialization_string( static_cast<specialization_e>( modifier.type ) ),
+                                          ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
         case RPPM_MODIFIER_RACE:
@@ -2223,8 +2222,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           }
 
           s.precision( real_ppm_decimals( spell, modifier ) );
-          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str, ", "),
-            ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str, ", " ),
+                                          ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
         default:
@@ -2239,19 +2238,19 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> stance_mask() > 0 )
+  if ( spell->stance_mask() > 0 )
   {
-    fmt::print( s, "Stance Mask      : 0x{:08x}\n", spell -> stance_mask() );
+    fmt::print( s, "Stance Mask      : 0x{:08x}\n", spell->stance_mask() );
   }
 
-  if ( spell -> mechanic() > 0 )
+  if ( spell->mechanic() > 0 )
   {
-    s << "Mechanic         : " << mechanic_str( spell -> mechanic() ) << std::endl;
+    s << "Mechanic         : " << mechanic_str( spell->mechanic() ) << std::endl;
   }
 
-  if ( spell -> power_id() > 0 )
+  if ( spell->power_id() > 0 )
   {
-    s << "Azerite Power Id : " << spell -> power_id() << std::endl;
+    s << "Azerite Power Id : " << spell->power_id() << std::endl;
   }
 
   if ( spell->essence_id() > 0 )
@@ -2271,7 +2270,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     auto ranks = conduit_rank_entry_t::find( conduit.id, dbc.ptr );
     std::vector<std::string> rank_str;
-    range::for_each( ranks, [&rank_str]( const conduit_rank_entry_t& entry ) {
+    range::for_each( ranks, [ &rank_str ]( const conduit_rank_entry_t& entry ) {
       rank_str.emplace_back( fmt::format( "{}", entry.value ) );
     } );
 
@@ -2283,24 +2282,27 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> proc_flags() > 0 )
+  if ( spell->proc_flags() > 0 )
   {
     s << "Proc Flags       : ";
-    for ( unsigned flag = 0; flag < 32; flag++ )
+    for ( unsigned flag = 0; flag < 64; flag++ )
     {
-      if ( spell -> proc_flags() & ( 1 << flag ) )
+      if ( spell->proc_flags() & ( static_cast<uint64_t>( 1 ) << flag ) )
         s << "x";
       else
         s << ".";
 
       if ( ( flag + 1 ) % 8 == 0 )
         s << " ";
+
+      if ( ( flag + 1 ) % 32 == 0 )
+        s << "  ";
     }
     s << std::endl;
     s << "                 : ";
     for ( const auto& info : _proc_flag_map )
     {
-      if ( spell -> proc_flags() & info.flag )
+      if ( spell->proc_flags() & info.flag )
       {
         fmt::print( s, "{}, ", info.proc );
       }
@@ -2310,7 +2312,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> class_family() > 0 )
+  if ( spell->class_family() > 0 )
   {
     auto affecting_effects = dbc.effects_affecting_spell( spell );
     if ( !affecting_effects.empty() )
@@ -2321,16 +2323,16 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           return fmt::format( "{} ({} effect#{})", spell->name_cstr(), spell->id(), effects.front()->index() + 1 );
 
         fmt::memory_buffer s;
-        fmt::format_to( std::back_inserter(s), "{} ({} effects: ", spell->name_cstr(), spell->id() );
+        fmt::format_to( std::back_inserter( s ), "{} ({} effects: ", spell->name_cstr(), spell->id() );
         for ( size_t i = 0; i < effects.size(); i++ )
-          fmt::format_to( std::back_inserter(s), "{}#{}", i == 0 ? "" : ", ", effects[ i ]->index() + 1 );
-        fmt::format_to( std::back_inserter(s), ")" );
+          fmt::format_to( std::back_inserter( s ), "{}#{}", i == 0 ? "" : ", ", effects[ i ]->index() + 1 );
+        fmt::format_to( std::back_inserter( s ), ")" );
         return to_string( s );
       };
 
       range::sort( affecting_effects, []( const spelleffect_data_t* lhs, const spelleffect_data_t* rhs ) {
-          return std::make_tuple( lhs->spell_id(), lhs->index() ) < std::make_tuple( rhs->spell_id(), rhs->index() );
-        } );
+        return std::make_tuple( lhs->spell_id(), lhs->index() ) < std::make_tuple( rhs->spell_id(), rhs->index() );
+      } );
 
       std::vector<std::string> spell_strings;
       auto effects = util::make_span( affecting_effects );
@@ -2348,13 +2350,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
-  if ( spell -> driver_count() > 0 )
+  if ( spell->driver_count() > 0 )
   {
     s << "Triggered by     : ";
-    s << concatenate( spell -> drivers(),
-        []( std::stringstream& s, const spell_data_t* spell ) {
-          s << spell -> name_cstr() << " (" << spell -> id() << ")";
-        } );
+    s << concatenate( spell->drivers(), []( std::stringstream& s, const spell_data_t* spell ) {
+      s << spell->name_cstr() << " (" << spell->id() << ")";
+    } );
     s << std::endl;
   }
 
@@ -2380,15 +2381,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     for ( unsigned flag = 0; flag < 32; flag++ )
     {
-      if ( spell -> attribute( i ) & ( 1 << flag ) )
+      if ( spell->attribute( i ) & ( 1 << flag ) )
       {
         s << "x";
         size_t attr_idx = i * 32 + flag;
         auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
         if ( it != _attribute_strings.end() )
         {
-          fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})",
-                          attr_str.empty() ? "" : ", ", it -> second, attr_idx );
+          fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ", it->second,
+                          attr_idx );
         }
       }
       else
@@ -2405,13 +2406,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       s << std::endl << "                 : ";
   }
 
-  if ( ! attr_str.empty() )
-      s << std::endl << "                 : " + attr_str;
+  if ( !attr_str.empty() )
+    s << std::endl << "                 : " + attr_str;
   s << std::endl;
 
   s << "Effects          :" << std::endl;
 
-  for ( const spelleffect_data_t& e : spell -> effects() )
+  for ( const spelleffect_data_t& e : spell->effects() )
   {
     if ( e.id() == 0 )
       continue;
@@ -2455,7 +2456,7 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_
   {
     s << "Overriden by : " << talent->id_override_spell << std::endl;
   }
-  //s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
+  // s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 
   return s.str();
@@ -2465,116 +2466,114 @@ std::string spell_info::set_bonus_to_str( const dbc_t&, const item_set_bonus_t* 
 {
   std::ostringstream s;
 
-  s << "Name          : " << set_bonus -> set_name << std::endl;
+  s << "Name          : " << set_bonus->set_name << std::endl;
 
-  auto player_type = static_cast<player_e>( set_bonus -> class_id);
+  auto player_type = static_cast<player_e>( set_bonus->class_id );
   s << "Class         : " << util::player_type_string( player_type ) << std::endl;
-  s << "Tier          : " << set_bonus -> tier << std::endl;
-  s << "Bonus Level   : " << set_bonus -> bonus << std::endl;
-  if ( set_bonus -> spec > 0 )
-    s << "Spec          : " << util::specialization_string( static_cast<specialization_e>(set_bonus -> spec ) ) << std::endl;
-  s << "Spell ID      : " << set_bonus -> spell_id << std::endl;
+  s << "Tier          : " << set_bonus->tier << std::endl;
+  s << "Bonus Level   : " << set_bonus->bonus << std::endl;
+  if ( set_bonus->spec > 0 )
+    s << "Spec          : " << util::specialization_string( static_cast<specialization_e>( set_bonus->spec ) )
+      << std::endl;
+  s << "Spell ID      : " << set_bonus->spell_id << std::endl;
 
   s << std::endl;
 
   return s.str();
 }
 
-void spell_info::effect_to_xml( const dbc_t& dbc,
-                                const spell_data_t*       spell,
-                                const spelleffect_data_t* e,
-                                xml_node_t* parent,
-                                int level )
+void spell_info::effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* e,
+                                xml_node_t* parent, int level )
 {
-  xml_node_t* node = parent -> add_child( "effect" );
+  xml_node_t* node = parent->add_child( "effect" );
 
-  node -> add_parm( "number", e -> index() + 1 );
-  node -> add_parm( "id", e -> id() );
-  node -> add_parm( "type", static_cast<int>( e -> type() ) );
+  node->add_parm( "number", e->index() + 1 );
+  node->add_parm( "id", e->id() );
+  node->add_parm( "type", static_cast<int>( e->type() ) );
 
-  if ( _effect_type_strings.contains( e -> raw_type() ) )
+  if ( _effect_type_strings.contains( e->raw_type() ) )
   {
-    node -> add_parm( "type_text", map_string( _effect_type_strings, e -> raw_type() ) );
+    node->add_parm( "type_text", map_string( _effect_type_strings, e->raw_type() ) );
   }
 
   // Put some nice handling on some effect types
-  switch ( e -> type() )
+  switch ( e->type() )
   {
     case E_SCHOOL_DAMAGE:
-      node -> add_parm( "school", spell -> get_school_type() );
-      node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+      node->add_parm( "school", spell->get_school_type() );
+      node->add_parm( "school_text", util::school_type_string( spell->get_school_type() ) );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
-      if ( e -> trigger_spell_id() )
+      if ( e->trigger_spell_id() )
       {
-        if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-          node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+        if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
+          node->add_parm( "trigger_spell_name", dbc.spell( e->trigger_spell_id() )->name_cstr() );
       }
       break;
     default:
       break;
   }
 
-  node -> add_parm( "sub_type", static_cast<int>( e -> subtype() ) );
+  node->add_parm( "sub_type", static_cast<int>( e->subtype() ) );
 
-  if ( e -> subtype() > 0 )
+  if ( e->subtype() > 0 )
   {
-    node -> add_parm( "sub_type_text", map_string( _effect_subtype_strings, e -> raw_subtype() ) );
+    node->add_parm( "sub_type_text", map_string( _effect_subtype_strings, e->raw_subtype() ) );
 
-    switch ( e -> subtype() )
+    switch ( e->subtype() )
     {
       case A_PERIODIC_DAMAGE:
-        node -> add_parm( "school", spell -> get_school_type() );
-        node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
-        if ( e -> period() != timespan_t::zero() )
-          node -> add_parm( "period", e -> period().total_seconds() );
+        node->add_parm( "school", spell->get_school_type() );
+        node->add_parm( "school_text", util::school_type_string( spell->get_school_type() ) );
+        if ( e->period() != timespan_t::zero() )
+          node->add_parm( "period", e->period().total_seconds() );
         break;
       case A_PERIODIC_ENERGIZE:
       case A_PERIODIC_DUMMY:
-        if ( e -> period() != timespan_t::zero() )
-          node -> add_parm( "period", e -> period().total_seconds() );
+        if ( e->period() != timespan_t::zero() )
+          node->add_parm( "period", e->period().total_seconds() );
         break;
       case A_PROC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
+        if ( e->trigger_spell_id() )
         {
-          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+          if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
+            node->add_parm( "trigger_spell_name", dbc.spell( e->trigger_spell_id() )->name_cstr() );
         }
         break;
       case A_PERIODIC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
+        if ( e->trigger_spell_id() )
         {
-          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+          if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
           {
-            node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
-            if ( e -> period() != timespan_t::zero() )
-              node -> add_parm( "period", e -> period().total_seconds() );
+            node->add_parm( "trigger_spell_name", dbc.spell( e->trigger_spell_id() )->name_cstr() );
+            if ( e->period() != timespan_t::zero() )
+              node->add_parm( "period", e->period().total_seconds() );
           }
         }
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
-        node -> add_parm( "modifier", e -> misc_value1() );
-        if ( _property_type_strings.contains( e -> misc_value1() ) )
+        node->add_parm( "modifier", e->misc_value1() );
+        if ( _property_type_strings.contains( e->misc_value1() ) )
         {
-          node -> add_parm( "modifier_text", map_string( _property_type_strings, e -> misc_value1() ) );
+          node->add_parm( "modifier_text", map_string( _property_type_strings, e->misc_value1() ) );
         }
         break;
       default:
         break;
     }
   }
-  node -> add_parm( "base_value", e -> base_value() );
+  node->add_parm( "base_value", e->base_value() );
 
   if ( level <= MAX_LEVEL )
   {
-    double v_min = dbc.effect_min( e -> id(), level );
-    double v_max = dbc.effect_max( e -> id(), level );
-    node -> add_parm( "scaled_value", v_min  );
+    double v_min = dbc.effect_min( e->id(), level );
+    double v_max = dbc.effect_max( e->id(), level );
+    node->add_parm( "scaled_value", v_min );
     if ( v_min != v_max )
     {
-      node -> add_parm( "scaled_value_max", v_max );
+      node->add_parm( "scaled_value_max", v_max );
     }
   }
   else
@@ -2582,108 +2581,108 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
     double item_budget = ilevel_data.p_epic[ 0 ];
 
-    node -> add_parm( "scaled_value", item_budget * e -> m_coefficient() );
+    node->add_parm( "scaled_value", item_budget * e->m_coefficient() );
   }
 
-  if ( e -> m_coefficient() != 0 )
+  if ( e->m_coefficient() != 0 )
   {
-    node -> add_parm( "multiplier_coefficient", e -> m_coefficient() );
+    node->add_parm( "multiplier_coefficient", e->m_coefficient() );
   }
 
-  if ( e -> m_delta() != 0 )
+  if ( e->m_delta() != 0 )
   {
-    node -> add_parm( "multiplier_delta", e -> m_delta() );
+    node->add_parm( "multiplier_delta", e->m_delta() );
   }
 
   if ( level <= MAX_LEVEL )
   {
-    if ( e -> m_unk() )
+    if ( e->m_unk() )
     {
-      node -> add_parm( "bonus_value", dbc.effect_bonus( e -> id(), level ) );
-      node -> add_parm( "bonus_value_multiplier", e -> m_unk() );
+      node->add_parm( "bonus_value", dbc.effect_bonus( e->id(), level ) );
+      node->add_parm( "bonus_value_multiplier", e->m_unk() );
     }
   }
 
-  if ( e -> real_ppl() != 0 )
+  if ( e->real_ppl() != 0 )
   {
-    node -> add_parm( "points_per_level", e -> real_ppl() );
+    node->add_parm( "points_per_level", e->real_ppl() );
   }
 
-  if ( e -> sp_coeff() != 0 )
+  if ( e->sp_coeff() != 0 )
   {
-    node -> add_parm( "sp_coefficient", e -> sp_coeff() );
+    node->add_parm( "sp_coefficient", e->sp_coeff() );
   }
 
-  if ( e -> ap_coeff() != 0 )
+  if ( e->ap_coeff() != 0 )
   {
-    node -> add_parm( "ap_coefficient", e -> ap_coeff() );
+    node->add_parm( "ap_coefficient", e->ap_coeff() );
   }
 
-  if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
-    node -> add_parm( "chain_multiplier", e -> chain_multiplier() );
+  if ( e->chain_multiplier() != 0 && e->chain_multiplier() != 1.0 )
+    node->add_parm( "chain_multiplier", e->chain_multiplier() );
 
-  if ( e -> misc_value1() != 0 || e -> type() == E_ENERGIZE )
+  if ( e->misc_value1() != 0 || e->type() == E_ENERGIZE )
   {
-    if ( e -> subtype() == A_MOD_DAMAGE_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_TAKEN ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_DONE ||
-         e -> subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
-      node -> add_parm( "misc_value_mod_damage", e -> misc_value1() );
-    else if ( e -> type() == E_ENERGIZE )
-      node -> add_parm( "misc_value_energize", util::resource_type_string( util::translate_power_type( static_cast<power_e>( e -> misc_value1() ) ) ) );
+    if ( e->subtype() == A_MOD_DAMAGE_DONE || e->subtype() == A_MOD_DAMAGE_TAKEN ||
+         e->subtype() == A_MOD_DAMAGE_PERCENT_DONE || e->subtype() == A_MOD_DAMAGE_PERCENT_TAKEN )
+      node->add_parm( "misc_value_mod_damage", e->misc_value1() );
+    else if ( e->type() == E_ENERGIZE )
+      node->add_parm(
+          "misc_value_energize",
+          util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) ) );
     else
-      node -> add_parm( "misc_value", e -> misc_value1() );
+      node->add_parm( "misc_value", e->misc_value1() );
   }
 
-  if ( e -> misc_value2() != 0 )
+  if ( e->misc_value2() != 0 )
   {
-    node -> add_parm( "misc_value_2", e -> misc_value2() );
+    node->add_parm( "misc_value_2", e->misc_value2() );
   }
 
-  if ( e -> pp_combo_points() != 0 )
-    node -> add_parm( "points_per_combo_point", e -> pp_combo_points() );
+  if ( e->pp_combo_points() != 0 )
+    node->add_parm( "points_per_combo_point", e->pp_combo_points() );
 
-  if ( e -> trigger_spell_id() != 0 )
-    node -> add_parm( "trigger_spell_id", e -> trigger_spell_id() );
+  if ( e->trigger_spell_id() != 0 )
+    node->add_parm( "trigger_spell_id", e->trigger_spell_id() );
 }
 
 void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level )
 {
   player_e pt = PLAYER_NONE;
 
-  if ( spell->has_scaling_effects() && spell -> level() > static_cast< unsigned >( level ) )
+  if ( spell->has_scaling_effects() && spell->level() > static_cast<unsigned>( level ) )
   {
     return;
   }
 
-  xml_node_t* node = parent -> add_child( "spell" );
+  xml_node_t* node = parent->add_child( "spell" );
 
-  node -> add_parm( "id", spell -> id() );
-  node -> add_parm( "name", spell -> name_cstr() );
+  node->add_parm( "id", spell->id() );
+  node->add_parm( "name", spell->name_cstr() );
   spell_flags_xml( spell, node );
 
-  unsigned replace_spell_id = dbc.replace_spell_id( spell -> id() );
+  unsigned replace_spell_id = dbc.replace_spell_id( spell->id() );
   if ( replace_spell_id > 0 )
   {
-    node -> add_parm( "replaces_name", dbc.spell( replace_spell_id ) -> name_cstr() );
-    node -> add_parm( "replaces_id", replace_spell_id );
+    node->add_parm( "replaces_name", dbc.spell( replace_spell_id )->name_cstr() );
+    node->add_parm( "replaces_id", replace_spell_id );
   }
 
-  if ( spell -> class_mask() )
+  if ( spell->class_mask() )
   {
     bool pet_ability = false;
 
-    if ( dbc.is_specialization_ability( spell -> id() ) )
+    if ( dbc.is_specialization_ability( spell->id() ) )
     {
       std::vector<specialization_e> spec_list;
       std::vector<specialization_e>::iterator iter;
-      dbc.ability_specialization( spell -> id(), spec_list );
+      dbc.ability_specialization( spell->id(), spec_list );
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
-        xml_node_t* spec_node = node -> add_child( "spec" );
-        spec_node -> add_parm( "id", *iter );
-        spec_node -> add_parm( "name", dbc::specialization_string( *iter ) );
+        xml_node_t* spec_node = node->add_child( "spec" );
+        spec_node->add_parm( "id", *iter );
+        spec_node->add_parm( "name", dbc::specialization_string( *iter ) );
         if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
         {
           pet_ability = true;
@@ -2694,121 +2693,121 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
 
     for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
     {
-      if ( ( spell -> class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
+      if ( ( spell->class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
-        xml_node_t* class_node = node -> add_child( "class" );
-        class_node -> add_parm( "id", _class_map[ i ].pt );
-        class_node -> add_parm( "name", _class_map[ i ].name );
-        if ( ! pt )
+        xml_node_t* class_node = node->add_child( "class" );
+        class_node->add_parm( "id", _class_map[ i ].pt );
+        class_node->add_parm( "name", _class_map[ i ].name );
+        if ( !pt )
           pt = _class_map[ i ].pt;
       }
     }
 
     if ( pet_ability )
-      node -> add_child( "class" ) -> add_parm( ".",  "Pet" );
+      node->add_child( "class" )->add_parm( ".", "Pet" );
   }
 
-  if ( spell -> race_mask() )
+  if ( spell->race_mask() )
   {
-    for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
+    for ( unsigned int i = 0; i < sizeof( spell->race_mask() ) * 8; i++ )
     {
-      uint64_t mask = (uint64_t(1) << i );
-      if ( ( spell -> race_mask() & mask ) )
+      uint64_t mask = ( uint64_t( 1 ) << i );
+      if ( ( spell->race_mask() & mask ) )
       {
         auto it = _race_map.find( i );
         if ( it != _race_map.end() )
         {
-          xml_node_t* race_node = node -> add_child( "race" );
-          race_node -> add_parm( "id", i );
-          race_node -> add_parm( "name", it -> second );
+          xml_node_t* race_node = node->add_child( "race" );
+          race_node->add_parm( "id", i );
+          race_node->add_parm( "name", it->second );
         }
       }
     }
   }
 
-  for ( const spellpower_data_t& pd : spell -> powers() )
+  for ( const spellpower_data_t& pd : spell->powers() )
   {
     if ( pd.cost() == 0 )
       continue;
 
-    xml_node_t* resource_node = node -> add_child( "resource" );
-    resource_node -> add_parm( "type", ( signed ) pd.type() );
+    xml_node_t* resource_node = node->add_child( "resource" );
+    resource_node->add_parm( "type", (signed)pd.type() );
 
     if ( pd.type() == POWER_MANA )
-      resource_node -> add_parm( "cost", spell -> cost( pd.type() ) * 100.0 );
+      resource_node->add_parm( "cost", spell->cost( pd.type() ) * 100.0 );
     else
-      resource_node -> add_parm( "cost", spell -> cost( pd.type() ) );
+      resource_node->add_parm( "cost", spell->cost( pd.type() ) );
 
     if ( _resource_strings.contains( pd.raw_type() ) )
     {
-      resource_node -> add_parm( "type_name", map_string( _resource_strings, pd.raw_type() ) );
+      resource_node->add_parm( "type_name", map_string( _resource_strings, pd.raw_type() ) );
     }
 
     if ( pd.type() == POWER_MANA )
     {
-      resource_node -> add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd.cost() ) );
-      resource_node -> add_parm( "cost_mana_flat_level", level );
+      resource_node->add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd.cost() ) );
+      resource_node->add_parm( "cost_mana_flat_level", level );
     }
 
-    if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() ) -> id() == pd.aura_id() )
+    if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() )->id() == pd.aura_id() )
     {
-      resource_node -> add_parm( "cost_aura_id", pd.aura_id() );
-      resource_node -> add_parm( "cost_aura_name", dbc.spell( pd.aura_id() ) -> name_cstr() );
+      resource_node->add_parm( "cost_aura_id", pd.aura_id() );
+      resource_node->add_parm( "cost_aura_name", dbc.spell( pd.aura_id() )->name_cstr() );
     }
   }
 
-  if ( spell -> level() > 0 )
+  if ( spell->level() > 0 )
   {
-    node -> add_parm( "level", spell -> level() );
-    if ( spell -> max_level() > 0 )
-      node -> add_parm( "max_level", spell -> max_level() );
+    node->add_parm( "level", spell->level() );
+    if ( spell->max_level() > 0 )
+      node->add_parm( "max_level", spell->max_level() );
   }
 
-  if ( spell -> min_range() || spell -> max_range() )
+  if ( spell->min_range() || spell->max_range() )
   {
-    if ( spell -> min_range() )
-      node -> add_parm( "range_min", spell -> min_range() );
-    node -> add_parm( "range", spell -> max_range() );
+    if ( spell->min_range() )
+      node->add_parm( "range_min", spell->min_range() );
+    node->add_parm( "range", spell->max_range() );
   }
 
-  if ( spell -> cast_time() > 0_ms )
-    node -> add_parm( "cast_time_else", spell -> cast_time().total_seconds() );
-  else if ( spell -> cast_time() < 0_ms )
-    node -> add_parm( "cast_time_range", "ranged_shot" );
+  if ( spell->cast_time() > 0_ms )
+    node->add_parm( "cast_time_else", spell->cast_time().total_seconds() );
+  else if ( spell->cast_time() < 0_ms )
+    node->add_parm( "cast_time_range", "ranged_shot" );
 
-  if ( spell -> gcd() != timespan_t::zero() )
-    node -> add_parm( "gcd", spell -> gcd().total_seconds() );
+  if ( spell->gcd() != timespan_t::zero() )
+    node->add_parm( "gcd", spell->gcd().total_seconds() );
 
-  if ( spell -> missile_speed() )
-    node -> add_parm( "velocity", spell -> missile_speed() );
+  if ( spell->missile_speed() )
+    node->add_parm( "velocity", spell->missile_speed() );
 
-  if ( spell -> duration() != timespan_t::zero() )
+  if ( spell->duration() != timespan_t::zero() )
   {
-    if ( spell -> duration() < timespan_t::zero() )
-      node -> add_parm( "duration", "-1" );
+    if ( spell->duration() < timespan_t::zero() )
+      node->add_parm( "duration", "-1" );
     else
-      node -> add_parm( "duration", spell -> duration().total_seconds() );
+      node->add_parm( "duration", spell->duration().total_seconds() );
   }
 
-  if ( spell -> cooldown() > timespan_t::zero() )
-    node -> add_parm( "cooldown", spell -> cooldown().total_seconds() );
+  if ( spell->cooldown() > timespan_t::zero() )
+    node->add_parm( "cooldown", spell->cooldown().total_seconds() );
 
-  if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
+  if ( spell->initial_stacks() > 0 || spell->max_stacks() )
   {
-    if ( spell -> initial_stacks() )
-      node -> add_parm( "stacks_initial", spell -> initial_stacks() );
+    if ( spell->initial_stacks() )
+      node->add_parm( "stacks_initial", spell->initial_stacks() );
 
-    if ( spell -> max_stacks() )
-      node -> add_parm( "stacks_max", spell -> max_stacks() );
-    else if ( spell -> initial_stacks() && ! spell -> max_stacks() )
-      node -> add_parm( "stacks_max", spell -> initial_stacks() );
+    if ( spell->max_stacks() )
+      node->add_parm( "stacks_max", spell->max_stacks() );
+    else if ( spell->initial_stacks() && !spell->max_stacks() )
+      node->add_parm( "stacks_max", spell->initial_stacks() );
   }
 
-  if ( spell -> proc_chance() > 0 )
-    node -> add_parm( "proc_chance", spell -> proc_chance() * 100 ); // NP 101 % displayed
+  if ( spell->proc_chance() > 0 )
+    node->add_parm( "proc_chance", spell->proc_chance() * 100 );  // NP 101 % displayed
 
-  if ( spell -> extra_coeff() > 0 )
-    node -> add_parm( "extra_coefficient", spell -> extra_coeff() );
+  if ( spell->extra_coeff() > 0 )
+    node->add_parm( "extra_coefficient", spell->extra_coeff() );
 
   std::string attribs;
   for ( unsigned int _attribute : spell->_attributes )
@@ -2821,12 +2820,12 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
         attribs += "0";
     }
   }
-  node -> add_child( "attributes" ) -> add_parm ( ".", attribs );
+  node->add_child( "attributes" )->add_parm( ".", attribs );
 
-  xml_node_t* effect_node = node -> add_child( "effects" );
-  effect_node -> add_parm( "count", spell -> effect_count() );
+  xml_node_t* effect_node = node->add_child( "effects" );
+  effect_node->add_parm( "count", spell->effect_count() );
 
-  for ( const spelleffect_data_t& e : spell -> effects() )
+  for ( const spelleffect_data_t& e : spell->effects() )
   {
     if ( e.id() == 0 )
       continue;
@@ -2834,27 +2833,27 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     spell_info::effect_to_xml( dbc, spell, &e, effect_node, level );
   }
 
-  const auto& spell_text = dbc.spell_text( spell -> id() );
+  const auto& spell_text = dbc.spell_text( spell->id() );
   if ( spell_text.desc() )
-    node -> add_child( "description" ) -> add_parm( ".", spell_text.desc() );
+    node->add_child( "description" )->add_parm( ".", spell_text.desc() );
 
   if ( spell_text.tooltip() )
-    node -> add_child( "tooltip" ) -> add_parm( ".", spell_text.tooltip() );
+    node->add_child( "tooltip" )->add_parm( ".", spell_text.tooltip() );
 
-  const auto& spelldesc_vars = dbc.spell_desc_vars( spell -> id() );
+  const auto& spelldesc_vars = dbc.spell_desc_vars( spell->id() );
   if ( spelldesc_vars.desc_vars() )
-    node -> add_child( "variables" ) -> add_parm( ".", spelldesc_vars.desc_vars() );
+    node->add_child( "variables" )->add_parm( ".", spelldesc_vars.desc_vars() );
 }
 
-void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* talent, xml_node_t* parent, int /* level */ )
+void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* talent, xml_node_t* parent,
+                                int /* level */ )
 {
   xml_node_t* node = parent->add_child( "talent" );
 
   node->add_parm( "name", talent->name );
   node->add_parm( "id", talent->id_trait_node_entry );
   node->add_parm( "tree", util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) );
-  node->add_child( "class" )
-    ->add_parm( ".", util::player_type_string( util::translate_class_id( talent->id_class ) ) );
+  node->add_child( "class" )->add_parm( ".", util::player_type_string( util::translate_class_id( talent->id_class ) ) );
 
   node->add_parm( "column", talent->col );
   node->add_parm( "row", talent->row );
@@ -2870,19 +2869,19 @@ void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* tale
   }
 }
 
-void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_t* set_bonus, xml_node_t* parent, int /* level */ )
+void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_t* set_bonus, xml_node_t* parent,
+                                   int /* level */ )
 {
-  xml_node_t* node = parent -> add_child( "set_bonus" );
+  xml_node_t* node = parent->add_child( "set_bonus" );
 
-  auto player_type = static_cast<player_e>( set_bonus -> class_id);
-  node -> add_parm( "name", set_bonus -> set_name );
-  node -> add_parm( "class", util::player_type_string( player_type ) );
-  node -> add_parm( "tier", set_bonus -> tier );
-  node -> add_parm( "bonus_level", set_bonus -> bonus );
-  if ( set_bonus -> spec > 0 )
+  auto player_type = static_cast<player_e>( set_bonus->class_id );
+  node->add_parm( "name", set_bonus->set_name );
+  node->add_parm( "class", util::player_type_string( player_type ) );
+  node->add_parm( "tier", set_bonus->tier );
+  node->add_parm( "bonus_level", set_bonus->bonus );
+  if ( set_bonus->spec > 0 )
   {
-    node -> add_parm( "spec", util::specialization_string( static_cast<specialization_e>( set_bonus -> spec ) ) );
+    node->add_parm( "spec", util::specialization_string( static_cast<specialization_e>( set_bonus->spec ) ) );
   }
-  node -> add_parm( "spell_id", set_bonus -> spell_id );
-
+  node->add_parm( "spell_id", set_bonus->spell_id );
 }

@@ -44,8 +44,10 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> soul_glutton;
     propagate_const<buff_t*> demonic_servitude; // Dummy buff for Tyrant that holds snapshot of Warlock's buff value
     propagate_const<buff_t*> fiendish_wrath; // Guillotine talent buff, causes AoE melee attacks and prevents Felstorm
+    propagate_const<buff_t*> festering_hatred; // Dummy buff for Immutable Hatred increment tracking
     propagate_const<buff_t*> demonic_inspiration; // Haste buff triggered by filling a Soul Shard
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
+    propagate_const<buff_t*> fury_of_ruvaraad; // T30 Demo 4pc buff for Grimoire: Felguard
   } buffs;
 
   bool is_main_pet          = false;
@@ -63,6 +65,7 @@ struct warlock_pet_t : public pet_t
   void init_special_effects() override;
   void arise() override;
   void demise() override;
+  void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<warlock_pet_td_t> target_data;
 
@@ -364,6 +367,10 @@ struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
   action_t* felguard_guillotine;
+  struct hatred_t {
+    action_t* proc;
+    player_t* target;
+  } immutable_hatred;
   cooldown_t* felstorm_cd;
   cooldown_t* dstr_cd;
   int demonic_strength_executes;
@@ -399,6 +406,7 @@ struct grimoire_felguard_pet_t : public warlock_pet_t
   action_t* create_action( util::string_view, util::string_view ) override;
   timespan_t available() const override;
   void arise() override;
+  double composite_player_multiplier( school_e ) const override;
 };
 
 struct wild_imp_pet_t : public warlock_pet_t

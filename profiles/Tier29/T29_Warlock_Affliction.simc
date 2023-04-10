@@ -1,0 +1,162 @@
+warlock="T29_Warlock_Affliction"
+source=default
+spec=affliction
+level=70
+race=orc
+role=spell
+position=ranged_back
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSSSCkmCRaSSItAAAAANSAAAAAAgEOQDRkkkIplEBAkA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_tepid_versatility_3
+food=fated_fortune_cookie
+augmentation=draconic_augment_rune
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>3
+actions.precombat+=/haunt
+actions.precombat+=/unstable_affliction,if=!talent.soul_swap
+actions.precombat+=/shadow_bolt
+
+# Executed every time the actor is available.
+actions=call_action_list,name=variables
+actions+=/call_action_list,name=cleave,if=active_enemies!=1&active_enemies<4|variable.cleave_apl
+actions+=/call_action_list,name=aoe,if=active_enemies>3
+actions+=/call_action_list,name=ogcd
+actions+=/call_action_list,name=items
+actions+=/malefic_rapture,if=talent.dread_touch&talent.malefic_affliction&debuff.dread_touch.remains<2&buff.malefic_affliction.stack=3
+actions+=/unstable_affliction,if=remains<5
+actions+=/agony,if=remains<5
+actions+=/corruption,if=remains<5
+actions+=/siphon_life,if=remains<5
+actions+=/haunt
+actions+=/drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions+=/shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
+actions+=/phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time
+actions+=/vile_taint,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<2&cooldown.soul_rot.remains>=12
+actions+=/soul_rot,if=variable.vt_up&variable.ps_up
+actions+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot
+actions+=/malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.stack=1&soul_shard>3)
+actions+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&!debuff.dread_touch.react
+actions+=/malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.stack=2
+actions+=/malefic_rapture,if=variable.cd_dots_up|variable.vt_up&soul_shard>1
+actions+=/malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react
+actions+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4
+actions+=/drain_soul,if=buff.nightfall.react
+actions+=/shadow_bolt,if=buff.nightfall.react
+actions+=/agony,if=refreshable
+actions+=/corruption,if=refreshable
+actions+=/drain_soul,interrupt=1
+actions+=/shadow_bolt
+
+actions.aoe=call_action_list,name=ogcd
+actions.aoe+=/call_action_list,name=items
+actions.aoe+=/haunt
+actions.aoe+=/vile_taint
+actions.aoe+=/phantom_singularity
+actions.aoe+=/soul_rot
+actions.aoe+=/unstable_affliction,if=remains<5
+actions.aoe+=/seed_of_corruption,if=dot.corruption.remains<5
+actions.aoe+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3&talent.doom_blossom
+actions.aoe+=/agony,target_if=remains<5,if=active_dot.agony<5
+actions.aoe+=/summon_darkglare
+actions.aoe+=/seed_of_corruption,if=talent.sow_the_seeds
+actions.aoe+=/malefic_rapture
+actions.aoe+=/drain_life,if=(buff.soul_rot.up|!talent.soul_rot)&buff.inevitable_demise.stack>10
+actions.aoe+=/summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&time_to_die<10
+actions.aoe+=/siphon_life,target_if=remains<5,if=active_dot.siphon_life<3
+actions.aoe+=/drain_soul,interrupt_global=1
+actions.aoe+=/shadow_bolt
+
+actions.cleave=call_action_list,name=ogcd
+actions.cleave+=/call_action_list,name=items
+actions.cleave+=/malefic_rapture,if=soul_shard=5
+actions.cleave+=/haunt
+actions.cleave+=/unstable_affliction,if=remains<5
+actions.cleave+=/agony,if=remains<5
+actions.cleave+=/agony,target_if=!(target=self.target)&remains<5
+actions.cleave+=/siphon_life,if=remains<5
+actions.cleave+=/siphon_life,target_if=!(target=self.target)&remains<3
+actions.cleave+=/seed_of_corruption,if=!talent.absolute_corruption&dot.corruption.remains<5
+actions.cleave+=/corruption,target_if=remains<5&(talent.absolute_corruption|!talent.seed_of_corruption)
+actions.cleave+=/phantom_singularity
+actions.cleave+=/vile_taint
+actions.cleave+=/soul_rot
+actions.cleave+=/summon_darkglare
+actions.cleave+=/malefic_rapture,if=talent.malefic_affliction&buff.malefic_affliction.stack<3
+actions.cleave+=/malefic_rapture,if=talent.dread_touch&debuff.dread_touch.remains<gcd
+actions.cleave+=/malefic_rapture,if=!talent.dread_touch&buff.tormented_crescendo.up
+actions.cleave+=/malefic_rapture,if=!talent.dread_touch&(dot.soul_rot.remains>cast_time|dot.phantom_singularity.remains>cast_time|dot.vile_taint_dot.remains>cast_time|pet.darkglare.active)
+actions.cleave+=/drain_soul,if=buff.nightfall.react
+actions.cleave+=/shadow_bolt,if=buff.nightfall.react
+actions.cleave+=/drain_life,if=buff.inevitable_demise.stack>48|buff.inevitable_demise.stack>20&time_to_die<4
+actions.cleave+=/drain_life,if=buff.soul_rot.up&buff.inevitable_demise.stack>10
+actions.cleave+=/agony,target_if=refreshable
+actions.cleave+=/corruption,target_if=refreshable
+actions.cleave+=/drain_soul,interrupt_global=1
+actions.cleave+=/shadow_bolt
+
+actions.items=use_items,if=variable.cds_active
+actions.items+=/use_item,name=desperate_invokers_codex
+actions.items+=/use_item,name=conjured_chillglobe
+
+actions.ogcd=potion,if=variable.cds_active
+actions.ogcd+=/berserking,if=variable.cds_active
+actions.ogcd+=/blood_fury,if=variable.cds_active
+actions.ogcd+=/invoke_external_buff,name=power_infusion,if=variable.cds_active
+actions.ogcd+=/fireblood,if=variable.cds_active
+
+actions.variables=variable,name=ps_up,op=set,value=dot.phantom_singularity.ticking|!talent.phantom_singularity
+actions.variables+=/variable,name=vt_up,op=set,value=dot.vile_taint_dot.ticking|!talent.vile_taint
+actions.variables+=/variable,name=sr_up,op=set,value=dot.soul_rot.ticking|!talent.soul_rot
+actions.variables+=/variable,name=cd_dots_up,op=set,value=variable.ps_up&variable.vt_up&variable.sr_up
+actions.variables+=/variable,name=has_cds,op=set,value=talent.phantom_singularity|talent.vile_taint|talent.soul_rot|talent.summon_darkglare
+actions.variables+=/variable,name=cds_active,op=set,value=!variable.has_cds|(pet.darkglare.active|variable.cd_dots_up|buff.power_infusion.react)
+
+head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
+shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
+back=fireproof_drape,id=193763,ilevel=421,enchant_id=6604
+chest=scalesworn_cultists_frock,id=200333,ilevel=421,enchant_id=6625
+wrists=manawracker_bindings,id=134310,bonus_id=6514,ilevel=421,gem_id=192948,enchant_id=6580
+hands=scalesworn_cultists_gloves,id=200335,ilevel=421
+waist=magathas_spiritual_sash,id=195515,bonus_id=6514,ilevel=421,gem_id=192948
+legs=scalesworn_cultists_culottes,id=200337,bonus_id=4800/4786/1498,enchant_id=6541
+feet=cushioned_treads_of_glory,id=136774,bonus_id=1795/6808/4786/3300,enchant_id=6607
+finger1=seal_of_filial_duty,id=195526,bonus_id=6514,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3,enchant_id=6562
+finger2=unstable_arcane_loop,id=193633,bonus_id=6514,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3,enchant_id=6562
+trinket1=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6643
+off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
+
+# Gear Summary
+# gear_ilvl=421.19
+# gear_stamina=13190
+# gear_intellect=7129
+# gear_crit_rating=1818
+# gear_haste_rating=4666
+# gear_mastery_rating=4427
+# gear_versatility_rating=310
+# gear_leech_rating=200
+# gear_speed_rating=375
+# gear_armor=2025
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1
+default_pet=imp

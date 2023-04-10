@@ -6,51 +6,55 @@ role=spell
 position=back
 talents=B4DAAAAAAAAAAAAAAAAAAAAAAIJQolIhkUAJtEiIikIhEaBSLJAAAAAAAAAAAAJJJJhkkkcAA
 
-head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192961
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192982/192932/192932
-shoulder=amice_of_the_blue,id=193526,ilevel=418
-back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192919
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,crafted_stats=32/40,gem_id=192982/192925/192925
+shoulder=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
+back=cape_of_entanglement,id=144094,bonus_id=4177/6808/4786/3311
 chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=infused_elemental_bands,id=193635,bonus_id=6808/4786/1643,gem_id=192961
+wrists=infused_elemental_bands,id=193635,bonus_id=6808/4786/1643,gem_id=192919
 hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1498
-waist=solstens_arcing_runecord,id=133613,bonus_id=1795/6808/4786/3300,gem_id=192961
+waist=cord_of_wicked_pyromania,id=137488,bonus_id=1795/6808/4786/3300,gem_id=192919
 legs=crystal_scholars_britches,id=200319,bonus_id=4800/4786/1498,enchant=temporal_spellthread_3
 feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_versatility_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_critical_strike_3
-trinket1=timebreaching_talon,id=193791,bonus_id=7977/6652/8816/1594/8767
-trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192919,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+trinket1=voidmenders_shadowgem,id=110007,ilevel=421
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
 
+flask=phial_of_static_empowerment_3
+
 save=T29_Mage_Arcane.simc
 
-# mage="T29_Mage_Fire"
-# spec=fire
-# level=70
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=3031021
+mage="T29_Mage_Fire"
+spec=fire
+level=70
+race=dwarf
+role=spell
+position=back
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAkkQIplIkkUA0SiIiIJAAAAAAAAAkQgEhyBkIJRSSSSBAAAA
 
-# head=erudite_occultists_hood,id=188844,bonus_id=1498/7187/6935,gem_id=173128
-# neck=sin_stained_pendant,id=178827,bonus_id=1592/6536/6646/6935,gem_id=173128
-# shoulder=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_insight
-# wrist=grimveiled_bracers,id=173249,bonus_id=1588/6934/6649/6650/6935,gem_id=173128,enchant=eternal_intellect
-# hands=erudite_occultists_handwraps,id=188845,bonus_id=1505/7187
-# waist=erudite_occultists_cord,id=188841,bonus_id=1498/7187/6935,gem_id=173130
-# legs=grimveiled_pants,id=173246,bonus_id=1588/8123/6648/6649
-# feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-# finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173130,enchant=tenet_of_haste
-# finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646/6935,gem_id=173130,enchant=tenet_of_haste
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6918
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498/8810,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=8960/8836/8782/1508,gem_id=192952/192952/192952,crafted_stats=36/49
+shoulder=crystal_scholars_beacons,id=200320,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8175/8960/8836/1508,crafted_stats=36/49
+chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrist=overengineered_sleeve_extenders,id=198322,bonus_id=1508/8836/8810,gem_id=192952,crafted_stats=36
+hands=crystal_scholars_pageturners,bonus_id=4800/4786/1501,id=200317
+waist=crystal_scholars_cinch,id=200321,bonus_id=4800/4786/1504/1808,gem_id=192952
+legs=leggings_of_swirling_runes,id=133610,bonus_id=8767/7977/6216,enchant=frozen_spellthread_3
+feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/8810,enchant=devotion_of_haste_3,gem_id=192952
+finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/8810,enchant=devotion_of_haste_3,gem_id=192952
+trinket1=desperate_invokers_codex,id=194310,bonus_id=4800/4786/1498
+trinket2=furious_ragefeather,id=193677,bonus_id=8767/7977/1643
+main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=wafting_devotion_3
+off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
 
-# save=T29_Mage_Fire.simc
+flask=phial_of_static_empowerment_3
+
+save=T29_Mage_Fire.simc
 
 mage="T29_Mage_Frost"
 spec=frost
@@ -58,7 +62,7 @@ level=70
 race=dwarf
 role=spell
 position=ranged_back
-talents=BAEAAAAAAAAAAAAAAAAAAAAAAIESolIhkUAJtEiIiEBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
+talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJBolIIJFQSLhIiIJBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
 
 head=,id=200318,bonus_id=523,gem_id=192961,ilevel=424
 neck=,id=193001,gem_id=192988/192961/192961,crafted_stats=32/49,ilevel=418
@@ -66,15 +70,17 @@ shoulders=,id=193526,ilevel=418
 back=,id=193763,ilevel=421
 chest=,id=200315,enchant=waking_stats_3,ilevel=421
 wrists=,id=134222,gem_id=192961,ilevel=421
-hands=,id=200317,ilevel=421
+hands=,id=200317,ilevel=424
 waist=,id=195515,gem_id=192961,ilevel=421
 legs=,id=200319,enchant=temporal_spellthread_3,ilevel=421
 feet=,id=195532,ilevel=424
 finger1=,id=133638,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=421
-finger2=,id=195526,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=430
+finger2=,id=195526,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=431
 trinket1=,id=194301,ilevel=421
 trinket2=,id=193677,ilevel=421
 main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
 off_hand=,id=195513,ilevel=421
+
+flask=phial_of_static_empowerment_3
 
 save=T29_Mage_Frost.simc

@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.2.46801
-static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
+// Active class spells, wow build 10.1.0.48898
+static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -13,6 +13,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  1,    0,  57755,      0, "Heroic Throw"                       },
   {  1,    0,  88163,      0, "Attack"                             },
   {  1,    0, 163201,      0, "Execute"                            },
+  {  1,   71, 260708,      0, "Sweeping Strikes"                   },
   {  1,   72,   5308, 163201, "Execute"                            },
   {  1,   72, 190411,   1680, "Whirlwind"                          },
   {  1,   73,  20243,      0, "Devastate"                          },
@@ -23,6 +24,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  2,    0,  13819,      0, "Summon Warhorse"                    },
   {  2,    0,  19750,      0, "Flash of Light"                     },
   {  2,    0,  20271,      0, "Judgment"                           },
+  {  2,    0,  23214,      0, "Summon Charger"                     },
   {  2,    0,  26573,      0, "Consecration"                       },
   {  2,    0,  34767,      0, "Summon Thalassian Charger"          },
   {  2,    0,  34769,      0, "Summon Thalassian Warhorse"         },
@@ -45,6 +47,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  2,   65, 275773,  20271, "Judgment"                           },
   {  2,   66, 275779,  20271, "Judgment"                           },
   {  2,   70,  85256,      0, "Templar's Verdict"                  },
+  {  2,   70, 403876,      0, "Divine Protection"                  },
   {  3,    0,    136,      0, "Mend Pet"                           },
   {  3,    0,    781,      0, "Disengage"                          },
   {  3,    0,    883,      0, "Call Pet 1"                         },
@@ -76,6 +79,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  4,    0,   1804,      0, "Pick Lock"                          },
   {  4,    0,   1833,      0, "Cheap Shot"                         },
   {  4,    0,   1856,      0, "Vanish"                             },
+  {  4,    0,   1966,      0, "Feint"                              },
   {  4,    0,   2983,      0, "Sprint"                             },
   {  4,    0,   3408,      0, "Crippling Poison"                   },
   {  4,    0,   8676,      0, "Ambush"                             },
@@ -135,6 +139,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  6,    0,  56222,      0, "Dark Command"                       },
   {  6,    0,  61999,      0, "Raise Ally"                         },
   {  6,    0, 316239,      0, "Rune Strike"                        },
+  {  6,  251, 196770,      0, "Remorseless Winter"                 },
   {  7,    0,    546,      0, "Water Walking"                      },
   {  7,    0,    556,      0, "Astral Recall"                      },
   {  7,    0,   2008,      0, "Ancestral Spirit"                   },
@@ -150,6 +155,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   {  7,    0, 188389,      0, "Flame Shock"                        },
   {  7,    0, 192106,      0, "Lightning Shield"                   },
   {  7,    0, 318038,      0, "Flametongue Weapon"                 },
+  {  7,  264,  52127,      0, "Water Shield"                       },
   {  7,  264,  77130,      0, "Purify Spirit"                      },
   {  7,  264, 212048,      0, "Ancestral Vision"                   },
   {  8,    0,    116,      0, "Frostbolt"                          },
@@ -227,6 +233,7 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   { 11,    0,  22812,      0, "Barkskin"                           },
   { 11,    0,  33917,      0, "Mangle"                             },
   { 11,    0,  50769,      0, "Revive"                             },
+  { 11,    0, 213764,      0, "Swipe"                              },
   { 11,  102, 190984,   5176, "Wrath"                              },
   { 11,  105,  88423,      0, "Nature's Cure"                      },
   { 11,  105, 212040,      0, "Revitalize"                         },
@@ -266,8 +273,8 @@ static const std::array<active_class_spell_t, 264> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.46801
-static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
+// Pet active spells, wow build 10.1.0.48898
+static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
   {  3,  17253, "Bite"                               },
@@ -352,7 +359,6 @@ static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { 
   {  7,  57984, "Fire Blast"                         },
   {  7, 117588, "Meteor"                             },
   {  7, 118297, "Immolate"                           },
-  {  7, 118337, "Harden Skin"                        },
   {  7, 118345, "Pulverize"                          },
   {  7, 157331, "Wind Gust"                          },
   {  7, 157348, "Call Lightning"                     },

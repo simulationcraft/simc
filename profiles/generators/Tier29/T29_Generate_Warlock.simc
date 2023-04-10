@@ -1,82 +1,80 @@
-# warlock="T29_Warlock_Affliction"
-# level=70
-# spec=affliction
-# race=orc
-# role=spell
-# position=ranged_back
-# talents=3302013
-# default_pet=sayaad
+warlock="T29_Warlock_Affliction"
+level=70
+spec=affliction
+race=mechagnome
+role=spell
+position=ranged_back
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
 
-# head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173130
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
-# shoulders=grimveiled_spaulders,id=173247,bonus_id=6716/7031/6649/6648/1588
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173130,enchant=eternal_intellect
-# hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-# waist=grimveiled_belt,id=173248,bonus_id=6716/8129/6649/6648/1808/1588,gem_id=173128
-# legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-# feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-# finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-# trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6918
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
+shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
+back=fireproof_drape,id=193763,ilevel=421,enchant_id=6604
+chest=scalesworn_cultists_frock,id=200333,ilevel=421,enchant_id=6625
+wrists=manawracker_bindings,id=134310,bonus_id=6514,ilevel=421,gem_id=192948,enchant_id=6580
+hands=scalesworn_cultists_gloves,id=200335,ilevel=421
+waist=magathas_spiritual_sash,id=195515,bonus_id=6514,ilevel=421,gem_id=192948
+legs=scalesworn_cultists_culottes,id=200337,bonus_id=4800/4786/1498,enchant_id=6541
+feet=cushioned_treads_of_glory,id=136774,bonus_id=1795/6808/4786/3300,enchant_id=6607
+finger1=seal_of_filial_duty,id=195526,bonus_id=6514,ilevel=430,gem_id=192948,enchant=devotion_of_mastery_3,enchant_id=6562
+finger2=unstable_arcane_loop,id=193633,bonus_id=6514,ilevel=421,gem_id=192948,enchant=devotion_of_mastery_3,enchant_id=6562
+trinket1=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6643
+off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
 
-# save=T29_Warlock_Affliction.simc
+save=T29_Warlock_Affliction.simc
 
-# warlock="T29_Warlock_Demonology"
-# level=70
-# race=troll
-# spec=demonology
-# role=spell
-# position=ranged_back
-# talents=1101032
+warlock="T29_Warlock_Demonology"
+level=70
+spec=demonology
+race=orc
+role=spell
+position=ranged_back
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKQaJJh0CAAAAAKJSiECIRiEpolkkDQAAAAAAQC
 
-# head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6648/1808/1588/6935,gem_id=173130
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
-# shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
-# chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173130,enchant=eternal_intellect
-# hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-# waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=1592/6536/6646/6935,gem_id=173130
-# legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-# feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-# trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=scalesworn_cultists_scorn,id=200336,bonus_id=523,ilevel=424,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8793/8846,gem_id=192945/192945/192945,crafted_stats=32/40
+shoulders=amice_of_the_blue,id=193526,bonus_id=8836/8840/8902/8960/8802/8846
+back=fireproof_drape,id=193763,bonus_id=9130/7977/6652/8822/8819/9144/1643/8767,enchant_id=6592
+chest=scalesworn_cultists_frock,id=200333,bonus_id=7981/6652/8830/1498/8767,enchant_id=6625
+wrists=manawracker_bindings,id=134310,bonus_id=523,ilevel=421,gem_id=192945,enchant_id=6574
+hands=scalesworn_cultists_gloves,id=200335,bonus_id=6652/8817/7981/8823/8095/8829/1501
+waist=scalesworn_cultists_girdle,id=200339,bonus_id=523,ilevel=421,gem_id=192945
+legs=scalesworn_cultists_culottes,id=200337,ilevel=421,enchant_id=6541
+feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424,enchant_id=6607
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=523,ilevel=421,gem_id=192945,enchant_id=6556
+finger2=unstable_arcane_loop,id=193633,bonus_id=523,ilevel=421,gem_id=192945,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,ilevel=421
+trinket2=voidmenders_shadowgem,id=110007,ilevel=421
+main_hand=stormlashs_last_resort,id=195529,bonus_id=6652/7981/1498/8767,enchant_id=6643
+off_hand=scripture_of_primal_devotion,id=195513,bonus_id=6652/7981/1498/8767
 
-# save=T29_Warlock_Demonology.simc
+save=T29_Warlock_Demonology.simc
 
-# warlock="T29_Warlock_Destruction"
-# level=70
-# race=mechagnome
-# spec=destruction
-# role=spell
-# position=ranged_back
-# talents=2103021
-# default_pet=sayaad
+warlock="T29_Warlock_Destruction"
+level=70
+spec=destruction
+race=human
+role=spell
+position=ranged_back
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESLwBSUSSSCSalmkAAAAAAAAAAAAIgSSkA
 
-# head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588/6935,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
-# shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-# hands=grasps_of_the_demon_star,id=188890,bonus_id=1498/7187
-# waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
-# legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-# feet=slippers_of_leavened_station,id=178831,bonus_id=1592/6536/6646
-# finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=unbound_changeling,id=178708,bonus_id=1592/6536/6646
-# trinket2=soulletting_ruby,id=178809,bonus_id=7359/6652/7606/1592/6646
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
+shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
+back=fireproof_drape,id=193763,ilevel=421,enchant_id=6604
+chest=scalesworn_cultists_frock,id=200333,ilevel=421,enchant_id=6625
+wrists=manawracker_bindings,id=134310,bonus_id=6514,ilevel=421,gem_id=192948,enchant_id=6580
+hands=scalesworn_cultists_gloves,id=200335,ilevel=421
+waist=magathas_spiritual_sash,id=195515,bonus_id=6514,ilevel=421,gem_id=192948
+legs=scalesworn_cultists_culottes,id=200337,ilevel=421,enchant_id=6541
+feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424,enchant_id=6607
+finger1=seal_of_filial_duty,id=195526,bonus_id=6514,ilevel=430,gem_id=192948,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192945,enchant_id=6556
+trinket1=whispering_incarnate_icon,id=194301,ilevel=421
+trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
+main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6643
+off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
 
-# save=T29_Warlock_Destruction.simc
+save=T29_Warlock_Destruction.simc

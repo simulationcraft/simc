@@ -1,15 +1,15 @@
-# TODO: Remove me when Dragonflight launches
 # T29
 # Tier 29 Vault of the Incarnates
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
 # * Set pieces are permitted up to the item level cap (415/421/424). ["bonus_id=4800/4786/1498"]
-#   * NOTE: Seal of Filial Duty is permitted up to item level 430.
+#   * NOTE: Catalyst items are allowed to increase tier item level cap further (e.g. Mythic tier legs are 415, whereas 424 raid legs can be catalysted to a tier piece)
 # * Raid gear is permitted up to the Mythic item level cap (415/421/424). ["bonus_id=4800/4786/1498"]
+#   * NOTE: Seal of Filial Duty and Neltharax, Enemy of the Sky are permitted up to item level 431.
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (421). [DF: "bonus_id=6808/4786/1643", MoP: "bonus_id=4177/6808/4786/3311", Legion: "bonus_id=1795/6808/4786/3300"]
 #   * Gear can come from: [Algeth'ar Academy, Ruby Life Pools, The Azure Vault, The Nokhud Offensive, Court of Stars, Halls of Valor, Shadowmoon Burial Grounds, Temple of the Jade Serpent]
 # * Honor PvP gear is permitted up to the item level cap (366). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 408). ["bonus_id=?"]
-# * Crafted gear is permitted with a maximum of two pieces, must be BoE and without profession requirements.
+# * Crafted gear is permitted up to the item level cap (418), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=8802/8846"]
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
 # * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.

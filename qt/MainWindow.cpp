@@ -101,17 +101,7 @@ void SC_MainWindow::loadHistory()
                               tr( "We have reset your configuration settings due to major changes to the GUI" ) );
   }
 
-  QVariant size                  = settings.value( "gui/size" );
-  QRect savedApplicationGeometry = geometry();
-  if ( size.isValid() )
-  {
-    savedApplicationGeometry.setSize( size.toSize() );
-  }
-  QVariant pos = settings.value( "gui/position" );
-  if ( pos.isValid() )
-  {
-    savedApplicationGeometry.moveTopLeft( pos.toPoint() );
-  }
+  restoreGeometry( settings.value( "gui/geometry" ).toByteArray() );
   QVariant maximized = settings.value( "gui/maximized" );
   if ( maximized.isValid() )
   {
@@ -174,8 +164,7 @@ void SC_MainWindow::saveHistory()
   QSettings settings;
   settings.beginGroup( "gui" );
   settings.setValue( "gui_version_number", SC_GUI_HISTORY_VERSION );
-  settings.setValue( "size", normalGeometry().size() );
-  settings.setValue( "position", normalGeometry().topLeft() );
+  settings.setValue( "geometry", saveGeometry() );
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
   settings.endGroup();
 

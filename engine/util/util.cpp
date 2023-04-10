@@ -714,6 +714,7 @@ const char* util::pet_type_string( pet_e type )
     case PET_TURTLE:              return "turtle";
     case PET_WARP_STALKER:        return "warp_stalker";
     case PET_WORM:                return "worm";
+    case PET_DUCK:                return "duck";
     //case PET_RIVERBEAST:          return "riverbeast";
     case PET_BAT:                 return "bat";
     case PET_BIRD_OF_PREY:        return "bird_of_prey";
@@ -1403,6 +1404,7 @@ const char* util::proc_type_string( proc_types type )
     case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
     case PROC1_PERIODIC_HEAL:        return "TickHeal";
     case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
+    case PROC1_CAST_SUCCESSFUL:      return "CastSuccessful";
     default:                         return "Unknown";
   }
 }
@@ -1842,6 +1844,7 @@ const char* util::scale_metric_type_string( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "Theck-Meloree-Index";
     case SCALE_METRIC_ETMI:      return "Effective Theck-Meloree-Index";
     case SCALE_METRIC_DEATHS:    return "Deaths";
+    case SCALE_METRIC_TIME:      return "Fight Length";
     default:                     return "Unknown";
   }
 }
@@ -1865,6 +1868,7 @@ const char* util::scale_metric_type_abbrev( scale_metric_e sm )
     case SCALE_METRIC_TMI:       return "tmi";
     case SCALE_METRIC_ETMI:      return "etmi";
     case SCALE_METRIC_DEATHS:    return "deaths";
+    case SCALE_METRIC_TIME:      return "time";
     default:                     return "unknown";
   }
 }
@@ -2578,6 +2582,7 @@ const char* util::buff_refresh_behavior_string( buff_refresh_behavior behavior )
     case buff_refresh_behavior::EXTEND: return "extend";
     case buff_refresh_behavior::PANDEMIC: return "pandemic";
     case buff_refresh_behavior::TICK: return "tick";
+    case buff_refresh_behavior::MAX: return "max";
     case buff_refresh_behavior::CUSTOM: return "custom";
     default: return "unknown";
   }

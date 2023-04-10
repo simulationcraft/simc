@@ -66,7 +66,7 @@ bool has_proc( util::span<const util::string_view> opts, util::string_view proc 
   return false;
 }
 
-void parse_proc_flags( util::string_view flags, util::span<const proc_parse_opt_t> opts, unsigned& proc_flags )
+void parse_proc_flags( util::string_view flags, util::span<const proc_parse_opt_t> opts, uint64_t& proc_flags )
 {
   auto splits = util::string_split<util::string_view>( flags, "/" );
 
@@ -657,7 +657,7 @@ attack_t* special_effect_t::initialize_attack_action() const
   return attack;
 }
 
-unsigned special_effect_t::proc_flags() const
+uint64_t special_effect_t::proc_flags() const
 {
   if ( proc_flags_ != 0 )
     return proc_flags_;
@@ -668,7 +668,7 @@ unsigned special_effect_t::proc_flags() const
   return 0;
 }
 
-unsigned special_effect_t::proc_flags2() const
+uint64_t special_effect_t::proc_flags2() const
 {
   // These do not have a spell-data equivalent, so they are going to always be
   // set manually, or (most commonly) default to 0. The new proc callback
@@ -1242,6 +1242,9 @@ std::string special_effect_t::cooldown_group_name() const
   unsigned cdgroup = cooldown_group();
   if ( cdgroup > 0 )
   {
+    if ( cdgroup == POTION_COOLDOWN_CATEGORY )
+      return "potion";
+
     return "item_cd_" + util::to_string( cdgroup );
   }
 

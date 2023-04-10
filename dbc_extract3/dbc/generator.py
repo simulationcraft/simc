@@ -962,7 +962,7 @@ class ItemDataGenerator(DataGenerator):
         return s
 
 class SpellDataGenerator(DataGenerator):
-    _spell_ref_rx = r'(?:\??\(?[Saps]|@spell(?:name|desc|icon|tooltip)|\$|&)([0-9]{2,})(?:\[|(?<=[0-9a-zA-Z])|\&|\))'
+    _spell_ref_rx = r'(?:[?|&]\(?!?[Saps]|@spell(?:name|desc|icon|tooltip)|\$|&)([0-9]+)'
 
     # Pattern based whitelist, these will always be added
     _spell_name_whitelist = [
@@ -1383,6 +1383,28 @@ class SpellDataGenerator(DataGenerator):
          396369, # Season 1 Thundering M+ Affix
          392271, 392275, # Seasoned Hunter's Trophy stat buffs
          393987, # Azureweave Vestments set bonus driver
+         390529, 390579, 392038, # Raging Tempest set 4pc
+         389820, 383813, 383812, 389816, 389839, 383814, 390234, # Ruby Whelp Shell
+         389581, # Emerald Coach's Whistle
+         # 10.0.7
+         403094, 403170, # Echoing Thunder Stone buffs
+         405209, # Humming Arcane Stone
+         398293, 398320, # Winterpelt Totem
+         # 10.1.0
+         408791, # Ashkandur
+         408089, # Idol of Debilitating Arrogance Death Knight
+         408090, # Idol of Debilitating Arrogance Druid?
+         408042, # Idol of Debilitating Arrogance Rogue?
+         408087, # Idol of Debilitating Arrogance Priest
+         408815, 408832, 408835, 408836, # Djaruun
+         401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil
+         408821, 403545, # Djaruun, Pillar of the Elder Flame
+         408667, 408671, 408675, 408770, 408682, 408694, # Dragonfire Bomb Dispenser
+         406244, 378758, 407090, # Spore Colony Shoulderguards
+         407949, 408015, # Tinker: Shadowflame Rockets
+         406753, 406764, 406770, # Shadowflame Wreathe
+         401513, 405620, 401516, 405613, 402221, 405615, 401521, 405608, 401518, 405612, 401519, 405611, # Glimmering Chromatic orb
+         406251, 406254, 406887, # Shadowflame-Tempered Armor Patch
         ),
 
         # Warrior:
@@ -1404,6 +1426,7 @@ class SpellDataGenerator(DataGenerator):
             ( 195707, 0 ),          # Rage gain from taking hits
             ( 161798, 0 ),          # Riposte passive (turns crit rating into parry)
             ( 279142, 0 ),          # Iron Fortress damage (azerite)
+            ( 409983, 0 ),          # Merciless Assault (T30 Fury 4p)
         ),
 
         # Paladin:
@@ -1452,6 +1475,8 @@ class SpellDataGenerator(DataGenerator):
             ( 387178, 0 ),          # Empyrean Legacy buff
             ( 224239, 0 ),          # Tempest divine storm
             ( 384810, 0 ),          # Seal of Clarity buff
+            ( 404140, 0 ),          # Blessed Hammers for Adjudication
+            ( 387113, 0 ),          # ES
         ),
 
         # Hunter:
@@ -1562,10 +1587,11 @@ class SpellDataGenerator(DataGenerator):
             ( 394757, 0 ),          # Flagellation talent damage spell
             ( 394758, 0 ),          # Flagellation talent persist buff
             ( 385948, 0 ), ( 385949, 0 ), ( 385951, 0 ), # Finality talent buffs
-            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells 
+            ( 385960, 0 ), ( 386081, 0 ), # Lingering Shadow talent background spells
             ( 393724, 0 ), ( 393725, 0 ), # T29 Assassination Set Bonus Spells
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
+            ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
         ),
 
         # Priest:
@@ -1607,6 +1633,7 @@ class SpellDataGenerator(DataGenerator):
             ( 394961, 0 ),          # Gathering Shadows T29 2-set buff
             ( 393685, 0 ),          # Priest Shadow Class Set 4-set
             ( 394963, 0 ),          # Dark Reveries T29 4-set buff
+            ( 377355, 0 ),          # Idol of C'thun Duration
             ( 377358, 5 ),          # Idol of C'thun Insanity values
             ( 394976, 5 ),          # Idol of C'thun Void Lasher Mind Sear
             ( 394979, 5 ),          # Idol of C'thun Void Lasher Mind Sear Tick
@@ -1618,6 +1645,10 @@ class SpellDataGenerator(DataGenerator):
             ( 390981, 0 ),          # Divine Star Heal Spell
             ( 396895, 5 ),          # Idol of Yogg-Saron Void Spike Cleave
             ( 373281, 0 ),          # Idol of N'Zoth Echoing Void debuff
+            ( 373213, 0 ),          # Insidious Ire Buff
+            ( 407468, 0 ),          # Mind Spike Insanity Buff
+            ( 391232, 0 ),          # Maddening Touch Insanity
+            ( 409502, 0 ),          # Priest Shadow Class Set 2-set - Weakening Reality
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -1686,6 +1717,11 @@ class SpellDataGenerator(DataGenerator):
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
+          ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
+          ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
+          ( 196780, 0 ), # Outbreak Intermediate AoE spell
+          ( 196782, 0 ), # Outbreak Intermediate AoE spell
+          ( 281327, 0 ), # Obliteration Rune Generation Spell
         ),
 
         # Shaman:
@@ -1787,6 +1823,8 @@ class SpellDataGenerator(DataGenerator):
           ( 384859, 0 ), ( 384860, 0 ),             # Orb Barrage
           ( 383783, 0 ),                            # Nether Precision
           ( 383882, 0 ),                            # Sun King's Blessing
+          ( 408763, 0 ),                            # Frost T30 2pc
+          ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
         ),
 
         # Warlock:
@@ -1884,6 +1922,8 @@ class SpellDataGenerator(DataGenerator):
           ( 387409, 0 ),    # Madness Chaos Bolt aura
           ( 387413, 0 ),    # Madness Rain of Fire aura
           ( 387414, 0 ),    # Madness Shadowburn aura
+          ( 405681, 0 ),    # Immutable Hatred Damage Proc
+          ( 409890, 0 ),    # T30 - Channel Demonfire
         ),
 
         # Monk:
@@ -1918,6 +1958,8 @@ class SpellDataGenerator(DataGenerator):
           # Mistweaver
           ( 228649, 2 ), # Teachings of the Monastery - Blackout Proc
           ( 343820, 2 ), # Invoke Chi-Ji, the Red Crane - Enveloping Mist cast reduction
+          ( 388609, 2 ), # Zen Pulse Echoing Reverberation Damage
+          ( 388668, 2 ), # Zen Pulse Echoing Reverberation Heal
 
           # Windwalker
           ( 115057, 3 ), # Flying Serpent Kick Movement spell
@@ -1940,6 +1982,8 @@ class SpellDataGenerator(DataGenerator):
           ( 396168, 3 ), # Fury of Xuen Haste Buff
           ( 393048, 3 ), # Skyreach Debuff
           ( 393050, 3 ), # Skyreach Exxhaustion Debuff
+          ( 395413, 3 ), # Fae Exposure Healing Buff
+          ( 395414, 3 ), # Fae Exposure Damage Debuff
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
@@ -2000,7 +2044,10 @@ class SpellDataGenerator(DataGenerator):
           ( 363924, 3 ), # WW 4-piece Primordial Power
 
           # Tier 29
-          ( 394951, 3 ) # WW 4-piece Versatility buff
+          ( 394951, 3 ), # WW 4-piece Versatility buff
+
+          # Tier 30
+          ( 411376, 3 ), # WW 4-piece Shadowflame Vulnerability buff
         ),
 
         # Druid:
@@ -2031,7 +2078,7 @@ class SpellDataGenerator(DataGenerator):
           ( 210705, 2 ),       # Ashamane's Rip (Fangs of Ashamane artifact trait spell)
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
-          ( 211547, 1 ),       # Fury of Elune move spell
+          ( 211547, 1 ), ( 281871, 1 ), # Fury of Elune
           ( 106829, 0 ), ( 48629, 0 ), # Bear/Cat form swipe/thrash replacement
           ( 106899, 0 ), ( 106840, 0 ), # Bear/Cat form stampeding roar replacement
           ( 209406, 1 ),       # Oneth's Intuition buff
@@ -2078,7 +2125,7 @@ class SpellDataGenerator(DataGenerator):
           # Dragonflight
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
-          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
+          ( 395336, 0 ), ( 378987, 0 ), ( 400202, 0 ), ( 400204, 0 ), # Protector of the Pack
           # Balance
           ( 188046, 1 ), # Denizen of the Dream pet attack
           ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
@@ -2093,12 +2140,14 @@ class SpellDataGenerator(DataGenerator):
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
           ( 393617, 2 ), # Primal Claws energize
+          ( 405191, 2 ), # Overflowing Power
           # Guardian
           ( 370602, 3 ), # Elune's Favored heal
           ( 372505, 3 ), # Ursoc's Fury absorb
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 279555, 3 ), # Layered Mane buff
           ( 395942, 3 ), # 2t29 Mangle AoE
+          ( 400360, 3 ), # Moonless Night
           # Restoration
         ),
         # Demon Hunter:
@@ -2133,6 +2182,7 @@ class SpellDataGenerator(DataGenerator):
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
           ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -2142,6 +2192,9 @@ class SpellDataGenerator(DataGenerator):
           ( 207760, 2 ), # Burning Alive spread radius
           ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
+          ( 336640, 2 ), # Charred Flesh
+          ( 203981, 2 ), # Soul Fragments
+          ( 409877, 2 ), # T30 4pc Recrimination buff
        ),
 
        # Evoker:
@@ -2149,13 +2202,15 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
           ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
-          ( 359115, 0 ),  # Empower Triggered GCD
+          ( 359115, 0 ), # Empower Triggered GCD
           ( 361519, 0 ), # Essence Burst
           # Devastation
           ( 386399, 1 ), ( 399370, 1 ), # Iridescence: Blue
           ( 375802, 1 ), # Burnout buff
           ( 376850, 1 ), # Power Swell buff
-          ( 397870, 1 ),  # Titanic Wrath
+          ( 397870, 1 ), # Titanic Wrath
+          ( 405651, 1 ), # Imminent Destruction Player Buff
+          ( 409848, 1 ), # 4t30 buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),
@@ -2339,6 +2394,7 @@ class SpellDataGenerator(DataGenerator):
         ( 143, 'misc_value_1' ),
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
+        ( 507, 'misc_value_1' ),
     ]
 
     _spell_blacklist = [
@@ -3112,10 +3168,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix.add(duration_entry, ('duration_1', 19))
 
             aura_opt_entry = spell.child('SpellAuraOptions')
-            fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges', 'proc_flags_1', 'internal_cooldown')
+            fields += aura_opt_entry.field('stack_amount', 'proc_chance', 'proc_charges')
+            fields.append('%d' % (aura_opt_entry.proc_flags_1 | aura_opt_entry.proc_flags_2 << 32))
+            fields += aura_opt_entry.field('internal_cooldown')
             hotfix.add(aura_opt_entry,
                     ('stack_amount', 20), ('proc_chance', 21), ('proc_charges', 22),
-                    ('proc_flags_1', 23), ('internal_cooldown', 24))
+                    ('proc_flags_1', 23), ('proc_flags_2', 52), ('internal_cooldown', 24))
 
             ppm_entry = aura_opt_entry.ref('id_ppm')
             fields += ppm_entry.field('ppm')
@@ -3622,6 +3680,16 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'woven_chronocloth',
             'bonuses': [ 1515 ],
             'tier'   : 29
+        },
+        {
+            'name'   : 'raging_tempests',
+            'bonuses': [ 1521, 1523, 1524, 1525 ],
+            'tier'   : 29
+        },
+        {
+            'name'   : 'tier30',
+            'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
+            'tier'   : 30
         }
     ]
 

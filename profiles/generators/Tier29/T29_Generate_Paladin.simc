@@ -6,7 +6,7 @@ server=valdrakken
 role=tank
 spec=protection
 
-talents=BIEAwtJ2KpR8WbGzhz/jy2AP80iSikikiIJhSTSChESAAAAAAAAAAAAAAARSSaCSSUSRkEloEA
+talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKSKIJhSTSChESAAACAAAAAAAACJJEIJRSKSkkAAiAAQgA
 
 head=,id=200417,bonus_id=4800/4786/1498,gem_id=192919
 neck=,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
@@ -28,31 +28,31 @@ off_hand=,id=195520,bonus_id=4800/4786/1498
 save=T29_Paladin_Protection.simc
 
 
-# paladin="T29_Paladin_Retribution"
-# spec=retribution
-# level=70
-# race=dark_iron_dwarf
-# role=attack
-# position=back
-# talents=1200101
+paladin="T29_Paladin_Retribution"
+spec=retribution
+level=70
+race=dark_iron_dwarf
+role=attack
+position=back
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjkWkkWSAAAAAAAEBJJFBSQkSESCpkmAJiQIKNaBA
 
-# head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
-# shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=shadowghast_breastplate,id=171412,bonus_id=6649/6648/6758/7064/1588,enchant=eternal_stats
-# wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935,gem_id=173128
-# hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=1505/7187,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/8125/1588/6935,gem_id=173128
-# legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
-# feet=songmad_sabatons,id=189786,bonus_id=1524/7187
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=old_warriors_soul,id=186438,bonus_id=4800/4786/1498
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation
+head=virtuous_silver_heaume,id=200417,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498/6935/6935/6935,gem_id=192948/192948/192948
+shoulders=virtuous_silver_pauldrons,id=200419,bonus_id=4800/4786/1498
+back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300
+chest=virtuous_silver_breastplate,id=200414,bonus_id=4800/4786/1498,enchant_id=6625
+wrists=allied_wristguard_of_companionship,id=190526,bonus_id=8836/8802/8960/1498,gem_id=192948
+hands=virtuous_silver_gauntlets,id=200416,bonus_id=4800/4786/1498
+waist=unstable_frostfire_belt,id=191623,,bonus_id=8836/8802/8960/1498,gem_id=192948
+legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,enchant_id=6490
+feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant_id=6556
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant_id=6556
+trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
+main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
 
-# save=T29_Paladin_Retribution.simc
+save=T29_Paladin_Retribution.simc
 
 
 # paladin="T27_Paladin_Holy"

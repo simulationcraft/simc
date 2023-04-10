@@ -95,6 +95,8 @@ struct drain_life_t : public warlock_spell_t
         }
       }
     }
+
+    p()->buffs.soulburn->expire();
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -245,7 +247,7 @@ struct corruption_t : public warlock_spell_t
           p()->procs.harvester_of_souls->occur();
         }
 
-        if ( p()->talents.doom_blossom->ok() )
+        if ( p()->talents.doom_blossom->ok() && td( d->state->target )->dots_unstable_affliction->is_ticking() )
         {
           if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
           {
@@ -286,10 +288,24 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    if ( p->talents.xavian_teachings->ok() && !seed_action )
+    if ( !seed_action )
     {
-      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
-      base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+      if ( p->min_version_check( VERSION_10_0_7 ) )
+      {
+        if ( p->warlock_base.xavian_teachings->ok() )
+        {
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Spell uses this effect in base spell for damage
+          base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
+        }
+      }
+      else
+      {
+        if ( p->talents.xavian_teachings->ok() )
+        {
+          spell_power_mod.direct = data().effectN( 3 ).sp_coeff();  // Talent uses this effect in base spell for damage
+          base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+        }
+      }
     }
   }
 
@@ -328,10 +344,12 @@ struct seed_of_corruption_t : public warlock_spell_t
   struct seed_of_corruption_aoe_t : public warlock_spell_t
   {
     corruption_t* corruption;
+    bool cruel_epiphany;
 
     seed_of_corruption_aoe_t( warlock_t* p )
       : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
-        corruption( new corruption_t( p, "", true ) )
+        corruption( new corruption_t( p, "", true ) ),
+        cruel_epiphany( false )
     {
       aoe = -1;
       background = dual = true;
@@ -376,7 +394,7 @@ struct seed_of_corruption_t : public warlock_spell_t
         m *= 1.0 + p()->cache.mastery_value();
       }
 
-      if ( p()->buffs.cruel_epiphany->check() )
+      if ( p()->buffs.cruel_epiphany->check() && cruel_epiphany )
         m *= 1.0 + p()->buffs.cruel_epiphany->check_value();
 
       return m;
@@ -384,10 +402,12 @@ struct seed_of_corruption_t : public warlock_spell_t
   };
 
   seed_of_corruption_aoe_t* explosion;
+  seed_of_corruption_aoe_t* epiphany_explosion;
 
   seed_of_corruption_t( warlock_t* p, util::string_view options_str )
     : warlock_spell_t( "Seed of Corruption", p, p->talents.seed_of_corruption ),
-      explosion( new seed_of_corruption_aoe_t( p ) )
+      explosion( new seed_of_corruption_aoe_t( p ) ),
+      epiphany_explosion( new seed_of_corruption_aoe_t( p ) )
   {
     parse_options( options_str );
     may_crit = false;
@@ -396,6 +416,9 @@ struct seed_of_corruption_t : public warlock_spell_t
     hasted_ticks = false;
 
     add_child( explosion );
+
+    epiphany_explosion->cruel_epiphany = true;
+    add_child( epiphany_explosion );
 
     if ( p->talents.sow_the_seeds->ok() )
       aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
@@ -448,6 +471,9 @@ struct seed_of_corruption_t : public warlock_spell_t
     }
 
     warlock_spell_t::impact( s );
+
+    if ( s->chain_target == 0 && p()->buffs.cruel_epiphany->check() )
+      td( s->target )->debuffs_cruel_epiphany->trigger();
   }
 
   // If Seed of Corruption is refreshed on a target, it will extend the duration
@@ -463,8 +489,18 @@ struct seed_of_corruption_t : public warlock_spell_t
 
   void last_tick( dot_t* d ) override
   {
-    explosion->set_target( d->target );
-    explosion->schedule_execute();
+    if ( td( d->target )->debuffs_cruel_epiphany->check() )
+    {
+      epiphany_explosion->set_target( d->target );
+      epiphany_explosion->schedule_execute();
+    }
+    else
+    {
+      explosion->set_target( d->target );
+      explosion->schedule_execute();
+    }
+
+    td( d->target )->debuffs_cruel_epiphany->expire();
 
     warlock_spell_t::last_tick( d );
   }
@@ -506,7 +542,7 @@ struct shadow_bolt_t : public warlock_spell_t
       p()->buffs.demonic_calling->trigger();
 
     if ( p()->talents.fel_covenant->ok() )
-      p()->buffs.fel_covenant->increment();
+      p()->buffs.fel_covenant->trigger();
 
     if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
     {
@@ -573,6 +609,14 @@ struct soul_rot_t : public warlock_spell_t
     aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
   }
 
+  soul_rot_t( warlock_t* p, util::string_view opt, bool soul_swap ) : soul_rot_t( p, opt )
+  {
+    if ( soul_swap )
+    {
+      aoe = 1;
+    }
+  }
+
   void execute() override
   {
     warlock_spell_t::execute();
@@ -584,7 +628,7 @@ struct soul_rot_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p()->talents.dark_harvest->ok() )
+    if ( p()->talents.dark_harvest->ok() && aoe > 1)
     {
       p()->buffs.dark_harvest_haste->trigger();
       p()->buffs.dark_harvest_crit->trigger();
@@ -595,7 +639,15 @@ struct soul_rot_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_ta_multiplier( s );
 
-    if ( s->chain_target == 0 )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    // Note: Soul Swapped Soul Rot technically retains memory of who the primary target was
+    // For the moment, we will shortcut this by assuming Soul Swap copy is going on a secondary target
+    // TODO: Figure out how to model this appropriately in the case where you copy a secondary and then apply to primary
+    if ( s->chain_target == 0 && aoe > 1 )
     {
       m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10.0; // Primary target takes increased damage
     }
@@ -645,6 +697,7 @@ struct grimoire_of_sacrifice_t : public warlock_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+    target = player;
   }
 
   bool ready() override
@@ -672,10 +725,24 @@ struct summon_soulkeeper_t : public warlock_spell_t
 {
   struct soul_combustion_t : public warlock_spell_t
   {
+    int tormented_souls;
+
     soul_combustion_t( warlock_t* p ) : warlock_spell_t( "Soul Combustion", p, p->talents.soul_combustion )
     {
       background = dual = true;
       aoe = -1;
+      reduced_aoe_targets = 8.0; // Presumably hardcoded, mentioned in tooltip
+
+      tormented_souls = 1;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= tormented_souls;
+
+      return m;
     }
   };
 
@@ -695,7 +762,7 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
   bool usable_moving() const override
   {
-    return true; // Last checked 2022-11-27
+    return true; // Last checked 2023-01-19
   }
 
   bool ready() override
@@ -708,9 +775,12 @@ struct summon_soulkeeper_t : public warlock_spell_t
 
   void execute() override
   {
-    // TODO: Cancel existing ground event if cast while one is already active
-
     warlock_spell_t::execute();
+
+    timespan_t dur = 0_ms;
+
+    dur = p()->talents.summon_soulkeeper_aoe->duration() - 2_s + 1_s; // Hardcoded -2 according to tooltip, but is doing 9 ticks as of 2023-01-19
+    debug_cast<soul_combustion_t*>( p()->proc_actions.soul_combustion )->tormented_souls = p()->buffs.tormented_soul->stack();
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                 ground_aoe_params_t()
@@ -718,57 +788,21 @@ struct summon_soulkeeper_t : public warlock_spell_t
                                     .x( execute_state->target->x_position )
                                     .y( execute_state->target->y_position )
                                     .pulse_time( base_tick_time )
-                                    .duration( 1_s + 1_s * p()->buffs.tormented_soul->stack() )
+                                    .duration( dur )
                                     .start_time( sim->current_time() )
                                     .action( p()->proc_actions.soul_combustion ) );
+
+    internal_cooldown->start( dur ); // As of 10.0.7, Soulkeepr can no longer be used if one is already active
 
     p()->buffs.tormented_soul->expire();
   }
 };
 
-struct inquisitors_gaze_t : public warlock_spell_t
+struct fel_barrage_t : public warlock_spell_t
 {
-  struct fel_bolt_t : public warlock_spell_t
+  fel_barrage_t( warlock_t* p ) : warlock_spell_t( "Fel Barrage", p, p->talents.fel_barrage )
   {
-    fel_bolt_t( warlock_t* p ) : warlock_spell_t( "Fel Bolt", p, p->talents.fel_bolt )
-    {
-      background = dual = true;
-    }
-  };
-
-  struct fel_blast_t : public warlock_spell_t
-  {
-    fel_blast_t( warlock_t* p ) : warlock_spell_t( "Fel Blast", p, p->talents.fel_blast )
-    {
-      background = dual = true;
-    }
-  };
-
-  inquisitors_gaze_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "Inquisitor's Gaze", p, p->talents.inquisitors_gaze )
-  {
-    parse_options( options_str );
-    
-    harmful = false;
-
-    if ( !p->proc_actions.fel_bolt )
-    {
-      p->proc_actions.fel_bolt = new fel_bolt_t( p );
-      p->proc_actions.fel_bolt->stats = stats;
-    }
-
-    if ( !p->proc_actions.fel_blast )
-    {
-      p->proc_actions.fel_blast = new fel_blast_t( p );
-      p->proc_actions.fel_blast->stats = stats;
-    }
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    p()->buffs.inquisitors_gaze->trigger();
+    background = dual = true;
   }
 };
 
@@ -780,6 +814,21 @@ struct soulburn_t : public warlock_spell_t
     parse_options( options_str );
     harmful = false;
     may_crit = false;
+  }
+
+  bool ready() override
+  {
+    if ( p()->buffs.soulburn->check() )
+      return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    p()->buffs.soulburn->trigger();
   }
 
   void consume_resource() override
@@ -796,7 +845,7 @@ struct soulburn_t : public warlock_spell_t
           p()->procs.portal_summon->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
 
           if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
           {
@@ -804,7 +853,7 @@ struct soulburn_t : public warlock_spell_t
             p()->procs.nerzhuls_volition->occur();
 
             if ( p()->talents.guldans_ambition->ok() )
-              p()->buffs.nether_portal_total->increment();
+              p()->buffs.nether_portal_total->trigger();
           }
         }
       }
@@ -825,9 +874,6 @@ struct soulburn_t : public warlock_spell_t
       }
     }
   }
-
-  // We could put an execute here to trigger a buff, but the only use for Soulburn from a DPS perspective is
-  // to trigger it for the shard spending and then cancelaura the buff so it can be used again after the cooldown
 };
 
 // Catchall action to trigger pet interrupt abilities via main APL.
@@ -917,9 +963,16 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 )
-                      ->set_stack_change_callback( [ &p ]( buff_t*, int, int cur ) {
-                          if ( cur == 0 )
-                            p.buffs.haunted_soul->expire();
+                      ->set_cooldown( 0_ms )
+                      ->set_stack_change_callback( [ &p ]( buff_t*, int prev, int cur ) {
+                          if ( cur < prev )
+                          {
+                            p.buffs.active_haunts->decrement();
+                          }
+                          else if ( cur > prev )
+                          {
+                            p.buffs.active_haunts->trigger();
+                          }
                         } );
 
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
@@ -927,6 +980,12 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
                             ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
+
+  debuffs_cruel_epiphany = make_buff( *this, "cruel_epiphany" );
+
+  debuffs_infirmity = make_buff( *this, "infirmity", p.tier.infirmity )
+                          ->set_default_value( p.tier.infirmity->effectN( 1 ).percent() )
+                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Destruction
   dots_immolate = target->get_dot( "immolate", &p );
@@ -970,6 +1029,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_from_the_shadows = make_buff( *this, "from_the_shadows", p.talents.from_the_shadows_debuff )
                                  ->set_default_value_from_effect( 1 );
+
+  debuffs_the_houndmasters_stratagem = make_buff( *this, "the_houndmasters_stratagem", p.talents.the_houndmasters_stratagem_debuff )
+                                           ->set_default_value_from_effect( 1 );
 
   debuffs_fel_sunder = make_buff( *this, "fel_sunder", p.talents.fel_sunder_debuff )
                            ->set_default_value( p.talents.fel_sunder->effectN( 1 ).percent() );
@@ -1098,9 +1160,13 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
     ua_target( nullptr ),
+    ss_source( nullptr ),
+    soul_swap_state(),
     havoc_spells(),
     agony_accumulator( 0.0 ),
     corruption_accumulator( 0.0 ),
+    cdf_accumulator( 0.0 ),
+    incinerate_last_target_count( 0 ),
     active_pets( 0 ),
     warlock_pet_list( this ),
     talents(),
@@ -1121,6 +1187,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.soul_rot = get_cooldown( "soul_rot" );
   cooldowns.call_dreadstalkers = get_cooldown( "call_dreadstalkers" );
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
+  cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
+  cooldowns.grimoire_felguard = get_cooldown( "grimoire_felguard" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
@@ -1156,6 +1224,9 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
     if ( talents.shadow_embrace->ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+
+    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) )
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )
@@ -1209,6 +1280,9 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( talents.summon_demonic_tyrant->ok() )
       m *= 1.0 + buffs.demonic_power->check_value();
+
+    if ( buffs.rite_of_ruvaraad->check() )
+      m *= 1.0 + buffs.rite_of_ruvaraad->check_value();
   }
 
   if ( specialization() == WARLOCK_AFFLICTION )
@@ -1235,6 +1309,12 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
     if ( talents.shadow_embrace->ok() )
     {
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value(); // Talent spell sets default value according to rank
+    }
+
+    if ( sets->has_set_bonus( WARLOCK_AFFLICTION, T30, B4 ) && !guardian )
+    {
+      // TOCHECK: Guardian effect is missing from spell data as of 2023-04-04
+      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
     }
   }
 
@@ -1282,7 +1362,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double amt = player_t::resource_gain( resource_type, amount, source, action );
 
-  if ( resource_type == RESOURCE_SOUL_SHARD )
+  if ( resource_type == RESOURCE_SOUL_SHARD && !min_version_check( VERSION_10_0_7 ) )
   {
     bool filled = ( resources.current[ resource_type ] - std::floor( prev ) >= 1.0 );
 
@@ -1362,8 +1442,6 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new seed_of_corruption_t( this, options_str );
   if ( action_name == "summon_soulkeeper" )
     return new summon_soulkeeper_t( this, options_str );
-  if ( action_name == "inquisitors_gaze" )
-    return new inquisitors_gaze_t( this, options_str );
   if ( action_name == "soulburn" )
     return new soulburn_t( this, options_str );
 
@@ -1379,7 +1457,14 @@ void warlock_t::create_actions()
 
     if ( talents.pandemic_invocation->ok() )
       proc_actions.pandemic_invocation_proc = new warlock::actions::pandemic_invocation_t( this );
+
+    if ( talents.soul_swap->ok() )
+      create_soul_swap_actions();
   }
+
+  if ( talents.inquisitors_gaze->ok() )
+    proc_actions.fel_barrage = new warlock::actions::fel_barrage_t( this );
+
   player_t::create_actions();
 }
 
@@ -1447,27 +1532,19 @@ void warlock_t::create_buffs()
                                        ->set_period( talents.summon_soulkeeper->effectN( 2 ).period() )
                                        ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                           buffs.tormented_soul->increment();
+                                           buffs.tormented_soul->trigger();
                                          } );
+  buffs.tormented_soul_generator->quiet = true;
 
   buffs.inquisitors_gaze = make_buff( this, "inquisitors_gaze", talents.inquisitors_gaze_buff )
-                               ->set_period( 3_s )
-                               ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                               ->set_period( 1_s )
                                ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-                                   if ( buffs.inquisitors_gaze_buildup->at_max_stacks() )
-                                   {
-                                     proc_actions.fel_blast->execute_on_target( target );
-                                     buffs.inquisitors_gaze_buildup->expire();
-                                   }
-                                   else
-                                   {
-                                     proc_actions.fel_bolt->execute_on_target( target );
-                                     buffs.inquisitors_gaze_buildup->increment();
-                                   }
-                                 }  );
+                                 proc_actions.fel_barrage->execute_on_target( target );
+                               } );
 
-  buffs.inquisitors_gaze_buildup = make_buff( this, "inquisitors_gaze_buildup" )
-                                       ->set_max_stack( 3 );
+  buffs.soulburn = make_buff( this, "soulburn", talents.soulburn_buff );
+
+  buffs.pet_movement = make_buff( this, "pet_movement" )->set_max_stack( 100 );
 
   // Affliction buffs
   create_buffs_affliction();
@@ -1518,6 +1595,7 @@ void warlock_t::init_spells()
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
+  warlock_base.xavian_teachings = find_specialization_spell( "Xavian Teachings", WARLOCK_AFFLICTION ); // Instant cast corruption and direct damage. Direct damage is in the base corruption spell on effect 3. Should be ID 317031.
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION ); // Should be ID 77215
   warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock", WARLOCK_AFFLICTION ); // Should be ID 137043
 
@@ -1563,6 +1641,9 @@ void warlock_t::init_spells()
   talents.grimoire_of_synergy = find_talent_spell( talent_tree::CLASS, "Grimoire of Synergy" ); // Should be ID 171975
   talents.demonic_synergy = find_spell( 171982 );
 
+  talents.socrethars_guile   = find_talent_spell( talent_tree::CLASS, "Socrethar's Guile" ); // Should be ID 405936 //405955
+  talents.sargerei_technique = find_talent_spell( talent_tree::CLASS, "Sargerei Technique" );  // Should be ID 405955
+
   talents.soul_conduit = find_talent_spell( talent_tree::CLASS, "Soul Conduit" ); // Should be ID 215941
 
   talents.grim_feast = find_talent_spell( talent_tree::CLASS, "Grim Feast" ); // Should be ID 386689
@@ -1574,10 +1655,13 @@ void warlock_t::init_spells()
 
   talents.inquisitors_gaze = find_talent_spell( talent_tree::CLASS, "Inquisitor's Gaze" ); // Should be ID 386344
   talents.inquisitors_gaze_buff = find_spell( 388068 );
-  talents.fel_bolt = find_spell( 388070 );
-  talents.fel_blast = find_spell( 389277 );
+  talents.fel_barrage = find_spell( 388070 );
 
   talents.soulburn = find_talent_spell( talent_tree::CLASS, "Soulburn" ); // Should be ID 385899
+  talents.soulburn_buff = find_spell( 387626 );
+
+  version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
+  version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
 }
 
 void warlock_t::init_rng()
@@ -1631,6 +1715,7 @@ void warlock_t::init_procs()
   procs.conflagration_of_chaos_sb = get_proc( "conflagration_of_chaos_sb" );
   procs.demonic_inspiration = get_proc( "demonic_inspiration" );
   procs.wrathful_minion = get_proc( "wrathful_minion" );
+  procs.inquisitors_gaze = get_proc( "inquisitors_gaze" );
 }
 
 void warlock_t::init_base_stats()
@@ -1746,6 +1831,18 @@ void warlock_t::init_special_effects()
 
     cb->initialize();
   }
+
+  if ( talents.inquisitors_gaze->ok() )
+  {
+    auto const gaze_effect = new special_effect_t( this );
+    gaze_effect->name_str = "inquisitors_gaze_effect";
+    gaze_effect->spell_id = talents.inquisitors_gaze->id();
+    special_effects.push_back( gaze_effect );
+
+    auto cb = new warlock::actions::inquisitors_gaze_callback_t( this, *gaze_effect );
+
+    cb->initialize();
+  }
 }
 
 void warlock_t::combat_begin()
@@ -1782,6 +1879,8 @@ void warlock_t::reset()
   ua_target                          = nullptr;
   agony_accumulator                  = rng().range( 0.0, 0.99 );
   corruption_accumulator             = rng().range( 0.0, 0.99 );
+  cdf_accumulator                    = rng().range( 0.0, 0.99 );
+  incinerate_last_target_count       = 0;
   wild_imp_spawns.clear();
 }
 
@@ -1895,7 +1994,11 @@ void warlock_t::expendables_trigger_helper( warlock_pet_t* source )
     if ( lock_pet == source )
       continue;
 
-    lock_pet->buffs.the_expendables->increment();
+    // Pit Lord is not affected by The Expendables
+    if ( lock_pet->pet_type == PET_PIT_LORD )
+      continue;
+
+    lock_pet->buffs.the_expendables->trigger();
   }
 }
 
@@ -1930,6 +2033,12 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_1_0:
+      return !( version_10_1_0_data == spell_data_t::not_found() );
+    case VERSION_10_0_7:
+      return !( version_10_0_7_data == spell_data_t::not_found() );
+    case VERSION_10_0_5:
+    case VERSION_10_0_0:
     case VERSION_ANY:
       return true;
   }
@@ -1939,7 +2048,12 @@ bool warlock_t::min_version_check( version_check_e version ) const
 
 action_t* warlock_t::pass_corruption_action( warlock_t* p )
 {
-  return debug_cast<action_t*>( new actions::corruption_t( p, "", false ) );
+  return debug_cast<action_t*>( new actions::corruption_t( p, "", true ) );
+}
+
+action_t* warlock_t::pass_soul_rot_action( warlock_t* p )
+{
+  return debug_cast<action_t*>( new actions::soul_rot_t( p, "", true ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -2029,6 +2143,16 @@ std::unique_ptr<expr_t> warlock_t::create_pet_expression( util::string_view name
       } );
     } );
   }
+  else if ( name_str == "igb_ratio" )
+  {
+    return make_fn_expr( "igb_ratio", [ this ]() {
+      auto igb_count = warlock_pet_list.wild_imps.n_active_pets( []( const pets::demonology::wild_imp_pet_t* pet ) {
+        return pet->buffs.imp_gang_boss->check();
+        } );
+
+      return igb_count / as<double>( buffs.wild_imps->stack() );
+      } );
+  }
 
   return player_t::create_expression( name_str );
 }
@@ -2074,6 +2198,10 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
     return create_pet_expression( name_str );
   }
   else if ( name_str == "two_cast_imps" )
+  {
+    return create_pet_expression( name_str );
+  }
+  else if ( name_str == "igb_ratio" )
   {
     return create_pet_expression( name_str );
   }
@@ -2171,6 +2299,12 @@ void warlock_t::apply_affecting_auras( action_t& action )
   {
     action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
+
+  action.apply_affecting_aura( talents.socrethars_guile );
+  action.apply_affecting_aura( talents.sargerei_technique );
+  action.apply_affecting_aura( talents.dark_virtuosity );
+  action.apply_affecting_aura( talents.kindled_malice );
+
 }
 
 struct warlock_module_t : public module_t
@@ -2186,6 +2320,11 @@ struct warlock_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Warlock", "2023-01-08", "Manually set secondary Malefic Rapture level requirement", 324540 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 11.0 )
+      .verification_value( 43.0 );
   }
 
   bool valid() const override

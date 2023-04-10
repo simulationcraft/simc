@@ -28,6 +28,7 @@ struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
 struct fury_of_xuen_pet_t;
+struct spirit_of_forged_vermillion_t;
 }
 
 struct monk_t;
@@ -47,6 +48,7 @@ enum class sef_ability_e
   SEF_BLACKOUT_KICK,
   SEF_BLACKOUT_KICK_TOTM,
   SEF_RISING_SUN_KICK,
+  SEF_GLORY_OF_THE_DAWN,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -92,6 +94,7 @@ public:
   {
     // Brewmaster
     propagate_const<buff_t*> keg_smash;
+    propagate_const<buff_t*> exploding_keg;
 
     // Windwalker
     propagate_const<buff_t*> flying_serpent_kick;
@@ -110,6 +113,9 @@ public:
     propagate_const<buff_t*> fae_exposure;
     propagate_const<buff_t*> keefers_skyreach;
     propagate_const<buff_t*> skyreach_exhaustion;
+
+    // Tier 30
+    propagate_const<buff_t*> shadowflame_vulnerability;
   } debuff;
 
   monk_t& monk;
@@ -174,6 +180,7 @@ public:
   } passive_actions;
 
   std::vector<action_t*> combo_strike_actions;
+  double squirm_timer;
   double spiritual_focus_count;
   double shuffle_count_secs;
 
@@ -204,7 +211,7 @@ public:
     double distance_moved;
 
     monk_movement_t( monk_t* player, util::string_view n, const spell_data_t* s = spell_data_t::not_found() )
-      : buff_t( player, n ), p( player ), data( s ), base_movement( find( player, "movement" ) )
+      : buff_t( player, n ), p( player ), base_movement( find( player, "movement" ) ), data( s )
     {
       set_chance( 1 );
       set_max_stack( 1 );
@@ -225,7 +232,8 @@ public:
       distance_moved = distance;
     }
 
-    bool trigger( int s = 1, double v = -std::numeric_limits<double>::min(), double c = -1.0, timespan_t d = timespan_t::min() ) override
+    bool trigger( int stacks = 1, double value = -std::numeric_limits<double>::min(), double chance = -1.0,
+                  timespan_t /*duration*/ = timespan_t::min() ) override
     {
       if ( distance_moved > 0 )
       {
@@ -247,7 +255,7 @@ public:
           p->current.movement_direction = movement_direction_type::AWAY;
         }
 
-        return base_movement->trigger( s, v, c, this->buff_duration() );
+        return base_movement->trigger( stacks, value, chance, this->buff_duration() );
       }
 
       return false;
@@ -357,6 +365,10 @@ public:
     propagate_const<buff_t*> fists_of_flowing_momentum;
     propagate_const<buff_t*> fists_of_flowing_momentum_fof;
     propagate_const<buff_t*> brewmasters_rhythm;
+
+    // T30 Set Bonus
+    propagate_const<buff_t*> leverage;
+    propagate_const<buff_t*> leverage_helper;
   } buff;
 
 public:
@@ -419,6 +431,11 @@ public:
     propagate_const<proc_t*> tranquil_spirit_expel_harm;
     propagate_const<proc_t*> tranquil_spirit_goto;
     propagate_const<proc_t*> xuens_battlegear_reduction;
+
+    // Tier 30
+    propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
+    propagate_const<proc_t *> elusive_brawler_preserved;
+
   } proc;
 
   struct talents_t
@@ -492,22 +509,22 @@ public:
       // Row 1
       player_talent_t keg_smash;
       // Row 2
-      player_talent_t stagger;
-      // Row 3
       player_talent_t purifying_brew;
       player_talent_t shuffle;
+      // Row 3
+      player_talent_t staggering_strikes;
+      player_talent_t gift_of_the_ox;
+      player_talent_t spirit_of_the_ox;
+      player_talent_t quick_sip;
       // Row 4
       player_talent_t hit_scheme;
-      player_talent_t gift_of_the_ox;
       player_talent_t healing_elixir;
-      player_talent_t quick_sip;
       player_talent_t rushing_jade_wind;
       player_talent_t special_delivery;
       // 8 Required
       // Row 5
       player_talent_t celestial_flames;
       player_talent_t celestial_brew;
-      player_talent_t staggering_strikes;
       player_talent_t graceful_exit;
       player_talent_t zen_meditation;
       player_talent_t clash;
@@ -606,7 +623,7 @@ public:
       player_talent_t gift_of_the_celestials;
       player_talent_t focused_thunder;
       player_talent_t upwelling;
-      player_talent_t bonedust_brew;
+//      player_talent_t bonedust_brew;
       // Row 9
       player_talent_t ancient_concordance;
       player_talent_t resplendent_mist;
@@ -683,6 +700,7 @@ public:
       player_talent_t attenuation;
       player_talent_t dust_in_the_wind;
       player_talent_t skyreach;
+      player_talent_t skytouch;
       player_talent_t invokers_delight;
       player_talent_t way_of_the_fae;
       player_talent_t faeline_harmony;
@@ -731,6 +749,7 @@ public:
     const spell_data_t* leather_specialization_brm;
     const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
+    const spell_data_t* stagger;
     const spell_data_t* touch_of_death_3_brm;
     const spell_data_t* two_hand_adjustment_brm;
 
@@ -857,6 +876,8 @@ public:
     const spell_data_t* spirit_of_the_crane;
     const spell_data_t* totm_bok_proc;
     const spell_data_t* zen_pulse_heal;
+    const spell_data_t* zen_pulse_echo_damage;
+    const spell_data_t* zen_pulse_echo_heal;
 
     // Windwalker
     const spell_data_t* bok_proc;
@@ -890,12 +911,23 @@ public:
     // Tier 29
     const spell_data_t* kicks_of_flowing_momentum;
     const spell_data_t* fists_of_flowing_momentum;
+
+    // Tier 30
+    const spell_data_t *shadowflame_nova;
+    const spell_data_t *shadowflame_spirit;
+    const spell_data_t *shadowflame_spirit_summon;
+    const spell_data_t* leverage;
+
   } passives;
 
   // RPPM objects
   struct rppms_t
   {
     real_ppm_t* bountiful_brew;
+    real_ppm_t* spirit_of_the_ox;
+
+    // Tier 30
+    real_ppm_t *shadowflame_spirit;
   } rppm;
 
   struct pets_t
@@ -908,6 +940,7 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
+    spawner::pet_spawner_t<pet_t, monk_t> spirit_of_forged_vermillion;
 
     pet_t* bron;
 
@@ -1036,7 +1069,7 @@ public:
   void trigger_bonedust_brew( const action_state_t* );
   void trigger_keefers_skyreach( action_state_t* );
   void trigger_mark_of_the_crane( action_state_t* );
-  void trigger_empowered_tiger_lightning( action_state_t*, bool, bool );
+  void trigger_empowered_tiger_lightning( action_state_t*, bool );
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
@@ -1057,7 +1090,8 @@ public:
   void retarget_storm_earth_and_fire_pets() const;
 
   void bonedust_brew_assessor( action_state_t* );
-  void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
+  void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability, bool combo_strike );
+  void trigger_spirit_of_forged_vermillion( action_state_t *s );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );

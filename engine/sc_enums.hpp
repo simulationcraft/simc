@@ -68,6 +68,7 @@ constexpr auto MAX_ARTIFACT_RELIC = 4;
 // relic's own item level
 constexpr auto RELIC_ILEVEL_BONUS_CURVE = 1718;
 
+constexpr auto POTION_COOLDOWN_CATEGORY    = 4;     /// "Item - Combat Cons. (Potion)" category (for shared CD)
 constexpr auto ITEM_TRINKET_BURST_CATEGORY = 1141;  /// Trinket On-Use effect default category (for shared CD)
 constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of gem slots in any specific item
 
@@ -164,6 +165,9 @@ enum class buff_refresh_behavior
 
   // Refresh to given duration plus ongoing tick time
   TICK,
+
+  // Refresh to given duration or remaining duration, whichever is greater
+  MAX,
 
   // Refresh to duration returned by the custom callback
   CUSTOM,
@@ -314,6 +318,7 @@ enum pet_e
   PET_TURTLE,
   PET_WARP_STALKER,
   PET_WORM,
+  PET_DUCK,
   //PET_RIVERBEAST,
 
   PET_TENACITY_TYPE,
@@ -686,6 +691,8 @@ enum school_e
   SCHOOL_MAX
 };
 
+const school_e SCHOOL_RADIANT = SCHOOL_HOLYFIRE;
+
 enum school_mask_e
 {
   SCHOOL_MASK_PHYSICAL = 0x01,
@@ -848,6 +855,8 @@ enum set_bonus_type_e
   T29_HORIZON_STRIDERS_GARMENTS,
   T29_AZUREWEAVE_VESTMENTS,
   T29_WOVEN_CHRONOCLOTH,
+  T29_RAGING_TEMPESTS,
+  T30,
   SET_BONUS_MAX
 };
 
@@ -1051,6 +1060,7 @@ enum scale_metric_e
   SCALE_METRIC_TMI,
   SCALE_METRIC_ETMI,
   SCALE_METRIC_DEATHS,
+  SCALE_METRIC_TIME,
   SCALE_METRIC_MAX
 };
 

@@ -260,6 +260,7 @@ bool dbc::valid_gem_color( unsigned color )
     case SOCKET_COLOR_SHARD_OF_DOMINATION:
     case SOCKET_COLOR_CRYSTALLIC:
     case SOCKET_COLOR_TINKER:
+    case SOCKET_COLOR_PRIMORDIAL:
       return true;
     default:
       return false;

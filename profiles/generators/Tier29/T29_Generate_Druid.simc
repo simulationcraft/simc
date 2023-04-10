@@ -4,79 +4,78 @@ race=troll
 spec=balance
 role=spell
 position=back
-talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQSiIQChkkIJSDaJSSSokgI5AJ0SKRCRSDgA
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlAIJJJBJhgkEJRKAkkkQJJEJJhWSJCBNACNAA
 
-head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192961
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782/8793,gem_id=192948/192948/192988
-shoulders=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
+head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192988
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8793,ilevel=418,gem_id=192961/192961/192961
+shoulder=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
-chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498,gem_id=192961
+chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant_id=6625
+wrist=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498/8780,gem_id=192961
 hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
-waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300/6935,gem_id=192961
-legs=lost_landcallers_leggings,id=200355,bonus_id=4800/4786/1498,enchant=frozen_spellthread_3
-feet=blackwater_boots,id=109799,ilevel=421
-finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=418,enchant=devotion_of_mastery_3,gem_id=192961
-finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,enchant=devotion_of_haste_3,gem_id=192961
+waist=swordsingers_belt,id=134287,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192961
+legs=lost_landcallers_leggings,id=200355,bonus_id=6652/7981/8095/8827/1507,enchant_id=6541
+feet=lifebound_boots,id=193398,bonus_id=8836/8840/8902/8802/8846/8793,enchant_id=6607,crafted_stats=36/49
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8840/8902/8780/8802/8793/8846/8175/8960,enchant_id=6562,gem_id=192961,crafted_stats=49/32
+finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant_id=6562
 trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
-main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
+main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant_id=6643
 
 save=T29_Druid_Balance.simc
 
-# druid="T29_Druid_Feral"
-# source=default
-# spec=feral
-# level=70
-# race=night_elf
-# timeofday=day
-# role=attack
-# position=back
-# professions=alchemy=1/engineering=1
-# talents=2331122
-# druid.owlweave_cat=0
-
-# head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
-# neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
-# shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
-# back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
-# chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
-# wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588,gem_id=173129
-# hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
-# waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
-# legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
-# feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
-# finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=the_first_sigil,id=188271,bonus_id=1524
-# trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
-# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
-
-# save=T29_Druid_Feral.simc
+druid="T29_Druid_Feral"
+source=default
+level=70
+race=night_elf
+timeofday=day
+position=back
+role=attack
+spec=feral
+talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICIikkkUSJSKJSkkAAAAAAQBgEBBgkkkIJhSOAlEHAAAAAAASAAC
 
 
-# druid=T29_Druid_Guardian
-# level=70
-# race=tauren
-# role=tank
-# position=front
-# spec=guardian
-# talents=1013321
+head=flaring_cowl,id=193494,ilevel=418,gem_id=192958,crafted_stats=32/49
+neck=wolfstride_pendant,id=133633,ilevel=421,gem_id=192988/192958/192958,crafted_stats=32/49
+shoulders=lost_landcallers_mantle,id=200356,bonus_id=7977/8807
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=8840/8836/8902/1508,crafted_stats=49/32
+chest=lost_landcallers_robes,id=200351,ilevel=421,enchant=waking_stats_3,enchant_id=6625
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=7977/8807/1808,gem_id=192958
+hands=lost_landcallers_claws,id=200353,ilevel=421
+waist=bjorns_hunting_strap,id=136776,bonus_id=1808,ilevel=421,gem_id=192958
+legs=lost_landcallers_leggings,id=200355,ilevel=424,enchant=fierce_armor_kit_3,enchant_id=6490
+feet=slimy_expulsion_boots,id=193451,ilevel=418
+finger1=seal_of_filial_duty,id=195526,ilevel=431,gem_id=192958,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,ilevel=421,gem_id=192958,enchant=devotion_of_critical_strike_3
+trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=7977/8807
+main_hand=obsidian_goaltending_spire,id=193723,bonus_id=7977/6652/8813/1594/8767/5894,enchant=sophic_devotion_3,enchant=sophic_devotion_3
 
-# head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
-# neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
-# shoulder=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
-# chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
-# wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
-# hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
-# waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
-# legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
-# feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
-# finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
-# trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
-# trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
-# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
 
-# save=T29_Druid_Guardian.simc
+save=T29_Druid_Feral.simc
+
+druid=T29_Druid_Guardian
+spec=guardian
+level=70
+race=highmountain_tauren
+role=tank
+position=front
+talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJRKJRikkEIkoBAkEEIQSSSSSkC0ScAAAAAAARARTAA
+
+head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/36
+shoulders=lost_landcallers_mantle,id=200356,bonus_id=7977/8807
+back=goldscar_pelt,id=133639,bonus_id=6652/8811/8812/6808/4786/3300
+chest=lost_landcallers_robes,id=200351,ilevel=421,enchant=waking_stats_3
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=7977/8807,gem_id=192958
+hands=lost_landcallers_claws,id=200353,ilevel=421
+waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925
+legs=lost_landcallers_leggings,id=200355,ilevel=424,enchant=frosted_armor_kit_3
+feet=lost_landcallers_moccasins,id=200352,enchant_id=6606,bonus_id=6808/4786/1504,enchant_id=6606
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1594/657/3178/7981,gem_id=192958,enchant=devotion_of_critical_strike_3
+trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
+trinket2=manic_grieftorch,id=194308,bonus_id=7977/8807
+main_hand=crux_of_blind_faith,id=201995,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
+
+save=T29_Druid_Guardian.simc

@@ -567,7 +567,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     sim.add_chart_data( raid_dps );
   }
 
-  if ( sim.num_enemies > 1 )
+  if ( sim.enemy_targets > 1 )
   {
     highchart::bar_chart_t priority_dps( "priority_dps", sim );
     if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
@@ -1238,6 +1238,8 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
 {
   os << "<title>Simulationcraft Results</title>\n";
   os << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+
+  os << "<meta name=\"color-scheme\" content=\"light dark\">\n";
 
   // Default target for links. Lets links to wowhead/armory escape iframes (wowhead does not display in iframes at all)
   // Should have no effect on GUI reports or directly viewing the HTML report in a browser

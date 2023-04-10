@@ -169,6 +169,7 @@ struct sim_t : private sc_thread_t
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   int keystone_level; // keystone difficulty for scaling purposes
   int keystone_pct_hp;     // keystone mob health percent
+  bool dungeon_route_smart_targeting;            // sets whether the list of mobs will be sorted by their hp
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.
@@ -491,6 +492,26 @@ struct sim_t : private sc_thread_t
     double allied_wristguards_ally_leave_chance = 0.05;
     // Corrupting Rages Average Uptime
     double corrupting_rage_uptime = 0.7;
+    // Hood of Surging Time proc chance when the period is set
+    double hood_of_surging_time_chance = 0.0;
+    // Hood of Surging Time proc period
+    timespan_t hood_of_surging_time_period = 5_s;
+    // Hood of Surging Time stacks to grant when the period is set
+    unsigned int hood_of_surging_time_stacks = 1;
+    // Ruby Whelp Shell training levels
+    std::string ruby_whelp_shell_training = "";
+    // A list of context-aware procs for Ruby Whelp Shell
+    std::string ruby_whelp_shell_context = "";
+    // Uptime of the mastery buff(Zone of Focus) of Blue Silken Lining (>90% HP)
+    double blue_silken_lining_uptime = 0.7;
+    // Interval between checking blue_silken_lining_uptime
+    timespan_t blue_silken_lining_update_interval = 5_s;
+    // Enable or Disable Seething Black Dragonscale's damage
+    bool seething_black_dragonscale_damage = false;
+    // Set the dragonflight for Glimmering Chromatic Orb
+    std::string glimmering_chromatic_orb_dragonflight = "obsidian";
+    // Set the allies dragonflights for Glimmering Chromatic Orb
+    std::string glimmering_chromatic_orb_allies = "";
   } dragonflight_opts;
 
   // Auras and De-Buffs

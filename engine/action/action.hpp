@@ -8,6 +8,7 @@
 #include "config.hpp"
 #include "dbc/data_definitions.hh"
 #include "player/target_specific.hpp"
+#include "sim/cooldown_waste_data.hpp"
 #include "sc_enums.hpp"
 #include "util/timespan.hpp"
 #include "util/generic.hpp"
@@ -236,6 +237,10 @@ public:
 
   /// Used with tick_action, tells tick_action to update state on every tick.
   bool dynamic_tick_action;
+
+  /// Track time spent with fully charged cooldown before the action is used.
+  bool track_cd_waste;
+  cooldown_waste_data_t* cd_waste_data;
 
 
   /// Did a channel action have an interrupt_immediate used to cancel it on it
@@ -768,6 +773,8 @@ public:
 
   virtual bool usable_moving() const;
 
+  virtual bool usable_precombat() const;
+
   virtual timespan_t composite_dot_duration( const action_state_t* ) const;
 
   virtual double attack_direct_power_coefficient( const action_state_t* ) const
@@ -1026,6 +1033,8 @@ public:
   virtual void acquire_target( retarget_source /* event */, player_t* /* context */, player_t* /* candidate_target */ );
 
   virtual void set_target( player_t* target );
+
+  virtual player_t* get_expression_target();
 
   virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
 

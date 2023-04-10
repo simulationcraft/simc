@@ -414,7 +414,9 @@ struct stat_buff_t : public buff_t
   double value() override { stack(); return stats[ 0 ].current_value; }
 
   stat_buff_t* add_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
+  stat_buff_t* set_stat( stat_e s, double a, const stat_check_fn& c = stat_check_fn() );
   stat_buff_t* add_stat_from_effect( size_t i, double a, const stat_check_fn& c = stat_check_fn() );
+  stat_buff_t* set_stat_from_effect( size_t i, double a, const stat_check_fn& c = stat_check_fn() );
 
   stat_buff_t( actor_pair_t q, util::string_view name );
   stat_buff_t( actor_pair_t q, util::string_view name, const spell_data_t*, const item_t* item = nullptr );
@@ -422,14 +424,15 @@ struct stat_buff_t : public buff_t
 
 struct absorb_buff_t : public buff_t
 {
-  using absorb_eligibility = std::function<bool(const action_state_t*)>;
+  using absorb_eligibility = std::function<bool( const action_state_t* )>;
   school_e absorb_school;
   stats_t* absorb_source;
   gain_t*  absorb_gain;
-  bool     high_priority; // For tank absorbs that should explicitly "go first"
+  bool     high_priority;  // For tank absorbs that should explicitly "go first"
+  bool     cumulative;     // when true, each refresh() will add to the existing shield value
   absorb_eligibility eligibility; // A custom function whose result determines if the attack is eligible to be absorbed.
 
-  absorb_buff_t(actor_pair_t q, util::string_view name);
+  absorb_buff_t( actor_pair_t q, util::string_view name );
   absorb_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item = nullptr );
 protected:
 
@@ -439,6 +442,7 @@ protected:
 
 public:
   void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
+  void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 
   virtual double consume( double amount );
@@ -447,6 +451,7 @@ public:
   absorb_buff_t* set_absorb_school( school_e );
   absorb_buff_t* set_absorb_high_priority( bool );
   absorb_buff_t* set_absorb_eligibility( absorb_eligibility );
+  absorb_buff_t* set_cumulative( bool );
 };
 
 struct cost_reduction_buff_t : public buff_t

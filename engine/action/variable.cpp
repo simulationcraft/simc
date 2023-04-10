@@ -25,6 +25,8 @@ variable_t::variable_t(player_t* player, util::string_view options_str) :
   harmful = proc = callbacks = may_miss = may_crit = may_block = may_parry = may_dodge = false;
   trigger_gcd = timespan_t::zero();
 
+  target = player; // Does not require a hostile target
+
   std::string operation_;
   double default_ = 0;
   timespan_t delay_ = timespan_t::zero();

@@ -4,7 +4,9 @@ race=goblin
 spec=blood
 role=tank
 position=front
-talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJRgkEJiEBJikIkkkEBAAAAAQikEEJNJiEAAgIJJJAAAA
+talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJRgkEJiEBJikIkkkEBAAAAAkIJBRSTiIBAAISSSCAAAA
+
+flask=phial_of_static_empowerment_3
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/1808,gem_id=192925
 neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8801/8793,ilevel=418,gem_id=192991/192925/192925,crafted_stats=32/36
@@ -31,20 +33,22 @@ race=blood_elf
 spec=frost
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAgkkIBSQkkkEiISSkEEQiIRSSSSSSa5AAAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIRkIJJJJJplAAAAAAAAAAAAA
 
-head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192922
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192958/192961/192922,crafted_stats=32/49
+flask=phial_of_static_empowerment_3
+
+head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192945/192945/192945,crafted_stats=36/32
 shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300
 chest=breastplate_of_the_haunted_frostbrood,id=200405,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192922
+wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192945
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
 waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8791/8932/8960/1498,gem_id=192958
 legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,enchant=fierce_armor_kit_3
-feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
-finger1=platinum_star_band,id=193708,bonus_id=6808/4786/1643/6935,gem_id=192922,enchant=devotion_of_mastery_3
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192922,enchant=devotion_of_mastery_3
+feet=valkyra_protector_greatboots,id=136772,bonus_id=6652/8811/8812/6808/4786/3300
+finger1=unstable_arcane_loop,id=193633,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,gem_id=192922,enchant=devotion_of_mastery_3
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192945,enchant=devotion_of_mastery_3
 trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=strike_twice,id=193700,bonus_id=6652/1643/8767,enchant=rune_of_the_fallen_crusader
@@ -58,7 +62,9 @@ race=tauren
 spec=frost
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAkEBASSiEIBRSSSIiIJRSSAkQSCQSSSKJBAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAISAkQSCJtIBhkkECJiERCgESSEJJJJpkEAAAAAAAAAAAAA
+
+flask=phial_of_static_empowerment_3
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192982
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192922/192958/192958,crafted_stats=36/49
@@ -84,7 +90,9 @@ race=tauren
 spec=frost
 role=attack
 position=back
-talents=BsPAAAAAAAAAAAAAAAAAAAAAAcgEBASSiEIBRSSSIiIJRSEEkEJJAJJJpkEAAAAAAAAAAAAA
+talents=BsPAAAAAAAAAAAAAAAAAAAAAAICAJkkQSLSQIJJhQiIRkAIJSSEJJJJpkEAAAAAAAAAAAAA
+
+flask=phial_of_static_empowerment_3
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192982
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192922/192948/192958,crafted_stats=36/49
@@ -111,22 +119,24 @@ level=70
 race=troll
 role=attack
 position=back
-talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJJBSAJJRIJSSSkAAAAAAAAAAKJJhIAAgEpItEJJJSC
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
+
+flask=phial_of_static_empowerment_3
 
 head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192961/192948/192948,crafted_stats=36/49
-shoulders=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
+shoulder=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
 back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
 chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=waking_stats_3
-wrists=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
+wrist=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
 hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
-waist=primal_molten_greatbelt,id=190501,bonus_id=8836/8840/8902/8802/8793/8932/8960/1498,gem_id=192948
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/7936/8802/8846,gem_id=192948
 legs=greaves_of_the_haunted_frostbrood,id=200409,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
 feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
-finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_critical_strike_3
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192948,enchant=devotion_of_critical_strike_3
+finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant=devotion_of_haste_3
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
-trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 save=T29_Death_Knight_Unholy.simc

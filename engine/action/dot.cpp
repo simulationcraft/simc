@@ -375,7 +375,7 @@ struct dot_expr_t : public expr_t
     if ( !dynamic )
       return static_dot;
 
-    player_t* dot_target = source_action->target;
+    player_t* dot_target = source_action->get_expression_target();
 
     action->player->get_target_data( dot_target );
 
@@ -861,10 +861,11 @@ void dot_t::start( timespan_t duration )
   state->original_x = target->x_position;
   state->original_y = target->y_position;
 
+  source->add_active_dot( current_action->internal_id );
+
   schedule_tick();
   check_tick_zero( true );
 
-  source->add_active_dot( current_action->internal_id );
 }
 
 /* Precondition: ticking == true

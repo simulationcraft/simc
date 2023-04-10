@@ -414,17 +414,67 @@ struct pull_event_t final : raid_event_t
     }
   };
 
+  struct redistribute_event_t : public event_t
+  {
+    pull_event_t* pull;
+
+    redistribute_event_t( pull_event_t* pull_ )
+      : event_t( *pull_->sim, 1.0_s ),
+        pull( pull_ )
+    { }
+
+    const char* name() const override
+    {
+      return "redistribute_event_t";
+    }
+
+    void execute() override
+    {
+      pull->redistribute_event = nullptr;
+
+      double max_hp     = 0.0;
+      double current_hp = 0.0;
+
+      auto active_adds = pull->adds_spawner->active_pets();
+      for ( auto add : active_adds )
+      {
+        max_hp += add->resources.initial[ RESOURCE_HEALTH ];
+        current_hp += add->resources.current[ RESOURCE_HEALTH ];
+      }
+
+      double pct = current_hp / max_hp;
+
+      for ( auto add : active_adds )
+      {
+        double new_hp = pct * add->resources.initial[ RESOURCE_HEALTH ];
+        double old_hp = add->resources.current[ RESOURCE_HEALTH ];
+        if ( new_hp > old_hp )
+        {
+          add->resource_gain( RESOURCE_HEALTH, new_hp - old_hp );
+        }
+        else if ( new_hp < old_hp )
+        {
+          add->resource_loss( RESOURCE_HEALTH, old_hp - new_hp );
+        }
+      }
+
+      pull->redistribute_event = make_event<redistribute_event_t>( sim(), pull );
+    }
+  };
+
   player_t* master;
   std::string enemies_str;
   timespan_t delay;
   timespan_t spawn_time;
   int pull;
   bool bloodlust;
+  bool shared_health;
   timespan_t mark_duration;
   bool spawned;
   bool demised;
   event_t* spawn_event;
   event_t* thundering_event;
+  event_t* redistribute_event;
 
   struct spawn_parameter
   {
@@ -444,15 +494,18 @@ struct pull_event_t final : raid_event_t
       spawn_time( 0_s ),
       pull( 0 ),
       bloodlust( false ),
+      shared_health( false ),
       mark_duration( 15_s ),
       spawned( false ),
       spawn_event( nullptr ),
-      thundering_event( nullptr )
+      thundering_event( nullptr ),
+      redistribute_event( nullptr )
   {
     add_option( opt_string( "enemies", enemies_str ) );
     add_option( opt_timespan( "delay", delay ) );
     add_option( opt_int( "pull", pull ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
+    add_option( opt_bool( "shared_health", shared_health ) );
     add_option( opt_timespan( "mark_duration", mark_duration ) );
 
     parse_options( options_str );
@@ -464,7 +517,7 @@ struct pull_event_t final : raid_event_t
 
     cooldown = sim->max_time * 2;
 
-    mark_duration = clamp<timespan_t>(mark_duration, 0_s, 15_s);
+    mark_duration = clamp<timespan_t>( mark_duration, 0_s, 15_s );
 
     master = sim->target_list.data().front();
     if ( !master )
@@ -490,7 +543,7 @@ struct pull_event_t final : raid_event_t
       auto enemy_splits = util::string_split<util::string_view>( enemies_str, "|" );
       if ( enemy_splits.empty() )
       {
-        throw std::invalid_argument( fmt::format( "{} at least one enmy is required.", *this ) );
+        throw std::invalid_argument( fmt::format( "{} at least one enemy is required.", *this ) );
       }
       else
       {
@@ -508,9 +561,9 @@ struct pull_event_t final : raid_event_t
             if ( util::starts_with( splits[ 0 ], "BOSS_" ) )
               spawn.boss = true;
 
-            spawn.name = splits[ 0 ];
+            spawn.name   = splits[ 0 ];
             spawn.health = util::to_double( splits[ 1 ] );
-            
+
             if ( splits.size() > 2 )
               spawn.race = util::parse_race_type( util::tokenize_fn( splits[ 2 ] ) );
 
@@ -518,10 +571,13 @@ struct pull_event_t final : raid_event_t
           }
         }
 
-        // Sort adds by descending HP order to improve retargeting logic
-        range::sort( spawn_parameters, []( const spawn_parameter a, const spawn_parameter b ) {
-          return a.health > b.health;
-        } );
+        // Sort adds by descending HP order to improve retargeting logic if the dungeon_route_smart_targeting option is
+        // set to true
+        if ( sim->dungeon_route_smart_targeting )
+        {
+          range::sort( spawn_parameters,
+                       []( const spawn_parameter a, const spawn_parameter b ) { return a.health > b.health; } );
+        }
       }
     }
   }
@@ -535,7 +591,7 @@ struct pull_event_t final : raid_event_t
         return;
     }
 
-    if ( demised )
+    if ( demised || !spawned )
       return;
 
     demised = true;
@@ -543,6 +599,8 @@ struct pull_event_t final : raid_event_t
 
     timespan_t thundering_timer = thundering_event->remains();
     event_t::cancel(thundering_event);
+
+    event_t::cancel( redistribute_event );
 
     // find the next pull and spawn it
     if ( auto next = next_pull() )
@@ -667,6 +725,7 @@ struct pull_event_t final : raid_event_t
             continue;
 
           p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
         }
       }
       else
@@ -675,6 +734,7 @@ struct pull_event_t final : raid_event_t
         if ( p )
         {
           p->buffs.bloodlust->trigger();
+          p->buffs.exhaustion->trigger();
         }
       }
     }    
@@ -699,6 +759,9 @@ struct pull_event_t final : raid_event_t
       }
     }
 
+    if ( shared_health )
+      redistribute_event = make_event<redistribute_event_t>( *sim, this );
+
     sim->print_log( "Spawned Pull {}: {} mobs with {} total health, {:.1f}s delay from previous",
                     pull, adds.size(), total_health, delay.total_seconds() );
 
@@ -711,6 +774,7 @@ struct pull_event_t final : raid_event_t
 
     spawned = false;
     demised = false;
+    redistribute_event = nullptr;
   }
 };
 
@@ -1507,31 +1571,6 @@ struct position_event_t : public raid_event_t
   }
 };
 
-std::unique_ptr<expr_t> parse_player_if_expr( player_t& player, util::string_view expr_str )
-{
-  if ( expr_str.empty() )
-    return nullptr;
-
-  auto tokens = expression::parse_tokens( nullptr, expr_str );
-
-  if ( player.sim->debug )
-    expression::print_tokens( tokens, player.sim );
-
-  if ( !expression::convert_to_rpn( tokens ) )
-  {
-    player.sim->error( "{}: Unable to convert expression {} into RPN\n", player.name(), expr_str );
-    return nullptr;
-  }
-
-  if ( player.sim->debug )
-    expression::print_tokens( tokens, player.sim );
-
-  if ( auto e = expression::build_player_expression_tree( player, tokens, false ) )
-    return e;
-
-  throw std::invalid_argument( "No player expression found" );
-}
-
 raid_event_t* get_next_raid_event( const std::vector<raid_event_t*>& matching_events )
 {
   raid_event_t* result     = nullptr;
@@ -1731,7 +1770,7 @@ void raid_event_t::start()
     {
       try
       {
-        expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+        expr_uptr = expr_t::parse( p, player_if_expr_str, false );
       }
       catch ( const std::exception& e )
       {
@@ -2232,8 +2271,6 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
       return 0.0;
 
     pull_event_t* next_pull = current_pull->next_pull();
-    if ( !next_pull )
-      return 0.0;
 
     if ( filter == "in" )
     {

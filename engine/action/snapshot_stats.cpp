@@ -23,6 +23,7 @@ snapshot_stats_t::snapshot_stats_t(player_t* player, util::string_view options_s
   parse_options(options_str);
   trigger_gcd = timespan_t::zero();
   harmful = false;
+  target = player;
 
   if (role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL)
   {

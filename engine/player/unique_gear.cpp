@@ -4039,6 +4039,39 @@ struct item_cooldown_expr_t : public item_effect_expr_t
   }
 };
 
+struct item_cast_time_expr_t : public item_effect_expr_t
+{
+  double v = 0;
+
+  item_cast_time_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression ) :
+    item_effect_expr_t( player, slots, full_expression ), v( 0 )
+  {
+    for (auto e : effects)
+    {
+      if ( e -> execute_action )
+      {
+        if ( e->execute_action->channeled )
+        {
+          v = e->execute_action->dot_duration.total_seconds();
+        }
+        else
+        {
+          v = e->execute_action->execute_time().total_seconds();
+        }
+        break;
+      }
+    }
+  }
+
+  bool is_constant() override
+  {
+    return true;
+  }
+
+  double evaluate() override
+  { return v; }
+};
+
 struct item_ready_expr_t : public item_effect_base_expr_t
 {
   item_ready_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression ) :
@@ -4325,6 +4358,11 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )
   {
     return std::make_unique<item_has_use_buff_expr_t>( player, slots, name_str );
+  }
+
+  if ( util::str_compare_ci( splits[ ptype_idx ], "cast_time" ) )
+  {
+    return std::make_unique<item_cast_time_expr_t>( player, slots, name_str );
   }
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
@@ -4839,6 +4877,7 @@ void unique_gear::register_hotfixes()
   register_hotfixes_legion();
   register_hotfixes_bfa();
   shadowlands::register_hotfixes();
+  dragonflight::register_hotfixes();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )

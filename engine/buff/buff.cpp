@@ -36,17 +36,20 @@ struct buff_expr_t : public expr_t
   target_specific_t<buff_t> specific_buff;
 
   buff_expr_t( util::string_view n, util::string_view bn, action_t* a, buff_t* b )
-    : expr_t( get_full_expression_name( n, bn ) ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false )
-  { }
+    : expr_t( get_full_expression_name( n, bn ) ), buff_name( bn ), action( a ),
+    static_buff( b ), specific_buff( false )
+  {
+  }
 
   virtual buff_t* create() const
   {
     assert( action && "Cannot create dynamic buff expressions without a action." );
 
-    action->player->get_target_data( action->target );
-    auto buff = buff_t::find( action->target, buff_name, action->player );
+    player_t* target = action->get_expression_target();
+    action->player->get_target_data( target );
+    auto buff = buff_t::find( target, buff_name, action->player );
     if ( !buff )
-      buff = buff_t::find( action->target, buff_name, action->target );  // Raid debuffs
+      buff = buff_t::find( target, buff_name, target );  // Raid debuffs
 
     if ( !buff )
     {
@@ -78,7 +81,9 @@ struct buff_expr_t : public expr_t
   {
     if ( static_buff )
       return static_buff;
-    buff_t*& buff = specific_buff[ action->target ];
+
+    player_t* target = action->get_expression_target();
+    buff_t*& buff = specific_buff[ target ];
     if ( !buff )
     {
       buff = create();
@@ -1443,6 +1448,11 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
         //sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
         break;
 
+      case P_TICK_TIME:
+        set_period( buff_period * ( 1.0 + effect.percent() ) );
+        sim->print_debug ( "{} tick time modified by {}%", *this, effect.base_value() );
+        break;
+
       case P_EFFECT_1:
         if ( default_value_effect_idx == 1 )
           apply_percent_effect_modifier( effect );
@@ -1664,6 +1674,8 @@ timespan_t buff_t::refresh_duration( timespan_t new_duration ) const
     }
     case buff_refresh_behavior::EXTEND:
       return remains() + new_duration;
+    case buff_refresh_behavior::MAX:
+      return std::max( remains(), new_duration );
     case buff_refresh_behavior::CUSTOM:
       return refresh_duration_callback( this, new_duration );
     default:
@@ -2516,11 +2528,11 @@ void buff_t::expire( timespan_t delay )
   update_stack_uptime_array( sim->current_time(), old_stack );
   last_stack_change = sim->current_time();
 
-  if ( sim->target->resources.base[ RESOURCE_HEALTH ] == 0 || sim->target->resources.current[ RESOURCE_HEALTH ] > 0 )
-    if ( !overridden && constant_behavior != buff_constant_behavior::ALWAYS_CONSTANT )
-    {
-      constant = false;
-    }
+  if ( !overridden && constant_behavior != buff_constant_behavior::ALWAYS_CONSTANT &&
+       player && !player->is_sleeping() )
+  {
+    constant = false;
+  }
 
   if ( reactable && player && player->ready_type == READY_TRIGGER )
   {
@@ -2658,7 +2670,7 @@ void buff_t::analyze()
     }
     else
     {
-      uptime_array.adjust( source->get_owner_or_self()->collected_data.fight_length );
+      uptime_array.adjust( player->get_owner_or_self()->collected_data.fight_length );
     }
   }
 }
@@ -2994,29 +3006,43 @@ stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, const stat_check_fn& c )
   }
   manual_stats_added = true;
 
-  stats.emplace_back( s, a, c );
+  auto it = range::find( stats, s, &buff_stat_t::stat );
+  if ( it != stats.end() )
+  {
+    it->amount += a;
+    it->check_func = std::move( c );
+  }
+  else
+  {
+    stats.emplace_back( s, a, c );
+  }
 
   return this;
 }
 
+stat_buff_t* stat_buff_t::set_stat( stat_e s, double a, const stat_check_fn& c )
+{
+  manual_stats_added = false;
+
+  return add_stat( s, a, c );
+}
+
 stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_check_fn& c )
 {
-  auto do_error = [ this, i ]( std::string_view msg ) {
+  auto do_error = [ this, i ]( std::string_view msg ) -> stat_buff_t* {
     sim->error( "{} cannot add stat from effect#{}: {}", name(), i, msg );
+    return this;
   };
 
   if ( i > data().effect_count() )
-  {
-    do_error( "index out of bounds" );
-    return this;
-  }
+    return do_error( "index out of bounds" );
 
   auto eff = data().effectN( i );
-  stat_e stat = STAT_NONE;
 
   if ( eff.subtype() == A_MOD_STAT )
   {
     auto misc = eff.misc_value1();
+    stat_e stat = STAT_NONE;
 
     if ( misc >= 0 )
       stat = static_cast<stat_e>( misc + 1 );
@@ -3024,19 +3050,30 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
       stat = STAT_ALL;
     else if ( misc == -2 )
       stat = player->convert_hybrid_stat( STAT_STR_AGI_INT );
+
+    if ( stat != STAT_NONE )
+      return add_stat( stat, a, c );
   }
   else if ( eff.subtype() == A_MOD_RATING )
   {
-    stat = util::translate_rating_mod( data().effectN( i ).misc_value1() );
+    auto mods = util::translate_all_rating_mod( data().effectN( i ).misc_value1() );
+    if ( !mods.empty() )
+    {
+      for ( const auto& s : mods )
+        add_stat( s, a, c );
+
+      return this;
+    }
   }
 
-  if ( stat == STAT_NONE )
-  {
-    do_error( "STAT_NONE" );
-    return this;
-  }
+  return do_error( "STAT_NONE" );
+}
 
-  return add_stat( stat, a, c );
+stat_buff_t* stat_buff_t::set_stat_from_effect( size_t i, double a, const stat_check_fn& c )
+{
+  manual_stats_added = false;
+
+  return add_stat_from_effect( i, a, c );
 }
 
 void stat_buff_t::bump( int stacks, double /* value */ )
@@ -3229,6 +3266,7 @@ absorb_buff_t::absorb_buff_t( actor_pair_t q, util::string_view name, const spel
     absorb_source(),
     absorb_gain(),
     high_priority( false ),
+    cumulative( false ),
     eligibility()
 {
   assert( player && "Absorb Buffs only supported for player!" );
@@ -3247,6 +3285,14 @@ void absorb_buff_t::start( int stacks, double value, timespan_t duration )
           "Attempting to add absorb buff to absorb_buffs list twice" );
 
   player->absorb_buff_list.push_back( this );
+}
+
+void absorb_buff_t::refresh( int stacks, double value, timespan_t duration )
+{
+  if ( cumulative )
+    value += current_value;
+
+  buff_t::refresh( stacks, value, duration );
 }
 
 void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
@@ -3338,6 +3384,12 @@ absorb_buff_t* absorb_buff_t::set_absorb_eligibility( absorb_eligibility e )
   eligibility = std::move(e);
   // TODO: check if player absorb_priority and instant_absorb_list could be automatically
   // populated from here somehow.
+  return this;
+}
+
+absorb_buff_t* absorb_buff_t::set_cumulative( bool c )
+{
+  cumulative = c;
   return this;
 }
 

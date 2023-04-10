@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -118,7 +118,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1038628)  : Apply Aura (6) | Unknown(531)
+#2 (id=1038628)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
 
@@ -626,7 +626,7 @@ Range            : 40 yards
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.1 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Improved Death Coil (377580 effects: #1, #2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2, #3), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Improved Death Coil (377580 effects: #1, #2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Family Flags     : 13, 43, 64, 78
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -639,7 +639,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Always Hit (114), Not In Spellbook (143), Do Not Consume Resources (197), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42755 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51734 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -758,7 +758,6 @@ Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=40864)    : Apply Aura (6) | Unknown(267)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -815,7 +814,7 @@ Cooldown         : 180 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Affecting spells : Cold Hearted (288425 effect#2), Chilled Resilience (337704 effect#1), Acclimation (373926 effect#1)
 Family Flags     : 20
@@ -894,7 +893,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 120 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
-Proc Flags       : ....x... x...x.x. x.x..... ........ 
+Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Affecting spells : Everlasting Bond (377668 effect#2)
 Family Flags     : 30
@@ -984,7 +983,7 @@ Talent Entry     : Frost [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
-Resource         : 25 Runic Power (6) (id=2237)
+Resource         : 30 Runic Power (6) (id=2237)
 Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -1093,7 +1092,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 2.5 (Haste multiplier)
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Family Flags     : 97
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1165,9 +1164,9 @@ Effects          :
 #1 (id=42113)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46426 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=42114)    : Dummy (3)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=287354)   : Dummy (3)
-                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=331353)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focuses dark power into a strike$?s137006[ with both weapons, that deals a total of ${$s1+$66188s1}][ that deals $s1] Physical damage and heals you for ${$s2}.2% of all damage taken in the last $s4 sec, minimum ${$s3}.1% of maximum health.
@@ -1218,7 +1217,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48960 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.56304 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
 
 |Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
@@ -1292,6 +1291,7 @@ Spell Level      : 1
 Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
+Affecting spells : Fatal Fixation (405166 effect#1)
 Triggered by     : Killing Machine (51128), Killer Frost (278603), Cold-Blooded Rage (377083)
 Family Flags     : 100
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -1321,7 +1321,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Family Flags     : 98
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -1348,8 +1348,8 @@ Duration         : 12 seconds
 Cooldown         : 60 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Proc Flags       : ....x... ..x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 21, 127
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... x....... ........ 
@@ -1383,6 +1383,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Duration         : 3 seconds
 Proc Chance      : 101%
+Affecting spells : Runic Mastery (390166 effect#2)
 Family Flags     : 102
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1458,7 +1459,7 @@ School           : Shadowstorm
 Spell Type       : Magic
 Spell Level      : 14
 Range            : 40 yards
-Cast Time        : 2 seconds
+Cast Time        : 2.5 seconds
 Velocity         : 25 yards/sec
 Family Flags     : 99
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1472,7 +1473,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : AI Primary Ranged Attack (206), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=44400)    : School Damage (2): shadowstorm
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | AP Coefficient: 0.28800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | AP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Inflicts $s1 Plague damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -1609,7 +1610,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Plaguebringer (332688 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #17), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Plaguebringer (332688 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1668,7 +1669,7 @@ Effects          :
 #1 (id=48018)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=48019)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.38088 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48448 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=48020)    : Trigger Spell (64): Scourge Strike
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 70890 | Target: Enemy (6)
 #4 (id=840915)   : Dummy (3)
@@ -1682,7 +1683,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Plaguebringer (332688 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2, #5), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Plaguebringer (332688 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Family Flags     : 43, 58, 65, 120
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1910,7 +1911,7 @@ Spell Type       : Magic
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Affecting spells : Improved Rime (316838 effect#1)
 Triggered by     : Rime (59057)
@@ -1946,7 +1947,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Affecting spells : Rage of the Frozen Champion (341724 effect#1), Rage of the Frozen Champion (377076 effect#1)
 Family Flags     : 3
@@ -2227,7 +2228,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41800 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50578 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -2254,7 +2255,7 @@ Effects          :
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2274,7 +2275,7 @@ Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2295,7 +2296,7 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2340,7 +2341,7 @@ Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=214692)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20980 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26688 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
@@ -2366,7 +2367,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Stampede (201594)
                    Family Flags: 99, 113
-#4 (id=1033046)  : Apply Aura (6) | Unknown(531)
+#4 (id=1033046)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage done by your pets by ${$s1}.1%.
 
@@ -2443,7 +2444,7 @@ Effects          :
                    Family Flags: 78
 #3 (id=800836)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1037297)  : Apply Aura (6) | Unknown(531)
+#4 (id=1037297)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage of your Minions and Shadow damage abilities by ${$s1}.1%.
 
@@ -2512,7 +2513,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 25%
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Family Flags     : 115
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -2618,10 +2619,10 @@ Effects          :
 Description      : Bursts in a shower of blood.
 
 Name             : Might of the Frozen Wastes (id=81333) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=1, max_rank=1, req_points=20]
-Class            : Death Knight
+Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
+Spell Level      : 25
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2651,9 +2652,9 @@ Duration         : 10 seconds
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x....... .....x.. 
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Affecting spells : Harbinger of Doom (276023 effect#1), Embrace Death (337980 effect#1)
+Proc Flags       : ........ ..x.x.x. x....... .....x..   ........ ........ ........ ........   
+                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Cast Ended
+Affecting spells : Harbinger of Doom (276023 effects: #1, #3), Embrace Death (337980 effect#1)
 Triggered by     : Sudden Doom (49530)
 Family Flags     : 81
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2671,6 +2672,10 @@ Effects          :
                    Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633), Epidemic (207317), Epidemic (212739), Epidemic (215969)
                    Family Flags: 13, 121
 #2 (id=836283)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Death Coil (47632)
+                   Family Flags: 64
+#3 (id=1054853)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632)
                    Family Flags: 64
@@ -2928,8 +2933,8 @@ Range            : 5 - 30 yards
 Duration         : 2 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x00000040
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Triggered by     : Shambling Rush (91802)
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
@@ -3035,7 +3040,7 @@ Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
-Proc Flags       : ........ ........ x....... ........ 
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3052,7 +3057,7 @@ Effects          :
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
 Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -3098,7 +3103,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Triggered by     : Dark Succor (178819)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3232,7 +3237,7 @@ Description      : An unholy pact that prevents fatal damage, instead absorbing 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
 
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -3428,17 +3433,21 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179689)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
 #3 (id=844541)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1032340)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1032340)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=1052714)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 14.5 | Scaled Value: 14.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Frost Fever (55095)
+                   Family Flags: 58
 
 Name             : Unholy Death Knight (id=137007) [Spell Family (15), Passive, Hidden] 
 Class            : Unholy Death Knight
@@ -3464,7 +3473,7 @@ Effects          :
                    Family Flags: 43
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1032341)  : Apply Aura (6) | Unknown(531)
+#4 (id=1032341)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
@@ -3482,11 +3491,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313)
                    Family Flags: 43
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3509,7 +3518,6 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=260810)   : Apply Aura (6) | Threat (10)
                    Base Value: 650 | Scaled Value: 650 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (550 -> 650)
 #10 (id=260811)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=260812)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -3524,11 +3532,15 @@ Hotfixed         : Base Value (550 -> 650)
 #14 (id=844542)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #15 (id=875940)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 23.5 | Scaled Value: 23.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 48.2 | Scaled Value: 48.2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Death and Decay (52212), Defile (156000), Death's Due (341340)
                    Family Flags: 67
-#16 (id=1032342)  : Apply Aura (6) | Unknown(531)
+#16 (id=1032342)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#17 (id=1052708)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078)
+                   Family Flags: 57
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
 Class            : Elemental Death Knight, Shaman
@@ -3580,7 +3592,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2077 | Target: Self (1)
                    Affected Spells (Category): Elemental Blast (117014)
 #11 (id=1012734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 164 | Scaled Value: 164 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588)
                    Family Flags: 98, 108
 #12 (id=1012737)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
@@ -3588,34 +3600,49 @@ Effects          :
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
 #13 (id=1026048)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443)
                    Family Flags: 1, 34, 63, 101
 #14 (id=1026052)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -19.9 | Scaled Value: -19.9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
 #15 (id=1026055)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15.9 | Scaled Value: 15.9 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
                    Family Flags: 44, 86
-#16 (id=1026125)  : Apply Aura (6) | Unknown(531)
+#16 (id=1026125)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #17 (id=1032430)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2389 (Label) | Target: Self (1)
                    Affected Spells (Label): Elemental Blast: Critical Strike (118522), Elemental Blast: Haste (173183), Elemental Blast: Mastery (173184)
 #18 (id=1040490)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 37.5 | Scaled Value: 37.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
 #19 (id=1040491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 37.5 | Scaled Value: 37.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
 #20 (id=1040492)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 27 | Scaled Value: 27 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
+#21 (id=1070361)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2551 (Label) | Target: Self (1)
+                   Affected Spells (Label): Swirling Currents (378094)
+#22 (id=1070607)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 164 | Scaled Value: 164 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588)
+                   Family Flags: 98, 108
+#23 (id=1070608)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
+                   Family Flags: 44, 86
+#24 (id=1074560)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
+                   Family Flags: 0, 96
 Description      : Elemental Shaman baseline passive
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
@@ -3697,7 +3724,7 @@ Talent Entry     : Frost [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
-Resource         : 0 Runic Power (6) and 16 Runic Power (6) per tick (id=9067)
+Resource         : 0 Runic Power (6) and 18 Runic Power (6) per tick (id=9067)
 Duration         : Aura (infinite)
 Cooldown         : 120 seconds
 Stance Mask      : 0x01000000
@@ -3724,7 +3751,8 @@ Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Defile (id=152280) [Spell Family (15)] 
 Replaces         : Death and Decay (id=43265)
-Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200, replace="Death and Decay" (id=43265)]
+Talent Entry     : Unholy [tree=spec, row=6, col=1, max_rank=1, req_points=8, replace="Death and Decay" (id=43265)]
+                 : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, replace="Death and Decay" (id=43265)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -3763,7 +3791,7 @@ While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Str
 
 Death's Due reduces damage enemies deal to you by $324164s1%, up to a maximum of ${$324164s1*-$324164u}% and their power is transferred to you as an equal amount of Strength.][.]
 
-If any enemies are standing in the Defile, it grows in size and deals increasing damage every sec.
+Every sec, if any enemies are standing in the Defile, it grows in size, dealing increased damage, and increasing your Mastery by $218100s1%, up to ${$218100s1*$218100u}%.
 
 Name             : Expansive Mind (desc=Racial Passive) (id=154747) [Passive] 
 Class            : Death Knight
@@ -3789,7 +3817,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x.x..... ........ 
+Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell, Periodic
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Triggered by     : Breath of Sindragosa (152279)
@@ -3807,7 +3835,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60737 | PvP Coefficient: 0.66667 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75920 | PvP Coefficient: 0.66667 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
@@ -3902,7 +3930,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 18
 Proc Chance      : 100%
-Proc Flags       : .x...... ........ ........ ........ 
+Proc Flags       : .x...... ........ ........ ........   ........ ........ ........ ........   
                  : Killing Blow
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4047,8 +4075,8 @@ Range            : 100 yards
 Duration         : 27 seconds
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ ...x...x ........ .......x 
-                 : Generic Heal Taken, Magic Heal Taken
+Proc Flags       : ........ ...x...x ........ .......x   ........ ........ ........ ........   
+                 : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Triggered by     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
@@ -4063,7 +4091,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.30000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -4088,7 +4116,7 @@ Charges          : 0 (60 seconds cooldown)
 Category         : 2074: Stormkeeper (392714 effect#1), Stormkeeper (392763 effect#1)
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Affecting spells : Spiritwalker's Grace (79206 effect#1)
 Family Flags     : 111
@@ -4098,9 +4126,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Can Proc From Procs (122)
+                 : Not Shapeshifted (16), Can Proc From Procs (122), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=281103)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -4162,8 +4190,8 @@ Range            : 50000 yards
 Duration         : 30 seconds
 Internal Cooldown: 1 seconds
 Stacks           : -1 initial, 6 maximum
-Proc Flags       : ........ ...x...x ........ .......x 
-                 : Generic Heal Taken, Magic Heal Taken
+Proc Flags       : ........ ...x...x ........ .......x   ........ ........ ........ ........   
+                 : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Family Flags     : 112
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   .......x ........ ..x..... ......x. 
@@ -4309,8 +4337,8 @@ School           : Frost
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x.x..x.. ........ 
-                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... ....x... x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4329,7 +4357,7 @@ Name             : Icy Talons (id=194879) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Icy Talons (194878)
@@ -4353,7 +4381,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4377,8 +4405,8 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... ..x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4440,7 +4468,6 @@ Effects          :
 Description      : Your Raise Dead spell summons an additional skeletal minion.
 
 Name             : Pestilent Pustules (id=194917) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -4467,7 +4494,7 @@ Duration         : 30 seconds
 Internal Cooldown: 2.5 seconds
 Stacks           : 1 initial, 10 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
+Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Rattlegore Bone Legplates (205816 effect#2), Foul Bulwark (206974 effect#1), Marrowrend (316746 effect#1), Improved Bone Shield (374715 effect#1), Reinforced Bones (374737 effect#1)
 Family Flags     : 38
@@ -4600,7 +4627,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ..x..... ........ 
+Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4623,7 +4650,7 @@ School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 5
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4709,7 +4736,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=287633)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.44940 | PvP Coefficient: 1.00000 | Radius: 0 - 2.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53928 | PvP Coefficient: 1.00000 | Radius: 0 - 2.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194913
 
 Name             : Bloodworm (id=196361) [Spell Family (15)] 
@@ -4774,8 +4801,7 @@ Effects          :
 Description      : $@spelldesc194844
 
 Name             : Remorseless Winter (id=196770) [Spell Family (15)] 
-Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0]
-Class            : Death Knight
+Class            : Frost Death Knight
 School           : Frost
 Spell Type       : None
 Resource         : 1 Rune (5) (id=10582)
@@ -4827,13 +4853,55 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06800 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc196770
 
+Name             : Outbreak (id=196780) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Range            : 200 yards
+Family Flags     : 76
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=288904)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@spelldesc77575
+
+Name             : Outbreak (id=196782) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 3 seconds
+Family Flags     : 76
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Extra Initial Period (169), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=288906)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc77575
+Tooltip          : Upon expiration nearby enemies are infected by Virulent Plague.
+
 Name             : Festering Wound (id=197147) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5030,6 +5098,7 @@ Spell Type       : Magic
 Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.3 seconds
+Labels           : 1615
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
@@ -5167,7 +5236,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Anti-Magic Shell (48707)
                    Family Flags: 17
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=726131)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces the cooldown of Anti-Magic Shell by ${$s1/-1000} sec and increases its duration and amount absorbed by $s2%.
@@ -5203,7 +5271,7 @@ Effects          :
 #1 (id=306039)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=306040)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41308 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47504 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #4 (id=312174)   : Dummy (3)
@@ -5258,7 +5326,7 @@ Duration         : 15 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5297,7 +5365,6 @@ Effects          :
                    Affected School(s): All
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage taken below $s3% Health is reduced by $s2%.
@@ -5348,7 +5415,7 @@ Description      : Each charge of Bone Shield increases your maximum health by $
 Variables        : $increase=${$s1}
 
 Name             : Shattering Blade (id=207057) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -5415,7 +5482,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 10.8 (Haste multiplier)
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5439,7 +5506,7 @@ Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x.x. x...x... x.x..... ........ 
+Proc Flags       : ....x.x. x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5457,13 +5524,13 @@ Description      : Your Frost Strike$?s207230[, Frostscythe,][] and Obliterate c
 Variables        : $cd=${$m1/10}
 
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
-Proc Flags       : ........ ........ x....... ........ 
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5514,7 +5581,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Mechanic         : Disorient
-Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x...... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
@@ -5565,7 +5632,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5607,7 +5674,7 @@ Effects          :
 #1 (id=306491)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=306492)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17227 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.23256 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #3 (id=330163)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #4 (id=345076)   : Energize Power (30)
@@ -5623,7 +5690,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ x....... ........ 
+Proc Flags       : ....x... ........ x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Magic Hostile Spell
 Affecting spells : Death Knight (137005 effect#2)
 Triggered by     : Obliteration (281238)
@@ -5753,7 +5820,7 @@ Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, S
 Cooldown         : 90 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 29, 127
@@ -5804,7 +5871,7 @@ Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55862 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.71057 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -5826,7 +5893,7 @@ Effects          :
 Description      : Raise Dead now summons an abomination instead of a ghoul, with improved innate abilities.
 
 Name             : Epidemic (id=207317) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5922,7 +5989,7 @@ School           : Physical
 Spell Type       : None
 Req. Max Level   : 49
 Proc Chance      : 15%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -6215,6 +6282,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09120 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207317
 
+Name             : Defile (id=218100) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Cooldown         : 1 seconds
+Stacks           : 8 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : x....... ........ ........ ........   ........ .......x ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Redirection (35), No Reflection (39), Not On AOE Immune (127), No Cast Log (128), Treat as Area Effect (175), Mastery Affects Points (285), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=324699)   : Apply Aura (6) | Modify Mastery% (318)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc152280
+Tooltip          : Mastery increased by $s1%.
+
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
@@ -6348,7 +6439,7 @@ Name             : Army of the Dead (id=221180) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Duration         : 15 seconds
+Duration         : 20 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6504,7 +6595,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41800 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50578 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Necrotic Strike (desc=PvP Talent) (id=223829) [Spell Family (15)] 
@@ -6588,7 +6679,7 @@ Effects          :
 #1 (id=344372)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=344373)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41308 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47504 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=344374)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #4 (id=344375)   : Dummy (3)
@@ -6648,7 +6739,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -6716,7 +6807,7 @@ Duration         : Aura (infinite)
 Internal Cooldown: 0.5 seconds
 Stacks           : 1 initial, 5 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -7124,7 +7215,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Winds of War (269214)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7351,7 +7442,7 @@ Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Impassive Visage (270117)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -7827,7 +7918,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ x....... ........ 
+Proc Flags       : ....x... ........ x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7850,7 +7941,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ x....... ........ 
+Proc Flags       : ....x... ........ x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Magic Hostile Spell
 Triggered by     : Hemostasis (273946)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7917,7 +8008,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Hotfixed         : Base Value (37.5 -> 15)
 Description      : Death Strike's healing is increased by $s2% and grants you $274009s1% Leech for $274009d.
 
 Name             : Voracious (id=274009) [Spell Family (15)] 
@@ -7927,7 +8017,7 @@ Spell Type       : None
 Duration         : 8 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ x....... ........ 
+Proc Flags       : ....x... ........ x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8176,7 +8266,13 @@ Effects          :
                    Family Flags: 81
 #2 (id=729402)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 18 | Target: Self (1)
-Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
+#3 (id=1054862)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Sudden Doom (81340)
+                   Family Flags: 81
+#4 (id=1054864)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Sudden Doom triggers $s2% more often, can accumulate up to ${$m1+1} charges, and increases the damage of your next Death Coil by $s3%$?s207317[ or Epidemic by $s4%][].
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
@@ -8184,7 +8280,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : .x...... ........ ........ ........ 
+Proc Flags       : .x...... ........ ........ ........   ........ ........ ........ ........   
                  : Killing Blow
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8211,7 +8307,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. x....... ........ 
+Proc Flags       : ........ ......x. x....... ........   ........ ........ ........ ........   
                  : Magic Heal, Magic Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8578,7 +8674,7 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
-Proc Flags       : ....x... x...x... x.x..... ........ 
+Proc Flags       : ....x... x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -8609,8 +8705,8 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -8641,7 +8737,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 503
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8672,8 +8768,8 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -8702,8 +8798,8 @@ Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 501
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8730,7 +8826,7 @@ Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 502
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9243,7 +9339,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 20 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x...x... x....... ........ 
+Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Triggered by     : Cold Heart (281208)
@@ -9291,7 +9387,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
 Proc Chance      : 101%
-Proc Flags       : ........ ..x..... ........ ........ 
+Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
                  : Generic Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -9307,8 +9403,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 207256 | Target: Self (1)
 #2 (id=739708)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Pillar of Frost is active, Frost Strike$?s194913[, Glacial Advance,][] and Howling Blast always grant Killing Machine and have a $s2% chance to generate a Rune.
+Description      : While Pillar of Frost is active, Frost Strike$?s194913[, Glacial Advance,][]$?s343294[, Soul Reaper,][] and Howling Blast always grant Killing Machine and have a $s2% chance to generate a Rune.
 Tooltip          : Frost Strike$?s194913[, Glacial Advance,][] and Howling Blast grant Killing Machine and have a $s2% chance to generate a Rune.
+
+Name             : Obliteration (id=281327) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=739712)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+Description      : $@spelldesc281238
 
 Name             : Unstable Catalyst (id=281514) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -9404,7 +9518,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Proc Flags       : ........ ......x. ........ ........ 
+Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
                  : Magic Heal
 Triggered by     : Helchains (286832)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -9575,7 +9689,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Proc Flags       : ........ ..x..... ........ ........ 
+Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
                  : Generic Heal
 Triggered by     : Frostwhelp's Indignation (287283)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -10007,8 +10121,8 @@ Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Azerite EssenceId: 22 (Type: Minor/Upgrade, Rank: 2)
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ....x.x. ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10030,8 +10144,8 @@ Spell Type       : None
 Labels           : 640: Cat Form (768 effect#6), Brewmaster Monk (137023 effect#21), Windwalker Monk (137025 effect#14), Rogue (137034 effect#2)
 Proc Chance      : 101%
 Real PPM         : 1
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Triggered by     : Strive for Perfection (296321)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -10138,8 +10252,8 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Azerite Power Id : 577
-Proc Flags       : ........ ........ ........ ....x... 
-                 
+Proc Flags       : ........ ........ ........ ....x...   ........ ........ ........ ........   
+                 : Encounter Start
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10273,7 +10387,7 @@ Labels           : 976
                  : 1060: Impenetrable Gloom (338628 effect#2)
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Proc Flags       : ....x... ....x... x.x..... ........ 
+Proc Flags       : ....x... ....x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Affecting spells : Death Knight (137005 effect#2)
 Family Flags     : 127
@@ -10341,7 +10455,7 @@ Labels           : 831: Proliferation (338664 effect#1), Proliferation (338664 e
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x01000000
-Proc Flags       : .....x.. .x...x.. .x...... ........ 
+Proc Flags       : .....x.. .x...x.. .x...... ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3)
 Family Flags     : 43, 127
@@ -10641,7 +10755,7 @@ Effects          :
 #1 (id=801745)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=999768)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Death and Decay (188290)
                    Family Flags: 118
 #3 (id=999771)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
@@ -10745,10 +10859,10 @@ Effects          :
 Description      : Increases Obliterate damage by $s1%.
 
 Name             : Frostreaper (id=317214) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8]
-Class            : Death Knight
+Class            : Frost Death Knight
 School           : Physical
 Spell Type       : None
+Spell Level      : 28
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10876,7 +10990,7 @@ Description      : $@spelldesc207167
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Unholy Pact (id=319230) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -10902,6 +11016,8 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Triggered by     : Unholy Pact (319230)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -11242,7 +11358,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.61856 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.74846 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
@@ -11271,7 +11387,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ....x.xx x..x.x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11381,7 +11497,7 @@ Effects          :
 #1 (id=818066)   : Enchant Item (53)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6242 | Misc Value 2: 0xb
 #2 (id=818067)   : Dummy (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.40000 | Target: Self (1)
 Description      : Engrave your weapon with a rune that deflects $326864s2% of all spell damage and taking magic damage has a chance to create a shield that absorbs magic damage equal to $s2% of your maximum health. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d. 
 
 Modifying your rune requires a Runeforge in Ebon Hold.
@@ -11392,7 +11508,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
-Proc Flags       : ........ .....x.. .x.x.... ........ 
+Proc Flags       : ........ .....x.. .x.x.... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ....x.xx x..x.x.. ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11411,7 +11527,7 @@ Effects          :
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Passive: Deflects $s2% of all spell damage.
 
-Taking magic damage has a chance to grant you a shield that absorbs ${$MHP*.1} magic damage for $326867d. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d.
+Taking magic damage has a chance to grant you a shield that absorbs ${$MHP*$326867s2/100} magic damage for $326867d. When an enemy damages the shield, their cast speed is reduced by $326868s1% for $326868d.
 
 Name             : Rune of Spellwarding (id=326867) [Spell Family (15)] 
 Class            : Death Knight
@@ -11434,10 +11550,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Cannot Be Stolen (134), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=818082)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.40000 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #2 (id=890165)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.40000 | Target: Self (1)
 Description      : $@spelldesc326864
 
 Tooltip          : Absorbs $w1 magic damage.
@@ -11464,7 +11580,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=818084)   : Apply Aura (6) | Modify Spell Speed% (65)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.40000 | Target: Enemy (6)
 Description      : $@spelldesc326864
 
 Tooltip          : Casting speed reduced by $w1%.
@@ -11501,7 +11617,7 @@ Spell Type       : None
 Labels           : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
-Proc Flags       : ..x.x... ....x... ........ ........ 
+Proc Flags       : ..x.x... ....x... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Generic Hostile Spell
 Attributes       : ....x.xx x..x.x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11578,7 +11694,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 962: Exacting Preparation (331580 effect#5), Unholy Bond (374261 effect#2)
 Proc Chance      : 101%
-Proc Flags       : .x...... ........ ........ ........ 
+Proc Flags       : .x...... ........ ........ ........   ........ ........ ........ ........   
                  : Killing Blow
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -11751,7 +11867,7 @@ Duration         : Aura (infinite)
 Internal Cooldown: 0.7 seconds
 Stacks           : 5 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ....x...   ........ ........ ....x... ........ 
@@ -11801,7 +11917,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ....x... ........ 
@@ -11847,7 +11963,7 @@ Name             : Bryndaor's Might (id=334501) [Spell Family (15), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : .....x.. ...x...x ........ ........ 
+Proc Flags       : .....x.. ...x...x ........ ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Generic Heal Taken, Magic Heal Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -11931,7 +12047,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 12%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -12055,7 +12171,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Real PPM         : 1.75
-Proc Flags       : ..x.x... ........ ........ ........ 
+Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12114,7 +12230,7 @@ Name             : Death's Certainty (id=334898) [Spell Family (15), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... x....... x.x..... ........ 
+Proc Flags       : ....x... x....... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -12138,7 +12254,7 @@ Name             : Deadliest Coil (id=334949) [Spell Family (15), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x....... ........ 
+Proc Flags       : ........ ..x.x.x. x....... ........   ........ ........ ........ ........   
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12181,7 +12297,7 @@ School           : Physical
 Spell Type       : Magic
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ....x... x.x..... ........ 
+Proc Flags       : ........ ....x... x.x..... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12266,7 +12382,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 100%
 Conduit Id       : 70 (values=100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240)
-Proc Flags       : ........ ....x... x....... ........ 
+Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12359,7 +12475,7 @@ Spell Level      : 60
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Conduit Id       : 83 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.4)
-Proc Flags       : ....x... ....x... ........ ........ 
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12381,7 +12497,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 86 (values=2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8)
-Proc Flags       : ........ ..x..... x....... ........ 
+Proc Flags       : ........ ..x..... x....... ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12403,7 +12519,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 88 (values=6, 6.6, 7.2, 7.8, 8.4, 9, 9.6, 10.2, 10.8, 11.4, 12, 12.6, 13.2, 13.8, 14.2)
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12446,7 +12562,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 91 (values=3, 3.3, 3.6, 3.9, 4.2, 4.5, 4.8, 5.1, 5.4, 5.7, 6, 6.3, 6.6, 6.9, 7.2)
-Proc Flags       : ........ ........ x.x..... ........ 
+Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12469,7 +12585,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 99 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12553,7 +12669,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 121 (values=2, 2.2, 2.4, 2.6, 2.8, 3, 3.2, 3.4, 3.6, 3.8, 4, 4.2, 4.4, 4.6, 4.8)
-Proc Flags       : ...x.x.. .x...x.. .x...... ........ 
+Proc Flags       : ...x.x.. .x...x.. .x...... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12580,7 +12696,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 122 (values=1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4)
-Proc Flags       : ....x... ....x... ........ ........ 
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12626,7 +12742,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 123 (values=7, 7.7, 8.4, 9.1, 9.8, 10.5, 11.2, 11.9, 12.6, 13.3, 14, 14.7, 15.4, 16.1, 16.799999)
-Proc Flags       : ........ ....x... x....... ........ 
+Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12648,7 +12764,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 124 (values=15, 16.5, 18, 19.5, 21, 22.5, 24, 25.5, 27, 28.5, 30, 31.5, 33, 34.5, 36)
-Proc Flags       : .x..x... ....x... x....... ........ 
+Proc Flags       : .x..x... ....x... x....... ........   ........ ........ ........ ........   
                  : Killing Blow, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12809,6 +12925,8 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12869,7 +12987,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=844983)   : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.34000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.43010 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=844984)   : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=844985)   : Dummy (3)
@@ -12898,7 +13016,7 @@ Attributes       : ........ ........ .....x.. x..x....   ...x.x.x ........ .....
                  : No Active Defense (21), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=844986)   : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.97340 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc343294
 
 Name             : Apocalypse (id=343758) [Spell Family (15)] 
@@ -12950,7 +13068,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 20 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered by     : Abomination's Frenzy (364754)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -13110,7 +13228,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=890320)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 24
 #2 (id=890321)   : Apply Aura (6) | Dummy (4)
@@ -13122,7 +13240,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -13146,7 +13264,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -13176,7 +13294,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -13268,7 +13386,7 @@ Range            : 30 yards
 Duration         : 20 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Proc Chance      : 100%
-Proc Flags       : ....x... x...x.x. x.x..... ........ 
+Proc Flags       : ....x... x...x.x. x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Attributes       : ........ ........ ........ ........   ........ .xx..... ........ ....x... 
                  : ........ ........ ........ ........   .x...... ..x..... ..x..... ..x..... 
@@ -13291,6 +13409,8 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -13338,7 +13458,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -13366,7 +13486,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x.x. x....... ........ 
+Proc Flags       : ....x... ....x.x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -13679,11 +13799,12 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Increases Strength by $s1%.
 
-Name             : Unholy Bond (id=374261) [Passive, Hidden] 
+Name             : Unholy Bond (id=374261) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
                  : Effect#3 [op=set, values=(10, 20)]
+                 : Effect#4 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13699,13 +13820,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1000038)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 961 (Label) | Target: Self (1)
-                   Affected Spells (Label): Razorice (50401), Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
+                   Affected Spells (Label): Razorice (51714), Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Sanguination (326808), Rune of Spellwarding (326867), Lethargy (326868), Rune of Hysteria (326918), Rune of Unending Thirst (326984), Famine (327092), Pestilence (327093), Death (327095), War (327096)
 #2 (id=1000039)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 962 (Label) | Target: Self (1)
                    Affected Spells (Label): Unholy Strength (53365), Stoneskin Gargoyle (62157), Rune of Spellwarding (326867), Rune of Hysteria (326913), Unending Thirst (326982), Rune of Unending Thirst (326984), Pestilence (327093), War (327096)
 #3 (id=1000040)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 963 (Label) | Target: Self (1)
                    Affected Spells (Label): Rune of Unending Thirst (326984)
+#4 (id=1049099)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Razorice (50401)
+                   Family Flags: 104
 Description      : Increases the effectiveness of your Runeforge effects by $s1%.
 
 Name             : Unholy Ground (id=374265) [Spell Family (15), Passive, Hidden] 
@@ -13767,12 +13892,10 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1000061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1000062)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
@@ -13810,7 +13933,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 15%
-Proc Flags       : ........ ........ ..x..... ........ 
+Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
                  : Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13832,7 +13955,7 @@ School           : Physical
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 5 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13840,7 +13963,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Reflection (39), Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1000451)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -13861,7 +13984,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14028,10 +14151,9 @@ Effects          :
 #1 (id=1000722)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=1000723)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Description      : Stamina increased by $s1%.
-Damage taken reduced by $s2%.
+Description      : Stamina increased by $s1%.
 
 Name             : Reinforced Bones (id=374737) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=7, col=3, max_rank=1, req_points=8]
@@ -14151,7 +14273,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14172,7 +14294,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : None
 Spell Level      : 60
-Duration         : 6 seconds
+Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Triggered by     : Unleashed Frenzy (376905)
@@ -14192,12 +14314,12 @@ Description      : $@spelldesc376905
 Tooltip          : Strength increased by $w1%.
 
 Name             : Everfrost (id=376938) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x.x..... ........ 
+Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14283,7 +14405,7 @@ Description      : Freezes enemies for $d.
 Tooltip          : Frozen.
 
 Name             : Biting Cold (id=377056) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=7, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14316,7 +14438,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 15%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -14361,6 +14483,8 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14385,7 +14509,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 1644: Cold-Blooded Rage (377083 effect#2)
 Proc Chance      : 10%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14425,14 +14549,14 @@ Effects          :
 Description      : Frost Fever critical strikes increase the chance to grant Runic Power by an additional $s1%.
 
 Name             : Bonegrinder (id=377098) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=2, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -14502,7 +14626,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ..x..... ........ ........ 
+Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
                  : Generic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14531,7 +14655,7 @@ Duration         : 20 seconds
 Internal Cooldown: 0.5 seconds
 Stacks           : 20 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x.x. x...x... x.x..... ........ 
+Proc Flags       : ....x.x. x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Triggered by     : Enduring Strength (377190)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -14580,7 +14704,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ..x..... ........ ........ 
+Proc Flags       : ........ ..x..... ........ ........   ........ ........ ........ ........   
                  : Generic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14644,7 +14768,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1004974)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | AP Coefficient: 0.21000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1004975)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #3 (id=1004976)  : Trigger Spell (64): Frostwhelp's Aid
@@ -14715,8 +14839,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1005150)  : Apply Aura (6) | Unknown(507)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1615 | Target: Enemy (6)
+#1 (id=1005150)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1615 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Chill Streak (204167)
 Description      : $@spelldesc377351
 
 Tooltip          : Damage taken from $@auracaster's Chill Streak increased by $s1%.
@@ -14788,7 +14913,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Aura While Dead (116), Not In Spellbook (143), Disable Aura While Dead (226), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005394)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1005396)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Soul Reaper, Scourge Strike, Festering Strike, and Death Coil deal $s1% addtional damage to enemies below $s2% health.
@@ -14799,7 +14924,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ x....... x....... ........ 
+Proc Flags       : ........ x....... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -14813,7 +14938,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1005431)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Death Coil and Epidemic debilitate your enemy applying Death Rot causing them to take $377540s1% increased Shadow damage, up to ${$377540s1*$377540u}% for $377540d. If Death Coil or Epidemic consume Sudden Doom it applies two stacks of Death Rot.
+Description      : Death Coil and Epidemic debilitate your enemy applying Death Rot causing them to take $377540s1% increased Shadow damage, up to ${$377540s1*$377540u}% from you for $377540d. If Death Coil or Epidemic consume Sudden Doom it applies two stacks of Death Rot.
 
 Name             : Death Rot (id=377540) [Spell Family (15)] 
 Class            : Death Knight
@@ -15087,7 +15212,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... ........ ........ 
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15166,7 +15291,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 1621 (Label) | Target: Self (1)
                    Affected Spells (Label): Shattering Bone (377642)
 #3 (id=1032487)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06930 | PvP Coefficient: 1.00000
 Description      : When Bone Shield is consumed it shatters dealing $s3 shadow damage to nearby enemies. This damage is tripled while you are within your Death and Decay.
 
 Name             : Shattering Bone (id=377642) [Spell Family (15)] 
@@ -15187,7 +15312,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005595)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06930 | PvP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc377640
 
 Name             : Heartrend (id=377655) [Spell Family (15), Passive] 
@@ -15196,7 +15321,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... ........ ........ 
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15221,7 +15346,7 @@ Duration         : 20 seconds
 Labels           : 1622: Heartrend (377655 effect#1)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15311,7 +15436,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ....x... x....... ........ 
+Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -15368,7 +15493,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : All damage done by your pet is increased by $s1%.
 
-Name             : Abomination Limb (id=383269) [Spell Family (15)] 
+Name             : Abomination Limb (desc=Shadowlands) (id=383269) [Spell Family (15)] 
 Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
@@ -15529,7 +15654,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -15543,7 +15668,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026779)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Festering Strike has a $s1% chance to generate $390162s1 Rune.
+Description      : Festering Strike has a $s1% chance to generate $390162s1 Rune and grant Runic Corruption.
 
 Name             : Feasting Strikes (id=390162) [Spell Family (15)] 
 Class            : Death Knight
@@ -15566,6 +15691,7 @@ Description      : $@spelldesc390161
 Name             : Runic Mastery (id=390166) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Unholy [tree=spec, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(100, 200)]
+                 : Effect#2 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15581,7 +15707,11 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026788)  : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-Description      : Increases your maximum Runic Power by ${$s1/10}.
+#2 (id=1050309)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Runic Corruption (51460)
+                   Family Flags: 102
+Description      : Increases your maximum Runic Power by ${$s1/10} and increases the Rune regeneration rate of Runic Corruption by $s2%.
 
 Name             : Plaguebringer (id=390175) [Spell Family (15), Passive] 
 Talent Entry     : Unholy [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
@@ -15590,7 +15720,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -15612,7 +15742,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Duration         : 5 seconds
+Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Triggered by     : Plaguebringer (390175)
@@ -15667,7 +15797,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1026875)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
 
 Name             : Ruptured Viscera (id=390236) [Spell Family (15), Passive] 
@@ -15686,8 +15816,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1026902)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When your ghouls expire, they explode in viscera dealing $<damage> Shadow damage to nearby enemies. 
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When your ghouls expire, they explode in viscera dealing $<damage> Shadow damage to nearby enemies. Each explosion has a $s1% chance to apply Festering Wounds to enemies hit.
 Variables        : $mastery=$?s77515[${((100+$77515m1)/100)}][${1.00}]
 $damage=${0.44*($390220s1)*(1+$@versadmg)*$<mastery>}
 
@@ -15697,7 +15827,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ......x. ........ ........ 
+Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
                  : Magic Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15713,12 +15843,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390260 | Target: Self (1)
 Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead for $390264d, increasing their damage by $390264s1%.
 
-Name             : Commander of the Dead (id=390260) [Spell Family (15), Hidden] 
+Name             : Commander of the Dead (id=390260) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
+Duration         : 30 seconds
 Triggered by     : Commander of the Dead (390259)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15726,11 +15857,14 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+                 : No Aura Cancel (31), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1026943)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+#2 (id=1051086)  : Apply Party Aura (35) | Unknown(395)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 28179 | Target: Self (1)
 Description      : $@spelldesc390259
+Tooltip          : Your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead ghouls deal $390264s1% increased damage.
 
 Name             : Commander of the Dead (id=390264) [Spell Family (15)] 
 Class            : Death Knight
@@ -15740,19 +15874,19 @@ Range            : 100 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126)
+                 : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
                    Affected School(s): All
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: Unknown(120)
 Description      : $@spelldesc390259
 Tooltip          : All damage done increased by $s1%.
 
@@ -15762,7 +15896,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x....... ........ 
+Proc Flags       : ........ ..x.x.x. x....... ........   ........ ........ ........ ........   
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15784,7 +15918,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -15845,7 +15979,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 6 seconds
+Duration         : 10 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16014,7 +16148,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1028995)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1028996)  : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
@@ -16028,7 +16162,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... ........ ........ 
+Proc Flags       : ....x... ....x... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -16080,8 +16214,8 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. .....x.. ........ 
-                 : Generic Heal, Magic Heal, Trap Triggered
+Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
+                 : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16102,7 +16236,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ ........ ..x..... ........ 
+Proc Flags       : ........ ........ ..x..... ........   ........ ........ ........ ........   
                  : Periodic
 Affecting spells : Improved Vampiric Blood (317133 effect#3)
 Triggered by     : Umbilicus Eternus (391517)
@@ -16128,7 +16262,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16171,7 +16305,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -16196,7 +16330,7 @@ Duration         : 30 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Insidious Chill (391566)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16204,7 +16338,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Reflection (39), Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1029156)  : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -16236,7 +16370,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 3
-Proc Flags       : ..x..... ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -16271,7 +16405,7 @@ Effects          :
 #1 (id=1030741)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=1030864)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66700 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Description      : $@spelldesc392487
 Tooltip          : Movement Speed slowed by $w1% and damage dealt to $@auracaster reduced by $w2%.
@@ -16316,7 +16450,7 @@ Effects          :
 Description      : $@spelltooltip191634
 
 Name             : Icebreaker (id=392950) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=5, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(30, 60)]
 Class            : Death Knight
 School           : Physical
@@ -16441,7 +16575,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -16463,7 +16597,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... ....x... x....... ........ 
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -16542,7 +16676,7 @@ Effects          :
                    Family Flags: 43
 #3 (id=1034346)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1039550)  : Apply Party Aura (35) | Unknown(531)
+#4 (id=1039550)  : Apply Party Aura (35) | Modify Guardian Damage Done% (531)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1039650)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16602,5 +16736,26 @@ Effects          :
                    Family Flags: 43
 Description      : $@spelldesc393627
 Tooltip          : Damage and Haste increased by $s1%.
+
+Name             : Fatal Fixation (id=405166) [Spell Family (15), Passive] 
+Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Only In Spellbook Until Learned (240)
+Effects          :
+#1 (id=1053203)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Affected Spells: Killing Machine (51124)
+                   Family Flags: 100
+Description      : Killing Machine can stack up to $s1 additional time.
 
 

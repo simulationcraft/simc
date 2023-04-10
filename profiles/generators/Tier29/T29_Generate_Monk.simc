@@ -1,56 +1,55 @@
-# # Kyrian Brewmaster
-# monk="T29_Monk_Brewmaster"
-# source=default
-# spec=brewmaster
-# level=70
-# race=vulpera
-# vulpera_tricks=flames
-# role=tank
-# position=front
-# talents=2010121
+monk="T29_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=70
+race=mechagnome
+role=tank
+position=front
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIBAAAAShWJJhQSSpRAAAASLSJJSkgIJJJJlEgWkIt0KhA
 
-# head=crown_of_the_grand_upwelling,id=188910,bonus_id=1498/7187/6935,gem_id=173127
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-# shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
-# chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=risen_monstrosity_cuffs,id=178741,bonus_id=1592/6536/6646/6935,gem_id=173129
-# hands=umbrahide_gauntlets,id=172316,bonus_id=7077/1588/6650/6647
-# waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
-# legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-# feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant=eternal_agility
-# finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
-# finger2=shadowghast_ring,id=178926,bonus_id=8124/1588/6650/6647/6935,gem_id=173129,enchant=tenet_of_critical_strike
-# trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
-# trinket2=ticking_sack_of_terror,id=190652,bonus_id=1595/6536/6646
-# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
+head=crown_of_roaring_storms,id=193751,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,gem_id=192932
+neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192982/192932/192932,crafted_stats=32/40
+shoulder=felbat_leather_pauldrons,id=134374,bonus_id=6652/8811/8812/6808/4786/3300
+back=drape_of_the_waking_fist,id=200368,enchant_id=6598,bonus_id=6652/9130/7977/1504
+chest=chestwrap_of_the_waking_fist,id=200360,enchant_id=6625,bonus_id=6652/8830/9130/7977/1498/8767
+wrist=loyal_flametenders_bracers,id=195525,enchant_id=6580,gem_id=192932,bonus_id=6652/7936/7981/8823/8819/1498/8767
+hands=subjugators_chilling_grips,id=193758,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
+waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/3300,gem_id=192932
+legs=legguards_of_the_waking_fist,id=200364,enchant_id=6490,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507
+feet=slimy_expulsion_boots,id=193451,enchant_id=6613,bonus_id=8960/8840/8836/8902/1508
+finger1=seal_of_diurnas_chosen,id=195480,enchant_id=6550,gem_id=192932,bonus_id=6652/7981/1498/8767/8780
+finger2=assembly_scholars_loop,id=202119,enchant_id=6550,gem_id=192932
+trinket1=manic_grieftorch,id=194308,bonus_id=7981/6652/1498/8767
+trinket2=windscar_whetstone,id=137486,bonus_id=6652/8811/8812/6808/4786/3300
+main_hand=refractions_edge,id=193646,enchant_id=6649,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
+off_hand=refractions_edge,id=193646,enchant_id=6649,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
 
-# save=T29_Monk_Brewmaster.simc
+save=T29_Monk_Brewmaster.simc
 
-monk="T29_Monk_Windwalker_Serenity"
+monk="T29_Monk_Windwalker"
 spec=windwalker
 level=70
 race=orc
 role=dps
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEkkkEtIBAAAAAJSSCgkkkEIRIiESkkkkkSCIAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJRLiEBAAAASkkEAJJJJQSJSEJkIJJJJlEcAAAA
 
-head=,id=200363,bonus_id=8780,gem_id=192982,ilevel=424
-neck=,id=193647,bonus_id=3524/8782,gem_id=192932/192932/192932,ilevel=421
-shoulder=,id=200365,ilevel=424
-back=,id=133765,bonus_id=3524,ilevel=421
-chest=,id=200360,enchant=waking_stats_3,ilevel=421
-wrist=,id=195525,bonus_id=3524/8780,gem_id=192932,ilevel=424
-hands=,id=200362,ilevel=421
-waist=,id=136776,bonus_id=3524/8780,gem_id=192932,ilevel=421
-legs=,id=195530,bonus_id=3524,enchant=fierce_armor_kit_3,ilevel=424
-feet=,id=134193,bonus_id=3524,ilevel=421
-finger1=,id=134542,bonus_id=3524/8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=421
-finger2=,id=195480,bonus_id=3524/8780,enchant=devotion_of_versatility_3,gem_id=192932,ilevel=421
-trinket1=,id=137486,bonus_id=3524,ilevel=421
-trinket2=,id=194308,bonus_id=3524,ilevel=424
-main_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
-off_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
+neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
+shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
+back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
+chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192932
+hands=palms_of_the_waking_fist,id=200362,ilevel=421
+waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192932
+legs=legguards_of_the_waking_fist,id=200364,ilevel=415,enchant_id=6496
+feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
+finger1=valkyr_ascension_signet,id=133679,bonus_id=3524/7580,ilevel=421,gem_id=192932,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
+trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
+trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
+main_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
+off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 
 save=T29_Monk_Windwalker.simc
 
@@ -60,23 +59,23 @@ level=70
 race=orc
 role=dps
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEJJJlkEAAAAAkIJJASSSSgEhISIRSSSSKJgAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESkkElISEAAAAIRSSAkkkkAJlkERCJSSSyBSJBAAA
 
-head=,id=200363,bonus_id=8780,gem_id=192991,ilevel=424
-neck=,id=193647,bonus_id=3524/8782,gem_id=192925/192925/192925,ilevel=421
-shoulder=,id=200365,ilevel=424
-back=,id=133765,bonus_id=3524,ilevel=421
-chest=,id=200360,enchant=waking_stats_3,ilevel=421
-wrist=,id=195525,bonus_id=3524/8780,gem_id=192925,ilevel=424
-hands=,id=200362,ilevel=421
-waist=,id=136776,bonus_id=3524/8780,gem_id=192925,ilevel=421
-legs=,id=195530,bonus_id=3524,enchant=fierce_armor_kit_3,ilevel=424
-feet=,id=134193,bonus_id=3524,ilevel=421
-finger1=,id=134542,bonus_id=3524/8780,enchant=devotion_of_critical_strike_3,gem_id=192925,ilevel=421
-finger2=,id=195480,bonus_id=3524/8780,enchant=devotion_of_critical_strike_3,gem_id=192925,ilevel=421
-trinket1=,id=137486,bonus_id=3524,ilevel=421
-trinket2=,id=194308,bonus_id=3524,ilevel=424
-main_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
-off_hand=,id=190509,bonus_id=3524/1679/8937,enchant=frozen_devotion_3,ilevel=418
+head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
+neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
+shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
+back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
+chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
+wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192932
+hands=palms_of_the_waking_fist,id=200362,ilevel=421
+waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192932
+legs=legguards_of_the_waking_fist,id=200364,ilevel=415,enchant_id=6496
+feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
+finger1=valkyr_ascension_signet,id=133679,bonus_id=3524/7580,ilevel=421,gem_id=192932,enchant_id=6568
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
+trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
+trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
+main_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
+off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 
 save=T29_Monk_Windwalker_SEF.simc

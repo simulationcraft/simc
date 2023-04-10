@@ -1419,6 +1419,48 @@ std::unique_ptr<expr_t> expr_t::parse( action_t* action, util::string_view expr_
   }
 }
 
+// Parse expressions in the "player" context. Action expressions will not function.
+std::unique_ptr<expr_t> expr_t::parse( player_t* player, util::string_view expr_str, bool optimize )
+{
+  try
+  {
+    if ( expr_str.empty() )
+    {
+      return nullptr;
+    }
+
+    auto tokens = expression::parse_tokens( nullptr, expr_str );
+
+    if ( player->sim->debug )
+    {
+      expression::print_tokens( tokens, player->sim );
+    }
+
+    if ( !expression::convert_to_rpn( tokens ) )
+    {
+      throw std::invalid_argument( fmt::format( "Unable to convert '{}' into RPN.", expr_str ) );
+    }
+
+    if ( player->sim->debug )
+    {
+      expression::print_tokens( tokens, player->sim );
+    }
+
+    if ( auto e = expression::build_player_expression_tree( *player, tokens, optimize ) )
+    {
+      return e;
+    }
+
+    throw std::invalid_argument( fmt::format( "Unable to build player-expression tree from '{}'.",
+      expr_str ) );
+  }
+  catch ( const std::exception& )
+  {
+    std::throw_with_nested( std::runtime_error( fmt::format( "Cannot parse expression from '{}'",
+                                                            expr_str ) ) );
+  }
+}
+
 target_wrapper_expr_t::target_wrapper_expr_t(action_t& a, util::string_view name_str, util::string_view expr_str) :
   expr_t(name_str), action(a), suffix_expr_str(expr_str)
 {
@@ -1441,7 +1483,7 @@ double target_wrapper_expr_t::evaluate()
 
 player_t* target_wrapper_expr_t::target() const
 {
-  return action.target;
+  return action.get_expression_target();
 }
 
 #ifdef UNIT_TEST

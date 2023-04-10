@@ -40,7 +40,14 @@ const permanent_enchant_entry_t& permanent_enchant_entry_t::find(
 
   auto __upper = std::upper_bound( __data.begin(), __data.end(), name, [rank](
     const util::string_view& left, const permanent_enchant_entry_t& right ) {
-      return left < right.tokenized_name && rank < right.rank;
+      if ( left == right.tokenized_name )
+      {
+        return rank < right.rank;
+      }
+      else
+      {
+        return left < right.tokenized_name;
+      }
   } );
 
   auto span = util::span<const permanent_enchant_entry_t>( __lower, __upper );

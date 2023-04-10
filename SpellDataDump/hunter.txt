@@ -1,4 +1,4 @@
-SimulationCraft 1002-01 for World of Warcraft 10.0.2.46924 Live (hotfix 2022-12-11/46924)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -7,7 +7,7 @@ Spell Level      : 1
 Range            : 40 yards
 Velocity         : 60 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Bestial Wrath (19574 effects: #1, #4), Survival Hunter (137017 effect#6), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Thrill of the Hunt (257946 effect#1)
+Affecting spells : Bestial Wrath (19574 effects: #1, #4), Survival Hunter (137017 effect#6), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Thrill of the Hunt (257946 effect#1), Heaven's Nemesis (397118 effect#1)
 Family Flags     : 0, 121
 Attributes       : .x..x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ .......x ........ ........ 
@@ -205,8 +205,8 @@ Duration         : 20 seconds
 Category         : 33
 Proc Chance      : 100%
 Mechanic         : Flee
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 31
 Attributes       : ........ ........ x...x... ......x.   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -366,8 +366,8 @@ Range            : 100 yards
 Duration         : 60 seconds
 Proc Chance      : 101%
 Mechanic         : Freeze
-Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Family Flags     : 36
 Attributes       : ........ ........ ........ x..x..x.   .....x.. ..x..... ..x..... .x...... 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ..x...x. 
@@ -635,7 +635,7 @@ GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
-Category         : 1715: Marksmanship Hunter (137016 effect#9), Trueshot (288613 effect#3)
+Category         : 1715: Marksmanship Hunter (137016 effect#9), Trueshot (288613 effect#3), Tactical Reload (400472 effect#2)
 Azerite Power Id : 97
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Lock and Load (194594 effects: #1, #2, #3), Bullseye (204090 effect#1), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1), Hunter's Knowledge (378766 effect#1), Focused Aim (378767 effect#1), Lunge (378934 effect#2), Eagletalon's True Focus (389450 effect#1)
 Triggered by     : Lock and Load (194594)
@@ -651,7 +651,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Bouncy Chain Missiles (146), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=10651)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.55000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.55000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 #2 (id=101526)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
 Description      : A powerful aimed shot that deals $s1 Physical damage$?s260240[ and causes your next 1-$260242u ][]$?s342049&s260240[Chimaera Shots]?s260240[Arcane Shots][]$?s260240[ or Multi-Shots to deal $260242s1% more damage][].$?s260228[
@@ -941,7 +941,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=12247)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1038628)  : Apply Aura (6) | Unknown(531)
+#2 (id=1038628)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
 
@@ -1007,8 +1007,8 @@ Category         : 38
 Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ..x.x.x. x...x... x.x..x.. ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -1126,7 +1126,7 @@ Range            : 100 yards
 Duration         : 30 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
-Proc Flags       : ..x.x.x. x...x... ........ ........ 
+Proc Flags       : ..x.x.x. x...x... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell
 Family Flags     : 33
 Attributes       : ....x... ........ x....... .x......   ........ ..x..... ...x.... ..x..... 
@@ -1275,8 +1275,8 @@ Duration         : 6 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 100%
 Mechanic         : Snare
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : ....x... ........ ........ ......x.   ..x..... .x...... ........ .....x.. 
@@ -1786,7 +1786,7 @@ Effects          :
 Description      : When your pet is at or above $s3 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1806,7 +1806,7 @@ Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (desc=Racial Passive) (id=68976) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1827,7 +1827,7 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -1873,7 +1873,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Stampede (201594)
                    Family Flags: 99, 113
-#4 (id=1033046)  : Apply Aura (6) | Unknown(531)
+#4 (id=1033046)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage done by your pets by ${$s1}.1%.
 
@@ -1953,8 +1953,8 @@ Category         : 38
 Category Cooldown: 10 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ..x.x.x. x...x... x.x..x.. ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -2038,7 +2038,7 @@ Spell Type       : None
 Internal Cooldown: 100 seconds
 Proc Chance      : 10%
 Azerite Power Id : 8
-Proc Flags       : ........ ........ x....... ........ 
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2213,7 +2213,7 @@ Effects          :
 Description      : You command your Bird of Prey to do a trick. Larger birds may not be interested.
 
 Name             : Altered Form (desc=Racial Passive) (id=94293) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid
 Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
@@ -2325,7 +2325,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1524 | Target: Unknown(138)
 #2 (id=133047)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 5 yards | Target: Unknown(87)
-Description      : Fires a magical projectile, tethering the enemy and any other enemies within $s2 yards for $d, stunning them for $117526d if they move more than $s2 yards from the arrow.$?s321468[
+Description      : Fires a magical projectile, tethering the enemy and any other enemies within $s2 yds for $d, stunning them for $117526d if they move more than $s2 yds from the arrow.$?s321468[
 
 Targets stunned by Binding Shot deal $321469s1% less damage to you for $321469d after the effect ends.][]
 
@@ -2501,7 +2501,7 @@ School           : Physical
 Spell Type       : None
 Range            : 200 yards
 Proc Chance      : 100%
-Proc Flags       : ..x.x... ........ ........ ........ 
+Proc Flags       : ..x.x... ........ ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee
 Affecting spells : Beast Cleave (115939 effect#2)
 Family Flags     : 111
@@ -2620,7 +2620,6 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Unknown(24)
 #2 (id=139842)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16400 | PvP Coefficient: 1.00000 | Radius: 50 yards | Target: Unknown(24)
-Hotfixed         : AP Coefficient (0.14196 -> 0.164)
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
@@ -2841,8 +2840,8 @@ Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
 Mechanic         : Root
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2882,7 +2881,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Master Handler (389654), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Master Handler (389654), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -2941,15 +2940,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191140)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -2958,8 +2957,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Volley (260247)
                    Family Flags: 34
-#6 (id=1032354)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=1032354)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
@@ -2976,18 +2975,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18.5 | Scaled Value: 18.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
-Hotfixed         : Base Value (10 -> 21)
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 18.5 | Scaled Value: 18.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
-Hotfixed         : Base Value (10 -> 21)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 21)
+                   Base Value: 18.5 | Scaled Value: 18.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191136)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -3009,9 +3005,8 @@ Hotfixed         : Base Value (10 -> 21)
 #9 (id=260890)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1715 | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
-#10 (id=1032356)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 21)
+#10 (id=1032356)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 18.5 | Scaled Value: 18.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -3028,18 +3023,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
-Hotfixed         : Base Value (5 -> 10)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
-Hotfixed         : Base Value (5 -> 10)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 10)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191132)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -3050,9 +3042,8 @@ Hotfixed         : Base Value (5 -> 10)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Auto Shot (75)
                    Family Flags: 0
-#7 (id=260878)   : Apply Aura (6) | Unknown(531)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 10)
+#7 (id=260878)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 17.5 | Scaled Value: 17.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=260879)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=260880)   : Apply Aura (6) | Dummy (4)
@@ -3167,7 +3158,7 @@ Spell Level      : 28
 Range            : 30 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Proc Flags       : ...x.x.. ........ ........ ........ 
+Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
 Triggered by     : Molten Hide (159788)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -3193,7 +3184,7 @@ Spell Level      : 28
 Range            : 30 yards
 Internal Cooldown: 60 seconds
 Proc Chance      : 100%
-Proc Flags       : ...x.x.. ........ ........ ........ 
+Proc Flags       : ...x.x.. ........ ........ ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken
 Attributes       : ......x. ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3288,7 +3279,7 @@ Spell Level      : 14
 Range            : 100 yards
 Internal Cooldown: 120 seconds
 Proc Chance      : 101%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
@@ -3449,7 +3440,7 @@ Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 100%
 Mechanic         : Root
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Family Flags     : 36
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ..x..... ........ 
@@ -3489,7 +3480,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=228151)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.2 -> 0.16)
 Description      : $@spelldesc162488
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -3707,7 +3697,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=269119)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62700 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.78400 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 Description      : A quick shot that causes $sw2 Arcane damage.$?s260393[
 
 Arcane Shot has a $260393h% chance to reduce the cooldown of Rapid Fire by ${$260393m1/10}.1 sec.][]
@@ -3719,7 +3709,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ......x. ........ ........ ........ 
+Proc Flags       : ......x. ........ ........ ........   ........ ........ ........ ........   
                  : White Ranged
 Affecting spells : One with the Pack (199528 effect#1), Echoing Call (340876 effect#1)
 Family Flags     : 127
@@ -4155,7 +4145,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=273765)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=273766)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=739193)   : Dummy (3)
@@ -4333,7 +4323,7 @@ Effects          :
 #1 (id=283801)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84800 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.27200 | PvP Coefficient: 0.66700 | Target: Enemy (6)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -4364,7 +4354,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Wind Arrow (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Rapid Fire (257045), Multi-Shot (257620), Volley (260247), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Wailing Arrow (392058)
                    Family Flags: 3, 5, 11, 12, 17, 32, 34, 70, 73, 74, 76, 79, 99, 105, 119
-Hotfixed         : Affects Spells
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -4426,7 +4415,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ......x. ........ ........ 
+Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
                  : Magic Heal
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4454,7 +4443,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
+Proc Flags       : ....x... x.x.x.x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4470,7 +4459,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Steady Focus (193534)
                    Family Flags: 58
-Description      : Using Steady Shot twice in a row increases your Haste by $s1% for $193534d.
+Description      : Using Steady Shot twice in a row increases your haste by $s1% for $193534d.
 
 Name             : Steady Focus (id=193534) [Spell Family (9)] 
 Class            : Hunter
@@ -4558,7 +4547,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 8%
-Proc Flags       : ......x. x....... ........ ........ 
+Proc Flags       : ......x. x....... ........ ........   ........ ........ ........ ........   
                  : White Ranged, Yellow Ranged
 Family Flags     : 104
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4613,7 +4602,7 @@ Duration         : 60 seconds
 Cooldown         : 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Family Flags     : 69
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
@@ -4692,7 +4681,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ......x. x....... ........ ........ 
+Proc Flags       : ......x. x....... ........ ........   ........ ........ ........ ........   
                  : White Ranged, Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4735,7 +4724,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x...x... x....... ........ 
+Proc Flags       : ..x.x.x. x...x... x....... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4752,7 +4741,7 @@ Effects          :
 #2 (id=1007184)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Family Flags: 46
-Description      : Your movement speed is increased by $s2% anytime you have not attacked for ${$s1/1000} seconds.
+Description      : Your movement speed is increased by $s2% anytime you have not attacked for ${$s1/1000} sec.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -4783,7 +4772,7 @@ Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20
 Class            : Hunter
 School           : Physical
 Spell Type       : Magic
-Range            : 30 yards
+Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
@@ -4852,7 +4841,7 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), No Pushback (207), Always Cast Log (255), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297313)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc199530
 
 Name             : Fury of the Eagle (id=203413) [Spell Family (9)] 
@@ -4860,7 +4849,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : Melee
 Range            : 8 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lunge (378934 effect#2), Ruthless Marauder (385718 effects: #1, #3)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lunge (378934 effect#2), Ruthless Marauder (385718 effect#1)
 Triggered by     : Fury of the Eagle (203415)
 Family Flags     : 101, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4874,7 +4863,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.93200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -4886,7 +4875,8 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Affecting spells : Ruthless Marauder (385718 effects: #1, #3)
+Labels           : 2452: Ruthless Marauder (385718 effect#3)
+Affecting spells : Ruthless Marauder (385718 effect#1)
 Family Flags     : 101
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4910,7 +4900,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 203413 | Target: Self (1)
 Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*9} Physical damage over $d. Critical strike chance increased by $s3% against any target below $s4% health. Deals reduced damage beyond $s5 targets.
 
-Kill Command cooldown resets reduce the cooldown of Fury of the Eagle by ${$m2/1000}.1 sec$?s385718[ and the cooldown of Wildfire Bomb and Flanking Strike by ${$m1/1000}.1 sec][].
+Kill Command cooldown resets reduce the cooldown of Fury of the Eagle by ${$m2/1000}.1 sec$?s385718[ and Fury of the Eagle critical strikes reduce the cooldown of Wildfire Bomb and Flanking Strike by ${$m1/1000}.1 sec][].
 
 Name             : Bullseye (id=204089) [Spell Family (9), Passive] 
 Talent Entry     : Marksmanship [tree=spec, row=8, col=4, max_rank=2, req_points=20]
@@ -4920,7 +4910,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x...x... x....... ........ 
+Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5268,7 +5258,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=899838)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Fires an explosive shot at your target. After $t1 sec, the shot will explode, dealing $212680s1 Fire damage to all enemies within $212680A1 yards. Deals reduced damage beyond $s2 targets.
+Description      : Fires an explosive shot at your target. After $t1 sec, the shot will explode, dealing $212680s1 Fire damage to all enemies within $212680A1 yds. Deals reduced damage beyond $s2 targets.
 Tooltip          : Exploding for $212680s1 Fire damage after $t1 sec.
 
 Name             : Butchery (id=212436) [Spell Family (9)] 
@@ -5296,7 +5286,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=314957)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.88000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.97000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=740187)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000
 #3 (id=740188)   : Dummy (3)
@@ -5326,7 +5316,6 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=315406)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.17000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (1.885 -> 2.17)
 Description      : $@spelldesc212431
 
 Name             : Scatter Shot (id=213691) [Spell Family (9)] 
@@ -5341,8 +5330,8 @@ Velocity         : 60 yards/sec
 Duration         : 4 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
+Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #2)
 Family Flags     : 1, 79, 121
 Attributes       : ....x... ........ x...x... ........   ........ ........ ........ ........ 
@@ -5393,7 +5382,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.38600 | PvP Coefficient: 0.90700 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d$?s257944[ and  increases your critical strike chance by $257946s1% for $257946d, stacking up to $257946u $Ltime:times;][].
@@ -5432,7 +5421,7 @@ Duration         : 4 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Mechanic         : Snare
-Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x...... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting spells : Mastery: Sniper Training (193468 effects: #2, #4), Magnetized Blasting Cap Launcher (226841 effects: #1, #2)
 Triggered by     : Bursting Shot (186387)
@@ -5810,7 +5799,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Trick Shots (257622 effect#2), Streamline (260367 effects: #1, #2), Double Tap (260402 effects: #1, #3), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Trick Shots (257622 effect#2), Streamline (260367 effects: #1, #2), Double Tap (260402 effects: #1, #3), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1), Tactical Reload (400472 effect#1)
 Family Flags     : 1, 118, 121
 Attributes       : .x...... ........ x....... ........   ..x...x. .x...... ........ .....x.. 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -5826,7 +5815,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=738873)   : Apply Aura (6) | Periodic Dummy (226): every 0.33 seconds
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Shoot a stream of $s1 shots at your target over $d, dealing a total of ${$m1*$257045sw1} Physical damage.  Usable while moving.$?s260367[
+Description      : Shoot a stream of $s1 shots at your target over $d, dealing a total of ${$m1*$257045sw1} Physical damage. Usable while moving.$?s260367[
 
 Rapid Fire causes your next Aimed Shot to cast $342076s1% faster.][]
 
@@ -5854,7 +5843,7 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Uses Ranged Slot (1), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Durability Loss (101), Not a Proc (105), Bouncy Chain Missiles (146), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45600 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 Description      : $@spelldesc257044
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -5916,7 +5905,7 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Duration (170), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=480918)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41200 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.47000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Fires several missiles, hitting your current target and all enemies within $A1 yards for $s1 Physical damage. Deals reduced damage beyond $2643s1 targets.$?s260393[
 
 Multi-Shot has a $260393h% chance to reduce the cooldown of Rapid Fire by ${$260393m1/10}.1 sec.][]
@@ -5957,7 +5946,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Family Flags     : 88
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6004,7 +5993,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6383,7 +6372,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6413,7 +6402,7 @@ Spell Type       : None
 Spell Level      : 1
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6442,7 +6431,7 @@ Duration         : 15 seconds
 Internal Cooldown: 0.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Affecting spells : Precise Shots (260240 effects: #1, #2), Powerful Precision (340033 effects: #1, #2)
 Family Flags     : 16
@@ -6599,7 +6588,7 @@ Spell Type       : None
 Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 100%
-Proc Flags       : ....x... x....... ........ ........ 
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged
 Affecting spells : Tip of the Spear (260285 effect#1)
 Triggered by     : Kill Command (259489)
@@ -6629,7 +6618,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
-Proc Flags       : ....x... x....... ..x..... ........ 
+Proc Flags       : ....x... x....... ..x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -6706,7 +6695,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 30%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6730,7 +6719,7 @@ Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6754,7 +6743,6 @@ Description      : $@spelldesc260393
 Tooltip          : Your next Aimed Shot will have $s1% increased critical strike chance, or your next Rapid Fire will deal a critical strike with each shot.
 
 Name             : Double Tap (id=260402) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6795,7 +6783,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -6808,7 +6796,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485543)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1025016)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $s2 Focus spent reduces the cooldown of Trueshot by ${$m1/1000}.1 sec.
@@ -7403,7 +7391,7 @@ Spell Level      : 14
 Range            : 100 yards
 Internal Cooldown: 120 seconds
 Proc Chance      : 101%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
@@ -7460,7 +7448,7 @@ Spell Level      : 14
 Range            : 100 yards
 Internal Cooldown: 120 seconds
 Proc Chance      : 101%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
@@ -7853,7 +7841,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=709120)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc259495
 
 Name             : Wildfire Bomb (id=265163) [Spell Family (9)] 
@@ -7938,6 +7926,8 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   x....... ........ ........ ........   
+                 : Target Dies
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -8099,11 +8089,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Log (8), Not In Spellbook (143)
 Effects          :
-#1 (id=713555)   : Apply Aura (6) | Unknown(493)
+#1 (id=713555)   : Apply Aura (6) | Hunter Animal Companion (493)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 273277 | Target: Self (1)
 #2 (id=740947)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities.
+Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities and both of your pets deal $s2% reduced damage.
 
 Name             : Chakrams (id=267605) [Spell Family (9)] 
 Class            : Hunter
@@ -8182,7 +8172,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Azerite Power Id : 43
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Winds of War (269214)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8409,7 +8399,7 @@ Spell Type       : None
 Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Azerite Power Id : 83
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Triggered by     : Impassive Visage (270117)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -8434,7 +8424,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x....... ........ ........ 
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -8638,7 +8628,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=718207)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc259495
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8765,7 +8755,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=719192)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc270323
 
 Name             : Pheromone Bomb (id=270332) [Spell Family (9)] 
@@ -8788,7 +8778,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=719195)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc270323
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -8859,7 +8849,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=719203)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc270335
 
 Name             : Shrapnel Bomb (id=270339) [Spell Family (9)] 
@@ -8870,7 +8860,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
 Proc Chance      : 100%
-Proc Flags       : .....x.. .x...... ........ ........ 
+Proc Flags       : .....x.. .x...... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Yellow Ranged Taken
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Improved Wildfire Bomb (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3), Lunge (378934 effect#2), Tactical Advantage (378951 effects: #2, #3)
 Family Flags     : 22, 106
@@ -8885,7 +8875,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=719204)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=719205)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc270335
@@ -8914,7 +8904,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=719209)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06300 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc270335
 Tooltip          : Suffering $w1 Bleed damage every $t1 sec.
 
@@ -8925,7 +8915,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
+Proc Flags       : ....x... x.x.x.x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9036,7 +9026,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=721015)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc271045
 
 Name             : Volatile Bomb (id=271049) [Spell Family (9)] 
@@ -9058,7 +9048,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=721016)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc271045
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
@@ -9275,9 +9265,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Do Not Auto Select Target with Initiates Combat (220), Periodic Can Crit (265), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=722198)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=722199)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Fire a shot that poisons your target, causing them to take $s1 Nature damage instantly and an additional $o2 Nature damage over $d.$?s260241[
 
 Serpent Sting fires arrows at $260241s1 additional $Lenemy:enemies; near your target.][]$?s378014[
@@ -9359,7 +9349,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Wildfire Cluster (272742)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -9501,7 +9491,7 @@ Attributes       : ....x..x ........ x....... x..x....   .....x.. ........ .x...
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Channeling (338), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
 Effects          :
-#1 (id=724776)   : Unknown(260)
+#1 (id=724776)   : Summon Stabled Pet (260)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 
 Name             : Latent Poison (id=273283) [Spell Family (9), Passive] 
@@ -9529,7 +9519,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 100%
-Proc Flags       : ....x... x....... ..x..... ........ 
+Proc Flags       : ....x... x....... ..x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Periodic
 Triggered by     : Latent Poison (273283)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -9705,7 +9695,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ......x. x....... ........ ........ 
+Proc Flags       : ......x. x....... ........ ........   ........ ........ ........ ........   
                  : White Ranged, Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10095,7 +10085,7 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 498
-Proc Flags       : ....x... x...x... x.x..... ........ 
+Proc Flags       : ....x... x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -10126,8 +10116,8 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Azerite Power Id : 499
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -10158,7 +10148,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 503
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10189,8 +10179,8 @@ Spell Type       : None
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 500
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -10219,8 +10209,8 @@ Internal Cooldown: 10 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 501
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10247,7 +10237,7 @@ Internal Cooldown: 20 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5
 Azerite Power Id : 502
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11176,8 +11166,8 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Azerite Power Id : 577
-Proc Flags       : ........ ........ ........ ....x... 
-                 
+Proc Flags       : ........ ........ ........ ....x...   ........ ........ ........ ........   
+                 : Encounter Start
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11645,7 +11635,8 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Command your pet to tear into your target, causing your target to bleed for $<damage> over $321538d and increase all damage taken from your pet by $321538s2% for $321538d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}
+$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]
+$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Bloodshed (id=321538) [Spell Family (9)] 
 Class            : Hunter
@@ -11675,7 +11666,8 @@ Description      : $@spelldesc321530
 Tooltip          : Bleeding for $w1 Physical damage every $t1 sec.
 Taking $s2% increased damage from the Hunter's pet.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
-$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}
+$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]
+$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Flayed Shot (desc=Venthyr) (id=324149) [Spell Family (9)] 
 Class            : Hunter
@@ -11720,7 +11712,7 @@ Range            : 40 yards
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11907,7 +11899,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Labels           : 1063: Spirit Attunement (339109 effect#2)
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lunge (378934 effect#2)
 Triggered by     : Wild Spirits (328231)
@@ -11988,7 +11980,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : .......x ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12055,7 +12047,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 50%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12077,7 +12069,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x....... ........ 
+Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered by     : Flamewaker's Cobra Sting (336822), Cobra Sting (378750)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -12101,7 +12093,7 @@ Name             : Qa'pla, Eredun War Order (id=336830) [Spell Family (9), Passi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12148,7 +12140,7 @@ Name             : Eagletalon's True Focus (id=336849) [Spell Family (9), Passiv
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12205,7 +12197,7 @@ Name             : Surging Shots (id=336867) [Spell Family (9), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 15%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12248,7 +12240,7 @@ Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9)
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -12270,7 +12262,7 @@ Spell Type       : None
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Secrets of the Unblinking Vigil (336878)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -12294,7 +12286,7 @@ Name             : Wildfire Cluster (id=336895) [Spell Family (9), Passive]
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -12316,7 +12308,7 @@ Name             : Rylakstalker's Confounding Strikes (id=336901) [Spell Family 
 School           : Physical
 Spell Type       : None
 Proc Chance      : 15%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -12336,7 +12328,7 @@ Name             : Latent Poison Injectors (id=336902) [Spell Family (9), Passiv
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x.x..... ........ 
+Proc Flags       : ........ x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -12379,7 +12371,7 @@ Name             : Butcher's Bone Fragments (id=336907) [Spell Family (9), Passi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -12401,7 +12393,7 @@ Spell Type       : None
 Duration         : 12 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Triggered by     : Butcher's Bone Fragments (336907), Wilfred's Sigil of Superior Summoning (337020)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -12473,7 +12465,7 @@ Range            : 40 yards
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12587,6 +12579,8 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 170 (values=10, 11, 12, 13.5, 14.5, 16, 17.5, 19, 20.5, 22, 23.5, 25, 26.5, 28, 30)
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12647,7 +12641,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 100%
 Conduit Id       : 175 (values=5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19)
-Proc Flags       : ....x... x....... ........ ........ 
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12779,7 +12773,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 189 (values=3, 3.25, 3.5, 4, 4.25, 4.5, 4.75, 5.25, 5.5, 5.75, 6, 6.25, 6.5, 6.75, 7)
-Proc Flags       : ......x. ........ ........ ........ 
+Proc Flags       : ......x. ........ ........ ........   ........ ........ ........ ........   
                  : White Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13006,7 +13000,7 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 252 (values=5, 5.33, 5.66, 6, 6.33, 6.66, 7, 7.33, 8.66, 9, 9.33, 9.66, 10, 10.33, 10.66)
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13062,12 +13056,12 @@ Family Flags     : 1, 2, 39, 105, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ x....... ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
+                 : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=842821)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
@@ -13082,7 +13076,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Affecting spells : Streamline (260367 effect#3)
 Family Flags     : 52
@@ -13188,7 +13182,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976)
                    Family Flags: 11
 Description      : Kill Shot's critical damage is increased by $s1%.
@@ -13214,7 +13208,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868192)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81300 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 Description      : $@spelldesc342049
 
 Name             : Chimaera Shot (id=344121) [Spell Family (9)] 
@@ -13238,7 +13232,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Uses Ranged Slot (1), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Treat as Area Effect (175), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=868193)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81300 | PvP Coefficient: 1.16000 | Target: Enemy (6)
 Description      : $@spelldesc342049
 
 Name             : Spore Cloud (desc=Special Ability) (id=344347) [Spell Family (9)] 
@@ -13414,8 +13408,8 @@ Spell Type       : Magic
 Spell Level      : 48
 Duration         : 30 seconds
 Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Proc Flags       : ..x.x.x. x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
+                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Affecting spells : Any Means Necessary (388114 effects: #1, #2, #3)
 Triggered by     : The Hunt (323639)
 Family Flags     : 82
@@ -13440,8 +13434,8 @@ Spell Type       : None
 Spell Level      : 60
 Proc Chance      : 101%
 Conduit Id       : 282 (values=1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400)
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Magic Heal
+Proc Flags       : ........ ......x. ........ ........   ..x..... ........ ........ ........   
+                 : Magic Heal, Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13546,7 +13540,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Triggered by     : Pact of the Soulstalkers (364739)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -13588,7 +13582,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Bag of Munitions (364741)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -13609,7 +13603,7 @@ Name             : Pouch of Razor Fragments (id=356618) [Spell Family (9), Passi
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Pouch of Razor Fragments (364740)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -13636,7 +13630,7 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13648,7 +13642,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Reset cooldown upon ending an encounter (333)
 Effects          :
-#1 (id=896617)   : Unknown(188)
+#1 (id=896617)   : Summon Multiple Hunter Pets (188)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Radius: 0 - 55 yards | Target: At Enemy (53) -> Unknown(74)
 #2 (id=899335)   : Apply Aura (6) | Periodic Trigger Spell (23): Call of the Wild every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 361582 | Target: Self (1)
@@ -13715,7 +13709,6 @@ $petDmg=${$360969s1*0.6}
 $combinedDmg=${$<playerDmg>+$<petDmg>}
 
 Name             : Spearhead (id=360966) [Spell Family (9)] 
-Hotfixed         : Proc Flags (16 -> 272), Attributes
 Talent Entry     : Survival [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
@@ -13727,10 +13720,10 @@ Duration         : 12 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... x....... ........ ........ 
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged
-Affecting spells : Deadly Duo (378962 effect#2)
-Family Flags     : 94
+Affecting spells : Hunter (137014 effect#3), Deadly Duo (378962 effect#2)
+Family Flags     : 1, 94
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13822,7 +13815,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=899570)   : Unknown(188)
+#1 (id=899570)   : Summon Multiple Hunter Pets (188)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> Unknown(74)
 #2 (id=899759)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13836,7 +13829,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13859,7 +13852,7 @@ Spell Type       : None
 Range            : 100 yards
 Duration         : 3 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Affecting spells : Mastery: Sniper Training (193468 effects: #2, #4)
 Triggered by     : Coordinated Assault (361736)
@@ -13944,8 +13937,8 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x.x.x... .....x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Trap Triggered
+Proc Flags       : ....x... x.x.x... .....x.. ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Helpful Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -13999,6 +13992,8 @@ Duration         : 8 seconds
 Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14022,7 +14017,7 @@ School           : Nature
 Spell Type       : None
 Duration         : 20 seconds
 Proc Chance      : 101%
-Proc Flags       : ......x. x...x... x.x..... ........ 
+Proc Flags       : ......x. x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14065,8 +14060,8 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ....x... 
-                 
+Proc Flags       : ........ ........ ........ ....x...   ........ ........ ........ ........   
+                 : Encounter Start
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -14217,7 +14212,7 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Line of Sight (66), DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002565)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1002566)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -14316,7 +14311,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x.x..... ........ 
+Proc Flags       : ........ x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -14399,7 +14394,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
-Description      : Barbed shot damage increased by $s1%.
+Description      : Barbed Shot damage increased by $s1%.
 
 Name             : Kill Cleave (id=378207) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Beast Mastery [tree=spec, row=5, col=3, max_rank=1, req_points=8]
@@ -14417,7 +14412,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
@@ -14446,7 +14441,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14469,7 +14464,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered by     : Hunter's Prey (378210)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -14495,7 +14490,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14519,7 +14514,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 25%
-Proc Flags       : ....x... x.x.x.x. x....... ........ 
+Proc Flags       : ....x... x.x.x.x. x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14652,7 +14647,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -14743,7 +14738,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 15%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14767,7 +14762,7 @@ Spell Level      : 1
 Duration         : 12 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Deathblow (378769)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14834,7 +14829,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14875,7 +14870,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14941,12 +14936,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
-Hotfixed         : Base Value (10 -> 25)
 #4 (id=1007413)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Trick Shots (257621)
                    Family Flags: 59
-Hotfixed         : Base Value (10 -> 25)
 Description      : Trick Shots now ricochets to $s1 fewer targets, but each ricochet deals an additional $s3% damage.
 
 Name             : Light Ammo (id=378913) [Spell Family (9), Passive, Hidden] 
@@ -15273,25 +15266,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $388998s1% increased damage, and shred up to $388998s2 targets near your Kill Shot target for $388998s3% of the damage dealt by Kill Shot over $385638d.
 
-Name             : Salvo (id=384791) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=10, col=1, max_rank=1, req_points=20]
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
-Effects          :
-#1 (id=1017648)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Multi-Shot and Volley now also apply Explosive Shot to up to $s1 $Ltarget:targets; hit. This can only occur once every $388909d.
-
 Name             : Hunter's Avoidance (id=384799) [Spell Family (9), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Hunter
@@ -15314,11 +15288,14 @@ Description      : Damage taken from area of effect attacks reduced by $s1%.
 Name             : Rejuvenating Wind (id=385539) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(4, 8)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15331,7 +15308,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018855)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Exhilaration heals you for an additional ${$s1}.1% of your maximum health over $385540d.
+#2 (id=1054213)  : Apply Aura (6) | Modify Max Health% (133)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Maximum health increased by $s2%, and Exhilaration now also heals you for an additional ${$s1}.1% of your maximum health over $385540d.
 
 Name             : Rejuvenating Wind (id=385540) [Spell Family (9)] 
 Class            : Hunter
@@ -15454,7 +15433,7 @@ School           : Physical
 Spell Type       : None
 Internal Cooldown: 0.1 seconds
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -15472,10 +15451,9 @@ Effects          :
                    Family Flags: 101
 #2 (id=1019179)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=1019180)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Fury of the Eagle (203413), Fury of the Eagle (203415)
-                   Family Flags: 101
+#3 (id=1019180)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2452 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fury of the Eagle (203415)
 Description      : Fury of the Eagle now gains bonus critical strike chance against targets below ${$s2+$s1}% health, and Fury of the Eagle critical strikes reduce the cooldown of Wildfire Bomb and Flanking Strike by ${$m3/1000}.1 sec.
 
 Name             : Bloody Claws (id=385737) [Spell Family (9), Passive, Hidden] 
@@ -15640,7 +15618,8 @@ Effects          :
 #1 (id=1021278)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1021279)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc386876
 Tooltip          : Critical strike chance increased by $s1%. Critical damage dealt increased by $s2%.
 
@@ -15650,7 +15629,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -15699,7 +15678,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1031629)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(27)
-Description      : Increase the maximum health of you and your pet by $s1% for $d.
+Description      : Increase the maximum health of you and your pet by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Lone Survivor (id=388039) [Spell Family (9), Passive] 
@@ -15819,27 +15798,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1024857)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While the Sentinel Owl is active, your party gains $393777s1% Leech.
-
-Name             : Salvo (id=388909) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Type       : None
-Duration         : 45 seconds
-Attributes       : ........ ........ ........ ..x..x.x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
-Effects          :
-#1 (id=1024884)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc384791
-Tooltip          : Unable to benefit from Salvo.
+Description      : While the Sentinel Owl is active, your party gains $393777s1% leech.
 
 Name             : Razor Fragments (id=388998) [Spell Family (9)] 
 Class            : Hunter
@@ -15847,7 +15806,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -15860,7 +15819,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1025023)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.80000 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976)
                    Family Flags: 11
 #2 (id=1025024)  : Apply Aura (6) | Dummy (4)
@@ -15891,7 +15850,6 @@ Effects          :
 Description      : Each additional target your Rapid Fire or Aimed Shot ricochets to from Trick Shots increases the damage of Multi-Shot by $389020s1% for $389020d, stacking up to $389020u times. The duration of this effect is not refreshed when gaining a stack.
 
 Name             : Bulletstorm (id=389020) [Spell Family (9)] 
-Hotfixed         : Proc Flags (256 -> 0)
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15947,7 +15905,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ..x...x. ........ ........ 
+Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -16169,7 +16127,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Proc Chance      : 101%
 Real PPM         : 4 (Haste multiplier)
-Proc Flags       : ....x... x....... ........ ........ 
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -16206,17 +16164,17 @@ Family Flags     : 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
                  : ........ ........ ........ ........   
-                 : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
+                 : Bouncy Chain Missiles (146), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=1026894)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1026895)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc390231
 Tooltip          : Slowed by $s2%.
 
@@ -16226,7 +16184,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 15%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -16284,7 +16242,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Aura Points On Client (268)
 Effects          :
 #1 (id=1029936)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.60000 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
 Description      : $@spelldesc392053
 Tooltip          : Critical damage dealt increased by $s1%.
@@ -16345,7 +16303,7 @@ Attributes       : .x..x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1029946)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 392058 | Target: Enemy (6)
-Description      : Fire an enchanted arrow, dealing $392058s1 Shadow damage to your target and an additional $392058s2 Shadow damage to all enemies within $392058A2 yds of your target. Non-Player targets struck by a Wailing Arrow are silenced for $392061d.$?s389865[
+Description      : Fire an enchanted arrow, dealing $392058s1 Shadow damage to your target and an additional $392058s2 Shadow damage to all enemies within $392058A2 yds of your target. Non-Player targets struck by a Wailing Arrow have their spellcasting interrupted and are silenced for $392061d.$?s389865[
 
 Wailing Arrow resets the cooldown of Rapid Fire and generates $389865s2 $Lcharge:charges; of Aimed Shot.][]$?s389866[
 
@@ -16384,7 +16342,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x....... ........ 
+Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered by     : Cobra Sting (378750)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -16431,7 +16389,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1031630)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increase the maximum health of you and your pet by $s1% for $d.
+Description      : Increase the maximum health of you and your pet by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Entrapment (id=393344) [Spell Family (9), Passive] 
@@ -16461,7 +16419,7 @@ Range            : 100 yards
 Duration         : 4 seconds
 Proc Chance      : 101%
 Mechanic         : Root
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ xx...... ..x..... 
@@ -16485,7 +16443,7 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
+Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -16517,7 +16475,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 10%
-Proc Flags       : ........ ....x... ........ ........ 
+Proc Flags       : ........ ....x... ........ ........   ........ ........ ........ ........   
                  : Generic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -16540,7 +16498,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -16565,12 +16523,11 @@ Effects          :
 Description      : Barbed Shot damage increased by $s1% and Barbed Shot increases damage of your next Kill Command by $394298s1%.
 
 Name             : Hunter Marksmanship Class Set 2pc (id=393648) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
@@ -16584,14 +16541,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1032733)  : Apply Aura (6) | Proc Trigger Spell (42): Find The Mark
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 394366 | Target: Self (1)
-Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d sec.
+Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot critical hits cause your next Aimed Shot to cause the target to bleed for $394366s1% of damage dealt over $394371d.
 
 Name             : Hunter Marksmanship Class Set 4pc (id=393649) [Passive, Hidden] 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ......x. ........ ........ ........ 
+Proc Flags       : ......x. ........ ........ ........   ........ ........ ........ ........   
                  : White Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -16632,7 +16589,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
+Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
                  : Yellow Melee
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -16678,7 +16635,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -16707,7 +16664,7 @@ Class            : Hunter
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x.x..... ........ 
+Proc Flags       : ........ x...x... x.x..... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ..x..... 
@@ -16749,7 +16706,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x....... ........ 
+Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered by     : Hunter Beast Mastery Class Set 4pc (393647)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -16763,7 +16720,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033805)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : $@spelldesc393647
@@ -16776,7 +16733,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Hunter Marksmanship Class Set 2pc (393648)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -16823,7 +16780,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ x....... ........ ........ 
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
                  : Yellow Ranged
 Triggered by     : Hunter Marksmanship Class Set 4pc (393649)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -16850,8 +16807,8 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
+Proc Flags       : ....x... x....... ........ ........   ........ ........ ........ ........   
+                 : Yellow Melee, Yellow Ranged
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16883,17 +16840,17 @@ Duration         : 12 seconds
 Labels           : 2405: Deadly Duo (378962 effect#1), Deadly Duo (378962 effect#3)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... x....... ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355)
+                 : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1040019)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
@@ -16906,5 +16863,51 @@ Effects          :
 Description      : $@spelldesc378962
 Tooltip          : Damage of your next Kill Command increased by $s1%.
 Kill Command cooldown reset chance increased by $s2%.
+
+Name             : Salvo (id=400456) [Spell Family (9)] 
+Talent Entry     : Marksmanship [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Cooldown         : 45 seconds
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ xx...... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Aura Cancel (31), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1045506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your next Multi-Shot or Volley now also applies Explosive Shot to up to $s1 $Ltarget:targets; hit. 
+Tooltip          : Your next Multi-Shot or Volley now also applies Explosive Shot to up to $s1 $Ltarget:targets; hit.
+
+Name             : Tactical Reload (id=400472) [Spell Family (9), Passive] 
+Talent Entry     : Marksmanship [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=1045535)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Rapid Fire (257044)
+                   Family Flags: 118
+#2 (id=1045536)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1715 | Target: Self (1)
+                   Affected Spells (Category): Aimed Shot (19434)
+Description      : Aimed Shot and Rapid Fire cooldown reduced by $s1%.
 
 

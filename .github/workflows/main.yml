@@ -11,31 +11,27 @@ on:
       - 'casc_extract/**'
 
 env:
-  MAIN_BRANCH: dragonflight # env is not accessible at jobs.if context so must be manually edited in ubuntu-clang-run and simc-tests
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_COMPRESS: true # always enable ccache compression
   ccache-generation: 0 # bump if you need to "clean" ccache
 
 jobs:
-  ubuntu-gcc:
-    name: ubuntu-${{ matrix.cc }}-C++${{ matrix.cppVersion }}
+  ubuntu-gcc-build:
+    name: ubuntu-${{ matrix.cc }}-cpp${{ matrix.cppVersion }}-build
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        cc: [gcc-12, gcc-7]
+        cc: [gcc-12, gcc-9]
         cppVersion: [17, 20]
         include:
-          - cc: gcc-7
-            cxx: g++-7
-            packages: gcc-7 g++-7
-            os: ubuntu-18.04
+          - cc: gcc-9
+            cxx: g++-9
+            packages: gcc-9 g++-9
+            os: ubuntu-20.04
           - cc: gcc-12
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
-        exclude:
-          - cc: gcc-7
-            cppVersion: 20   
 
     steps:
       - uses: actions/checkout@v3
@@ -50,13 +46,12 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build lld ccache ${{ matrix.packages }}
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
 
       - name: Configure
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
               -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }}
-              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
               -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
 
@@ -69,29 +64,33 @@ jobs:
           ccache -z
           ninja -C '${{ runner.workspace }}/b/ninja'
           ccache -s
-
-      - name: Smoke Test
-        if: ${{ github.ref_name == env.MAIN_BRANCH }}
-        run: ${{ runner.workspace }}/b/ninja/simc $SIMC_PROFILE iterations=20
-              output=/dev/null html=/dev/null json2=/dev/null
-
-      - name: Spell Query
-        if: ${{ github.ref_name == env.MAIN_BRANCH }}
-        run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
-
+          
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+          key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
     name: ubuntu-clang-build
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         cppVersion: [17, 20]
+        cc: [clang++-12, clang++-14]
+        include:
+          - cc: clang++-12
+            os: ubuntu-20.04
+          - cc: clang++-14
+            os: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
-        env: { ccache-prefix: 'ubuntu-clang-12-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-${{ matrix.cc }}-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -107,7 +106,7 @@ jobs:
           UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
         run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
               -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=clang++-12 -DCMAKE_C_COMPILER=clang-12
+              -DCMAKE_CXX_COMPILER=${{ matrix.cc }}
               -DCMAKE_CXX_FLAGS="-Og -ffile-prefix-map=${{ runner.workspace }}/=/
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
@@ -126,25 +125,23 @@ jobs:
           ccache -s
 
       - uses: actions/cache@v3
-        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
-
-  ubuntu-clang-run:
-    if: ${{ github.ref_name == 'dragonflight' }}
-    name: ubuntu-clang-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
-    runs-on: ubuntu-20.04
-    needs: [ ubuntu-clang-build ]
+  ubuntu-run:
+    name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build, ubuntu-gcc-build ]
 
     strategy:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
+        compiler: [clang++-12, clang++-14, gcc-9, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -155,6 +152,14 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
+          - compiler: clang++-12
+            os: ubuntu-20.04
+          - compiler: clang++-14
+            os: ubuntu-22.04
+          - compiler: gcc-12
+            os: ubuntu-22.04
+          - compiler: gcc-9
+            os: ubuntu-20.04
 
     steps:
       - uses: actions/cache@v3
@@ -163,7 +168,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
         env:
@@ -171,9 +176,8 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
-    if: ${{ github.ref_name == 'dragonflight' }}
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
 
     strategy:
@@ -181,6 +185,7 @@ jobs:
       matrix:
         cppVersion: [17]
         tier: [ Tier29 ]
+        compiler: [clang++-14]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -196,6 +201,9 @@ jobs:
             Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
+        include:
+          - compiler: clang++-14
+            os: ubuntu-22.04
 
     steps:
       - uses: actions/cache@v3
@@ -204,7 +212,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
         run: pip3 install -r ${{ github.workspace }}/tests/requirements.txt
@@ -228,7 +236,6 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
-        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -265,5 +272,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: ${{ matrix.runSmokeTest && github.ref_name == env.MAIN_BRANCH }}
+        if: ${{ matrix.runSmokeTest }}
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1

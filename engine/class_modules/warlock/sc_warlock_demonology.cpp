@@ -27,7 +27,7 @@ public:
         p()->procs.portal_summon->occur();
 
         if ( p()->talents.guldans_ambition->ok() )
-          p()->buffs.nether_portal_total->increment();
+          p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
@@ -35,7 +35,7 @@ public:
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
         }
       }
     }
@@ -48,6 +48,11 @@ public:
     if ( p()->talents.from_the_shadows->ok() && data().affected_by( p()->talents.from_the_shadows_debuff->effectN( 1 ) ) )
     {
       m *= 1.0 + td( t )->debuffs_from_the_shadows->check_value();
+    }
+
+    if ( p()->talents.the_houndmasters_stratagem->ok() && data().affected_by( p()->talents.the_houndmasters_stratagem_debuff->effectN( 1 ) ) )
+    {
+      m *= 1.0 + td( t )->debuffs_the_houndmasters_stratagem->check_value();
     }
 
     return m;
@@ -66,10 +71,21 @@ public:
 
 struct hand_of_guldan_t : public demonology_spell_t
 {
+  struct umbral_blaze_dot_t : public demonology_spell_t
+  {
+    umbral_blaze_dot_t( warlock_t* p ) : demonology_spell_t( "Umbral Blaze", p, p->talents.umbral_blaze_dot )
+    {
+      background = dual = true;
+      hasted_ticks = false;
+      base_td_multiplier = 1.0 + p->talents.umbral_blaze->effectN( 2 ).percent();
+    }
+  };
+
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
     timespan_t meteor_time;
+    umbral_blaze_dot_t* blaze;
 
     hog_impact_t( warlock_t* p )
       : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
@@ -78,6 +94,12 @@ struct hand_of_guldan_t : public demonology_spell_t
     {
       aoe = -1;
       dual = true;
+
+      if ( p->talents.umbral_blaze->ok() )
+      {
+        blaze = new umbral_blaze_dot_t( p );
+        add_child( blaze );
+      }
     }
 
     timespan_t travel_time() const override
@@ -126,7 +148,14 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }        
+        }
+
+        // Umbral Blaze only triggers on primary target
+        if ( p()->talents.umbral_blaze->ok() && rng().roll( p()->talents.umbral_blaze->effectN( 1 ).percent() ) )
+        {
+          blaze->execute_on_target( s->target );
+          p()->procs.umbral_blaze->occur();
+        }
       }
     }
   };
@@ -181,7 +210,7 @@ struct hand_of_guldan_t : public demonology_spell_t
     }
 
     if ( p()->talents.dread_calling->ok() )
-      p()->buffs.dread_calling->increment( shards_used );
+      p()->buffs.dread_calling->trigger( shards_used );
   }
 
   void consume_resource() override
@@ -246,6 +275,11 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+    {
+      p()->cooldowns.grimoire_felguard->adjust( timespan_t::from_seconds( -p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 2 ).base_value() ) );
+    }
+
     if ( p()->talents.power_siphon->ok() )
       p()->buffs.power_siphon->decrement();
 
@@ -260,9 +294,8 @@ struct demonbolt_t : public demonology_spell_t
 
     p()->buffs.stolen_power_final->expire();
 
-    // 2022-10-17 Percent chance for this effect is not in spell data!
-    // TOCHECK with further testing.
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.15 ) )
+    // 2023-01-05 Percent chance for this effect is still not in spell data! Update since beta appears to have adjusted it to 30%
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B4 ) && rng().roll( 0.30 ) )
     {
       p()->buffs.blazing_meteor->trigger();
       p()->procs.blazing_meteor->occur();
@@ -292,6 +325,9 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T29, B2 ) )
       m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T29, B2 )->effectN( 1 ).percent();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B2 ) )
+      m *= 1.0 + p()->sets->set( WARLOCK_DEMONOLOGY, T30, B2 )->effectN( 1 ).percent();
 
     return m;
   }
@@ -355,7 +391,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
         p()->procs.portal_summon->occur();
 
         if ( p()->talents.guldans_ambition->ok() )
-          p()->buffs.nether_portal_total->increment();
+          p()->buffs.nether_portal_total->trigger();
 
         if ( p()->talents.nerzhuls_volition->ok() && rng().roll( p()->talents.nerzhuls_volition->effectN( 1 ).percent() ) )
         {
@@ -363,7 +399,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
           p()->procs.nerzhuls_volition->occur();
 
           if ( p()->talents.guldans_ambition->ok() )
-            p()->buffs.nether_portal_total->increment();
+            p()->buffs.nether_portal_total->trigger();
         }
       }
 
@@ -565,6 +601,9 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     if ( p()->buffs.grimoire_felguard->check() )
     {
       p()->buffs.grimoire_felguard->extend_duration( p(), extension_time );
+
+      if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T30, B4 ) )
+        p()->buffs.rite_of_ruvaraad->extend_duration( p(), extension_time );
     }
     if ( p()->buffs.vilefiend->check() )
     {
@@ -580,9 +619,12 @@ struct demonic_strength_t : public demonology_spell_t
     : demonology_spell_t( "Demonic Strength", p, p->talents.demonic_strength )
   {
     parse_options( options_str );
+    
+    internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
   // If you have Guillotine or regular Felstorm active, attempting to activate Demonic Strength will fail
+  // TOCHECK: New cooldown handling should render these redundant
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -592,25 +634,25 @@ struct demonic_strength_t : public demonology_spell_t
 
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
-    if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
-      return false;
-    if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
-      return false;
-    if ( active_pet->buffs.fiendish_wrath->check() )
-      return false;
-    return spell_t::ready();
+
+    return demonology_spell_t::ready();
   }
 
   void execute() override
   {
+    auto active_pet = p()->warlock_pet_list.active;
+
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
+      active_pet->buffs.demonic_strength->trigger();
 
-      auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->queue_ds_felstorm();
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->queue_ds_felstorm();
+
+      // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+      internal_cooldown->start( 5_s * p()->composite_spell_haste() );
+
     }
   }
 };
@@ -668,6 +710,8 @@ struct power_siphon_t : public demonology_spell_t
     parse_options( options_str );
     harmful = false;
     ignore_false_positive = true;
+
+    target = player;
   }
 
   bool ready() override
@@ -827,16 +871,22 @@ struct soul_strike_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
-      pet->soul_strike->execute_on_target( execute_state->target );
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->soul_strike->execute_on_target( execute_state->target );
     }
   }
 
   bool ready() override
   {
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    auto active_pet = p()->warlock_pet_list.active;
+
+    if ( !active_pet )
+      return false;
+
+    if ( active_pet->pet_type == PET_FELGUARD )
       return demonology_spell_t::ready();
 
     return false;
@@ -901,9 +951,10 @@ struct guillotine_t : public demonology_spell_t
   {
     parse_options( options_str );
     may_crit = false;
+
+    internal_cooldown = p->get_cooldown( "felstorm_icd" );
   }
 
-  // Guillotine takes priority over any other actions except Demonic Strength Felstorm
   bool ready() override
   {
     auto active_pet = p()->warlock_pet_list.active;
@@ -913,35 +964,24 @@ struct guillotine_t : public demonology_spell_t
 
     if ( active_pet->pet_type != PET_FELGUARD )
       return false;
-
-    if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
-      return false;
     
-    return spell_t::ready();
+    return demonology_spell_t::ready();
   }
 
   void execute() override
   {
     auto active_pet = p()->warlock_pet_list.active;
 
-    // Activating Guillotine will cancel any active Felstorm
-    // Since Guillotine should not be usable when Demonic Strength Felstorm is active, we shouldn't hit that code, but keep it to be safe
-    if ( active_pet->find_action( "felstorm" )->get_dot()->is_ticking() )
-    {
-      active_pet->find_action( "felstorm" )->cancel();
-    }
-    else if ( active_pet->find_action( "felstorm_demonic_strength" )->get_dot()->is_ticking() )
-    {
-      active_pet->find_action( "felstorm_demonic_strength" )->cancel();
-    }
-
     demonology_spell_t::execute();
 
-    if ( p()->warlock_pet_list.active->pet_type == PET_FELGUARD )
+    if ( active_pet->pet_type == PET_FELGUARD )
     {
-      p()->warlock_pet_list.active->buffs.fiendish_wrath->trigger();
+      active_pet->buffs.fiendish_wrath->trigger();
 
-      debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active )->felguard_guillotine->execute_on_target( execute_state->target );
+      debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->felguard_guillotine->execute_on_target( execute_state->target );
+
+      // New in 10.0.5 - Hardcoded scripted shared cooldowns while one of Felstorm, Demonic Strength, or Guillotine is active
+      internal_cooldown->start( 6_s ); // TOCHECK: Is there a reasonable way to get the duration instead of hardcoding
     }
   }
 };
@@ -1181,6 +1221,9 @@ void warlock_t::create_buffs_demonology()
   buffs.blazing_meteor = make_buff( this, "blazing_meteor", tier.blazing_meteor )
                              ->set_default_value_from_effect( 1 );
 
+  buffs.rite_of_ruvaraad = make_buff( this, "rite_of_ruvaraad", tier.rite_of_ruvaraad )
+                               ->set_default_value( tier.rite_of_ruvaraad->effectN( 1 ).percent() );
+
   // Pet tracking buffs
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
@@ -1227,6 +1270,9 @@ void warlock_t::init_spells_demonology()
 
   talents.from_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "From the Shadows" ); // Should be ID 267170
   talents.from_the_shadows_debuff = find_spell( 270569 );
+  
+  talents.the_houndmasters_stratagem = find_talent_spell( talent_tree::SPECIALIZATION, "The Houndmaster's Stratagem" ); // Should be ID 267170
+  talents.the_houndmasters_stratagem_debuff = find_spell( 270569 );
 
   talents.implosion = find_talent_spell( talent_tree::SPECIALIZATION, "Implosion" ); // Should be ID 196277
   talents.implosion_aoe = find_spell( 196278 );
@@ -1273,6 +1319,9 @@ void warlock_t::init_spells_demonology()
 
   talents.hounds_of_war = find_talent_spell( talent_tree::SPECIALIZATION, "Hounds of War" ); // Should be ID 387488
 
+  talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
+  talents.umbral_blaze_dot = find_spell( 405802 );
+
   talents.nether_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Nether Portal" ); // Should be ID 267217
   talents.nether_portal_buff = find_spell( 267218 );
 
@@ -1303,12 +1352,17 @@ void warlock_t::init_spells_demonology()
   talents.reign_of_tyranny = find_talent_spell( talent_tree::SPECIALIZATION, "Reign of Tyranny" ); // Should be ID 390173
   talents.demonic_servitude = find_spell( 390193 );
 
+  talents.immutable_hatred = find_talent_spell( talent_tree::SPECIALIZATION, "Immutable Hatred" ); // Should be ID 405670
+
   talents.guillotine = find_talent_spell( talent_tree::SPECIALIZATION, "Guillotine" ); // Should be ID 386833
 
   // Additional Tier Set spell data
 
   // T29 (Vault of the Incarnates)
   tier.blazing_meteor = find_spell( 394776 );
+
+  // T30 (Aberrus, the Shadowed Crucible)
+  tier.rite_of_ruvaraad = find_spell( 409725 );
 
   proc_actions.summon_random_demon = new actions_demonology::summon_random_demon_t( this );
 
@@ -1336,6 +1390,7 @@ void warlock_t::init_procs_demonology()
   procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
   procs.hounds_of_war = get_proc( "hounds_of_war" );
+  procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
   procs.blazing_meteor = get_proc( "blazing_meteor" );

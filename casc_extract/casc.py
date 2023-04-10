@@ -1,6 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 # CASC file formats, based on the work of Caali et al. @ http://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-model-editing/471104-analysis-of-casc-filesystem.html
-import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii, socket
+import os, sys, mmap, hashlib, stat, struct, zlib, glob, re, urllib.request, urllib.error, collections, codecs, io, binascii, socket, time
 
 import jenkins
 
@@ -80,7 +80,7 @@ class BLTEChunk(object):
 			dc = zlib.decompressobj()
 			uncompressed_data = dc.decompress(data[1:])
 			if len(dc.unused_data) > 0:
-				sys.stderr.write('Unused %d bytes of compressed data in chunk%d' % (
+				sys.stderr.write('Unused %d bytes of compressed data in chunk%d\n' % (
 					len(dc.unused_data), self.id))
 				return False
 
@@ -413,16 +413,24 @@ class CASCObject(object):
 		self.options = options
 
 	def get_url(self, url, headers = None):
-		try:
-			r = _S.get(url, headers = headers)
+		attempt = 0
+		maxAttempts = 5
+		while attempt < maxAttempts:
+			r = None
+			try:
+				sys.stdout.write('Fetching %s ...\n' % url)
+				r = _S.get(url, headers = headers)
 
-			print('Fetching %s ...' % url)
-			if r.status_code not in [200, 206]:
-				self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
-		except Exception as e:
-			self.options.parser.error('Unable to fetch %s: %s' % (url, r.reason))
+				if r.status_code not in [200, 206]:
+					self.options.parser.error('HTTP request for %s returns %u' % (url, r.status_code))
+				return r
+			except Exception as e:
+				sys.stderr.write('Unable to fetch %s (attempt %s): %s\n' % (url, attempt, r.reason if r else 'unknown error'))
+				if attempt + 1 < maxAttempts:
+					sys.stdout.write('Retrying %s ...\n' % url)
+					time.sleep(2 ** attempt)
+					attempt += 1
 
-		return r
 
 	def cache_dir(self, path = None):
 		dir = self.options.cache
@@ -515,7 +523,9 @@ class CDNIndex(CASCObject):
 		return self.cdn_url('data', self.get_build_cfg().encoding[1])
 
 	def patch_base_url(self):
-		if self.options.ptr:
+		if self.options.product:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, self.options.product )
+		elif self.options.ptr:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_PTR )
 		elif self.options.beta:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_BETA )
@@ -627,7 +637,7 @@ class CDNIndex(CASCObject):
 			self.builds.append(BuildCfg(handle))
 
 	def open_archives(self):
-		sys.stdout.write('Parsing CDN index files ... ')
+		sys.stdout.write('Parsing CDN index files ... \n')
 
 		index_cache = self.cache_dir('index')
 		for idx in range(0, len(self.archives)):
@@ -709,7 +719,9 @@ class RibbitIndex(CDNIndex):
 			return s.makefile('b')
 
 	def patch_base_url(self):
-		if self.options.ptr:
+		if self.options.product:
+			return 'v1/products/%s' % self.options.product
+		elif self.options.ptr:
 			return 'v1/products/%s' % self.PATCH_PTR
 		elif self.options.beta:
 			return 'v1/products/%s' % self.PATCH_BETA
@@ -871,7 +883,7 @@ class CASCEncodingFile(CASCObject):
 			if md5str != self.build.encoding_file():
 				data = self.__bootstrap()
 
-		sys.stdout.write('Parsing encoding file %s ... ' % self.build.encoding_file())
+		sys.stdout.write('Parsing encoding file %s ... \n' % self.build.encoding_file())
 
 		offset = 0
 		fsize = os.stat(self.encoding_path()).st_size
@@ -1219,10 +1231,10 @@ class CASCRootFile(CASCObject):
 			if md5str != self.build.root_file():
 				data = self.__bootstrap()
 
-		sys.stdout.write('Parsing root file %s ... ' % self.build.root_file())
+		sys.stdout.write('Parsing root file %s ... \n' % self.build.root_file())
 
 		if len(data) < 4:
-			sys.stdout.write('Root file too small (%d bytes)' % len(data))
+			sys.stdout.write('Root file too small (%d bytes)\n' % len(data))
 			return False
 
 		if data[:4] == b'TSFM':
