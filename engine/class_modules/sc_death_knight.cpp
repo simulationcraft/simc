@@ -3187,7 +3187,7 @@ struct death_knight_action_t : public Base
   {
     double m = action_base_t::composite_target_multiplier( target );
 
-    const death_knight_td_t* td = find_td( target );
+    const death_knight_td_t* td = get_td( target );
 
     if ( td && this -> affected_by.razorice )
     {
@@ -3715,7 +3715,7 @@ struct melee_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
-    const death_knight_td_t* td = find_td( target );
+    const death_knight_td_t* td = get_td( target );
     if ( td && p() -> talent.blood.tightening_grasp.ok() )
     {
       m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
@@ -3951,7 +3951,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
-    const death_knight_td_t* td = find_td( state -> target );
+    const death_knight_td_t* td = get_td( state -> target );
     assert( td && "apocalypse impacting without any target data" ); // td should should exist because the debuff is a condition of target_ready()
     auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td -> debuff.festering_wound -> check() );
 
@@ -3971,7 +3971,7 @@ struct apocalypse_t final : public death_knight_melee_attack_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    const death_knight_td_t* td = find_td( candidate_target );
+    const death_knight_td_t* td = get_td( candidate_target );
 
     // In-game limitation: you can't use Apocalypse on a target that isn't affected by Festering Wounds
     if ( ! td || ! td -> debuff.festering_wound -> check() )
@@ -4567,7 +4567,7 @@ struct chill_streak_damage_t final : public death_knight_spell_t
   {
   double m = death_knight_spell_t::composite_target_multiplier( t );
 
-  if ( auto td = find_td( t ) )
+  if ( auto td = get_td( t ) )
     m *= 1.0 + td -> debuff.piercing_chill -> check_value();
 
   return m;
@@ -6623,7 +6623,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
-    const death_knight_td_t* td = find_td( target );
+    const death_knight_td_t* td = get_td( target );
     // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
     if ( td && p() -> spec.frostreaper -> ok() && p() -> buffs.killing_machine -> up() )
     {
@@ -7042,7 +7042,7 @@ struct remorseless_winter_damage_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    if ( auto td = find_td( t ) )
+    if ( auto td = get_td( t ) )
       m *= 1.0 + td -> debuff.everfrost -> check_stack_value();
 
     return m;
@@ -8369,7 +8369,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     return;
   }
 
-  const death_knight_td_t* td = find_target_data( target );
+  const death_knight_td_t* td = get_target_data( target );
   if ( !td ) return;
 
   int n_wounds = td -> debuff.festering_wound -> check();
@@ -8643,7 +8643,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
     }
   };
 
-  const death_knight_td_t* td = find_target_data( target );
+  const death_knight_td_t* td = get_target_data( target );
 
   // Don't bother creating the event if n is 0, the target has no wounds, or is scheduled to demise
   if ( ! spec.festering_wound -> ok() || ! n || ! td || ! td -> debuff.festering_wound -> check() || target -> demise_event )
@@ -10207,7 +10207,7 @@ void death_knight_t::do_damage( action_state_t* state )
 
   if ( state -> result_amount > 0 && talent.blood.mark_of_blood.ok() && ! state -> action -> special )
   {
-    const death_knight_td_t* td = find_target_data( state -> action -> player );
+    const death_knight_td_t* td = get_target_data( state -> action -> player );
     if ( td && td -> debuff.mark_of_blood -> check() )
       active_spells.mark_of_blood_heal -> execute();
   }
@@ -10238,7 +10238,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent();
 
-  const death_knight_td_t* td = find_target_data( state -> action -> player );
+  const death_knight_td_t* td = get_target_data( state -> action -> player );
   if ( td && runeforge.rune_of_apocalypse )
     state -> result_amount *= 1.0 + td -> debuff.apocalypse_famine -> check_stack_value();
 
@@ -10381,7 +10381,7 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
 {
   double m = player_t::composite_player_target_multiplier( target, s );
 
-  const death_knight_td_t* td = find_target_data( target );
+  const death_knight_td_t* td = get_target_data( target );
 
   // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
   // Does not use a whitelist, affects all damage sources
@@ -10461,7 +10461,7 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
 {
   double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
 
-  const death_knight_td_t* td = find_target_data( target );
+  const death_knight_td_t* td = get_target_data( target );
 
   if ( td )
   {
