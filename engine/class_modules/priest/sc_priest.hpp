@@ -164,6 +164,7 @@ public:
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
+    propagate_const<buff_t*> last_shadowy_apparition_crit;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
