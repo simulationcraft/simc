@@ -758,11 +758,13 @@ struct mindgames_t final : public priest_spell_t
 {
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
+  propagate_const<action_t*> child_searing_light;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.talents.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
-      child_mindgames_damage_reversal( nullptr )
+      child_mindgames_damage_reversal( nullptr ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
 
@@ -783,6 +785,17 @@ struct mindgames_t final : public priest_spell_t
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
+    }
+  }
+
+  void execute() override
+  {
+    if ( child_searing_light && priest().buffs.divine_image->check() )
+    {
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_searing_light->execute();
+      }
     }
   }
 
