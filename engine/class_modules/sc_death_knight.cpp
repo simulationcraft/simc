@@ -1778,7 +1778,6 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
-  buff_t* pet_stun;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
@@ -1788,7 +1787,6 @@ struct death_knight_pet_t : public pet_t
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
-      action_list_str = "auto_attack";
     }
   }
 
@@ -1850,6 +1848,15 @@ struct death_knight_pet_t : public pet_t
     if ( name == "auto_attack" ) return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( use_auto_attack )
+      def -> add_action( "auto_attack" );
+
+    pet_t::init_action_list();
   }
 };
 
@@ -2018,6 +2025,15 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     resources.base_regen_per_second[ RESOURCE_ENERGY ]  = 10;
   }
 
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    if ( !precombat_spawn )
+    {
+      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() - precombat_spawn_adjust );
+    }
+  }
+
   resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
 
@@ -2155,23 +2171,16 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> pet_spell.gnaw -> cooldown();
-    action_list_str = "sweeping_claws";
-    action_list_str += "/claw,if=energy>70";
-    action_list_str += "/monstrous_blow";
-    action_list_str += "/gnaw";
+    if ( owner -> talent.unholy.raise_dead.ok() )
+    {
+      precombat_spawn_adjust = 4.5_s;
+      precombat_spawn = true;
+    }
   }
 
   attack_t* create_auto_attack() override
   { return new ghoul_melee_t( this ); }
 
-  void arise() override
-  {
-    base_ghoul_pet_t::arise();
-    if( !precombat_spawn )
-    {
-      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
-    }
-  }
 
   double composite_player_multiplier( school_e school ) const override
   {
@@ -2229,6 +2238,21 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_gains();
 
     dark_transformation_gain = get_gain( "Dark Transformation" );
+  }
+
+  void init_action_list() override
+  {
+    base_ghoul_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "sweeping_claws" );
+    def -> add_action( "claw,if=energy>70" );
+    def -> add_action( "monstrous_blow" );
+    def -> add_action( "Gnaw" );
+
+    // TODO: alternative APL with energy spender spam and no gnaw usage
+    // Gated behind a player option?
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2298,16 +2322,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t( owner, name, true )
   {
     affected_by_commander_of_the_dead = true;
-    action_list_str = "claw";
-  }
-
-  void arise() override
-  {
-    base_ghoul_pet_t::arise();
-    if( !precombat_spawn )
-    {
-      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
-    }
   }
 
   void init_base_stats() override
@@ -2316,6 +2330,14 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
     owner_coeff.ap_from_ap = 0.4664;
+  }
+
+  void init_action_list() override
+  {
+    base_ghoul_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Claw" );
   }
 
   void init_spells() override
@@ -2397,7 +2419,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    action_list_str = "Gargoyle Strike";
   }
   
   void arise() override
@@ -2427,6 +2448,14 @@ struct gargoyle_pet_t : public death_knight_pet_t
     m *= 1.0 + dark_empowerment -> stack_value();
 
     return m;
+  }
+  
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Gargoyle Strike" );
   }
 
   void create_buffs() override
@@ -2490,7 +2519,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
-    action_list_str = "skulker_shot";
     main_hand_weapon.swing_time = 2.7_s;
   }
 
@@ -2499,6 +2527,14 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "Skulker Shot" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
