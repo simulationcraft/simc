@@ -2179,7 +2179,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     gnaw_cd -> duration = owner -> pet_spell.gnaw -> cooldown();
     if ( owner -> talent.unholy.raise_dead.ok() )
     {
-      precombat_spawn_adjust = 4.5_s;
       precombat_spawn = true;
     }
   }
