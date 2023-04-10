@@ -258,8 +258,8 @@ void holy( player_t* p )
   divine_favor_chastise_active->add_action( "mindgames" );
   divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_favor_chastise_active->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
-  divine_favor_chastise_active->add_action( "halo,if=spell_targets.halo>=2" );
-  divine_favor_chastise_active->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_favor_chastise_active->add_action( "halo" );
+  divine_favor_chastise_active->add_action( "divine_star" );
   divine_favor_chastise_active->add_action( "smite" );
 
   divine_favor_filler->add_action( "holy_word_chastise,if=cooldown.holy_word_chastise.duration_expected<cooldown.divine_word.remains", "---------------------------------------------------------------------------  Divine Favor (Filler)  ---------------------------------------------------------------------------" );
@@ -267,8 +267,8 @@ void holy( player_t* p )
   divine_favor_filler->add_action( "mindgames" );
   divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_favor_filler->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
-  divine_favor_filler->add_action( "halo,if=spell_targets.halo>=2" );
-  divine_favor_filler->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_favor_filler->add_action( "halo" );
+  divine_favor_filler->add_action( "divine_star" );
   divine_favor_filler->add_action( "smite" );
 
   divine_image->add_action( "apotheosis,if=!buff.answered_prayers.up&((cooldown.holy_word_sanctify.remains>(gcd.max*2))&(cooldown.holy_word_serenity.remains>(gcd.max*2))&(cooldown.holy_word_chastise.remains>(gcd.max*2)))", "---------------------------------------------------------------------------  Divine Image  ---------------------------------------------------------------------------  We want to apotheosis when our holy words aren't about to come off of cooldown, and when answered prayer's apotheosis is already active." );
@@ -280,8 +280,8 @@ void holy( player_t* p )
   divine_image->add_action( "mindgames", "Mindgames also triggers divine images" );
   divine_image->add_action( "shadow_word_death,if=target.health.pct<20", "Shadow Word: Death is only worth casting during execute, otherwise it's worse than a smite" );
   divine_image->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
-  divine_image->add_action( "halo,if=spell_targets.halo>=2", "Halo doesn't proc images  144% damage per target to beat smite's 120% + (57% * # of DIs)" );
-  divine_image->add_action( "divine_star,if=spell_targets.divine_star>=2", "Divine Star doesn't proc images  112% damage per target to beat smite's 120% + (57% * # of DIs)" );
+  divine_image->add_action( "halo,if=buff.divine_image.stack=0", "Halo doesn't proc image spells" );
+  divine_image->add_action( "divine_star,if=buff.divine_image.stack=0", "Divine Star doesn't proc image spells" );
   divine_image->add_action( "smite" );
 
   generic->add_action( "holy_word_chastise", "---------------------------------------------------------------------------  Generic  ---------------------------------------------------------------------------" );
@@ -291,8 +291,8 @@ void holy( player_t* p )
   generic->add_action( "mindgames" );
   generic->add_action( "shadow_word_death,if=target.health.pct<20" );
   generic->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
-  generic->add_action( "halo,if=spell_targets.halo>=2" );
-  generic->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  generic->add_action( "halo" );
+  generic->add_action( "divine_star" );
   generic->add_action( "smite" );
 
   cooldowns->add_action( "power_infusion,if=(!talent.divine_word|(talent.divine_word&buff.divine_favor_chastise.up))", "---------------------------------------------------------------------------  Cooldowns  ---------------------------------------------------------------------------  Sync PI with divine favor: chastise if we took divine word" );
