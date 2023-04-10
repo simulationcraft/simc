@@ -1115,9 +1115,6 @@ public:
     propagate_const<proc_t*> km_from_obliteration_sr_wasted;   // Soul Reaper during Obliteration
     propagate_const<proc_t*> km_from_t29_4pc_wasted;           // T29 Frost 4PC
 
-    // Shattering Blade
-    propagate_const<proc_t*> shattering_blade;
-
     // Runic corruption triggered by
     propagate_const<proc_t*> rp_runic_corruption; // from RP spent
     propagate_const<proc_t*> sr_runic_corruption; // from soul reaper
@@ -1272,7 +1269,6 @@ public:
   void      trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
   void      consume_killing_machine( proc_t* proc );
   void      trigger_runic_empowerment( double rpcost );
-  void      shattering_blade( player_t* target, proc_t* proc );
   // Unholy
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( player_t* target, unsigned n = 1 );
@@ -6097,7 +6093,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     if( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> at_max_stacks() )
     {
       sb = true;
-      p() -> shattering_blade( p() -> target, p() -> procs.shattering_blade );
+      td -> debuff.razorice -> expire();
       debug_cast<frost_strike_strike_t*>( mh_sb ) -> sb = true;
       if( oh )
       {
@@ -8729,33 +8725,6 @@ void death_knight_t::start_cold_heart()
   } );
 }
 
-// Shattering Blade Handler
-void death_knight_t::shattering_blade( player_t* target, proc_t* proc )
-{
-  struct sb_proc_t : public event_t
-  {
-    player_t* target;
-    death_knight_t* dk;
-    proc_t* proc;
-
-    sb_proc_t( death_knight_t* dk, player_t* target, proc_t* proc ) :
-      event_t( *dk, 0_ms ), target( target ), dk( dk ), proc( proc )
-    {
-    }
-
-    const char* name() const override
-    { return "Shattering Blade"; }
-
-    void execute() override
-    {
-      const death_knight_td_t* td = dk -> get_target_data( target );
-      td -> debuff.razorice -> expire();
-      proc -> occur();
-    }
-  };
-  make_event<sb_proc_t>( *sim, this, target, proc );
-}
-
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -10050,8 +10019,6 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
   procs.km_from_obliteration_sr_wasted   = get_proc( "Killing Machine wasted: Soul Reaper" );
   procs.km_from_t29_4pc_wasted           = get_proc( "Killing Machine wasted: T29 4pc" );
-
-  procs.shattering_blade                 = get_proc( "Shattering Blade" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
