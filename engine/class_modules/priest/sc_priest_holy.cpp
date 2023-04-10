@@ -473,6 +473,10 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new searing_light_t( *this );
   }
+  if ( name == "light_eruption" )
+  {
+    return new light_eruption_t( *this );
+  }
 
   return nullptr;
 }
