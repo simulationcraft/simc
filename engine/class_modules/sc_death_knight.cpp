@@ -2028,7 +2028,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( !precombat_spawn )
+    if ( precombat_spawn_adjust > 0_s )
     {
       buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() - precombat_spawn_adjust );
     }
@@ -2043,7 +2043,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
     // Cheapest Ability need 40 Energy
     if ( energy > 40 )
-      return 0_s;
+      return 1_ms;
 
     return std::max( timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ), 0.1_s );
   }
