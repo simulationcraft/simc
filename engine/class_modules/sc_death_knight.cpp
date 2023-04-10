@@ -2028,10 +2028,14 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    if ( precombat_spawn_adjust > 0_s )
+    if ( precombat_spawn_adjust > 0_s && precombat_spawn )
     {
       buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() - precombat_spawn_adjust );
     }
+    else if( !precombat_spawn )
+    {
+      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
+    }   
   }
 
   resource_e primary_resource() const override
@@ -2045,7 +2049,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     if ( energy > 40 )
       return 1_ms;
 
-    return std::max( timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ), 0.1_s );
+    return std::max( timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ), 1_ms );
   }
 };
 
@@ -2424,7 +2428,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
+    buffs.stunned -> trigger( 2.9_s );
     gargoyle_strike_count = 0;
   }
 
