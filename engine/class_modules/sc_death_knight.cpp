@@ -520,7 +520,6 @@ public:
     propagate_const<buff_t*> enduring_strength_builder;
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frostwhelps_aid;
-    propagate_const<buff_t*> shattering_blade;
     buff_t* wrath_of_the_frostwyrm; // T30 4pc
 
     // Unholy
@@ -6019,8 +6018,9 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
+  bool sb;
   frost_strike_strike_t( death_knight_t* p, util::string_view n, weapon_t* w, const spell_data_t* s ) :
-    death_knight_melee_attack_t( n, p, s )
+    death_knight_melee_attack_t( n, p, s ), sb( false )
   {
     background = special = true;
     weapon = w;
@@ -6033,7 +6033,7 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier ( state );
 
-    if ( p() -> buffs.shattering_blade -> up() )
+    if ( sb )
     {
       m *= 1.0 + p() -> talent.frost.shattering_blade -> effectN( 1 ).percent();
     }
@@ -6052,6 +6052,7 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
         p() -> trigger_killing_machine( p() -> talent.frost.cold_blooded_rage -> effectN( 2 ).percent(), p() -> procs.km_from_cold_blooded_rage,
                                           p() -> procs.km_from_cold_blooded_rage_wasted );
       }
+      sb = false;
     }
   }
 };
@@ -6087,6 +6088,11 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     if( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> at_max_stacks() )
     {
       p() -> shattering_blade( p() -> target, p() -> procs.shattering_blade );
+      debug_cast<frost_strike_strike_t*>( mh ) -> sb = true;
+      if( oh )
+      {
+        debug_cast<frost_strike_strike_t*>( oh ) -> sb = true;
+      }
     }
     death_knight_melee_attack_t::execute();
 
@@ -6097,7 +6103,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
         oh -> set_target( target );
         oh -> execute();
       }
-      p() -> buffs.shattering_blade -> expire();
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
@@ -8722,7 +8727,6 @@ void death_knight_t::shattering_blade( player_t* target, proc_t* proc )
     {
       const death_knight_td_t* td = dk -> get_target_data( target );
       td -> debuff.razorice -> expire();
-      dk -> buffs.shattering_blade -> trigger();
       proc -> occur();
     }
   };
@@ -9884,11 +9888,6 @@ void death_knight_t::create_buffs()
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
-
-  buffs.shattering_blade = make_buff( this, "shattering_blade", talent.frost.shattering_blade )
-        -> set_default_value( talent.frost.shattering_blade -> effectN( 1 ).percent() )
-        -> set_quiet( true )
-        -> set_duration( 0_ms );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
