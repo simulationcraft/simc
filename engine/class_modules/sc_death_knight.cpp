@@ -192,13 +192,13 @@ struct dynamic_event_t : public event_t
   }
 
   static T* cast( event_t* event )
-  { return static_cast<T*>( event ); }
+  { return debug_cast<T*>( event ); }
 
   T* cast() const
-  { return static_cast<T*>( this ); }
+  { return debug_cast<T*>( this ); }
 
   T* cast()
-  { return static_cast<T*>( this ); }
+  { return debug_cast<T*>( this ); }
 
   T* ptr( T*& value )
   { m_ptr = &value; return cast(); }
@@ -3123,7 +3123,7 @@ struct death_knight_action_t : public Base
   }
 
   death_knight_t* p() const
-  { return static_cast< death_knight_t* >( this -> player ); }
+  { return debug_cast< death_knight_t* >( this -> player ); }
 
   const death_knight_td_t* find_td( player_t* t ) const
   { return p() -> find_target_data( t ); }
@@ -8110,7 +8110,7 @@ void runeforge::sanguination( special_effect_t& effect )
   {
     double health_threshold;
     sanguination_heal_t( special_effect_t& effect ) :
-      death_knight_heal_t( "rune_of_sanguination", static_cast<death_knight_t*>( effect.player ),
+      death_knight_heal_t( "rune_of_sanguination", debug_cast<death_knight_t*>( effect.player ),
                            effect.driver() -> effectN( 1 ).trigger() ),
       health_threshold( effect.driver() -> effectN( 1 ).base_value() )
     {
@@ -8183,7 +8183,7 @@ void runeforge::unending_thirst( special_effect_t& effect )
   }
 
   // Placeholder for APL tracking purpose, effect NYI
-  static_cast<death_knight_t*>( effect.player ) -> runeforge.rune_of_unending_thirst = true;
+  debug_cast<death_knight_t*>( effect.player ) -> runeforge.rune_of_unending_thirst = true;
 }
 
 // Resource Manipulation ====================================================
