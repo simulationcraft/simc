@@ -6743,7 +6743,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
       p() -> buffs.rime -> trigger();
     }
     
-    if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() )
+    if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() && !p() -> buffs.bonegrinder_frost -> up() )
     {
       p() -> buffs.bonegrinder_crit -> trigger();
       if ( p() -> buffs.bonegrinder_crit -> at_max_stacks() )
