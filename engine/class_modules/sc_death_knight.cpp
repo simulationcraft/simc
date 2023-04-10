@@ -6742,17 +6742,6 @@ struct obliterate_t final : public death_knight_melee_attack_t
 
       p() -> buffs.rime -> trigger();
     }
-    
-    if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() && !p() -> buffs.bonegrinder_frost -> up() )
-    {
-      p() -> buffs.bonegrinder_crit -> trigger();
-      if ( p() -> buffs.bonegrinder_crit -> at_max_stacks() )
-      {
-        p() -> buffs.bonegrinder_frost -> trigger();
-        p() -> buffs.bonegrinder_crit -> expire();
-      }
-    }
-
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T29, B4 ) &&
           p() -> buffs.killing_machine -> up() )
@@ -8543,6 +8532,16 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
   if ( rng().roll( talent.frost.murderous_efficiency -> effectN( 1 ).percent() ) )
   {
     replenish_rune( as<int>( spell.murderous_efficiency_gain -> effectN( 1 ).base_value() ), gains.murderous_efficiency );
+  }
+
+  if ( talent.frost.bonegrinder.ok() && !buffs.bonegrinder_frost -> up() )
+  {
+    buffs.bonegrinder_crit -> trigger();
+    if ( buffs.bonegrinder_crit -> at_max_stacks() )
+    {
+      buffs.bonegrinder_frost -> trigger();
+      buffs.bonegrinder_crit -> expire();
+    }
   }
 }
 
