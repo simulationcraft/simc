@@ -434,7 +434,7 @@ struct death_knight_td_t : public actor_target_data_t {
     // Frost
     propagate_const<buff_t*> piercing_chill;
     propagate_const<buff_t*> everfrost;
-    buff_t* lingering_chill;
+    propagate_const<buff_t*> lingering_chill;
 	
     // Unholy
     propagate_const<buff_t*> festering_wound;
@@ -520,7 +520,6 @@ public:
     propagate_const<buff_t*> enduring_strength_builder;
     propagate_const<buff_t*> enduring_strength;
     propagate_const<buff_t*> frostwhelps_aid;
-    propagate_const<buff_t*> shattering_blade;
     buff_t* wrath_of_the_frostwyrm; // T30 4pc
 
     // Unholy
@@ -6015,13 +6014,13 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
+  bool sb;
   frost_strike_strike_t( death_knight_t* p, util::string_view n, weapon_t* w, const spell_data_t* s ) :
-    death_knight_melee_attack_t( n, p, s )
+    death_knight_melee_attack_t( n, p, s ), sb( false )
   {
     background = special = true;
     weapon = w;
     triggers_icecap = true;
-
     base_multiplier *= 1.0 + p -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
   }
 
@@ -6029,14 +6028,14 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier ( state );
 
-    if ( p() -> buffs.shattering_blade -> up() )
+    if ( sb )
     {
       m *= 1.0 + p() -> talent.frost.shattering_blade -> effectN( 1 ).percent();
     }
 
     return m;
   }
-
+  
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
@@ -6048,17 +6047,18 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
         p() -> trigger_killing_machine( p() -> talent.frost.cold_blooded_rage -> effectN( 2 ).percent(), p() -> procs.km_from_cold_blooded_rage,
                                           p() -> procs.km_from_cold_blooded_rage_wasted );
       }
+      sb = false;
     }
   }
 };
 
 struct frost_strike_t final : public death_knight_melee_attack_t
 {
-  frost_strike_strike_t *mh, *oh;
-
+  frost_strike_strike_t *mh, *oh, *mh_sb, *oh_sb;
+  bool sb;
   frost_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "frost_strike", p, p -> talent.frost.frost_strike ),
-    mh( nullptr ), oh( nullptr )
+    mh( nullptr ), oh( nullptr ), sb( false ), mh_sb( nullptr ), oh_sb( nullptr )
   {
     parse_options( options_str );
     may_crit = false;
@@ -6066,37 +6066,62 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
     dual = true;
-    mh = new frost_strike_strike_t( p, "frost_strike", &( p -> main_hand_weapon ), mh_data );
+    mh = new frost_strike_strike_t(p, "frost_strike", &(p->main_hand_weapon), mh_data);
     add_child( mh );
-    execute_action = mh;
+    if( p -> talent.frost.shattering_blade.ok() )
+    {
+      mh_sb = new frost_strike_strike_t( p, "frost_strike_sb", &(p->main_hand_weapon), mh_data);
+      add_child( mh_sb );
+    }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
+      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &(p->off_hand_weapon), data().effectN(3).trigger());
       add_child( oh );
+      if( p -> talent.frost.shattering_blade.ok() )
+      {
+        oh_sb = new frost_strike_strike_t( p, "frost_strike_offhand_sb", &(p->off_hand_weapon), data().effectN(3).trigger());
+        add_child( oh_sb );
+      }
     }
   }
 
   void execute() override
   {
-    const death_knight_td_t* td = p() -> get_target_data( target );
+    const auto td = get_td( target );
 
-    if ( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> check() == 5 )
+    if( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> at_max_stacks() )
     {
-      td->debuff.razorice->expire();
-      p() -> buffs.shattering_blade -> trigger();
+      sb = true;
+      td -> debuff.razorice -> expire();
+      debug_cast<frost_strike_strike_t*>( mh_sb ) -> sb = true;
+      if( oh )
+      {
+        debug_cast<frost_strike_strike_t*>( oh_sb ) -> sb = true;
+      }
     }
 
     death_knight_melee_attack_t::execute();
 
     if ( hit_any_target )
     {
-      if ( oh )
+      if( !sb )
       {
-        oh -> set_target( target );
-        oh -> execute();
+        mh -> execute_on_target( target );
+        if ( oh )
+        {
+          oh -> execute_on_target( target );
+        }
       }
-      p() -> buffs.shattering_blade -> expire();
+      if( sb )
+      {
+        mh_sb -> execute_on_target( target );
+        if ( oh_sb )
+        {
+          oh_sb -> execute_on_target( target );
+        }
+        sb = false;
+      }
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
@@ -9855,10 +9880,6 @@ void death_knight_t::create_buffs()
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", spell.frostwhelps_aid_buff )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).base_value() );
-
-  buffs.shattering_blade = make_buff( this, "shattering_blade", talent.frost.shattering_blade )
-        -> set_default_value( talent.frost.shattering_blade -> effectN( 1 ).percent() )
-        -> set_duration( 0_ms );
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
