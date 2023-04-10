@@ -1152,10 +1152,15 @@ struct shadow_word_death_t final : public priest_spell_t
 // ==========================================================================
 struct holy_nova_t final : public priest_spell_t
 {
-  holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
+  action_t* child_light_eruption;
+  holy_nova_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "holy_nova", p, p.talents.holy_nova ),
+      child_light_eruption( priest().background_actions.light_eruption )
   {
     parse_options( options_str );
-    aoe = -1;
+    aoe                 = -1;
+    full_amount_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
+    reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1177,6 +1182,13 @@ struct holy_nova_t final : public priest_spell_t
     if ( priest().talents.rhapsody )
     {
       priest().buffs.rhapsody_timer->trigger();
+    }
+    if ( child_light_eruption && priest().buffs.divine_image->check() )
+    {
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_light_eruption->execute();
+      }
     }
   }
 
