@@ -2949,8 +2949,6 @@ struct magus_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    action_list_str = "frostbolt";
-    action_list_str += "/shadow_bolt";
   }
 
   void arise() override
@@ -2966,6 +2964,18 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
+  }
+  
+  // Magus of the dead Action Priority List:
+  // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata, and applies a 4s snare on non-boss enemies
+  // Frostbolt is used on cooldown and if the target isn't slowed by the debuff, and shadow bolt is used the rest of the time
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "frostbolt" ); // Cooldown and debuff are handled in the action
+    def -> add_action( "shadow_bolt" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
