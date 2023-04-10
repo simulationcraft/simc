@@ -1775,12 +1775,12 @@ namespace pets {
 struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
-  timespan_t precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
+  timespan_t precombat_spawn_adjust;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    spawn_travel_duration( 0_s ), spawn_travel_stddev( 0_s ), affected_by_commander_of_the_dead( false )
+    affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
@@ -1841,60 +1841,9 @@ struct death_knight_pet_t : public pet_t
     }
   };
 
-  struct spawn_travel_t : public action_t
-  {
-    bool executed;
-
-    spawn_travel_t( death_knight_pet_t* p ) :
-      action_t( ACTION_OTHER, "spawn_travel", p ),
-      executed( false )
-    {
-      may_miss = false;
-      quiet    = true;
-    }
-
-    result_e calculate_result( action_state_t* /* s */ ) const override
-    { return RESULT_HIT; }
-
-    block_result_e calculate_block_result( action_state_t* ) const override
-    { return BLOCK_RESULT_UNBLOCKED; }
-
-    void cancel() override
-    {
-      action_t::cancel();
-      executed = false;
-    }
-
-    void execute() override
-    {
-      action_t::execute();
-      executed = true;
-      debug_cast<death_knight_pet_t*>( player ) -> precombat_spawn = false;
-    }
-
-    timespan_t execute_time() const override
-    {
-      death_knight_pet_t* p = debug_cast<death_knight_pet_t*>( player );
-      timespan_t mean_duration = p -> spawn_travel_duration;
-
-      // Reduce the spawn timer by the precombat time if necessary
-      if ( p -> precombat_spawn )
-        mean_duration -= p -> precombat_spawn_adjust;
-      // Don't bother gaussing null delays
-      if ( mean_duration <= 0_s )
-        return 0_ms;
-
-      return ( rng().gauss( mean_duration, p -> spawn_travel_stddev ) );
-    }
-
-    bool ready() override
-    { return !executed; }
-  };
-
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "auto_attack" ) return new auto_attack_t( this );
-    if ( name == "spawn_travel" ) return new spawn_travel_t( this );
 
     return pet_t::create_action( name, options_str );
   }
@@ -1902,12 +1851,16 @@ struct death_knight_pet_t : public pet_t
   void init_action_list() override
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( spawn_travel_duration > 0_s )
-      def -> add_action( "spawn_travel" );
     if ( use_auto_attack )
       def -> add_action( "auto_attack" );
 
     pet_t::init_action_list();
+  }
+
+  void create_buffs() override
+  {
+   pet_t::create_buffs();
+   buffs.stunned  = make_buff( this, "stunned" );
   }
 };
 
@@ -2063,9 +2016,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
-    // Army ghouls, apoc ghouls and raise dead ghoul all share the same spawn/travel animation lock
-    spawn_travel_duration = 4.5_s;
-    spawn_travel_stddev = 0.1_s;
   }
 
   attack_t* create_auto_attack() override
@@ -2088,7 +2038,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
     // Cheapest Ability need 40 Energy
     if ( energy > 40 )
-      return 0.1_s;
+      return 0_s;
 
     return std::max( timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ), 0.1_s );
   }
@@ -2102,8 +2052,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 {
   cooldown_t* gnaw_cd; // shared cd between gnaw/monstrous_blow
   gain_t* dark_transformation_gain;
-  buff_t* ghoulish_frenzy;
   buff_t* vile_infusion;
+  buff_t* ghoulish_frenzy;
+  buff_t* stunned;
 
   // Generic Dark Transformation pet ability
   struct dt_melee_ability_t : public pet_melee_attack_t<ghoul_pet_t>
@@ -2216,14 +2167,24 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     gnaw_cd = get_cooldown( "gnaw" );
     gnaw_cd -> duration = owner -> pet_spell.gnaw -> cooldown();
-
-    // With a permanent pet, make sure that the precombat spawn ignores the spawn/travel delay
-    if ( owner -> talent.unholy.raise_dead.ok() )
-      precombat_spawn_adjust = spawn_travel_duration;
+    action_list_str = "sweeping_claws";
+    action_list_str += "/claw,if=energy>70";
+    action_list_str += "/monstrous_blow";
+    action_list_str += "/gnaw";
   }
 
   attack_t* create_auto_attack() override
   { return new ghoul_melee_t( this ); }
+
+  void arise() override
+  {
+    base_ghoul_pet_t::arise();
+    if( !precombat_spawn )
+    {
+      stunned -> set_duration( 4.5_s );
+      stunned -> trigger();
+    }
+  }
 
   double composite_player_multiplier( school_e school ) const override
   {
@@ -2283,21 +2244,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     dark_transformation_gain = get_gain( "Dark Transformation" );
   }
 
-  void init_action_list() override
-  {
-    base_ghoul_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "sweeping_claws" );
-    def -> add_action( "claw,if=energy>70" );
-    def -> add_action( "monstrous_blow" );
-    def -> add_action( "Gnaw" );
-
-    // TODO: alternative APL with energy spender spam and no gnaw usage
-    // Gated behind a player option?
-  }
-
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
     if ( name == "claw"           ) return new           claw_t( this, options_str );
@@ -2310,7 +2256,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
   void create_buffs() override
   {
-    base_ghoul_pet_t::create_buffs();
+    pet_t::create_buffs();
 	  
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
       -> set_default_value_from_effect( 1 )
@@ -2332,6 +2278,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
+  buff_t* stunned;
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
@@ -2365,11 +2312,17 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t( owner, name, true )
   {
     affected_by_commander_of_the_dead = true;
+    action_list_str = "claw";
   }
 
   void arise() override
   {
     base_ghoul_pet_t::arise();
+    if( !precombat_spawn )
+    {
+      stunned -> set_duration( 4.5_s );
+      stunned -> trigger();
+    }
   }
 
   void init_base_stats() override
@@ -2378,14 +2331,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
     owner_coeff.ap_from_ap = 0.4664;
-  }
-
-  void init_action_list() override
-  {
-    base_ghoul_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Claw" );
   }
 
   void init_spells() override
@@ -2434,7 +2379,7 @@ int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
-
+  buff_t* stunned;
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
     gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
@@ -2467,14 +2412,14 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    spawn_travel_duration = 2.9_s;
-    spawn_travel_stddev = 0.2_s;
+    action_list_str = "gargoyle_strike";
   }
   
   void arise() override
   {
     death_knight_pet_t::arise();
-
+    stunned -> set_duration( 2.9_s );
+    stunned -> trigger();
     gargoyle_strike_count = 0;
   }
 
@@ -2498,14 +2443,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     m *= 1.0 + dark_empowerment -> stack_value();
 
     return m;
-  }
-
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Gargoyle Strike" );
   }
 
   void create_buffs() override
@@ -2557,7 +2494,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       weapon = &( p -> main_hand_weapon );
-
       // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
       base_multiplier *= 2.0;
       aoe = -1;
@@ -2570,6 +2506,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
+    action_list_str = "skulker_shot";
     main_hand_weapon.swing_time = 2.7_s;
   }
 
@@ -2578,14 +2515,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 1.0;
-  }
-
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Skulker Shot" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2994,10 +2923,10 @@ struct magus_pet_t : public death_knight_pet_t
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = 1.4_s;
-    spawn_travel_duration = 0_s;
-    spawn_travel_stddev = 0_s;
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
+    action_list_str = "frostbolt";
+    action_list_str += "/shadow_bolt";
   }
 
   void arise() override
@@ -3013,18 +2942,6 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
-  }
-
-  // Magus of the dead Action Priority List:
-  // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata, and applies a 4s snare on non-boss enemies
-  // Frostbolt is used on cooldown and if the target isn't slowed by the debuff, and shadow bolt is used the rest of the time
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "frostbolt" ); // Cooldown and debuff are handled in the action
-    def -> add_action( "shadow_bolt" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
