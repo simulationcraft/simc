@@ -790,6 +790,7 @@ struct mindgames_t final : public priest_spell_t
 
   void execute() override
   {
+    priest_spell_t::execute();
     if ( child_searing_light && priest().buffs.divine_image->check() )
     {
       for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
