@@ -272,7 +272,7 @@ void holy( player_t* p )
   divine_favor_filler->add_action( "smite" );
 
   divine_image->add_action( "apotheosis,if=!buff.answered_prayers.up&((cooldown.holy_word_sanctify.remains>(gcd.max*2))&(cooldown.holy_word_serenity.remains>(gcd.max*2))&(cooldown.holy_word_chastise.remains>(gcd.max*2)))", "---------------------------------------------------------------------------  Divine Image  ---------------------------------------------------------------------------  We want to apotheosis when our holy words aren't about to come off of cooldown, and when answered prayer's apotheosis is already active." );
-  divine_image->add_action( "holy_word_sanctify,line_cd=9", "line_cd prevents re-casting sanctify and serenity right away, wasting GCDs that could be used to proc divine image damage. In testing, the "sweet spot" balance between adding more divine images, triggering apotheosis, and casting damage CDs was to let the image from each healing holy word expire before re-casting" );
+  divine_image->add_action( "holy_word_sanctify,line_cd=9", "line_cd prevents re-casting sanctify and serenity right away, wasting GCDs that could be used to proc divine image damage. In testing, the sweet spot balance between adding more divine images, triggering apotheosis, and casting damage CDs was to let the image from each healing holy word expire before re-casting" );
   divine_image->add_action( "holy_word_serenity,line_cd=9" );
   divine_image->add_action( "holy_word_chastise" );
   divine_image->add_action( "empyreal_blaze" );
