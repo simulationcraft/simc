@@ -2031,10 +2031,12 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     if ( precombat_spawn_adjust > 0_s && precombat_spawn )
     {
       buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() - precombat_spawn_adjust );
+      stun();
     }
     else if( !precombat_spawn )
     {
       buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
+      stun();
     }   
   }
 
@@ -2429,6 +2431,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     buffs.stunned -> trigger( 2.9_s );
+    stun();
     gargoyle_strike_count = 0;
   }
 

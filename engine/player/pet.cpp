@@ -274,7 +274,14 @@ void pet_t::create_buffs()
     sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
     buffs.stunned  = make_buff( this, "stunned" )
-      ->set_max_stack( 1 );
+      ->set_max_stack( 1 )
+      ->set_stack_change_callback( [ this ] ( buff_t*, int, int new_ ) 
+      {
+        if ( !new_ )
+        {
+          schedule_ready( available() );
+        }
+      } );
     buffs.movement = new movement_buff_t( this );
 
     // Blood of the Enemy Essence Major R3 increase crit damage buff
