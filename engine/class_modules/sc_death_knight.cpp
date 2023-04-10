@@ -6015,8 +6015,8 @@ struct frostwyrms_fury_t final : public death_knight_spell_t
 struct frost_strike_strike_t final : public death_knight_melee_attack_t
 {
   bool sb;
-  frost_strike_strike_t( death_knight_t* p, util::string_view n, weapon_t* w, const spell_data_t* s ) :
-    death_knight_melee_attack_t( n, p, s ), sb( false )
+  frost_strike_strike_t( death_knight_t* p, util::string_view n, weapon_t* w, const spell_data_t* s, bool shattering_blade ) :
+    death_knight_melee_attack_t( n, p, s ), sb( shattering_blade )
   {
     background = special = true;
     weapon = w;
@@ -6047,7 +6047,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
         p() -> trigger_killing_machine( p() -> talent.frost.cold_blooded_rage -> effectN( 2 ).percent(), p() -> procs.km_from_cold_blooded_rage,
                                           p() -> procs.km_from_cold_blooded_rage_wasted );
       }
-      sb = false;
     }
   }
 };
@@ -6066,21 +6065,21 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
     dual = true;
-    mh = new frost_strike_strike_t(p, "frost_strike", &(p->main_hand_weapon), mh_data);
+    mh = new frost_strike_strike_t(p, "frost_strike", &(p->main_hand_weapon), mh_data, false  );
     add_child( mh );
     if( p -> talent.frost.shattering_blade.ok() )
     {
-      mh_sb = new frost_strike_strike_t( p, "frost_strike_sb", &(p->main_hand_weapon), mh_data);
+      mh_sb = new frost_strike_strike_t( p, "frost_strike_sb", &(p->main_hand_weapon), mh_data, true );
       add_child( mh_sb );
     }
 
     if ( p -> off_hand_weapon.type != WEAPON_NONE )
     {
-      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &(p->off_hand_weapon), data().effectN(3).trigger());
+      oh = new frost_strike_strike_t( p, "frost_strike_offhand", &(p->off_hand_weapon), data().effectN(3).trigger(), false );
       add_child( oh );
       if( p -> talent.frost.shattering_blade.ok() )
       {
-        oh_sb = new frost_strike_strike_t( p, "frost_strike_offhand_sb", &(p->off_hand_weapon), data().effectN(3).trigger());
+        oh_sb = new frost_strike_strike_t( p, "frost_strike_offhand_sb", &(p->off_hand_weapon), data().effectN(3).trigger(), true );
         add_child( oh_sb );
       }
     }
@@ -6094,11 +6093,6 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     {
       sb = true;
       td -> debuff.razorice -> expire();
-      debug_cast<frost_strike_strike_t*>( mh_sb ) -> sb = true;
-      if( oh )
-      {
-        debug_cast<frost_strike_strike_t*>( oh_sb ) -> sb = true;
-      }
     }
 
     death_knight_melee_attack_t::execute();
