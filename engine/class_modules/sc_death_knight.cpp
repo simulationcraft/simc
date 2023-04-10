@@ -1034,6 +1034,8 @@ public:
     const spell_data_t* monstrous_blow;
     // Army of the dead
     const spell_data_t* army_claw;
+    // All Ghouls
+    const spell_data_t* pet_stun;
     // Gargoyle
     const spell_data_t* gargoyle_strike;
     const spell_data_t* dark_empowerment;
@@ -1776,6 +1778,7 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
+  buff_t* pet_stun;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
@@ -1785,6 +1788,7 @@ struct death_knight_pet_t : public pet_t
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
+      action_list_str = "auto_attack";
     }
   }
 
@@ -1846,21 +1850,6 @@ struct death_knight_pet_t : public pet_t
     if ( name == "auto_attack" ) return new auto_attack_t( this );
 
     return pet_t::create_action( name, options_str );
-  }
-
-  void init_action_list() override
-  {
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( use_auto_attack )
-      def -> add_action( "auto_attack" );
-
-    pet_t::init_action_list();
-  }
-
-  void create_buffs() override
-  {
-   pet_t::create_buffs();
-   buffs.stunned  = make_buff( this, "stunned" );
   }
 };
 
@@ -2054,7 +2043,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   gain_t* dark_transformation_gain;
   buff_t* vile_infusion;
   buff_t* ghoulish_frenzy;
-  buff_t* stunned;
 
   // Generic Dark Transformation pet ability
   struct dt_melee_ability_t : public pet_melee_attack_t<ghoul_pet_t>
@@ -2181,8 +2169,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::arise();
     if( !precombat_spawn )
     {
-      stunned -> set_duration( 4.5_s );
-      stunned -> trigger();
+      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
     }
   }
 
@@ -2256,7 +2243,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
   void create_buffs() override
   {
-    pet_t::create_buffs();
+    base_ghoul_pet_t::create_buffs();
 	  
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
       -> set_default_value_from_effect( 1 )
@@ -2278,7 +2265,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
-  buff_t* stunned;
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
@@ -2320,8 +2306,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::arise();
     if( !precombat_spawn )
     {
-      stunned -> set_duration( 4.5_s );
-      stunned -> trigger();
+      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
     }
   }
 
@@ -2379,7 +2364,7 @@ int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
-  buff_t* stunned;
+
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
     gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
@@ -2412,14 +2397,13 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    action_list_str = "gargoyle_strike";
+    action_list_str = "Gargoyle Strike";
   }
   
   void arise() override
   {
     death_knight_pet_t::arise();
-    stunned -> set_duration( 2.9_s );
-    stunned -> trigger();
+    buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
     gargoyle_strike_count = 0;
   }
 
@@ -9436,6 +9420,8 @@ void death_knight_t::init_spells()
   pet_spell.monstrous_blow          = find_spell( 91797 );
   // Army of the dead
   pet_spell.army_claw               = find_spell( 199373 );
+  // All Ghouls
+  pet_spell.pet_stun                = find_spell( 47466 );
   // Gargoyle
   pet_spell.gargoyle_strike         = find_spell( 51963 );
   pet_spell.dark_empowerment        = find_spell( 211947 );
