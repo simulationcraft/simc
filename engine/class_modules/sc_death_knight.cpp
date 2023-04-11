@@ -1963,6 +1963,28 @@ struct death_knight_pet_t : public pet_t
     return m;
   }
 
+  // Standard Death Knight pet actions
+
+  struct auto_attack_t : public melee_attack_t
+  {
+    auto_attack_t( death_knight_pet_t* p ) :
+      melee_attack_t( "auto_attack", p )
+    {
+      assert( p -> main_hand_weapon.type != WEAPON_NONE );
+      p -> main_hand_attack = p -> create_auto_attack();
+      trigger_gcd = 0_ms;
+    }
+
+    void execute() override
+    { player -> main_hand_attack -> schedule_execute(); }
+
+    bool ready() override
+    {
+      if ( player -> is_moving() ) return false;
+      return ( player -> main_hand_attack -> execute_event == nullptr );
+    }
+  };
+
   void create_actions()
   {
     pet_t::create_actions();
@@ -1972,18 +1994,9 @@ struct death_knight_pet_t : public pet_t
     }
   }
 
-  void arise() override
-  {
-    pet_t::arise();
-    if( use_auto_attack )
-    {
-      auto_attack_create -> execute_on_target( target );
-    }
-  }
-
   void reschedule_auto()
   {
-    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() || !use_auto_attack )
       return;
 
     timespan_t gcd_adjust = gcd_ready - sim->current_time();
@@ -2357,12 +2370,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  void arise() override
-  {
-    death_knight_pet_t::arise();
-    claw->execute_on_target( target );
-  }
-
   void reschedule_ghoul_attacks()
   {
     if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
@@ -2398,7 +2405,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
   void create_actions()
   {
-    death_knight_pet_t::create_actions();
+    base_ghoul_pet_t::create_actions();
     claw = new army_claw_t( this );
     if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
@@ -2424,7 +2431,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
       ruptured_viscera -> execute_on_target( target );
     }
 	  
-    pet_t::dismiss( expired );
+    base_ghoul_pet_t::dismiss(expired);
   }
 };
 
