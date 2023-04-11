@@ -1919,50 +1919,18 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
-  attack_t* auto_attack_create;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false ), auto_attack_create( nullptr )
+    affected_by_commander_of_the_dead( false )
   {
-    if ( auto_attack )
+    if ( use_auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
     }
   }
 
-  death_knight_t* dk() const
-  { return debug_cast<death_knight_t*>( owner ); }
-
-   // DK pets do not inherit player attack speed modifiers
-  double composite_melee_speed() const override
-  { return owner -> cache.attack_haste(); }
-
-  virtual attack_t* create_auto_attack()
-  { return nullptr; }
-
-  void apply_affecting_auras( action_t& action ) override
-  {
-    player_t::apply_affecting_auras( action );
-
-    // Hack to apply BDK aura to DRW abilities
-    // 2021-01-29: The bdk aura is currently set to 0,
-    // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
-    dk() -> apply_affecting_auras( action );
-  }
-
-  double composite_player_multiplier ( school_e s ) const override
-  {
-    double m = pet_t::composite_player_multiplier( s );
-
-    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
-    {
-      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
-    }
-    return m;
-  }
-  
   // Standard Death Knight pet actions
 
   struct auto_attack_t : public melee_attack_t
@@ -1985,41 +1953,47 @@ struct death_knight_pet_t : public pet_t
     }
   };
 
+  death_knight_t* dk() const
+  { return debug_cast<death_knight_t*>( owner ); }
+
+   // DK pets do not inherit player attack speed modifiers
+  double composite_melee_speed() const override
+  { return owner -> cache.attack_haste(); }
+
+  void apply_affecting_auras( action_t& action ) override
+  {
+    player_t::apply_affecting_auras( action );
+
+    // Hack to apply BDK aura to DRW abilities
+    // 2021-01-29: The bdk aura is currently set to 0,
+    // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
+    dk() -> apply_affecting_auras( action );
+  }
+
+  double composite_player_multiplier ( school_e s ) const override
+  {
+    double m = pet_t::composite_player_multiplier( s );
+
+    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
+    {
+      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
+    }
+    return m;
+  }
+  
+  virtual attack_t* create_auto_attack()
+  { return nullptr; }
+
   void init_actions()
   {
     pet_t::init_actions();
-    if ( use_auto_attack )
-    {
-      auto_attack_create = new auto_attack_t( this );
-    }
-  }
-
-  void reschedule_auto()
-  {
-    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() || !use_auto_attack )
-      return;
-
-    timespan_t gcd_adjust = gcd_ready - sim->current_time();
-    if ( gcd_adjust > 0_ms )
-    {
-      make_event( sim, gcd_adjust, [ this ]() {
-        auto_attack_create->set_target( target );
-        auto_attack_create->schedule_execute();
-      } );
-    }
-    else
-    {
-      auto_attack_create->set_target( target );
-      auto_attack_create->schedule_execute();
-    }
+    main_hand_attack = new auto_attack_t( this );
   }
 
   void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
   {
     if( use_auto_attack )
-    {
-      reschedule_auto();
-    }
+    main_hand_attack -> execute_on_target( target );
   }
 };
 
@@ -2033,6 +2007,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
+    main_hand_weapon.type = WEAPON_BEAST;
   }
 
   void init_base_stats() override
@@ -2277,36 +2252,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     dark_transformation_gain = get_gain( "Dark Transformation" );
   }
 
-  void init_action_list() override
-  {
-    base_ghoul_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    if( dk() -> talent.unholy.dark_transformation.ok() )
-    {
-      def -> add_action( "sweeping_claws" );
-      def -> add_action( "claw,if=energy>70" );
-      def -> add_action( "monstrous_blow" );
-      def -> add_action( "Gnaw" );
-    }
-    else
-    {
-      def -> add_action( "claw,if=energy>70" );
-      def -> add_action( "Gnaw" );
-    }
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "claw"           ) return new           claw_t( this, options_str );
-    if ( name == "gnaw"           ) return new           gnaw_t( this, options_str );
-    if ( name == "sweeping_claws" ) return new sweeping_claws_t( this, options_str );
-    if ( name == "monstrous_blow" ) return new monstrous_blow_t( this, options_str );
-
-    return base_ghoul_pet_t::create_action( name, options_str );
-  }
-
   void create_buffs() override
   {
     base_ghoul_pet_t::create_buffs();
@@ -2366,31 +2311,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
       }
     }
   };
-
-  void reschedule_ghoul_attacks()
-  {
-    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
-      return;
-
-    timespan_t gcd_adjust = gcd_ready - sim->current_time();
-    if ( gcd_adjust > 0_ms )
-    {
-      make_event( sim, gcd_adjust, [ this ]() {
-        claw->set_target( target );
-        claw->schedule_execute();
-      } );
-    }
-    else
-    {
-      claw->set_target( target );
-      claw->schedule_execute();
-    }
-  }
-
-  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
-  {
-    reschedule_ghoul_attacks();
-  }
 
   void init_base_stats() override
   {
