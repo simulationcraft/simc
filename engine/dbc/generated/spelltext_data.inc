@@ -2538,7 +2538,7 @@ static const std::array<spelltext_data_t, 19494> __spelltext_data { {
   {  85288, "A mighty blow with both weapons that deals a total of $<damage> Physical damage.$?s383854[\r\n\r\nRaging Blow has a $s1% chance to instantly reset its own cooldown.][]\r\n\r\n|cFFFFFFFFGenerates ${$m2/10} Rage.|r", 0, 0 },
   {  85384, "$@spelldesc85288", 0, 0 },
   {  85416, "$@spelldesc85043", 0, 0 },
-  {  85673, "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on the target's missing health.][]", 0, 0 },
+  {  85673, "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on your missing health, or up to $315924s1% if cast on another target.][]", 0, 0 },
   {  85692, "Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.", 0, 0 },
   {  85739, "Causes your next single-target attack to strike up to $s1 additional targets for $s3% damage.", "Your next single-target attack strikes up to $w1 additional targets for $w3% damage.", 0 },
   {  85804, "Your Holy Power spending abilities reduce the cast time of your next Flash of Light by $114250s1%, and increase its healing done by $114250s2%. Stacks up to $114250u times.", 0, 0 },
@@ -12846,7 +12846,7 @@ static const std::array<spelltext_data_t, 19494> __spelltext_data { {
   { 315858, 0, "Primary stat increased by $w1.", 0 },
   { 315867, "Judgment generates $220637s1 Holy Power.", 0, "Rank 3" },
   { 315921, "When you cast Word of Glory on yourself, it is increased by up to $s1% based on your missing health.", 0, "Rank 2" },
-  { 315924, "Word of Glory's healing is increased by the target's missing health, on any target.", 0, 0 },
+  { 315924, "When you cast Word of Glory on someone other than yourself, its healing is increased by up to $s1% based on the target's missing health.", 0, 0 },
   { 315961, "$@spelldesc262150", 0, 0 },
   { 316019, "Deals $s1 Shadow damage.", 0, 0 },
   { 316099, "Afflicts one target with $o2 Shadow damage over $d. \r\n\r\nIf dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d.$?s231791[\r\n\r\n|cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]", "Suffering $w2 Shadow damage every $t2 sec. If dispelled, will cause ${$w2*$s1/100} damage to the dispeller and silence them for $196364d.", 0 },
@@ -19497,14 +19497,16 @@ static const std::array<spelltext_data_t, 19494> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.0.7.48966
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  {   85673,  0, "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on the target's missing health.][]", "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on your missing health, or up to $315924s1% if cast on another target.][]" },
+  {  315924,  0, "Word of Glory's healing is increased by the target's missing health, on any target.", "When you cast Word of Glory on someone other than yourself, its healing is increased by up to $s1% based on the target's missing health." },
   {  343527,  0, "A hammer slowly falls from the sky upon the target, after $d, they suffer ${$387113s1*$<mult>} Holy damage$?s387196[ and enemies within $387200a2 yards will suffer $387196s1% of the damage taken from your abilities in that time.][, plus $s2% of damage taken from your abilities in that time.]\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]" },
   {  343527,  1, "Sentenced to suffer an additional $w1 Holy damage.", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage." },
 } };
 
 // Spell description variables, wow build 10.0.7.48966
 static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
-  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
+  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -19881,6 +19883,7 @@ static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.0.7.48966
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
 } };
 

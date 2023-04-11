@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-11/48966)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1365,7 +1365,7 @@ Labels           : 1284: Symbol of Hope (265144 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Tough as Bark (340529 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2)
+Affecting spells : Guardian Druid (137010 effect#16), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Tough as Bark (340529 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1571,7 +1571,7 @@ Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 10% Base Mana (0) (id=1450)
+Resource         : 6% Base Mana (0) (id=1450)[Hotfixed: Percent Cost (10 -> 6)]
 Spell Level      : 48
 Range            : 20 yards
 Cast Time        : 1.7 seconds
@@ -4815,6 +4815,11 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
+#16 (id=1079987)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Barkskin (22812)
+                   Family Flags: 50
+Hotfixed         : NEW EFFECT
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -5367,9 +5372,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Can Proc From Suppressed Target Procs (254), Mastery Affects Points (285), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=216520)   : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : SP Coefficient (0.5 -> 0.7)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : SP Coefficient (0.5 -> 0.7)
 Description      : Increases your maximum health and healing received by ${$s1}.1%.
 
 Also increases your attack power by ${$159195s1}.1%.

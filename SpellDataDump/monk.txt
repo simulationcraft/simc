@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-11/48966)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -5911,7 +5911,8 @@ Attributes       : ........ ........ ........ x..x....   ........ ..x..... .....
                  : Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=312261)   : Energize Power% (137)
-                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.40000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc210802
 
 Name             : Reawaken (id=212051) [Spell Family (53)] 
@@ -6384,7 +6385,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=344387)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84700 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.84700 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.3)
 Description      : Kick with a blast of Chi energy, dealing $s1 Physical damage.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
 $dwm=$?a108561|a115697[${1}][${0.857143}]
