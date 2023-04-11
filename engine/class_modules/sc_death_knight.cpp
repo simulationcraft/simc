@@ -1430,7 +1430,7 @@ inline void runes_t::consume( unsigned runes )
 #endif
   auto n_full_runes = runes_full();
   int n_wasting_runes = n_full_runes - MAX_REGENERATING_RUNES;
-  auto disable_waste = n_full_runes - runes <= MAX_REGENERATING_RUNES;
+  int disable_waste = n_full_runes - runes <= MAX_REGENERATING_RUNES;
 
   while ( runes-- )
   {
@@ -1606,7 +1606,7 @@ timespan_t runes_t::time_to_regen( unsigned n_runes )
   } );
 
   // Number of unsatisfied runes
-  unsigned n_unsatisfied = n_runes - as<unsigned>( dk -> resources.current[ RESOURCE_RUNE ] );
+  int n_unsatisfied = n_runes - as<int>( dk -> resources.current[ RESOURCE_RUNE ] );
 
   // If we can satisfy the remaining unsatisfied runes with regenerating runes, return the N - 1th
   // remaining regeneration time
@@ -2028,7 +2028,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    auto duration = dk() -> pet_spell.pet_stun -> duration();
+    timespan_t duration = dk() -> pet_spell.pet_stun -> duration();
     if ( precombat_spawn_adjust > 0_s && precombat_spawn )
     {
       duration = duration - precombat_spawn_adjust;
@@ -2040,8 +2040,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
       buffs.stunned -> trigger( duration );
       stun();
     }
-    buffs.movement -> trigger( duration + rng().gauss( 1_s, 0_ms ) );
-    moving();
   }
 
   resource_e primary_resource() const override
@@ -2173,6 +2171,10 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     if ( owner -> talent.unholy.raise_dead.ok() )
     {
       precombat_spawn = true;
+      if( !owner -> talent.sacrificial_pact.ok() )
+      {
+        dynamic = false;
+      }
     }
   }
 
@@ -2425,9 +2427,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    auto duration = 2.9_s;
-    buffs.movement -> trigger( duration + rng().gauss( 100_ms, 0_ms ) );
-    moving();
+    timespan_t duration = 2.8_s;
+    buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
+    stun();
     gargoyle_strike_count = 0;
   }
 
@@ -2921,16 +2923,6 @@ struct magus_pet_t : public death_knight_pet_t
       {
         pet() -> get_target_data( state -> target ) -> frostbolt_debuff -> trigger();
       }
-    }
-
-    bool target_ready( player_t* candidate_target ) override
-    {
-      // Frostbolt can't target an enemy already affected by its slowing debuff
-      auto td = pet() -> find_target_data( candidate_target );
-      if ( td && td -> frostbolt_debuff -> check() )
-        return false;
-
-      return magus_spell_t::target_ready( candidate_target );
     }
   };
 
@@ -8547,7 +8539,7 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
     // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
     spell.runic_corruption_chance->effectN(1).percent() * rpcost / 100.0;
   // Buff duration and refresh behavior handled in runic_corruption_buff_t
-  if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
+  if ( spec.unholy_death_knight -> ok() && buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
     proc -> occur();
 }
 
@@ -8968,7 +8960,7 @@ void death_knight_t::create_pets()
 {
   // Created unconditionally for APL purpose
   // Only the permanent version with raise dead 2 is a pet, others are guardians
-  pets.ghoul_pet = new pets::ghoul_pet_t( this, ! talent.unholy.raise_dead.ok() );
+  pets.ghoul_pet = new pets::ghoul_pet_t( this, !talent.unholy.raise_dead.ok() );
 
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
@@ -10783,7 +10775,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 326864, runeforge::spellwarding );
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
-  
+  /*
   void register_hotfixes() const override
   {
       hotfix::register_spell( "Death Knight", "2023-4-7", "Gargoyle Strike Cast time increased to 2.5s", 51963, hotfix::HOTFIX_FLAG_LIVE )
@@ -10834,7 +10826,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 1.9734 )
       .verification_value( 1.71600 );
   }
-  
+  */
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
   void combat_begin( sim_t* ) const override {}
