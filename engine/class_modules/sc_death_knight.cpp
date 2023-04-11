@@ -2411,14 +2411,22 @@ int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
+  pet_spell_t<gargoyle_pet_t>* gargoyle_strike;
+
+  gargoyle_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
+  {
+    resource_regeneration = regen_type::DISABLED;
+    affected_by_commander_of_the_dead = true;
+  }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
+    gargoyle_strike_t( gargoyle_pet_t* p ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     {
-      parse_options( options_str );
       trigger_gcd = 1.5_s;
+      repeating = true;
     }
 
     void execute() override
@@ -2439,11 +2447,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
     }
   };
 
-  gargoyle_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
+  void create_actions()
   {
-    resource_regeneration = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
+    death_knight_pet_t::create_actions();
+    gargoyle_strike = new gargoyle_strike_t( this );
   }
   
   void arise() override
@@ -2484,20 +2491,21 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
   }
 
-  void init_action_list() override
+  void reschedule_gary()
   {
-    death_knight_pet_t::init_action_list();
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
 
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "gargoyle_strike" );
+    else
+    {
+      gargoyle_strike->set_target( dk()->target );
+      gargoyle_strike->schedule_execute();
+    }
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
   {
-    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
-
-    return death_knight_pet_t::create_action( name, options_str );
+    reschedule_gary();
   }
 
   // Function that increases the gargoyle's dark empowerment buff value based on RP spent
@@ -2528,27 +2536,29 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct risen_skulker_pet_t : public death_knight_pet_t
 {
-  struct skulker_shot_t : public pet_action_t<risen_skulker_pet_t, ranged_attack_t>
-  {
-    skulker_shot_t( risen_skulker_pet_t* p, util::string_view options_str ) :
-      pet_action_t( p, "skulker_shot", p -> dk() -> pet_spell.skulker_shot )
-    {
-      parse_options( options_str );
-      weapon = &( p -> main_hand_weapon );
-      // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
-      base_multiplier *= 2.0;
-      aoe = -1;
-      base_aoe_multiplier = 0.5;
-    }
-  };
-
+  pet_spell_t<risen_skulker_pet_t>* skulker_shot;
   risen_skulker_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "risen_skulker", true, false, false )
+    death_knight_pet_t( owner, "risen_skulker", true, false, false ), skulker_shot( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
   }
+
+  struct skulker_shot_t : public pet_spell_t<risen_skulker_pet_t>
+  {
+    skulker_shot_t( risen_skulker_pet_t* p ) :
+      pet_spell_t<risen_skulker_pet_t>( p, "skulker_shot", p -> dk() -> pet_spell.skulker_shot )
+    {
+      weapon = &( p -> main_hand_weapon );
+      background = true;
+      // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
+      base_multiplier *= 2.0;
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
+      repeating = true;
+    }
+  };
 
   void init_base_stats() override
   {
@@ -2557,20 +2567,33 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 1.0;
   }
 
-  void init_action_list() override
+  void create_actions()
   {
-    death_knight_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "skulker_shot" );
+    death_knight_pet_t::create_actions();
+    skulker_shot = new skulker_shot_t( this );
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  void reschedule_skulker()
   {
-    if ( name == "skulker_shot" ) return new skulker_shot_t( this, options_str );
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
 
-    return death_knight_pet_t::create_action( name, options_str );
+    else
+    {
+      skulker_shot->set_target( dk()->target );
+      skulker_shot->schedule_execute();
+    }
+  }
+  
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    reschedule_skulker();
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  {
+    reschedule_skulker();
   }
 };
 
