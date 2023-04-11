@@ -12,7 +12,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:primal_whetstone_3/off_hand:primal_whetstone_3
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -280,8 +280,7 @@ off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
 # gear_ilvl=420.81
 # gear_agility=4914
 # gear_stamina=12972
-# gear_attack_power=270
-# gear_crit_rating=3967
+# gear_crit_rating=4587
 # gear_haste_rating=522
 # gear_mastery_rating=2854
 # gear_versatility_rating=4033
