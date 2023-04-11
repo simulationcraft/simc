@@ -1205,14 +1205,6 @@ struct stun_event_t final : public raid_event_t
     for ( auto p : affected_players )
     {
       p->buffs.stunned->decrement();
-
-      if ( !p->buffs.stunned->check() )
-      {
-        // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon
-        // imp ).
-        if ( !p->channeling && !p->executing && !p->readying )
-          p->schedule_ready();
-      }
     }
   }
 };
