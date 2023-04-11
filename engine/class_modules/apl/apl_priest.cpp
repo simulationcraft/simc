@@ -265,8 +265,8 @@ void discipline( player_t* p )
   main->add_action( "run_action_list,name=scov_prep,if=cooldown.shadow_covenant.up&(!variable.harsh_discipline_ready|(variable.short_scov&((talent.purge_the_wicked&dot.purge_the_wicked.remains<20)|(!talent.purge_the_wicked&dot.shadow_word_pain.remains<20))))" );
   main->add_action( "run_action_list,name=short_scov,if=variable.short_scov&variable.can_enter_scov" );
   main->add_action( "run_action_list,name=long_scov,if=variable.long_scov&variable.can_enter_scov" );
-  main->add_action( "purge_the_wicked,if=talent.purge_the_wicked&(!ticking|(refreshable&(!talent.painful_punishment|(talent.painful_punishment&(dot.purge_the_wicked.remains<(cooldown.penance.remains-variable.expected_penance_reduction))))))" );
-  main->add_action( "shadow_word_pain,if=!talent.purge_the_wicked&(!ticking|(refreshable&(!talent.painful_punishment|(talent.painful_punishment&(dot.shadow_word_pain.remains<(cooldown.penance.remains-variable.expected_penance_reduction))))))" );
+  main->add_action( "purge_the_wicked,if=talent.purge_the_wicked&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))&(!ticking|(refreshable&(!talent.painful_punishment|(talent.painful_punishment&(dot.purge_the_wicked.remains<(cooldown.penance.remains-variable.expected_penance_reduction))))))" );
+  main->add_action( "shadow_word_pain,if=!talent.purge_the_wicked&(target.time_to_die>(0.5*dot.shadow_word_pain.duration))&(!ticking|(refreshable&(!talent.painful_punishment|(talent.painful_punishment&(dot.shadow_word_pain.remains<(cooldown.penance.remains-variable.expected_penance_reduction))))))" );
   main->add_action( "schism,if=!talent.shadow_covenant" );
   main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&target.health.pct<20" );
   main->add_action( "penance,if=(!talent.shadow_covenant|variable.can_penance)&buff.harsh_discipline_ready.up" );
@@ -281,11 +281,11 @@ void discipline( player_t* p )
   main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&(target.time_to_pct_20>(gcd.max*2))" );
   main->add_action( "smite" );
 
-  scov_prep->add_action( "purge_the_wicked,if=!ticking", "Prepare to enter shadow covenant" );
+  scov_prep->add_action( "purge_the_wicked,if=!ticking&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))", "Prepare to enter shadow covenant" );
   scov_prep->add_action( "mind_blast,if=!variable.harsh_discipline_ready&variable.can_mind_blast" );
   scov_prep->add_action( "power_word_solace,if=!variable.harsh_discipline_ready" );
   scov_prep->add_action( "smite,if=!variable.harsh_discipline_ready" );
-  scov_prep->add_action( "purge_the_wicked" );
+  scov_prep->add_action( "purge_the_wicked,if=(target.time_to_die>(0.5*dot.purge_the_wicked.duration))" );
 
   short_scov->add_action( "shadow_covenant", "Short Shadow Covenant  We want to use entirely shadow spells to optimize our time with the buff" );
   short_scov->add_action( "schism" );
@@ -300,7 +300,7 @@ void discipline( player_t* p )
   short_scov->add_action( "mind_blast" );
   short_scov->add_action( "divine_star" );
   short_scov->add_action( "shadow_word_death" );
-  short_scov->add_action( "purge_the_wicked,if=(!ticking|refreshable)", "just in case we run out of shadow spells" );
+  short_scov->add_action( "purge_the_wicked,if=(!ticking|refreshable)&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))", "just in case we run out of shadow spells" );
   short_scov->add_action( "lights_wrath" );
   short_scov->add_action( "power_word_solace" );
   short_scov->add_action( "smite" );
@@ -318,7 +318,7 @@ void discipline( player_t* p )
   long_scov->add_action( "halo,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "divine_star,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "shadow_word_death,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
-  long_scov->add_action( "purge_the_wicked,if=(!variable.should_te|(variable.should_te&variable.te_holy))&(!ticking|refreshable)" );
+  long_scov->add_action( "purge_the_wicked,if=(!variable.should_te|(variable.should_te&variable.te_holy))&(!ticking|refreshable)&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))" );
   long_scov->add_action( "lights_wrath,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
   long_scov->add_action( "power_word_solace,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
   long_scov->add_action( "smite,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
