@@ -1982,7 +1982,7 @@ struct pet_spell_t : public pet_action_t<T_PET, spell_t>
 template <typename T>
 struct auto_attack_melee_t : public pet_melee_attack_t<T>
 {
-  auto_attack_melee_t( T* p, util::string_view name = "main_hand" ) :
+  auto_attack_melee_t( T* p, util::string_view name = "auto_attack" ) :
     pet_melee_attack_t<T>( p, name )
   {
     this -> background = this -> repeating = true;
@@ -2108,7 +2108,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct claw_t : public dt_melee_ability_t
+  struct claw_t final : public dt_melee_ability_t
   {
     claw_t( ghoul_pet_t* p, util::string_view options_str ) :
       dt_melee_ability_t( p, "claw", p -> dk() -> pet_spell.ghoul_claw, false )
@@ -2118,7 +2118,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct sweeping_claws_t : public dt_melee_ability_t
+  struct sweeping_claws_t final : public dt_melee_ability_t
   {
     sweeping_claws_t( ghoul_pet_t* p, util::string_view options_str ) :
       dt_melee_ability_t( p, "sweeping_claws", p -> dk() -> pet_spell.sweeping_claws, true )
@@ -2129,7 +2129,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct gnaw_t : public dt_melee_ability_t
+  struct gnaw_t final : public dt_melee_ability_t
   {
     gnaw_t( ghoul_pet_t* p, util::string_view options_str ) :
       dt_melee_ability_t( p, "gnaw", p -> dk() -> pet_spell.gnaw, false )
@@ -2139,7 +2139,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct monstrous_blow_t : public dt_melee_ability_t
+  struct monstrous_blow_t final : public dt_melee_ability_t
   {
     monstrous_blow_t( ghoul_pet_t* p, util::string_view options_str ):
       dt_melee_ability_t( p, "monstrous_blow", p -> dk() -> pet_spell.monstrous_blow, true )
@@ -2149,9 +2149,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  struct ghoul_melee_t : public auto_attack_melee_t<ghoul_pet_t>
+  struct ghoul_melee_t final : public auto_attack_melee_t<ghoul_pet_t>
   {
-    ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "main_hand" ) :
+    ghoul_melee_t( ghoul_pet_t* p, util::string_view name = "auto_attack" ) :
       auto_attack_melee_t<ghoul_pet_t>( p, name )
     { }
 
@@ -2323,7 +2323,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     }
   };
   
-  struct ruptured_viscera_t : public pet_spell_t<army_ghoul_pet_t>
+  struct ruptured_viscera_t final : public pet_spell_t<army_ghoul_pet_t>
   {
     ruptured_viscera_t( army_ghoul_pet_t* p ) :
       pet_spell_t( p, "ruptured_viscera", p -> dk() -> pet_spell.ruptured_viscera )
@@ -2346,7 +2346,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t( owner, name, true )
   {
     affected_by_commander_of_the_dead = true;
-    action_list_str = "claw";
   }
 
   void init_base_stats() override
@@ -2376,6 +2375,15 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       this -> gains.resource_regen = dk() -> find_pet( name_str ) -> gains.resource_regen;
     }
+  }
+
+  void init_action_list() override
+  {
+    base_ghoul_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "claw" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2436,7 +2444,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    action_list_str = "gargoyle_strike";
   }
   
   void arise() override
@@ -2475,6 +2482,15 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::create_buffs();
 
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "gargoyle_strike" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2532,7 +2548,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
-    action_list_str = "skulker_shot";
   }
 
   void init_base_stats() override
@@ -2540,6 +2555,15 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 1.0;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "skulker_shot" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2904,7 +2928,7 @@ struct magus_pet_t : public death_knight_pet_t
     { return 0; }
   };
 
-  struct frostbolt_magus_t : public magus_spell_t
+  struct frostbolt_magus_t final : public magus_spell_t
   {
     frostbolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
       magus_spell_t( p, "frostbolt", p -> dk() -> pet_spell.frostbolt, options_str )
@@ -2926,7 +2950,7 @@ struct magus_pet_t : public death_knight_pet_t
     }
   };
 
-  struct shadow_bolt_magus_t : public magus_spell_t
+  struct shadow_bolt_magus_t final : public magus_spell_t
   {
     shadow_bolt_magus_t( magus_pet_t* p, util::string_view options_str ) :
       magus_spell_t( p, "shadow_bolt", p -> dk() -> pet_spell.shadow_bolt, options_str )
@@ -2936,17 +2960,8 @@ struct magus_pet_t : public death_knight_pet_t
   magus_pet_t( death_knight_t* owner ) :
     death_knight_pet_t( owner, "magus_of_the_dead", true, false )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
-    action_list_str = "frostbolt";
-    action_list_str += "/shadow_bolt";
-  }
-
-  void arise() override
-  {
-    death_knight_pet_t::arise();
   }
 
   void init_base_stats() override
@@ -2957,6 +2972,16 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
+  }
+
+  void init_action_list() override
+  {
+    death_knight_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "frostbolt" );
+    def -> add_action( "shadow_bolt" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
