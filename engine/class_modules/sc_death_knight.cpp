@@ -1919,7 +1919,7 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
-  auto_attack_melee_t<death_knight_pet_t>* auto_attack_create;
+  attack_t* auto_attack_create;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
@@ -1962,7 +1962,7 @@ struct death_knight_pet_t : public pet_t
     }
     return m;
   }
-
+  
   // Standard Death Knight pet actions
 
   struct auto_attack_t : public melee_attack_t
@@ -1985,12 +1985,12 @@ struct death_knight_pet_t : public pet_t
     }
   };
 
-  void create_actions()
+  void init_actions()
   {
-    pet_t::create_actions();
+    pet_t::init_actions();
     if ( use_auto_attack )
     {
-      auto_attack_create = new auto_attack_melee_t( this );
+      auto_attack_create = new auto_attack_t( this );
     }
   }
 
@@ -2034,9 +2034,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   {
     main_hand_weapon.swing_time = 2.0_s;
   }
-
-  attack_t* create_auto_attack() override
-  { return new auto_attack_melee_t<base_ghoul_pet_t>( this ); }
 
   void init_base_stats() override
   {
