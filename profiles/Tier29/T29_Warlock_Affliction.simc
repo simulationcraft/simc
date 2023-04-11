@@ -2,10 +2,10 @@ warlock="T29_Warlock_Affliction"
 source=default
 spec=affliction
 level=70
-race=orc
+race=mechagnome
 role=spell
 position=ranged_back
-talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSSSCkmCRaSSItAAAAANSAAAAAAgEOQDRkkkIplEBAkA
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -47,7 +47,7 @@ actions+=/siphon_life,if=remains<5
 actions+=/haunt
 actions+=/drain_soul,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
 actions+=/shadow_bolt,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)
-actions+=/phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time
+actions+=/phantom_singularity,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25
 actions+=/vile_taint,if=!talent.soul_rot|cooldown.soul_rot.remains<=execute_time|talent.souleaters_gluttony.rank<2&cooldown.soul_rot.remains>=12
 actions+=/soul_rot,if=variable.vt_up&variable.ps_up
 actions+=/summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot

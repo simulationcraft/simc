@@ -458,6 +458,7 @@ public:
     cooldown_t* storm_elemental;
     cooldown_t* stormkeeper;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
+    cooldown_t* totemic_recall;
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -802,6 +803,7 @@ public:
     cooldown.storm_elemental    = get_cooldown( "storm_elemental" );
     cooldown.stormkeeper        = get_cooldown( "stormkeeper" );
     cooldown.strike             = get_cooldown( "strike" );
+    cooldown.totemic_recall     = get_cooldown( "totemic_recall" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -9869,7 +9871,7 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
 void shaman_t::trigger_flash_of_lightning()
 {
   if ( !talent.stormkeeper.enabled() && !talent.stormkeeper2.enabled() &&
-       !talent.storm_elemental.enabled() )
+       !talent.storm_elemental.enabled() && !talent.totemic_recall.enabled() )
   {
     return;
   }
@@ -9885,6 +9887,10 @@ void shaman_t::trigger_flash_of_lightning()
   if ( talent.natures_swiftness.enabled() )
   {
     cooldown.natures_swiftness->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  }
+  if ( talent.totemic_recall.enabled() )
+  {
+    cooldown.totemic_recall->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
   }
 
   proc.flash_of_lightning->occur();
