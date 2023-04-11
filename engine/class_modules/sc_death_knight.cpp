@@ -2044,6 +2044,22 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
   resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
+
+  timespan_t available() const override
+  {
+    double energy = resources.current[ RESOURCE_ENERGY ];
+    timespan_t time_to_next = timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) );
+
+    // Cheapest Ability need 40 Energy
+    if ( energy > 40 )
+    {
+      return 100_ms;
+    }
+    else
+    {
+      return std::max ( time_to_next, 100_ms );
+    }
+  }
 };
 
 // ===============================================================================
@@ -2072,7 +2088,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     void impact( action_state_t* state ) override
     {
-      pet_melee_attack_t::impact( state );
+      pet_melee_attack_t<ghoul_pet_t>::impact( state );
 
       if ( triggers_infected_claws && dk() -> talent.unholy.infected_claws.ok() &&
            rng().roll( dk() -> talent.unholy.infected_claws -> effectN( 1 ).percent() ) )
@@ -2088,7 +2104,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         return false;
       }
 
-      return pet_melee_attack_t::ready();
+      return pet_melee_attack_t<ghoul_pet_t>::ready();
     }
   };
 
