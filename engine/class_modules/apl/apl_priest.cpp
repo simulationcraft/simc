@@ -254,7 +254,7 @@ void holy( player_t* p )
   divine_favor_chastise_active->add_action( "holy_word_chastise", "---------------------------------------------------------------------------  Divine Favor (Active)  ---------------------------------------------------------------------------" );
   divine_favor_chastise_active->add_action( "empyreal_blaze" );
   divine_favor_chastise_active->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>(gcd.max*3)", "Hold apotheosis if chastise will be up soon so we can get an additional reset" );
-  divine_favor_chastise_active->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=13)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=5)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=2)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  divine_favor_chastise_active->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_favor_chastise_active->add_action( "mindgames" );
   divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_favor_chastise_active->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
@@ -263,7 +263,7 @@ void holy( player_t* p )
   divine_favor_chastise_active->add_action( "smite" );
 
   divine_favor_filler->add_action( "holy_word_chastise,if=cooldown.holy_word_chastise.duration_expected<cooldown.divine_word.remains", "---------------------------------------------------------------------------  Divine Favor (Filler)  ---------------------------------------------------------------------------" );
-  divine_favor_filler->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=13)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=5)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=2)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  divine_favor_filler->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_favor_filler->add_action( "mindgames" );
   divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_favor_filler->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
@@ -276,7 +276,7 @@ void holy( player_t* p )
   divine_image->add_action( "holy_word_serenity,line_cd=9" );
   divine_image->add_action( "holy_word_chastise" );
   divine_image->add_action( "empyreal_blaze" );
-  divine_image->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=13)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=5)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=2)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  divine_image->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_image->add_action( "mindgames", "Mindgames also triggers divine images" );
   divine_image->add_action( "shadow_word_death,if=target.health.pct<20", "Shadow Word: Death is only worth casting during execute, otherwise it's worse than a smite" );
   divine_image->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
@@ -287,7 +287,7 @@ void holy( player_t* p )
   generic->add_action( "holy_word_chastise", "---------------------------------------------------------------------------  Generic  ---------------------------------------------------------------------------" );
   generic->add_action( "empyreal_blaze" );
   generic->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>(gcd.max*3)", "Hold Apotheosis if chastise will be up soon" );
-  generic->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=13)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=5)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=2)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  generic->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   generic->add_action( "mindgames" );
   generic->add_action( "shadow_word_death,if=target.health.pct<20" );
   generic->add_action( "holy_nova,if=buff.rhapsody.stack=buff.rhapsody.max_stack", "Avoid sitting on a full rhapsody stack" );
