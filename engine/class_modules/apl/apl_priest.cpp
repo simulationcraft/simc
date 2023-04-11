@@ -179,7 +179,7 @@ void discipline( player_t* p )
   action_priority_list_t* long_scov = p->get_action_priority_list( "long_scov" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
-  precombat->add_action( "flask", "ytho /class_modules/apl/ConvertAPL.p  /jom_disc.sim  /class_modules/apl/apl_priest.cp  isciplin otion=elemental_potion_of_ultimate_power_ ood=fated_fortune_cooki lask=phial_of_tepid_versatility_ ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
+  precombat->add_action( "flask", "otion=elemental_potion_of_ultimate_power_ ood=fated_fortune_cooki lask=phial_of_tepid_versatility_ ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
