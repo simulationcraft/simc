@@ -2176,6 +2176,18 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         dynamic = false;
       }
     }
+    if( owner -> talent.unholy.dark_transformation.ok() )
+    {
+      action_list_str = "sweeping_claws";
+      action_list_str += "/claw,if=energy>70";
+      action_list_str += "/monstrous_blow";
+      action_list_str += "/gnaw";
+    }
+    else
+    {
+      action_list_str = "claw,if=energy>70";
+      action_list_str += "/gnaw";
+    }
   }
 
   attack_t* create_auto_attack() override
@@ -2241,21 +2253,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_gains();
 
     dark_transformation_gain = get_gain( "Dark Transformation" );
-  }
-
-  void init_action_list() override
-  {
-    base_ghoul_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "sweeping_claws" );
-    def -> add_action( "claw,if=energy>70" );
-    def -> add_action( "monstrous_blow" );
-    def -> add_action( "Gnaw" );
-
-    // TODO: alternative APL with energy spender spam and no gnaw usage
-    // Gated behind a player option?
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2325,6 +2322,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t( owner, name, true )
   {
     affected_by_commander_of_the_dead = true;
+    action_list_str = "claw";
   }
 
   void init_base_stats() override
@@ -2333,14 +2331,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
     owner_coeff.ap_from_ap = 0.4664;
-  }
-
-  void init_action_list() override
-  {
-    base_ghoul_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Claw" );
   }
 
   void init_spells() override
@@ -2422,6 +2412,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
+    action_list_str = "gargoyle_strike";
   }
   
   void arise() override
@@ -2453,14 +2444,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     m *= 1.0 + dark_empowerment -> stack_value();
 
     return m;
-  }
-  
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Gargoyle Strike" );
   }
 
   void create_buffs() override
@@ -2525,6 +2508,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
+    action_list_str = "skulker_shot";
   }
 
   void init_base_stats() override
@@ -2532,14 +2516,6 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 1.0;
-  }
-
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "Skulker Shot" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -2940,6 +2916,8 @@ struct magus_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = 1.4_s;
     resource_regeneration = regen_type::DISABLED;
     affected_by_commander_of_the_dead = true;
+    action_list_str = "frostbolt";
+    action_list_str += "/shadow_bolt";
   }
 
   void arise() override
@@ -2955,18 +2933,6 @@ struct magus_pet_t : public death_knight_pet_t
     // Looks like Magus' AP coefficient is the same as the pet ghouls'
     // Including the +6% buff applied before magus was even a thing
     owner_coeff.ap_from_ap *= 1.06;
-  }
-  
-  // Magus of the dead Action Priority List:
-  // Frostbolt has a 3s cooldown that doesn't seeem to be in spelldata, and applies a 4s snare on non-boss enemies
-  // Frostbolt is used on cooldown and if the target isn't slowed by the debuff, and shadow bolt is used the rest of the time
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "frostbolt" ); // Cooldown and debuff are handled in the action
-    def -> add_action( "shadow_bolt" );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
