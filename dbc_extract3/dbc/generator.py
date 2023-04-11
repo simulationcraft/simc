@@ -1397,7 +1397,7 @@ class SpellDataGenerator(DataGenerator):
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
          408815, 408832, 408835, 408836, # Djaruun
-         401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil 
+         401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil
          408821, 403545, # Djaruun, Pillar of the Elder Flame
          408667, 408671, 408675, 408770, 408682, 408694, # Dragonfire Bomb Dispenser
          406244, 378758, 407090, # Spore Colony Shoulderguards
@@ -1476,6 +1476,7 @@ class SpellDataGenerator(DataGenerator):
             ( 224239, 0 ),          # Tempest divine storm
             ( 384810, 0 ),          # Seal of Clarity buff
             ( 404140, 0 ),          # Blessed Hammers for Adjudication
+            ( 387113, 0 ),          # ES
         ),
 
         # Hunter:
@@ -1718,6 +1719,9 @@ class SpellDataGenerator(DataGenerator):
           ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
           ( 408368, 0 ), # T30 Wrath of the Frostwyrm Frost Set buff
           ( 410790, 0 ), # T30 Wrath of the Frostwyrm FWF triggered from pillar
+          ( 196780, 0 ), # Outbreak Intermediate AoE spell
+          ( 196782, 0 ), # Outbreak Intermediate AoE spell
+          ( 281327, 0 ), # Obliteration Rune Generation Spell
         ),
 
         # Shaman:

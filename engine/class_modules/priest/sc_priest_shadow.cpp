@@ -605,37 +605,55 @@ struct shadowy_apparition_state_t : public action_state_t
 {
   double source_crit;
   double number_spawned;
+  bool buffed_by_darkflame_shroud;
+  double darkflame_shroud_mult;
 
   shadowy_apparition_state_t( action_t* a, player_t* t )
-    : action_state_t( a, t ), source_crit( 1.0 ), number_spawned( 1.0 )
+    : action_state_t( a, t ),
+      source_crit( 1.0 ),
+      number_spawned( 1.0 ),
+      buffed_by_darkflame_shroud( false ),
+      darkflame_shroud_mult( t->find_spell( 410871 )->effectN( 1 ).percent() )
   {
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     action_state_t::debug_str( s );
-    fmt::print( s, " source_crit={}, number_spawned={}", source_crit, number_spawned );
+    fmt::print( s, " source_crit={}, number_spawned={}, buffed_by_darkflame_shroud={}", source_crit, number_spawned,
+                buffed_by_darkflame_shroud );
     return s;
   }
 
   void initialize() override
   {
     action_state_t::initialize();
-    source_crit    = 1.0;
-    number_spawned = 1.0;
+    source_crit                = 1.0;
+    number_spawned             = 1.0;
+    buffed_by_darkflame_shroud = false;
   }
 
   void copy_state( const action_state_t* o ) override
   {
     action_state_t::copy_state( o );
-    auto other_sa_state = debug_cast<const shadowy_apparition_state_t*>( o );
-    number_spawned      = other_sa_state->number_spawned;
-    source_crit         = other_sa_state->source_crit;
+    auto other_sa_state        = debug_cast<const shadowy_apparition_state_t*>( o );
+    number_spawned             = other_sa_state->number_spawned;
+    source_crit                = other_sa_state->source_crit;
+    buffed_by_darkflame_shroud = other_sa_state->buffed_by_darkflame_shroud;
   }
 
   double composite_da_multiplier() const override
   {
-    return action_state_t::composite_da_multiplier() * source_crit;
+    double m = action_state_t::composite_da_multiplier();
+
+    m *= source_crit;
+
+    if ( buffed_by_darkflame_shroud )
+    {
+      m *= 1 + darkflame_shroud_mult;
+    }
+
+    return m;
   }
 };
 
@@ -669,9 +687,6 @@ public:
       {
         coalescing_shadows_chance = priest().talents.shadow.puppet_master->proc_chance();
       }
-
-      da_multiplier_buffeffects.emplace_back( nullptr, priest().buffs.darkflame_shroud->default_value, false, false,
-                                              [ this ] { return priest().buffs.darkflame_shroud->check(); } );
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -783,6 +798,9 @@ public:
     s->source_crit    = _gets_crit_mod ? 2.0 : 1.0;
     s->number_spawned = vts;
     s->target         = target;
+
+    // Darkflame Shroud buffs Apparitions as they spawn, not on hit
+    s->buffed_by_darkflame_shroud = priest().buffs.darkflame_shroud->check();
 
     proc->occur();
 
@@ -914,7 +932,11 @@ struct shadow_word_pain_t final : public priest_spell_t
                            .talents.shadow.tormented_spirits->effectN( ( d->state->result == RESULT_CRIT ) ? 2 : 1 )
                            .percent() ) )
       {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp, false );
+        // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1097
+        // Tormented Spirits Shadowy Apparitions get the crit mod if the last action to
+        // trigger a Shadowy Apparition crit, not if the SW:P tick crit
+        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_swp,
+                                              priest().bugs ? false : d->state->result == RESULT_CRIT );
       }
 
       if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
@@ -2615,6 +2637,10 @@ void priest_t::create_buffs_shadow()
                              ->set_cooldown( 0_s )
                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  // BUG: Tracking buff for bugged Tormented Spirits crit handling
+  buffs.last_shadowy_apparition_crit =
+      make_buff( this, "last_shadowy_apparition_crit" )->set_quiet( true )->set_duration( 0_s )->set_max_stack( 1 );
+
   // Tier Sets
   // 393684 -> 394961
   buffs.gathering_shadows =
@@ -2904,6 +2930,32 @@ void priest_t::trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod )
   if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
     return;
+  }
+
+  // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1097
+  // Tormented Spirits Shadowy Apparitions get the crit mod if the last action to
+  // trigger a Shadowy Apparition crit, not if the SW:P tick crit
+  if ( bugs )
+  {
+    if ( proc == procs.shadowy_apparition_swp )
+    {
+      if ( buffs.last_shadowy_apparition_crit->check() )
+      {
+        sim->print_debug( "{} triggered a shadowy_apparition from tormented_spirits with the crit mod", *this );
+        gets_crit_mod = true;
+      }
+    }
+    else
+    {
+      if ( gets_crit_mod )
+      {
+        buffs.last_shadowy_apparition_crit->trigger();
+      }
+      else
+      {
+        buffs.last_shadowy_apparition_crit->expire();
+      }
+    }
   }
 
   // Idol of Yogg-Saron only triggers for each cast that generates an apparition

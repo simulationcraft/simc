@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.7.48865
-static const std::array<spelltext_data_t, 19493> __spelltext_data { {
+// Spell text, wow build 10.0.7.48966
+static const std::array<spelltext_data_t, 19494> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6339,7 +6339,9 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 196771, "$@spelldesc196770", 0, 0 },
   { 196777, "Your damage and healing spells have a chance open a portal to Mardum, sending a stream of imps at your target or your target's opponent.", 0, 0 },
   { 196779, "When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.", 0, 0 },
+  { 196780, "$@spelldesc77575", 0, 0 },
   { 196781, "$@spelldesc196779", 0, 0 },
+  { 196782, "$@spelldesc77575", "Upon expiration nearby enemies are infected by Virulent Plague.", 0 },
   { 196783, "Nibble a piece of the crystal.", "Crystals are growing everywhere!", 0 },
   { 196792, "Place a Whitewater Carp to kick around. Splash!", 0, 0 },
   { 196809, "Heals the target for $s1.", 0, 0 },
@@ -11035,6 +11037,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 281291, "Ardent Defender has $s2% reduced cooldown.", 0, 0 },
   { 281297, "Increases your Haste by $s1%.", 0, 0 },
   { 281301, "Increases healing done by Renewing Mist by $s1%.", 0, 0 },
+  { 281327, "$@spelldesc281238", 0, 0 },
   { 281423, "Bind an Infernal Alchemist stone, preventing its fel energies from ever releasing.", 0, 0 },
   { 281425, "$@spelldesc53343", 0, 0 },
   { 281452, "Increases your damage done by $s1%.", 0, 0 },
@@ -14743,7 +14746,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 343399, "Increase your armor by $s1 and regenerate $343401s1 health every $t3 sec for $d, but you are slowed by $s2%.", "Armor increased by $w1, regenerating $343401s1 health every $t3 sec, but you are slowed by $s2% for the duration.", 0 },
   { 343411, "Unleash the little Bonestorm spinning across the ground. ", 0, 0 },
   { 343441, "Eat me! Results are unpredictable. Only usable in the Shadowlands.", 0, 0 },
-  { 343527, "A hammer slowly falls from the sky upon the target, after $d, they suffer ${$387113s1*$<mult>} Holy damage$?s387196[ and enemies within $387200a2 yards will suffer $387196s1% of the damage taken from your abilities in that time.][, plus $s2% of damage taken from your abilities in that time.]\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "Sentenced to suffer an additional $w1 Holy damage.", 0 },
+  { 343527, "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage.", 0 },
   { 343539, "$@spelldesc343250", 0, 0 },
   { 343540, "$@spelldesc336866", 0, 0 },
   { 343541, "$@spelldesc336866", 0, 0 },
@@ -17802,9 +17805,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 387176, "Your Incinerate and Conflagrate casts on targets that have $s2% or less health reduce the cooldown of Soulfire by ${$s1/-1000} sec.", 0, 0 },
   { 387178, "$@spelldesc387170", "Your next $?c3[Single target Holy Power ability automatically triggers Divine Storm][Word of Glory automatically triggers Light of Dawn] with $387170s2% increased effectiveness.", 0 },
   { 387184, "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}.1]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]", "Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]", 0 },
-  { 387196, "When Execution Sentence expires, $s1% of damage done during its duration is also dealt to nearby enemies within $s3 yards.", 0, 0 },
   { 387198, "Boon of the Covenants passively increases your damage and healing by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
-  { 387200, "$@spelldesc343527", 0, 0 },
   { 387201, "Increases critical strike chance by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 387202, "Increases mastery by |cFFFFFFFF${$mas*$s1}.1%|r.", 0, 0 },
   { 387218, "Place a banner that increases damage done to all Air and Frost Elementals within $r yards by $396255s1%. Also grants $387229s1 Deftness and Finesse to Herbalists. Lasts $d. Only usable in the Dragon Isles.", 0, 0 },
@@ -19495,11 +19496,13 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 409451, "Create a piece of Crimson Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.7.48865
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.7.48966
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  343527,  0, "A hammer slowly falls from the sky upon the target, after $d, they suffer ${$387113s1*$<mult>} Holy damage$?s387196[ and enemies within $387200a2 yards will suffer $387196s1% of the damage taken from your abilities in that time.][, plus $s2% of damage taken from your abilities in that time.]\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]" },
+  {  343527,  1, "Sentenced to suffer an additional $w1 Holy damage.", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage." },
 } };
 
-// Spell description variables, wow build 10.0.7.48865
+// Spell description variables, wow build 10.0.7.48966
 static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19877,7 +19880,7 @@ static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.7.48865
+// spelldesc_vars hotfix entries, wow build 10.0.7.48966
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

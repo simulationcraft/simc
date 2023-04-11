@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.48898
-static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19845> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6336,7 +6336,9 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 196771, "$@spelldesc196770", 0, 0 },
   { 196777, "Your damage and healing spells have a chance open a portal to Mardum, sending a stream of imps at your target or your target's opponent.", 0, 0 },
   { 196779, "When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.", 0, 0 },
+  { 196780, "$@spelldesc77575", 0, 0 },
   { 196781, "$@spelldesc196779", 0, 0 },
+  { 196782, "$@spelldesc77575", "Upon expiration nearby enemies are infected by Virulent Plague.", 0 },
   { 196783, "Nibble a piece of the crystal.", "Crystals are growing everywhere!", 0 },
   { 196792, "Place a Whitewater Carp to kick around. Splash!", 0, 0 },
   { 196809, "Heals the target for $s1.", 0, 0 },
@@ -11027,6 +11029,7 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 281291, "Ardent Defender has $s2% reduced cooldown.", 0, 0 },
   { 281297, "Increases your Haste by $s1%.", 0, 0 },
   { 281301, "Increases healing done by Renewing Mist by $s1%.", 0, 0 },
+  { 281327, "$@spelldesc281238", 0, 0 },
   { 281423, "Bind an Infernal Alchemist stone, preventing its fel energies from ever releasing.", 0, 0 },
   { 281425, "$@spelldesc53343", 0, 0 },
   { 281452, "Increases your damage done by $s1%.", 0, 0 },
@@ -17763,6 +17766,7 @@ static const std::array<spelltext_data_t, 19841> __ptr_spelltext_data { {
   { 387108, "Conflagrate and Shadowburn have a $s1% chance to guarantee your next cast of the ability to critically strike, and increase its damage by your critical strike chance.", 0, 0 },
   { 387109, "$@spelldesc387108", "Your next Conflagrate will critically strike and your critical strike chance will increase its critical strike damage.", 0 },
   { 387110, "$@spelldesc387108", "Your next Shadowburn will critically strike and your critical strike chance will increase its critical strike damage.", 0 },
+  { 387113, "$@spelldesc343527", 0, 0 },
   { 387136, "Salvage what you can from the Rimefin Tuna.", 0, 0 },
   { 387140, "$?a393818[$@spellaura393818][Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $387142s1 Haste.]\r\n\r\n", "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $w1 Haste.", 0 },
   { 387141, "$@spelldesc387140", "A Moment of Time stored, and then another.", 0 },
@@ -19848,7 +19852,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_ho
 } };
 
 // Spell description variables, wow build 10.1.0.48898
-static const std::array<spelldesc_vars_data_t, 378> __ptr_spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -20206,6 +20210,7 @@ static const std::array<spelldesc_vars_data_t, 378> __ptr_spelldesc_vars_data { 
   {  383885, "$threshold=${35}" },
   {  384110, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
   {  385786, "$shield=${$s1/100*$AP*(1+$@versadmg)}" },
+  {  387113, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
