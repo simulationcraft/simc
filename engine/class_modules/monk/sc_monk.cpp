@@ -4781,6 +4781,7 @@ namespace monk
         bonedust_brew_damage_t( monk_t &p ) : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
         {
           background = true;
+          proc = true;
         }
 
         void execute() override
@@ -8261,6 +8262,9 @@ namespace monk
       {
         // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
         if ( !p->buff.exploding_keg->up() )
+          return false;
+
+        if ( state->action->id == p->passives.breath_of_fire_dot->id() )
           return false;
 
         p->active_actions.exploding_keg->set_target( state->target );
