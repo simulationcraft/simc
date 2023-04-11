@@ -2192,18 +2192,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         dynamic = false;
       }
     }
-    if( owner -> talent.unholy.dark_transformation.ok() )
-    {
-      action_list_str = "sweeping_claws";
-      action_list_str += "/claw,if=energy>70";
-      action_list_str += "/monstrous_blow";
-      action_list_str += "/gnaw";
-    }
-    else
-    {
-      action_list_str = "claw,if=energy>70";
-      action_list_str += "/gnaw";
-    }
   }
 
   attack_t* create_auto_attack() override
@@ -2269,6 +2257,26 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_gains();
 
     dark_transformation_gain = get_gain( "Dark Transformation" );
+  }
+
+  void init_action_list() override
+  {
+    base_ghoul_pet_t::init_action_list();
+
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if( dk() -> talent.unholy.dark_transformation.ok() )
+    {
+      def -> add_action( "sweeping_claws" );
+      def -> add_action( "claw,if=energy>70" );
+      def -> add_action( "monstrous_blow" );
+      def -> add_action( "Gnaw" );
+    }
+    else
+    {
+      def -> add_action( "claw,if=energy>70" );
+      def -> add_action( "Gnaw" );
+    }
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
