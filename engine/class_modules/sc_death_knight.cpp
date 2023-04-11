@@ -1769,97 +1769,6 @@ inline void rune_t::adjust_regen_event( timespan_t adjustment )
 }
 
 namespace pets {
-
-// ==========================================================================
-// Generic DK pet
-// ==========================================================================
-
-struct death_knight_pet_t : public pet_t
-{
-  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
-  timespan_t precombat_spawn_adjust;
-
-  death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
-    pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
-    precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false )
-  {
-    if ( auto_attack )
-    {
-      main_hand_weapon.type = WEAPON_BEAST;
-    }
-  }
-
-  death_knight_t* dk() const
-  { return debug_cast<death_knight_t*>( owner ); }
-
-   // DK pets do not inherit player attack speed modifiers
-  double composite_melee_speed() const override
-  { return owner -> cache.attack_haste(); }
-
-  virtual attack_t* create_auto_attack()
-  { return nullptr; }
-
-  void apply_affecting_auras( action_t& action ) override
-  {
-    player_t::apply_affecting_auras( action );
-
-    // Hack to apply BDK aura to DRW abilities
-    // 2021-01-29: The bdk aura is currently set to 0,
-    // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
-    dk() -> apply_affecting_auras( action );
-  }
-
-  double composite_player_multiplier ( school_e s ) const override
-  {
-    double m = pet_t::composite_player_multiplier( s );
-
-    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
-    {
-      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
-    }
-    return m;
-  }
-
-  // Standard Death Knight pet actions
-
-  struct auto_attack_t : public melee_attack_t
-  {
-    auto_attack_t( death_knight_pet_t* p ) :
-      melee_attack_t( "auto_attack", p )
-    {
-      assert( p -> main_hand_weapon.type != WEAPON_NONE );
-      p -> main_hand_attack = p -> create_auto_attack();
-      trigger_gcd = 0_ms;
-    }
-
-    void execute() override
-    { player -> main_hand_attack -> schedule_execute(); }
-
-    bool ready() override
-    {
-      if ( player -> is_moving() ) return false;
-      return ( player -> main_hand_attack -> execute_event == nullptr );
-    }
-  };
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "auto_attack" ) return new auto_attack_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
-
-  void init_action_list() override
-  {
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    if ( use_auto_attack )
-      def -> add_action( "auto_attack" );
-
-    pet_t::init_action_list();
-  }
-};
-
 // ==========================================================================
 // Base Death Knight Pet Action
 // ==========================================================================
@@ -1999,6 +1908,105 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
       this -> schedule_execute();
     else
       pet_melee_attack_t<T>::execute();
+  }
+};
+
+// ==========================================================================
+// Generic DK pet
+// ==========================================================================
+
+struct death_knight_pet_t : public pet_t
+{
+  bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
+  timespan_t precombat_spawn_adjust;
+  auto_attack_melee_t<death_knight_pet_t>* auto_attack_create;
+
+  death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
+    pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
+    precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
+    affected_by_commander_of_the_dead( false ), auto_attack_create( nullptr )
+  {
+    if ( auto_attack )
+    {
+      main_hand_weapon.type = WEAPON_BEAST;
+    }
+  }
+
+  death_knight_t* dk() const
+  { return debug_cast<death_knight_t*>( owner ); }
+
+   // DK pets do not inherit player attack speed modifiers
+  double composite_melee_speed() const override
+  { return owner -> cache.attack_haste(); }
+
+  virtual attack_t* create_auto_attack()
+  { return nullptr; }
+
+  void apply_affecting_auras( action_t& action ) override
+  {
+    player_t::apply_affecting_auras( action );
+
+    // Hack to apply BDK aura to DRW abilities
+    // 2021-01-29: The bdk aura is currently set to 0,
+    // Keep an eye on this in case blizz changes the value as double dipping may happen (both ingame and here)
+    dk() -> apply_affecting_auras( action );
+  }
+
+  double composite_player_multiplier ( school_e s ) const override
+  {
+    double m = pet_t::composite_player_multiplier( s );
+
+    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
+    {
+      m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
+    }
+    return m;
+  }
+
+  void create_actions()
+  {
+    pet_t::create_actions();
+    if ( use_auto_attack )
+    {
+      auto_attack_create = new auto_attack_melee_t( this );
+    }
+  }
+
+  void arise() override
+  {
+    pet_t::arise();
+    if( use_auto_attack )
+    {
+      auto_attack_create -> execute_on_target( target );
+    }
+  }
+
+  void reschedule_auto()
+  {
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
+
+    timespan_t gcd_adjust = gcd_ready - sim->current_time();
+    if ( gcd_adjust > 0_ms )
+    {
+      make_event( sim, gcd_adjust, [ this ]() {
+        auto_attack_create->set_target( target );
+        auto_attack_create->schedule_execute();
+      } );
+    }
+    else
+    {
+      auto_attack_create->set_target( target );
+      auto_attack_create->schedule_execute();
+    }
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  {
+    if( use_auto_attack )
+    {
+      reschedule_auto();
+    }
   }
 };
 
@@ -2313,16 +2321,23 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
+  pet_melee_attack_t<army_ghoul_pet_t>* claw;
+
+  army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
+    base_ghoul_pet_t( owner, name, true ), claw( nullptr )
+  {
+    affected_by_commander_of_the_dead = true;
+  }
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
-    army_claw_t( army_ghoul_pet_t* p, util::string_view options_str ) :
+    army_claw_t( army_ghoul_pet_t* p ) :
       pet_melee_attack_t( p, "claw", p -> dk() -> pet_spell.army_claw )
     {
-      parse_options( options_str );
+      repeating = background = true;
     }
   };
-  
+
   struct ruptured_viscera_t final : public pet_spell_t<army_ghoul_pet_t>
   {
     ruptured_viscera_t( army_ghoul_pet_t* p ) :
@@ -2342,10 +2357,35 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     }
   };
 
-  army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
-    base_ghoul_pet_t( owner, name, true )
+  void arise() override
   {
-    affected_by_commander_of_the_dead = true;
+    death_knight_pet_t::arise();
+    claw->execute_on_target( target );
+  }
+
+  void reschedule_ghoul_attacks()
+  {
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
+
+    timespan_t gcd_adjust = gcd_ready - sim->current_time();
+    if ( gcd_adjust > 0_ms )
+    {
+      make_event( sim, gcd_adjust, [ this ]() {
+        claw->set_target( target );
+        claw->schedule_execute();
+      } );
+    }
+    else
+    {
+      claw->set_target( target );
+      claw->schedule_execute();
+    }
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  {
+    reschedule_ghoul_attacks();
   }
 
   void init_base_stats() override
@@ -2356,10 +2396,10 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     owner_coeff.ap_from_ap = 0.4664;
   }
 
-  void init_spells() override
+  void create_actions()
   {
-    base_ghoul_pet_t::init_spells();
-
+    death_knight_pet_t::create_actions();
+    claw = new army_claw_t( this );
     if ( dk()->talent.unholy.ruptured_viscera.ok() )
     {
       ruptured_viscera = new ruptured_viscera_t( this );
@@ -2375,22 +2415,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     {
       this -> gains.resource_regen = dk() -> find_pet( name_str ) -> gains.resource_regen;
     }
-  }
-
-  void init_action_list() override
-  {
-    base_ghoul_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "claw" );
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "claw" ) return new army_claw_t( this, options_str );
-
-    return base_ghoul_pet_t::create_action( name, options_str );
   }
 
   void dismiss( bool expired = false ) override
@@ -2411,14 +2435,22 @@ int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
+  pet_spell_t<gargoyle_pet_t>* gargoyle_strike;
+  gargoyle_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
+  {
+    resource_regeneration = regen_type::DISABLED;
+    affected_by_commander_of_the_dead = true;
+  }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
+    gargoyle_strike_t( gargoyle_pet_t* p ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     {
-      parse_options( options_str );
       trigger_gcd = 1.5_s;
+      background = true;
+      repeating = true;
     }
 
     void execute() override
@@ -2439,11 +2471,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
     }
   };
 
-  gargoyle_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
+  void create_actions()
   {
-    resource_regeneration = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
+    death_knight_pet_t::create_actions();
+    gargoyle_strike = new gargoyle_strike_t( this );
   }
   
   void arise() override
@@ -2452,6 +2483,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     timespan_t duration = 2.8_s;
     buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
     stun();
+    gargoyle_strike -> execute_on_target( target );
     gargoyle_strike_count = 0;
   }
 
@@ -2484,22 +2516,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
   }
 
-  void init_action_list() override
-  {
-    death_knight_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "gargoyle_strike" );
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
-
-    return death_knight_pet_t::create_action( name, options_str );
-  }
-
   // Function that increases the gargoyle's dark empowerment buff value based on RP spent
   void increase_power ( double rp_spent )
   {
@@ -2528,27 +2544,40 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct risen_skulker_pet_t : public death_knight_pet_t
 {
-  struct skulker_shot_t : public pet_action_t<risen_skulker_pet_t, ranged_attack_t>
-  {
-    skulker_shot_t( risen_skulker_pet_t* p, util::string_view options_str ) :
-      pet_action_t( p, "skulker_shot", p -> dk() -> pet_spell.skulker_shot )
-    {
-      parse_options( options_str );
-      weapon = &( p -> main_hand_weapon );
-      // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
-      base_multiplier *= 2.0;
-      aoe = -1;
-      base_aoe_multiplier = 0.5;
-    }
-  };
-
+  pet_spell_t<risen_skulker_pet_t>* skulker_shot;
   risen_skulker_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "risen_skulker", true, false, false )
+    death_knight_pet_t( owner, "risen_skulker", true, false, false ), skulker_shot( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
   }
+
+  struct skulker_shot_t : public pet_spell_t<risen_skulker_pet_t>
+  {
+    skulker_shot_t( risen_skulker_pet_t* p ) :
+      pet_spell_t<risen_skulker_pet_t>( p, "skulker_shot", p -> dk() -> pet_spell.skulker_shot )
+    {
+      weapon = &( p -> main_hand_weapon );
+      background = true;
+      // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
+      base_multiplier *= 2.0;
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
+      repeating = true;
+    }
+
+    void schedule_execute(action_state_t* a) override
+    {
+      player -> executing = nullptr;
+
+      if( player -> buffs.movement -> check() || player -> buffs.stunned -> check() )
+      {
+        return;
+      }
+      pet_action_t::schedule_execute( a );
+    }
+  };
 
   void init_base_stats() override
   {
@@ -2557,20 +2586,16 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 1.0;
   }
 
-  void init_action_list() override
+  void create_actions()
   {
-    death_knight_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "skulker_shot" );
+    death_knight_pet_t::create_actions();
+    skulker_shot = new skulker_shot_t( this );
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  void arise() override
   {
-    if ( name == "skulker_shot" ) return new skulker_shot_t( this, options_str );
-
-    return death_knight_pet_t::create_action( name, options_str );
+    death_knight_pet_t::arise();
+    skulker_shot -> execute_on_target( target );
   }
 };
 
