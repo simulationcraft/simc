@@ -2047,16 +2047,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
 
-  timespan_t available() const override
-  {
-    double energy = resources.current[ RESOURCE_ENERGY ];
-
-    // Cheapest Ability need 40 Energy
-    if ( energy > 40 )
-      return 1_ms;
-
-    return std::max( timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ), 1_ms );
-  }
 };
 
 // ===============================================================================
