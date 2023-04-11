@@ -1919,11 +1919,12 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
+  attack_t* create_auto;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false )
+    affected_by_commander_of_the_dead( false ), create_auto( nullptr )
   {
     if ( use_auto_attack )
     {
@@ -1940,6 +1941,7 @@ struct death_knight_pet_t : public pet_t
     {
       assert( p -> main_hand_weapon.type != WEAPON_NONE );
       p -> main_hand_attack = p -> create_auto_attack();
+      background = true;
       trigger_gcd = 0_ms;
     }
 
@@ -1987,13 +1989,14 @@ struct death_knight_pet_t : public pet_t
   void init_actions()
   {
     pet_t::init_actions();
-    main_hand_attack = new auto_attack_t( this );
+    if( use_auto_attack )
+    create_auto = new auto_attack_t( this );
   }
 
   void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
   {
     if( use_auto_attack )
-    main_hand_attack -> execute_on_target( target );
+    create_auto -> execute_on_target( target );
   }
 };
 
