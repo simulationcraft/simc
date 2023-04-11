@@ -3379,6 +3379,7 @@ struct blood_plague_t final : public death_knight_disease_t
   {
     double m = death_knight_disease_t::composite_ta_multiplier( state );
 
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD)
     m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
 
     return m;
@@ -3715,7 +3716,7 @@ struct melee_t : public death_knight_melee_attack_t
       // Crimson scourge doesn't proc if death and decay is ticking
       if ( get_td( s -> target ) -> dot.blood_plague -> is_ticking() && ! p() -> active_dnd )
       {
-        if ( p() -> buffs.crimson_scourge -> trigger() )
+        if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> trigger() )
         {
           p() -> cooldown.death_and_decay_dynamic -> reset( true );
         }
