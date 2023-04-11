@@ -1814,7 +1814,7 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    if( dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
+    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
     {
       m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
     }
@@ -2046,7 +2046,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
 
   resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
-
 };
 
 // ===============================================================================
@@ -2086,7 +2085,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     bool ready() override
     {
-      if ( usable_in_dt != ( dk() -> buffs.dark_transformation -> check() > 0 ) )
+      if ( usable_in_dt != ( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.dark_transformation -> check() > 0 ) )
       {
         return false;
       }
@@ -2185,11 +2184,14 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   {
     double m = base_ghoul_pet_t::composite_player_multiplier( school );
 
-    m *= 1.0 + dk() -> buffs.dark_transformation -> value();
+    if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY )
+    {
+      m *= 1.0 + dk() -> buffs.dark_transformation -> value();
 
-    m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
+      m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
 
-    m *= 1.0 + vile_infusion -> value();
+      m *= 1.0 + vile_infusion -> value();
+    }
 
     return m;
   }
@@ -2424,7 +2426,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     auto duration = 2.9_s;
-    buffs.movement -> trigger( duration + rng().gauss( 200_ms, -200_ms ) );
+    buffs.movement -> trigger( duration + rng().gauss( 100_ms, 0_ms ) );
     moving();
     gargoyle_strike_count = 0;
   }
@@ -3095,12 +3097,12 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> cache.mastery_value();
     }
 
-    if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
     {
       m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
     }
 
-    if ( this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
     {
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
@@ -3117,12 +3119,12 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> cache.mastery_value();
     }
 
-    if ( this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY && this -> affected_by.ghoulish_infusion && p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T29, B4 ) && p() -> buffs.ghoulish_infusion -> up() )
     {
       m *= 1.0 + p() -> buffs.ghoulish_infusion -> value();
     }
 
-    if ( this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
     {
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
@@ -3321,7 +3323,7 @@ struct death_knight_disease_t : public death_knight_spell_t
   {
     auto base_tick_time = death_knight_spell_t::tick_time( s );
 
-    if ( p() -> buffs.plaguebringer -> up() )
+    if ( p() -> specialization()  == DEATH_KNIGHT_UNHOLY && p() -> buffs.plaguebringer -> up() )
     { 
       base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
     }
@@ -3650,7 +3652,7 @@ struct melee_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( s );
 
-    if ( p() -> buffs.vigorous_lifeblood_4pc -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.vigorous_lifeblood_4pc -> up() )
     {
       m *= 1.0 + p() -> spell.vigorous_lifeblood_4pc -> effectN ( 5 ).percent();
     }
@@ -3692,7 +3694,10 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p() -> buffs.sudden_doom -> trigger();
+      if( p() -> specialization()  == DEATH_KNIGHT_UNHOLY )
+      {
+        p() -> buffs.sudden_doom -> trigger();
+      }
 
       if ( p() -> talent.frost.killing_machine.ok() && s -> result == RESULT_CRIT )
       {
@@ -4938,7 +4943,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
 
   double cost() const override
   {
-    if ( p() -> buffs.crimson_scourge -> check() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> check() )
     {
       return 0;
     }
@@ -4950,7 +4955,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::runic_power_generation_multiplier( state );
 
-    if ( p() -> buffs.crimson_scourge -> check() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> check() )
     {
       m *= 1.0 + p() -> buffs.crimson_scourge -> data().effectN( 2 ).percent();
     }
@@ -4963,13 +4968,13 @@ struct death_and_decay_base_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
-    if ( p() -> buffs.crimson_scourge -> up() && p() -> talent.blood.relish_in_blood.ok() && p() -> buffs.bone_shield -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> up() && p() -> talent.blood.relish_in_blood.ok() && p() -> buffs.bone_shield -> up() )
     {
       // The heal's energize data automatically handles RP generation
       relish_in_blood -> execute();
     }
 
-    if( p() -> buffs.crimson_scourge -> up() )
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> up() )
     {
       p() -> buffs.crimson_scourge -> decrement();
       if ( p() -> talent.blood.perseverance_of_the_ebon_blade.ok() )
@@ -4982,7 +4987,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> buffs.unholy_ground -> set_duration( data().duration() );
     }
 
-    if ( p() -> talent.blood.sanguine_ground.ok() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> talent.blood.sanguine_ground.ok() )
     {
       p() -> buffs.sanguine_ground -> trigger();
       p() -> buffs.sanguine_ground -> set_duration( data().duration() );
@@ -7364,7 +7369,7 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.dancing_rune_weapon -> up() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.soul_reaper -> execute_on_target( target );
 
@@ -7377,7 +7382,7 @@ struct soul_reaper_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
+    if ( p() -> specialization() == DEATH_KNIGHT_FROST && p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
     {
       p() -> trigger_killing_machine( 1.0, p() -> procs.km_from_obliteration_sr,
                                            p() -> procs.km_from_obliteration_sr_wasted );
@@ -8194,7 +8199,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
-      if ( buffs.pillar_of_frost -> up() )
+      if ( specialization() == DEATH_KNIGHT_FROST && buffs.pillar_of_frost -> up() )
       {
         buffs.pillar_of_frost_bonus -> trigger( as<int>( actual_amount ) );
       }
@@ -9018,7 +9023,7 @@ double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
-  if( buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
+  if( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
   {
     haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() );
   }
@@ -9032,7 +9037,7 @@ double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
-  if( buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
+  if( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield -> up() && talent.blood.improved_bone_shield -> ok() )
   {
     haste *= 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() );
   }
@@ -9624,7 +9629,7 @@ void death_knight_t::create_buffs()
         -> set_trigger_spell( talent.icy_talons );
 
   // Blood
-  if ( DEATH_KNIGHT_BLOOD )
+  if ( this -> specialization() == DEATH_KNIGHT_BLOOD)
   {
   buffs.blood_shield = new blood_shield_buff_t( this );
 
@@ -9747,7 +9752,7 @@ void death_knight_t::create_buffs()
   }
 
   // Frost
-  if( DEATH_KNIGHT_FROST )
+  if( this -> specialization() == DEATH_KNIGHT_FROST )
   {
   buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
 
@@ -9836,7 +9841,7 @@ void death_knight_t::create_buffs()
   }
 
   // Unholy
-  if( DEATH_KNIGHT_UNHOLY )
+  if( this -> specialization() == DEATH_KNIGHT_UNHOLY )
   {
   buffs.dark_transformation = new dark_transformation_buff_t( this );
 
@@ -10052,7 +10057,7 @@ void death_knight_t::reset()
 
 void death_knight_t::assess_heal( school_e school, result_amount_type t, action_state_t* s )
 {
-  if ( buffs.vampiric_blood -> up() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vampiric_blood -> up() )
     s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + talent.blood.improved_vampiric_blood -> effectN( 1 ).percent();
 
   if( talent.blood.sanguine_ground.ok() && in_death_and_decay() )
@@ -10219,7 +10224,7 @@ double death_knight_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
 
-  if ( buffs.bone_shield -> check() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.bone_shield -> check() )
   {
     ba += spell.bone_shield -> effectN( 1 ).percent() * ( 1.0 + talent.blood.reinforced_bones -> effectN( 1 ).percent() ) * cache.strength();
   }
@@ -10235,6 +10240,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STRENGTH )
   {
+    if ( specialization() == DEATH_KNIGHT_FROST )
     m *= 1.0 + buffs.pillar_of_frost -> check_value() + buffs.pillar_of_frost_bonus -> check_stack_value();
 
     if ( talent.might_of_thassarian.ok() )
@@ -10282,12 +10288,12 @@ double death_knight_t::composite_leech() const
 {
   double m = player_t::composite_leech();
 
-  if ( buffs.voracious -> check() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.voracious -> check() )
   {
     m += buffs.voracious -> data().effectN( 1 ).percent();
   }
 
-  if ( talent.blood_scent.ok() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood_scent.ok() )
   {
     m += talent.blood_scent->effectN( 1 ).percent();
   }
@@ -10325,7 +10331,7 @@ double death_knight_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
 
-  if ( buffs.dancing_rune_weapon -> check() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.dancing_rune_weapon -> check() )
     parry += buffs.dancing_rune_weapon -> check_value();
 
   return parry;
@@ -10370,22 +10376,22 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.ghoulish_frenzy -> check() )
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.ghoulish_frenzy -> check() )
   {
     m *= 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 2 ).percent();
   }
   
-  if ( buffs.bonegrinder_frost->check() && dbc::is_school( school, SCHOOL_FROST ) )
+  if ( specialization() == DEATH_KNIGHT_FROST && buffs.bonegrinder_frost->check() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.bonegrinder_frost->check_value();
   }
 
-  if ( talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
   }
 
-  if ( buffs.sanguine_ground -> check() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.sanguine_ground -> check() )
   {
     m *= 1.0 + buffs.sanguine_ground -> check_value();
   }
@@ -10414,7 +10420,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
 
-  if ( buffs.vigorous_lifeblood_4pc -> check() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.vigorous_lifeblood_4pc -> check() )
   {
     m *= 1.0 + spell.vigorous_lifeblood_4pc -> effectN( 4 ).percent();
   }
@@ -10482,7 +10488,7 @@ double death_knight_t::composite_melee_speed() const
     haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
   }
 
-  if ( buffs.ghoulish_frenzy -> check() )
+  if ( specialization() == DEATH_KNIGHT_UNHOLY && buffs.ghoulish_frenzy -> check() )
   {
     haste *= 1.0 / ( 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 1 ).percent() );
   }
@@ -10525,11 +10531,14 @@ double death_knight_t::composite_mastery_value() const
 {
   double m = player_t::composite_mastery_value();
 
-  m += buffs.unholy_t30_2pc_mastery -> stack_value();
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    m += buffs.unholy_t30_2pc_mastery -> stack_value();
 
-  m += buffs.unholy_t30_4pc_mastery -> stack_value();
+    m += buffs.unholy_t30_4pc_mastery -> stack_value();
 
-  m += buffs.defile_buff -> check_stack_value();
+    m += buffs.defile_buff -> check_stack_value();
+  }
 
   return m;
 }
@@ -10623,7 +10632,7 @@ inline double death_knight_t::runes_per_second() const
 {
   double rps = RUNE_REGEN_BASE_SEC / cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() )
+  if ( specialization()  == DEATH_KNIGHT_UNHOLY && buffs.runic_corruption -> check() )
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
   }
@@ -10635,7 +10644,7 @@ inline double death_knight_t::rune_regen_coefficient() const
 {
   auto coeff = cache.attack_haste();
   // Runic corruption doubles rune regeneration speed
-  if ( buffs.runic_corruption -> check() )
+  if ( specialization()  == DEATH_KNIGHT_UNHOLY && buffs.runic_corruption -> check() )
   {
     coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent() + talent.unholy.runic_mastery -> effectN( 2 ).percent();
   }
