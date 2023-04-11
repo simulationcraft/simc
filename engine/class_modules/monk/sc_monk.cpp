@@ -640,8 +640,6 @@ namespace monk
 
         if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
         {
-          trigger_exploding_keg_proc( s );
-
           p()->trigger_empowered_tiger_lightning( s, true );
 
           if ( get_td( s->target )->debuff.bonedust_brew->up() )
@@ -659,8 +657,6 @@ namespace monk
         {
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
-
-          trigger_exploding_keg_proc( dot->state );
         }
       }
 
@@ -748,33 +744,7 @@ namespace monk
           s->target->debuffs.mystic_touch->trigger();
         }
       }
-
-      void trigger_exploding_keg_proc( action_state_t *s )
-      {
-        if ( p()->specialization() != MONK_BREWMASTER )
-          return;
-
-        // Exploding keg damage is triggered when the player buff is up, regardless if the enemy has the debuff
-        if ( !p()->buff.exploding_keg->up() )
-          return;
-
-        // Blacklist spells
-        if ( s->action->id == 388867 || // Exploding Keg Proc
-          s->action->id == 124255 || // Stagger
-          s->action->id == 123725 || // Breath of Fire dot
-          s->action->id == 196608 || // Eye of the Tiger
-          s->action->id == 196733 || // Special Delivery
-          s->action->id == 338141 || // Charred Passion
-          s->action->id == 386959 || // Charred Passion
-          s->action->id == 387621 || // Dragonfire Brew
-          s->action->id == 393786 || // Chi Surge
-          s->action->id == 325217    // Bonedust Brew
-          )
-          return;
-
-        p()->active_actions.exploding_keg->target = s->target;
-        p()->active_actions.exploding_keg->execute();
-      }
+   
     };
 
     struct monk_spell_t : public monk_action_t<spell_t>
@@ -3962,7 +3932,7 @@ namespace monk
       // Exploding Keg Proc ==============================================
       struct exploding_keg_proc_t : public monk_spell_t
       {
-        exploding_keg_proc_t( monk_t *p ) : monk_spell_t( "exploding_keg_proc", p, p->find_spell( 388867 ) )
+        exploding_keg_proc_t( monk_t *p ) : monk_spell_t( "exploding_keg_proc", p, p->talent.brewmaster.exploding_keg->effectN( 4 ).trigger() )
         {
           background = dual = true;
           proc = true;
@@ -8181,14 +8151,61 @@ namespace monk
     // create_proc_callback
     // ======================================
 
-    auto create_proc_callback = [ this ] ( const spell_data_t *trigger_spell, bool ( *trigger )( monk_t *p, action_state_t *state ) )
+    auto create_proc_callback = [ this ] ( const spell_data_t *effect_driver, bool ( *trigger )( monk_t *p, action_state_t *state ), action_t *proc_action_override = nullptr )
     {
       auto effect = new special_effect_t( this );
 
-      effect->spell_id = trigger_spell->id();
-      effect->cooldown_ = trigger_spell->internal_cooldown();
-      effect->proc_flags_ = trigger_spell->proc_flags();
-      effect->proc_chance_ = trigger_spell->proc_chance();
+      effect->spell_id        = effect_driver->id();
+      effect->cooldown_       = effect_driver->internal_cooldown();
+      effect->proc_flags_     = effect_driver->proc_flags();
+      effect->proc_chance_    = effect_driver->proc_chance();
+      effect->ppm_            = effect_driver->_rppm;
+
+      if ( proc_action_override == nullptr )
+      {
+        // If we didn't define a custom action in initialization then
+        // search action list for the first trigger we have a valid action for 
+        for ( auto e : effect_driver->effects() )
+        {
+          for ( auto t : action_list )
+            if ( e.trigger()->ok() && t->id == e.trigger()->id() )
+              proc_action_override = t;
+
+          if ( proc_action_override != nullptr )
+            break;
+        }
+      }
+
+      if ( proc_action_override != nullptr )
+      {
+        effect->name_str          = proc_action_override->name_str;
+        effect->trigger_str       = proc_action_override->name_str;
+        effect->trigger_spell_id  = proc_action_override->id;
+
+        if ( proc_action_override->harmful )
+        {
+          // Translate harmful proc_flags
+          // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
+
+          const std::unordered_map<uint64_t, uint64_t> translation_map =
+          {
+            { PF_MELEE_TAKEN, PF_MELEE },
+            { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
+            { PF_RANGED_TAKEN, PF_RANGED },
+            { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
+            { PF_NONE_HEAL_TAKEN, PF_NONE_HEAL },
+            { PF_NONE_SPELL_TAKEN, PF_NONE_SPELL },
+            { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
+            { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
+            { PF_PERIODIC_TAKEN, PF_PERIODIC },
+            { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          };
+
+          for ( auto t = translation_map.begin(); t != translation_map.end(); ++t )
+            if ( effect->proc_flags_ & t->first )
+              effect->proc_flags_ = effect->proc_flags_ & ~t->first | t->second;
+        }
+      }
 
       struct monk_effect_callback : dbc_proc_callback_t
       {
@@ -8208,6 +8225,9 @@ namespace monk
             return;
           }
 
+          if ( a->internal_id == 0 && state->action->id == effect.trigger_spell_id )
+            return;
+
           if ( callback_trigger( p, state ) )
             dbc_proc_callback_t::trigger( a, state );
         }
@@ -8221,12 +8241,29 @@ namespace monk
     // ======================================
     // Resonant Fists Talent
     // ======================================
-
+    
     if ( talent.general.resonant_fists.ok() )
     {
       create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
       {
         p->active_actions.resonant_fists->set_target( state->target );
+        return true;
+      } );
+    }
+
+    // ======================================
+    // Exploding Keg Talent
+    // =====================================
+
+    if ( talent.brewmaster.exploding_keg.ok() )
+    {
+      create_proc_callback( talent.brewmaster.exploding_keg.spell(), [ ] ( monk_t *p, action_state_t *state )
+      {
+        // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
+        if ( !p->buff.exploding_keg->up() )
+          return false;
+
+        p->active_actions.exploding_keg->set_target( state->target );
         return true;
       } );
     }
