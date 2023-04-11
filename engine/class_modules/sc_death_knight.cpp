@@ -2028,16 +2028,20 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
+    auto duration = dk() -> pet_spell.pet_stun -> duration();
     if ( precombat_spawn_adjust > 0_s && precombat_spawn )
     {
-      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() - precombat_spawn_adjust );
+      duration = duration - precombat_spawn_adjust;
+      buffs.stunned -> trigger( duration );
       stun();
     }
     else if( !precombat_spawn )
     {
-      buffs.stunned -> trigger( dk() -> pet_spell.pet_stun -> duration() );
+      buffs.stunned -> trigger( duration );
       stun();
-    }   
+    }
+    buffs.movement -> trigger( duration + rng().gauss( 1_s, 0_ms ) );
+    moving();
   }
 
   resource_e primary_resource() const override
@@ -2114,7 +2118,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   struct sweeping_claws_t : public dt_melee_ability_t
   {
     sweeping_claws_t( ghoul_pet_t* p, util::string_view options_str ) :
-      dt_melee_ability_t( p, "sweeping_claws", p -> dk() -> pet_spell.sweeping_claws )
+      dt_melee_ability_t( p, "sweeping_claws", p -> dk() -> pet_spell.sweeping_claws, true )
     {
       parse_options( options_str );
       aoe = -1;
@@ -2135,7 +2139,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   struct monstrous_blow_t : public dt_melee_ability_t
   {
     monstrous_blow_t( ghoul_pet_t* p, util::string_view options_str ):
-      dt_melee_ability_t( p, "monstrous_blow", p -> dk() -> pet_spell.monstrous_blow )
+      dt_melee_ability_t( p, "monstrous_blow", p -> dk() -> pet_spell.monstrous_blow, true )
     {
       parse_options( options_str );
       cooldown = p -> get_cooldown( "gnaw" );
@@ -2429,8 +2433,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
-    buffs.stunned -> trigger( 2.9_s );
-    stun();
+    auto duration = 2.9_s;
+    buffs.movement -> trigger( duration + rng().gauss( 200_ms, -200_ms ) );
+    moving();
     gargoyle_strike_count = 0;
   }
 

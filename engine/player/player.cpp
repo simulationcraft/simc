@@ -3810,9 +3810,9 @@ void player_t::create_buffs()
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned =
       make_buff( this, "stunned" )->set_max_stack( 1 )->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-        if ( !new_ )
+        if ( new_ == 0 )
         {
-          schedule_ready( available() );
+          schedule_ready();
         }
       } );
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
