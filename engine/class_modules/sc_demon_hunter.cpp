@@ -1910,7 +1910,7 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
                       []( cooldown_t* c ) { return c->down(); } );
       if ( !sigils_on_cooldown.empty() )
       {
-        cooldown_t* sigil_cooldown = sigils_on_cooldown[ rng().range( sigils_on_cooldown.size() ) ];
+        cooldown_t* sigil_cooldown = sigils_on_cooldown[ static_cast<int>(rng().range( sigils_on_cooldown.size() )) ];
         sigil_cooldown->adjust( sigil_cooldown_adjust );
       }
     }
