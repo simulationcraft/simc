@@ -4267,7 +4267,7 @@ void ashkandur( special_effect_t& e )
 
     double composite_target_multiplier( player_t* t ) const override
     {
-      auto m = generic_proc_t::composite_target_multiplier( t );
+      double m = generic_proc_t::composite_target_multiplier( t );
 
       if ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
            player->target->race == RACE_HUMANOID ||
