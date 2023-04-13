@@ -5429,8 +5429,8 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
-    // Rolls on execute and on impact
-    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
+    // Rolls on execute and on impact on live, doesn't roll on impact on ptr
+    if ( !p()->is_ptr() && rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
