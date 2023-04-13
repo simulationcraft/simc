@@ -1,4 +1,4 @@
-// Item effects, wow build 10.1.0.48898
+// Item effects, wow build 10.1.0.49092
 static const std::array<item_effect_t, 8408> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8244,19 +8244,19 @@ static const std::array<item_effect_t, 8408> __ptr_item_effect_data { {
   { 172570, 398393, 202282,   0,   0,    0,      -1,      -1 }, // Mending Totem Bash
   { 172597, 398453, 202290,   0,   0,   11,       0,       0 }, // Refreshment
   { 172634, 398851, 202401,   0,   0,   11,       0,    1000 }, // Food...
-  { 174425, 408821, 202569,   0,   0,    0,      -1,      -1 }, // [PH] Elder Cantrip Polearm
-  { 174426, 403545, 202569,   1,   1,    0,      -1,      -1 }, // [PH] Elder Cantrip Polearm
+  { 174425, 408821, 202569,   0,   0,    0,      -1,      -1 }, // Elder Flame
+  { 174426, 403545, 202569,   1,   1,    0,      -1,      -1 }, // Elder Flame
   { 174423, 408790, 202606,   0,   1,    0,      -1,      -1 }, // Ashkandur, Fall of the Brotherhood
   { 174414, 408671, 202610,   0,   0,    0,      -1,      -1 }, // Dragonfire Bomb Dispenser
   { 174415, 408667, 202610,   1,   1,    0,      -1,      -1 }, // Dragonfire Bomb Dispenser
-  { 173456, 401468, 202612,   0,   1,    0,      -1,      -1 }, // Seething Flight
+  { 173456, 401468, 202612,   0,   1,    0,      -1,      -1 }, // Screaming Flight
   { 174083, 405940, 202612,   1,   0,    0,      -1,      -1 }, // Seething Descent
   { 173418, 400955, 202613,   0,   1,    0,      -1,      -1 }, // Zaqali Chaos Grapnel
   { 173419, 400956, 202613,   1,   0,    0,      -1,      -1 }, // Impaling Grapnel
   { 173439, 401183, 202614,   0,   1,    0,      -1,      -1 }, // Rashok's Molten Heart
   { 173454, 401395, 202615,   0,   1,    0,      -1,      -1 }, // Vessel of Searing Shadow
-  { 173420, 400962, 202616,   0,   1,    0,      -1,      -1 }, // Fortified Dreadslab
-  { 173421, 400986, 202616,   1,   0,    0,      -1,      -1 }, // Fortified Dreadslab Plating
+  { 173420, 400962, 202616,   0,   1,    0,      -1,      -1 }, // Enduring Dreadplate
+  { 173421, 400986, 202616,   1,   0,    0,      -1,      -1 }, // Hellsteel Plating
   { 173446, 401303, 202617,   0,   1,    0,      -1,      -1 }, // Elementium Pocket Anvil
   { 173447, 401306, 202617,   1,   0,    0,      -1,      -1 }, // Anvil Strike
   { 173307, 336126, 203375,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
@@ -8347,9 +8347,9 @@ static const std::array<item_effect_t, 8408> __ptr_item_effect_data { {
   { 173734, 336126, 204164,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
   { 173735, 345229, 204165,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
   { 173736, 345231, 204166,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
-  { 173765, 403366, 204201,   0,   1,    0,      -1,      -1 }, // Idol of Chaotic Arrogance
-  { 173764, 403368, 204202,   0,   1,    0,      -1,      -1 }, // Idol of Domineering Arrogance
-  { 173768, 403385, 204211,   0,   1,    0,      -1,      -1 }, // Idol of Debilitating Arrogance
+  { 173765, 403366, 204201,   0,   1,    0,      -1,      -1 }, // Neltharion's Call to Chaos
+  { 173764, 403368, 204202,   0,   1,    0,      -1,      -1 }, // Neltharion's Call to Dominance
+  { 173768, 403385, 204211,   0,   1,    0,      -1,      -1 }, // Neltharion's Call to Suffering
   { 173913, 405064, 204386,   0,   0,    0,      -1,      -1 }, // Darkened Elemental Core
   { 173918, 405165, 204386,   1,   1,    0,      -1,      -1 }, // Pocket Elemental Core
   { 173914, 405066, 204387,   0,   1,    0,      -1,      -1 }, // Buzzing Orb Core
