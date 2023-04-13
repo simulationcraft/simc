@@ -10109,13 +10109,13 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
-  if ( ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special )
+  if ( ( specialization() == DEATH_KNIGHT_BLOOD && ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special ) )
   {
     return;
   }
 
   sim -> print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
-
+  if( specialization() == DEATH_KNIGHT_BLOOD )
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
@@ -10233,7 +10233,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     state -> result_amount *= 1.0 + spec.blood_fortification -> effectN( 2 ).percent();
 
-  if ( buffs.rune_tap -> up() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )
