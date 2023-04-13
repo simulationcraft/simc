@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -1791,9 +1791,9 @@ bonus_id={ 3611 }, base_ilevel={ 885 }, desc={ Heroic }, quality={ epic }
 bonus_id={ 3612 }, base_ilevel={ 900 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 3613 }, base_ilevel={ 855 }, desc={ Raid Finder }, quality={ epic }
 bonus_id={ 3614 }, base_ilevel={ 860 }
-bonus_id={ 3615 }, ilevel={ 15 @plvl 1 - 188 @plvl 70 }
-bonus_id={ 3616 }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
-bonus_id={ 3617 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
+bonus_id={ 3615 }, ilevel={ 15 @plvl 1 - 330 @plvl 70 }
+bonus_id={ 3616 }, ilevel={ 17 @plvl 1 - 332 @plvl 70 }
+bonus_id={ 3617 }, ilevel={ 16 @plvl 1 - 331 @plvl 70 }
 bonus_id={ 3618 }, suffix={ Shatug }, stats={ 60% Sta [0.9999], 40% Vers [0.6666] }
 bonus_id={ 3619 }, suffix={ F'harg }, stats={ 57% StrAgi [0.6666], 43% BonusArmor [0.5106] }
 bonus_id={ 3621 }, ilevel={ 5 @plvl 1 - 50 @plvl 45 }
@@ -3120,9 +3120,9 @@ bonus_id={ 5781 }, quality={ rare }, ilevel={ 7 @plvl 1 - 180 @plvl 70 }
 bonus_id={ 5782 }, quality={ epic }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
 bonus_id={ 5803 }, stats={ 100% unknown [0.3000] }
 bonus_id={ 5805 }, ilevel={ 14 @plvl 1 - 329 @plvl 70 }
-bonus_id={ 5806 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
-bonus_id={ 5807 }, ilevel={ 15 @plvl 1 - 188 @plvl 70 }
-bonus_id={ 5808 }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
+bonus_id={ 5806 }, ilevel={ 16 @plvl 1 - 331 @plvl 70 }
+bonus_id={ 5807 }, ilevel={ 15 @plvl 1 - 330 @plvl 70 }
+bonus_id={ 5808 }, ilevel={ 17 @plvl 1 - 332 @plvl 70 }
 bonus_id={ 5817 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
 bonus_id={ 5821 }, quality={ epic }
 bonus_id={ 5825 }, desc={ Combatant I }, quality={ epic }
@@ -4254,9 +4254,9 @@ bonus_id={ 7915 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 2
 bonus_id={ 7916 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 190 @plvl 60 }
 bonus_id={ 7917 }, effects={ Sustaining Armor Polish (id=361118, index=0, type=equip) }
 bonus_id={ 7920 }, ilevel={ 14 @plvl 1 - 329 @plvl 70 }
-bonus_id={ 7921 }, ilevel={ 15 @plvl 1 - 188 @plvl 70 }
-bonus_id={ 7922 }, ilevel={ 17 @plvl 1 - 190 @plvl 70 }
-bonus_id={ 7923 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
+bonus_id={ 7921 }, ilevel={ 15 @plvl 1 - 330 @plvl 70 }
+bonus_id={ 7922 }, ilevel={ 17 @plvl 1 - 332 @plvl 70 }
+bonus_id={ 7923 }, ilevel={ 16 @plvl 1 - 331 @plvl 70 }
 bonus_id={ 7924 }, ilevel={ 16 @plvl 1 - 189 @plvl 70 }
 bonus_id={ 7930 }, effects={ Unknown Effect (id=0) }
 bonus_id={ 7932 }, effects={ Dimensional Translators (id=363327, index=0, type=use), Dimensional Translators (id=363328, index=0, type=equip) }
@@ -4669,8 +4669,8 @@ bonus_id={ 9269 }, quality={ legendary }, ilevel={ 35 @plvl 1 - 208 @plvl 70 }
 bonus_id={ 9270 }, quality={ legendary }, ilevel={ 41 @plvl 1 - 214 @plvl 70 }
 bonus_id={ 9271 }, quality={ legendary }, ilevel={ 43 @plvl 1 - 216 @plvl 70 }
 bonus_id={ 9272 }, quality={ legendary }, ilevel={ 33 @plvl 1 - 206 @plvl 70 }
-bonus_id={ 9294 }, quality={ rare }
-bonus_id={ 9295 }, quality={ rare }
+bonus_id={ 9294 }, quality={ uncommon }
+bonus_id={ 9295 }, quality={ uncommon }
 bonus_id={ 9296 }, quality={ rare }
 bonus_id={ 9297 }, quality={ rare }
 bonus_id={ 9298 }, quality={ rare }
@@ -4733,14 +4733,14 @@ bonus_id={ 9374 }, base_ilevel={ 421 }
 bonus_id={ 9375 }, base_ilevel={ 434 }
 bonus_id={ 9376 }, base_ilevel={ 434 }
 bonus_id={ 9379 }, effects={ Roiling Shadowflame (id=406254, index=0, type=equip) }
-bonus_id={ 9380 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9381 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9382 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9383 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9384 }, desc={ Mythic }, quality={ epic }
-bonus_id={ 9385 }, desc={ Mythic }, quality={ epic }
+bonus_id={ 9380 }, quality={ epic }
+bonus_id={ 9381 }, quality={ epic }
+bonus_id={ 9382 }, quality={ epic }
+bonus_id={ 9383 }, quality={ epic }
+bonus_id={ 9384 }, quality={ epic }
+bonus_id={ 9385 }, quality={ epic }
 bonus_id={ 9399 }, effects={ Precognition (id=377360, index=0, type=equip) }
-bonus_id={ 9400 }, effects={ Precognition (id=377360, index=0, type=equip) }
+bonus_id={ 9400 }, effects={ Determination (id=411126, index=0, type=equip) }
 bonus_id={ 9402 }, ilevel_adjust={ 3 }
 bonus_id={ 9403 }, ilevel_adjust={ 6 }
 bonus_id={ 9404 }, ilevel_adjust={ 9 }
@@ -4750,3 +4750,38 @@ bonus_id={ 9407 }, quality={ rare }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
 bonus_id={ 9412 }, effects={ Reserve Parachute (id=409838, index=0, type=use) }
 bonus_id={ 9413 }, socket={ 1 }
 bonus_id={ 9416 }, effects={ Medical Wrap Kit (id=409923, index=0, type=equip) }
+bonus_id={ 9435 }, quality={ epic }
+bonus_id={ 9436 }, socket={ 1 }
+bonus_id={ 9438 }, socket={ 1 }
+bonus_id={ 9439 }, quality={ epic }
+bonus_id={ 9440 }, quality={ epic }
+bonus_id={ 9441 }, quality={ epic }
+bonus_id={ 9442 }, quality={ epic }
+bonus_id={ 9443 }, ilevel={ 15 @plvl 1 - 330 @plvl 70 }
+bonus_id={ 9444 }, ilevel={ 17 @plvl 1 - 332 @plvl 70 }
+bonus_id={ 9445 }, ilevel={ 16 @plvl 1 - 331 @plvl 70 }
+bonus_id={ 9447 }, quality={ epic }
+bonus_id={ 9448 }, quality={ epic }
+bonus_id={ 9449 }, quality={ epic }
+bonus_id={ 9450 }, quality={ epic }
+bonus_id={ 9451 }, quality={ epic }
+bonus_id={ 9455 }, ilevel_adjust={ 401 }
+bonus_id={ 9456 }, ilevel_adjust={ 402 }
+bonus_id={ 9457 }, ilevel_adjust={ 403 }
+bonus_id={ 9458 }, ilevel_adjust={ 404 }
+bonus_id={ 9459 }, ilevel_adjust={ 405 }
+bonus_id={ 9460 }, ilevel_adjust={ 406 }
+bonus_id={ 9461 }, ilevel_adjust={ 407 }
+bonus_id={ 9464 }, ilevel_adjust={ 408 }
+bonus_id={ 9465 }, ilevel_adjust={ 409 }
+bonus_id={ 9466 }, ilevel_adjust={ 410 }
+bonus_id={ 9467 }, ilevel_adjust={ -401 }
+bonus_id={ 9468 }, ilevel_adjust={ -402 }
+bonus_id={ 9469 }, ilevel_adjust={ -403 }
+bonus_id={ 9470 }, ilevel_adjust={ -404 }
+bonus_id={ 9471 }, ilevel_adjust={ -405 }
+bonus_id={ 9472 }, ilevel_adjust={ -406 }
+bonus_id={ 9473 }, ilevel_adjust={ -407 }
+bonus_id={ 9474 }, ilevel_adjust={ -408 }
+bonus_id={ 9475 }, ilevel_adjust={ -409 }
+bonus_id={ 9476 }, ilevel_adjust={ -410 }

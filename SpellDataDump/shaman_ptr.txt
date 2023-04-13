@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -120,7 +120,7 @@ Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Maelstrom Weapon (187881 effects: #1, #3), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Maelstrom Weapon (187881 effects: #3, #5), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2)
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -212,7 +212,7 @@ Class            : Shaman
 Race             : Orc, Tauren, Troll, Goblin, Vulpera, Mag'har Orc, Highmountain Tauren, Zandalari Troll (0x4a0031a2)
 School           : Nature
 Spell Type       : None
-Resource         : 21.5% Base Mana (0) (id=12194)
+Resource         : 2% Base Mana (0) (id=12194)
 Spell Level      : 48
 Duration         : 40 seconds
 Cooldown         : 300 seconds
@@ -361,7 +361,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effects: #4, #5), Enhancement Shaman (137041 effects: #10, #11), Maelstrom Weapon (187881 effects: #1, #3), Nobundo's Redemption (208764 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #21, #22), Elemental Shaman (137040 effects: #4, #5), Enhancement Shaman (137041 effects: #10, #11), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -865,7 +865,7 @@ Class            : Shaman
 Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Pandaren, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Nature
 Spell Type       : None
-Resource         : 21.5% Base Mana (0) (id=1324)
+Resource         : 2% Base Mana (0) (id=1324)
 Spell Level      : 48
 Duration         : 40 seconds
 Cooldown         : 300 seconds
@@ -2299,6 +2299,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1089 | Target: Self (1)
 #7 (id=893523)   : Apply Aura (6) | Unknown(307)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 726 | Target: Self (1)
+#8 (id=1079349)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Calls upon the guidance of the spirits for $d, permitting movement while casting Shaman spells. Castable while casting.$?a192088[ Increases movement speed by $192088s2%.][]
 Tooltip          : Able to move while casting all Shaman spells.
 
@@ -3342,11 +3344,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179723)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024)
                    Family Flags: 41
 #2 (id=191046)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shield (379), Chain Heal (1064), Healing Surge (8004), Healing Stream Totem (52042), Riptide (61295), Unleash Life (73685), Healing Rain (73921), Healing Wave (77472), Healing Tide (114942), Wellspring (197997), Downpour (207778), Tidebringer (236502), Serene Spirit (274416), Swelling Stream (275499), Overflowing Shores (278095), Pack Spirit (280205), Restorative Mists (294020), Surge of Earth (320747), Chain Harvest (320751), Vesper Totem (324522), Primordial Wave (327163), Fae Transfusion (328930), Vesper Totem (356791), Primordial Wave (375985), Earthliving Weapon (382024)
                    Family Flags: 41
 #3 (id=191047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3408,6 +3410,14 @@ Effects          :
                    Base Value: 73 | Scaled Value: 73 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flame Shock (188389)
                    Family Flags: 28
+#21 (id=1080080)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Healing Surge (8004)
+                   Family Flags: 7
+#22 (id=1080081)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Healing Surge (8004)
+                   Family Flags: 7
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -4288,8 +4298,8 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=274048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chain Heal (1064), Healing Surge (8004), Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Lightning Bolt Overload (214816), Lava Burst (285452), Chain Harvest (320674)
-                   Family Flags: 0, 1, 7, 8, 33, 34, 44, 51, 65, 80, 84, 98, 119
+                   Affected Spells: Lava Burst (51505), Healing Rain (73920), Healing Wave (77472), Lava Beam (114074), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Wellspring (197995), Wellspring (197997), Downpour (207778), Icefury (210714), Lightning Bolt Overload (214816), Lava Burst (285452), Chain Harvest (320674)
+                   Family Flags: 0, 1, 33, 34, 44, 51, 65, 80, 84, 98, 119
 #2 (id=811721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816), Primordial Wave (326059), Primordial Wave (375982)
@@ -4301,6 +4311,10 @@ Effects          :
 #4 (id=1076473)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 983 (Label) | Target: Self (1)
                    Affected Spells (Label): Chain Harvest (320751), Chain Harvest (320752)
+#5 (id=1080293)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064), Healing Surge (8004)
+                   Family Flags: 7, 8
 Description      : $@spelldesc187880
 
 Name             : Lightning Bolt (id=188196) [Spell Family (11)] 
@@ -4613,7 +4627,7 @@ Description      : Inflicts Nature damage to up to $x enemies.
 
 Name             : Power of the Maelstrom (id=191861) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=7, col=3, max_rank=2, req_points=8]
-                 : Effect#2 [op=set, values=(5, 10)]
+                 : Effect#2 [op=set, values=(15, 25)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -4621,19 +4635,19 @@ Labels           : 1736: Power of the Maelstrom (191861 effect#2)
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Allow Class Ability Procs (416)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202)
 Effects          :
 #1 (id=281468)   : Apply Aura (6) | Proc Trigger Spell (42): Power of the Maelstrom
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 191877 | Target: Self (1)
 #2 (id=1015847)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Proc Chance (18)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 18 | Misc Value 2: 1736 (Label) | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Misc Value: 18 | Misc Value 2: 1736 (Label) | Target: Self (1)
                    Affected Spells (Label): Power of the Maelstrom (191861)
 Description      : Casting Lava Burst has a $s2% chance to cause your next $191877n Lightning Bolt or Chain Lightning casts to trigger Elemental Overload an additional time.
 
@@ -9931,7 +9945,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=747255)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.97200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.97200 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 Description      : $@spelldesc51505
 
 Name             : Lava Burst Overload (id=285466) [Spell Family (11)] 

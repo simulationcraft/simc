@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -457,7 +457,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Partial Immunity (139), Aura Bounce Fails Spell (157), Taps immediately (215), Aura Points On Client (268), Nameplate Enemy Debuffs (426), Aura Always Shown (438)
 Effects          :
-#1 (id=521)      : Apply Aura (6) | Modify Casting Speed (216)
+#1 (id=521)      : Apply Aura (6) | Unknown(355)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.33340 | Target: Enemy (6)
 Description      : Forces the target to speak in Demonic, increasing the casting time of all spells by $s1% for $d.$?s103112[
 
@@ -1012,7 +1012,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.96000 | PvP Coefficient: 1.50000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.96000 | PvP Coefficient: 1.65000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -3380,7 +3380,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.60524 | PvP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.60524 | PvP Coefficient: 1.60000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -16918,8 +16918,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053916)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Channel Demonfire bolts, Immolate, and Incinerate have a chance to fire an additional Demonfire bolt.
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Channel Demonfire bolts, Immolate, and Incinerate have a chance to fire an additional Demonfire bolt. These bolts deal $s1% increased damage to their main target.
 
 Name             : Warlock Destruction 10.1 Class Set 4pc (id=405576) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -16958,7 +16958,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1054078)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1054088)  : None (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #3 (id=1054159)  : None (0)
