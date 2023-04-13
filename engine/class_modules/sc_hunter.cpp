@@ -842,7 +842,6 @@ public:
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
-  void trigger_bombardment();
   void trigger_bloody_frenzy();
   void consume_trick_shots();
 };
@@ -1106,14 +1105,7 @@ public:
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
     { 
-      if( p() -> is_ptr() ) 
-      {
-        c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
-      }
-      else 
-      {
-        c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
-      }
+      c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
     }
 
     if ( c < 0 )
@@ -2441,7 +2433,7 @@ void stable_pet_t::init_spells()
 
   main_hand_attack = new actions::pet_melee_t( "melee", this );
 
-  if ( o() -> talents.beast_cleave.ok() || o() -> is_ptr() && o() -> talents.bloody_frenzy.ok() )
+  if ( o() -> talents.beast_cleave.ok() || o() -> talents.bloody_frenzy.ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
 }
 
@@ -2671,22 +2663,10 @@ void hunter_t::trigger_latent_poison( const action_state_t* s )
   debuff -> expire();
 }
 
-void hunter_t::trigger_bombardment()
-{
-  if ( is_ptr() || !talents.bombardment.ok() )
-    return;
-
-  if ( ++state.bombardment_counter == talents.bombardment -> effectN( 1 ).base_value() )
-  {
-    state.bombardment_counter = 0;
-    buffs.bombardment -> trigger();
-  }
-}
-
 // 24-3-23: Currently only applying Beast Cleave with the remaining Call of the Wild duration as the result of a Cobra Shot, Serpent Sting, Arcant Shot, or Multi-Shot.
 void hunter_t::trigger_bloody_frenzy()
 {
-  if ( !is_ptr() || !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() )
+  if ( !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() )
     return;
 
   timespan_t duration = buffs.call_of_the_wild -> remains();
@@ -2949,7 +2929,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
     }
 
-    if ( p() -> is_ptr() && p() -> talents.bombardment.ok() )
+    if ( p() -> talents.bombardment.ok() )
       p() -> buffs.trick_shots -> trigger();
   }
 
@@ -3050,7 +3030,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> trigger_lethal_shots();
-    p() -> trigger_bombardment();
     p() -> trigger_bloody_frenzy();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
@@ -3128,14 +3107,13 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     }
 
     if ( p -> tier_set.t29_mm_2pc.ok() )
-      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
-
-    if ( p -> is_ptr() )
     {
-      lotw.trigger_threshold = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 2 ).base_value() );
-      lotw.focus_gain = p -> talents.legacy_of_the_windrunners -> effectN( 3 ).base_value();
-      lotw.aimed_recharges = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 4 ).base_value() );
+      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
     }
+
+    lotw.trigger_threshold = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 2 ).base_value() );
+    lotw.focus_gain = p -> talents.legacy_of_the_windrunners -> effectN( 3 ).base_value();
+    lotw.aimed_recharges = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -3147,7 +3125,7 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
       p() -> procs.windrunners_guidance -> occur();
     }
 
-    if ( p() -> is_ptr() && ++p() -> state.lotw_counter == lotw.trigger_threshold )
+    if ( ++p() -> state.lotw_counter == lotw.trigger_threshold )
     {
       p() -> state.lotw_counter = 0;
       p() -> cooldowns.aimed_shot -> reset( true, lotw.aimed_recharges );
@@ -3712,7 +3690,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> is_ptr() && p -> talents.bloody_frenzy.ok() )
+    if ( p -> talents.bloody_frenzy.ok() )
       cotw_serpent_sting = p -> get_background_action<serpent_sting_cotw_t>( "serpent_sting_cotw" );
   }
 
@@ -3826,12 +3804,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       pet -> buffs.lethal_command -> trigger();
     }
 
-    if ( !p() -> is_ptr() && p() -> talents.bloody_frenzy.ok() && p() -> buffs.call_of_the_wild -> up() )
-    {
-      for ( pets::call_of_the_wild_pet_t* pet : p() -> pets.cotw_stable_pet.active_pets() )
-        pet -> buffs.frenzy -> trigger();
-    }
-
     auto pet = p() -> pets.main;
     if ( pet && pet -> stable_pet_t::buffs.frenzy -> check() == as<int>( p() -> talents.brutal_companion -> effectN( 1 ).base_value() ) )
     {
@@ -3904,7 +3876,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> trigger_lethal_shots();
-    p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -4016,7 +3987,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( p -> talents.legacy_of_the_windrunners.ok() )
     {
       legacy_of_the_windrunners.count = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value() );
-      legacy_of_the_windrunners.chance = p -> is_ptr() ? 1.0 : p -> talents.legacy_of_the_windrunners -> effectN( 2 ).percent();
+      legacy_of_the_windrunners.chance = 1.0;
       legacy_of_the_windrunners.action = p -> get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
       add_child( legacy_of_the_windrunners.action );
     }
@@ -4428,7 +4399,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
   {
     auto_attack_base_t::impact( s );
 
-    if( p() -> is_ptr() && p() -> talents.lunge.ok() )
+    if( p() -> talents.lunge.ok() )
     {
       p() -> cooldowns.wildfire_bomb -> adjust( -timespan_t::from_millis( p() -> talents.lunge -> effectN( 3 ).base_value() ) );
     }
