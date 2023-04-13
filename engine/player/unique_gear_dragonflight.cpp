@@ -4255,13 +4255,32 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 // Ashkandur
 // 408790 Driver/Damage Value
 // 408791 Damage effect
-void ashkandur( special_effect_t& effect )
+void ashkandur( special_effect_t& e )
 {
-  auto damage = create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect, "ashkandur_fall_of_the_brotherhood", effect.player -> find_spell( 408791 ) );
-  damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  struct ashkandur_t : public generic_proc_t
+  {
+    ashkandur_t( const special_effect_t& e )
+      : generic_proc_t( e, "ashkandur_fall_of_the_brotherhood", e.player->find_spell( 408791 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
 
-  effect.execute_action = damage;
-  new dbc_proc_callback_t( effect.player, effect );
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = generic_proc_t::composite_target_multiplier( t );
+
+      if ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
+           player->target->race == RACE_HUMANOID ||
+       player->sim->dragonflight_opts.ashkandur_humanoid )
+      {
+        m *= 2; // Doubles damage against humanoid targets. 
+      }
+      return m;
+    }
+  };
+
+  e.execute_action = create_proc_action<ashkandur_t>( "ashkandur_fall_of_the_brotherhood", e );
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Armor
