@@ -3925,6 +3925,7 @@ void sim_t::create_options()
   add_option( opt_bool( "dragonflight.seething_black_dragonscale_damage", dragonflight_opts.seething_black_dragonscale_damage ) );
   add_option( opt_string( "dragonflight.glimmering_chromatic_orb_dragonflight", dragonflight_opts.glimmering_chromatic_orb_dragonflight ) );
   add_option( opt_string( "dragonflight.glimmering_chromatic_orb_allies", dragonflight_opts.glimmering_chromatic_orb_allies ) );
+  add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
 }
 
 // sim_t::parse_option ======================================================

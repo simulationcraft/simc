@@ -512,6 +512,8 @@ struct sim_t : private sc_thread_t
     std::string glimmering_chromatic_orb_dragonflight = "obsidian";
     // Set the allies dragonflights for Glimmering Chromatic Orb
     std::string glimmering_chromatic_orb_allies = "";
+    // Set the target type for Askhandur's Damage Doubling
+    bool ashkandur_humanoid = false;
   } dragonflight_opts;
 
   // Auras and De-Buffs

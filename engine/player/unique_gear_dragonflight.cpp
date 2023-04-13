@@ -4257,8 +4257,18 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 // 408791 Damage effect
 void ashkandur( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect, "ashkandur_fall_of_the_brotherhood", effect.player -> find_spell( 408791 ) );
-  damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  auto damage_value = effect.driver()->effectN( 1 ).average( effect.item );
+  auto td           = effect.player->get_target_data( effect.player->target );
+  auto damage =
+      create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect,
+                                          "ashkandur_fall_of_the_brotherhood", effect.player->find_spell( 408791 ) );
+  if ( td && effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
+           effect.player->target->race == RACE_HUMANOID ||
+       effect.player->sim->dragonflight_opts.ashkandur_humanoid )
+  {
+    damage_value = damage_value * 2;  // Double the damage if Humanoid
+  }
+  damage->base_dd_min = damage->base_dd_max = damage_value;
 
   effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
