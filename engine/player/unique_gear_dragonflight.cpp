@@ -4724,6 +4724,7 @@ void hood_of_surging_time( special_effect_t& effect )
 // 409434 Driver
 // 409447 Stat Buff
 // 409442 Stacking Buff
+// TODO - Potentially better proc emulation?
 void voice_of_the_silent_star( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs(
@@ -4761,11 +4762,10 @@ void voice_of_the_silent_star( special_effect_t& effect )
                  } );
 
   effect.custom_buff = stack_buff;
+  // Overriding Proc Flags as sims dont usually take damage to proc this.
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
-  // 30-3-2023, This effect appears to be proccing ~1.5x more than spell data suggests. 
-  // Modifiying RPPM data by 50% to emulate this behavior, will need to be rechecked on launch.
-  effect.rppm_modifier_ = effect.driver() -> real_ppm() * 0.5; 
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
