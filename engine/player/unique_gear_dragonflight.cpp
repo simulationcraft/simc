@@ -3559,7 +3559,7 @@ void winterpelt_totem( special_effect_t& effect )
                            { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
 }
 
-void seething_black_dragonscale_equip( special_effect_t& effect )
+void screaming_black_dragonscale_equip( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
                            ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.item ) )
@@ -3568,12 +3568,12 @@ void seething_black_dragonscale_equip( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void seething_black_dragonscale_use( special_effect_t& effect )
+void screaming_black_dragonscale_use( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "screaming_descent", effect, "screaming_descent", effect.driver() );
   damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
 
-  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  if( effect.player -> sim -> dragonflight_opts.screaming_black_dragonscale_damage )
   {
     effect.execute_action = damage;
   }
@@ -3625,7 +3625,7 @@ void zaqali_chaos_grapnel( special_effect_t& effect )
 }
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
-void idol_of_debilitating_arrogance( special_effect_t& effect )
+void neltharions_call_to_suffering( special_effect_t& effect )
 {
   int driver_id = effect.spell_id;
 
@@ -3865,14 +3865,14 @@ void elementium_pocket_anvil( special_effect_t& e )
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
 
-// Glimmering Chromatic Orb
+// Ominous Chromatic Essence 
 // 401513 Value Container
 // Ruby - 401513, Minor - 405613
 // Obsidian - 402221, Minor - 405615
 // Emerald - 401521, Minor - 405608
 // Bronze - 401518, Minor - 405612
 // Azure - 401519, Minor - 405611
-void glimmering_chromatic_orb( special_effect_t& e )
+void ominous_chromatic_essence( special_effect_t& e )
 {
   buff_t* buff;
   buff_t* obsidian_minor;
@@ -3882,7 +3882,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
   buff_t* emerald_minor;
   double main_value       = e.driver()->effectN( 1 ).average( e.item );
   double minor_value      = e.driver()->effectN( 2 ).average( e.item );
-  const auto& flight      = e.player->sim->dragonflight_opts.glimmering_chromatic_orb_dragonflight;
+  const auto& flight      = e.player->sim->dragonflight_opts.ominous_chromatic_essence_dragonflight;
   bool valid              = false;
   bool has_obsidian_major = false;
   bool has_ruby_major     = false;
@@ -3940,7 +3940,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
   }
 
   auto splits =
-      util::string_split<std::string_view>( e.player->sim->dragonflight_opts.glimmering_chromatic_orb_allies, "/" );
+      util::string_split<std::string_view>( e.player->sim->dragonflight_opts.ominous_chromatic_essence_allies, "/" );
   for ( auto s : splits )
   {
     if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
@@ -3957,7 +3957,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
       return;
     else
       e.player->sim->error(
-          "Invalid Option for Glimmering Chromatic Orb Allies. Your Main Dragonflight can not be entered." );
+          "Invalid Option for Ominous Chromatic Essence Allies. Your Main Dragonflight can not be entered." );
   }
 
   // Minor Buffs
@@ -4026,7 +4026,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
   else
   {
     e.player->sim->error(
-        "'{}' Is not a valid Dragonflight for Glimmering Chromatic Orb. Options are: obsidian, azure, emerald, ruby, "
+        "'{}' Is not a valid Dragonflight for Ominous Chromatic Essence. Options are: obsidian, azure, emerald, ruby, "
         "or bronze",
         flight );
   }
@@ -5890,13 +5890,13 @@ void register_special_effects()
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
   register_special_effect( 398292, items::winterpelt_totem );
-  register_special_effect( 401468, items::seething_black_dragonscale_equip);
-  register_special_effect( 405940, items::seething_black_dragonscale_use);
-  register_special_effect( 403385, items::idol_of_debilitating_arrogance );
+  register_special_effect( 401468, items::screaming_black_dragonscale_equip);
+  register_special_effect( 405940, items::screaming_black_dragonscale_use);
+  register_special_effect( 403385, items::neltharions_call_to_suffering );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
-  register_special_effect( 401513, items::glimmering_chromatic_orb );
+  register_special_effect( 401513, items::ominous_chromatic_essence );
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
   register_special_effect( 395175, items::treemouths_festering_splinter );
 
