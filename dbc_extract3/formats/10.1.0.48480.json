@@ -340,10 +340,11 @@
   "DisplaySeason": {
     "fields": [
       { "data_type": "S", "field": "desc" },
-      { "data_type": "i", "field": "season" },
+      { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "expansion_season" },
       { "data_type": "i", "field": "id_expansion" },
-      { "data_type": "i", "field": "unk_1" }
+      { "data_type": "i", "field": "unk_1" },
+      { "data_type": "i", "field": "unk_2" }
     ]
   },
   "ExpectedStat": {
@@ -616,7 +617,9 @@
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "i", "field": "id_item_bonus_season" }
+      { "data_type": "i", "field": "id_item_bonus_season" },
+      { "data_type": "i", "field": "unk_3" },
+      { "data_type": "i", "field": "unk_4" }
     ]
   },
   "ItemBonusTreeNode": {
@@ -920,7 +923,8 @@
     "fields": [
       { "data_type": "H", "field": "id_journal_tier" },
       { "data_type": "H", "field": "id_journal_instance", "ref": "JournalInstance" },
-      { "data_type": "H", "field": "unk_1" }
+      { "data_type": "H", "field": "unk_1" },
+      { "data_type": "H", "field": "unk_2" }
     ]
   },
   "ManifestInterfaceData": {

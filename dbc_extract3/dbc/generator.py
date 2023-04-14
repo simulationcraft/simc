@@ -1405,6 +1405,7 @@ class SpellDataGenerator(DataGenerator):
          406753, 406764, 406770, # Shadowflame Wreathe
          401513, 405620, 401516, 405613, 402221, 405615, 401521, 405608, 401518, 405612, 401519, 405611, # Glimmering Chromatic orb
          406251, 406254, 406887, # Shadowflame-Tempered Armor Patch
+         407087, # Ever-Decaying Spores
         ),
 
         # Warrior:

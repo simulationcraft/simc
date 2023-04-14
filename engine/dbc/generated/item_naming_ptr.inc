@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.1.0.48898
-static const std::array<item_name_description_t, 740> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 10.1.0.49092
+static const std::array<item_name_description_t, 741> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -740,5 +740,6 @@ static const std::array<item_name_description_t, 740> __ptr_item_name_descriptio
   { 14011, "Ingenuity Crafted"                           },
   { 14012, "Shadowflame Crafted"                         },
   { 14014, "Azure"                                       },
+  { 14015, "Purple"                                      },
 } };
 

@@ -2422,44 +2422,37 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p ) :
+    gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     {
       trigger_gcd = 1.5_s;
-      repeating = true;
+      parse_options( options_str );
     }
 
     void execute() override
     {
-      // Bugged as of 3/3/2023, Appears to stop casting every other cast for a period of time between 100% and ~145% haste, between 146-154% haste appears to work as expected, and 155% and above seems to bug again. 
-      // Period of time between casts appears to be roughly equal to 2s - (cast time * 2). So if a cast were to take 0.8 seconds, it would cast twice normally, then wait 0.4s before starting to cast again. 
-      // Due to the complex nature of this bug, going to emulate it by implementing a min gcd of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
-      if( dk() -> bugs && gargoyle_strike_count % 2 == 0 && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 1_s ) && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() >= 0.77_s ) )
+      timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
+      min_gcd = cast_time;
+      if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
       {
-        min_gcd = 1_s * ( 1 / dk() -> composite_spell_haste() );
+        min_gcd = 1_s;
       }
-      else if ( dk() -> bugs && gargoyle_strike_count % 2 == 0 && dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 0.73_s )
+      else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
       {
-        min_gcd = 0.73_s * ( 1 / dk() -> composite_spell_haste() );
+        min_gcd = 0.75_s;
       }
-      pet_spell_t::execute();
+      pet_spell_t<gargoyle_pet_t>::execute();
       ++gargoyle_strike_count;
     }
   };
 
-  void create_actions()
-  {
-    death_knight_pet_t::create_actions();
-    gargoyle_strike = new gargoyle_strike_t( this );
-  }
-  
   void arise() override
   {
+    gargoyle_strike_count = 0;
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
     buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
     stun();
-    gargoyle_strike_count = 0;
   }
 
   void reset() override
@@ -2491,21 +2484,20 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
   }
 
-  void reschedule_gary()
+  void init_action_list() override
   {
-    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
-      return;
+    death_knight_pet_t::init_action_list();
 
-    else
-    {
-      gargoyle_strike->set_target( dk()->target );
-      gargoyle_strike->schedule_execute();
-    }
+    // Default "auto-pilot" pet APL (if everything is left on auto-cast
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def -> add_action( "gargoyle_strike" );
   }
 
-  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    reschedule_gary();
+    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
+
+    return death_knight_pet_t::create_action( name, options_str );
   }
 
   // Function that increases the gargoyle's dark empowerment buff value based on RP spent
@@ -10109,13 +10101,13 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
-  if ( ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special )
+  if ( ( specialization() == DEATH_KNIGHT_BLOOD && ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special ) )
   {
     return;
   }
 
   sim -> print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
-
+  if( specialization() == DEATH_KNIGHT_BLOOD )
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
@@ -10233,7 +10225,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     state -> result_amount *= 1.0 + spec.blood_fortification -> effectN( 2 ).percent();
 
-  if ( buffs.rune_tap -> up() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )

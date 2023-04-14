@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2968,15 +2968,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Spearhead (378957), Arctic Bola (390232), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061)
                    Family Flags: 106
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191140)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -2986,7 +2986,7 @@ Effects          :
                    Affected Spells: Volley (260243), Volley (260247)
                    Family Flags: 34
 #6 (id=1032354)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1.5 | Scaled Value: 1.5 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
@@ -6130,7 +6130,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=483863)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.57200 | PvP Coefficient: 0.83000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.41500 | PvP Coefficient: 0.92000 | Target: Enemy (6)
 Description      : A brutal attack that deals $s1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -7938,7 +7938,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=710469)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.57200 | PvP Coefficient: 0.83000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.41500 | PvP Coefficient: 0.92000 | Target: Enemy (6)
 Description      : A brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -16931,11 +16931,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053861)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
 #2 (id=1075473)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : Cobra Shot and Kill Command damage increased by $s1%.
@@ -16958,7 +16958,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053862)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Cobra Shot, Kill Command, and Multi-Shot reduce the cooldown of Bestial Wrath by ${$m1/1000}.1 sec.
 
 Name             : Hunter Marksmanship 10.1 Class Set 2pc (id=405526) [Spell Family (9), Passive, Hidden] 
@@ -16979,7 +16979,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053863)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Arcane Shot (185358), Multi-Shot (257620), Chimaera Shot (342049)
                    Family Flags: 12, 105
 #2 (id=1075493)  : Apply Aura (6) | Proc Trigger Spell (42): Deathblow
@@ -17004,11 +17004,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053864)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976)
                    Family Flags: 11
 #2 (id=1075495)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Kill Shot deals $s1% increased damage and reduces the cooldown of Aimed Shot and Rapid Fire by ${$m2/1000}.1 sec.
 
 Name             : Hunter Survival 10.1 Class Set 2pc (id=405528) [Spell Family (9), Passive, Hidden] 
@@ -17029,13 +17029,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053865)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 #2 (id=1075500)  : Apply Aura (6) | Proc Trigger Spell (42): Exposed Wound
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 410147 | Target: Self (1)
 #3 (id=1075518)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 Description      : Wildfire Bomb damage increased by $s1%, and throwing a Wildfire Bomb increases the damage of your next Kill Command by $410147s1%.
@@ -17060,7 +17060,7 @@ Effects          :
 #1 (id=1053868)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1075530)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Every $s1 Focus spent reduces the cooldown of Wildfire Bomb by ${$m2/1000}.1 sec, and the target of your latest Kill Command takes $410167s2% increased damage from Wildfire Bomb for $410167d.
 
 Name             : Bombardment (id=405804) [Spell Family (9), Passive] 
@@ -17283,7 +17283,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122)
 Effects          :
 #1 (id=1075502)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Command (259277)
                    Family Flags: 37
 Description      : $@spelldesc405528
@@ -17310,7 +17310,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Limit N (165)
 Effects          :
 #1 (id=1075529)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Enemy (6)
                    Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 Description      : $@spelldesc405530

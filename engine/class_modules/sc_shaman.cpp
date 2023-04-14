@@ -5429,8 +5429,8 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
-    // Rolls on execute and on impact
-    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
+    // Rolls on execute and on impact on live, doesn't roll on impact on ptr
+    if ( !p()->is_ptr() && rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
@@ -10671,9 +10671,9 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         "lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)",
         "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled" );
-    single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
+    single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled",
                                "Use your Icefury buffs if you didn't improve the talent." );

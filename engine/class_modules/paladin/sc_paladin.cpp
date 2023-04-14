@@ -3686,11 +3686,6 @@ struct paladin_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Paladin", "2023-4-7", "Execution Sentence percentage changed to 30%.", 845391, hotfix::HOTFIX_FLAG_LIVE )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 30 )
-      .verification_value( 20 );
   }
 
   void combat_begin( sim_t* ) const override
