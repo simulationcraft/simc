@@ -797,7 +797,7 @@ namespace monk_apl
     opener->add_action( "expel_harm,if=talent.chi_burst.enabled&chi=3" );
     opener->add_action( "chi_wave,if=chi.max-chi=2" );
     opener->add_action( "expel_harm" );
-    opener->add_action( "chi_burst,if=chi=2<5" );
+    opener->add_action( "chi_burst,if=chi>1&chi.max-chi>=2" );
 
     // Bonedust Brew Setup
     bdb_setup->add_action( "bonedust_brew,if=spinning_crane_kick.max&chi>=4", "Bonedust Brew Setup" );
