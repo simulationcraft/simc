@@ -4038,8 +4038,10 @@ void ominous_chromatic_essence( special_effect_t& e )
 // 401239 Value container
 void ward_of_the_faceless_ire( special_effect_t& e )
 {
+  auto num_ticks = e.player->find_spell( 401257 )->duration() / e.player->find_spell( 401257 )->effectN( 2 ).period();
+  auto damage_value = e.player->find_spell( 401239 )->effectN( 2 ).average( e.item ) / num_ticks;
   auto damage = create_proc_action<generic_proc_t>( "writhing_ire", e, "writhing_ire", e.player->find_spell( 401257 ) );
-  damage->base_td = e.player->find_spell( 401239 )->effectN( 2 ).average( e.item );
+  damage->base_td = damage_value;
 
   auto absorb_buff = create_buff<absorb_buff_t>( e.player, e.driver() )
                          ->set_default_value( e.player->find_spell( 401239 )->effectN( 1 ).average( e.item ) )
