@@ -3593,12 +3593,12 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
 // Zaqali Chaos Grapnel
 // 400956 Driver
 // 400955 Damage Values
-// 406558 Missile
+// 400959 Missile
 void zaqali_chaos_grapnel( special_effect_t& effect )
 {
   struct zaqali_chaos_grapnel_missile_t : public generic_aoe_proc_t
   {
-    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "impaling_grapnel_missile", e.player -> find_spell( 406558 ), true )
+    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "furious_impact", e.player -> find_spell( 400959 ), true )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 2 ).average( e.item );
     }
@@ -3608,7 +3608,7 @@ void zaqali_chaos_grapnel( special_effect_t& effect )
   {
     action_t* missile;
     zaqali_chaos_grapnel_t( const special_effect_t& e ) : generic_proc_t( e, "impaling_grapnel", e.driver() ),
-        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "impaling_grapnel_missile", e ) )
+        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "furious_impact", e ) )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 1 ).average( e.item );
       add_child( missile );
