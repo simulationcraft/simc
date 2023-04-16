@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49092
-static const std::array<spelltext_data_t, 19857> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19859> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19242,6 +19242,7 @@ static const std::array<spelltext_data_t, 19857> __ptr_spelltext_data { {
   { 400806, "$@spelldesc400803", 0, 0 },
   { 400813, "Harness the heat of the unhinged timelines during the Storm's Fury event in the Primalist Future to remove one stack of  $@spellicon396050$@spellname396050 every $t seconds.", "Harnessing the heat of the unhinged timelines to remove one stack of  $@spellicon396050$@spellname396050 every $t seconds.", 0 },
   { 400956, "Hurl the grapnel up to $ryds to impale your target, dealing $400955s1 Physical damage and heaving you towards them with tremendous force. On impact, deal $400955s2 Volcanic damage split between all nearby enemies. \r\n\r\nImpact damage is increased per enemy struck, up to 5 enemies.", 0, 0 },
+  { 400959, "$@spelldesc400956", 0, 0 },
   { 400986, "Cover yourself with $u Hellsteel Plates, reducing damage taken by $400962s1 and your movement speed by $400962s2% per plate, for $400986d2. \r\n\r\nTaking $400962s5 damage ruptures one plate, removing it and releasing forth a pillar of Shadowflame that deals $400962s4 damage to all enemies in its path. This effect may only occur once every $400962s6 sec.", "Damage taken reduced by $w1. Movement speed decreased by $w2%.", 0 },
   { 401150, "Transform into a colossus for $d, causing you to deal $s1% increased damage$?s394314[, take $394314s2% reduced damage][] and removing all roots and snares.\r\n\r\n|cFFFFFFFFGenerates ${$s2/10} Rage.|r", "Damage done increased by $s1%.", 0 },
   { 401183, "Your healing spells have a chance to awaken the Heart, restoring ${$s3*($409898d/($409898t3))} mana over $409898d and causing your healing spells to restore ${$s1*($401186d/($401186t2))} additional health over $401186d.\r\n\r\nOverhealing from this effect invigorates your target, granting them up to $401183s2 Versatility for $401187d.", 0, 0 },
@@ -19645,6 +19646,7 @@ static const std::array<spelltext_data_t, 19857> __ptr_spelltext_data { {
   { 407063, "Enjoy a tasty and authentic drogbar delicacy.", "You've got a few less teeth, but a whole lot of muscle!", 0 },
   { 407065, "$@spelldesc407067", "Haste increased by $s1%.", 0 },
   { 407067, "The critical strikes of your damaging single target Holy Power abilities grant you $s1% Haste for $407065d.", 0, 0 },
+  { 407087, "$@spelldesc406244", "The spores gather and are on the verge of collapse. At 5 stacks, you will suffer ${$w1*$407090d} Nature damage over $407090d.", 0 },
   { 407090, "$@spelldesc406244", "Suffering $w1 Nature damage every $t sec.", 0 },
   { 407404, "When Rapid Fire fully finishes channeling, gain $407405s1% haste for $407405d.", 0, 0 },
   { 407405, "$@spelldesc407404", "Haste increased by $s1%.", 0 },

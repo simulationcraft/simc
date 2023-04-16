@@ -197,8 +197,8 @@ void demonology( player_t* p )
   default_->add_action( "soul_strike,if=soul_shard<5&active_enemies>1" );
   default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1" );
   default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4" );
-  default_->add_action( "power_siphon,if=buff.demonic_core.stack<1&(buff.dreadstalkers.remains>3|buff.dreadstalkers.down)" );
-  default_->add_action( "hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)" );
+  default_->add_action( "power_siphon,if=buff.demonic_core.stack<2&(buff.dreadstalkers.remains>gcd*3|buff.dreadstalkers.down)" );
+  default_->add_action( "hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)&(buff.demonic_calling.up|soul_shard>4|cooldown.call_dreadstalkers.remains>gcd)" );
   default_->add_action( "doom,target_if=refreshable" );
   default_->add_action( "soul_strike,if=soul_shard<5" );
   default_->add_action( "shadow_bolt" );
@@ -221,7 +221,7 @@ void demonology( player_t* p )
   tyrant->add_action( "soulburn,if=buff.nether_portal.up&soul_shard>=2,line_cd=40" );
   tyrant->add_action( "hand_of_guldan,if=variable.next_tyrant-time>2&(buff.nether_portal.up|soul_shard>2&variable.next_tyrant-time<12|soul_shard=5)" );
   tyrant->add_action( "hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4&variable.next_tyrant-time>action.summon_demonic_tyrant.cast_time" );
-  tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1" );
+  tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1|buff.dreadstalkers.remains<cast_time+gcd" );
   tyrant->add_action( "demonbolt,if=buff.demonic_core.up" );
   tyrant->add_action( "power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up" );
   tyrant->add_action( "soul_strike" );
