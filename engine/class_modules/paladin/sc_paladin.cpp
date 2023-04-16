@@ -3114,10 +3114,6 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
     if ( !( source->name_str == "arcane_torrent" || source->name_str == "divine_toll" ) )
     {
       holy_power_generators_used++;
-      // 23-03-25 Judgment generates two hidden stacks for Dawn, if Protection
-      if ( bugs && specialization() == PALADIN_PROTECTION && source->name_str == "judgment" )
-        holy_power_generators_used++;
-
       int hpGensNeeded = talents.of_dusk_and_dawn->effectN( 1 ).base_value();
       if ( holy_power_generators_used >= hpGensNeeded )
       {
