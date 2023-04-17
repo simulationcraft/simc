@@ -458,6 +458,7 @@ public:
     cooldown_t* storm_elemental;
     cooldown_t* stormkeeper;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
+    cooldown_t* totemic_recall;
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -802,6 +803,7 @@ public:
     cooldown.storm_elemental    = get_cooldown( "storm_elemental" );
     cooldown.stormkeeper        = get_cooldown( "stormkeeper" );
     cooldown.strike             = get_cooldown( "strike" );
+    cooldown.totemic_recall     = get_cooldown( "totemic_recall" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -5427,8 +5429,8 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
-    // Rolls on execute and on impact
-    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
+    // Rolls on execute and on impact on live, doesn't roll on impact on ptr
+    if ( !p()->is_ptr() && rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
@@ -9869,7 +9871,7 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
 void shaman_t::trigger_flash_of_lightning()
 {
   if ( !talent.stormkeeper.enabled() && !talent.stormkeeper2.enabled() &&
-       !talent.storm_elemental.enabled() )
+       !talent.storm_elemental.enabled() && !talent.totemic_recall.enabled() )
   {
     return;
   }
@@ -9885,6 +9887,10 @@ void shaman_t::trigger_flash_of_lightning()
   if ( talent.natures_swiftness.enabled() )
   {
     cooldown.natures_swiftness->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  }
+  if ( talent.totemic_recall.enabled() )
+  {
+    cooldown.totemic_recall->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
   }
 
   proc.flash_of_lightning->occur();
@@ -10665,9 +10671,9 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action(
         "lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)",
         "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled" );
-    single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
+    single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
     single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled",
                                "Use your Icefury buffs if you didn't improve the talent." );

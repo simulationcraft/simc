@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 70, wow build 10.1.0.48898
+// Hit points per stamina for level 1 - 70, wow build 10.1.0.49092
 static constexpr double _ptr__hp_per_sta[70] = {
     7,	7,	7,	7,	7,	//    5
     7,	7,	7,	8,	8,	//   10
@@ -16,7 +16,7 @@ static constexpr double _ptr__hp_per_sta[70] = {
     20,	20,	20,	20,	20,	//   70
 };
 
-// Spell scaling multipliers for levels 1 - 70, wow build 10.1.0.48898
+// Spell scaling multipliers for levels 1 - 70, wow build 10.1.0.49092
 static constexpr double _ptr__spell_scaling[][70] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -376,7 +376,7 @@ static constexpr double _ptr__spell_scaling[][70] = {
   },
 };
 
-// Base mana points for levels 1 - 70, wow build 10.1.0.48898
+// Base mana points for levels 1 - 70, wow build 10.1.0.49092
 static constexpr double _ptr__base_mp[][70] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -617,7 +617,7 @@ static constexpr double _ptr__base_mp[][70] = {
   },
 };
 
-// Combat rating values for level 1 - 70, wow build 10.1.0.48898
+// Combat rating values for level 1 - 70, wow build 10.1.0.49092
 static constexpr double _ptr__combat_ratings[][70] = {
   // Dodge
   {
@@ -791,20 +791,20 @@ static constexpr double _ptr__combat_ratings[][70] = {
   },
   // Lifesteal
   {
-    1.683813485,	1.683813485,	1.683813485,	1.683813485,	1.683813485,	//    5
-    1.683813485,	1.683813485,	1.683813485,	1.683813485,	1.683813485,	//   10
-    1.683813485,	1.768004159,	1.852194833,	1.936385507,	2.020576182,	//   15
-    2.104766856,	2.18895753,	2.273148204,	2.357338879,	2.441529553,	//   20
-    2.540594614,	2.645140083,	2.755508553,	2.872066565,	2.995206418,	//   25
-    3.125348137,	3.262941589,	3.408468784,	3.562446361,	3.725428282,	//   30
-    3.898008747,	4.080825358,	4.274562542,	4.479955272,	4.697793097,	//   35
-    4.928924517,	5.174261735,	5.434785813,	5.711552281,	6.005697223,	//   40
-    6.318443906,	6.651109978,	7.005115307,	7.38199051,	7.783386244,	//   45
-    8.211083318,	8.667003719,	9.153222628,	9.67198152,	10.22570246,	//   50
-    10.87430986,	11.56405787,	12.29755599,	13.07757925,	13.90707872,	//   55
-    14.78919261,	15.72725821,	16.72482451,	17.78566556,	21.38926091,	//   60
-    24.5166548,	28.10131519,	32.21010051,	36.91964479,	42.31778696,	//   65
-    48.50520918,	55.59731467,	63.72638012,	73.04402286,	109.9970367,	//   70
+    2.265494507,	2.265494507,	2.265494507,	2.265494507,	2.265494507,	//    5
+    2.265494507,	2.265494507,	2.265494507,	2.265494507,	2.265494507,	//   10
+    2.265494507,	2.378769232,	2.492043957,	2.605318683,	2.718593408,	//   15
+    2.831868133,	2.945142859,	3.058417584,	3.171692309,	3.284967035,	//   20
+    3.418254572,	3.558915748,	3.707411507,	3.864235014,	4.02991409,	//   25
+    4.205013858,	4.390139593,	4.585939818,	4.79310965,	5.012394416,	//   30
+    5.244593588,	5.490565027,	5.751229601,	6.027576184,	6.320667076,	//   35
+    6.631643896,	6.961733971,	7.312257276,	7.684633978,	8.080392628,	//   40
+    8.501179074,	8.948766152,	9.425064231,	9.932132686,	10.4721924,	//   45
+    11.04763937,	11.66105955,	12.31524499,	13.0132115,	13.75821786,	//   50
+    14.63088964,	15.55891422,	16.5458026,	17.59528845,	18.71134227,	//   55
+    19.89818642,	21.16031105,	22.50249115,	23.92980457,	28.77827832,	//   60
+    32.98604464,	37.80904225,	43.33722614,	49.6737039,	56.93665882,	//   65
+    65.26155417,	74.80365974,	85.7409478,	98.27741257,	147.996013,	//   70
   },
   // Haste - Melee
   {
@@ -1029,7 +1029,7 @@ static constexpr double _ptr__combat_ratings[][70] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 10.1.0.48898
+// Combat rating multipliers for item level 1 - 1300, wow build 10.1.0.49092
 static constexpr double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2085,7 +2085,7 @@ static constexpr double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 10.1.0.48898
+// Item level translation for item level 1 - 1300, wow build 10.1.0.49092
 static constexpr double _ptr__item_level_squish[1300] = {
     1,	1,	2,	2,	2,	//    5
     3,	3,	4,	4,	5,	//   10
@@ -2349,7 +2349,7 @@ static constexpr double _ptr__item_level_squish[1300] = {
     951,	952,	953,	954,	955,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 10.1.0.48898
+// Item socket costs for item levels 1 - 1300, wow build 10.1.0.49092
 static constexpr double _ptr__item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2553,7 +2553,7 @@ static constexpr double _ptr__item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 10.1.0.48898
+// Stamina multipliers for item level 1 - 1300, wow build 10.1.0.49092
 static constexpr double _ptr__stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -3609,7 +3609,7 @@ static constexpr double _ptr__stamina_mult_by_ilvl[][1300] = {
   },
 };
 
-// Azerite level to item level 1 - 300, wow build 10.1.0.48898
+// Azerite level to item level 1 - 300, wow build 10.1.0.49092
 static constexpr unsigned _ptr__azerite_level_to_item_level[300] = {
     280,	282,	284,	286,	288,	//    5
     290,	292,	294,	296,	298,	//   10
@@ -3673,7 +3673,7 @@ static constexpr unsigned _ptr__azerite_level_to_item_level[300] = {
     870,	872,	874,	876,	878,	//  300
 };
 
-// Armor mitigation constants (K-values), wow build 10.1.0.48898
+// Armor mitigation constants (K-values), wow build 10.1.0.49092
 static const std::array<double, 73> __ptr_armor_mitigation_constants_data { {
     64.000,   70.000,   75.000,   81.000,   87.000,
     93.000,   99.000,  110.000,  122.000,  133.000,
@@ -3692,7 +3692,7 @@ static const std::array<double, 73> __ptr_armor_mitigation_constants_data { {
   11766.000, 11766.000, 11766.000,
 } };
 
-// Npc base armor values, wow build 10.1.0.48898
+// Npc base armor values, wow build 10.1.0.49092
 static const std::array<double, 73> __ptr_npc_armor_data { {
     27.000,   30.000,   32.000,   35.000,   37.000,
     40.000,   42.000,   47.000,   52.000,   57.000,

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-09/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-11/48966)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -107,7 +107,7 @@ Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16), Aegis of Protection (403654 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16), Aegis of Protection (403654 effect#1), Retribution Paladin (412314 effects: #5, #6)
 Family Flags     : 72
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -342,6 +342,7 @@ Duration         : 12 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (120 seconds cooldown)
 Category         : 1186: Sacrifice of the Just (384820 effect#1)
+Labels           : 2655: Retribution Paladin (412314 effect#3), Retribution Paladin (412314 effect#4)
 Affecting spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#5), Echoing Blessings (387801 effect#5)
 Family Flags     : 13
 Attributes       : ........ ........ x.x..... .......x   ........ ........ ...x.... ........ 
@@ -1813,6 +1814,7 @@ Effects          :
 Description      : $@spelldesc85043
 
 Name             : Word of Glory (id=85673) [Spell Family (10)] 
+Hotfixed         : Description
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -1838,7 +1840,7 @@ Description      : Calls down the Light to heal a friendly target for $130551s1$
 
 |cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[
 
-|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on the target's missing health.][]
+|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on your missing health, or up to $315924s1% if cast on another target.][]
 Variables        : $heal=${$378412o1*(1+($378405s1/100))}
 
 Name             : Selfless Healer (id=85804) [Spell Family (10), Passive] 
@@ -2891,10 +2893,14 @@ Hotfixed         : Base Value (0 -> -3)
                    Base Value: 30000 | Scaled Value: 30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
-#17 (id=1032367)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#18 (id=1032368)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#17 (id=1032367)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanctified Plates (402964)
+Hotfixed         : Sub Type (429 -> 218), Base Value (0 -> -50), Misc Value (0 -> 3), Misc Value 2 (0 -> 2602)
+#18 (id=1032368)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanctified Plates (402964)
+Hotfixed         : Sub Type (531 -> 218), Base Value (0 -> 100), Misc Value (0 -> 3), Misc Value 2 (0 -> 2602), PvP Coefficient (1 -> 0)
 #19 (id=1050893)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 2128 | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
@@ -2930,17 +2936,21 @@ Hotfixed         : Base Value (-10 -> -17), PvP Coefficient (1.5 -> 1)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 2627 (Label) | Target: Self (1)
                    Affected Spells (Label): Empyrean Legacy (387170)
 #29 (id=1077113)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath (384376)
+Hotfixed         : Base Value (5 -> 10)
 #30 (id=1077114)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath (384376)
+Hotfixed         : Base Value (-5 -> -10)
 #31 (id=1077116)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
+Hotfixed         : Base Value (5 -> 10)
 #32 (id=1077117)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
+Hotfixed         : Base Value (-5 -> -10)
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
@@ -8898,6 +8908,7 @@ Effects          :
 Description      : When you cast Word of Glory on yourself, it is increased by up to $s1% based on your missing health.
 
 Name             : Hand of the Protector (id=315924) [Spell Family (10), Passive] 
+Hotfixed         : Description
 Talent Entry     : Protection [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -8913,8 +8924,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=800025)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Word of Glory's healing is increased by the target's missing health, on any target.
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 100)
+Description      : When you cast Word of Glory on someone other than yourself, its healing is increased by up to $s1% based on the target's missing health.
 
 Name             : Ashen Hallow (desc=Venthyr) (id=316958) [Spell Family (10)] 
 Class            : Paladin
@@ -16085,7 +16097,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Final Verdict has a $h% chance to reset the cooldown of Blade of Justice.
 
-Name             : Sanctified Plates (id=402964) [Spell Family (4), Passive, Hidden] 
+Name             : Sanctified Plates (id=402964) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : Spell Family (4 -> 10)
 Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
@@ -16093,7 +16106,7 @@ Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=2, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Labels           : 2602: Protection Paladin (137028 effect#21)
+Labels           : 2602: Retribution Paladin (137027 effect#17), Retribution Paladin (137027 effect#18), Protection Paladin (137028 effect#21), Retribution Paladin (412314 effect#1), Retribution Paladin (412314 effect#2)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16514,9 +16527,10 @@ Effects          :
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
 #3 (id=1050811)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Flash of Light (19750)
                    Family Flags: 30
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : Flash of Light casts instantly, its healing done is increased by $s3%, but it now has a ${$s1/1000} sec cooldown.
 
 Name             : Improved Blade of Justice (id=403745) [Spell Family (10), Passive, Hidden] 
@@ -16569,7 +16583,7 @@ Spell Level      : 10
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16), Aegis of Protection (403654 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16), Aegis of Protection (403654 effect#1), Retribution Paladin (412314 effects: #5, #6)
 Family Flags     : 72
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -17925,5 +17939,47 @@ $@spelldesc385127
 $@spellicon385126$@spellname385126
 $@spelldesc385126
 
+
+Name             : Retribution Paladin (id=412314) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : NEW SPELL
+Class            : Retribution Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1079573)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanctified Plates (402964)
+Hotfixed         : NEW EFFECT
+#2 (id=1079574)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.00000 | Misc Value: 12 | Misc Value 2: 2602 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanctified Plates (402964)
+Hotfixed         : NEW EFFECT
+#3 (id=1079579)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2655 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blessing of Sacrifice (6940)
+Hotfixed         : NEW EFFECT
+#4 (id=1079580)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.00000 | Misc Value: 3 | Misc Value 2: 2655 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blessing of Sacrifice (6940)
+Hotfixed         : NEW EFFECT
+#5 (id=1079865)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Divine Protection (498), Divine Protection (403876)
+                   Family Flags: 72
+Hotfixed         : NEW EFFECT
+#6 (id=1079866)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Divine Protection (498), Divine Protection (403876)
+                   Family Flags: 72
+Hotfixed         : NEW EFFECT
 
 

@@ -2411,48 +2411,48 @@ int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
+  pet_spell_t<gargoyle_pet_t>* gargoyle_strike;
+
+  gargoyle_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), gargoyle_strike( nullptr )
+  {
+    resource_regeneration = regen_type::DISABLED;
+    affected_by_commander_of_the_dead = true;
+  }
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
     gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
     {
-      parse_options( options_str );
       trigger_gcd = 1.5_s;
+      parse_options( options_str );
     }
 
     void execute() override
     {
-      // Bugged as of 3/3/2023, Appears to stop casting every other cast for a period of time between 100% and ~145% haste, between 146-154% haste appears to work as expected, and 155% and above seems to bug again. 
-      // Period of time between casts appears to be roughly equal to 2s - (cast time * 2). So if a cast were to take 0.8 seconds, it would cast twice normally, then wait 0.4s before starting to cast again. 
-      // Due to the complex nature of this bug, going to emulate it by implementing a min gcd of anything between these to 1s per cast, or 0.73s per cast instead, basically capping it at 100% haste, or 154% haste. 
-      if( dk() -> bugs && gargoyle_strike_count % 2 == 0 && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 1_s ) && ( dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() >= 0.77_s ) )
+      timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
+      min_gcd = cast_time;
+      if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
       {
-        min_gcd = 1_s * ( 1 / dk() -> composite_spell_haste() );
+        min_gcd = 1_s;
       }
-      else if ( dk() -> bugs && gargoyle_strike_count % 2 == 0 && dk() -> pet_spell.gargoyle_strike -> cast_time() / dk() -> composite_spell_haste() <= 0.73_s )
+      else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
       {
-        min_gcd = 0.73_s * ( 1 / dk() -> composite_spell_haste() );
+        min_gcd = 0.75_s;
       }
-      pet_spell_t::execute();
+      pet_spell_t<gargoyle_pet_t>::execute();
       ++gargoyle_strike_count;
     }
   };
 
-  gargoyle_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
-  {
-    resource_regeneration = regen_type::DISABLED;
-    affected_by_commander_of_the_dead = true;
-  }
-  
   void arise() override
   {
+    gargoyle_strike_count = 0;
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
     buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
     stun();
-    gargoyle_strike_count = 0;
   }
 
   void reset() override
@@ -2528,27 +2528,29 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
 struct risen_skulker_pet_t : public death_knight_pet_t
 {
-  struct skulker_shot_t : public pet_action_t<risen_skulker_pet_t, ranged_attack_t>
-  {
-    skulker_shot_t( risen_skulker_pet_t* p, util::string_view options_str ) :
-      pet_action_t( p, "skulker_shot", p -> dk() -> pet_spell.skulker_shot )
-    {
-      parse_options( options_str );
-      weapon = &( p -> main_hand_weapon );
-      // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
-      base_multiplier *= 2.0;
-      aoe = -1;
-      base_aoe_multiplier = 0.5;
-    }
-  };
-
+  pet_spell_t<risen_skulker_pet_t>* skulker_shot;
   risen_skulker_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "risen_skulker", true, false, false )
+    death_knight_pet_t( owner, "risen_skulker", true, false, false ), skulker_shot( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST_RANGED;
     main_hand_weapon.swing_time = 2.7_s;
   }
+
+  struct skulker_shot_t : public pet_spell_t<risen_skulker_pet_t>
+  {
+    skulker_shot_t( risen_skulker_pet_t* p ) :
+      pet_spell_t<risen_skulker_pet_t>( p, "skulker_shot", p -> dk() -> pet_spell.skulker_shot )
+    {
+      weapon = &( p -> main_hand_weapon );
+      background = true;
+      // For some reason, Risen Skulker deals double damage to its main target, and normal damage to the other targets
+      base_multiplier *= 2.0;
+      aoe = -1;
+      base_aoe_multiplier = 0.5;
+      repeating = true;
+    }
+  };
 
   void init_base_stats() override
   {
@@ -2557,20 +2559,33 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 1.0;
   }
 
-  void init_action_list() override
+  void create_actions()
   {
-    death_knight_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "skulker_shot" );
+    death_knight_pet_t::create_actions();
+    skulker_shot = new skulker_shot_t( this );
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  void reschedule_skulker()
   {
-    if ( name == "skulker_shot" ) return new skulker_shot_t( this, options_str );
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
 
-    return death_knight_pet_t::create_action( name, options_str );
+    else
+    {
+      skulker_shot->set_target( dk()->target );
+      skulker_shot->schedule_execute();
+    }
+  }
+  
+  void arise() override
+  {
+    death_knight_pet_t::arise();
+    reschedule_skulker();
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  {
+    reschedule_skulker();
   }
 };
 
@@ -3379,6 +3394,7 @@ struct blood_plague_t final : public death_knight_disease_t
   {
     double m = death_knight_disease_t::composite_ta_multiplier( state );
 
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD)
     m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
 
     return m;
@@ -3715,7 +3731,7 @@ struct melee_t : public death_knight_melee_attack_t
       // Crimson scourge doesn't proc if death and decay is ticking
       if ( get_td( s -> target ) -> dot.blood_plague -> is_ticking() && ! p() -> active_dnd )
       {
-        if ( p() -> buffs.crimson_scourge -> trigger() )
+        if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && p() -> buffs.crimson_scourge -> trigger() )
         {
           p() -> cooldown.death_and_decay_dynamic -> reset( true );
         }
@@ -10085,13 +10101,13 @@ void death_knight_t::assess_damage( school_e school, result_amount_type type, ac
 
 void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 {
-  if ( ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special )
+  if ( ( specialization() == DEATH_KNIGHT_BLOOD && ! buffs.bone_shield -> check() || ! cooldown.bone_shield_icd -> up() || state -> action -> special ) )
   {
     return;
   }
 
   sim -> print_log( "{} took a successful auto attack and lost a bone shield charge", name() );
-
+  if( specialization() == DEATH_KNIGHT_BLOOD )
   buffs.bone_shield -> decrement();
   cooldown.bone_shield_icd -> start();
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
@@ -10209,7 +10225,7 @@ void death_knight_t::target_mitigation( school_e school, result_amount_type type
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     state -> result_amount *= 1.0 + spec.blood_fortification -> effectN( 2 ).percent();
 
-  if ( buffs.rune_tap -> up() )
+  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.rune_tap -> up() )
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )

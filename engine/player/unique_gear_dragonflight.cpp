@@ -3559,7 +3559,7 @@ void winterpelt_totem( special_effect_t& effect )
                            { if ( new_ ) blessing_cb->activate(); else blessing_cb->deactivate(); } );
 }
 
-void seething_black_dragonscale_equip( special_effect_t& effect )
+void screaming_black_dragonscale_equip( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
                            ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.item ) )
@@ -3568,12 +3568,12 @@ void seething_black_dragonscale_equip( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void seething_black_dragonscale_use( special_effect_t& effect )
+void screaming_black_dragonscale_use( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "seething_descent", effect, "seething_descent", effect.driver() );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "screaming_descent", effect, "screaming_descent", effect.driver() );
   damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
 
-  if( effect.player -> sim -> dragonflight_opts.seething_black_dragonscale_damage )
+  if( effect.player -> sim -> dragonflight_opts.screaming_black_dragonscale_damage )
   {
     effect.execute_action = damage;
   }
@@ -3593,12 +3593,12 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
 // Zaqali Chaos Grapnel
 // 400956 Driver
 // 400955 Damage Values
-// 406558 Missile
+// 400959 Missile
 void zaqali_chaos_grapnel( special_effect_t& effect )
 {
   struct zaqali_chaos_grapnel_missile_t : public generic_aoe_proc_t
   {
-    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "impaling_grapnel_missile", e.player -> find_spell( 406558 ), true )
+    zaqali_chaos_grapnel_missile_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "furious_impact", e.player -> find_spell( 400959 ), true )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 2 ).average( e.item );
     }
@@ -3608,7 +3608,7 @@ void zaqali_chaos_grapnel( special_effect_t& effect )
   {
     action_t* missile;
     zaqali_chaos_grapnel_t( const special_effect_t& e ) : generic_proc_t( e, "impaling_grapnel", e.driver() ),
-        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "impaling_grapnel_missile", e ) )
+        missile( create_proc_action<zaqali_chaos_grapnel_missile_t>( "furious_impact", e ) )
     {
       base_dd_min = base_dd_max = e.player->find_spell( 400955 )->effectN( 1 ).average( e.item );
       add_child( missile );
@@ -3625,7 +3625,7 @@ void zaqali_chaos_grapnel( special_effect_t& effect )
 }
 
 // TODO: Confirm which driver is Druid and Rogue, spell data at the time of implementation (17/03/2023) was unclear
-void idol_of_debilitating_arrogance( special_effect_t& effect )
+void neltharions_call_to_suffering( special_effect_t& effect )
 {
   int driver_id = effect.spell_id;
 
@@ -3865,14 +3865,14 @@ void elementium_pocket_anvil( special_effect_t& e )
   e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
 }
 
-// Glimmering Chromatic Orb
+// Ominous Chromatic Essence 
 // 401513 Value Container
 // Ruby - 401513, Minor - 405613
 // Obsidian - 402221, Minor - 405615
 // Emerald - 401521, Minor - 405608
 // Bronze - 401518, Minor - 405612
 // Azure - 401519, Minor - 405611
-void glimmering_chromatic_orb( special_effect_t& e )
+void ominous_chromatic_essence( special_effect_t& e )
 {
   buff_t* buff;
   buff_t* obsidian_minor;
@@ -3882,7 +3882,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
   buff_t* emerald_minor;
   double main_value       = e.driver()->effectN( 1 ).average( e.item );
   double minor_value      = e.driver()->effectN( 2 ).average( e.item );
-  const auto& flight      = e.player->sim->dragonflight_opts.glimmering_chromatic_orb_dragonflight;
+  const auto& flight      = e.player->sim->dragonflight_opts.ominous_chromatic_essence_dragonflight;
   bool valid              = false;
   bool has_obsidian_major = false;
   bool has_ruby_major     = false;
@@ -3940,7 +3940,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
   }
 
   auto splits =
-      util::string_split<std::string_view>( e.player->sim->dragonflight_opts.glimmering_chromatic_orb_allies, "/" );
+      util::string_split<std::string_view>( e.player->sim->dragonflight_opts.ominous_chromatic_essence_allies, "/" );
   for ( auto s : splits )
   {
     if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
@@ -3957,7 +3957,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
       return;
     else
       e.player->sim->error(
-          "Invalid Option for Glimmering Chromatic Orb Allies. Your Main Dragonflight can not be entered." );
+          "Invalid Option for Ominous Chromatic Essence Allies. Your Main Dragonflight can not be entered." );
   }
 
   // Minor Buffs
@@ -4026,7 +4026,7 @@ void glimmering_chromatic_orb( special_effect_t& e )
   else
   {
     e.player->sim->error(
-        "'{}' Is not a valid Dragonflight for Glimmering Chromatic Orb. Options are: obsidian, azure, emerald, ruby, "
+        "'{}' Is not a valid Dragonflight for Ominous Chromatic Essence. Options are: obsidian, azure, emerald, ruby, "
         "or bronze",
         flight );
   }
@@ -4038,8 +4038,10 @@ void glimmering_chromatic_orb( special_effect_t& e )
 // 401239 Value container
 void ward_of_the_faceless_ire( special_effect_t& e )
 {
+  auto num_ticks = e.player->find_spell( 401257 )->duration() / e.player->find_spell( 401257 )->effectN( 2 ).period();
+  auto damage_value = e.player->find_spell( 401239 )->effectN( 2 ).average( e.item ) / num_ticks;
   auto damage = create_proc_action<generic_proc_t>( "writhing_ire", e, "writhing_ire", e.player->find_spell( 401257 ) );
-  damage->base_td = e.player->find_spell( 401239 )->effectN( 2 ).average( e.item );
+  damage->base_td = damage_value;
 
   auto absorb_buff = create_buff<absorb_buff_t>( e.player, e.driver() )
                          ->set_default_value( e.player->find_spell( 401239 )->effectN( 1 ).average( e.item ) )
@@ -4255,13 +4257,32 @@ struct heavens_nemesis_initializer_t : public item_targetdata_initializer_t
 // Ashkandur
 // 408790 Driver/Damage Value
 // 408791 Damage effect
-void ashkandur( special_effect_t& effect )
+void ashkandur( special_effect_t& e )
 {
-  auto damage = create_proc_action<generic_proc_t>( "ashkandur_fall_of_the_brotherhood", effect, "ashkandur_fall_of_the_brotherhood", effect.player -> find_spell( 408791 ) );
-  damage -> base_dd_min = damage -> base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  struct ashkandur_t : public generic_proc_t
+  {
+    ashkandur_t( const special_effect_t& e )
+      : generic_proc_t( e, "ashkandur_fall_of_the_brotherhood", e.player->find_spell( 408791 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
 
-  effect.execute_action = damage;
-  new dbc_proc_callback_t( effect.player, effect );
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double m = generic_proc_t::composite_target_multiplier( t );
+
+      if ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
+           player->target->race == RACE_HUMANOID ||
+       player->sim->dragonflight_opts.ashkandur_humanoid )
+      {
+        m *= 2; // Doubles damage against humanoid targets. 
+      }
+      return m;
+    }
+  };
+
+  e.execute_action = create_proc_action<ashkandur_t>( "ashkandur_fall_of_the_brotherhood", e );
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Armor
@@ -4705,6 +4726,7 @@ void hood_of_surging_time( special_effect_t& effect )
 // 409434 Driver
 // 409447 Stat Buff
 // 409442 Stacking Buff
+// TODO - Potentially better proc emulation?
 void voice_of_the_silent_star( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs(
@@ -4742,28 +4764,22 @@ void voice_of_the_silent_star( special_effect_t& effect )
                  } );
 
   effect.custom_buff = stack_buff;
+  // Overriding Proc Flags as sims dont usually take damage to proc this.
   effect.proc_flags_ = PF_ALL_DAMAGE;
   effect.proc_flags2_ = PF2_ALL_HIT;
-  // 30-3-2023, This effect appears to be proccing ~1.5x more than spell data suggests. 
-  // Modifiying RPPM data by 50% to emulate this behavior, will need to be rechecked on launch.
-  effect.rppm_modifier_ = effect.driver() -> real_ppm() * 0.5; 
+
   new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Shadowflame-Tempered Armor Patch
-// 406254 Driver
+// 406254 Driver / Value Container
+// 412547 RPPM Data
 // 406251 Damage
 // 406887 Buff
 void roiling_shadowflame( special_effect_t& e )
 {
-  auto stack_buff = buff_t::find( e.player, "roused_shadowflame" );
-  if ( !stack_buff )
-  {
-    stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) );
-    // Buff value and RPPM double with multiple instances of the item
-    e.name_str += "_2";
-  }
-  stack_buff->set_default_value( stack_buff -> default_value + e.driver() -> effectN( 4 ).percent() );
+  auto stack_buff = create_buff<buff_t>( e.player, "roused_shadowflame", e.player->find_spell( 406887 ) )
+                        ->set_default_value( e.player->find_spell( 406254 )->effectN( 4 ).percent() );
 
   struct roiling_shadowflame_t : public generic_proc_t
   {
@@ -4772,7 +4788,7 @@ void roiling_shadowflame( special_effect_t& e )
     roiling_shadowflame_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "roiling_shadowflame", e.player->find_spell( 406251 ) ), buff( b )
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      base_dd_min = base_dd_max = e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -4797,6 +4813,9 @@ void roiling_shadowflame( special_effect_t& e )
       }
     }
   };
+
+  auto new_driver_id = 412547;  // Rppm data moved out of the main driver into this spell
+  e.spell_id         = new_driver_id;
 
   auto damage      = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
   e.execute_action = damage;
@@ -5873,13 +5892,13 @@ void register_special_effects()
   register_special_effect( 377464, items::desperate_invokers_codex, true );
   register_special_effect( 377455, items::iceblood_deathsnare );
   register_special_effect( 398292, items::winterpelt_totem );
-  register_special_effect( 401468, items::seething_black_dragonscale_equip);
-  register_special_effect( 405940, items::seething_black_dragonscale_use);
-  register_special_effect( 403385, items::idol_of_debilitating_arrogance );
+  register_special_effect( 401468, items::screaming_black_dragonscale_equip);
+  register_special_effect( 405940, items::screaming_black_dragonscale_use);
+  register_special_effect( 403385, items::neltharions_call_to_suffering );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
-  register_special_effect( 401513, items::glimmering_chromatic_orb );
+  register_special_effect( 401513, items::ominous_chromatic_essence );
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
   register_special_effect( 395175, items::treemouths_festering_splinter );
 
