@@ -273,12 +273,12 @@ void discipline( player_t* p )
   main->add_action( "lights_wrath,if=talent.wrath_unleashed", "For DPS, Lights wrath should always be used outside of scov when you take wrath unleashed to maximize the number of smites it buffs. In a real raid setting, you may want to cast it at the beginning of a scov cycle for additional healing." );
   main->add_action( "mind_blast,if=!talent.shadow_covenant|variable.can_mind_blast" );
   main->add_action( "mindgames,if=(!talent.shadow_covenant|variable.can_mindgames)&talent.shattered_perceptions" );
-  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&talent.expiation&(target.time_to_pct_20>(gcd.max*2))" );
+  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&talent.expiation&(target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration))" );
   main->add_action( "mindgames,if=(!talent.shadow_covenant|variable.can_mindgames)&!talent.shattered_perceptions" );
   main->add_action( "halo" );
   main->add_action( "divine_star,if=(!talent.shadow_covenant|variable.can_divine_star)" );
   main->add_action( "power_word_solace" );
-  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&(target.time_to_pct_20>(gcd.max*2))" );
+  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&(target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration))" );
   main->add_action( "smite" );
 
   scov_prep->add_action( "purge_the_wicked,if=!ticking&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))", "Prepare to enter shadow covenant" );
@@ -294,12 +294,12 @@ void discipline( player_t* p )
   short_scov->add_action( "shadow_word_death,if=target.health.pct<20" );
   short_scov->add_action( "mind_blast,if=talent.expiation" );
   short_scov->add_action( "mindgames,if=talent.shattered_perceptions" );
-  short_scov->add_action( "shadow_word_death,if=talent.expiation" );
+  short_scov->add_action( "shadow_word_death,if=talent.expiation&(target.time_to_pct_20>buff.shadow_covenant.remains)" );
   short_scov->add_action( "mindgames" );
   short_scov->add_action( "halo" );
   short_scov->add_action( "mind_blast" );
   short_scov->add_action( "divine_star" );
-  short_scov->add_action( "shadow_word_death" );
+  short_scov->add_action( "shadow_word_death,if=(target.time_to_pct_20>buff.shadow_covenant.remains)" );
   short_scov->add_action( "purge_the_wicked,if=(!ticking|refreshable)&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))", "just in case we run out of shadow spells" );
   short_scov->add_action( "lights_wrath" );
   short_scov->add_action( "power_word_solace" );
@@ -312,12 +312,12 @@ void discipline( player_t* p )
   long_scov->add_action( "shadow_word_death,if=target.health.pct<20&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "mind_blast,if=talent.expiation&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "mindgames,if=talent.shattered_perceptions&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
-  long_scov->add_action( "shadow_word_death,if=talent.expiation&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "shadow_word_death,if=talent.expiation&(!variable.should_te|(variable.should_te&variable.te_shadow))&(target.time_to_pct_20>buff.shadow_covenant.remains)" );
   long_scov->add_action( "mindgames,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "mind_blast,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "halo,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
   long_scov->add_action( "divine_star,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
-  long_scov->add_action( "shadow_word_death,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "shadow_word_death,if=(!variable.should_te|(variable.should_te&variable.te_shadow))&(target.time_to_pct_20>buff.shadow_covenant.remains)" );
   long_scov->add_action( "purge_the_wicked,if=(!variable.should_te|(variable.should_te&variable.te_holy))&(!ticking|refreshable)&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))" );
   long_scov->add_action( "lights_wrath,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
   long_scov->add_action( "power_word_solace,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
