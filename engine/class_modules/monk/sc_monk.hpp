@@ -715,7 +715,6 @@ public:
   {
     const spell_data_t* attenuation;
     const spell_data_t* bonedust_brew;
-    const spell_data_t* bountiful_brew;
     const spell_data_t* faeline_stomp;
     const spell_data_t* healing_elixir;
     const spell_data_t* invokers_delight;
@@ -797,7 +796,6 @@ public:
     propagate_const<cooldown_t*> black_ox_brew;
     propagate_const<cooldown_t*> brewmaster_attack;
     propagate_const<cooldown_t*> bonedust_brew;
-    propagate_const<cooldown_t*> bountiful_brew;
     propagate_const<cooldown_t*> breath_of_fire;
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
@@ -926,7 +924,6 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    real_ppm_t* bountiful_brew;
     real_ppm_t* spirit_of_the_ox;
 
     // Tier 30

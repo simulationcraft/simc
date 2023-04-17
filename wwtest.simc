@@ -1,5 +1,5 @@
 debug=1
-ptr=1
+ptr=0
 
 # Raidbots-generated SimC input for Armory character US Spirestone Maleia
 # On 2023-03-23T14:11:45.110Z
@@ -9,37 +9,33 @@ ptr=1
 # Raidbots-generated SimC input for Armory character US Thrall Katebrew
 # On 2023-04-11T13:42:33.372Z
 
-monk="T30"
+monk=Equinoxmonk
 level=70
-race=orc
+race=human
 region=us
-server=valdrakken
-role=attack
-professions=leatherworking=100/jewelcrafting=100
-spec=windwalker
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASiIJJaRgEAAAAkIJpBIJJJBSKRiIhUkkkkkSCAAAA
+server=illidan
+role=tank
+spec=brewmaster
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAlo1SSCkkUaHIBAAAItQJJSkIJkkkIlEQEJSLtSIA
 
-head=,id=193494,bonus_id=8780,gem_id=192991,ilevel=447
-neck=,id=193666,gem_id=192925/192925/192925,ilevel=447
-shoulder=,id=202504,ilevel=447
-back=,id=204465,ilevel=447
-chest=,id=202509,enchant_id=6625,ilevel=447
-wrist=,id=193419,bonus_id=3524/9379,ilevel=447,crafted_stats=32/40
-hands=,id=202507,ilevel=447
-waist=,id=193668,ilevel=447
-legs=,id=202505,enchant_id=6496,ilevel=447
-feet=,id=202574,ilevel=447
-finger1=,id=203460,enchant_id=6568,gem_id=204011/204027/204029,ilevel=424
-finger2=,id=195480,bonus_id=3524/8780,enchant_id=6568,gem_id=192925,ilevel=421
-trinket1=,id=202617,ilevel=447
-trinket2=,id=203963,ilevel=447
-main_hand=,id=193785,enchant_id=6643,ilevel=447
-off_hand=,id=159653,enchant_id=6643,ilevel=447
-
-set_bonus=tier30_2pc=1
-set_bonus=tier30_4pc=1
-set_bonus=tier29_2pc=0
-set_bonus=tier29_4pc=0
+back=,id=200368,bonus_id=6652/9130/7977/1504,enchant_id=6598,context=35
+chest=,id=200360,bonus_id=6652/9130/7977/8830/1498,enchant_id=6625,context=35
+feet=,id=143973,bonus_id=9130/7977/6652/8822/8818/9144/3311/8767,enchant_id=6613,context=35
+finger1=,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192925,enchant_id=6550,context=6
+finger2=,id=203460,bonus_id=1491,gem_id=204007/204012/204006,enchant_id=6550,context=11
+hands=,id=200362,bonus_id=7981/6652/8829/1498/8767,context=6
+head=,id=134447,bonus_id=9130/7977/6652/8822/8820/9144/3300/8767/8780,gem_id=192925,context=35
+legs=,id=200364,bonus_id=6652/8827/9130/7977/1504/8767,enchant_id=6490,context=35
+main_hand=,id=193646,bonus_id=9130/7977/6652/9147/1643/8767,enchant_id=6643,context=35
+neck=,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8795/8846,gem_id=192982/192925/192925,context=13,crafted_stats=40/49
+off_hand=,id=193631,bonus_id=9130/7977/6652/9147/1643/8767,enchant_id=6643,context=35
+shirt=,id=10055
+shoulder=,id=200365,bonus_id=6652/8826/9130/7977/1495/8767,context=35
+tabard=,id=45574,context=14
+trinket1=,id=194301,bonus_id=6652/7981/1498/8767,context=6
+trinket2=,id=194302,bonus_id=6652/7980/1485/8767,context=5
+waist=,id=136776,bonus_id=9130/7977/6652/8822/8818/9144/3300/8767/8780,gem_id=192925,context=35
+wrist=,id=193419,bonus_id=8836/8840/8902/8780/8802/8846/8175/8960/8795,gem_id=192925,enchant_id=6580,context=13,crafted_stats=40/32
 
 # Simulation Options
 fight_style=DungeonSlice
