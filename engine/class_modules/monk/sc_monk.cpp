@@ -8318,7 +8318,7 @@ namespace monk
             first = false;
           }
 
-          *stream << name << " procced by: " << '\n';
+          *stream << name << " procced from: " << '\n';
           for ( auto a : list )
             *stream << " - " << a->id << " : " << a->name_str << '\n';
 
