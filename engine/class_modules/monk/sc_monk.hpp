@@ -132,6 +132,9 @@ public:
   action_t* generous_pour_aura;
   action_t* windwalking_aura;
 
+  // For Debug reporting, used by create_proc_callback in init_special_effects
+  std::map< std::string, std::vector< action_t *> > proc_tracking;
+
   struct sample_data_t
   {
     sc_timeline_t stagger_effective_damage_timeline;

@@ -8230,11 +8230,25 @@ namespace monk
             return;
 
           if ( callback_trigger( p, state ) )
+          {
             dbc_proc_callback_t::trigger( a, state );
+
+            if ( p->sim->debug )
+            {
+              // Debug reporting
+              auto action = range::find_if( p->proc_tracking[ effect.name() ], [ a ] ( action_t *it )
+              {
+                return it->id == a->id;
+              } );
+
+              if ( action == p->proc_tracking[ effect.name() ].end() )
+                p->proc_tracking[ effect.name() ].push_back( a );
+            }
+          }
         }
       };
 
-      special_effects.push_back( effect ); // Garbage disposal
+      special_effects.push_back( effect ); // Garbage collection
 
       new monk_effect_callback( *effect, this, trigger );
     };
@@ -8242,19 +8256,20 @@ namespace monk
     // ======================================
     // Resonant Fists Talent
     // ======================================
-    
+
     if ( talent.general.resonant_fists.ok() )
     {
       create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
       {
         p->active_actions.resonant_fists->set_target( state->target );
+
         return true;
       } );
     }
 
     // ======================================
     // Exploding Keg Talent
-    // =====================================
+    // ======================================
 
     if ( talent.brewmaster.exploding_keg.ok() )
     {
@@ -8268,6 +8283,7 @@ namespace monk
           return false;
 
         p->active_actions.exploding_keg->set_target( state->target );
+
         return true;
       } );
     }
@@ -8304,6 +8320,37 @@ namespace monk
     spiritual_focus_count = 0;
     combo_strike_actions.clear();
     stagger_tick_damage.clear();
+
+    // ===================================
+    // Proc Tracking
+    // ===================================
+
+    if ( sim->debug )
+    {
+      auto stream = sim->out_debug.raw().get_stream();
+      bool first = true;
+
+      for ( auto tracker : proc_tracking )
+      {
+        auto name = tracker.first;
+        auto list = tracker.second;
+
+        if ( list.size() > 0 )
+        {
+          if ( first )
+          {
+            *stream << "Monk Proc Tracking ..." << '\n';
+            first = false;
+          }
+
+          *stream << name << " procced by: " << '\n';
+          for ( auto a : list )
+            *stream << " - " << a->id << " : " << a->name_str << '\n';
+
+          list.clear();
+        }
+      }
+    }
   }
 
   // monk_t::matching_gear_multiplier =========================================

@@ -1,0 +1,65 @@
+debug=1
+ptr=1
+
+# Raidbots-generated SimC input for Armory character US Spirestone Maleia
+# On 2023-03-23T14:11:45.110Z
+
+
+
+# Raidbots-generated SimC input for Armory character US Thrall Katebrew
+# On 2023-04-11T13:42:33.372Z
+
+monk="T30"
+level=70
+race=orc
+region=us
+server=valdrakken
+role=attack
+professions=leatherworking=100/jewelcrafting=100
+spec=windwalker
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASiIJJaRgEAAAAkIJpBIJJJBSKRiIhUkkkkkSCAAAA
+
+head=,id=193494,bonus_id=8780,gem_id=192991,ilevel=447
+neck=,id=193666,gem_id=192925/192925/192925,ilevel=447
+shoulder=,id=202504,ilevel=447
+back=,id=204465,ilevel=447
+chest=,id=202509,enchant_id=6625,ilevel=447
+wrist=,id=193419,bonus_id=3524/9379,ilevel=447,crafted_stats=32/40
+hands=,id=202507,ilevel=447
+waist=,id=193668,ilevel=447
+legs=,id=202505,enchant_id=6496,ilevel=447
+feet=,id=202574,ilevel=447
+finger1=,id=203460,enchant_id=6568,gem_id=204011/204027/204029,ilevel=424
+finger2=,id=195480,bonus_id=3524/8780,enchant_id=6568,gem_id=192925,ilevel=421
+trinket1=,id=202617,ilevel=447
+trinket2=,id=203963,ilevel=447
+main_hand=,id=193785,enchant_id=6643,ilevel=447
+off_hand=,id=159653,enchant_id=6643,ilevel=447
+
+set_bonus=tier30_2pc=1
+set_bonus=tier30_4pc=1
+set_bonus=tier29_2pc=0
+set_bonus=tier29_4pc=0
+
+# Simulation Options
+fight_style=DungeonSlice
+iterations=100
+desired_targets=1
+max_time=300
+calculate_scale_factors=0
+scale_only=strength,intellect,agility,crit,mastery,vers,haste,weapon_dps,weapon_offhand_dps,stamina
+override.bloodlust=1
+override.arcane_intellect=1
+override.power_word_fortitude=1
+override.battle_shout=1
+override.mystic_touch=1
+override.chaos_brand=1
+override.windfury_totem=1
+override.mark_of_the_wild=1
+override.bleeding=1
+report_details=1
+single_actor_batch=1
+optimize_expressions=1
+
+
+html=wwtest.html
