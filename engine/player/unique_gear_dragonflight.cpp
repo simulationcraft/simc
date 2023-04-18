@@ -1551,7 +1551,7 @@ void igneous_flowstone( special_effect_t& effect )
         else if ( util::str_compare_ci( starting_state, "flood" ) )
           high_tide_counter->trigger();
         else
-          low_tide_trigger->trigger();
+          high_tide_trigger->trigger();
       } );
 }
 
