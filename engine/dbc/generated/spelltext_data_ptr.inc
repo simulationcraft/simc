@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49092
-static const std::array<spelltext_data_t, 19865> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19258,6 +19258,8 @@ static const std::array<spelltext_data_t, 19865> __ptr_spelltext_data { {
   { 401375, "Activate the Dragon Pack to propel you forward in the air. Usable in Zskera Vaults and the Forbidden Reach.", 0, 0 },
   { 401394, "$@spelldesc401395", "Haste increased by $w3. Suffering $w2 Fire damage every $t2 sec.", 0 },
   { 401395, "Your harmful spells have a high chance to draw unstable flames from the Vessel, increasing your Haste by $s4 and dealing ${$s1*$401394d/$401394t2} Fire damage to you over $401394d.\r\n\r\nUpon reaching $401394u stacks the flames leap toward your target, combusting immediately for $401395s2 Shadow damage, then burning them for ${$401395s3*6} Shadowflame damage over 12 seconds.", 0, 0 },
+  { 401422, "$@spelldesc401395", 0, 0 },
+  { 401428, "$@spelldesc401395", "Suffering $w2 Shadowflame damage every $t1 sec.", 0 },
   { 401468, "Your attacks and abilities have a chance to grant you ephemeral dragon wings, increasing your Critical Strike by $s1 and your Leech by $s2 for $401469d.\r\n\r\n", 0, 0 },
   { 401469, "$@spelldesc401468", "Critical Strike increased by $w2. Leech increased by $w3.", 0 },
   { 401513, "Resonate with the power of your sworn dragonflight, granting you $s1 secondary stat. Allies sworn to a different dragonflight gain $s2 secondary stat from your Resonance. You may only benefit from one Resonance per Flight. \r\n\r\n", 0, 0 },

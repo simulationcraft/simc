@@ -1408,6 +1408,7 @@ class SpellDataGenerator(DataGenerator):
          407087, # Ever-Decaying Spores
          400959, # Zaquali Chaos Grapnel
          402813, 402894, 402896, 402897, 402898, 402903, 407961, # Igneous Tidestone
+         401428, 401422, # Vessel of Searing Shadow
         ),
 
         # Warrior:
