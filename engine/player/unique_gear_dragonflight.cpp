@@ -1409,6 +1409,152 @@ void furious_ragefeather( special_effect_t& effect )
   } );
 }
 
+
+// Igneous Flowstone
+// 402813 = Primary Driver - Effect1 = Damage, Effect2 = Crit
+// 402897 = Stats
+// 402903 = High Tide Trigger
+// 402896 = Low Tide Trigger
+// 402898 = Low Tide Count Down
+// 402894 = High Tide Count Up
+// 407961 = Lava Wave, damage spell
+// 402822 = Weird Area Trigger
+// 402813 = Damage Spell in logs? 
+void igneous_flowstone( special_effect_t& effect )
+{
+  struct low_tide_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* trigger_buff;
+    buff_t* stat_buff;
+
+    low_tide_cb_t( const special_effect_t& e, buff_t* t, buff_t* s )
+      : dbc_proc_callback_t( e.player, e ), trigger_buff( t ), stat_buff( s )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      trigger_buff->expire();
+      stat_buff->trigger();
+    }
+  };
+
+  struct high_tide_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* trigger_buff;
+    action_t* damage;
+
+    high_tide_cb_t( const special_effect_t& e, buff_t* t, action_t* d )
+      : dbc_proc_callback_t( e.player, e ), trigger_buff( t ), damage( d )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      trigger_buff->expire();
+
+      damage->set_target( target( s ) );
+      auto damage_state    = damage->get_state();
+      damage_state->target = damage->target;
+      damage->snapshot_state( damage_state, damage->amount_type( damage_state ) );
+      damage->schedule_execute( damage_state );
+    }
+  };
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "lava_wave", effect, "lava_wave", 407961, true );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->split_aoe_damage                  = true;
+  damage->aoe                               = -1;
+
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 402897 ) )
+                       ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  auto low_tide_trigger = create_buff<buff_t>( effect.player, effect.player->find_spell( 402896 ) );
+
+  auto low_tide_driver      = new special_effect_t( effect.player );
+  low_tide_driver->type     = SPECIAL_EFFECT_EQUIP;
+  low_tide_driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  low_tide_driver->spell_id = low_tide_trigger->data().id();
+  effect.player->special_effects.push_back( low_tide_driver );
+
+  auto low_tide_cb = new low_tide_cb_t( *low_tide_driver, low_tide_trigger, crit_buff );
+  low_tide_cb->initialize();
+  low_tide_cb->deactivate();
+
+  auto high_tide_trigger = create_buff<buff_t>( effect.player, effect.player->find_spell( 402903 ) );
+
+  auto high_tide_driver      = new special_effect_t( effect.player );
+  high_tide_driver->type     = SPECIAL_EFFECT_EQUIP;
+  high_tide_driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  high_tide_driver->spell_id = high_tide_trigger->data().id();
+  effect.player->special_effects.push_back( high_tide_driver );
+
+  auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger, damage );
+  high_tide_cb->initialize();
+  high_tide_cb->deactivate();
+
+  auto low_tide_counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 402898 ) )
+                              ->set_reverse( true )
+                              ->set_period( 1_s )
+                              ->set_stack_change_callback( [ low_tide_trigger ]( buff_t*, int, int n ) {
+                                if ( !n )
+                                {
+                                  low_tide_trigger->trigger();
+                                }
+                              } );
+
+  auto high_tide_counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 402894 ) )
+                               ->set_period( 1_s )
+                               ->set_expire_at_max_stack( true )
+                               ->set_stack_change_callback( [ high_tide_trigger ]( buff_t*, int, int n ) {
+                                 if ( !n )
+                                 {
+                                   high_tide_trigger->trigger();
+                                 }
+                               } );
+
+  high_tide_trigger->set_stack_change_callback( [ high_tide_cb, low_tide_counter ]( buff_t*, int, int n ) {
+    if ( !n )
+    {
+      high_tide_cb->deactivate();
+      low_tide_counter->trigger();
+    }
+    else
+    {
+      high_tide_cb->activate();
+    }
+  } );
+
+  low_tide_trigger->set_stack_change_callback( [ low_tide_cb, high_tide_counter ]( buff_t*, int, int n ) {
+    if ( !n )
+    {
+      low_tide_cb->deactivate();
+      high_tide_counter->trigger();
+    }
+    else
+    {
+      low_tide_cb->activate();
+    }
+  } );
+
+  effect.player->register_combat_begin(
+      [ low_tide_trigger, high_tide_trigger, low_tide_counter, high_tide_counter ]( player_t* p ) {
+        auto starting_state = p->sim->dragonflight_opts.flowstone_starting_state;
+        if ( util::str_compare_ci( starting_state, "low" ) )
+          low_tide_trigger->trigger();
+        else if ( util::str_compare_ci( starting_state, "ebb" ) )
+          low_tide_counter->trigger();
+        else if ( util::str_compare_ci( starting_state, "flood" ) )
+          high_tide_counter->trigger();
+        else
+          low_tide_trigger->trigger();
+      } );
+}
+
 void idol_of_pure_decay( special_effect_t& effect )
 {
   struct idol_of_pure_decay_cb_t : public dbc_proc_callback_t
@@ -5941,6 +6087,7 @@ void register_special_effects()
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
+  register_special_effect( 402813, items::igneous_flowstone );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 384191, items::shikaari_huntress_arrowhead );
   register_special_effect( 377466, items::spiteful_storm );
