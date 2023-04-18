@@ -4187,10 +4187,9 @@ void fang_adornments( special_effect_t& effect )
 // 406793 Dot
 // 405232 Vers Buff
 // 406795 Absorb Shield
-
 void spore_keepers_baton( special_effect_t& effect )
 {
-  auto dot     = create_proc_action<generic_proc_t>( "sporeadic Adaptability", effect, "sporeadic_adaptability", effect.player->find_spell( 406793 ) );
+  auto dot     = create_proc_action<generic_proc_t>( "sporeadic_adaptability", effect, "sporeadic_adaptability", effect.player->find_spell( 406793 ) );
   dot->base_td = effect.driver()->effectN( 2 ).average( effect.item );
   
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 405232 ) )
