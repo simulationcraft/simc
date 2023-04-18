@@ -4134,6 +4134,12 @@ void fang_adornments( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Spore Keepers Baton
+// 405226 Buff Driver
+// 406793 Dot
+// 405232 Vers Buff
+// 406795 Absorb Shield
+
 void spore_keepers_baton( special_effect_t& effect )
 {
   auto dot     = create_proc_action<generic_proc_t>( "sporeadic Adaptability", effect, "sporeadic_adaptability", effect.player->find_spell( 406793 ) );
