@@ -4134,6 +4134,38 @@ void fang_adornments( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void spore_keepers_baton( special_effect_t& effect )
+{
+  auto dot     = create_proc_action<generic_proc_t>( "sporeadic Adaptability", effect, "sporeadic_adaptability", effect.player->find_spell( 406793 ) );
+  dot->base_td = effect.driver()->effectN( 2 ).average( effect.item );
+  
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 405232 ) )
+                  ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        switch ( s->proc_type() )
+        {
+          case PROC1_MAGIC_HEAL:
+            buff->trigger();
+            break;
+          case PROC1_MAGIC_SPELL:
+          {
+            dot->set_target( cb->target( s ) );
+            auto proc_state    = dot->get_state();
+            proc_state->target = dot->target;
+            dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
+            dot->schedule_execute( proc_state );
+            break;
+          }
+          default:
+            break;
+        }
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Forgestorm
 // 381698 Buff Driver
 // 381699 Buff and Damage Driver
@@ -5905,6 +5937,7 @@ void register_special_effects()
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
+  register_special_effect( 405226, items::spore_keepers_baton );     // Spore Keepers Baton Weapon
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
   register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
   register_special_effect( 394928, items::neltharax );               // Neltharax, Enemy of the Sky
