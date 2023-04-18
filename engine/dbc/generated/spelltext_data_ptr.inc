@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49092
-static const std::array<spelltext_data_t, 19864> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19865> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19676,6 +19676,7 @@ static const std::array<spelltext_data_t, 19864> __ptr_spelltext_data { {
   { 407912, "$@spelldesc110744", 0, 0 },
   { 407915, "$@spelldesc122121", 0, 0 },
   { 407949, "Hop onto a plank of wood with a haphazard shadowflame rocket attachment. Absolutely nothing could go wrong, but if it did, deal $408015s1 Shadowflame damage split between you and enemies caught in the theoretical blast.", "WeeeeeeeAAAAAHHH!!!", 0 },
+  { 407961, "$@spelldesc402813", 0, 0 },
   { 407986, "$@spelldesc115310", 0, 0 },
   { 407991, "$@spelldesc322118", 0, 0 },
   { 407992, "$@spelldesc114158", 0, 0 },
