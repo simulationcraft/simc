@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49092
-static const std::array<spelltext_data_t, 19859> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19864> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19275,7 +19275,12 @@ static const std::array<spelltext_data_t, 19859> __ptr_spelltext_data { {
   { 402583, "Briefly open a pair of gates to the Void to redirect the orbit of An'shuul, the Cosmic Wanderer through your target, dealing $402574s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to 5 enemies.", 0, 0 },
   { 402642, "Consume the spores and let them transform you.", "A Spore-bound Essence transforms your body.", 0 },
   { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every 45 seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", 0, 0 },
+  { 402822, "$@spelldesc402813", 0, 0 },
+  { 402894, "$@spelldesc402813\r\n", "You sense the distant ebb of tidal magma.", 0 },
+  { 402896, "$@spelldesc402813\r\n\r\n", "Your next harmful spell or ranged ability will grant Igneous Fury.", 0 },
   { 402897, "$@spelldesc402813", "Critical Strike increased by $w1.", 0 },
+  { 402898, "$@spelldesc402813", "You sense the distant flood of tidal magma.", 0 },
+  { 402903, "$@spelldesc402813\r\n", "Your next harmful spell or ranged ability will launch a Lava Wave towards your target.", 0 },
   { 402912, "Templar's Verdict, Final Verdict and Justicar's Vengeance have a $h% chance to reset the cooldown of Blade of Justice.", 0, 0 },
   { 402916, "Final Verdict has a $h% chance to reset the cooldown of Blade of Justice.", 0, 0 },
   { 402928, "$?|CFF20ff20Critically striking an enemy has a chance to shock them and 2 nearby enemies, dealing $s1 Nature damage.", 0, 0 },
