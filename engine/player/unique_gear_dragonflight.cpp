@@ -4079,6 +4079,54 @@ void treemouths_festering_splinter( special_effect_t& e )
   e.custom_buff    = absorb_buff;
 }
 
+// 401395 Driver
+// 401394 Stacking Buff
+// 401422 Direct Damage
+// 401428 DoT
+void vessel_of_searing_shadow( special_effect_t& e )
+{
+  struct vessel_of_searing_shadow_dot_t : public generic_proc_t
+  {
+    vessel_of_searing_shadow_dot_t( const special_effect_t& e )
+      : generic_proc_t( e, "ravenous_shadowflame", e.player->find_spell( 401428 ) )
+    {
+      base_td = e.driver()->effectN( 3 ).average( e.item );
+    }
+  };
+
+  struct vessel_of_searing_shadow_direct_t : public generic_proc_t
+  {
+    action_t* dot;
+    vessel_of_searing_shadow_direct_t( const special_effect_t& e )
+      : generic_proc_t( e, "shadow_spike", e.player->find_spell( 401422 ) ),
+        dot( create_proc_action<vessel_of_searing_shadow_dot_t>( "ravenous_shadowflame", e ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      dot->execute();
+    }
+  };
+
+  auto damage = create_proc_action<vessel_of_searing_shadow_direct_t>( "shadow_spike", e );
+
+  auto stack_buff = create_buff<stat_buff_t>( e.player, "unstable_flames", e.player->find_spell( 401394 ) )
+                        ->add_stat_from_effect( 3, e.driver()->effectN( 4 ).average( e.item ) )
+                        ->set_expire_at_max_stack( true )
+                        ->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+                          if ( !new_ )
+                          {
+                            damage->execute();
+                          }
+                        } );
+  e.custom_buff = stack_buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -5939,6 +5987,7 @@ void register_special_effects()
   register_special_effect( 401513, items::ominous_chromatic_essence );
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
   register_special_effect( 395175, items::treemouths_festering_splinter );
+  register_special_effect( 401395, items::vessel_of_searing_shadow );
 
 
   // Weapons
