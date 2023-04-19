@@ -75,8 +75,6 @@ namespace monk
       bool trigger_chiji;
       // Whether the ability can reset Faeline Stomp
       bool trigger_faeline_stomp;
-      // Whether the ability can trigger the Legendary Bountiful Brew.
-      bool trigger_bountiful_brew;
       // Whether the ability can be used during Spinning Crane Kick
       bool cast_during_sck;
 
@@ -103,7 +101,6 @@ namespace monk
         may_combo_strike( false ),
         trigger_chiji( false ),
         trigger_faeline_stomp( false ),
-        trigger_bountiful_brew( false ),
         cast_during_sck( false ),
         keefers_skyreach_proc( nullptr ),
         affected_by()
@@ -629,19 +626,8 @@ namespace monk
 
         ab::impact( s );
 
-        if ( p()->shared.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
-          p()->rppm.bountiful_brew->trigger() )
-        {
-          p()->cooldown.bountiful_brew->start( p()->shared.bountiful_brew->internal_cooldown() );
-
-          p()->active_actions.bountiful_brew->execute();
-          p()->proc.bountiful_brew_proc->occur();
-        }
-
         if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
         {
-          trigger_exploding_keg_proc( s );
-
           p()->trigger_empowered_tiger_lightning( s, true );
 
           if ( get_td( s->target )->debuff.bonedust_brew->up() )
@@ -659,8 +645,6 @@ namespace monk
         {
           if ( get_td( dot->state->target )->debuff.bonedust_brew->up() )
             p()->bonedust_brew_assessor( dot->state );
-
-          trigger_exploding_keg_proc( dot->state );
         }
       }
 
@@ -748,33 +732,7 @@ namespace monk
           s->target->debuffs.mystic_touch->trigger();
         }
       }
-
-      void trigger_exploding_keg_proc( action_state_t *s )
-      {
-        if ( p()->specialization() != MONK_BREWMASTER )
-          return;
-
-        // Exploding keg damage is triggered when the player buff is up, regardless if the enemy has the debuff
-        if ( !p()->buff.exploding_keg->up() )
-          return;
-
-        // Blacklist spells
-        if ( s->action->id == 388867 || // Exploding Keg Proc
-          s->action->id == 124255 || // Stagger
-          s->action->id == 123725 || // Breath of Fire dot
-          s->action->id == 196608 || // Eye of the Tiger
-          s->action->id == 196733 || // Special Delivery
-          s->action->id == 338141 || // Charred Passion
-          s->action->id == 386959 || // Charred Passion
-          s->action->id == 387621 || // Dragonfire Brew
-          s->action->id == 393786 || // Chi Surge
-          s->action->id == 325217    // Bonedust Brew
-          )
-          return;
-
-        p()->active_actions.exploding_keg->target = s->target;
-        p()->active_actions.exploding_keg->execute();
-      }
+   
     };
 
     struct monk_spell_t : public monk_action_t<spell_t>
@@ -1316,7 +1274,6 @@ namespace monk
         eye_of_the_tiger_heal_tick_t( monk_t &p, util::string_view name )
           : monk_heal_t( name, p, p.talent.general.eye_of_the_tiger->effectN( 1 ).trigger() )
         {
-          trigger_bountiful_brew = true;
           background = true;
           hasted_ticks = false;
           may_crit = tick_may_crit = true;
@@ -1343,7 +1300,6 @@ namespace monk
         eye_of_the_tiger_dmg_tick_t( monk_t *player, util::string_view name )
           : monk_spell_t( name, player, player->talent.general.eye_of_the_tiger->effectN( 1 ).trigger() )
         {
-          trigger_bountiful_brew = true;
           background = true;
           hasted_ticks = false;
           may_crit = tick_may_crit = true;
@@ -1392,7 +1348,6 @@ namespace monk
           may_combo_strike = true;
           trigger_chiji = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           sef_ability = sef_ability_e::SEF_TIGER_PALM;
           cast_during_sck = true;
 
@@ -1550,7 +1505,6 @@ namespace monk
           ww_mastery = true;
           sef_ability = sef_ability_e::SEF_GLORY_OF_THE_DAWN;
           //trigger_faeline_stomp   = TODO;
-          //trigger_bountiful_brew  = TODO;
 
           apply_dual_wield_two_handed_scaling();
         }
@@ -1614,7 +1568,6 @@ namespace monk
         {
           ww_mastery = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
 
           background = dual = true;
           may_crit = true;
@@ -1717,7 +1670,6 @@ namespace monk
 
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           sef_ability = sef_ability_e::SEF_RISING_SUN_KICK;
           affected_by.serenity = true;
           ap_type = attack_power_type::NONE;
@@ -1916,7 +1868,6 @@ namespace monk
           may_combo_strike = true;
           trigger_chiji = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           cast_during_sck = true;
 
           aoe = 1 + ( int )p->shared.shadowboxing_treads->effectN( 1 ).base_value();
@@ -2145,7 +2096,6 @@ namespace monk
           sef_ability = sef_ability_e::SEF_RUSHING_JADE_WIND;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           gcd_type = gcd_haste_type::NONE;
 
           // Set dot data to 0, since we handle everything through the buff.
@@ -2362,7 +2312,6 @@ namespace monk
           sef_ability = sef_ability_e::SEF_SPINNING_CRANE_KICK;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
 
           may_crit = may_miss = may_block = may_dodge = may_parry = false;
           tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
@@ -2582,7 +2531,6 @@ namespace monk
           sef_ability = sef_ability_e::SEF_FISTS_OF_FURY;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           affected_by.serenity = true;
 
           channeled = tick_zero = true;
@@ -2727,7 +2675,6 @@ namespace monk
           channeled = false;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           cast_during_sck = true;
 
           spell_power_mod.direct = 0.0;
@@ -2787,7 +2734,6 @@ namespace monk
 
           ww_mastery = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           ap_type = attack_power_type::WEAPON_MAINHAND;
 
           aoe = -1;
@@ -2815,7 +2761,6 @@ namespace monk
           sef_ability = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
           ww_mastery = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           ap_type = attack_power_type::WEAPON_OFFHAND;
 
           aoe = -1;
@@ -3053,7 +2998,6 @@ namespace monk
           aoe = -1;
           reduced_aoe_targets = p.talent.brewmaster.keg_smash->effectN( 7 ).base_value();
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           cast_during_sck = true;
 
           attack_power_mod.direct = p.talent.brewmaster.keg_smash->effectN( 2 ).ap_coeff();
@@ -3156,7 +3100,6 @@ namespace monk
           may_crit = hasted_ticks = false;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           cast_during_sck         = true;
           parse_options( options_str );
 
@@ -3715,7 +3658,6 @@ namespace monk
           sef_ability = sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
 
           parse_options( options_str );
 
@@ -3853,7 +3795,6 @@ namespace monk
           reduced_aoe_targets = 1.0;
           full_amount_targets    = 1;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           cast_during_sck = true;
 
           add_child( p.active_actions.breath_of_fire );
@@ -3974,7 +3915,7 @@ namespace monk
       // Exploding Keg Proc ==============================================
       struct exploding_keg_proc_t : public monk_spell_t
       {
-        exploding_keg_proc_t( monk_t *p ) : monk_spell_t( "exploding_keg_proc", p, p->find_spell( 388867 ) )
+        exploding_keg_proc_t( monk_t *p ) : monk_spell_t( "exploding_keg_proc", p, p->talent.brewmaster.exploding_keg->effectN( 4 ).trigger() )
         {
           background = dual = true;
           proc = true;
@@ -4737,7 +4678,7 @@ namespace monk
       struct bountiful_brew_t : public monk_spell_t
       {
         bountiful_brew_t( monk_t &p )
-          : monk_spell_t( "bountiful_brew", &p, p.shared.bountiful_brew )
+          : monk_spell_t( "bountiful_brew", &p, p.talent.brewmaster.bountiful_brew )
         {
           harmful = false;
           cooldown->duration = timespan_t::zero();
@@ -4772,6 +4713,8 @@ namespace monk
           monk_spell_t::impact( s );
 
           get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
+
+          p()->proc.bountiful_brew_proc->occur();
         }
       };
 
@@ -4823,6 +4766,7 @@ namespace monk
         bonedust_brew_damage_t( monk_t &p ) : monk_spell_t( "bonedust_brew_dmg", &p, p.passives.bonedust_brew_dmg )
         {
           background = true;
+          proc = true;
         }
 
         void execute() override
@@ -4949,8 +4893,6 @@ namespace monk
           gcd_type = gcd_haste_type::NONE; // Need to define this manually for some reason
 
           aoe = ( int )data().effectN( 3 ).base_value();
-
-          trigger_bountiful_brew = true;
 
           damage = new faeline_stomp_damage_t( p );
           heal = new faeline_stomp_heal_t( p );
@@ -5654,7 +5596,6 @@ namespace monk
           sef_ability = sef_ability_e::SEF_CHI_WAVE;
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           cast_during_sck = true;
           parse_options( options_str );
           hasted_ticks = harmful = false;
@@ -5698,7 +5639,6 @@ namespace monk
         {
           background = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           target = p();
           // If we are using the user option, each heal just heals 1 target, otherwise use the old SimC code
           aoe = ( p()->user_options.chi_burst_healing_targets > 1 ? 1 : -1 );
@@ -5728,7 +5668,6 @@ namespace monk
           background = true;
           ww_mastery = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
           aoe = -1;
         }
 
@@ -5766,7 +5705,6 @@ namespace monk
           parse_options( options_str );
           may_combo_strike = true;
           trigger_faeline_stomp = true;
-          trigger_bountiful_brew = true;
 
           add_child( damage );
           add_child( heal );
@@ -6804,7 +6742,6 @@ namespace monk
     cooldown.blackout_kick = get_cooldown( "blackout_kick" );
     cooldown.black_ox_brew = get_cooldown( "black_ox_brew" );
     cooldown.bonedust_brew = get_cooldown( "bonedust_brew" );
-    cooldown.bountiful_brew = get_cooldown( "bountiful_brew" );
     cooldown.brewmaster_attack = get_cooldown( "brewmaster_attack" );
     cooldown.breath_of_fire = get_cooldown( "breath_of_fire" );
     cooldown.celestial_brew = get_cooldown( "celestial_brew" );
@@ -7642,9 +7579,6 @@ namespace monk
     shared.bonedust_brew =
       _priority( talent.windwalker.bonedust_brew, talent.brewmaster.bonedust_brew );
 
-    shared.bountiful_brew =
-      _priority( talent.brewmaster.bountiful_brew, talent.mistweaver.bountiful_brew );
-
     shared.faeline_stomp =
       _priority( talent.windwalker.faeline_stomp, talent.mistweaver.faeline_stomp );
 
@@ -8174,8 +8108,6 @@ namespace monk
   void monk_t::init_rng()
   {
     player_t::init_rng();
-    if ( shared.bountiful_brew && shared.bountiful_brew->ok() )
-      rppm.bountiful_brew = get_rppm( "bountiful_brew", find_spell( 356592 ) );
 
     if ( talent.brewmaster.spirit_of_the_ox->ok() )
       rppm.spirit_of_the_ox = get_rppm( "spirit_of_the_ox", find_spell( 400629 ) );
@@ -8192,14 +8124,61 @@ namespace monk
     // create_proc_callback
     // ======================================
 
-    auto create_proc_callback = [ this ] ( const spell_data_t *trigger_spell, bool ( *trigger )( monk_t *p, action_state_t *state ) )
+    auto create_proc_callback = [ this ] ( const spell_data_t *effect_driver, bool ( *trigger )( monk_t *p, action_state_t *state ), action_t *proc_action_override = nullptr )
     {
       auto effect = new special_effect_t( this );
 
-      effect->spell_id = trigger_spell->id();
-      effect->cooldown_ = trigger_spell->internal_cooldown();
-      effect->proc_flags_ = trigger_spell->proc_flags();
-      effect->proc_chance_ = trigger_spell->proc_chance();
+      effect->spell_id        = effect_driver->id();
+      effect->cooldown_       = effect_driver->internal_cooldown();
+      effect->proc_flags_     = effect_driver->proc_flags();
+      effect->proc_chance_    = effect_driver->proc_chance();
+      effect->ppm_            = effect_driver->_rppm;
+
+      if ( proc_action_override == nullptr )
+      {
+        // If we didn't define a custom action in initialization then
+        // search action list for the first trigger we have a valid action for 
+        for ( auto e : effect_driver->effects() )
+        {
+          for ( auto t : action_list )
+            if ( e.trigger()->ok() && t->id == e.trigger()->id() )
+              proc_action_override = t;
+
+          if ( proc_action_override != nullptr )
+            break;
+        }
+      }
+
+      if ( proc_action_override != nullptr )
+      {
+        effect->name_str          = proc_action_override->name_str;
+        effect->trigger_str       = proc_action_override->name_str;
+        effect->trigger_spell_id  = proc_action_override->id;
+
+        if ( proc_action_override->harmful )
+        {
+          // Translate harmful proc_flags
+          // e.g., the driver for a debuff uses MELEE_ABILITY_TAKEN instead of MELEE_ABILITY
+
+          const std::unordered_map<uint64_t, uint64_t> translation_map =
+          {
+            { PF_MELEE_TAKEN, PF_MELEE },
+            { PF_MELEE_ABILITY_TAKEN, PF_MELEE_ABILITY },
+            { PF_RANGED_TAKEN, PF_RANGED },
+            { PF_RANGED_ABILITY_TAKEN, PF_RANGED_ABILITY },
+            { PF_NONE_HEAL_TAKEN, PF_NONE_HEAL },
+            { PF_NONE_SPELL_TAKEN, PF_NONE_SPELL },
+            { PF_MAGIC_HEAL_TAKEN, PF_MAGIC_HEAL },
+            { PF_MAGIC_SPELL_TAKEN, PF_MAGIC_SPELL },
+            { PF_PERIODIC_TAKEN, PF_PERIODIC },
+            { PF_DAMAGE_TAKEN, PF_ALL_DAMAGE },
+          };
+
+          for ( auto t = translation_map.begin(); t != translation_map.end(); ++t )
+            if ( effect->proc_flags_ & t->first )
+              effect->proc_flags_ = effect->proc_flags_ & ~t->first | t->second;
+        }
+      }
 
       struct monk_effect_callback : dbc_proc_callback_t
       {
@@ -8219,12 +8198,29 @@ namespace monk
             return;
           }
 
+          if ( a->internal_id == 0 && state->action->id == effect.trigger_spell_id )
+            return;
+
           if ( callback_trigger( p, state ) )
+          {
             dbc_proc_callback_t::trigger( a, state );
+
+            if ( p->sim->debug )
+            {
+              // Debug reporting
+              auto action = range::find_if( p->proc_tracking[ effect.name() ], [ a ] ( action_t *it )
+              {
+                return it->id == a->id;
+              } );
+
+              if ( action == p->proc_tracking[ effect.name() ].end() )
+                p->proc_tracking[ effect.name() ].push_back( a );
+            }
+          }
         }
       };
 
-      special_effects.push_back( effect ); // Garbage disposal
+      special_effects.push_back( effect ); // Garbage collection
 
       new monk_effect_callback( *effect, this, trigger );
     };
@@ -8238,6 +8234,42 @@ namespace monk
       create_proc_callback( talent.general.resonant_fists.spell(), [ ] ( monk_t *p, action_state_t *state )
       {
         p->active_actions.resonant_fists->set_target( state->target );
+
+        return true;
+      } );
+    }
+
+    // ======================================
+    // Exploding Keg Talent
+    // ======================================
+
+    if ( talent.brewmaster.exploding_keg.ok() )
+    {
+      create_proc_callback( talent.brewmaster.exploding_keg.spell(), [ ] ( monk_t *p, action_state_t *state )
+      {
+        // Exploding keg damage is only triggered when the player buff is up, regardless if the enemy has the debuff
+        if ( !p->buff.exploding_keg->up() )
+          return false;
+
+        if ( state->action->id == p->passives.breath_of_fire_dot->id() )
+          return false;
+
+        p->active_actions.exploding_keg->set_target( state->target );
+
+        return true;
+      } );
+    }
+
+    // ======================================
+    // Bountiful Brew Talent
+    // ======================================
+
+    if ( talent.brewmaster.bountiful_brew.ok() )
+    {
+      create_proc_callback( talent.brewmaster.bountiful_brew.spell(), [ ] ( monk_t *p, action_state_t *state )
+      {
+        p->active_actions.bountiful_brew->set_target( state->target );
+
         return true;
       } );
     }
@@ -8274,6 +8306,37 @@ namespace monk
     spiritual_focus_count = 0;
     combo_strike_actions.clear();
     stagger_tick_damage.clear();
+
+    // ===================================
+    // Proc Tracking
+    // ===================================
+
+    if ( sim->debug )
+    {
+      auto stream = sim->out_debug.raw().get_stream();
+      bool first = true;
+
+      for ( auto tracker : proc_tracking )
+      {
+        auto name = tracker.first;
+        auto list = tracker.second;
+
+        if ( list.size() > 0 )
+        {
+          if ( first )
+          {
+            *stream << "Monk Proc Tracking ..." << '\n';
+            first = false;
+          }
+
+          *stream << name << " procced from: " << '\n';
+          for ( auto a : list )
+            *stream << " - " << a->id << " : " << a->name_str << '\n';
+
+          list.clear();
+        }
+      }
+    }
   }
 
   // monk_t::matching_gear_multiplier =========================================

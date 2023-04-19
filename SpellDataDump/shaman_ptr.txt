@@ -120,7 +120,7 @@ Spell Level      : 21
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Maelstrom Weapon (187881 effects: #3, #5), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effect#1), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effect#25), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Tide Turner (404072 effect#1), Spiritwalker's Tidal Totem (404523 effects: #1, #2)
 Family Flags     : 8, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -303,7 +303,7 @@ Labels           : 1658: Totemic Focus (382201 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. .....x.. ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal, Helpful Periodic
-Affecting spells : Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1)
+Affecting spells : Elemental Shaman (137040 effect#25), Enhancement Shaman (137041 effect#19), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1)
 Family Flags     : 13
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -361,7 +361,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #21, #22), Elemental Shaman (137040 effects: #4, #5), Enhancement Shaman (137041 effects: #10, #11), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #2, #3), Healing Trance (60515 effect#1), Unleash Life (73685 effect#2), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #21, #22), Elemental Shaman (137040 effects: #4, #5), Enhancement Shaman (137041 effects: #10, #11, #18), Maelstrom Weapon (187881 effects: #3, #5), Nobundo's Redemption (208764 effect#1), Refreshing Waters (337974 effect#1), Swirling Currents (338340 effect#1), Elemental Fury (343190 effect#1), Nature's Swiftness (378081 effects: #1, #2), Primordial Fury (378193 effect#1), Refreshing Waters (378211 effect#1), Nature's Fury (381655 effect#1), Focused Insight (381668 effects: #1, #2), Refreshing Waters (393905 effect#1), Tide Turner (404072 effect#1)
 Family Flags     : 7, 41
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1055,7 +1055,7 @@ Spell Level      : 1
 Range            : 35 yards
 GCD              : 1 seconds
 Duration         : 20 seconds
-Cooldown         : 60 seconds
+Cooldown         : 30 seconds
 Labels           : 1659: Totemic Focus (382201 effect#1)
                  : 1660: Totemic Focus (382201 effect#3)
 Affecting spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
@@ -1271,7 +1271,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 1660: Totemic Focus (382201 effect#3)
-Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Tide Turner (404072 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Elemental Shaman (137040 effect#25), Enhancement Shaman (137041 effect#19), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1), Tide Turner (404072 effect#1)
 Triggered by     : Healing Stream (5672)
 Family Flags     : 13, 41
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ...x.... ........ 
@@ -3449,11 +3449,11 @@ Effects          :
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #6 (id=733898)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 68 | Scaled Value: 68 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
 #7 (id=880172)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -3521,6 +3521,10 @@ Effects          :
                    Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
+#25 (id=1081072)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Stream Totem (52042), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Family Flags: 8, 13
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -3538,15 +3542,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Liquid Magma (192231), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548), Earth Shock Overload (381725), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 39
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3554,7 +3558,7 @@ Effects          :
                    Affected Spells: Lava Burst (51505), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816), Lava Burst (285452)
                    Family Flags: 0, 1, 44, 98
 #6 (id=261007)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 68 | Scaled Value: 68 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
                    Family Flags: 70
 #7 (id=261008)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -3580,7 +3584,7 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #13 (id=1032431)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 12.5 | Scaled Value: 12.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 19 | Scaled Value: 19 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=1039898)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Frost Shock (196840)
@@ -3595,6 +3599,14 @@ Effects          :
 #17 (id=1052832)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2551 (Label) | Target: Self (1)
                    Affected Spells (Label): Swirling Currents (378094)
+#18 (id=1081070)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 37 | Scaled Value: 37 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Healing Surge (8004)
+                   Family Flags: 7
+#19 (id=1081071)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064), Healing Stream (5672), Healing Stream Totem (52042), Poison Cleansing (383014), Poison Cleansing (403922)
+                   Family Flags: 8, 13
 
 Name             : Lightning Blast (id=145002) 
 Class            : Shaman
@@ -4627,7 +4639,7 @@ Description      : Inflicts Nature damage to up to $x enemies.
 
 Name             : Power of the Maelstrom (id=191861) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=7, col=3, max_rank=2, req_points=8]
-                 : Effect#2 [op=set, values=(15, 25)]
+                 : Effect#2 [op=set, values=(13, 25)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -13058,7 +13070,7 @@ Effects          :
 #2 (id=874551)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
 Description      : $@spelldesc187880
-Tooltip          : Your next damage or healing spell has its cast time reduced by ${$max($187881s1, -100)*-1}%$?s383303[, damage increased by][]$?s383303&!s384149[ ${$min($187881w2, 5*$s~2)}%]?s383303&s384149[ $187881w2%][]$?s383303[, and healing increased by][]$?s383303&!s384149[ ${$min($187881w3, 5*$s~2)}%]?s383303&s384149[ $187881w3%][].
+Tooltip          : Your next damage$?a410673[][ or healing] spell has its cast time reduced by ${$max($187881s1, -100)*-1}%$?a410673&?s383303[ and its damage increased by]?s383303&!a410673[, damage increased by][]$?s383303&!s384149[ $187881w2%]?s383303&s384149[ $187881w2%][]$?s383303&!a410673[, and healing increased by][]$?a410673[]?s383303&!s384149[ $187881w3%]?s383303&s384149[ $187881w3%][].
 
 Name             : Stormflurry (id=344357) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=6, col=4, max_rank=1, req_points=8]
@@ -15660,14 +15672,14 @@ Proc Chance      : 101%
 Proc Flags       : ........ ..x...x. ........ ........   ........ ........ ........ ........   
                  : Generic Heal, Magic Heal
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1013613)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16004,7 +16016,7 @@ Spell Level      : 10
 Duration         : 6 seconds
 Labels           : 1658: Totemic Focus (382201 effect#2)
                  : 1660: Totemic Focus (382201 effect#3)
-Affecting spells : Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1)
+Affecting spells : Elemental Shaman (137040 effect#25), Enhancement Shaman (137041 effect#19), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1)
 Family Flags     : 13
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -16213,7 +16225,7 @@ Description      : $@spelldesc383222
 Name             : Improved Maelstrom Weapon (id=383303) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=3, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
-                 : Effect#2 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -17104,7 +17116,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032787)  : Apply Aura (6) | Modify Critical Heal Bonus (50)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 8 | Target: Self (1)
 Description      : Your critical heals have ${200+$s1}% effectiveness instead of the usual 200%.
 
 Name             : Refreshing Waters (id=393905) [Spell Family (11), Passive, Hidden] 
@@ -17215,7 +17227,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034560)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393690
 Tooltip          : Mastery increased by ${$s1*$168534bc1}%.
 
@@ -17240,13 +17252,13 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034576)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Lash (60103), Ascendance (114050), Ascendance (114051), Ascendance (114052), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Lightning Lasso (305483), Lightning Lasso (305485), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357), Ascendance (344548)
                    Family Flags: 0, 1, 27, 31, 44, 66, 75, 82, 85, 98, 102, 122
 #2 (id=1034577)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1045352)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Lash (60103), Elemental Blast (117014), Crash Lightning (187874), Lightning Bolt (188196), Chain Lightning (188443), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Lightning Bolt Overload (214816), Lava Burst (285452), Lightning Lasso (305483), Lightning Lasso (305485), Fire Nova (333974), Fire Nova (333977), Lashing Flames (334046), Hailstorm (334195), Hailstorm (334196), Ice Strike (342240), Stormflurry (344357)
                    Family Flags: 0, 1, 27, 31, 44, 66, 75, 82, 85, 98, 122
 Description      : $@spelldesc393691
@@ -17269,7 +17281,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1034667)  : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393695
 Tooltip          : Critical Strike increased by $w1%.
 
@@ -17315,7 +17327,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1036879)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393693
 Tooltip          : Haste increased by $w1%.
 
@@ -17386,7 +17398,7 @@ Spell Type       : Magic
 Spell Level      : 10
 Range            : 30 yards
 Labels           : 1660: Totemic Focus (382201 effect#3)
-Affecting spells : Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1)
+Affecting spells : Elemental Shaman (137040 effect#25), Enhancement Shaman (137041 effect#19), Rushing Streams (147074 effect#1), Praetorian's Tidecallers (210604 effect#1), Elemental Fury (343190 effect#1), Swirling Currents (378094 effect#1), Primordial Fury (378193 effect#1), Nature's Fury (381655 effect#1)
 Triggered by     : Poison Cleansing (383014)
 Family Flags     : 13
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17604,7 +17616,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053906)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 2.00000 | Target: Self (1)
 #2 (id=1075273)  : Apply Aura (6) | Periodic Dummy (226): every 5 seconds
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Gain Stormkeeper every $s1 sec.
@@ -17882,7 +17894,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1074118)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.75000 | PvP Coefficient: 0.50000 | Target: Friend (21)
 Description      : $@spelldesc405569
 
 Name             : Rainstorm (id=409386) [Spell Family (11)] 
@@ -17904,7 +17916,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1074183)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Self (1)
 Description      : $@spelldesc405570
 Tooltip          : Healing done increased by $w1%.
 
@@ -17927,9 +17939,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1074191)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1077191)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc405570
 Tooltip          : Healing of your next Healing Wave or Healing Surge increased by $s1%, or healing of your next Chain Heal increased by $s2%.
 
@@ -17948,7 +17960,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1074720)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc405567
 Tooltip          : Mastery increased by ${$s1*$77223bc1}%.
 
@@ -17967,11 +17979,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1074986)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 58, 103
 #2 (id=1074987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Doom Winds (384352), Magma Eruption (395349)
                    Family Flags: 58, 103
 Description      : $@spelldesc405568
@@ -17982,7 +17994,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Stacks           : 3 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17996,11 +18008,11 @@ Effects          :
 #1 (id=1074988)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1074989)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
 #3 (id=1075115)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc405568
 Tooltip          : Your next $s1 Chain Lightning spells will deal $s2% increased damage and refund $s3% of Maelstrom Weapon consumed.
 
@@ -18019,33 +18031,51 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1075302)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1748 (Label) | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
 #2 (id=1075303)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Earthquake (61882), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443), Earthquake (298762), Earthquake Overload (298765)
                    Family Flags: 1, 34, 63, 83, 101
 #3 (id=1075467)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1748 (Label) | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 12 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
 #4 (id=1075468)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 1748 (Label) | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 23 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
 #5 (id=1075469)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 1748 (Label) | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 32 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
 #6 (id=1075470)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Icefury (210714)
                    Family Flags: 119
 #7 (id=1075471)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Icefury Overload (219271)
                    Family Flags: 5
 #8 (id=1075472)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1114 (Label) | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1114 (Label) | Target: Self (1)
 Description      : $@spelldesc405566
 Tooltip          : Maelstrom generated from Lava Burst, Lightning Bolt, Icefury, and Frost Shock increased by $s1%.
 Critical damage dealt by Earthquake, Chain Lightning, and Lava Beam increased by $s2%.
+
+Name             : Stormweaver (desc=PvP Talent) (id=410673) [Spell Family (11), Passive, Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1076545)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Maelstrom Weapon no longer benefits Healing Surge or Chain Heal. Instead, consuming Maelstrom Weapon on a damage spell causes your next Healing Surge or Chain Heal to gain $s1% of the benefits of Maelstrom Weapon based on the stacks consumed. 
 
 

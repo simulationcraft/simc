@@ -54,8 +54,8 @@ actions+=/implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1
 actions+=/soul_strike,if=soul_shard<5&active_enemies>1
 actions+=/summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1
 actions+=/demonbolt,if=buff.demonic_core.up&soul_shard<4
-actions+=/power_siphon,if=buff.demonic_core.stack<1&(buff.dreadstalkers.remains>3|buff.dreadstalkers.down)
-actions+=/hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)
+actions+=/power_siphon,if=buff.demonic_core.stack<2&(buff.dreadstalkers.remains>gcd*3|buff.dreadstalkers.down)
+actions+=/hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)&(buff.demonic_calling.up|soul_shard>4|cooldown.call_dreadstalkers.remains>gcd)
 actions+=/doom,target_if=refreshable
 actions+=/soul_strike,if=soul_shard<5
 actions+=/shadow_bolt
@@ -78,7 +78,7 @@ actions.tyrant+=/call_dreadstalkers
 actions.tyrant+=/soulburn,if=buff.nether_portal.up&soul_shard>=2,line_cd=40
 actions.tyrant+=/hand_of_guldan,if=variable.next_tyrant-time>2&(buff.nether_portal.up|soul_shard>2&variable.next_tyrant-time<12|soul_shard=5)
 actions.tyrant+=/hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4&variable.next_tyrant-time>action.summon_demonic_tyrant.cast_time
-actions.tyrant+=/summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1
+actions.tyrant+=/summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1|buff.dreadstalkers.remains<cast_time+gcd
 actions.tyrant+=/demonbolt,if=buff.demonic_core.up
 actions.tyrant+=/power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up
 actions.tyrant+=/soul_strike

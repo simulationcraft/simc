@@ -1409,6 +1409,152 @@ void furious_ragefeather( special_effect_t& effect )
   } );
 }
 
+
+// Igneous Flowstone
+// 402813 = Primary Driver - Effect1 = Damage, Effect2 = Crit
+// 402897 = Stats
+// 402903 = High Tide Trigger
+// 402896 = Low Tide Trigger
+// 402898 = Low Tide Count Down
+// 402894 = High Tide Count Up
+// 407961 = Lava Wave, damage spell
+// 402822 = Weird Area Trigger
+// 402813 = Damage Spell in logs? 
+void igneous_flowstone( special_effect_t& effect )
+{
+  struct low_tide_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* trigger_buff;
+    buff_t* stat_buff;
+
+    low_tide_cb_t( const special_effect_t& e, buff_t* t, buff_t* s )
+      : dbc_proc_callback_t( e.player, e ), trigger_buff( t ), stat_buff( s )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      trigger_buff->expire();
+      stat_buff->trigger();
+    }
+  };
+
+  struct high_tide_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* trigger_buff;
+    action_t* damage;
+
+    high_tide_cb_t( const special_effect_t& e, buff_t* t, action_t* d )
+      : dbc_proc_callback_t( e.player, e ), trigger_buff( t ), damage( d )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      trigger_buff->expire();
+
+      damage->set_target( target( s ) );
+      auto damage_state    = damage->get_state();
+      damage_state->target = damage->target;
+      damage->snapshot_state( damage_state, damage->amount_type( damage_state ) );
+      damage->schedule_execute( damage_state );
+    }
+  };
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "lava_wave", effect, "lava_wave", 407961, true );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->split_aoe_damage                  = true;
+  damage->aoe                               = -1;
+
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 402897 ) )
+                       ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  auto low_tide_trigger = create_buff<buff_t>( effect.player, effect.player->find_spell( 402896 ) );
+
+  auto low_tide_driver      = new special_effect_t( effect.player );
+  low_tide_driver->type     = SPECIAL_EFFECT_EQUIP;
+  low_tide_driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  low_tide_driver->spell_id = low_tide_trigger->data().id();
+  effect.player->special_effects.push_back( low_tide_driver );
+
+  auto low_tide_cb = new low_tide_cb_t( *low_tide_driver, low_tide_trigger, crit_buff );
+  low_tide_cb->initialize();
+  low_tide_cb->deactivate();
+
+  auto high_tide_trigger = create_buff<buff_t>( effect.player, effect.player->find_spell( 402903 ) );
+
+  auto high_tide_driver      = new special_effect_t( effect.player );
+  high_tide_driver->type     = SPECIAL_EFFECT_EQUIP;
+  high_tide_driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  high_tide_driver->spell_id = high_tide_trigger->data().id();
+  effect.player->special_effects.push_back( high_tide_driver );
+
+  auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger, damage );
+  high_tide_cb->initialize();
+  high_tide_cb->deactivate();
+
+  auto low_tide_counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 402898 ) )
+                              ->set_reverse( true )
+                              ->set_period( 1_s )
+                              ->set_stack_change_callback( [ low_tide_trigger ]( buff_t*, int, int n ) {
+                                if ( !n )
+                                {
+                                  low_tide_trigger->trigger();
+                                }
+                              } );
+
+  auto high_tide_counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 402894 ) )
+                               ->set_period( 1_s )
+                               ->set_expire_at_max_stack( true )
+                               ->set_stack_change_callback( [ high_tide_trigger ]( buff_t*, int, int n ) {
+                                 if ( !n )
+                                 {
+                                   high_tide_trigger->trigger();
+                                 }
+                               } );
+
+  high_tide_trigger->set_stack_change_callback( [ high_tide_cb, low_tide_counter ]( buff_t*, int, int n ) {
+    if ( !n )
+    {
+      high_tide_cb->deactivate();
+      low_tide_counter->trigger();
+    }
+    else
+    {
+      high_tide_cb->activate();
+    }
+  } );
+
+  low_tide_trigger->set_stack_change_callback( [ low_tide_cb, high_tide_counter ]( buff_t*, int, int n ) {
+    if ( !n )
+    {
+      low_tide_cb->deactivate();
+      high_tide_counter->trigger();
+    }
+    else
+    {
+      low_tide_cb->activate();
+    }
+  } );
+
+  effect.player->register_combat_begin(
+      [ low_tide_trigger, high_tide_trigger, low_tide_counter, high_tide_counter ]( player_t* p ) {
+        auto starting_state = p->sim->dragonflight_opts.flowstone_starting_state;
+        if ( util::str_compare_ci( starting_state, "low" ) )
+          low_tide_trigger->trigger();
+        else if ( util::str_compare_ci( starting_state, "ebb" ) )
+          low_tide_counter->trigger();
+        else if ( util::str_compare_ci( starting_state, "flood" ) )
+          high_tide_counter->trigger();
+        else
+          high_tide_trigger->trigger();
+      } );
+}
+
 void idol_of_pure_decay( special_effect_t& effect )
 {
   struct idol_of_pure_decay_cb_t : public dbc_proc_callback_t
@@ -4079,6 +4225,54 @@ void treemouths_festering_splinter( special_effect_t& e )
   e.custom_buff    = absorb_buff;
 }
 
+// 401395 Driver
+// 401394 Stacking Buff
+// 401422 Direct Damage
+// 401428 DoT
+void vessel_of_searing_shadow( special_effect_t& e )
+{
+  struct vessel_of_searing_shadow_dot_t : public generic_proc_t
+  {
+    vessel_of_searing_shadow_dot_t( const special_effect_t& e )
+      : generic_proc_t( e, "ravenous_shadowflame", e.player->find_spell( 401428 ) )
+    {
+      base_td = e.driver()->effectN( 3 ).average( e.item );
+    }
+  };
+
+  struct vessel_of_searing_shadow_direct_t : public generic_proc_t
+  {
+    action_t* dot;
+    vessel_of_searing_shadow_direct_t( const special_effect_t& e )
+      : generic_proc_t( e, "shadow_spike", e.player->find_spell( 401422 ) ),
+        dot( create_proc_action<vessel_of_searing_shadow_dot_t>( "ravenous_shadowflame", e ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      add_child( dot );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      dot->execute();
+    }
+  };
+
+  auto damage = create_proc_action<vessel_of_searing_shadow_direct_t>( "shadow_spike", e );
+
+  auto stack_buff = create_buff<stat_buff_t>( e.player, "unstable_flames", e.player->find_spell( 401394 ) )
+                        ->add_stat_from_effect( 3, e.driver()->effectN( 4 ).average( e.item ) )
+                        ->set_expire_at_max_stack( true )
+                        ->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+                          if ( !new_ )
+                          {
+                            damage->execute();
+                          }
+                        } );
+  e.custom_buff = stack_buff;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -4130,6 +4324,43 @@ void fang_adornments( special_effect_t& effect )
   effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
   effect.override_result_es_mask |= RESULT_CRIT_MASK;
   effect.result_es_mask &= ~RESULT_CRIT_MASK;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Spore Keepers Baton
+// 405226 Buff Driver
+// 406793 Dot
+// 405232 Vers Buff
+// 406795 Absorb Shield
+void spore_keepers_baton( special_effect_t& effect )
+{
+  auto dot     = create_proc_action<generic_proc_t>( "sporeadic_adaptability", effect, "sporeadic_adaptability", effect.player->find_spell( 406793 ) );
+  dot->base_td = effect.driver()->effectN( 2 ).average( effect.item );
+  
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 405232 ) )
+                  ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+        switch ( s->proc_type() )
+        {
+          case PROC1_MAGIC_HEAL:
+            buff->trigger();
+            break;
+          case PROC1_MAGIC_SPELL:
+          {
+            dot->set_target( cb->target( s ) );
+            auto proc_state    = dot->get_state();
+            proc_state->target = dot->target;
+            dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
+            dot->schedule_execute( proc_state );
+            break;
+          }
+          default:
+            break;
+        }
+      } );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5856,6 +6087,7 @@ void register_special_effects()
   register_special_effect( 383798, items::emerald_coachs_whistle );
   register_special_effect( 381471, items::erupting_spear_fragment );
   register_special_effect( 383920, items::furious_ragefeather );
+  register_special_effect( 402813, items::igneous_flowstone );
   register_special_effect( 388603, items::idol_of_pure_decay );
   register_special_effect( 384191, items::shikaari_huntress_arrowhead );
   register_special_effect( 377466, items::spiteful_storm );
@@ -5901,10 +6133,12 @@ void register_special_effects()
   register_special_effect( 401513, items::ominous_chromatic_essence );
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
   register_special_effect( 395175, items::treemouths_festering_splinter );
+  register_special_effect( 401395, items::vessel_of_searing_shadow );
 
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
+  register_special_effect( 405226, items::spore_keepers_baton );     // Spore Keepers Baton Weapon
   register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
   register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
   register_special_effect( 394928, items::neltharax );               // Neltharax, Enemy of the Sky

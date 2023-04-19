@@ -9,7 +9,7 @@ talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIhkIJJJJJplAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
@@ -216,7 +216,7 @@ off_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_the_fall
 # Gear Summary
 # gear_ilvl=372.00
 # gear_strength=3141
-# gear_stamina=6915
+# gear_stamina=9278
 # gear_crit_rating=2995
 # gear_haste_rating=2016
 # gear_mastery_rating=2636

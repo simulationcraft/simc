@@ -3926,6 +3926,7 @@ void sim_t::create_options()
   add_option( opt_string( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight ) );
   add_option( opt_string( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies ) );
   add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
+  add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
 }
 
 // sim_t::parse_option ======================================================

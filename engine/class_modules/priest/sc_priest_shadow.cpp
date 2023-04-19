@@ -671,7 +671,9 @@ public:
     double coalescing_shadows_chance = 0.0;
 
     shadowy_apparition_damage_t( priest_t& p )
-      : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
+      : priest_spell_t( "shadowy_apparition", p,
+                        p.is_ptr() ? p.talents.shadow.shadowy_apparition->effectN( 1 ).trigger()
+                                   : p.talents.shadow.shadowy_apparition ),
         insanity_gain( priest().talents.shadow.auspicious_spirits->effectN( 2 ).percent() )
     {
       affected_by_shadow_weaving = true;
