@@ -1396,6 +1396,11 @@ class SpellDataGenerator(DataGenerator):
          408090, # Idol of Debilitating Arrogance Druid?
          408042, # Idol of Debilitating Arrogance Rogue?
          408087, # Idol of Debilitating Arrogance Priest
+         408126, # Neltharion's Call to Chaos Mage
+         408122, # Neltharion's Call to Chaos Warrior
+         408127, # Neltharion's Call to Chaos Evoker
+         408128, # Neltharion's Call to Chaos Demon Hunter
+         408123, # Neltharion's Call to Chaos Paladin
          408815, 408832, 408835, 408836, # Djaruun
          401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil
          408821, 403545, # Djaruun, Pillar of the Elder Flame
