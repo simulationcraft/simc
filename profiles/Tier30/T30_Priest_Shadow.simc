@@ -121,6 +121,7 @@ actions.trinkets=use_item,name=voidmenders_shadowgem,if=buff.power_infusion.up|f
 actions.trinkets+=/use_item,name=darkmoon_deck_box_inferno
 actions.trinkets+=/use_item,name=darkmoon_deck_box_rime
 actions.trinkets+=/use_item,name=darkmoon_deck_box_dance
+actions.trinkets+=/use_item,name=screaming_black_dragonscale,if=dragonflight.screaming_black_dragonscale_damage
 actions.trinkets+=/use_item,name=erupting_spear_fragment,if=buff.power_infusion.up|raid_event.adds.up|fight_remains<20
 actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20
