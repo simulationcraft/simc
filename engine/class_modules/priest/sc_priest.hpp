@@ -908,8 +908,8 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-    return c;
+    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
+                              get_buff_effects_value( cost_buffeffects, false, false ) );
   }
 
   double composite_target_multiplier( player_t* t ) const override
