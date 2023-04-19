@@ -3840,25 +3840,30 @@ void neltharions_call_to_chaos( special_effect_t& effect )
   effect.spell_id = driver_id;
 
   // Triggers only on AoE Abilities - Abilities that *can* AoE or abilities that *did* AoE. Evokers need a hack.
-  if ( effect.player->type != EVOKER )
+  switch ( effect.player->type )
   {
-    effect.player->callbacks.register_callback_trigger_function(
-        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-        []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) { return a->is_aoe() || s->n_targets > 1; } );
-  }
-  else
-  {
-    // Horrifying state hack to trick the Evoker Module into thinking there is a pre-execute state for the is_aoe calls
-    // for eternity surge as the action n_targets is based on that state.
-    effect.player->callbacks.register_callback_trigger_function(
-        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-        []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-          auto _s              = a->pre_execute_state;
-          a->pre_execute_state = s;
-          auto b               = a->is_aoe() || s->n_targets > 1;
-          a->pre_execute_state = _s;
-          return b;
-        } );
+    case EVOKER:
+      // Horrifying state hack to trick the Evoker Module into thinking there is a pre-execute state for the is_aoe
+      // calls for eternity surge as the action n_targets is based on that state.
+      effect.player->callbacks.register_callback_trigger_function(
+          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+            auto _s              = a->pre_execute_state;
+            a->pre_execute_state = s;
+            auto b               = a->is_aoe();
+            a->pre_execute_state = _s;
+            return b;
+          } );
+      break;
+    case WARRIOR:
+    case PALADIN:
+    case MAGE:
+    case DEMON_HUNTER:
+    default:
+      // Evoker is unique with it working on cleave abilities. Other classes likely need an ability whitelist but this is a better aproximation for now.
+      effect.player->callbacks.register_callback_trigger_function(
+          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) { return a->n_targets() == -1; } );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
