@@ -1,0 +1,84 @@
+# warrior="T30_Arms_Warrior"
+# spec=arms
+# level=70
+# race=human
+# role=attack
+# position=back
+# professions=blacksmithing=100/engineering=65
+# talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQkkSrkEAAAAQQkIKEQREQiQSoJRIAhECAAAAAAAAJBJJgQ0QA
+
+# head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192985
+# neck=elemental_lariat,id=193001,bonus_id=8782/8960,crafted_stats=32/36,ilevel=418,gem_id=192919/192919/192919
+# shoulder=peaks_of_the_walking_mountain,id=200428,bonus_id=4800/4786/1498
+# back=decorated_commanders_cindercloak,id=195482,bonus_id=4800/4786/1498
+# chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
+# wrist=allied_wristguard_of_companionship,id=190526,bonus_id=7935/8960,ilevel=418,gem_id=192919
+# hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=4800/4786/1498
+# waist=matriarchs_opulent_girdle,id=195524,bonus_id=4800/4786/1498/7935,gem_id=192919
+# legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=4800/4786/1498,enchant_id=6496
+# feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192919,enchant_id=6556
+# finger2=emissarys_flamewrought_seal,id=201992,bonus_id=4800/4786/1498/7935,gem_id=192919,enchant_id=6556
+# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+# trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+
+# save=T30_Warrior_Arms.simc
+
+
+# warrior="T30_Fury_Warrior"
+# spec=fury
+# level=70
+# race=human
+# role=attack
+# position=back
+# professions=blacksmithing=100/engineering=65
+# talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAChIoEARQISQUgEiARSIJpFRSkgQSSSkSASSkEAAAAEE
+
+# head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192988
+# neck=elemental_lariat,id=193001,bonus_id=8782/8960,crafted_stats=32/49,ilevel=418,gem_id=192961/192961/192961
+# shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=4800/4786/1498
+# back=acidproof_webbing,id=195511,bonus_id=4800/4786/1498
+# chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
+# wrists=allied_wristguard_of_companionship,id=190526,bonus_id=7935/8960,ilevel=418,gem_id=192961
+# hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=4800/4786/1498
+# waist=matriarchs_opulent_girdle,id=195524,bonus_id=4800/4786/1498/7935,gem_id=192961
+# legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=4800/4786/1498,enchant_id=6496
+# feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192961,enchant_id=6562
+# finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/7935,gem_id=192961,enchant_id=6562
+# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+# trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+# off_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+
+# save=T30_Warrior_Fury.simc
+
+# warrior="T30_Warrior_Protection"
+# source=default
+# spec=protection
+# level=70
+# race=dwarf
+# role=tank
+# position=front
+# professions=blacksmithing=100/jewelcrafting=100
+# talents=BkEAAAAAAAAAAAAAAAAAAAAAAIEBAAAASSikkg0SKJJp1QEIUEQJJBgIJJ0QSCQ4AhAAAAAAAARAAKlCAIA
+
+# head=infurious_helm_of_vengeance,id=190522,bonus_id=8836/8840/8902/8960/8809/8801,ilevel=418,gem_id=192919
+# neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
+# shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=1463/8767,ilevel=421
+# back=cape_of_the_duskwatch,id=137483,bonus_id=1795/6808/4786/3300,ilevel=421,drop_level=70
+# chest=husk_of_the_walking_mountain,id=200423,bonus_id=1466/8767,ilevel=421,enchant=waking_stats_3
+# wrists=virtuous_silver_bracers,id=200421,bonus_id=4800/4786/1498,ilevel=424,gem_id=192919
+# hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=1466/8767,ilevel=421
+# waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8801,ilevel=418,gem_id=192985
+# legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=1472/8767,ilevel=421,enchant=frosted_armor_kit_3
+# feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
+# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192919,enchant=devotion_of_haste_3,drop_level=70
+# trinket1=manic_grieftorch,id=194308,bonus_id=7979/6652/1472/8767,ilevel=421
+# trinket2=windscar_whetstone,id=137486,bonus_id=6652/3300/8767
+# main_hand=strike_twice,id=193700,bonus_id=6808/4786/1643,enchant=frozen_devotion_3
+# off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=4800/4786/1498
+
+# save=T30_Warrior_Protection.simc
