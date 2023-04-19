@@ -1917,7 +1917,7 @@ public:
 
     if ( mw_affected_stacks && affected_by_maelstrom_weapon )
     {
-      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
+      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 1 ).percent() +
                            this->p()->talent.raging_maelstrom->effectN( 2 ).percent();
 
       mw_multiplier = stack_value * mw_affected_stacks;
