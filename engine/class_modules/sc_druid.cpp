@@ -1712,7 +1712,7 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
   protector_of_the_pack_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, s ),
       mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() ),
-      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : 4.0 )
+      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : p->is_ptr() ? 5.0 : 4.0 )
   {
     set_trigger_spell( p->talent.protector_of_the_pack );
     set_name_reporting( "protector_of_the_pack" );
@@ -1751,6 +1751,9 @@ struct shadows_of_the_predator_buff_t : public druid_buff_t
       p()->predator_revealed_stacks->add( current_stack );
 
       base_t::decrement( current_stack - reset, v );
+
+      // as we are using decrement, manually reschedule buff expiration
+      expiration.front()->reschedule( refresh_duration( buff_duration() ) );
 
       p()->buff.predator_revealed->trigger();
     }
@@ -9164,7 +9167,7 @@ double brambles_handler( const action_state_t* s )
   double attack_power = ( p->cache.attack_power() + weapon_ap ) * p->composite_attack_power_multiplier();
 
   // Brambles coefficient is not in spelldata :(
-  double absorb_cap = attack_power * 0.06;
+  double absorb_cap = attack_power * ( p->is_ptr() ?  0.075 : 0.06 );
 
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s->result_mitigated, absorb_cap );
