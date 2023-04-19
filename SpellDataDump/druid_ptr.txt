@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -159,7 +159,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #16), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#18), Feral Druid (137011 effect#15), Restoration Druid (137012 effects: #1, #2, #16), Balance Druid (137013 effect#10), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -230,7 +230,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodtalons (145152 effects: #1, #2), Soul of the Forest (158476 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Feral Affinity (202157 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Gushing Lacerations (278509 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Dreadful Bleeding (391045 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Lion's Strength (391972 effect#2), Veinripper (391978 effect#1), Druid Feral Class Set 2pc (393635 effect#2), Sharpened Claws (394465 effects: #2, #3), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodtalons (145152 effects: #1, #2), Soul of the Forest (158476 effect#3), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#6), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Gushing Lacerations (278509 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Dreadful Bleeding (391045 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Sabertooth (391722 effect#1), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Lion's Strength (391972 effect#2), Veinripper (391978 effect#1), Druid Feral Class Set 2pc (393635 effect#2), Sharpened Claws (394465 effects: #2, #3), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 85, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -243,7 +243,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18300 | PvP Coefficient: 0.82000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.19030 | PvP Coefficient: 0.82000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -330,7 +330,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effects: #1, #3), Infected Wounds (48484 effects: #2, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effects: #5, #7), Feral Affinity (202157 effects: #5, #7), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Veinripper (391978 effect#1), Sharpened Claws (394465 effects: #1, #2, #3), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Infected Wounds (48484 effects: #2, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effects: #5, #7), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Veinripper (391978 effect#1), Sharpened Claws (394465 effects: #1, #2, #3), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -343,7 +343,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Aura Never Bounces (148), Periodic Can Crit (265), Aura Points On Client (268), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16000 | PvP Coefficient: 0.82000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.16320 | PvP Coefficient: 0.82000 | Target: Enemy (6)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -640,7 +640,7 @@ Spell Level      : 5
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Feral Affinity (202157 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Sharpened Claws (394465 effect#1), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Sharpened Claws (394465 effect#1), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 15, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -653,7 +653,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1859)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.76100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.77620 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1860)     : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #3 (id=1861)     : Dummy (3)
@@ -1155,7 +1155,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1576
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#14), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effect#9), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1)
 Family Flags     : 33, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1293,7 +1293,7 @@ Spell Level      : 7
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Apex Predator's Craving (339140 effects: #1, #2, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Apex Predator's Craving (391882 effects: #1, #2, #3), Circle of Life and Death (391969 effects: #1, #3), Lion's Strength (391972 effect#1), Druid Feral Class Set 2pc (393635 effect#1), Relentless Predator (393771 effects: #1, #2), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Bloodtalons (145152 effect#2), Soul of the Forest (158476 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Apex Predator's Craving (339140 effects: #1, #2, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Apex Predator's Craving (391882 effects: #1, #2, #3), Circle of Life and Death (391969 effects: #1, #3), Lion's Strength (391972 effect#1), Druid Feral Class Set 2pc (393635 effect#1), Relentless Predator (393771 effects: #1, #2), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 98, 108
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1366,7 +1366,7 @@ Labels           : 1284: Symbol of Hope (265144 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Tough as Bark (340529 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2)
+Affecting spells : Guardian Druid (137010 effect#16), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Tough as Bark (340529 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1405,7 +1405,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
 Category         : 1568: Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Heart of the Wild (319454 effect#9), Reinvigoration (372945 effect#2), Innate Resolve (377811 effect#2)
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#11), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #14, #15), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #18, #19), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Verdant Heart (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1), Reinvigoration (372945 effect#1), Innate Resolve (377811 effect#1), Adaptive Swarm (391891 effect#2)
+Affecting spells : Berserk (50334 effect#11), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #14, #15), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #18, #19, #20), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Verdant Heart (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1), Reinvigoration (372945 effect#1), Innate Resolve (377811 effect#1), Adaptive Swarm (391891 effect#2)
 Family Flags     : 62
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1572,7 +1572,7 @@ Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 10% Base Mana (0) (id=1450)
+Resource         : 6% Base Mana (0) (id=1450)
 Spell Level      : 48
 Range            : 20 yards
 Cast Time        : 1.7 seconds
@@ -1827,7 +1827,7 @@ Duration         : 7 seconds
 Cooldown         : 10 seconds
 Category         : 1237
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #5, #6), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#18), Feral Druid (137011 effect#15), Restoration Druid (137012 effects: #1, #2), Balance Druid (137013 effect#10), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #5, #6), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1)
 Family Flags     : 58, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   .......x ........ ........ ........ 
@@ -2682,7 +2682,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.37230 | PvP Coefficient: 1.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.37230 | PvP Coefficient: 1.27200 | Target: Enemy (6)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -3727,7 +3727,7 @@ Resource         : 35 Energy (3) (id=9341)
 Range            : 8 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Feral Affinity (202155 effect#3), Feral Affinity (202157 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Wild Slashes (390864 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Sharpened Claws (394465 effect#1), Improved Swipe (400158 effect#1), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effect#3), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Feral Affinity (202155 effect#3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Sharpened Claws (279943 effect#1), Scent of Blood (285646 effect#1), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Wild Slashes (390864 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Sharpened Claws (394465 effect#1), Improved Swipe (400158 effect#1), Circle of Life and Death (400320 effects: #1, #3)
 Family Flags     : 74, 98
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3744,7 +3744,7 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #3 (id=222212)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24320 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24810 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #4 (id=819579)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #5 (id=1031978)  : Energize Power (30)
@@ -3762,13 +3762,13 @@ Duration         : Aura (infinite)
 Stance Mask      : 0x00000010
 Attributes       : ....x..x x....... ........ .....x.x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Immunities (29), No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Immunities (29), No Aura Cancel (31), No Threat (42), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=117261)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 213771 | Scaled Value: 213771 | PvP Coefficient: 1.00000 | Misc Value 2: 0x3 | Target: Self (1)
@@ -3805,7 +3805,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook (143), Treat as Area Effect (175), Always AOE Line of Sight (186), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12470 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12720 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $405233o1 Bleed damage over $405233d.
@@ -4290,21 +4290,25 @@ Resource         : 18% Base Mana (0) (id=11150)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
+Duration         : 12 seconds
 Cooldown         : 60 seconds
+Labels           : 2648: Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
 Affecting spells : Rule of Law (214202 effect#1)
 Family Flags     : 67
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127305)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 122773 | Radius: 10 yards | Target: Unknown(87)
+#2 (id=1080484)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 Description      : Hurls a Light-infused hammer to the ground, dealing $114919s1 Holy damage to nearby enemies and healing up to 6 nearby allies for $119952s1, every $114918t1 sec for ${$122773d-1.5} sec.
 
 Name             : Treant Form (desc=Shapeshift) (id=114282) [Spell Family (7)] 
@@ -4355,7 +4359,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
-Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4), Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
+Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... .......x ........ ........   ........ .x...... ........ ........ 
@@ -4462,7 +4466,6 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Duration         : 15.5 seconds
-Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4), Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
 Triggered by     : Light's Hammer (114158)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -4887,11 +4890,11 @@ Effects          :
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
                    Family Flags: 77
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #4 (id=191160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #5 (id=191161)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -4930,6 +4933,18 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
+#16 (id=1079987)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Barkskin (22812)
+                   Family Flags: 50
+#17 (id=1080970)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562)
+                   Family Flags: 33
+#18 (id=1080971)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -4958,11 +4973,11 @@ Effects          :
                    Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
                    Family Flags: 45
 #4 (id=191156)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #6 (id=260767)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -4989,6 +5004,14 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
+#14 (id=1080962)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562)
+                   Family Flags: 33
+#15 (id=1080963)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
@@ -5047,7 +5070,7 @@ Effects          :
 #13 (id=1032350)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=1039258)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #15 (id=1039259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -5068,6 +5091,10 @@ Effects          :
                    Family Flags: 62
 #19 (id=1049861)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#20 (id=1080082)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
 Description      : Restoration Druid core passive
@@ -5097,11 +5124,11 @@ Effects          :
 #3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191148)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.45000 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #5 (id=191149)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.45000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #6 (id=260777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -5112,6 +5139,14 @@ Effects          :
                    Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=872569)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#9 (id=1080967)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562)
+                   Family Flags: 33
+#10 (id=1080968)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
 
 Name             : Charged Bolt (id=137542) 
 Class            : Druid
@@ -5343,9 +5378,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Require All Targets (58), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=216288)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13650 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -5404,7 +5439,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stance Mask      : 0x00000001
 Mechanic         : Bleed
-Affecting spells : Tiger's Fury (5217 effects: #1, #3), Infected Wounds (48484 effects: #2, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effects: #5, #7), Feral Affinity (202157 effects: #5, #7), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Veinripper (391978 effect#1), Sharpened Claws (394465 effects: #1, #2, #3), Circle of Life and Death (400320 effects: #1, #3)
+Affecting spells : Tiger's Fury (5217 effects: #1, #3), Infected Wounds (48484 effects: #2, #3), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Mastery: Razor Claws (77493 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Prowl (102547 effect#5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Feral Druid (137011 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Feral Affinity (202155 effects: #5, #7), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Blood Mist (279524 effect#2), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Veinripper (391978 effect#1), Sharpened Claws (394465 effects: #1, #2, #3), Circle of Life and Death (400320 effects: #1, #3)
 Triggered by     : Rake (1822)
 Family Flags     : 12, 98
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -5418,7 +5453,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Always Hit (114), Do Not Display Range (126), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), No Level Up Toast (281), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23110 | PvP Coefficient: 0.82000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23570 | PvP Coefficient: 0.82000 | Target: Enemy (6)
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -5430,7 +5465,7 @@ Spell Level      : 1
 Range            : 40 yards
 Duration         : 12 seconds
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Restoration Druid (137012 effects: #1, #2, #16), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#18), Feral Druid (137011 effect#15), Restoration Druid (137012 effects: #1, #2, #16), Balance Druid (137013 effect#10), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Stellar Drift (202461 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Natural Recovery (377796 effects: #1, #2), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ......x.   .......x ........ ........ ........ 
@@ -5474,9 +5509,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Can Proc From Suppressed Target Procs (254), Mastery Affects Points (285), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=216520)   : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your maximum health and healing received by ${$s1}.1%.
 
 Also increases your attack power by ${$159195s1}.1%.
@@ -7074,7 +7109,7 @@ Effects          :
 #1 (id=297726)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #2 (id=297727)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.62100 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=819590)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Strikes all nearby enemies with a massive slash, inflicting $s2 Physical damage.$?a231063[ Deals $231063s1% increased damage against bleeding targets.][]$?a405300[ Applies the Bleed from Thrash.][] Deals reduced damage beyond $s3 targets.$?a5487[][
@@ -7157,61 +7192,6 @@ You also learn:
 
 $@spellicon1822 $@spellname1822
 $@spellicon1079 $@spellname1079
-$@spellicon22570 $@spellname22570
-
-Your energy regeneration is increased by $s2%.
-
-Name             : Feral Affinity (id=202157) [Spell Family (7), Passive] 
-Class            : Druid
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=297936)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=340946)   : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-#3 (id=340950)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Swipe (106785)
-                   Family Flags: 74
-#4 (id=344682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Ferocious Bite (22568)
-                   Family Flags: 108
-#5 (id=344859)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rake (1822), Shred (5221), Rake (155722)
-                   Family Flags: 12, 15
-#6 (id=346477)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rip (1079)
-                   Family Flags: 85
-#7 (id=346478)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rake (1822), Rake (155722)
-                   Family Flags: 12
-#8 (id=810222)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 108292 | Scaled Value: 108292 | PvP Coefficient: 1.00000 | Misc Value: 319454 | Target: Self (1)
-Description      : You gain:
-
-$@spellicon131768 $@spellname131768
-$@spelldesc131768
-
-You also learn:
-
-$@spellicon1822 $@spellname1822
-$@spellicon1079 $@spellname1079
-$@spellicon106785 $@spellname106785
 $@spellicon22570 $@spellname22570
 
 Your energy regeneration is increased by $s2%.
@@ -7636,7 +7616,7 @@ Effects          :
 Description      : Sharp brambles protect you, absorbing and reflecting up to $<shield> damage from each attack.
 
 While Barkskin is active, the brambles also deal $213709s1 Nature damage to all nearby enemies every $22812t3 sec.
-Variables        : $shield=${$AP*0.06}
+Variables        : $shield=${$AP*0.075}
 
 Name             : Brambles (id=203958) [Spell Family (7)] 
 Class            : Druid
@@ -7864,7 +7844,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301153)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=301154)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc204066
@@ -15603,7 +15583,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=981995)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While in Bear Form, you deal $370588s1% increased Arcane damage, and are healed for $s1% of all Arcane damage done.
 
 Name             : Elune's Favored (id=370588) [Spell Family (7), Hidden] 
@@ -16023,7 +16003,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1004915)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Thrash and Maul grant you an absorb shield for $s1% of the damage dealt for $372505d.
 
 Name             : Berserk: Unchecked Aggression (id=377623) [Spell Family (7), Passive, Hidden] 
@@ -16255,7 +16235,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s137012[Store $s1% of your effective healing, up to $<cap>. Your next Moonfire consumes all stored healing to increase its damage dealt.][Store $s1% of your damage, up to $<cap2>. Your next Regrowth consumes all stored damage to increase its healing.]
 Variables        : $cap=${$SP*3}
-$cap2=${$SP*4}
+$cap2=${$SP*5}
 
 Name             : Protector of the Pack (id=378987) [Spell Family (7)] 
 Class            : Druid
@@ -16268,14 +16248,14 @@ Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1007517)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16990,7 +16970,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1028301)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rip (1079)
                    Family Flags: 85
 #2 (id=1028302)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -17337,7 +17317,7 @@ Effects          :
 #1 (id=1029484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1029485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1042566)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.
@@ -18599,11 +18579,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032720)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568)
                    Family Flags: 108
 #2 (id=1034131)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Misc Value: 22
                    Affected Spells: Rip (1079)
                    Family Flags: 85
 Description      : Ferocious Bite and Rip deal $s1% additional damage.
@@ -18649,7 +18629,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032722)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1036755)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Using Mangle with Gore also deals $s1% of damage dealt to nearby enemies, damage reduced beyond $s2 targets. It also increases your damage done and reduces damage you take by $395944s1% for 6 sec.
@@ -18669,7 +18649,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1032723)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Gore has a $s1% increased chance to trigger. Using Mangle with Gore heals you for ${$394504o1*(1+$@versadmg)} over $394504d.
 
 Name             : Druid Restoration Class Set 2pc (id=393639) [Spell Family (7), Passive, Hidden] 
@@ -18687,7 +18667,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032724)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Lifebloom (33763), Wild Growth (48438), Efflorescence (81269), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550)
                    Family Flags: 4, 7, 44, 58, 65
 Description      : Rejuvenation, Lifebloom, Wild Growth, Efflorescence, and Tranquility chance to critically heal is increased by $s1%.
@@ -18711,7 +18691,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032726)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Efflorescence critical heals increase the healing of your next Wild Growth by $394565s1%, stacking up to 5 times. Lifebloom critical heals reduces the cooldown of Nature's Swiftness by $s1 sec.
 
 Name             : Umbral Embrace (id=393760) [Spell Family (7), Passive] 
@@ -19636,7 +19616,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034016)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984), Starfire (194153), Starfire (197628)
                    Family Flags: 0, 2
 Description      : $@spellaura393632
@@ -19663,11 +19643,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1034019)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
 #2 (id=1034020)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
 Description      : $@spelldesc393633
@@ -19691,15 +19671,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1034138)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Rake (1822), Shred (5221), Swipe (106785), Thrash (106830), Rake (155722), Brutal Slash (202028), Thrash (405233)
                    Family Flags: 12, 15, 74, 99, 126
 #2 (id=1036929)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Thrash (405233)
                    Family Flags: 12, 85, 126
 #3 (id=1037199)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Thrash (106830), Rake (155722), Thrash (405233)
                    Family Flags: 12, 85, 126
 Description      : $@spelldesc393636
@@ -19721,7 +19701,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Include In Advanced Combat Log (72), Can't Crit (93), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Heal Prediction (280)
 Effects          :
 #1 (id=1034209)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393638
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -19745,7 +19725,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034337)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393641
 Tooltip          : Wild Growth healing increased by $w1%.
 
@@ -19872,14 +19852,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1036758)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
                    Family Flags: 9, 77
 #2 (id=1036759)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1036760)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
                    Family Flags: 9, 77
 Description      : $@spelldesc393637
@@ -20495,7 +20475,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1053352)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07950 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08110 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc106830
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -20516,7 +20496,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1053489)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
 Description      : Shred deals $s1% increased damage against bleeding targets and Shred and $?s202028[Brutal Slash][Swipe] apply the Bleed damage over time from Thrash.
 
 Name             : Druid Balance 10.1 Class Set 2pc (id=405510) [Spell Family (7), Passive, Hidden] 
@@ -20538,11 +20518,11 @@ Effects          :
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
 #2 (id=1072380)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815), Shooting Stars (202497), Crashing Star (408310)
                    Family Flags: 92, 116, 127
 #3 (id=1072381)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (164812), Sunfire (164815), Shooting Stars (202497), Crashing Star (408310)
                    Family Flags: 92, 116, 127
 Description      : Sunfire radius increased by $s1 yds. Sunfire, Moonfire and Shooting Stars damage increased by $s2%.
@@ -20627,7 +20607,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053849)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : When you take damage, Mangle and Thrash damage and Rage generation are increased by $408504s2% for $408504d and you heal for $s1% of damage taken over $408504d.
 
 Name             : Druid Guardian 10.1 Class Set 4pc (id=405515) [Spell Family (7), Passive, Hidden] 
@@ -20648,7 +20628,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053850)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254)
                    Family Flags: 11
 #2 (id=1072711)  : Apply Aura (6) | Proc Trigger Spell (42): Indomitable Guardian
@@ -20670,15 +20650,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
 #2 (id=1072740)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Lifebloom (33763), Lifebloom (33778), Rejuvenation (Germination) (155777), Lifebloom (188550)
                    Family Flags: 4, 36
 #3 (id=1072741)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 Description      : Rejuvenation and Lifebloom healing increased by $s1%. Regrowth healing over time increased by $s3%.
@@ -20873,7 +20853,7 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Allow While Sitting (27), No Reflection (39), No Threat (42), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Do Not Display Range (126), No Harmful Threat (132), Not In Spellbook (143), Always AOE Line of Sight (186), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1072361)  : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.76500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.76500 | PvP Coefficient: 0.50000 | Target: Enemy (6)
 #2 (id=1072362)  : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: astral_power | Target: Self (1)
 Description      : $@spelldesc405511
@@ -20882,7 +20862,7 @@ Name             : Shadows of the Predator (id=408340) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 25 seconds
 Stacks           : 12 maximum
 Proc Chance      : 101%
 Triggered by     : Druid Feral 10.1 Class Set 2pc (405512)
@@ -20897,7 +20877,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Do Not Display Range (126), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1072406)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc405512
 Tooltip          : Agility increased by $w1%.
 
@@ -20905,7 +20885,7 @@ Name             : Predator Revealed (id=408468) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 8 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... x....... ........ ........   ........ ........ x....... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -20917,8 +20897,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1072615)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
-#2 (id=1072616)  : Apply Aura (6) | Periodic Trigger Spell (23): Predator Revealed every 1.5 seconds
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value 2: 0x2 | Target: Self (1)
+#2 (id=1072616)  : Apply Aura (6) | Periodic Trigger Spell (23): Predator Revealed every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 411344 | Target: Self (1)
 Description      : $@spelldesc405513
 Tooltip          : Agility increased by $w1%. Generating $s2 combo $lpoint:points; every $t1 sec.
@@ -20941,19 +20921,19 @@ Effects          :
 #1 (id=1072672)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1072677)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Mangle (33917), Thrash (77758), Thrash (192090)
                    Family Flags: 38, 40, 91
 #3 (id=1072678)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Mangle (33917), Thrash (77758), Thrash (192090)
                    Family Flags: 38, 40, 91
 #4 (id=1072679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Mangle (33917)
                    Family Flags: 38
 #5 (id=1072680)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Thrash (77758)
                    Family Flags: 91
 Description      : $@spelldesc405514
@@ -20978,7 +20958,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
 #1 (id=1072710)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc405515
 Tooltip          : Maximum health increased by $s1%.
 
@@ -20998,14 +20978,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1072743)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -23.1 | Scaled Value: -23.1 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: -23.1 | Scaled Value: -23.1 | PvP Coefficient: 0.50000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Grove Tending (383193)
                    Family Flags: 4, 6, 7, 8, 44, 58, 106
 #2 (id=1072744)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
-                   Base Value: -23.1 | Scaled Value: -23.1 | PvP Coefficient: 1.00000 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
+                   Base Value: -23.1 | Scaled Value: -23.1 | PvP Coefficient: 0.50000 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
                    Affected Spells (Label): Adaptive Swarm (325748), Adaptive Swarm (391891)
 #3 (id=1072756)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000
 Description      : $@spelldesc405517
 Tooltip          : Heal over time spells are healing $m3% faster.
 
@@ -21026,7 +21006,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1072790)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Unknown(25)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
 Description      : $@spelldesc405517

@@ -164,6 +164,7 @@ public:
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
+    propagate_const<buff_t*> last_shadowy_apparition_crit;
 
     // Tier Sets
     propagate_const<buff_t*> gathering_shadows;
@@ -369,6 +370,7 @@ public:
       player_talent_t harsh_discipline;
       const spell_data_t* harsh_discipline_ready;
       player_talent_t blaze_of_light;
+      player_talent_t inescapable_torment;
       // Row 10
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;
@@ -529,6 +531,7 @@ public:
     propagate_const<proc_t*> shadowy_apparition_ms;
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
+    propagate_const<proc_t*> expiation_lost_no_dot;
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
@@ -905,8 +908,8 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-    return c;
+    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
+                              get_buff_effects_value( cost_buffeffects, false, false ) );
   }
 
   double composite_target_multiplier( player_t* t ) const override

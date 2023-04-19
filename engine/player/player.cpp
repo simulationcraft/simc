@@ -3808,7 +3808,13 @@ void player_t::create_buffs()
   sim->print_debug( "Creating Auras, Buffs, and Debuffs for {}.", *this );
 
   // Infinite-Stacking Buffs and De-Buffs for everyone
-  buffs.stunned   = make_buff( this, "stunned" )->set_max_stack( 1 );
+  buffs.stunned =
+      make_buff( this, "stunned" )->set_max_stack( 1 )->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( new_ == 0 )
+        {
+          schedule_ready();
+        }
+      } );
   debuffs.casting = make_buff( this, "casting" )->set_max_stack( 1 )->set_quiet( true );
 
   // .. for players
@@ -11477,6 +11483,18 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       }
 
       throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
+    }
+
+    if ( splits[ 0 ] == "dragonflight" )
+    {
+      if ( splits[ 1 ] == "screaming_black_dragonscale_damage" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->dragonflight_opts.screaming_black_dragonscale_damage;
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
     }
   } // splits.size() == 2
 

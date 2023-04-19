@@ -9,7 +9,7 @@ talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:howling_rune_3
@@ -96,7 +96,7 @@ actions.aoe_setup+=/festering_strike,target_if=max:debuff.festering_wound.stack,
 actions.aoe_setup+=/death_coil,if=!variable.pooling_runic_power&!talent.epidemic
 
 # ST/Cleave Cooldowns
-actions.cooldowns=summon_gargoyle,if=buff.commander_of_the_dead.up
+actions.cooldowns=summon_gargoyle,if=buff.commander_of_the_dead.up|!talent.commander_of_the_dead
 actions.cooldowns+=/raise_dead,if=!pet.ghoul.active
 actions.cooldowns+=/dark_transformation,if=cooldown.apocalypse.remains<5
 actions.cooldowns+=/apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.st_planning&debuff.festering_wound.stack>=4
@@ -116,7 +116,7 @@ actions.garg_setup+=/unholy_assault,if=pet.gargoyle.active&pet.gargoyle.remains<
 actions.garg_setup+=/potion,if=(30>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60|cooldown.summon_gargoyle.ready)&(buff.dark_transformation.up&30>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=30|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=30)
 actions.garg_setup+=/dark_transformation,if=talent.commander_of_the_dead&runic_power>40|!talent.commander_of_the_dead
 actions.garg_setup+=/any_dnd,if=!death_and_decay.ticking&debuff.festering_wound.stack>0
-actions.garg_setup+=/festering_strike,if=debuff.festering_wound.stack=0
+actions.garg_setup+=/festering_strike,if=debuff.festering_wound.stack=0|!talent.apocalypse|runic_power<40
 actions.garg_setup+=/death_coil,if=rune<=1
 
 # Generic
@@ -171,7 +171,7 @@ main_hand=leyline_tracer,id=193638,bonus_id=6808/4786/1594,enchant=rune_of_the_f
 # Gear Summary
 # gear_ilvl=372.00
 # gear_strength=3440
-# gear_stamina=6827
+# gear_stamina=9166
 # gear_crit_rating=1504
 # gear_haste_rating=2293
 # gear_mastery_rating=2986

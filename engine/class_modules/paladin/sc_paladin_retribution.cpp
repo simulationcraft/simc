@@ -101,11 +101,7 @@ struct es_explosion_t : public paladin_spell_t
     dual = background = true;
     may_crit = false;
 
-    // apparently base damage is affected
-    affected_by.hand_of_light = true;
-    affected_by.divine_purpose = true;
-    affected_by.judgment = true;
-    affected_by.final_reckoning = true;
+    attack_power_mod.direct = 0;
   }
 
   double calculate_direct_amount( action_state_t* state ) const
@@ -116,7 +112,7 @@ struct es_explosion_t : public paladin_spell_t
       amount = floor( amount + 0.5 );
 
     if ( amount == 0 && weapon_multiplier == 0 && attack_direct_power_coefficient( state ) == 0 &&
-        spell_direct_power_coefficient( state ) == 0 )
+        spell_direct_power_coefficient( state ) == 0 && accumulated == 0 )
       return 0;
 
     double base_direct_amount = amount;
@@ -1183,6 +1179,11 @@ void paladin_t::trigger_es_explosion( player_t* target )
   double accumulated = get_target_data( target )->debuff.execution_sentence->get_accumulated_damage();
   if ( talents.penitence->ok() )
     accumulated *= 1.0 + talents.penitence->effectN( 1 ).percent();
+  if ( bugs )
+  {
+    accumulated /= 1.0 + composite_damage_versatility();
+  }
+
   sim->print_debug( "{}'s execution_sentence has accumulated {} total additional damage.", target->name(), accumulated );
   ta += accumulated;
 

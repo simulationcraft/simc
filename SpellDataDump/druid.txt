@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1365,7 +1365,7 @@ Labels           : 1284: Symbol of Hope (265144 effect#2)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Tough as Bark (340529 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2)
+Affecting spells : Guardian Druid (137010 effect#16), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Survival of the Fittest (203965 effect#1), Verdant Heart (301768 effect#2), Improved Barkskin (327993 effect#1), The Natural Order's Will (339063 effect#1), Tough as Bark (340529 effect#1), Ursoc's Endurance (393611 effect#1), Reinforced Fur (393618 effect#2)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1571,7 +1571,7 @@ Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 10% Base Mana (0) (id=1450)
+Resource         : 6% Base Mana (0) (id=1450)[Hotfixed: Percent Cost (10 -> 6)]
 Spell Level      : 48
 Range            : 20 yards
 Cast Time        : 1.7 seconds
@@ -2681,7 +2681,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.14367 | PvP Coefficient: 1.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.25800 | PvP Coefficient: 1.27200 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.14367 -> 1.258), PvP Coefficient (1.4 -> 1.272)
 #2 (id=816907)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=845292)   : Dummy (3)
@@ -3755,6 +3756,7 @@ Description      : Swipe all nearby enemies, inflicting $s3 Physical damage. Dea
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
 Name             : Bear Form (desc=Passive) (id=106829) [Spell Family (7), Hidden] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3763,13 +3765,13 @@ Duration         : Aura (infinite)
 Stance Mask      : 0x00000010
 Attributes       : ....x..x x....... ........ .....x.x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Immunities (29), No Aura Cancel (31), No Threat (42), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Immunities (29), No Aura Cancel (31), No Threat (42), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=117261)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 213771 | Scaled Value: 213771 | PvP Coefficient: 1.00000 | Misc Value 2: 0x3 | Target: Self (1)
@@ -4814,6 +4816,11 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
+#16 (id=1079987)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Barkskin (22812)
+                   Family Flags: 50
+Hotfixed         : NEW EFFECT
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -5366,9 +5373,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Can Proc From Suppressed Target Procs (254), Mastery Affects Points (285), Can Proc from Suppressed Caster Procs (385), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=216520)   : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : SP Coefficient (0.5 -> 0.7)
 #2 (id=345062)   : Apply Aura (6) | Modify Absorb% Done (422)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : SP Coefficient (0.5 -> 0.7)
 Description      : Increases your maximum health and healing received by ${$s1}.1%.
 
 Also increases your attack power by ${$159195s1}.1%.
@@ -5937,7 +5946,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16)
 Effects          :
 #1 (id=274309)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15730 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.1573 -> 0.1888)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 

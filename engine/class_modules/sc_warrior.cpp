@@ -205,6 +205,7 @@ public:
     buff_t* vanguards_determination;
     buff_t* crushing_advance;
     buff_t* merciless_assault;
+    buff_t* earthen_tenacity;  // T30 Protection 4PC
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -5660,17 +5661,33 @@ struct shield_charge_t : public warrior_attack_t
 };
 
 // Shield Slam ==============================================================
+
+// Linked action for shield slam aoe with T30 Protection
+struct earthen_smash_t : public warrior_attack_t
+{
+  earthen_smash_t( util::string_view name, warrior_t* p )
+  : warrior_attack_t( name, p, p->find_spell( 410219 ) )
+  {
+    background = true;
+  }
+};
+
 struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
+  action_t* earthen_smash;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
-    rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) )
+    rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
+    earthen_smash( get_action<earthen_smash_t>( "earthen_smash", p ))
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
     rage_gain += p->talents.protection.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
     rage_gain += p->talents.protection.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+
+    if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T30, B2 ) -> effectN( 1 ).percent();
   }
 
     void init() override
@@ -5702,6 +5719,11 @@ struct shield_slam_t : public warrior_attack_t
     if ( p() -> buff.brace_for_impact -> up() )
     {
       am *= 1.0 + p()->buff.brace_for_impact -> stack_value();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) && p() -> buff.last_stand -> up() )
+    {
+        am *= 1.0 + p() -> talents.protection.last_stand -> effectN( 3 ).percent();
     }
 
     return am;
@@ -5746,6 +5768,21 @@ struct shield_slam_t : public warrior_attack_t
       p()->buff.ignore_pain->trigger();
       p()->buff.violent_outburst->expire();
       total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) ) 
+    {
+      p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
+      // Value is doubled with last stand up, so we apply the same effect twice.
+      if ( p() -> buff.last_stand -> up() )
+      {
+        p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
+      }
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B4 ) && p() -> buff.earthen_tenacity -> up() )
+    {
+      earthen_smash -> execute_on_target( target );
     }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
@@ -9072,7 +9109,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "bag_of_tricks" );
   default_list -> add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
   default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
-  default_list -> add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled" );
+  default_list -> add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
   default_list -> add_action( "ravager" );
   default_list -> add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_list -> add_action( "spear_of_bastion" );
@@ -9094,7 +9131,6 @@ void warrior_t::apl_prot()
   generic -> add_action( "thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
   generic -> add_action( "execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
   generic -> add_action( "execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50" );
-  generic -> add_action( "revenge,if=buff.vanguards_determination.down&rage>=40" );
   generic -> add_action( "execute,if=spell_targets.revenge=1&rage>=50" );
   generic -> add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic -> add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
@@ -9234,6 +9270,10 @@ struct last_stand_buff_t : public warrior_buff_t<buff_t>
                         player -> name(), health_change * 100.0,
                         old_health, player -> resources.current[ RESOURCE_HEALTH ],
                         old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
+
+    warrior_t* p = debug_cast< warrior_t* >( player );
+    if ( ! p -> sim -> event_mgr.canceled && p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B4 ) )
+      p -> buff.earthen_tenacity -> trigger();
   }
 };
 
@@ -9732,6 +9772,9 @@ void warrior_t::create_buffs()
                                 find_spell( 409983 ) : spell_data_t::not_found() )
                            ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
                            ->set_duration( find_spell( 409983 )->duration() );
+
+  buff.earthen_tenacity = make_buff( this, "earthen_tenacity", tier_set.t30_prot_4pc -> ok() ?
+                                find_spell( 410218 ) : spell_data_t::not_found() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()

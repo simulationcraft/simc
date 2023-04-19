@@ -514,7 +514,7 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     base_fiend_pet_t::demise();
 
-    if ( o().talents.shadow.inescapable_torment.enabled() )
+    if ( o().talents.shadow.inescapable_torment.enabled() || o().talents.discipline.inescapable_torment.enabled() )
     {
       if ( o().cooldowns.mind_blast->is_ready() )
       {
@@ -1048,13 +1048,22 @@ struct void_spike_t final : public priest_pet_spell_t
 
     gcd_type = gcd_haste_type::SPELL_HASTE;
 
-    child_void_spike_cleave = new void_spike_cleave_t( p );
-    add_child( child_void_spike_cleave );
+    if ( !p.o().is_ptr() )
+    {
+      child_void_spike_cleave = new void_spike_cleave_t( p );
+      add_child( child_void_spike_cleave );
+    }
+    else
+    {
+      aoe                 = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+      radius              = data().effectN( 1 ).radius_max();
+    }
 
     // BUG: Does not scale with Mastery
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
     // NOTE: a recent blue post said it should, but on beta it is not
-    if ( !p.o().bugs )
+    if ( !p.o().bugs || p.o().is_ptr() )
     {
       affected_by_shadow_weaving = true;
     }
@@ -1067,11 +1076,24 @@ struct void_spike_t final : public priest_pet_spell_t
     merge_pet_stats( p().o(), p(), *this );
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_pet_spell_t::composite_da_multiplier( s );
+
+    // Only hit for 30% of the damage when hitting off-targets.
+    if ( p().o().is_ptr() && target != s->target )
+    {
+      m *= data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_pet_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( !p().o().is_ptr() && result_is_hit( s->result ) )
     {
       child_void_spike_cleave->trigger( s->target, s->result_amount );
     }
@@ -1101,7 +1123,7 @@ namespace priestspace
 {
 void priest_t::trigger_inescapable_torment( player_t* target )
 {
-  if ( !talents.shadow.inescapable_torment.enabled() )
+  if ( !talents.shadow.inescapable_torment.enabled() || !talents.discipline.inescapable_torment.enabled() )
     return;
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
@@ -1140,7 +1162,7 @@ void priest_t::trigger_idol_of_yshaarj( player_t* target )
   }
   else
   {
-    auto duration      = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+    auto duration = timespan_t::from_seconds( talents.shadow.devoured_violence->effectN( 1 ).base_value() );
 
     for ( auto pet : get_current_main_pet( *this ) )
     {

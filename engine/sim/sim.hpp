@@ -507,11 +507,15 @@ struct sim_t : private sc_thread_t
     // Interval between checking blue_silken_lining_uptime
     timespan_t blue_silken_lining_update_interval = 5_s;
     // Enable or Disable Seething Black Dragonscale's damage
-    bool seething_black_dragonscale_damage = false;
+    bool screaming_black_dragonscale_damage = false;
     // Set the dragonflight for Glimmering Chromatic Orb
-    std::string glimmering_chromatic_orb_dragonflight = "obsidian";
+    std::string ominous_chromatic_essence_dragonflight = "obsidian";
     // Set the allies dragonflights for Glimmering Chromatic Orb
-    std::string glimmering_chromatic_orb_allies = "";
+    std::string ominous_chromatic_essence_allies = "";
+    // Set the target type for Askhandur's Damage Doubling
+    bool ashkandur_humanoid = false;
+    // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
+    std::string flowstone_starting_state = "high";
   } dragonflight_opts;
 
   // Auras and De-Buffs

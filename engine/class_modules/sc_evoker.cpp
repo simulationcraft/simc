@@ -535,8 +535,8 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
-    return c;
+    return std::max( 0.0, ( ab::cost() + get_buff_effects_value( flat_cost_buffeffects, true, false ) ) *
+                              get_buff_effects_value( cost_buffeffects, false, false ) );
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1175,7 +1175,12 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
     int n_targets() const override
     {
-      int n = pre_execute_state ? empower_value( pre_execute_state ) : max_empower;
+      return n_targets( pre_execute_state );
+    }
+
+    int n_targets( action_state_t* s ) const
+    {
+      int n = s ? empower_value( s ) : max_empower;
 
       n *= as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
 
@@ -1723,6 +1728,8 @@ struct shattering_star_t : public evoker_spell_t
     : evoker_spell_t( "shattering_star", p, p->talent.shattering_star, options_str )
   {
     aoe = as<int>( data().effectN( 1 ).base_value() * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
+    aoe = ( aoe == 1 ) ? 0 : aoe;
+    
 
     if ( p->talent.arcane_vigor.ok() && !p->is_ptr() )
     {

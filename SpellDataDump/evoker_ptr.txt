@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -106,7 +106,7 @@ Description      : $@spelldesc115008
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -124,7 +124,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Paladin, Rogue, Priest, Mage, Monk, Evoker
+Class            : Warrior, Paladin, Rogue, Priest, Mage, Monk, Evoker
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -524,14 +524,14 @@ Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
 Attributes       : ........ ........ ........ x.xx..x.   ...x.x.x ........ ........ ........ 
-                 : ........ ......x. ........ .....x..   ........ ........ x....... ........ 
+                 : ........ ......x. ........ .....x..   ........ ........ x....... ..x..... 
                  : .......x ........ ........ .....x..   ...x.... ........ .xx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ....x... ........ 
                  : x....... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
+                 : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Heartbeat Resist (30), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Can't Crit (93), Suppress Caster Procs (112), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Bounce Fails Spell (157), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Bypass Visibility Check (320), Defend Against Friendly Cast (336), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=889008)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: AOE enemy (instant) (16)
@@ -580,7 +580,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6, #15), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1)
 Family Flags     : 1, 38, 49
 Attributes       : ........ ........ ........ x.......   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -662,9 +662,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Periodic Refresh Extends Duration (436)
+                 : Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=889437)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.38400 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Unknown(59) -> AOE friendly (31)
@@ -720,7 +720,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2444 (Label) | Target: Self (1)
                    Affected Spells (Label): Energizing Flame (400006)
 #11 (id=1045271)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 63 | Scaled Value: 63 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Living Flame (361509)
                    Family Flags: 22
 #12 (id=1046956)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -732,9 +732,20 @@ Effects          :
                    Affected Spells: Fire Breath (357209), Full Belly (377087)
                    Family Flags: 35
 #14 (id=1050506)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 69 | Scaled Value: 69 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Verdant Embrace (361195)
                    Family Flags: 36
+#15 (id=1080987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916)
+                   Family Flags: 49
+#16 (id=1080988)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Living Flame (361509)
+                   Family Flags: 22
+#17 (id=1080989)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value 2: 2669 (Label) | Target: Self (1)
+                   Affected Spells (Label): Panacea (387763)
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -752,11 +763,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Spiritbloom (409895)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763), Spiritbloom (409895)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -1606,7 +1617,7 @@ Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect
                  : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #5, #6, #11), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7, #11), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6, #11, #16), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7, #11), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Lifespark (394552 effect#2)
 Family Flags     : 1, 7, 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x ........ ........ ......x. 
@@ -1619,7 +1630,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=899463)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.98000 | PvP Coefficient: 1.30000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.30000 | PvP Coefficient: 1.12000 | Target: Friend (21)
 #2 (id=907224)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc361469
@@ -2431,8 +2442,8 @@ Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
-Family Flags     : 0
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Raging Inferno (405659 effect#1)
+Family Flags     : 0, 64
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -2645,7 +2656,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 4 seconds
-Cooldown         : 15 seconds
+Cooldown         : 20 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #4, #5), Essence Burst (359618 effect#1), Spellweaver's Dominance (370845 effect#1), Eternity's Span (375757 effect#2), Focusing Iris (386336 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 20
@@ -2880,7 +2891,7 @@ Effects          :
                    Affected Spells: Firestorm (368847)
                    Family Flags: 32
 #2 (id=998482)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1013997)  : Reduce Remaining Cooldown (290)
                    Base Value: -21000 | Scaled Value: -21000 | PvP Coefficient: 1.00000 | Trigger Spell: 368847 | Target: Self (1)
 Description      : $@spelldesc370783
@@ -2926,7 +2937,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982356)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1033150)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Disintegrate has a $s2% chance each time it deals damage to launch a level 1 Eternity Surge at $s1% power.
@@ -3533,13 +3544,13 @@ Range            : 100 yards
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ x....... ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93), Ignore Healing Modifiers (219), Allow Class Ability Procs (416)
+                 : Can't Crit (93), Not On Player Controlled NPC (168), Ignore Healing Modifiers (219), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=985054)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Unknown(87) -> AOE friendly (31)
@@ -4932,7 +4943,7 @@ Effects          :
 #1 (id=1003135)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1044131)  : Dummy (3)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Temporal Anomaly applies Echo at $s1% effectiveness to the first $s2 allies it passes through.
 
 Name             : Nozdormu's Teachings (id=376237) [Spell Family (224), Passive] 
@@ -6519,6 +6530,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : None
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
+                 : 2669: Devastation Evoker (356809 effect#17)
 Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #6, #7), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6673,7 +6685,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032727)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Eternity Surge (359077), Full Belly (377087)
                    Family Flags: 18, 35
 Description      : Empower spells have a $s1% increased chance to critically strike and also increase your critical strike chance by $394402s1% for $394402d.
@@ -6694,7 +6706,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032728)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1034262)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
 Description      : Empower spells have a $s2% chance to grant you $s1 seconds of Fury of the Aspects without causing Exhaustion.
@@ -6740,7 +6752,7 @@ Effects          :
 #1 (id=1032730)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 394552 | Target: Self (1)
 #2 (id=1034308)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Reversion healing has a chance to cause your next Living Flame to cast instant and deal $s2% increased healing or damage. Stacks up to $394552u times.
 
 Name             : Limitless Potential (id=394402) [Spell Family (224)] 
@@ -6759,7 +6771,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1034001)  : Apply Aura (6) | Modify Critical Strike% (290)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc394400
 Tooltip          : Chance to critically strike increased by $s1%.
 
@@ -6780,7 +6792,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1034298)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Reversion (366155)
                    Family Flags: 8
 Description      : $@spelldesc393644
@@ -6811,7 +6823,7 @@ Effects          :
                    Affected Spells: Living Flame (361469)
                    Family Flags: 52
 #2 (id=1034314)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Living Flame (361500), Living Flame (361509)
                    Family Flags: 22, 50
 Description      : $@spelldesc393645
@@ -6942,7 +6954,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1053853)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Disintegrate and Pyre pierce enemies with Obsidian Shards, dealing $s1% of damage done as Volcanic damage over $409776d. 
 
 
@@ -6962,15 +6974,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053854)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Eternity Surge (359077), Full Belly (377087)
                    Family Flags: 18, 35
 #2 (id=1075004)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Fire Breath (357209), Eternity Surge (359077), Full Belly (377087)
                    Family Flags: 18, 35
 #3 (id=1075016)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Empower spells deal $s1% increased damage and cause your Obsidian Shards to blaze with power, dealing $s3% more damage for $409848d. During Dragonrage, shards always blaze with power.
 
 Name             : Evoker Preservation 10.1 Class Set 2pc (id=405520) [Spell Family (224), Passive, Hidden] 
@@ -6992,13 +7004,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053855)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1075107)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Dream Breath (355941)
                    Family Flags: 21
 #3 (id=1075967)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Dream Breath (355941)
                    Family Flags: 21
 Description      : Spiritbloom applies a heal over time effect for $s1% of healing done over $409895d. Dream Breath's healing is increased by $s2%.
@@ -7020,7 +7032,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053857)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 2.00000 | Target: Self (1)
 Description      : After casting $s1 empower spells, gain Essence Burst immediately and another $409899t1 sec later.
 
 Name             : Imminent Destruction (id=405651) [Spell Family (224)] 
@@ -7064,7 +7076,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1054061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Firestorm (368847)
+                   Affected Spells: Firestorm (368847), Firestorm (369374)
                    Family Flags: 32, 64
 #2 (id=1054086)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7158,29 +7170,29 @@ Removes $s1 Enrage effect from each enemy. Oppressing Roar's cooldown is reduced
 Tooltip          : The duration of incoming crowd control effects are increased by $s2%.
 
 Name             : Obsidian Shards (id=409776) [Spell Family (224)] 
-Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 8 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
-2615
+Family Flags     : 127
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
                  : .......x .......x ....x... ........   ........ ........ .......x ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Allow Class Ability Procs (416)
+                 : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Always Hit (114), Ignore Caster & Target Restrictions (124), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), No Partial Resists (183), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Bypass Visibility Check (320), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1074863)  : Apply Aura (6) | Periodic Damage (3): firestorm every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=1075094)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 2615 (Label) | Target: Enemy (6)
-                   Affected Spells (Label): Obsidian Shards (409776)
+#2 (id=1075094)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Obsidian Shards (409776)
+                   Family Flags: 127
 Description      : $@spelldesc405518
 Tooltip          : Deals $w1 Volcanic damage every $t1 sec.
 
@@ -7362,7 +7374,7 @@ Effects          :
 #1 (id=1077742)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1077743)  : Unknown(289)
-                   Base Value: -12 | Scaled Value: -12 | PvP Coefficient: 1.00000 | Trigger Spell: 405874 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Trigger Spell: 405874 | Target: Self (1)
 Description      : $@spelldesc369846
 Tooltip          : Your next Pyre will explode into a Firestorm.
 

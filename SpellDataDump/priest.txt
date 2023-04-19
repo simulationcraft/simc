@@ -1,9 +1,10 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48865 Live (hotfix 2023-04-01/48865)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
+Hotfixed         : Variables
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 3.1% Base Mana (0) (id=7) w/ Discipline Priest (id=137032)
+Resource         : 2.4% Base Mana (0) (id=7) w/ Discipline Priest (id=137032)[Hotfixed: Percent Cost (3.1 -> 2.4)]
 Resource         : 3.1% Base Mana (0) (id=265783) w/ Holy Priest (id=137031)
 Resource         : 5% Base Mana (0) (id=265784) w/ Shadow Priest (id=137033)
 Spell Level      : 4
@@ -34,11 +35,11 @@ Description      : Shields an ally for $d, absorbing $<shield> damage.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
 $shadow=$?a137033[${1.00}][${1}]
+$disc=$?a137032[${1.25}][${1}]
 $pvp=$?a134735[${1}][${1}]
 $shadowinpvp=$?a134735&a137033[${0.8}][${1}]
 $weal=$?a390787[${1+$390787s2/100}][${1}]
-$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}
-
+$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=1, max_rank=1, req_points=0]
@@ -46,14 +47,14 @@ Class            : Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.8% Base Mana (0) (id=35) w/ Holy Priest (id=137031)
-Resource         : 2.7% Base Mana (0) (id=265695) w/ Discipline Priest (id=137032)
+Resource         : 2.4% Base Mana (0) (id=265695) w/ Discipline Priest (id=137032)[Hotfixed: Percent Cost (2.7 -> 2.4)]
 Resource         : 1.8% Base Mana (0) (id=265696) w/ Shadow Priest (id=137033)
 Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2, #18), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Holy Priest (137031 effects: #1, #2, #14), Discipline Priest (137032 effects: #1, #2, #18, #19), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Renewed Faith (341997 effect#1), Divine Favor: Serenity (372791 effects: #1, #2, #3, #4), Twist of Fate (390978 effects: #1, #2), Rapid Recovery (391368 effects: #1, #2)
 Family Flags     : 6, 126
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
@@ -167,7 +168,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #5, #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Boon of the Ascended (325013 effect#4), Hungering Void (345219 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Wrath Unleashed (390782 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1)
+Affecting spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4, #18), Discipline Priest (137032 effects: #5, #12, #13), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#2), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Boon of the Ascended (325013 effect#4), Hungering Void (345219 effect#1), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Wrath Unleashed (390782 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1)
 Family Flags     : 7, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -639,9 +640,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.72500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.5 -> 1.725)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08250 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09488 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.0825 -> 0.094875)
 #3 (id=808675)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19526 | Target: Enemy (6)
 Description      : Consumes the enemy in Holy flames that cause $s1 Holy damage and an additional $o2 Holy damage over $d.$?a231687[ Stacks up to $u times.][]
@@ -3404,7 +3407,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=170810)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.31500 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40950 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+Hotfixed         : SP Coefficient (0.315 -> 0.4095)
 #2 (id=709210)   : Trigger Spell (64): Holy Nova
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 281265 | Target: Self (1)
 #3 (id=845266)   : Dummy (3)
@@ -3572,6 +3576,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
+#18 (id=1079592)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Smite (585)
+                   Family Flags: 7
+Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -3653,6 +3662,14 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
+#19 (id=1079597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Renew (139)
+                   Family Flags: 6
+Hotfixed         : NEW EFFECT
+#20 (id=1079598)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -4259,7 +4276,7 @@ Talent Entry     : Discipline [tree=spec, row=2, col=1, max_rank=1, req_points=0
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
-Resource         : 5.5% Base Mana (0) (id=10498)
+Resource         : 4.5% Base Mana (0) (id=10498)[Hotfixed: Percent Cost (5.5 -> 4.5)]
 Spell Level      : 23
 Range            : 40 yards
 Cast Time        : 2 seconds

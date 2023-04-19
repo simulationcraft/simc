@@ -3922,9 +3922,11 @@ void sim_t::create_options()
   add_option( opt_string( "dragonflight.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
   add_option( opt_float( "dragonflight.blue_silken_lining_uptime", dragonflight_opts.blue_silken_lining_uptime, 0.0, 1.0 ) );
   add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_bool( "dragonflight.seething_black_dragonscale_damage", dragonflight_opts.seething_black_dragonscale_damage ) );
-  add_option( opt_string( "dragonflight.glimmering_chromatic_orb_dragonflight", dragonflight_opts.glimmering_chromatic_orb_dragonflight ) );
-  add_option( opt_string( "dragonflight.glimmering_chromatic_orb_allies", dragonflight_opts.glimmering_chromatic_orb_allies ) );
+  add_option( opt_bool( "dragonflight.screaming_black_dragonscale_damage", dragonflight_opts.screaming_black_dragonscale_damage ) );
+  add_option( opt_string( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight ) );
+  add_option( opt_string( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies ) );
+  add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
+  add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
 }
 
 // sim_t::parse_option ======================================================

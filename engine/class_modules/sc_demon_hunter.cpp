@@ -409,7 +409,7 @@ public:
       player_talent_t soulmonger;                 // NYI
       player_talent_t stoke_the_flames;
       player_talent_t burning_alive;              // NYI
-      player_talent_t cycle_of_binding;           // NYI
+      player_talent_t cycle_of_binding;
 
       player_talent_t vulnerability;
       player_talent_t feed_the_demon;             // NYI
@@ -1861,6 +1861,8 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
 {
   timespan_t sigil_delay;
   timespan_t sigil_activates;
+  std::vector<cooldown_t*> sigil_cooldowns;
+  timespan_t sigil_cooldown_adjust;
 
   demon_hunter_sigil_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, timespan_t delay )
     : demon_hunter_spell_t( n, p, s ),
@@ -1870,6 +1872,13 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     aoe = -1;
     background = dual = ground_aoe = true;
     assert( delay > timespan_t::zero() );
+
+    if ( p->talent.vengeance.cycle_of_binding->ok() )
+    {
+      sigil_cooldowns = { p->cooldown.sigil_of_flame, p->cooldown.elysian_decree, p->cooldown.sigil_of_misery, p->cooldown.sigil_of_silence };
+      sigil_cooldown_adjust =
+          -timespan_t::from_seconds( p->talent.vengeance.cycle_of_binding->effectN( 1 ).base_value() );
+    }
   }
 
   void place_sigil( player_t* target )
@@ -1889,11 +1898,21 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    // TOCHECK -- Appears to have a 100ms ICD in the spell data
     if ( hit_any_target && p()->talent.demon_hunter.soul_sigils->ok() )
     {
       unsigned num_souls = as<unsigned>( p()->talent.demon_hunter.soul_sigils->effectN( 1 ).base_value() );
       p()->spawn_soul_fragment( soul_fragment::LESSER, num_souls, false);
+    }
+    if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
+    {
+      std::vector<cooldown_t*> sigils_on_cooldown;
+      range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
+                      []( cooldown_t* c ) { return c->down(); } );
+      if ( !sigils_on_cooldown.empty() )
+      {
+        cooldown_t* sigil_cooldown = sigils_on_cooldown[ static_cast<int>(rng().range( sigils_on_cooldown.size() )) ];
+        sigil_cooldown->adjust( sigil_cooldown_adjust );
+      }
     }
   }
 

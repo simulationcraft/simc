@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.7.48865
-static const std::array<spelltext_data_t, 19493> __spelltext_data { {
+// Spell text, wow build 10.0.7.48999
+static const std::array<spelltext_data_t, 19494> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2538,7 +2538,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   {  85288, "A mighty blow with both weapons that deals a total of $<damage> Physical damage.$?s383854[\r\n\r\nRaging Blow has a $s1% chance to instantly reset its own cooldown.][]\r\n\r\n|cFFFFFFFFGenerates ${$m2/10} Rage.|r", 0, 0 },
   {  85384, "$@spelldesc85288", 0, 0 },
   {  85416, "$@spelldesc85043", 0, 0 },
-  {  85673, "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on the target's missing health.][]", 0, 0 },
+  {  85673, "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on your missing health, or up to $315924s1% if cast on another target.][]", 0, 0 },
   {  85692, "Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.", 0, 0 },
   {  85739, "Causes your next single-target attack to strike up to $s1 additional targets for $s3% damage.", "Your next single-target attack strikes up to $w1 additional targets for $w3% damage.", 0 },
   {  85804, "Your Holy Power spending abilities reduce the cast time of your next Flash of Light by $114250s1%, and increase its healing done by $114250s2%. Stacks up to $114250u times.", 0, 0 },
@@ -6339,7 +6339,9 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 196771, "$@spelldesc196770", 0, 0 },
   { 196777, "Your damage and healing spells have a chance open a portal to Mardum, sending a stream of imps at your target or your target's opponent.", 0, 0 },
   { 196779, "When Prayer of Mending jumps to a target affected by your Renew, that target is instantly healed for $196781s1.", 0, 0 },
+  { 196780, "$@spelldesc77575", 0, 0 },
   { 196781, "$@spelldesc196779", 0, 0 },
+  { 196782, "$@spelldesc77575", "Upon expiration nearby enemies are infected by Virulent Plague.", 0 },
   { 196783, "Nibble a piece of the crystal.", "Crystals are growing everywhere!", 0 },
   { 196792, "Place a Whitewater Carp to kick around. Splash!", 0, 0 },
   { 196809, "Heals the target for $s1.", 0, 0 },
@@ -11035,6 +11037,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 281291, "Ardent Defender has $s2% reduced cooldown.", 0, 0 },
   { 281297, "Increases your Haste by $s1%.", 0, 0 },
   { 281301, "Increases healing done by Renewing Mist by $s1%.", 0, 0 },
+  { 281327, "$@spelldesc281238", 0, 0 },
   { 281423, "Bind an Infernal Alchemist stone, preventing its fel energies from ever releasing.", 0, 0 },
   { 281425, "$@spelldesc53343", 0, 0 },
   { 281452, "Increases your damage done by $s1%.", 0, 0 },
@@ -12843,7 +12846,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 315858, 0, "Primary stat increased by $w1.", 0 },
   { 315867, "Judgment generates $220637s1 Holy Power.", 0, "Rank 3" },
   { 315921, "When you cast Word of Glory on yourself, it is increased by up to $s1% based on your missing health.", 0, "Rank 2" },
-  { 315924, "Word of Glory's healing is increased by the target's missing health, on any target.", 0, 0 },
+  { 315924, "When you cast Word of Glory on someone other than yourself, its healing is increased by up to $s1% based on the target's missing health.", 0, 0 },
   { 315961, "$@spelldesc262150", 0, 0 },
   { 316019, "Deals $s1 Shadow damage.", 0, 0 },
   { 316099, "Afflicts one target with $o2 Shadow damage over $d. \r\n\r\nIf dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for $196364d.$?s231791[\r\n\r\n|cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]", "Suffering $w2 Shadow damage every $t2 sec. If dispelled, will cause ${$w2*$s1/100} damage to the dispeller and silence them for $196364d.", 0 },
@@ -14743,7 +14746,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 343399, "Increase your armor by $s1 and regenerate $343401s1 health every $t3 sec for $d, but you are slowed by $s2%.", "Armor increased by $w1, regenerating $343401s1 health every $t3 sec, but you are slowed by $s2% for the duration.", 0 },
   { 343411, "Unleash the little Bonestorm spinning across the ground. ", 0, 0 },
   { 343441, "Eat me! Results are unpredictable. Only usable in the Shadowlands.", 0, 0 },
-  { 343527, "A hammer slowly falls from the sky upon the target, after $d, they suffer ${$387113s1*$<mult>} Holy damage$?s387196[ and enemies within $387200a2 yards will suffer $387196s1% of the damage taken from your abilities in that time.][, plus $s2% of damage taken from your abilities in that time.]\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "Sentenced to suffer an additional $w1 Holy damage.", 0 },
+  { 343527, "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage.", 0 },
   { 343539, "$@spelldesc343250", 0, 0 },
   { 343540, "$@spelldesc336866", 0, 0 },
   { 343541, "$@spelldesc336866", 0, 0 },
@@ -17802,9 +17805,7 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 387176, "Your Incinerate and Conflagrate casts on targets that have $s2% or less health reduce the cooldown of Soulfire by ${$s1/-1000} sec.", 0, 0 },
   { 387178, "$@spelldesc387170", "Your next $?c3[Single target Holy Power ability automatically triggers Divine Storm][Word of Glory automatically triggers Light of Dawn] with $387170s2% increased effectiveness.", 0 },
   { 387184, "For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}.1]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]", "Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]", 0 },
-  { 387196, "When Execution Sentence expires, $s1% of damage done during its duration is also dealt to nearby enemies within $s3 yards.", 0, 0 },
   { 387198, "Boon of the Covenants passively increases your damage and healing by an additional |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
-  { 387200, "$@spelldesc343527", 0, 0 },
   { 387201, "Increases critical strike chance by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 387202, "Increases mastery by |cFFFFFFFF${$mas*$s1}.1%|r.", 0, 0 },
   { 387218, "Place a banner that increases damage done to all Air and Frost Elementals within $r yards by $396255s1%. Also grants $387229s1 Deftness and Finesse to Herbalists. Lasts $d. Only usable in the Dragon Isles.", 0, 0 },
@@ -19495,13 +19496,17 @@ static const std::array<spelltext_data_t, 19493> __spelltext_data { {
   { 409451, "Create a piece of Crimson Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.7.48865
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.0.7.48999
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  {   85673,  0, "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on the target's missing health.][]", "Calls down the Light to heal a friendly target for $130551s1$?a378405[ and an additional $<heal> over $378412d][].$?a379043[ Your block chance is increased by $379043s1% for $379041d.][]$?a315921&!a315924[\r\n\r\n|cFFFFFFFFProtection:|r If cast on yourself, healing increased by up to $315921s1% based on your missing health.][]$?a315924[\r\n\r\n|cFFFFFFFFProtection:|r Healing increased by up to $315921s1% based on your missing health, or up to $315924s1% if cast on another target.][]" },
+  {  315924,  0, "Word of Glory's healing is increased by the target's missing health, on any target.", "When you cast Word of Glory on someone other than yourself, its healing is increased by up to $s1% based on the target's missing health." },
+  {  343527,  0, "A hammer slowly falls from the sky upon the target, after $d, they suffer ${$387113s1*$<mult>} Holy damage$?s387196[ and enemies within $387200a2 yards will suffer $387196s1% of the damage taken from your abilities in that time.][, plus $s2% of damage taken from your abilities in that time.]\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]" },
+  {  343527,  1, "Sentenced to suffer an additional $w1 Holy damage.", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage." },
 } };
 
-// Spell description variables, wow build 10.0.7.48865
+// Spell description variables, wow build 10.0.7.48999
 static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
-  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n" },
+  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -19877,7 +19882,8 @@ static const std::array<spelldesc_vars_data_t, 374> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.7.48865
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.0.7.48999
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>*$<shadowinpvp>}\r\n", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
 } };
 

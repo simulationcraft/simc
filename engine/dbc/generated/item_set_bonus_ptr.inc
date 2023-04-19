@@ -1,4 +1,4 @@
-// Set bonus data, wow build 10.1.0.48898
+// Set bonus data, wow build 10.1.0.49190
 static const std::array<item_set_bonus_t, 601> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
@@ -603,12 +603,12 @@ static const std::array<item_set_bonus_t, 601> __ptr_set_bonus_data { {
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   4,   9,  265,  405572, { 202534, 202533, 202532, 202536, 202531,  0 } },
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   4,   9,  266,  405574, { 202534, 202533, 202532, 202536, 202531,  0 } },
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   4,   9,  267,  405576, { 202534, 202533, 202532, 202536, 202531,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   2,  10,  268,  405539, { 202509, 202507, 202506, 202505, 202504,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   2,  10,  270,  405541, { 202509, 202507, 202506, 202505, 202504,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   2,  10,  269,  405543, { 202509, 202507, 202506, 202505, 202504,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  268,  405540, { 202509, 202507, 202506, 202505, 202504,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  270,  405542, { 202509, 202507, 202506, 202505, 202504,  0 } },
-  { "Fangs of Forged Vermillion"                , "tier30"             ,     19,  1546,   30,   4,  10,  269,  411375, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of the Vermillion Forge"             , "tier30"             ,     19,  1546,   30,   2,  10,  268,  405539, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of the Vermillion Forge"             , "tier30"             ,     19,  1546,   30,   2,  10,  270,  405541, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of the Vermillion Forge"             , "tier30"             ,     19,  1546,   30,   2,  10,  269,  405543, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of the Vermillion Forge"             , "tier30"             ,     19,  1546,   30,   4,  10,  268,  405540, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of the Vermillion Forge"             , "tier30"             ,     19,  1546,   30,   4,  10,  270,  405542, { 202509, 202507, 202506, 202505, 202504,  0 } },
+  { "Fangs of the Vermillion Forge"             , "tier30"             ,     19,  1546,   30,   4,  10,  269,  411375, { 202509, 202507, 202506, 202505, 202504,  0 } },
   { "Strands of the Autumn Blaze"               , "tier30"             ,     19,  1542,   30,   2,  11,  102,  405510, { 202518, 202516, 202515, 202514, 202513,  0 } },
   { "Strands of the Autumn Blaze"               , "tier30"             ,     19,  1542,   30,   2,  11,  103,  405512, { 202518, 202516, 202515, 202514, 202513,  0 } },
   { "Strands of the Autumn Blaze"               , "tier30"             ,     19,  1542,   30,   2,  11,  104,  405514, { 202518, 202516, 202515, 202514, 202513,  0 } },
