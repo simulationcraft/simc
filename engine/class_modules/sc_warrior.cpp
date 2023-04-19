@@ -205,6 +205,7 @@ public:
     buff_t* vanguards_determination;
     buff_t* crushing_advance;
     buff_t* merciless_assault;
+    buff_t* earthen_tenacity;  // T30 Protection 4PC
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -5671,6 +5672,9 @@ struct shield_slam_t : public warrior_attack_t
     energize_type = action_energize::NONE;
     rage_gain += p->talents.protection.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
     rage_gain += p->talents.protection.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+
+    if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T30, B2 ) -> effectN( 1 ).percent();
   }
 
     void init() override
@@ -5702,6 +5706,11 @@ struct shield_slam_t : public warrior_attack_t
     if ( p() -> buff.brace_for_impact -> up() )
     {
       am *= 1.0 + p()->buff.brace_for_impact -> stack_value();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) && p() -> buff.last_stand -> up() )
+    {
+        am *= 1.0 + p() -> talents.protection.last_stand -> effectN( 3 ).percent();
     }
 
     return am;
@@ -5746,6 +5755,16 @@ struct shield_slam_t : public warrior_attack_t
       p()->buff.ignore_pain->trigger();
       p()->buff.violent_outburst->expire();
       total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) ) 
+    {
+      p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
+      // Value is doubled with last stand up, so we apply the same effect twice.
+      if ( p() -> buff.last_stand -> up() )
+      {
+        p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
+      }
     }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
