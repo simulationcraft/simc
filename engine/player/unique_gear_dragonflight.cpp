@@ -3803,6 +3803,64 @@ void neltharions_call_to_suffering( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void neltharions_call_to_chaos( special_effect_t& effect )
+{
+  int driver_id = effect.spell_id;
+
+  switch ( effect.player->type )
+  {
+    case WARRIOR:
+      driver_id = 408122;
+      break;
+    case PALADIN:
+      driver_id = 408123;
+      break;
+    case MAGE:
+      driver_id = 408126;
+      break;
+    case DEMON_HUNTER:
+      driver_id = 408128;
+      break;
+    case EVOKER:
+      driver_id = 408127;
+      break;
+    default:
+      return;
+  }
+
+  // Buff scaling is on the main trinket driver.
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403382 ) )
+                           ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
+  effect.spell_id = driver_id;
+
+  // Triggers only on AoE Abilities - Abilities that *can* AoE or abilities that *did* AoE. Evokers need a hack.
+  if ( effect.player->type != EVOKER )
+  {
+    effect.player->callbacks.register_callback_trigger_function(
+        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) { return a->is_aoe() || s->n_targets > 1; } );
+  }
+  else
+  {
+    // Horrifying state hack to trick the Evoker Module into thinking there is a pre-execute state for the is_aoe calls
+    // for eternity surge as the action n_targets is based on that state.
+    effect.player->callbacks.register_callback_trigger_function(
+        driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+          auto _s              = a->pre_execute_state;
+          a->pre_execute_state = s;
+          auto b               = a->is_aoe() || s->n_targets > 1;
+          a->pre_execute_state = _s;
+          return b;
+        } );
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+
 // Elementium Pocket Anvil
 // 401303 Main Spell/Value Container
 // 401306 On use Cast time/Cooldown
@@ -6127,6 +6185,7 @@ void register_special_effects()
   register_special_effect( 401468, items::screaming_black_dragonscale_equip);
   register_special_effect( 405940, items::screaming_black_dragonscale_use);
   register_special_effect( 403385, items::neltharions_call_to_suffering );
+  register_special_effect( 403366, items::neltharions_call_to_chaos );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
