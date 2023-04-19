@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.0.49092
-static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
+// Spell text, wow build 10.1.0.49190
+static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14792,7 +14792,7 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 344154, "$@spelldesc344063", "Dealing Physical damage to nearby enemies every $t1 sec.", 0 },
   { 344155, "$@spelldesc344063", 0, 0 },
   { 344172, "Damage taken is reduced by $s1% while inside your Consecration.", 0, "Rank 2" },
-  { 344179, "$@spelldesc187880", "Your next damage or healing spell has its cast time reduced by ${$max($187881s1, -100)*-1}%$?s383303[, damage increased by][]$?s383303&!s384149[ ${$min($187881w2, 5*$s~2)}%]?s383303&s384149[ $187881w2%][]$?s383303[, and healing increased by][]$?s383303&!s384149[ ${$min($187881w3, 5*$s~2)}%]?s383303&s384149[ $187881w3%][].", 0 },
+  { 344179, "$@spelldesc187880", "Your next damage$?a410673[][ or healing] spell has its cast time reduced by ${$max($187881s1, -100)*-1}%$?a410673&?s383303[ and its damage increased by]?s383303&!a410673[, damage increased by][]$?s383303&!s384149[ $187881w2%]?s383303&s384149[ $187881w2%][]$?s383303&!a410673[, and healing increased by][]$?a410673[]?s383303&!s384149[ $187881w3%]?s383303&s384149[ $187881w3%][].", 0 },
   { 344221, "Casting a damaging spell causes your next single target heal to grant $344227s1 Leech for $344227d. This effect may only occur once every $344229d.", 0, 0 },
   { 344225, "$@spelldesc344221", "Your next heal will grant Leech to the target.", 0 },
   { 344227, "$@spelldesc344221", "Leech increased by $w1.", 0 },
@@ -16826,7 +16826,6 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
   { 381734, "Taking damage has a chance to increase your Versatility by $381769s1 for $381769d.\r\n\r\nThis effect is increased for every ally within $381769s2 yds, up to $381769s3.", 0, 0 },
-  { 381736, "Get carried away by five dragon whelplings!", "Get carried away by five dragon whelplings!", 0 },
   { 381741, "$@spelldesc364342", "Cooldown of Fel Rush and Infernal Strike reduced by $s1%.", "Bronze" },
   { 381743, "Increases the chance for Earthquake to knock enemies down by ${$s1}.1%.\r\n", 0, 0 },
   { 381746, "$@spelldesc364342", "Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.", "Bronze" },
@@ -19276,7 +19275,7 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 402221, "$@spelldesc401515", "Your secondary stats are increased by $w2.", 0 },
   { 402583, "Briefly open a pair of gates to the Void to redirect the orbit of An'shuul, the Cosmic Wanderer through your target, dealing $402574s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to 5 enemies.", 0, 0 },
   { 402642, "Consume the spores and let them transform you.", "A Spore-bound Essence transforms your body.", 0 },
-  { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every 45 seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", 0, 0 },
+  { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", 0, 0 },
   { 402822, "$@spelldesc402813", 0, 0 },
   { 402894, "$@spelldesc402813\r\n", "You sense the distant ebb of tidal magma.", 0 },
   { 402896, "$@spelldesc402813\r\n\r\n", "Your next harmful spell or ranged ability will grant Igneous Fury.", 0 },
@@ -19516,7 +19515,7 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 405539, "Blackout Kick damage increased by $s1%. You have a $s2% chance to not reset your Elusive Brawler stacks on a successful dodge.", 0, 0 },
   { 405540, "$@spelldesc408503", 0, 0 },
   { 405541, "Renewing Mist has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.", "Renewing Mist has a chance to grant Soulfang Infusion, granting ${$410007s1*$410007d}.1% of your maximum Mana over $410007d.", 0 },
-  { 405542, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", 0 },
+  { 405542, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $410082s1% for $410082d.", 0 },
   { 405543, "Rising Sun Kick deals $s1% increased damage and goes nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1 yds.", "Rising Sun Kick deals $s1% increased damage and goes nova, dealing $410139s1 Shadowflame damage to all enemies within $410139A1 yds.", 0 },
   { 405545, "Holy Shock's critical strikes heal for $s1% more and reduce the cooldown of Light's Hammer by $s2 sec, or Holy Prism by $s3 sec.", 0, 0 },
   { 405546, "Light's Hammer heals $s2% more frequently and generates $s6 Holy Power every $122773t2 sec. Holy Prism's healing is increased by $s3% and it generates $s4 Holy Power if cast on an enemy target, or $s5 if cast on an ally.", 0, 0 },
@@ -19532,9 +19531,9 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 405558, "Devouring Plague damage increased by $s1%. Every $409502u casts of Devouring Plague increases the damage of Shadowy Apparitions conjured within the next $410871d by $410871s1%.", 0, 0 },
   { 405559, "Rupture deals an additional $s1% damage as Nature. Crimson Tempest deals an additional $s2% damage as Nature.", "Rupture deals an additional $s1% damage as Nature. Crimson Tempest deals an additional $s2% damage as Nature.", 0 },
   { 405560, "When Deathmark expires, Nature damage you deal is increased by $409587s1% for $409587d.", "When Deathmark expires, Nature damage you deal is increased by $409587s1% for $409587d.", 0 },
-  { 405561, "Damage you inflict applies a Soulrip, dealing 5% of all damage you deal as physical damage over 8 sec.", "Damage you inflict applies a Soulrip, dealing 5% of all damage you deal as physical damage over 8 sec.", 0 },
+  { 405561, "Damage you inflict applies a Soulrip, dealing $s1% of all damage you deal as physical damage over $409604d.", "Damage you inflict applies a Soulrip, dealing $s1% of all damage you deal as physical damage over $409604d.", 0 },
   { 405562, "Between the Eyes unleashes all Soulrips, dealing $s1% of all remaining damage and granting $409606s1% Agility for $409606d.", "Between the Eyes unleashes all Soulrips, dealing $s1% of all remaining damage and granting $409606s1% Agility for $409606d.", 0 },
-  { 405563, "Shadow Dance grants you Symbols of Death for 10 sec and extends the duration of Rupture by 4 sec. \r\n", "Shadow Dance grants you Symbols of Death for 10 sec and extends the duration of Rupture by 4 sec.", 0 },
+  { 405563, "Shadow Dance grants you Symbols of Death for $s1 sec and extends the duration of Rupture by $s2 sec. \r\n", "Shadow Dance grants you Symbols of Death for $s1 sec and extends the duration of Rupture by $s2 sec.", 0 },
   { 405564, "Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $409987s1%.", "Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $409987s1%.", 0 },
   { 405565, "Gain Stormkeeper every $s1 sec.", 0, 0 },
   { 405566, "For $410018d after you consume Stormkeeper, your Lightning Bolt, Lava Burst, Icefury, and Frost Shock generate $410018s1% more Maelstrom, and your Chain Lightning, Lava Beam, and Earthquake deal $410018s2% increased critical damage.", 0, 0 },
@@ -19553,7 +19552,7 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 405579, "Rampage damage and critical strike chance increased by $s1%.", 0, 0 },
   { 405580, "Rampage causes your next Bloodthirst to have a $409983s3% increased critical strike chance, deal $409983s2% increased damage and generate ${$409983s1/10} additional Rage. Stacking up to $409983u times.", 0, 0 },
   { 405581, "Shield Slam deals $s1% increased damage and reduces the cooldown of Last Stand by $s2 sec. During Last Stand these effects are doubled.", 0, 0 },
-  { 405582, "For 10 sec after Last Stand ends, Shield Slam unleashes a wave of force dealing $410219s2 Physical damage to enemies in front of you and reducing damage they deal to you by 5% for 5 sec.", 0, 0 },
+  { 405582, "For $410218d sec after Last Stand ends, Shield Slam unleashes a wave of force dealing $410219s2 Physical damage to enemies in front of you and reducing damage they deal to you by $410219s3% for $410219d.", 0, 0 },
   { 405607, "Increases the critical strike chance of Judgment $s1%.\r\n\r\n", 0, 0 },
   { 405608, "$@spelldesc401515", "Your Critical Strike is increased by $w2.", 0 },
   { 405611, "$@spelldesc401515", "Your Mastery is increased by $w2.", 0 },
@@ -19617,7 +19616,7 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 406459, "Call a friend to come help you! They may deal $406477s3 Physical damage to your target and $?134735a[snare][stun] it for $406488d, heal you for $406477s1, or increase a random secondary stat by $406477s2 for $406485d.\r\n\r\nIf you're feeling hungry, they might even bring you some food!", 0, 0 },
   { 406468, "Shield of the Righteous heals you and up to $s3 nearby allies for $53600s2% of maximum health.", 0, 0 },
   { 406485, "$@spelldesc406459", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $?e2[$w3]?e3[$w4]?e4[$w5]?e5[$w6][Highest secondary stat].", 0 },
-  { 406488, "$@spelldesc406459", "Stuned", 0 },
+  { 406488, "$@spelldesc406459", "Stunned.", 0 },
   { 406545, "Your damaging Holy Power abilities cost $s1 additional Holy Power and deal $s2% increased damage.", 0, 0 },
   { 406646, "Crusader Strike becomes a 2 part combo.\r\n\r\nTemplar Strike slashes an enemy for $407480s1 $?s403664 [Holystrike][Radiant] damage. \r\n\r\nYou have $406648d to continue the combo.\r\n\r\nTemplar Slash strikes an enemy for $406647s1 $?s403664[Holystrike][Radiant] damage and is always a critical strike.\r\n\r\nInherits Crusader Strike benefits.", 0, 0 },
   { 406647, "Complete the Templar combo, slash the target with a $406648s2% increased chance to critically strike for $<damage> $?s403664[Holystrike][Radiant] damage.\r\n\r\n|cFFFFFFFFGenerate $s2 Holy Power.", 0, 0 },
@@ -19813,12 +19812,13 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 409987, "Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $s1%.", "Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $w1%.", 0 },
   { 410007, "Renewing Mist has a chance to grant Soulfang Infusion, granting ${$o1}.2% of your maximum Mana over $d.", "Restoring $o1% of maximum mana over $d.", 0 },
   { 410018, "$@spelldesc405566", "Maelstrom generated from Lava Burst, Lightning Bolt, Icefury, and Frost Shock increased by $s1%.\r\nCritical damage dealt by Earthquake, Chain Lightning, and Lava Beam increased by $s2%.", 0 },
-  { 410082, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by 40% for 6 sec.", 0 },
+  { 410082, "Drinking a Tea or gaining Soulfang Infusion increases the healing of your Vivify and Renewing Mists by $s1% for $d.", "Increases the healing of your Vivify and Renewing Mists by $w1% for $d.", 0 },
   { 410138, "$@spelldesc405578", "You next Mortal Strike deals $m1% increased damage and deals additional damage to all enemies in front of you.", 0 },
   { 410139, "$@spelldesc405543", 0, 0 },
   { 410147, "$@spelldesc405528", "Damage of your next Kill Command increased by $s1%.", 0 },
   { 410167, "$@spelldesc405530", "Damage taken from Wildfire Bomb increased by $s1%.", 0 },
-  { 410219, "Shield Slam unleashes a wave of force dealing $s2 Physical damage to enemies in front of you and reducing damage they deal to you by $s3% for 5 sec.", "Dealing $s3% reduced damage to $@auracaster.", 0 },
+  { 410218, "$@spelldesc405582", "Shield Slam unleashes a wave of force dealing $410219s2 Physical damage to enemies in front of you and reducing damage they deal to you by $410219s3% for 5 sec.", 0 },
+  { 410219, "Shield Slam unleashes a wave of force dealing $s2 Physical damage to enemies in front of you and reducing damage they deal to you by $s3% for $d.", "Dealing $s3% reduced damage to $@auracaster.", 0 },
   { 410220, "Heals $s1 damage over $409915d", 0, 0 },
   { 410226, 0, "Storing stacks of Shadowed Immolation.", 0 },
   { 410228, "[NYI] Taking damage has a chance to store stacks of Hellsteel Immolation.\r\nAfter receiving 5 stacks, your next ability will release the stored energy dealing X Shadowflame damage to all enemies in a Y radius. This effect repeats for each stack of Hellsteel Immolation.", "Points!", 0 },
@@ -19836,6 +19836,7 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 410532, "$@spelldesc410530", 0, 0 },
   { 410638, "$@spelldesc405553", "Your next Power Word: Radiance is instant and costs $s1% less mana.", 0 },
   { 410668, "Restores ${$m1/5*$d} health over $d.  Must remain seated while eating.", "Restores ${$m1/5} health per second.", 0 },
+  { 410673, "Maelstrom Weapon no longer benefits Healing Surge or Chain Heal. Instead, consuming Maelstrom Weapon on a damage spell causes your next Healing Surge or Chain Heal to gain $s1% of the benefits of Maelstrom Weapon based on the stacks consumed. ", 0, "PvP Talent" },
   { 410790, "$@spelldesc279302", "Movement speed slowed by $s2%.", 0 },
   { 410871, "$@spelldesc405558\r\n", "The damage of conjured Shadowy Apparitions is increased by $s1%.", 0 },
   { 410879, "$@spelldesc405502", "Taking ${$w1/2}% additional critical strike damage from $@auracaster.", 0 },
@@ -19864,18 +19865,20 @@ static const std::array<spelltext_data_t, 19867> __ptr_spelltext_data { {
   { 411899, "Apply a Shadowed Belt Clasp to your waist armor, causing it to permanently gain $ec1 Stamina.", 0, 0 },
   { 412150, "Add the Shielding affix to a Mythic Keystone.", 0, 0 },
   { 412547, "Dealing damage has a chance to rouse the Shadowflame, inflicting $s2 Shadowflame damage upon your target and $s3 Shadowflame damage to yourself. Whenever this happens, you gain a stack of Roused Shadowflame.\r\n\r\nRoused Shadowflame increases this effects damage by $s4%, stacking $406887u times. Upon reaching maximum stacks, the Roused Shadowflame will subside.", 0, 0 },
-  { 412574, "Create a piece of Obsidian Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 412574, "Create a piece of Obsidian Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 412629, "Empowers your chosen aura for $d.$?a344218[\r\n\r\n$@spellname465: Damage reduction increased to ${-$s1-$465s2}%.][]$?a344219[\r\n\r\n$@spellname32223: Mount speed bonus increased to ${$s2+$32223s4}%.][]$?a344217[\r\n\r\n$@spellname183435: Increases healing received by $s3% while its effect is active.][]$?a344220[\r\n\r\n$@spellname317920: Affected allies immune to interrupts and silences.][]", "Aura effectiveness increased.", 0 },
   { 412740, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 2.", 0, 0 },
+  { 413075, "$@spelldesc408635", 0, 0 },
+  { 413231, "$@spelldesc341491", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49092
+// spelltext hotfix entries, wow build 10.1.0.49190
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.0.49092
+// Spell description variables, wow build 10.1.0.49190
 static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
-  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
+  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -19930,7 +19933,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {   51533, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
   {   51690, "$dmg=${$57841s2*6+$57842s1*6}" },
   {   53343, "$coeff=${0.01127}\r\n" },
-  {   53376, "$time= $?!a53376[{$31884d*(1+($53376s1/100))}][${$31884d}]" },
+  {   53376, "$time= $?a53376[${$31884d}][${$31884d*(1+($53376s1/100))}]" },
   {   55095, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {   58877, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
   {   61882, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.213*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}" },
@@ -19998,7 +20001,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  187874, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  188499, "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
   {  190411, "$damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}\r\n$maxRage=${$190411s1+($190411s2*$190411s3)}" },
-  {  190456, "$absorb=${($s1+$AP*3.5)*(1+$@versadmg)}" },
+  {  190456, "$absorb=${($s1+$AP*4.375)*(1+$@versadmg)}" },
   {  191034, "$damage=$?s202354[${9*$191037s1}][${9*$191037s1}]" },
   {  192376, "$agonizingratio = ${2}" },
   {  193315, "$mult=${($max(0,$min($pl-10,10))*8+195)/275}" },
@@ -20018,7 +20021,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  202044, "$ce=$?s152244[${1.85}][${1.5}]\r\n$damage=${$<ce>*($RAP*0.250)}" },
   {  202770, "$dmg=${$d*2*$211545s1}" },
   {  203316, "$reduction=${$m2/-1000}" },
-  {  203953, "$shield=${$AP*0.06}" },
+  {  203953, "$shield=${$AP*0.075}" },
   {  204019, "$shield=${$AP*$s1/100}" },
   {  204074, "$reduction=${$m1/10*3}.1" },
   {  205448, "$ext=${$231688s1/1000} sec" },
@@ -20061,7 +20064,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  260331, "$duration= ${$s1/1000}.1" },
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
-  {  263648, "$baseAbsorb=${5*$AP*$pctH}\r\n$fragmentAbsorb=${1*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${6.25*$AP*$pctH}\r\n$fragmentAbsorb=${1.25*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267997, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]" },
@@ -20140,7 +20143,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  321012, "$absorb=${($319978s1/100)*$MHP*(1+$@versadmg)}" },
   {  321530, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  321538, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($@traitentryrank100513*$389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
-  {  322507, "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
+  {  322507, "$absorb=${($AP*10.5)*(1+$@versadmg)}\r\n" },
   {  322721, "$mod=$?a137005[${0.25}]?a212611[${1.5}]?a137009[${2}]?a137014[${2}]?a137018[${0.75}]?a137022[${0.5}]?a137026[${0.75}]?a137030[${1.5}]?a137034[${1.5}]?a137038[${2}]?a137042[${1}]?a137047[${1.5}]?a353167[${2}][${1}]" },
   {  322729, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  323673, "$damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}\r\n$healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}" },
@@ -20200,7 +20203,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  358164, "$buff=${$348272s1}\r\n$max=${3*$<buff>}" },
   {  359073, "$dmg=${$359077s2}" },
   {  360952, "$playerDmg=${$360969s1}\r\n$petDmg=${$360969s1*0.6}\r\n$combinedDmg=${$<playerDmg>+$<petDmg>}" },
-  {  363041, "$absorb=${($AP*8.4)*(1+$@versadmg)}\r\n" },
+  {  363041, "$absorb=${($AP*10.5)*(1+$@versadmg)}\r\n" },
   {  363534, "$min=${$SP*0.4*(($d/$t1)+1)}" },
   {  364365, "$heal=${$SP*$s1/100}" },
   {  364416, "$CDR=${s1*0.1}.1" },
@@ -20223,7 +20226,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  377192, "$duration=${$377195d+(($w2-1)*$377190s~2/1000)}" },
   {  378285, "$dmg=${$378286s1*(1+($378285s2/100))}" },
   {  378405, "$heal=${$378412o1*(1+($378405s1/100))}" },
-  {  378986, "$cap=${$SP*3}\r\n$cap2=${$SP*4}" },
+  {  378986, "$cap=${$SP*3}\r\n$cap2=${$SP*5}" },
   {  382266, "$blastTicks=$?s375510[${$375510s1/2}][${0}]\r\n$dmgI=${$357209s1}\r\n$dotI=${$357209o2*(10+$<blastTicks>)}\r\n$durI=${20+$375510s1}\r\n$dmgII=${$357209s1+($357209o2*3)}\r\n$dotII=${$357209o2*(7+$<blastTicks>)}\r\n$durII=${14+$375510s1}\r\n$dmgIII=${$357209s1+($357209o2*6)}\r\n$dotIII=${$357209o2*(4+$<blastTicks>)}\r\n$durIII=${8+$375510s1}\r\n$dmgIV=${$357209s1+($357209o2*9)}\r\n$dotIV=${$357209o2*(1+$<blastTicks>)}\r\n$durIV=${2+$375510s1}" },
   {  382411, "$dmg=${$359077s2}" },
   {  382614, "$sOneHeal=${2*$355941s1}\r\n$sTwoHeal=${2.25*$355941s1}\r\n$sThreeHeal=${2.5*$355941s1}\r\n$sFourHeal=${2.75*$355941s1}\r\n$sOneDur=${16}\r\n$sTwoDur=${12}\r\n$sThreeDur=${8}\r\n$sFourDur=${4}\r\n$ysera=$?a373835[${1+$373835s1/100}][${1}]\r\n" },
@@ -20256,7 +20259,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49092
+// spelldesc_vars hotfix entries, wow build 10.1.0.49190
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

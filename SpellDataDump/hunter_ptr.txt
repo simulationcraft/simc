@@ -14884,7 +14884,7 @@ Effects          :
 #1 (id=1007401)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1007402)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each Wind Arrow fired has a $s1% chance to grant you ${$s2/1000}.1 sec of Trueshot.
 
 Name             : Sharpshooter (id=378907) [Spell Family (9), Passive, Hidden] 
@@ -15293,7 +15293,7 @@ Description      : Damage taken from area of effect attacks reduced by $s1%.
 
 Name             : Rejuvenating Wind (id=385539) [Spell Family (9), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(10, 16)]
                  : Effect#2 [op=set, values=(4, 8)]
 Class            : Hunter
 School           : Physical
@@ -16494,7 +16494,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032731)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Command (34026), Kill Command (83381)
                    Family Flags: 43
 Description      : Kill Command damage increased by $s1% and it has a $h% chance to reset the cooldown on Barbed Shot.
@@ -16517,11 +16517,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032732)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
 #2 (id=1036816)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Barbed Shot (217200), Frenzy (272790)
                    Family Flags: 78
 #3 (id=1036817)  : Apply Aura (6) | Proc Trigger Spell (42): Lethal Command
@@ -16567,7 +16567,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032734)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 394384 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Trigger Spell: 394384 | Target: Self (1)
 Description      : Ranged auto-attacks have a $s1% chance to increase the critical strike chance of your next $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot by $394384s1%.
 
 Name             : Hunter Survival Class Set 2pc (id=393650) [Spell Family (9), Passive, Hidden] 
@@ -16585,7 +16585,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032735)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
 Description      : $?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery damage increased by $s1%.
@@ -16753,7 +16753,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033937)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393648
 Tooltip          : Aimed Shot causes the target to bleed for $s1% of the damage dealt.
 
@@ -16800,7 +16800,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1033964)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Multi-Shot (257620), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 12, 39, 105
 Description      : $@spelldesc393649
@@ -16825,15 +16825,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1033979)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
 #2 (id=1036927)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
 #3 (id=1036928)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Raptor Strike (265189), Mongoose Bite (265888)
                    Family Flags: 38, 71, 80, 96
 Tooltip          : $?s259387[Mongoose Bite][Raptor Strike], Carve, and Butchery damage increased by $s2%, and Focus cost reduced by $s1.
@@ -17241,7 +17241,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1070831)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc407404
 Tooltip          : Haste increased by $s1%.
 
@@ -17283,7 +17283,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122)
 Effects          :
 #1 (id=1075502)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Kill Command (259277)
                    Family Flags: 37
 Description      : $@spelldesc405528
@@ -17310,7 +17310,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Limit N (165)
 Effects          :
 #1 (id=1075529)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Enemy (6)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Target: Enemy (6)
                    Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 Description      : $@spelldesc405530
