@@ -4,11 +4,11 @@ ptr=1
 optimal_raid=1
 default_actions=1
 
-# T30_Death_Knight_Blood.simc
-# T30_Death_Knight_Frost.simc
-# T30_Death_Knight_Frost_2h.simc
+T30_Death_Knight_Blood.simc
+T30_Death_Knight_Frost.simc
+T30_Death_Knight_Frost_2h.simc
 # T30_Death_Knight_Frost_DW.simc
-# T30_Death_Knight_Unholy.simc
+T30_Death_Knight_Unholy.simc
 
 # T30_Demon_Hunter_Havoc.simc
 # T30_Demon_Hunter_Vengeance.simc
