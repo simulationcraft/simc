@@ -9131,7 +9131,6 @@ void warrior_t::apl_prot()
   generic -> add_action( "thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
   generic -> add_action( "execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
   generic -> add_action( "execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50" );
-  generic -> add_action( "revenge,if=buff.vanguards_determination.down&rage>=40" );
   generic -> add_action( "execute,if=spell_targets.revenge=1&rage>=50" );
   generic -> add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic -> add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
