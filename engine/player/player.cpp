@@ -11484,6 +11484,18 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
     }
+
+    if ( splits[ 0 ] == "dragonflight" )
+    {
+      if ( splits[ 1 ] == "screaming_black_dragonscale_damage" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->dragonflight_opts.screaming_black_dragonscale_damage;
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
+    }
   } // splits.size() == 2
 
 
