@@ -153,7 +153,6 @@ actions.trinkets=use_item,name=voidmenders_shadowgem,if=buff.power_infusion.up|f
 actions.trinkets+=/use_item,name=darkmoon_deck_box_inferno
 actions.trinkets+=/use_item,name=darkmoon_deck_box_rime
 actions.trinkets+=/use_item,name=darkmoon_deck_box_dance
-actions.trinkets+=/use_item,name=screaming_black_dragonscale,if=dragonflight.screaming_black_dragonscale_damage
 # Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds
 actions.trinkets+=/use_item,name=erupting_spear_fragment,if=buff.power_infusion.up|raid_event.adds.up|fight_remains<20
 # Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets
