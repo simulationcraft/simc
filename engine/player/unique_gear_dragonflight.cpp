@@ -19,6 +19,7 @@
 #include "player/action_variable.hpp"
 #include "player/pet.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
@@ -5010,6 +5011,42 @@ void allied_chestplate_of_generosity(special_effect_t& effect)
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 406219 Damage Taken Driver
+// 406928 Crit Damage Driver
+// 406927 Crit Stats
+// 406921 Damage Taken Stats
+void adaptive_dracothyst_armguards(special_effect_t& effect)
+{
+  if ( effect.driver()->id() == 406928 )
+  {
+    auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_crit", effect.driver()->effectN( 1 ).trigger() );
+    buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    effect.custom_buff  = buff;
+    effect.proc_flags2_ = PF2_CRIT;
+    auto dbc            = new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_dmgtaken",
+                                          effect.driver()->effectN( 1 ).trigger() );
+    buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    effect.custom_buff = buff;
+    auto dbc = new dbc_proc_callback_t( effect.player, effect );
+
+    effect.player->register_combat_begin( [ dbc, buff ]( player_t* p ) {
+      if ( dbc->rppm && p->sim->dragonflight_opts.adaptive_stonescales_period > 0_s )
+      {
+        make_repeating_event( p->sim, p->sim->dragonflight_opts.adaptive_stonescales_period, [ dbc, buff ]() {
+          if ( dbc->rppm && dbc->rppm->trigger() )
+          {
+            buff->trigger();
+          }
+        } );
+      }
+    } );
+  }
+}
+
 // 395601 Driver
 // 395603 Buff
 void hood_of_surging_time( special_effect_t& effect )
@@ -6285,7 +6322,7 @@ void register_special_effects()
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
   register_special_effect( 406254, items::roiling_shadowflame );
-
+  register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
