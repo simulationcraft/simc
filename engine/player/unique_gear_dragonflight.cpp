@@ -4583,6 +4583,59 @@ void ashkandur( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Shadowed Razing Annihilator
+// 408711 Driver & Main damage
+// 411024 Residual AoE Damage
+// 7-4-2023 This is a speculative implementation based off spell data.
+// No in game testing has been done on this at the time of writing.
+void shadowed_razing_annihilator( special_effect_t& e )
+{
+  struct shadowed_razing_annihilator_residual_t : public generic_aoe_proc_t
+  {
+    shadowed_razing_annihilator_residual_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ) )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+    }
+  };
+
+  auto aoe_damage =
+      create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e );
+  auto buff = create_buff<buff_t>( e.player, e.driver() )
+                  ->set_quiet( true )
+                  ->set_duration( 4_s ) // Random Number for now til we have in game testing data
+                  ->set_stack_change_callback( [ aoe_damage ]( buff_t*, int, int new_ ) {
+                    if ( !new_ )
+                    {
+                      aoe_damage->execute();
+                    }
+                  } );
+  ;
+
+  struct shadowed_razing_annihilator_t : public generic_proc_t
+  {
+    action_t* aoe;
+    buff_t* buff;
+
+    shadowed_razing_annihilator_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "shadowed_razing_annihilator", e.driver() ),
+        aoe( create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e ) ),
+        buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      add_child( aoe );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      buff->trigger();
+    }
+  };
+
+  e.execute_action = create_proc_action<shadowed_razing_annihilator_t>( "shadowed_razing_annihilator", e, buff );
+}
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -6205,12 +6258,13 @@ void register_special_effects()
 
 
   // Weapons
-  register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
-  register_special_effect( 405226, items::spore_keepers_baton );     // Spore Keepers Baton Weapon
-  register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
-  register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
-  register_special_effect( 394928, items::neltharax );               // Neltharax, Enemy of the Sky
-  register_special_effect( 408790, items::ashkandur );               // Ashkandur, Fall of the Brotherhood
+  register_special_effect( 396442, items::bronzed_grip_wrappings );      // bronzed grip wrappings embellishment
+  register_special_effect( 405226, items::spore_keepers_baton );         // Spore Keepers Baton Weapon
+  register_special_effect( 377708, items::fang_adornments );             // fang adornments embellishment
+  register_special_effect( 381698, items::forgestorm );                  // Forgestorm Weapon
+  register_special_effect( 394928, items::neltharax );                   // Neltharax, Enemy of the Sky
+  register_special_effect( 408790, items::ashkandur );                   // Ashkandur, Fall of the Brotherhood
+  register_special_effect( 408711, items::shadowed_razing_annihilator ); // Shadowed Razing Annihilator 
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
