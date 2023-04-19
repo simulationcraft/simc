@@ -5015,8 +5015,9 @@ void allied_chestplate_of_generosity(special_effect_t& effect)
 // 406928 Crit Damage Driver
 // 406927 Crit Stats
 // 406921 Damage Taken Stats
-void adaptive_dracothyst_armguards(special_effect_t& effect)
+void adaptive_dracothyst_armguards( special_effect_t& effect )
 {
+  // Handle both drivers, this is the Crit Driver.
   if ( effect.driver()->id() == 406928 )
   {
     auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_crit", effect.driver()->effectN( 1 ).trigger() );
@@ -5033,10 +5034,12 @@ void adaptive_dracothyst_armguards(special_effect_t& effect)
     effect.custom_buff = buff;
     auto dbc = new dbc_proc_callback_t( effect.player, effect );
 
+    // Fake damage taken events to trigger this for DPS Players
     effect.player->register_combat_begin( [ dbc, buff ]( player_t* p ) {
       if ( dbc->rppm && p->sim->dragonflight_opts.adaptive_stonescales_period > 0_s )
       {
         make_repeating_event( p->sim, p->sim->dragonflight_opts.adaptive_stonescales_period, [ dbc, buff ]() {
+          // Roll RPPM from the DBC Object so it will still work on sims with damage taken events.
           if ( dbc->rppm && dbc->rppm->trigger() )
           {
             buff->trigger();
