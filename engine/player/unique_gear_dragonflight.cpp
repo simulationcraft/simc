@@ -4587,14 +4587,13 @@ void ashkandur( special_effect_t& e )
 // Shadowed Razing Annihilator
 // 408711 Driver & Main damage
 // 411024 Residual AoE Damage
-// 7-4-2023 This is a speculative implementation based off spell data.
-// No in game testing has been done on this at the time of writing.
+// TODO: Test the damage increase per target, early data suggested maybe its 30%, rather than the default 15%
 void shadowed_razing_annihilator( special_effect_t& e )
 {
   struct shadowed_razing_annihilator_residual_t : public generic_aoe_proc_t
   {
     shadowed_razing_annihilator_residual_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ) )
+      : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ), true )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
     }
@@ -4604,7 +4603,7 @@ void shadowed_razing_annihilator( special_effect_t& e )
       create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e );
   auto buff = create_buff<buff_t>( e.player, e.driver() )
                   ->set_quiet( true )
-                  ->set_duration( 4_s ) // Random Number for now til we have in game testing data
+                  ->set_duration( 2_s )
                   ->set_stack_change_callback( [ aoe_damage ]( buff_t*, int, int new_ ) {
                     if ( !new_ )
                     {
