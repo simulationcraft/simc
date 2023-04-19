@@ -113,30 +113,28 @@
 
 # save="T30_Death_Knight_Frost_DW.simc"
 
-# deathknight="T30_Death_Knight_Unholy"
-# spec=unholy
-# level=70
-# race=troll
-# role=attack
-# position=back
-# talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
+deathknight="T30_Death_Knight_Unholy"
+spec=unholy
+level=70
+race=troll
+role=attack
+position=back
+talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
 
-# flask=phial_of_static_empowerment_3
+head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192961/192948/192948,crafted_stats=36/49
+shoulder=lingering_phantoms_shoulderplates,id=202459,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192948
+hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
+waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192948,crafted_stats=32/49
+legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=32/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
+trinket1=vial_of_animated_blood,id=159625,bonus_id=3317/6808/4786
+trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
-# head=maw_of_the_haunted_frostbrood,id=200408,bonus_id=4800/4786/1498/6935,gem_id=192985
-# neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/8782,gem_id=192961/192948/192948,crafted_stats=36/49
-# shoulder=jaws_of_the_haunted_frostbrood,id=200410,bonus_id=4800/4786/1498
-# back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
-# chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=waking_stats_3
-# wrist=vambraces_of_the_haunted_frostbrood,id=200412,bonus_id=1507/6935,gem_id=192948
-# hands=grasps_of_the_haunted_frostbrood,id=200407,bonus_id=4800/4786/1498
-# waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/7936/8802/8846,gem_id=192948
-# legs=greaves_of_the_haunted_frostbrood,id=200409,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
-# feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
-# finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192948,enchant=devotion_of_haste_3
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant=devotion_of_haste_3
-# trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
-# trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
-
-# save=T30_Death_Knight_Unholy.simc
+save=T30_Death_Knight_Unholy.simc
