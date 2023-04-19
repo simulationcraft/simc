@@ -3716,12 +3716,16 @@ void screaming_black_dragonscale_equip( special_effect_t& effect )
 
 void screaming_black_dragonscale_use( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "screaming_descent", effect, "screaming_descent", effect.driver() );
-  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
-
-  if( effect.player -> sim -> dragonflight_opts.screaming_black_dragonscale_damage )
+  if ( effect.player->sim->dragonflight_opts.screaming_black_dragonscale_damage )
   {
+    auto damage           = create_proc_action<generic_aoe_proc_t>( "screaming_descent", effect, "screaming_descent", effect.driver() );
+    damage->base_dd_min   = damage->base_dd_max = effect.player->find_spell( 401468 )->effectN( 3 ).average( effect.item );
     effect.execute_action = damage;
+  }
+  else
+  {
+    // set the type to SPECIAL_EFFECT_NONE to disable all handling of this effect.
+    effect.type = SPECIAL_EFFECT_NONE;
   }
 }
 
