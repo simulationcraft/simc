@@ -1,4 +1,4 @@
-deathknight="PR_Death_Knight_Unholy"
+deathknight="T30_Death_Knight_Unholy"
 source=default
 spec=unholy
 level=70
@@ -152,29 +152,30 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=variable.trinket_2_bu
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!trinket.2.has_cooldown|!variable.trinket_2_buffs|!talent.summon_gargoyle&!talent.army_of_the_dead|!talent.summon_gargoyle&talent.army_of_the_dead&cooldown.army_of_the_dead.remains_expected>20|!talent.summon_gargoyle&!talent.army_of_the_dead&cooldown.dark_transformation.remains>20|cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
 actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!trinket.1.has_cooldown|!variable.trinket_1_buffs|!talent.summon_gargoyle&!talent.army_of_the_dead|!talent.summon_gargoyle&talent.army_of_the_dead&cooldown.army_of_the_dead.remains_expected>20|!talent.summon_gargoyle&!talent.army_of_the_dead&cooldown.dark_transformation.remains>20|cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
 
-head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
-neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
-shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
-back=fireproof_drape,id=193763,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
-chest=breastplate_of_soaring_terror,id=193753,bonus_id=6808/4786/1594,enchant=waking_stats_2
-wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2
-hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
-waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
-legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant=fierce_armor_kit_2
-feet=scaleguards_stalwart_greatboots,id=193728,bonus_id=6808/4786/1594
-finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant=devotion_of_mastery_2
-finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_haste_2
-trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1594
-trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
-main_hand=leyline_tracer,id=193638,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
+head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192961/192948/192948,crafted_stats=36/49
+shoulders=lingering_phantoms_shoulderplates,id=202459,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192948
+hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
+waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192948,crafted_stats=32/49
+legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=32/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
+trinket1=vial_of_animated_blood,id=159625,bonus_id=3317/6808/4786
+trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=372.00
-# gear_strength=3440
-# gear_stamina=9166
-# gear_crit_rating=1504
-# gear_haste_rating=2293
-# gear_mastery_rating=2986
-# gear_versatility_rating=818
-# gear_leech_rating=275
-# gear_armor=5338
+# gear_ilvl=449.33
+# gear_strength=5667
+# gear_stamina=22613
+# gear_crit_rating=2974
+# gear_haste_rating=5024
+# gear_mastery_rating=5158
+# gear_versatility_rating=850
+# gear_armor=8558
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1
