@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.0.49190
-static const std::array<spelltext_data_t, 19875> __ptr_spelltext_data { {
+// Spell text, wow build 10.1.0.49222
+static const std::array<spelltext_data_t, 19877> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18244,8 +18244,8 @@ static const std::array<spelltext_data_t, 19875> __ptr_spelltext_data { {
   { 390145, "$@spelldesc389693", "Your next Chaos Strike unleashes your inner demon, dealing $390137s1 Chaos damage to all nearby enemies.", 0 },
   { 390148, "$@spelldesc385696", "Time is moving $w1% faster.", 0 },
   { 390152, "$?a212613[Fel Devastation][Eye Beam] summons an allied $?a212613[Havoc][Vengeance] Demon Hunter who casts $?a212613[Eye Beam][Fel Devastation], dealing $?a212613[${$391058s1*10*2} Chaos][${$393834s1*(2/$393831t1)} Fire] damage over $?a212613[$391057d][$393831d]. $?a212613[Deals reduced damage beyond $198013s5 targets.][Dealing damage heals you for up to ${$212106s1*(2/$t1)} health.]", 0, 0 },
-  { 390154, "Enemies hit by Throw Glaive take $s1% increased damage from Eye Beam.", 0, 0 },
-  { 390155, "$@spelldesc390154", "Damage taken from Eye Beam increased by $w1%.", 0 },
+  { 390154, "Enemies hit by Throw Glaive take $s1% increased damage from Chaos Strike andEye Beam.", 0, 0 },
+  { 390155, "$@spelldesc390154", "Damage taken from Chaos Strike and Eye Beam increased by $w1%.", 0 },
   { 390158, "Immolation Aura's damage increases by $s1% each time it deals damage.", 0, 0 },
   { 390161, "Festering Strike has a $s1% chance to generate $390162s1 Rune and grant Runic Corruption.", 0, 0 },
   { 390162, "$@spelldesc390161", 0, 0 },
@@ -18458,7 +18458,7 @@ static const std::array<spelltext_data_t, 19875> __ptr_spelltext_data { {
   { 391233, "Prayer of Mending heals $s1% more for each bounce remaining.", 0, 0 },
   { 391270, "Cooldown of Raging Blow and Pummel reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 391271, "Cooldown of Shield Slam and Pummel reduced by ${$s1/-1000}.1 sec.", 0, 0 },
-  { 391275, "Throw Glaive deals $s1% increased damage for each enemy hit.", 0, 0 },
+  { 391275, "Throw Glaive deals $s2% increased damage, reduced by ${$s2/2}% for each previous enemy hit.", 0, 0 },
   { 391284, "Your Shadow Word: Pain damage has a $s1% chance to create Shadowy Apparitions that float towards all targets afflicted by your Vampiric Touch. \r\n\r\nCritical strikes increase the chance to $s2%.", 0, 0 },
   { 391286, "$@spelldesc205385", 0, 0 },
   { 391330, "When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.2 sec.\r\n\r\nTouch of Death deals an additional $s1% damage.", 0, 0 },
@@ -19416,6 +19416,7 @@ static const std::array<spelltext_data_t, 19875> __ptr_spelltext_data { {
   { 404551, "$@spelldesc381930", 0, 0 },
   { 404752, "When any party or raid member within $a1 yards dies, you gain Avenging Wrath for $s1 sec.", 0, 0 },
   { 404834, "Blade of Justice casts Consecration at the target's location.\r\n\r\nThis effect can only occur every 10 sec.", 0, 0 },
+  { 404859, "Permanently enchants a weapon to cultivate living spores, causing your healing spells and abilities to occasionally send an Invigorating Spore Cloud to your target. It will grant them $ec1s1 of their highest secondary stat for $406785d. Cannot be applied to items lower than level $ecim.", 0, 0 },
   { 404864, "Critically striking an enemy has a chance to shock them and 2 nearby enemies, dealing $s1 Nature damage.", 0, 0 },
   { 404865, "Dealing damage has a chance to set the enemy on fire, dealing ${$s1*$403225d} Fire damage over $403225d.", 0, 0 },
   { 404866, "Moving builds an electrical charge, causing your next damaging ability to also deal $s1 Nature damage.", 0, 0 },
@@ -19446,6 +19447,7 @@ static const std::array<spelltext_data_t, 19875> __ptr_spelltext_data { {
   { 405064, "Throw a small Darkened Elemental Core at the target location dealing $405165s1 Shadowflame damage split between all enemies.", 0, 0 },
   { 405066, "Slowly build up stacks of titan energy. The amount of stacks gained per second can vary but when fully charged at $s3 stacks the Buzzing Orb Core will increase a random secondary stat by $s0, as well as your movement speed by $s1 for $405202d seconds.", 0, 0 },
   { 405068, "Shield an ally for $405098s2 while channeling a beam of molten flame dealing ${$405098s1*($d/($t1))}  Fire damage over $d to them. If they survive the channel, heal them for $405098s3.", "Cauterizing the wound, dealing ${$w1*($d/($t1))}  Fire damage over $d.", 0 },
+  { 405076, "Permanently enchants a weapon to erupt with Shadowflame, causing your damaging spells and abilities to sometimes inflict ${$ec1s1*$406764d} Shadowflame damage to your target over $406764d while instantly inflicting $ec1s1 Shadowflame damage to yourself. Cannot be applied to items lower than level $ecim.", 0, 0 },
   { 405109, "$@spelldesc405068", "Absorb up to $w1 incoming damage.", 0 },
   { 405166, "Killing Machine can stack up to $s1 additional time.", 0, 0 },
   { 405167, "$@spelldesc405064", 0, 0 },
@@ -19877,11 +19879,11 @@ static const std::array<spelltext_data_t, 19875> __ptr_spelltext_data { {
   { 413231, "$@spelldesc341491", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49190
+// spelltext hotfix entries, wow build 10.1.0.49222
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.0.49190
+// Spell description variables, wow build 10.1.0.49222
 static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20264,7 +20266,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49190
+// spelldesc_vars hotfix entries, wow build 10.1.0.49222
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

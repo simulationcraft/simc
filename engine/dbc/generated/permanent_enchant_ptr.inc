@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 10.1.0.49190
-static const std::array<permanent_enchant_entry_t, 778> __ptr_permanent_enchant_data { {
+// Permanent item enchants, wow build 10.1.0.49222
+static const std::array<permanent_enchant_entry_t, 784> __ptr_permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -604,6 +604,9 @@ static const std::array<permanent_enchant_entry_t, 778> __ptr_permanent_enchant_
   { 6906,  1,  4, 0x00000040, 0x0000001e, "shadowed_belt_clasp"               },
   { 6905,  2,  4, 0x00000040, 0x0000001e, "shadowed_belt_clasp"               },
   { 6904,  3,  4, 0x00000040, 0x0000001e, "shadowed_belt_clasp"               },
+  { 6825,  1,  2, 0x00000000, 0x000abff3, "shadowflame_wreathe"               },
+  { 6826,  2,  2, 0x00000000, 0x000abff3, "shadowflame_wreathe"               },
+  { 6827,  3,  2, 0x00000000, 0x000abff3, "shadowflame_wreathe"               },
   { 6205,  0,  4, 0x00000400, 0x0000001f, "shadowlands_gathering"             },
   { 4822,  0,  4, 0x00000080, 0x0000001f, "shadowleather_leg_armor"           },
   { 4871,  0,  4, 0x00000080, 0x0000001f, "shatouched_leg_armor"              },
@@ -634,6 +637,9 @@ static const std::array<permanent_enchant_entry_t, 778> __ptr_permanent_enchant_
   { 5184,  0,  4, 0x00000200, 0x0000001e, "spellpower"                        },
   { 2674,  0,  2, 0x00000000, 0x000ae7f3, "spellsurge"                        },
   { 4750,  0,  4, 0x00000040, 0x0000001e, "spinal_healing_injector"           },
+  { 6822,  1,  2, 0x00000000, 0x000abff3, "spore_tender"                      },
+  { 6823,  2,  2, 0x00000000, 0x000abff3, "spore_tender"                      },
+  { 6824,  3,  2, 0x00000000, 0x000abff3, "spore_tender"                      },
   { 2724,  0,  2, 0x00000000, 0x0004000c, "stabilized_eternium_scope"         },
   { 5966,  0,  2, 0x00000000, 0x000ebfff, "stalwart_navigation"               },
   { 4738,  0,  4, 0x00000000, 0x00000040, "stamina"                           },
