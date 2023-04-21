@@ -1272,7 +1272,7 @@ struct deep_breath_t : public evoker_spell_t
     {
       evoker_spell_t::execute();
 
-      if ( p()->is_ptr() )
+      if ( p()->is_ptr() && p()->talent.imminent_destruction->ok() )
       {
         p()->buff.imminent_destruction->trigger();
       }
