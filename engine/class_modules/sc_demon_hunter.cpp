@@ -6479,8 +6479,12 @@ void demon_hunter_t::init_spells()
   talent.havoc.chaos_theory = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
   talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
   talent.havoc.inner_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
-  // TODO 10.1: rename accelerating_blade
-  talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, this->is_ptr() ? "Accelerated Blade" : "Accelerating Blade" );
+  // TODO 10.1: rename accelerating_blade and remove fallback
+  talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerating Blade" );
+  if ( talent.havoc.accelerating_blade.spell() == spell_data_t::not_found() )
+  {
+    talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
+  }
   talent.havoc.ragefire = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
