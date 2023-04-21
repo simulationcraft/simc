@@ -1912,8 +1912,15 @@ void way_of_controlled_currents( special_effect_t& effect )
       create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
           ->set_name_reporting( "Stack" )
           ->add_invalidate( CACHE_ATTACK_SPEED );
-  //On the 10.1 PTR, the buff is now properly gives % per stack rather than a number, so we don't have to divide by 100 into % anymore. 
-  stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * effect.player -> is_ptr() ?  1 : 0.01 );
+  //In 10.1 the effect is always 2% rather than scaling with item level
+  if( effect.player -> is_ptr() )
+  {
+    stack->set_default_value( stack->data().effectN( 1 ).base_value() * 0.01 );
+  }
+  else
+  {
+    stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 ); 
+  }
 
   effect.player->buffs.way_of_controlled_currents = stack;
 
