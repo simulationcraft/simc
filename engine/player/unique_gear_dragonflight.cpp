@@ -604,6 +604,21 @@ void temporal_spellthread( special_effect_t& effect )
   effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver()->effectN( 1 ).percent();
 }
 
+// 406764 - DoT
+// 406770 - Self Damage (TODO)
+void shadowflame_wreathe( special_effect_t& effect )
+{
+  auto new_driver = effect.driver()->effectN( 1 ).trigger();
+  auto dot        = create_proc_action<generic_proc_t>( "shadowflame_wreathe", effect, "shadowflame_wreathe",
+                                                 new_driver->effectN( 1 ).trigger() );
+  dot->base_td    = effect.driver()->effectN( 1 ).average( effect.player );
+
+  effect.spell_id       = new_driver->id();
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace enchants
 
 namespace items
@@ -6226,7 +6241,7 @@ void register_special_effects()
   register_special_effect( { 385765, 385886, 385892 }, enchants::gyroscopic_kaleidoscope );
   register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
   register_special_effect( { 387302, 387303, 387306 }, enchants::temporal_spellthread );
-
+  register_special_effect( { 405764, 405765, 405766 }, enchants::shadowflame_wreathe );
 
   // Trinkets
   register_special_effect( 408671, items::dragonfire_bomb_dispenser );
@@ -6268,7 +6283,7 @@ void register_special_effects()
   register_special_effect( 383781, items::algethar_puzzle_box );
   register_special_effect( 382119, items::frenzying_signoll_flare );
   register_special_effect( 386175, items::idol_of_trampling_hooves );
-  register_special_effect( 386692, items::dragon_games_equipment);
+  register_special_effect( 386692, items::dragon_games_equipment );
   register_special_effect( 397400, items::bonemaws_big_toe );
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
