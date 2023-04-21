@@ -3985,7 +3985,6 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   stat_effect->player->callbacks.register_callback_trigger_function(
     stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
     [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-      a->sim->print_log( "evaluating callback: {}", a->data().id() );
       return range::contains( proc_spell_id, a->data().id() );
     } );
 
