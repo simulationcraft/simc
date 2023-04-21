@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49222
-static const std::array<spelltext_data_t, 19877> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19881> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19693,6 +19693,10 @@ static const std::array<spelltext_data_t, 19877> __ptr_spelltext_data { {
   { 408126, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
   { 408127, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
   { 408128, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408256, "$@spelldesc403368", 0, 0 },
+  { 408259, "$@spelldesc403368", 0, 0 },
+  { 408260, "$@spelldesc403368", 0, 0 },
+  { 408262, "$@spelldesc403368", 0, 0 },
   { 408310, "$@spelldesc405511", 0, 0 },
   { 408340, "$@spelldesc405512", "Agility increased by $w1%.", 0 },
   { 408356, "$@spelldesc405500", "Strength increased by $w1%.", 0 },
