@@ -7879,6 +7879,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
   {
     aoe = -1;
     energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    if ( p->is_ptr() ) reduced_aoe_targets = 8;
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -10535,6 +10536,7 @@ void druid_t::create_actions()
     auto fm = get_secondary_action_n<full_moon_t>( "orbit breaker", find_spell( 274283 ), "" );
     fm->s_data_reporting = talent.orbit_breaker;
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
+    if ( is_ptr() ) fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
     fm->background = true;
     active.orbit_breaker = fm;
