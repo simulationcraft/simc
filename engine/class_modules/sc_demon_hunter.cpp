@@ -651,6 +651,9 @@ public:
     proc_t* annihilation_in_essence_break;
     proc_t* blade_dance_in_essence_break;
     proc_t* death_sweep_in_essence_break;
+    proc_t* chaos_strike_in_serrated_glaive;
+    proc_t* annihilation_in_serrated_glaive;
+    proc_t* eye_beam_tick_in_serrated_glaive;
     proc_t* felblade_reset;
     proc_t* shattered_destiny;
     proc_t* eye_beam_canceled;
@@ -1310,6 +1313,7 @@ public:
     bool chaos_theory = false;
     bool essence_break = false;
     bool burning_wound = false;
+    bool serrated_glaive = false;
 
     // Vengeance
     bool frailty = false;
@@ -1418,6 +1422,11 @@ public:
       {
         affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
       }
+
+      if ( p->talent.havoc.serrated_glaive->ok() )
+      {
+        affected_by.serrated_glaive = ab::data().affected_by( p->spec.serrated_glaive_debuff );
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1519,6 +1528,11 @@ public:
     if ( affected_by.essence_break )
     {
       m *= 1.0 + td( target )->debuffs.essence_break->check_value();
+    }
+
+    if ( affected_by.serrated_glaive )
+    {
+      m *= 1.0 + td( target )->debuffs.serrated_glaive->check_value();
     }
 
     if ( affected_by.burning_wound )
@@ -2274,8 +2288,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       double m = demon_hunter_spell_t::composite_target_multiplier( target );
 
-      m *= 1.0 + td( target )->debuffs.serrated_glaive->value();
-
       return m;
     }
 
@@ -2316,6 +2328,15 @@ struct eye_beam_t : public demon_hunter_spell_t
     {
       add_child( p->active.collective_anguish );
     }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+
+    // Serrated glaive stats tracking
+    if ( td( target )->debuffs.serrated_glaive->up() )
+      p()->proc.eye_beam_tick_in_serrated_glaive->occur();
   }
 
   void last_tick( dot_t* d ) override
@@ -4285,16 +4306,22 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), attack, target, attack->delay );
     }
 
-    // Metamorphosis benefit and Essence Break stats tracking
+    // Metamorphosis benefit and Essence Break + Serrated Glaive stats tracking
     if ( p()->buff.metamorphosis->up() )
     {
       if ( td( target )->debuffs.essence_break->up() )
         p()->proc.annihilation_in_essence_break->occur();
+
+      if ( td( target )->debuffs.serrated_glaive->up() )
+        p()->proc.annihilation_in_serrated_glaive->occur();
     }
     else
     {
       if ( td( target )->debuffs.essence_break->up() )
         p()->proc.chaos_strike_in_essence_break->occur();
+
+      if ( td( target )->debuffs.serrated_glaive->up() )
+        p()->proc.chaos_strike_in_serrated_glaive->occur();
     }
 
     // Demonic Appetite
@@ -6174,35 +6201,38 @@ void demon_hunter_t::init_procs()
   base_t::init_procs();
 
   // General
-  proc.delayed_aa_range               = get_proc( "delayed_aa_out_of_range" );
-  proc.relentless_pursuit             = get_proc( "relentless_pursuit" );
-  proc.soul_fragment_greater          = get_proc( "soul_fragment_greater" );
-  proc.soul_fragment_greater_demon    = get_proc( "soul_fragment_greater_demon" );
-  proc.soul_fragment_empowered_demon  = get_proc( "soul_fragment_empowered_demon" );
-  proc.soul_fragment_lesser           = get_proc( "soul_fragment_lesser" );
-  proc.felblade_reset                 = get_proc( "felblade_reset" );
+  proc.delayed_aa_range                 = get_proc( "delayed_aa_out_of_range" );
+  proc.relentless_pursuit               = get_proc( "relentless_pursuit" );
+  proc.soul_fragment_greater            = get_proc( "soul_fragment_greater" );
+  proc.soul_fragment_greater_demon      = get_proc( "soul_fragment_greater_demon" );
+  proc.soul_fragment_empowered_demon    = get_proc( "soul_fragment_empowered_demon" );
+  proc.soul_fragment_lesser             = get_proc( "soul_fragment_lesser" );
+  proc.felblade_reset                   = get_proc( "felblade_reset" );
 
   // Havoc
-  proc.demonic_appetite               = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta            = get_proc( "demons_bite_in_meta" );
-  proc.chaos_strike_in_essence_break  = get_proc( "chaos_strike_in_essence_break" );
-  proc.annihilation_in_essence_break  = get_proc( "annihilation_in_essence_break" );
-  proc.blade_dance_in_essence_break   = get_proc( "blade_dance_in_essence_break" );
-  proc.death_sweep_in_essence_break   = get_proc( "death_sweep_in_essence_break" );
-  proc.shattered_destiny              = get_proc( "shattered_destiny" );
-  proc.eye_beam_canceled              = get_proc( "eye_beam_canceled" );
+  proc.demonic_appetite                 = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta              = get_proc( "demons_bite_in_meta" );
+  proc.chaos_strike_in_essence_break    = get_proc( "chaos_strike_in_essence_break" );
+  proc.annihilation_in_essence_break    = get_proc( "annihilation_in_essence_break" );
+  proc.blade_dance_in_essence_break     = get_proc( "blade_dance_in_essence_break" );
+  proc.death_sweep_in_essence_break     = get_proc( "death_sweep_in_essence_break" );
+  proc.chaos_strike_in_serrated_glaive  = get_proc( "chaos_strike_in_serrated_glaive" );
+  proc.annihilation_in_serrated_glaive  = get_proc( "annihilation_in_serrated_glaive" );
+  proc.eye_beam_tick_in_serrated_glaive = get_proc( "eye_beam_tick_in_serrated_glaive" );
+  proc.shattered_destiny                = get_proc( "shattered_destiny" );
+  proc.eye_beam_canceled                = get_proc( "eye_beam_canceled" );
 
   // Vengeance
-  proc.soul_fragment_expire           = get_proc( "soul_fragment_expire" );
-  proc.soul_fragment_overflow         = get_proc( "soul_fragment_overflow" );
-  proc.soul_fragment_from_shear       = get_proc( "soul_fragment_from_shear" );
-  proc.soul_fragment_from_fracture    = get_proc( "soul_fragment_from_fracture" );
-  proc.soul_fragment_from_fallout     = get_proc( "soul_fragment_from_fallout" );
-  proc.soul_fragment_from_meta        = get_proc( "soul_fragment_from_meta" );
-  proc.soul_fragment_from_hunger      = get_proc( "soul_fragment_from_hunger" );
+  proc.soul_fragment_expire             = get_proc( "soul_fragment_expire" );
+  proc.soul_fragment_overflow           = get_proc( "soul_fragment_overflow" );
+  proc.soul_fragment_from_shear         = get_proc( "soul_fragment_from_shear" );
+  proc.soul_fragment_from_fracture      = get_proc( "soul_fragment_from_fracture" );
+  proc.soul_fragment_from_fallout       = get_proc( "soul_fragment_from_fallout" );
+  proc.soul_fragment_from_meta          = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_from_hunger        = get_proc( "soul_fragment_from_hunger" );
 
   // Set Bonuses
-  proc.soul_fragment_from_t29_2pc     = get_proc( "soul_fragment_from_t29_2pc" );
+  proc.soul_fragment_from_t29_2pc       = get_proc( "soul_fragment_from_t29_2pc" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -6449,7 +6479,12 @@ void demon_hunter_t::init_spells()
   talent.havoc.chaos_theory = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
   talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
   talent.havoc.inner_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
+  // TODO 10.1: rename accelerating_blade and remove fallback
   talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerating Blade" );
+  if ( talent.havoc.accelerating_blade.spell() == spell_data_t::not_found() )
+  {
+    talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
+  }
   talent.havoc.ragefire = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
