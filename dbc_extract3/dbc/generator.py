@@ -1401,6 +1401,10 @@ class SpellDataGenerator(DataGenerator):
          408127, # Neltharion's Call to Chaos Evoker
          408128, # Neltharion's Call to Chaos Demon Hunter
          408123, # Neltharion's Call to Chaos Paladin
+         408256, # Neltharion's Call to Dominance Warlock
+         408259, # Neltharion's Call to Dominance Shaman
+         408260, # Neltharion's Call to Dominance Monk
+         408262, # Neltharion's Call to Dominance Hunter
          408815, 408832, 408835, 408836, # Djaruun
          401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil
          408821, 403545, # Djaruun, Pillar of the Elder Flame
