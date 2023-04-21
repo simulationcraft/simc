@@ -1310,6 +1310,7 @@ public:
     bool chaos_theory = false;
     bool essence_break = false;
     bool burning_wound = false;
+    bool serrated_glaive = false;
 
     // Vengeance
     bool frailty = false;
@@ -1418,6 +1419,11 @@ public:
       {
         affected_by.chaos_theory = ab::data().affected_by( p->spec.chaos_theory_buff->effectN( 1 ) );
       }
+
+      if ( p->talent.havoc.serrated_glaive->ok() )
+      {
+        affected_by.serrated_glaive = ab::data().affected_by( p->spec.serrated_glaive_debuff );
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1519,6 +1525,11 @@ public:
     if ( affected_by.essence_break )
     {
       m *= 1.0 + td( target )->debuffs.essence_break->check_value();
+    }
+
+    if ( affected_by.serrated_glaive )
+    {
+      m *= 1.0 + td( target )->debuffs.serrated_glaive->value();
     }
 
     if ( affected_by.burning_wound )
@@ -2273,8 +2284,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     double composite_target_multiplier( player_t* target ) const override
     {
       double m = demon_hunter_spell_t::composite_target_multiplier( target );
-
-      m *= 1.0 + td( target )->debuffs.serrated_glaive->value();
 
       return m;
     }
@@ -6449,7 +6458,8 @@ void demon_hunter_t::init_spells()
   talent.havoc.chaos_theory = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
   talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
   talent.havoc.inner_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
-  talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerating Blade" );
+  // TODO 10.1: rename accelerating_blade
+  talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, this->is_ptr() ? "Accelerated Blade" : "Accelerating Blade" );
   talent.havoc.ragefire = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
