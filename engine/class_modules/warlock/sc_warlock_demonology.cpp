@@ -550,7 +550,8 @@ struct summon_demonic_tyrant_t : public demonology_spell_t
     : demonology_spell_t( "Summon Demonic Tyrant", p, p->talents.summon_demonic_tyrant )
   {
     parse_options( options_str );
-    harmful = may_crit = false;
+    harmful = true; // Needs to be enabled specifically for 10.1 class trinket
+    may_crit = false;
   }
 
   void execute() override
