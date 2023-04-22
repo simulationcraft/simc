@@ -4091,13 +4091,28 @@ struct sundering_t : public shaman_attack_t
     may_proc_stormbringer = may_proc_flametongue = true;
   }
 
+  double action_da_multiplier() const override
+  {
+    double m = shaman_attack_t::action_da_multiplier();
+
+    // In-Game, Sundering damage double dips on T30 4PC damage buff
+    if ( player->bugs )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
+    // In-game, Sundering that procs T30 4PC already benefits from the T30 damage buff
+    p()->buff.t30_4pc_enh_damage->trigger();
+    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
+
     shaman_attack_t::execute();
 
     p()->buff.t30_2pc_enh->trigger();
-    p()->buff.t30_4pc_enh_damage->trigger();
-    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
   }
 };
 
@@ -5243,6 +5258,19 @@ struct fire_nova_explosion_t : public shaman_spell_t
     shaman_spell_t( "fire_nova_explosion", p, p->find_spell( 333977 ) )
   {
     background = true;
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = shaman_spell_t::action_da_multiplier();
+
+    // In-game, Fire Nova damage double-dips on T30 4PC buff
+    if ( player->bugs )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
+    return m;
   }
 };
 
