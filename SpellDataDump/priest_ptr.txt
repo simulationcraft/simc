@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999, git build ptr_hotfixes 3212a0922f)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4477,7 +4477,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288949)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.24375 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (0.4875 -> 0.24375)
 #2 (id=336109)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Heals up to $s2 nearby targets for $s1.
@@ -4697,7 +4696,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 30)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -15023,7 +15021,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Circle of Healing (204883)
                    Family Flags: 86
-Hotfixed         : Base Value (1 -> 2)
 Description      : $@spelldesc390881
 Tooltip          : The healing of your next Circle of Healing is increased by $w1%.
 
@@ -15677,12 +15674,10 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Shadow Word: Death (32379), Mind Spike (73510), Painbreaker Psalm (336167), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466)
                    Family Flags: 13, 33, 70, 80
-Hotfixed         : Base Value (3 -> 4)
 #2 (id=1028468)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Shadow Word: Death (32379), Mind Spike (73510), Painbreaker Psalm (336167), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466)
                    Family Flags: 13, 33, 70, 80
-Hotfixed         : Base Value (15 -> 20)
 Description      : Increases the critical strike chance of Mind Blast, Mind Spike, Mind Flay, and Shadow Word: Death by $s1% and increases their critical strike damage by $s2%.
 
 Name             : Holy Mending (id=391154) [Spell Family (6), Passive, Hidden] 
@@ -15925,7 +15920,6 @@ Effects          :
 Description      : $@spelldesc205385
 
 Name             : Empowered Renew (id=391339) [Spell Family (6), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Physical
@@ -15945,7 +15939,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 40)
 Description      : Renew instantly heals your target for $s1% of its total periodic effect.
 
 Name             : Empowered Renew (id=391359) [Spell Family (6)] 

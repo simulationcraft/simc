@@ -2431,18 +2431,21 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     void execute() override
     {
-      timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
-      min_gcd = cast_time;
-      if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
+      if( !dk() -> is_ptr() )
       {
-        min_gcd = 1_s;
+        timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
+        min_gcd = cast_time;
+        if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
+        {
+          min_gcd = 1_s;
+        }
+        else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
+        {
+          min_gcd = 0.75_s;
+        }
+        pet_spell_t<gargoyle_pet_t>::execute();
+        ++gargoyle_strike_count;
       }
-      else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
-      {
-        min_gcd = 0.75_s;
-      }
-      pet_spell_t<gargoyle_pet_t>::execute();
-      ++gargoyle_strike_count;
     }
   };
 

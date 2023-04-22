@@ -4785,3 +4785,4 @@ bonus_id={ 9473 }, ilevel_adjust={ -407 }
 bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
+bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }
