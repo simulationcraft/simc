@@ -1380,7 +1380,7 @@ struct avatar_of_destruction_t : public destruction_spell_t
 
   infernal_awakening_proc_t* infernal_awakening;
 
-  avatar_of_destruction_t( warlock_t* p ) : destruction_spell_t( "avatar_of_destruction", p, p->talents.avatar_of_destruction )
+  avatar_of_destruction_t( warlock_t* p ) : destruction_spell_t( "avatar_of_destruction", p, p->talents.summon_blasphemy )
   {
     background = dual = true;
     infernal_awakening = new infernal_awakening_proc_t( p );
@@ -1659,6 +1659,7 @@ void warlock_t::init_spells_destruction()
   talents.rift_chaos_bolt = find_spell( 394246 );
 
   talents.avatar_of_destruction = find_talent_spell( talent_tree::SPECIALIZATION, "Avatar of Destruction" ); // Should be ID 387159
+  talents.summon_blasphemy = find_spell( 387160 );
 
   // Additional Tier Set spell data
 

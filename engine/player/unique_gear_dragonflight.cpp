@@ -3894,6 +3894,110 @@ void neltharions_call_to_chaos( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void neltharions_call_to_dominance( special_effect_t& effect )
+{
+  auto stacking_buff = buff_t::find( effect.player, "domineering_arrogance" );
+
+  if ( !stacking_buff )
+  {
+    stacking_buff = create_buff<buff_t>( effect.player, "domineering_arrogance", effect.player->find_spell( 411661 ) )
+                                                       ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.custom_buff = stacking_buff;
+
+  auto stat_effect = new special_effect_t( effect.player );
+
+  auto stat_buff = buff_t::find( effect.player, "call_to_dominance" );
+
+  if ( !stat_buff )
+  {
+    stat_buff = create_buff<stat_buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) )
+                      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stacking_buff->default_value )
+                      ->set_max_stack( stacking_buff->max_stack() ); // This buff does not have stacks in game but we need to treat it as such in simc for clarity/ease-of-use
+  }
+
+  stat_effect->custom_buff = stat_buff;
+  stat_effect->type = SPECIAL_EFFECT_EQUIP;
+  stat_effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+  std::set<int> proc_spell_id;
+  int driver_id = effect.spell_id;
+
+  switch ( effect.player->specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      driver_id = 408259;
+      proc_spell_id = { { 198067, 192241 } }; // Fire Elemental and Storm Elemental
+      break;
+    case SHAMAN_ENHANCEMENT:
+      driver_id = 408259;
+      proc_spell_id = { { 51533 } }; // Feral Spirit
+      break;
+    case SHAMAN_RESTORATION:
+      driver_id = 408259;
+      proc_spell_id = { { 98008, 108280, 16191 } }; // Spirit Link, Healing Tide, Mana Tide totems
+      break;
+    case MONK_BREWMASTER:
+      driver_id = 408260;
+      proc_spell_id = { { 132578 } }; // Invoke Niuzao. TOCHECK: Weapons of Order, Fury of Xuen
+      break;
+    case MONK_WINDWALKER:
+      driver_id = 408260;
+      proc_spell_id = { { 123904 } }; // Invoke Xuen
+      break;
+    case MONK_MISTWEAVER:
+      driver_id = 408260;
+      proc_spell_id = { { 322118, 325197 } }; // Invoke Yu'lon or Chi-Ji
+      break;
+    case WARLOCK_DESTRUCTION:
+      driver_id = 408256;
+      proc_spell_id = { { 1122, 387160 } }; // Summon Infernal and Summon Blasphemy (Avatar of Destruction)
+      break;
+    case WARLOCK_DEMONOLOGY:
+      driver_id = 408256;
+      proc_spell_id = { { 265187 } }; // Summon Demonic Tyrant
+      break;
+    case WARLOCK_AFFLICTION:
+      driver_id = 408256;
+      proc_spell_id = { { 205180 } }; // Summon Darkglare
+      break;
+    case HUNTER_SURVIVAL:
+      driver_id = 408262;
+      proc_spell_id = { { 201430, 360952 } }; // Stampede and Coordinated Assault
+      break;
+    case HUNTER_MARKSMANSHIP:
+      driver_id = 408262;
+      proc_spell_id = { { 201430 } }; // Stampede
+      break;
+    case HUNTER_BEAST_MASTERY:
+      driver_id = 408262;
+      proc_spell_id = { { 201430, 120679 } }; // Stampede and Dire Beast. TOCHECK: Dire Command?
+      break;
+    default:
+      return;
+  }
+
+  stat_effect->spell_id = driver_id;
+
+  effect.player->special_effects.push_back( stat_effect );
+
+  stat_effect->player->callbacks.register_callback_trigger_function(
+    stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+      return range::contains( proc_spell_id, a->data().id() );
+    } );
+
+  stat_effect->player->callbacks.register_callback_execute_function(
+    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+      // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
+      stat_buff->trigger( stacking_buff->check() );
+      stacking_buff->expire();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+  new dbc_proc_callback_t( effect.player, *stat_effect );
+}
 
 // Elementium Pocket Anvil
 // 401303 Main Spell/Value Container
@@ -6311,6 +6415,7 @@ void register_special_effects()
   register_special_effect( 405940, items::screaming_black_dragonscale_use);
   register_special_effect( 403385, items::neltharions_call_to_suffering );
   register_special_effect( 403366, items::neltharions_call_to_chaos );
+  register_special_effect( 403368, items::neltharions_call_to_dominance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
