@@ -3900,21 +3900,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
 
   auto stat_effect = new special_effect_t( effect.player );
 
-  // populate stat effect properties here
-
   auto stat_buff = buff_t::find( effect.player, "call_to_dominance" );
 
   if ( !stat_buff )
   {
-    stat_buff = create_buff<buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) )
-                      ->set_stack_change_callback( [ stacking_buff ]( buff_t* b, int prev, int cur )
-                                                   {
-                                                     if ( cur > prev )
-                                                     {
-                                                       b->current_value = stacking_buff->check_stack_value();
-                                                       stacking_buff->expire();
-                                                     }
-                                                   } );
+    stat_buff = create_buff<buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) );
   }
 
   stat_effect->custom_buff = stat_buff;
@@ -3986,6 +3976,13 @@ void neltharions_call_to_dominance( special_effect_t& effect )
     stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
     [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
       return range::contains( proc_spell_id, a->data().id() );
+    } );
+
+  stat_effect->player->callbacks.register_callback_execute_function(
+    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+      // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
+      stat_buff->trigger( 1, stacking_buff->check_stack_value() );
+      stacking_buff->expire();
     } );
 
   new dbc_proc_callback_t( effect.player, effect );
