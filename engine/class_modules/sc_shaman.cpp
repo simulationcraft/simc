@@ -7287,7 +7287,7 @@ struct doom_winds_t : public shaman_spell_t
     shaman_spell_t( "doom_winds", player, player->talent.doom_winds )
   {
     parse_options( options_str );
-    may_crit = harmful = false;
+    may_crit = false;
   }
 
   void execute() override
