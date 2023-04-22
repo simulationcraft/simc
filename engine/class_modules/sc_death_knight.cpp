@@ -8232,8 +8232,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     }
   }
 
-  // Procs from RP spent
-  if ( resource_type == RESOURCE_RUNIC_POWER )
+ // Procs from RP spent
+  if ( resource_type == RESOURCE_RUNIC_POWER && action )
   {
     // 2019-02-12: Runic Empowerment, Runic Corruption, Red Thirst and gargoyle's shadow empowerment
     // seem to be using the base cost of the ability rather than the last resource cost
@@ -8252,7 +8252,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
-    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost );
+    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() && pets.gargoyle )
     {
