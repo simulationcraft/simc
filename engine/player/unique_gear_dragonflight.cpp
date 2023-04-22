@@ -3906,7 +3906,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   {
     stat_buff = create_buff<stat_buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) )
                       ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stacking_buff->default_value )
-                      ->set_max_stack( stacking_buff->max_stack() );
+                      ->set_max_stack( stacking_buff->max_stack() ); // This buff does not have stacks in game but we need to treat it as such in simc for clarity/ease-of-use
   }
 
   stat_effect->custom_buff = stat_buff;
@@ -3932,7 +3932,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578 } }; // Invoke Niuzao
+      proc_spell_id = { { 132578 } }; // Invoke Niuzao. TOCHECK: Weapons of Order, Fury of Xuen
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
@@ -3944,7 +3944,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case WARLOCK_DESTRUCTION:
       driver_id = 408256;
-      proc_spell_id = { { 1122, 387160 } }; // Procs from either Summon Infernal or Blasphemy (Avatar of Destruction)
+      proc_spell_id = { { 1122, 387160 } }; // Summon Infernal and Summon Blasphemy (Avatar of Destruction)
       break;
     case WARLOCK_DEMONOLOGY:
       driver_id = 408256;
@@ -3956,7 +3956,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_SURVIVAL:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 360952 } }; // Stampede or Coordinated Assault
+      proc_spell_id = { { 201430, 360952 } }; // Stampede and Coordinated Assault
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
@@ -3964,7 +3964,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 120679 } }; // Stampede or Dire Beast. TOCHECK: Dire Command?
+      proc_spell_id = { { 201430, 120679 } }; // Stampede and Dire Beast. TOCHECK: Dire Command?
       break;
     default:
       return;
