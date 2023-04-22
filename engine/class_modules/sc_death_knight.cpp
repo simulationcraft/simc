@@ -6834,7 +6834,7 @@ struct frostwhelps_aid_t final : public death_knight_spell_t
 struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
 {
   wrath_of_the_frostwyrm_damage_t( util::string_view name, death_knight_t* p) :
-    death_knight_spell_t( "frostwyrms_fury_t30", p,  p -> spell.wrath_of_the_frostwyrm_damage )
+    death_knight_spell_t( name, p,  p -> spell.wrath_of_the_frostwyrm_damage )
   {
     aoe = -1;
     background = true;
@@ -6882,7 +6882,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 
     if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
-      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury", p );
+      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury_t30", p );
       add_child( t30_frostwyrm );
     }
 
