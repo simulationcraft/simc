@@ -455,6 +455,7 @@ public:
 
     proc_t* wild_call;
     proc_t* wild_instincts;
+    proc_t* dire_command; 
 
     proc_t* t30_sv_4p; 
   } procs;
@@ -686,6 +687,7 @@ public:
     action_t* barbed_shot = nullptr;
     action_t* latent_poison = nullptr;
     action_t* arctic_bola = nullptr;
+    action_t* dire_command = nullptr; 
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -2109,7 +2111,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
 {
   struct {
     double chance = 0;
-    proc_t* proc;
   } dire_command;
 
   kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
@@ -2124,8 +2125,8 @@ struct kill_command_bm_mm_t: public kill_command_base_t
 
     if ( rng().roll( dire_command.chance ) )
     {
-      o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
-      dire_command.proc -> occur();
+      o() -> actions.dire_command -> execute(); 
+      o() -> procs.dire_command -> occur();
     }
 
     p() -> buffs.lethal_command -> expire();
@@ -5342,7 +5343,6 @@ struct kill_command_t: public hunter_spell_t
     if ( p -> talents.dire_command.ok() )
     {
       dire_command.chance = p -> talents.dire_command -> effectN( 1 ).percent();
-      dire_command.proc = p -> get_proc( "Dire Command" );
     }
   }
 
@@ -5394,8 +5394,8 @@ struct kill_command_t: public hunter_spell_t
 
     if ( rng().roll( dire_command.chance ) )
     {
-      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
-      dire_command.proc -> occur();
+      p() -> actions.dire_command -> execute();
+      p() -> procs.dire_command -> occur();
     }
 
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
@@ -5493,7 +5493,8 @@ struct dire_beast_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    //Specifically set to harmful for 10.1 class trinket
+    harmful = true;
   }
 
   void init_finished() override
@@ -5517,6 +5518,26 @@ struct dire_beast_t: public hunter_spell_t
   }
 };
 
+// Dire Command =============================================================
+struct dire_command_summon_t final : hunter_spell_t
+{
+  dire_command_summon_t( hunter_t* p ): 
+    hunter_spell_t( "dire_command_summon", p, p -> find_spell( 219199 ) )
+    {
+      cooldown -> duration = 0_ms;
+      track_cd_waste= false;
+      background = true;
+      //Specifically set for 10.1 class trinket
+      harmful = true;
+    }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+  }
+};
 // Bestial Wrath ============================================================
 
 struct bestial_wrath_t: public hunter_spell_t
@@ -6755,6 +6776,9 @@ void hunter_t::create_actions()
 
   if ( talents.arctic_bola.ok() )
     actions.arctic_bola = new attacks::arctic_bola_t( this );
+  
+  if ( talents.dire_command.ok() )
+    actions.dire_command = new spells::dire_command_summon_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7108,8 +7132,14 @@ void hunter_t::init_procs()
   if ( talents.windrunners_guidance.ok() )
     procs.windrunners_guidance = get_proc( "Windrunner's Guidance" );
 
-  procs.wild_call           = get_proc( "Wild Call" );
-  procs.wild_instincts      = get_proc( "Wild Instincts");
+  if ( talents.dire_command.ok() )
+    procs.dire_command        = get_proc( "Dire Command" );
+
+  if ( talents.wild_call.ok() )
+    procs.wild_call           = get_proc( "Wild Call" );
+  
+  if( talents.wild_instincts.ok() )
+    procs.wild_instincts      = get_proc( "Wild Instincts");
 
   if ( tier_set.t30_sv_4pc.ok() )
     procs.t30_sv_4p          = get_proc( "Wildfire Bomb Reduction T304P" );

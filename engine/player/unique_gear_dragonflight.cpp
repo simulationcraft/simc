@@ -3972,7 +3972,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 120679 } }; // Stampede and Dire Beast. TOCHECK: Dire Command?
+      proc_spell_id = { { 201430, 120679, 219199 } }; // Stampede, Dire Beast and Dire Command proc
       break;
     default:
       return;
