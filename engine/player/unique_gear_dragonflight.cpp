@@ -3952,7 +3952,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case WARLOCK_DESTRUCTION:
       driver_id = 408256;
-      proc_spell_id = { { 1122, 387159 } }; // Procs from either Summon Infernal or Blasphemy (Avatar of Destruction)
+      proc_spell_id = { { 1122, 387160 } }; // Procs from either Summon Infernal or Blasphemy (Avatar of Destruction)
       break;
     case WARLOCK_DEMONOLOGY:
       driver_id = 408256;
