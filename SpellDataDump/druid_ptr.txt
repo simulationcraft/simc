@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999, git build ptr_hotfixes 3212a0922f)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999, git build ptr_hotfixes 0c967c95fd)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -6261,7 +6261,6 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=280158)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.12 -> 0.114)
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
@@ -15069,6 +15068,7 @@ Class            : Druid
 School           : Astral
 Spell Type       : None
 Range            : 100 yards
+Travel Time      : 0.8 seconds
 Triggered by     : Star Burst (358124)
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
@@ -15137,7 +15137,6 @@ Name             : Star Burst (id=358124) [Spell Family (7), Hidden]
 Class            : Druid
 School           : Astral
 Spell Type       : None
-Velocity         : 0.8 yards/sec
 Duration         : 8 seconds
 Triggered by     : Star Burst (356517)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
