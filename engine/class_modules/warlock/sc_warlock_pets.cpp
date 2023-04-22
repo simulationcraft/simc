@@ -695,21 +695,28 @@ struct axe_toss_t : public warlock_pet_spell_t
 
 struct legion_strike_t : public warlock_pet_melee_attack_t
 {
+  bool main_pet;
+
   legion_strike_t( warlock_pet_t* p, util::string_view options_str ) 
     : warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     parse_options( options_str );
     aoe    = -1;
     weapon = &( p->main_hand_weapon );
+    main_pet = true;
+  }
+
+  legion_strike_t( warlock_pet_t* p, util::string_view options_str, bool is_main_pet )
+    : legion_strike_t( p, options_str )
+  {
+    main_pet = is_main_pet;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
 
-    // 2023-03-19 On PTR2, Grimoire Felguard was benefitting from the Legion Strike effect as well
-    // If this is fixed, will need to disable this somehow on GFG
-    if ( p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
+    if ( main_pet && p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
       m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
 
     return m;
@@ -1215,7 +1222,7 @@ void grimoire_felguard_pet_t::init_base_stats()
 action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "legion_strike" )
-    return new legion_strike_t( this, options_str );
+    return new legion_strike_t( this, options_str, false );
   if ( name == "felstorm" )
     return new felstorm_t( this, options_str, false );
 
