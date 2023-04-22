@@ -3928,7 +3928,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   {
     case SHAMAN_ELEMENTAL:
       driver_id = 408259;
-      proc_spell_id = { { 198067, 192241 } }; // Fire Elemental and Storm Elemental
+      proc_spell_id = { { 198067, 192249 } }; // Fire Elemental and Storm Elemental
       break;
     case SHAMAN_ENHANCEMENT:
       driver_id = 408259;
