@@ -3893,7 +3893,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   if ( !stacking_buff )
   {
     stacking_buff = create_buff<buff_t>( effect.player, "domineering_arrogance", effect.player->find_spell( 411661 ) )
-                                                       ->set_default_value( effect.driver()->effectN( 1 ).base_value() );
+                                                       ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
   effect.custom_buff = stacking_buff;
@@ -3904,7 +3904,9 @@ void neltharions_call_to_dominance( special_effect_t& effect )
 
   if ( !stat_buff )
   {
-    stat_buff = create_buff<buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) );
+    stat_buff = create_buff<stat_buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) )
+                      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stacking_buff->default_value )
+                      ->set_max_stack( stacking_buff->max_stack() );
   }
 
   stat_effect->custom_buff = stat_buff;
@@ -3981,7 +3983,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   stat_effect->player->callbacks.register_callback_execute_function(
     stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
       // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
-      stat_buff->trigger( 1, stacking_buff->check_stack_value() );
+      stat_buff->trigger( stacking_buff->check() );
       stacking_buff->expire();
     } );
 
