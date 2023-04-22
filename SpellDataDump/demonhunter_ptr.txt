@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999, git build ptr_hotfixes 3212a0922f)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12125,7 +12125,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026770)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 390155 | Target: Self (1)
-Description      : Enemies hit by Throw Glaive take $s1% increased damage from Chaos Strike andEye Beam.
+Description      : Enemies hit by Throw Glaive take $s1% increased damage from Chaos Strike and Eye Beam.
 
 Name             : Serrated Glaive (id=390155) [Spell Family (107)] 
 Class            : Demon Hunter
