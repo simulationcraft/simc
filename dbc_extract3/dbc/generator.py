@@ -1531,6 +1531,7 @@ class SpellDataGenerator(DataGenerator):
           ( 386875, 2 ), # Bombardment
           ( 164273, 2 ), # Lone Wolf buff
           ( 361736, 5 ), # Coordinated Assault (pet buff)
+          ( 219199, 1 ), # Dire Beast (summon)
         ),
 
         # Rogue:
