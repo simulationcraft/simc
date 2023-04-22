@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49255
-static const std::array<spelltext_data_t, 19884> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19886> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7520,6 +7520,7 @@ static const std::array<spelltext_data_t, 19884> __ptr_spelltext_data { {
   { 218861, "Increases your chance to catch bait in the Broken Isles by $s1% for $d.", "Chance to catch bait in the Broken Isles increased by $s1%.", 0 },
   { 218877, "$@spelldesc218826", 0, 0 },
   { 218903, "$@spelldesc183752", 0, 0 },
+  { 219199, "Summons a powerful wild beast to assist you in combat for $d.  Each time the beast deals damage, you will gain $120694s1 Focus.", 0, 0 },
   { 219271, "Hurls frigid ice at the target, dealing $s1 Frost damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Maelstrom.|r", 0, 0 },
   { 219272, "Your Soul Leech absorption now passively recharges at a rate of ${$s1/10}.1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.", 0, 0 },
   { 219376, "When you are below $214848s1% health, a massive eagle comes to your aid for $d. \r\n\r\nThis can only occur once every $219380d.", 0, 0 },
@@ -19046,6 +19047,7 @@ static const std::array<spelltext_data_t, 19884> __ptr_spelltext_data { {
   { 395157, "$@spelldesc199471", 0, 0 },
   { 395175, "Impale yourself with the splinter, immediately suffering $s1 Nature damage but letting its slime loose over your body. The slime absorbs $s3% of damage taken, up to $s2 total damage, for $d.", "Absorbing $s3% of damage taken, up to $w2 total damage.", 0 },
   { 395180, "$@spelldesc148039", "Absorbs $w1 damage.", 0 },
+  { 395267, "Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target, and frequently Stomps, damaging all nearby enemies$?s322740[ for $227291s1 plus $322740s1% of Stagger damage recently purified.][.]\r\n\r\nWhile active, $s2% of damage delayed by Stagger is instead Staggered by Niuzao.", "Niuzao is staggering $s2% of the Monk's Stagger damage.", 0 },
   { 395336, "$@spelldesc378986", "Healing of your next Regrowth increased by $w1.", 0 },
   { 395349, "$@spelldesc192222", 0, 0 },
   { 395388, "Add the Thundering affix to a Mythic Keystone.", 0, 0 },
@@ -19250,7 +19252,7 @@ static const std::array<spelltext_data_t, 19884> __ptr_spelltext_data { {
   { 401238, "Grant an ally Writhing Ward for $d, absorbing up to $401239s1 damage. If broken, the Ward coalesces into Writhing Ire, dealing ${$401239s2*($401257d/$401257t1)} Shadowflame damage over $401257d to the last enemy to strike it.\r\n", "Absorbs $401239s1 damage.", 0 },
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
   { 401257, "$@spelldesc401238", "Suffering $w2 Shadowflame damage every $t2 sec.", 0 },
-  { 401303, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", 0, 0 },
+  { 401303, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", 0, 0 },
   { 401306, "Strike your weapon against the anvil to strengthen it further, dealing $401303s2 Shadowflame damage to nearby enemies and increasing the on-hit damage by $401303s3% until shortly after leaving combat. Stacks $u times.", "Echoed Flare's damage increased by $401303s3%.", 0 },
   { 401324, "$@spelldesc401303", 0, 0 },
   { 401367, "Less effective mechanically aided flight system.", "Falling speed reduced.", 0 },
@@ -19887,7 +19889,8 @@ static const std::array<spelltext_data_t, 19884> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.49255
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  401303,  0, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n" },
 } };
 
 // Spell description variables, wow build 10.1.0.49255
