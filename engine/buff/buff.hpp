@@ -278,6 +278,9 @@ public:
   virtual timespan_t refresh_duration( timespan_t new_duration ) const;
   virtual timespan_t tick_time() const;
 
+  timespan_t iteration_uptime() const
+  { return iteration_uptime_sum; }
+
 #if defined(SC_USE_STAT_CACHE)
   virtual void invalidate_cache();
 #else
