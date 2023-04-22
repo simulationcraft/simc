@@ -437,6 +437,7 @@ public:
   {
     rotation_type_e rotation = ROTATION_STANDARD;
     int dre_flat_chance = -1;
+    unsigned dre_forced_failures = 2U;
   } options;
 
   // Cooldowns
@@ -8740,6 +8741,7 @@ void shaman_t::create_options()
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
   add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
+  add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -8767,6 +8769,7 @@ void shaman_t::copy_from( player_t* source )
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
   options.dre_flat_chance = p->options.dre_flat_chance;
+  options.dre_forced_failures = p->options.dre_forced_failures;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -9617,7 +9620,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   {
     // per attempt there exists an ever growing 1% chance
     // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
-    proc_chance = dre_attempts * 0.01 - 0.02;
+    proc_chance = dre_attempts * 0.01 - 0.01 * options.dre_forced_failures;
   }
 
   if ( !rng().roll( proc_chance ) )
@@ -11585,7 +11588,7 @@ public:
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
     chart.set( "plotOptions.column.color", color::RED.str() );
-    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? 3 : 1 );
+    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? p.options.dre_forced_failures + 1 : 1 );
     chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
                                  p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
     chart.set( "yAxis.title.text", "# of Triggered Procs" );
