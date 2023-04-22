@@ -3991,8 +3991,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   stat_effect->player->callbacks.register_callback_execute_function(
     stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
       // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
-      stat_buff->trigger( stacking_buff->check() );
-      stacking_buff->expire();
+      if ( stacking_buff->check() )
+      {
+        stat_buff->trigger( stacking_buff->check() );
+        stacking_buff->expire();
+      }
     } );
 
   new dbc_proc_callback_t( effect.player, effect );
