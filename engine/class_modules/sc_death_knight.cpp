@@ -2443,9 +2443,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
         {
           min_gcd = 0.75_s;
         }
-        pet_spell_t<gargoyle_pet_t>::execute();
         ++gargoyle_strike_count;
       }
+      pet_spell_t<gargoyle_pet_t>::execute();
     }
   };
 
