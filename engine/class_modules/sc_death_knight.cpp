@@ -8262,6 +8262,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       pets.gargoyle -> increase_power( base_rp_cost );
     }
 
+    if( action )
     buffs.icy_talons -> trigger();
 
     if ( talent.frost.unleashed_frenzy.ok() )
