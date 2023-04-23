@@ -1632,6 +1632,16 @@ namespace monk
             p()->buff.elusive_brawler->trigger();
 
           p()->buff.leverage->expire();
+
+          // Brewmaster RSK also applies the WoO debuff.
+          // This is not mentioned in the tooltip and could be old code from Shadowland Beta that slipped through.
+          if ( p()->bugs && p()->buff.weapons_of_order->up() ) {
+            std::vector<player_t*>& tl = target_list();
+            const int target_count = as<int>( tl.size() );
+
+            for ( int t = 0; t < target_count; t++ )
+              get_td( tl[t] )->debuff.weapons_of_order->trigger();
+          }
         }
 
         void impact( action_state_t *s ) override
@@ -5314,6 +5324,11 @@ namespace monk
           double am = monk_heal_t::action_multiplier();
 
           am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
+          // should be zero if not talented, but just to be safe (for first condition):
+          if ( p()->talent.general.strength_of_spirit->ok() && p()->buff.expel_harm_helper->check() && p()->bugs ) {
+            double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+            am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
+          }
 
           return am;
         }
@@ -5333,6 +5348,17 @@ namespace monk
             p()->proc.tranquil_spirit_goto->occur();
           }
         }
+
+        void impact( action_state_t *s ) override
+        {
+          monk_heal_t::impact( s );
+          if ( p()->buff.expel_harm_helper->check() ) {
+            double result = s->result_total;
+            double current_value = p()->buff.expel_harm_helper->check_value();
+            p()->sim->print_debug("adding {} to buff of {}", result, current_value);
+            p()->buff.expel_harm_helper->trigger(1, result + current_value);
+          }
+        }
       };
 
       struct gift_of_the_ox_trigger_t : public monk_heal_t
@@ -5342,6 +5368,31 @@ namespace monk
           background = true;
           target = &p;
           trigger_gcd = timespan_t::zero();
+        }
+
+        double action_multiplier() const override
+        {
+          double am = monk_heal_t::action_multiplier();
+
+          am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
+          // should be zero if not talented, but just to be safe (for first condition):
+          if ( p()->talent.general.strength_of_spirit->ok() && p()->buff.expel_harm_helper->check() && p()->bugs ) {
+            double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+            am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
+          }
+
+          return am;
+        }
+
+        void impact( action_state_t *s ) override
+        {
+          monk_heal_t::impact( s );
+          if ( p()->buff.expel_harm_helper->check() ) {
+            double result = s->result_total;
+            double current_value = p()->buff.expel_harm_helper->check_value();
+            p()->sim->print_debug("adding {} to buff of {}", result, current_value);
+            p()->buff.expel_harm_helper->trigger(1, result + current_value);
+          }
         }
       };
 
@@ -5400,11 +5451,21 @@ namespace monk
         {
           double am = monk_heal_t::action_multiplier();
 
+          if ( p()->specialization() == MONK_BREWMASTER ) {
+            if ( p()->talent.general.strength_of_spirit->ok() ) {
+              double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+              am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
+            }
+            am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
+          }
+
           return am;
         }
 
         void execute() override
         {
+          p()->buff.expel_harm_helper->trigger();
+
           monk_heal_t::execute();
 
           if ( p()->specialization() == MONK_WINDWALKER )
@@ -5422,16 +5483,13 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
-
           monk_heal_t::impact( s );
 
           double result = s->result_total;
-          double health_difference = p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
-
-          result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
           if ( p()->specialization() == MONK_WINDWALKER )
           {
+            double health_difference = p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
             // Have to manually set the combo strike mastery multiplier
             if ( p()->buff.combo_strikes->up() )
               result *= 1 + p()->cache.mastery_value();
@@ -5445,30 +5503,30 @@ namespace monk
               // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
               result = rng().range( min_amount, result );
             }
+
+            if ( p()->talent.general.strength_of_spirit->ok() )
+            {
+              double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
+              s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
+            }
+
+            result *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
           }
 
           if ( p()->specialization() == MONK_BREWMASTER )
           {
             if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
             {
-              double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
-              goto_heal *= p()->buff.gift_of_the_ox->check();
-              result += goto_heal;
-            }
-
-            for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
-            {
-              p()->buff.gift_of_the_ox->decrement();
+              for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
+                {
+                  p()->buff.gift_of_the_ox->decrement();
+                }
+              result += p()->buff.expel_harm_helper->check_value();
+              p()->buff.expel_harm_helper->expire();
             }
           }
 
-          if ( p()->talent.general.strength_of_spirit->ok() )
-          {
-            double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-            s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
-          }
-
-          result *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
+          result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
           dmg->base_dd_min = result;
           dmg->base_dd_max = result;
@@ -6228,8 +6286,7 @@ namespace monk
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
       {
-        p().active_actions.gift_of_the_ox_expire->execute();
-
+        // p().active_actions.gift_of_the_ox_expire->execute();
         buff_t::expire_override( expiration_stacks, remaining_duration );
       }
     };
@@ -6637,6 +6694,25 @@ namespace monk
         set_cooldown( timespan_t::zero() );
         set_duration( p.spec.spinning_crane_kick_brm->duration() );
         set_max_stack( 5 );
+      }
+    };
+
+    // ===============================================================================
+    // Expel Harm Helper
+    // ===============================================================================
+
+    struct expel_harm_helper_t : public monk_buff_t<buff_t>
+    {
+      expel_harm_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+      {
+        set_trigger_spell( p.talent.brewmaster.gift_of_the_ox );
+        set_can_cancel( true );
+        set_quiet( true );
+        set_cooldown( timespan_t::zero() );
+        set_duration( timespan_t::from_millis( 1 ) );
+        set_max_stack( 1 );
+        set_default_value( 0.0 );
+
       }
     };
   }  // namespace buffs
@@ -7873,6 +7949,7 @@ namespace monk
       ->set_default_value_from_effect( 2 );
 
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+    buff.expel_harm_helper = new buffs::expel_harm_helper_t( *this, "expel_harm_helper", spell_data_t::nil() );
 
     buff.graceful_exit = make_buff( this, "graceful_exit", talent.brewmaster.graceful_exit->effectN( 1 ).trigger() )
       ->set_trigger_spell( talent.brewmaster.graceful_exit )
