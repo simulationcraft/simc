@@ -32,6 +32,7 @@ namespace enchants
 std::function<void( special_effect_t& )> writ_enchant( stat_e stat = STAT_NONE );
 void frozen_devotion( special_effect_t& );
 void wafting_devotion( special_effect_t& );
+void shadowflame_wreathe( special_effect_t& );
 }
 
 namespace items

@@ -19,6 +19,7 @@
 #include "player/action_variable.hpp"
 #include "player/pet.hpp"
 #include "sim/cooldown.hpp"
+#include "sim/real_ppm.hpp"
 #include "sim/sim.hpp"
 #include "stats.hpp"
 #include "unique_gear.hpp"
@@ -601,6 +602,22 @@ void projectile_propulsion_pinion( special_effect_t& effect )
 void temporal_spellthread( special_effect_t& effect )
 {
   effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver()->effectN( 1 ).percent();
+}
+
+// 406764 - DoT
+// 406770 - Self Damage (TODO)
+void shadowflame_wreathe( special_effect_t& effect )
+{
+  auto new_driver = effect.driver()->effectN( 1 ).trigger();
+  auto dot        = create_proc_action<generic_proc_t>( "shadowflame_wreathe", effect, "shadowflame_wreathe",
+                                                 new_driver->effectN( 1 ).trigger() );
+  dot->base_td += effect.driver()->effectN( 1 ).average( effect.player );
+
+  effect.name_str       = new_driver->name_cstr();
+  effect.spell_id       = new_driver->id();
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 }  // namespace enchants
@@ -1896,7 +1913,15 @@ void way_of_controlled_currents( special_effect_t& effect )
       create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
           ->set_name_reporting( "Stack" )
           ->add_invalidate( CACHE_ATTACK_SPEED );
-  stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 );
+  //In 10.1 the effect is always 2% rather than scaling with item level
+  if( effect.player -> is_ptr() )
+  {
+    stack->set_default_value( stack->data().effectN( 1 ).base_value() * 0.01 );
+  }
+  else
+  {
+    stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 ); 
+  }
 
   effect.player->buffs.way_of_controlled_currents = stack;
 
@@ -3716,12 +3741,16 @@ void screaming_black_dragonscale_equip( special_effect_t& effect )
 
 void screaming_black_dragonscale_use( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "screaming_descent", effect, "screaming_descent", effect.driver() );
-  damage -> base_dd_min = damage -> base_dd_max = effect.player -> find_spell( 401468 ) -> effectN( 3 ).average( effect.item );
-
-  if( effect.player -> sim -> dragonflight_opts.screaming_black_dragonscale_damage )
+  if ( effect.player->sim->dragonflight_opts.screaming_black_dragonscale_damage )
   {
+    auto damage           = create_proc_action<generic_aoe_proc_t>( "screaming_descent", effect, "screaming_descent", effect.driver() );
+    damage->base_dd_min   = damage->base_dd_max = effect.player->find_spell( 401468 )->effectN( 3 ).average( effect.item );
     effect.execute_action = damage;
+  }
+  else
+  {
+    // set the type to SPECIAL_EFFECT_NONE to disable all handling of this effect.
+    effect.type = SPECIAL_EFFECT_NONE;
   }
 }
 
@@ -3801,6 +3830,176 @@ void neltharions_call_to_suffering( special_effect_t& effect )
   effect.spell_id = driver_id;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void neltharions_call_to_chaos( special_effect_t& effect )
+{
+  int driver_id = effect.spell_id;
+
+  switch ( effect.player->type )
+  {
+    case WARRIOR:
+      driver_id = 408122;
+      break;
+    case PALADIN:
+      driver_id = 408123;
+      break;
+    case MAGE:
+      driver_id = 408126;
+      break;
+    case DEMON_HUNTER:
+      driver_id = 408128;
+      break;
+    case EVOKER:
+      driver_id = 408127;
+      break;
+    default:
+      return;
+  }
+
+  // Buff scaling is on the main trinket driver.
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403382 ) )
+                           ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
+  effect.spell_id = driver_id;
+
+  // Triggers only on AoE Abilities - Abilities that *can* AoE or abilities that *did* AoE. Evokers need a hack.
+  switch ( effect.player->type )
+  {
+    case EVOKER:
+      // Horrifying state hack to trick the Evoker Module into thinking there is a pre-execute state for the is_aoe
+      // calls for eternity surge as the action n_targets is based on that state.
+      effect.player->callbacks.register_callback_trigger_function(
+          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+            auto _s              = a->pre_execute_state;
+            a->pre_execute_state = s;
+            auto b               = a->is_aoe();
+            a->pre_execute_state = _s;
+            return b;
+          } );
+      break;
+    case WARRIOR:
+    case PALADIN:
+    case MAGE:
+    case DEMON_HUNTER:
+    default:
+      // Evoker is unique with it working on cleave abilities. Other classes likely need an ability whitelist but this is a better aproximation for now.
+      effect.player->callbacks.register_callback_trigger_function(
+          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) { return a->n_targets() == -1; } );
+  }
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void neltharions_call_to_dominance( special_effect_t& effect )
+{
+  auto stacking_buff = buff_t::find( effect.player, "domineering_arrogance" );
+
+  if ( !stacking_buff )
+  {
+    stacking_buff = create_buff<buff_t>( effect.player, "domineering_arrogance", effect.player->find_spell( 411661 ) )
+                                                       ->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.custom_buff = stacking_buff;
+
+  auto stat_effect = new special_effect_t( effect.player );
+
+  auto stat_buff = buff_t::find( effect.player, "call_to_dominance" );
+
+  if ( !stat_buff )
+  {
+    stat_buff = create_buff<stat_buff_t>( effect.player, "call_to_dominance", effect.player->find_spell( 403380 ) )
+                      ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), stacking_buff->default_value )
+                      ->set_max_stack( stacking_buff->max_stack() ); // This buff does not have stacks in game but we need to treat it as such in simc for clarity/ease-of-use
+  }
+
+  stat_effect->custom_buff = stat_buff;
+  stat_effect->type = SPECIAL_EFFECT_EQUIP;
+  stat_effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+  std::set<int> proc_spell_id;
+  int driver_id = effect.spell_id;
+
+  switch ( effect.player->specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      driver_id = 408259;
+      proc_spell_id = { { 198067, 192241 } }; // Fire Elemental and Storm Elemental
+      break;
+    case SHAMAN_ENHANCEMENT:
+      driver_id = 408259;
+      proc_spell_id = { { 51533 } }; // Feral Spirit
+      break;
+    case SHAMAN_RESTORATION:
+      driver_id = 408259;
+      proc_spell_id = { { 98008, 108280, 16191 } }; // Spirit Link, Healing Tide, Mana Tide totems
+      break;
+    case MONK_BREWMASTER:
+      driver_id = 408260;
+      proc_spell_id = { { 132578, 395267 } };  // Invoke Niuzao, Weapons of Order's Call to Arms
+      break;
+    case MONK_WINDWALKER:
+      driver_id = 408260;
+      proc_spell_id = { { 123904 } }; // Invoke Xuen 
+      break;
+    case MONK_MISTWEAVER:
+      driver_id = 408260;
+      proc_spell_id = { { 322118, 325197 } }; // Invoke Yu'lon or Chi-Ji
+      break;
+    case WARLOCK_DESTRUCTION:
+      driver_id = 408256;
+      proc_spell_id = { { 1122, 387160 } }; // Summon Infernal and Summon Blasphemy (Avatar of Destruction)
+      break;
+    case WARLOCK_DEMONOLOGY:
+      driver_id = 408256;
+      proc_spell_id = { { 265187 } }; // Summon Demonic Tyrant
+      break;
+    case WARLOCK_AFFLICTION:
+      driver_id = 408256;
+      proc_spell_id = { { 205180 } }; // Summon Darkglare
+      break;
+    case HUNTER_SURVIVAL:
+      driver_id = 408262;
+      proc_spell_id = { { 201430, 360952 } }; // Stampede and Coordinated Assault
+      break;
+    case HUNTER_MARKSMANSHIP:
+      driver_id = 408262;
+      proc_spell_id = { { 201430 } }; // Stampede
+      break;
+    case HUNTER_BEAST_MASTERY:
+      driver_id = 408262;
+      proc_spell_id = { { 201430, 120679, 219199 } }; // Stampede, Dire Beast and Dire Command proc
+      break;
+    default:
+      return;
+  }
+
+  stat_effect->spell_id = driver_id;
+
+  effect.player->special_effects.push_back( stat_effect );
+
+  stat_effect->player->callbacks.register_callback_trigger_function(
+    stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+    [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+      return range::contains( proc_spell_id, a->data().id() );
+    } );
+
+  stat_effect->player->callbacks.register_callback_execute_function(
+    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+      // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
+      if ( stacking_buff->check() )
+      {
+        stat_buff->trigger( stacking_buff->check() );
+        stacking_buff->expire();
+      }
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+  new dbc_proc_callback_t( effect.player, *stat_effect );
 }
 
 // Elementium Pocket Anvil
@@ -4516,6 +4715,58 @@ void ashkandur( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Shadowed Razing Annihilator
+// 408711 Driver & Main damage
+// 411024 Residual AoE Damage
+// TODO: Test the damage increase per target, early data suggested maybe its 30%, rather than the default 15%
+void shadowed_razing_annihilator( special_effect_t& e )
+{
+  struct shadowed_razing_annihilator_residual_t : public generic_aoe_proc_t
+  {
+    shadowed_razing_annihilator_residual_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "shadowed_razing_annihilator_residual", e.player->find_spell( 411024 ), true )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e.item );
+    }
+  };
+
+  auto aoe_damage =
+      create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e );
+  auto buff = create_buff<buff_t>( e.player, e.driver() )
+                  ->set_quiet( true )
+                  ->set_duration( 2_s )
+                  ->set_stack_change_callback( [ aoe_damage ]( buff_t*, int, int new_ ) {
+                    if ( !new_ )
+                    {
+                      aoe_damage->execute();
+                    }
+                  } );
+  ;
+
+  struct shadowed_razing_annihilator_t : public generic_proc_t
+  {
+    action_t* aoe;
+    buff_t* buff;
+
+    shadowed_razing_annihilator_t( const special_effect_t& e, buff_t* b )
+      : generic_proc_t( e, "shadowed_razing_annihilator", e.driver() ),
+        aoe( create_proc_action<shadowed_razing_annihilator_residual_t>( "shadowed_razing_annihilator_residual", e ) ),
+        buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      add_child( aoe );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      buff->trigger();
+    }
+  };
+
+  e.execute_action = create_proc_action<shadowed_razing_annihilator_t>( "shadowed_razing_annihilator", e, buff );
+}
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -4888,6 +5139,45 @@ void allied_chestplate_of_generosity(special_effect_t& effect)
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 406219 Damage Taken Driver
+// 406928 Crit Damage Driver
+// 406927 Crit Stats
+// 406921 Damage Taken Stats
+void adaptive_dracothyst_armguards( special_effect_t& effect )
+{
+  // Handle both drivers, this is the Crit Driver.
+  if ( effect.driver()->id() == 406928 )
+  {
+    auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_crit", effect.driver()->effectN( 1 ).trigger() );
+    buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    effect.custom_buff  = buff;
+    effect.proc_flags2_ = PF2_CRIT;
+    auto dbc            = new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_dmgtaken",
+                                          effect.driver()->effectN( 1 ).trigger() );
+    buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+    effect.custom_buff = buff;
+    auto dbc = new dbc_proc_callback_t( effect.player, effect );
+
+    // Fake damage taken events to trigger this for DPS Players
+    effect.player->register_combat_begin( [ dbc, buff ]( player_t* p ) {
+      if ( dbc->rppm && p->sim->dragonflight_opts.adaptive_stonescales_period > 0_s )
+      {
+        make_repeating_event( p->sim, p->sim->dragonflight_opts.adaptive_stonescales_period, [ dbc, buff ]() {
+          // Roll RPPM from the DBC Object so it will still work on sims with damage taken events.
+          if ( dbc->rppm && dbc->rppm->trigger() )
+          {
+            buff->trigger();
+          }
+        } );
+      }
+    } );
+  }
 }
 
 // 395601 Driver
@@ -6066,7 +6356,7 @@ void register_special_effects()
   register_special_effect( { 385765, 385886, 385892 }, enchants::gyroscopic_kaleidoscope );
   register_special_effect( { 385939, 386127, 386136 }, enchants::projectile_propulsion_pinion );
   register_special_effect( { 387302, 387303, 387306 }, enchants::temporal_spellthread );
-
+  register_special_effect( { 405764, 405765, 405766 }, enchants::shadowflame_wreathe );
 
   // Trinkets
   register_special_effect( 408671, items::dragonfire_bomb_dispenser );
@@ -6108,7 +6398,7 @@ void register_special_effects()
   register_special_effect( 383781, items::algethar_puzzle_box );
   register_special_effect( 382119, items::frenzying_signoll_flare );
   register_special_effect( 386175, items::idol_of_trampling_hooves );
-  register_special_effect( 386692, items::dragon_games_equipment);
+  register_special_effect( 386692, items::dragon_games_equipment );
   register_special_effect( 397400, items::bonemaws_big_toe );
   register_special_effect( 381705, items::mutated_magmammoth_scale );
   register_special_effect( 382139, items::homeland_raid_horn );
@@ -6127,6 +6417,8 @@ void register_special_effects()
   register_special_effect( 401468, items::screaming_black_dragonscale_equip);
   register_special_effect( 405940, items::screaming_black_dragonscale_use);
   register_special_effect( 403385, items::neltharions_call_to_suffering );
+  register_special_effect( 403366, items::neltharions_call_to_chaos );
+  register_special_effect( 403368, items::neltharions_call_to_dominance );
   register_special_effect( 402583, items::anshuul_the_cosmic_wanderer );
   register_special_effect( 400956, items::zaqali_chaos_grapnel );
   register_special_effect( 401306, items::elementium_pocket_anvil );
@@ -6137,12 +6429,13 @@ void register_special_effects()
 
 
   // Weapons
-  register_special_effect( 396442, items::bronzed_grip_wrappings );  // bronzed grip wrappings embellishment
-  register_special_effect( 405226, items::spore_keepers_baton );     // Spore Keepers Baton Weapon
-  register_special_effect( 377708, items::fang_adornments );         // fang adornments embellishment
-  register_special_effect( 381698, items::forgestorm );              // Forgestorm Weapon
-  register_special_effect( 394928, items::neltharax );               // Neltharax, Enemy of the Sky
-  register_special_effect( 408790, items::ashkandur );               // Ashkandur, Fall of the Brotherhood
+  register_special_effect( 396442, items::bronzed_grip_wrappings );      // bronzed grip wrappings embellishment
+  register_special_effect( 405226, items::spore_keepers_baton );         // Spore Keepers Baton Weapon
+  register_special_effect( 377708, items::fang_adornments );             // fang adornments embellishment
+  register_special_effect( 381698, items::forgestorm );                  // Forgestorm Weapon
+  register_special_effect( 394928, items::neltharax );                   // Neltharax, Enemy of the Sky
+  register_special_effect( 408790, items::ashkandur );                   // Ashkandur, Fall of the Brotherhood
+  register_special_effect( 408711, items::shadowed_razing_annihilator ); // Shadowed Razing Annihilator 
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
@@ -6163,7 +6456,7 @@ void register_special_effects()
   register_special_effect( 395601, items::hood_of_surging_time, true );
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
   register_special_effect( 406254, items::roiling_shadowflame );
-
+  register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );

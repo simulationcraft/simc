@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.1.0.49190
+// Player trait definitions, wow build 10.1.0.49255
 static const std::array<trait_data_t, 2451> __ptr_trait_data_data { {
   { 1,  1, 112108, 90258, 2, 20, 117113, 384124,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 112109, 90259, 2, 20, 117114, 394855,      0,      0,  8,  1,  -1,              "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2334,7 +2334,7 @@ static const std::array<trait_data_t, 2451> __ptr_trait_data_data { {
   { 2, 12, 112929, 91009, 1, 20, 117934, 389693,      0,      0,  8,  4,  -1,                       "Inner Demon", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112930, 91010, 1, 20, 117935, 390163,      0,      0,  9,  4, 200,                    "Elysian Decree", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112931, 91010, 1, 20, 117936, 391429,      0,      0,  9,  4, 100,               "Fodder to the Flame", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
-  { 2, 12, 112932, 91011, 1, 20, 117937, 391275,      0,      0,  8,  5,  -1,                "Accelerating Blade", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
+  { 2, 12, 112932, 91011, 1, 20, 117937, 391275,      0,      0,  8,  5,  -1,                 "Accelerated Blade", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112933, 91012, 1,  8, 117938, 389977,      0,      0,  7,  4,  -1,              "Relentless Onslaught", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112934, 91013, 2,  8, 117939, 390154,      0,      0,  6,  4,  -1,                   "Serrated Glaive", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 2, 12, 112936, 91015, 2,  0, 117941, 389978,      0,      0,  4,  3,  -1,                 "Dancing with Fate", {  577,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2453,7 +2453,7 @@ static const std::array<trait_data_t, 2451> __ptr_trait_data_data { {
   { 2, 13, 115682, 93364, 1, 20, 120694, 375777,      0,      0, 10,  3,  -1,                         "Causality", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.1.0.49190
+// Player trait definition effect entries, wow build 10.1.0.49255
 static const std::array<trait_definition_effect_entry_t, 669> __ptr_trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },

@@ -220,7 +220,9 @@ struct summon_darkglare_t : public affliction_spell_t
     : affliction_spell_t( "Summon Darkglare", p, p->talents.summon_darkglare )
   {
     parse_options( options_str );
-    harmful = may_crit = may_miss = false;
+    harmful = true; // This is currently set to true specifically for the 10.1 class trinket
+    callbacks = true; // 2023-04-22 This was recently modified to false in spell data but we need it to be true for 10.1 trinket
+    may_crit = may_miss = false;
   }
 
   void execute() override

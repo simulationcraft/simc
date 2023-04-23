@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.0.49190
-static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
+// Spell text, wow build 10.1.0.49255
+static const std::array<spelltext_data_t, 19886> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2705,8 +2705,8 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   {  91140, "Your healing spell critical strikes have a chance to grant $91139s1 Versatility for $91139d.", 0, 0 },
   {  91141, "Haste increased by $s1 for $d.", "Haste increased by $s1.", 0 },
   {  91142, "Your healing spells have a chance to grant $91141s1 haste for $91141d.", 0, 0 },
-  {  91143, "$@spelldesc91144", "Haste increased by $s1.", 0 },
-  {  91144, "Your healing spells have a chance to grant $91143s1 Haste for $91143d.", 0, 0 },
+  {  91143, "$@spelldesc91144", "Haste increased by $s1. Healing spells on allies have a chance to cause a ripple, granting them $413426s1 Haste for $413426d.", 0 },
+  {  91144, "Your healing spells have a chance to call a flowing anthem, granting $91143s1 Haste for $91143d. While under this effect, your healing spells on allies have a chance to cause a ripple, granting them $413426s1 Haste for $413426d.", 0, 0 },
   {  91147, "Versatility increased by $s1 for $d.", "Versatility increased by $s1.", 0 },
   {  91148, "Your healing spells have a chance to grant $91147s1 Versatility for $91147d.", 0, 0 },
   {  91149, "Versatility increased by $s1 for $d.", "Versatility increased by $s1.", 0 },
@@ -7520,6 +7520,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 218861, "Increases your chance to catch bait in the Broken Isles by $s1% for $d.", "Chance to catch bait in the Broken Isles increased by $s1%.", 0 },
   { 218877, "$@spelldesc218826", 0, 0 },
   { 218903, "$@spelldesc183752", 0, 0 },
+  { 219199, "Summons a powerful wild beast to assist you in combat for $d.  Each time the beast deals damage, you will gain $120694s1 Focus.", 0, 0 },
   { 219271, "Hurls frigid ice at the target, dealing $s1 Frost damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Maelstrom.|r", 0, 0 },
   { 219272, "Your Soul Leech absorption now passively recharges at a rate of ${$s1/10}.1% of maximum health every $t1 sec, and may now absorb up to $s2% of maximum health.", 0, 0 },
   { 219376, "When you are below $214848s1% health, a massive eagle comes to your aid for $d. \r\n\r\nThis can only occur once every $219380d.", 0, 0 },
@@ -18244,8 +18245,8 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 390145, "$@spelldesc389693", "Your next Chaos Strike unleashes your inner demon, dealing $390137s1 Chaos damage to all nearby enemies.", 0 },
   { 390148, "$@spelldesc385696", "Time is moving $w1% faster.", 0 },
   { 390152, "$?a212613[Fel Devastation][Eye Beam] summons an allied $?a212613[Havoc][Vengeance] Demon Hunter who casts $?a212613[Eye Beam][Fel Devastation], dealing $?a212613[${$391058s1*10*2} Chaos][${$393834s1*(2/$393831t1)} Fire] damage over $?a212613[$391057d][$393831d]. $?a212613[Deals reduced damage beyond $198013s5 targets.][Dealing damage heals you for up to ${$212106s1*(2/$t1)} health.]", 0, 0 },
-  { 390154, "Enemies hit by Throw Glaive take $s1% increased damage from Eye Beam.", 0, 0 },
-  { 390155, "$@spelldesc390154", "Damage taken from Eye Beam increased by $w1%.", 0 },
+  { 390154, "Enemies hit by Throw Glaive take $s1% increased damage from Chaos Strike and Eye Beam.", 0, 0 },
+  { 390155, "$@spelldesc390154", "Damage taken from Chaos Strike and Eye Beam increased by $w1%.", 0 },
   { 390158, "Immolation Aura's damage increases by $s1% each time it deals damage.", 0, 0 },
   { 390161, "Festering Strike has a $s1% chance to generate $390162s1 Rune and grant Runic Corruption.", 0, 0 },
   { 390162, "$@spelldesc390161", 0, 0 },
@@ -18458,7 +18459,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 391233, "Prayer of Mending heals $s1% more for each bounce remaining.", 0, 0 },
   { 391270, "Cooldown of Raging Blow and Pummel reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 391271, "Cooldown of Shield Slam and Pummel reduced by ${$s1/-1000}.1 sec.", 0, 0 },
-  { 391275, "Throw Glaive deals $s1% increased damage for each enemy hit.", 0, 0 },
+  { 391275, "Throw Glaive deals $s2% increased damage, reduced by ${$s2/2}% for each previous enemy hit.", 0, 0 },
   { 391284, "Your Shadow Word: Pain damage has a $s1% chance to create Shadowy Apparitions that float towards all targets afflicted by your Vampiric Touch. \r\n\r\nCritical strikes increase the chance to $s2%.", 0, 0 },
   { 391286, "$@spelldesc205385", 0, 0 },
   { 391330, "When you Combo Strike, the cooldown of Touch of Death is reduced by ${$s2/100}.2 sec.\r\n\r\nTouch of Death deals an additional $s1% damage.", 0, 0 },
@@ -19046,6 +19047,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 395157, "$@spelldesc199471", 0, 0 },
   { 395175, "Impale yourself with the splinter, immediately suffering $s1 Nature damage but letting its slime loose over your body. The slime absorbs $s3% of damage taken, up to $s2 total damage, for $d.", "Absorbing $s3% of damage taken, up to $w2 total damage.", 0 },
   { 395180, "$@spelldesc148039", "Absorbs $w1 damage.", 0 },
+  { 395267, "Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target, and frequently Stomps, damaging all nearby enemies$?s322740[ for $227291s1 plus $322740s1% of Stagger damage recently purified.][.]\r\n\r\nWhile active, $s2% of damage delayed by Stagger is instead Staggered by Niuzao.", "Niuzao is staggering $s2% of the Monk's Stagger damage.", 0 },
   { 395336, "$@spelldesc378986", "Healing of your next Regrowth increased by $w1.", 0 },
   { 395349, "$@spelldesc192222", 0, 0 },
   { 395388, "Add the Thundering affix to a Mythic Keystone.", 0, 0 },
@@ -19250,7 +19252,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 401238, "Grant an ally Writhing Ward for $d, absorbing up to $401239s1 damage. If broken, the Ward coalesces into Writhing Ire, dealing ${$401239s2*($401257d/$401257t1)} Shadowflame damage over $401257d to the last enemy to strike it.\r\n", "Absorbs $401239s1 damage.", 0 },
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
   { 401257, "$@spelldesc401238", "Suffering $w2 Shadowflame damage every $t2 sec.", 0 },
-  { 401303, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal $s1 additional Shadowflame damage on-hit.\r\n\r\n", 0, 0 },
+  { 401303, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", 0, 0 },
   { 401306, "Strike your weapon against the anvil to strengthen it further, dealing $401303s2 Shadowflame damage to nearby enemies and increasing the on-hit damage by $401303s3% until shortly after leaving combat. Stacks $u times.", "Echoed Flare's damage increased by $401303s3%.", 0 },
   { 401324, "$@spelldesc401303", 0, 0 },
   { 401367, "Less effective mechanically aided flight system.", "Falling speed reduced.", 0 },
@@ -19258,7 +19260,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 401394, "$@spelldesc401395", "Haste increased by $w3. Suffering $w2 Fire damage every $t2 sec.", 0 },
   { 401395, "Your harmful spells have a high chance to draw unstable flames from the Vessel, increasing your Haste by $s4 and dealing ${$s1*$401394d/$401394t2} Fire damage to you over $401394d.\r\n\r\nUpon reaching $401394u stacks the flames leap toward your target, combusting immediately for $401395s2 Shadow damage, then burning them for ${$401395s3*6} Shadowflame damage over 12 seconds.", 0, 0 },
   { 401422, "$@spelldesc401395", 0, 0 },
-  { 401428, "$@spelldesc401395", "Suffering $w2 Shadowflame damage every $t1 sec.", 0 },
+  { 401428, "$@spelldesc401395", "Suffering $w1 Shadowflame damage every $t sec.", 0 },
   { 401468, "Your attacks and abilities have a chance to grant you ephemeral dragon wings, increasing your Critical Strike by $s1 and your Leech by $s2 for $401469d.\r\n\r\n", 0, 0 },
   { 401469, "$@spelldesc401468", "Critical Strike increased by $w2. Leech increased by $w3.", 0 },
   { 401513, "Resonate with the power of your sworn dragonflight, granting you $s1 secondary stat. Allies sworn to a different dragonflight gain $s2 secondary stat from your Resonance. You may only benefit from one Resonance per Flight. \r\n\r\n", 0, 0 },
@@ -19416,6 +19418,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 404551, "$@spelldesc381930", 0, 0 },
   { 404752, "When any party or raid member within $a1 yards dies, you gain Avenging Wrath for $s1 sec.", 0, 0 },
   { 404834, "Blade of Justice casts Consecration at the target's location.\r\n\r\nThis effect can only occur every 10 sec.", 0, 0 },
+  { 404859, "Permanently enchants a weapon to cultivate living spores, causing your healing spells and abilities to occasionally send an Invigorating Spore Cloud to your target. It will grant them $ec1s1 of their highest secondary stat for $406785d. Cannot be applied to items lower than level $ecim.", 0, 0 },
   { 404864, "Critically striking an enemy has a chance to shock them and 2 nearby enemies, dealing $s1 Nature damage.", 0, 0 },
   { 404865, "Dealing damage has a chance to set the enemy on fire, dealing ${$s1*$403225d} Fire damage over $403225d.", 0, 0 },
   { 404866, "Moving builds an electrical charge, causing your next damaging ability to also deal $s1 Nature damage.", 0, 0 },
@@ -19446,6 +19449,7 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 405064, "Throw a small Darkened Elemental Core at the target location dealing $405165s1 Shadowflame damage split between all enemies.", 0, 0 },
   { 405066, "Slowly build up stacks of titan energy. The amount of stacks gained per second can vary but when fully charged at $s3 stacks the Buzzing Orb Core will increase a random secondary stat by $s0, as well as your movement speed by $s1 for $405202d seconds.", 0, 0 },
   { 405068, "Shield an ally for $405098s2 while channeling a beam of molten flame dealing ${$405098s1*($d/($t1))}  Fire damage over $d to them. If they survive the channel, heal them for $405098s3.", "Cauterizing the wound, dealing ${$w1*($d/($t1))}  Fire damage over $d.", 0 },
+  { 405076, "Permanently enchants a weapon to erupt with Shadowflame, causing your damaging spells and abilities to sometimes inflict ${$ec1s1*$406764d} Shadowflame damage to your target over $406764d while instantly inflicting $ec1s1 Shadowflame damage to yourself. Cannot be applied to items lower than level $ecim.", 0, 0 },
   { 405109, "$@spelldesc405068", "Absorb up to $w1 incoming damage.", 0 },
   { 405166, "Killing Machine can stack up to $s1 additional time.", 0, 0 },
   { 405167, "$@spelldesc405064", 0, 0 },
@@ -19686,6 +19690,15 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 408087, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
   { 408089, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
   { 408090, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408122, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408123, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408126, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408127, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408128, "$@spelldesc403385", "Your debuffs and harmful periodic spells and abilities have a chance to grant you $s1 $pri for $403386d.", 0 },
+  { 408256, "$@spelldesc403368", 0, 0 },
+  { 408259, "$@spelldesc403368", 0, 0 },
+  { 408260, "$@spelldesc403368", 0, 0 },
+  { 408262, "$@spelldesc403368", 0, 0 },
   { 408310, "$@spelldesc405511", 0, 0 },
   { 408340, "$@spelldesc405512", "Agility increased by $w1%.", 0 },
   { 408356, "$@spelldesc405500", "Strength increased by $w1%.", 0 },
@@ -19870,13 +19883,17 @@ static const std::array<spelltext_data_t, 19870> __ptr_spelltext_data { {
   { 412740, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Dragonflight Season 2.", 0, 0 },
   { 413075, "$@spelldesc408635", 0, 0 },
   { 413231, "$@spelldesc341491", 0, 0 },
+  { 413419, "Melee attacks against you have a chance to make the heart pulse, dealing $413423s1 Nature damage split between nearby enemies.", 0, 0 },
+  { 413423, "$@spelldesc413419", 0, 0 },
+  { 413426, "$@spelldesc91144", "Haste increased by $s1.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49190
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.1.0.49255
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  401303,  0, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n" },
 } };
 
-// Spell description variables, wow build 10.1.0.49190
+// Spell description variables, wow build 10.1.0.49255
 static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20259,7 +20276,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49190
+// spelldesc_vars hotfix entries, wow build 10.1.0.49255
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

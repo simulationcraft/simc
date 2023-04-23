@@ -287,6 +287,7 @@ public:
 
   /// Deeply Rooted Elements tracking
   extended_sample_data_t dre_samples;
+  extended_sample_data_t dre_uptime_samples;
   unsigned dre_attempts;
 
   // Cached actions
@@ -437,6 +438,7 @@ public:
   {
     rotation_type_e rotation = ROTATION_STANDARD;
     int dre_flat_chance = -1;
+    unsigned dre_forced_failures = 2U;
   } options;
 
   // Cooldowns
@@ -771,6 +773,7 @@ public:
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
+      dre_uptime_samples( "dre_uptime_tracker", false ),
       dre_attempts( 0U ),
       action(),
       pet( this ),
@@ -821,6 +824,7 @@ public:
       resource_regeneration = regen_type::DYNAMIC;
 
     dre_samples.reserve( 8192 );
+    dre_uptime_samples.reserve( 8192 );
   }
 
   ~shaman_t() override = default;
@@ -932,6 +936,7 @@ public:
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
+  void datacollection_end() override;
 
   // APL releated methods
   void init_action_list() override;
@@ -1917,7 +1922,7 @@ public:
 
     if ( mw_affected_stacks && affected_by_maelstrom_weapon )
     {
-      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
+      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 1 ).percent() +
                            this->p()->talent.raging_maelstrom->effectN( 2 ).percent();
 
       mw_multiplier = stack_value * mw_affected_stacks;
@@ -4091,13 +4096,28 @@ struct sundering_t : public shaman_attack_t
     may_proc_stormbringer = may_proc_flametongue = true;
   }
 
+  double action_da_multiplier() const override
+  {
+    double m = shaman_attack_t::action_da_multiplier();
+
+    // In-Game, Sundering damage double dips on T30 4PC damage buff
+    if ( player->bugs )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
+    // In-game, Sundering that procs T30 4PC already benefits from the T30 damage buff
+    p()->buff.t30_4pc_enh_damage->trigger();
+    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
+
     shaman_attack_t::execute();
 
     p()->buff.t30_2pc_enh->trigger();
-    p()->buff.t30_4pc_enh_damage->trigger();
-    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
   }
 };
 
@@ -5243,6 +5263,19 @@ struct fire_nova_explosion_t : public shaman_spell_t
     shaman_spell_t( "fire_nova_explosion", p, p->find_spell( 333977 ) )
   {
     background = true;
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = shaman_spell_t::action_da_multiplier();
+
+    // In-game, Fire Nova damage double-dips on T30 4PC buff
+    if ( player->bugs )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
+    return m;
   }
 };
 
@@ -7287,7 +7320,7 @@ struct doom_winds_t : public shaman_spell_t
     shaman_spell_t( "doom_winds", player, player->talent.doom_winds )
   {
     parse_options( options_str );
-    may_crit = harmful = false;
+    may_crit = false;
   }
 
   void execute() override
@@ -8712,6 +8745,7 @@ void shaman_t::create_options()
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
   add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
+  add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -8739,6 +8773,7 @@ void shaman_t::copy_from( player_t* source )
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
   options.dre_flat_chance = p->options.dre_flat_chance;
+  options.dre_forced_failures = p->options.dre_forced_failures;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -8873,6 +8908,20 @@ void shaman_t::analyze( sim_t& sim )
   {
     dre_samples.analyze();
     dre_samples.create_histogram( dre_samples.max() - dre_samples.min() + 1 );
+    dre_uptime_samples.analyze();
+    dre_uptime_samples.create_histogram( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 );
+  }
+}
+
+// shaman_t::datacollection_end ============================================
+
+void shaman_t::datacollection_end()
+{
+  player_t::datacollection_end();
+
+  if ( buff.ascendance->iteration_uptime() > 0_ms )
+  {
+    dre_uptime_samples.add( 100.0 * buff.ascendance->iteration_uptime() / iteration_fight_length );
   }
 }
 
@@ -9589,7 +9638,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   {
     // per attempt there exists an ever growing 1% chance
     // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
-    proc_chance = dre_attempts * 0.01 - 0.02;
+    proc_chance = dre_attempts * 0.01 - 0.01 * options.dre_forced_failures;
   }
 
   if ( !rng().roll( proc_chance ) )
@@ -11245,6 +11294,7 @@ void shaman_t::merge( player_t& other )
   if ( talent.deeply_rooted_elements.ok() )
   {
     dre_samples.merge( s.dre_samples );
+    dre_uptime_samples.merge( s.dre_uptime_samples );
   }
 }
 
@@ -11552,12 +11602,38 @@ public:
     os << "</table>\n";
   }
 
-  void dre_distribution_contents( report::sc_html_stream& os )
+  void dre_uptime_distribution_contents( report::sc_html_stream& os )
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dre_uptime" ), *p.sim );
+
+    chart.set( "plotOptions.column.color", color::GREY3.str() );
+    chart.set( "plotOptions.column.pointStart", std::floor( p.dre_uptime_samples.min() ) );
+    chart.set_title( fmt::format( "DRE Iteration Uptime% (min={:.2f}% median={:.2f}% max={:.2f}%)",
+                                 p.dre_uptime_samples.min(),
+                                 p.dre_uptime_samples.percentile( 0.5 ),
+                                 p.dre_uptime_samples.max() ) );
+    chart.set( "yAxis.title.text", "# of Iterations" );
+    chart.set( "xAxis.title.text", "Uptime%" );
+    chart.set( "series.0.name", "# of Iterations" );
+
+    range::for_each( p.dre_uptime_samples.distribution, [ &chart ]( size_t n ) {
+      js::sc_js_t e;
+
+      e.set( "y", static_cast<double>( n ) );
+
+      chart.add( "series.0.data", e );
+    } );
+
+    os << chart.to_target_div();
+    p.sim->add_chart_data( chart );
+  }
+
+  void dre_proc_distribution_contents( report::sc_html_stream& os )
   {
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
     chart.set( "plotOptions.column.color", color::RED.str() );
-    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? 3 : 1 );
+    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? p.options.dre_forced_failures + 1 : 1 );
     chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
                                  p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
     chart.set( "yAxis.title.text", "# of Triggered Procs" );
@@ -11610,7 +11686,8 @@ public:
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Deeply Rooted Elements Proc Details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      dre_distribution_contents( os );
+      dre_proc_distribution_contents( os );
+      dre_uptime_distribution_contents( os );
 
       os << "\t\t\t\t\t</div>\n";
 

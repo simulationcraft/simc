@@ -27,7 +27,7 @@ ptr=1
 T30_Generate_Death_Knight.simc
 
 # Demon Hunter
-# T30_Generate_Demon_Hunter.simc
+T30_Generate_Demon_Hunter.simc
 
 # Druid
 # T30_Generate_Druid.simc
