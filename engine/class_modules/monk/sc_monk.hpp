@@ -170,10 +170,12 @@ public:
     propagate_const<action_t*> exploding_keg;
     propagate_const<heal_t*> gift_of_the_ox_trigger;
     propagate_const<heal_t*> gift_of_the_ox_expire;
+    propagate_const<action_t*> niuzao_call_to_arms_summon;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
     // Windwalker
     propagate_const<action_t*> empowered_tiger_lightning;
+    propagate_const<action_t*> fury_of_xuen_summon;
     propagate_const<action_t*> fury_of_xuen_empowered_tiger_lightning;
   } active_actions;
 
@@ -301,6 +303,7 @@ public:
     // Brewmaster
     propagate_const<buff_t*> bladed_armor;
     propagate_const<buff_t*> blackout_combo;
+    propagate_const<buff_t*> call_to_arms_invoke_niuzao;
     propagate_const<absorb_buff_t*> celestial_brew;
     propagate_const<buff_t*> celestial_flames;
     propagate_const<buff_t*> charred_passions;

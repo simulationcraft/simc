@@ -4413,7 +4413,8 @@ namespace monk
           parse_options( options_str );
 
           cast_during_sck = true;
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           gcd_type = gcd_haste_type::NONE;
         }
 
@@ -4426,6 +4427,26 @@ namespace monk
           p()->buff.invoke_xuen->trigger();
 
           p()->buff.invokers_delight->trigger();
+        }
+      };
+
+      // Fury of Xuen Invoke Xuen =============================================================
+      struct fury_of_xuen_summon_t final : monk_spell_t
+      {
+        fury_of_xuen_summon_t( monk_t *p ) : monk_spell_t( "fury_of_xuen_summon", p, p->find_spell( 396168 ) )
+        {
+          cooldown->duration = 0_ms;
+          track_cd_waste     = false;
+          background         = true;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
+        }
+
+        void execute() override
+        {
+          monk_spell_t::execute();
+
+          p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
         }
       };
 
@@ -4489,7 +4510,8 @@ namespace monk
           parse_options( options_str );
 
           cast_during_sck = true;
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4506,6 +4528,29 @@ namespace monk
           p()->buff.invokers_delight->trigger();
         }
       };
+      
+      // Call to Arms Invoke Niuzao =============================================================
+      struct niuzao_call_to_arms_summon_t final : monk_spell_t
+      {
+        niuzao_call_to_arms_summon_t( monk_t *p )
+          : monk_spell_t( "niuzao_call_to_arms_summon", p, p->find_spell( 395267 ) )
+        {
+          cooldown->duration = 0_ms;
+          track_cd_waste     = false;
+          background         = true;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
+        }
+
+        void execute() override
+        {
+          monk_spell_t::execute();
+
+          p()->buff.call_to_arms_invoke_niuzao->trigger();
+
+          p()->pets.call_to_arms_niuzao.spawn( p()->passives.call_to_arms_invoke_niuzao->duration(), 1 );
+        }
+      };
 
       // ==========================================================================
       // Invoke Chi-Ji, the Red Crane
@@ -4518,7 +4563,8 @@ namespace monk
         {
           parse_options( options_str );
 
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4547,7 +4593,8 @@ namespace monk
         {
           parse_options( options_str );
 
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4642,7 +4689,8 @@ namespace monk
         {
           parse_options( options_str );
           may_combo_strike = true;
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = p.talent.brewmaster.call_to_arms.enabled() ? true : false;
           base_dd_min = 0;
           base_dd_max = 0;
           cast_during_sck = true;
@@ -4666,7 +4714,7 @@ namespace monk
           }
 
           if ( p()->talent.brewmaster.call_to_arms->ok() )
-            p()->pets.call_to_arms_niuzao.spawn( p()->passives.call_to_arms_invoke_niuzao->duration(), 1 );
+            p()->active_actions.niuzao_call_to_arms_summon->execute();
 
           p()->buff.invoke_niuzao->trigger( p()->passives.call_to_arms_invoke_niuzao->duration() );
         }
@@ -6254,7 +6302,7 @@ namespace monk
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
       {
         p().buff.fury_of_xuen_haste->trigger();
-        p().pets.fury_of_xuen_tiger.spawn( p().passives.fury_of_xuen_haste_buff->duration(), 1 );
+        p().active_actions.fury_of_xuen_summon->execute();
         buff_t::expire_override( expiration_stacks, remaining_duration );
       }
     };
@@ -7478,7 +7526,7 @@ namespace monk
 
     // Brewmaster
     passives.breath_of_fire_dot = find_spell( 123725 );
-    passives.call_to_arms_invoke_niuzao = find_spell( 358520 );
+    passives.call_to_arms_invoke_niuzao = find_spell( 395267 );
     passives.celestial_fortune = find_spell( 216521 );
     passives.charred_passions_dmg = find_spell( 386959 );
     passives.dragonfire_brew = find_spell( 387621 );
@@ -7617,6 +7665,7 @@ namespace monk
       active_actions.exploding_keg = new actions::spells::exploding_keg_proc_t( this );
       active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
       active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
+      active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
       active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
     }
 
@@ -7624,6 +7673,7 @@ namespace monk
     if ( spec_tree == MONK_WINDWALKER )
     {
       active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
+      active_actions.fury_of_xuen_summon = new actions::fury_of_xuen_summon_t( this );
       active_actions.fury_of_xuen_empowered_tiger_lightning = new actions::fury_of_xuen_empowered_tiger_lightning_t( *this );
     }
 
@@ -7798,6 +7848,8 @@ namespace monk
 
   // Brewmaster
     buff.blackout_combo = make_buff( this, "blackout_combo", talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
+
+    buff.call_to_arms_invoke_niuzao = make_buff( this, "call_to_arms_invoke_niuzao", passives.call_to_arms_invoke_niuzao );
 
     buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
     buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )

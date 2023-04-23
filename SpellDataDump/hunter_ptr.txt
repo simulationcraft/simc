@@ -5435,6 +5435,33 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.42000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc207068
 
+Name             : Dire Beast (id=219199) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Spell Level      : 1
+Range            : 40 yards
+GCD              : 1 seconds
+Duration         : 8 seconds
+Cooldown         : 10 seconds
+Category         : 1378
+Category Cooldown: 10 seconds
+Affecting spells : Dire Frenzy (385810 effect#1)
+Family Flags     : 100
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Always Cast Log (255), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=326461)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 110063 | Misc Value 2: 0xca4 | Radius: 0 - 5 yards | Target: At Enemy (53) -> Unknown(49)
+Description      : Summons a powerful wild beast to assist you in combat for $d.  Each time the beast deals damage, you will gain $120694s1 Focus.
+
 Name             : Bursting Shot (id=224729) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -15535,7 +15562,7 @@ Attributes       : ......xx ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=1019312)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Dire Beast (120679), Dire Beast (281036)
+                   Affected Spells: Dire Beast (120679), Dire Beast (219199), Dire Beast (281036)
                    Family Flags: 100
 #2 (id=1019319)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)

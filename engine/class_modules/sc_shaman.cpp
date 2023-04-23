@@ -287,6 +287,7 @@ public:
 
   /// Deeply Rooted Elements tracking
   extended_sample_data_t dre_samples;
+  extended_sample_data_t dre_uptime_samples;
   unsigned dre_attempts;
 
   // Cached actions
@@ -772,6 +773,7 @@ public:
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
+      dre_uptime_samples( "dre_uptime_tracker", false ),
       dre_attempts( 0U ),
       action(),
       pet( this ),
@@ -822,6 +824,7 @@ public:
       resource_regeneration = regen_type::DYNAMIC;
 
     dre_samples.reserve( 8192 );
+    dre_uptime_samples.reserve( 8192 );
   }
 
   ~shaman_t() override = default;
@@ -933,6 +936,7 @@ public:
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
+  void datacollection_end() override;
 
   // APL releated methods
   void init_action_list() override;
@@ -8904,6 +8908,20 @@ void shaman_t::analyze( sim_t& sim )
   {
     dre_samples.analyze();
     dre_samples.create_histogram( dre_samples.max() - dre_samples.min() + 1 );
+    dre_uptime_samples.analyze();
+    dre_uptime_samples.create_histogram( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 );
+  }
+}
+
+// shaman_t::datacollection_end ============================================
+
+void shaman_t::datacollection_end()
+{
+  player_t::datacollection_end();
+
+  if ( buff.ascendance->iteration_uptime() > 0_ms )
+  {
+    dre_uptime_samples.add( 100.0 * buff.ascendance->iteration_uptime() / iteration_fight_length );
   }
 }
 
@@ -11276,6 +11294,7 @@ void shaman_t::merge( player_t& other )
   if ( talent.deeply_rooted_elements.ok() )
   {
     dre_samples.merge( s.dre_samples );
+    dre_uptime_samples.merge( s.dre_uptime_samples );
   }
 }
 
@@ -11583,7 +11602,33 @@ public:
     os << "</table>\n";
   }
 
-  void dre_distribution_contents( report::sc_html_stream& os )
+  void dre_uptime_distribution_contents( report::sc_html_stream& os )
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dre_uptime" ), *p.sim );
+
+    chart.set( "plotOptions.column.color", color::GREY3.str() );
+    chart.set( "plotOptions.column.pointStart", std::floor( p.dre_uptime_samples.min() ) );
+    chart.set_title( fmt::format( "DRE Iteration Uptime% (min={:.2f}% median={:.2f}% max={:.2f}%)",
+                                 p.dre_uptime_samples.min(),
+                                 p.dre_uptime_samples.percentile( 0.5 ),
+                                 p.dre_uptime_samples.max() ) );
+    chart.set( "yAxis.title.text", "# of Iterations" );
+    chart.set( "xAxis.title.text", "Uptime%" );
+    chart.set( "series.0.name", "# of Iterations" );
+
+    range::for_each( p.dre_uptime_samples.distribution, [ &chart ]( size_t n ) {
+      js::sc_js_t e;
+
+      e.set( "y", static_cast<double>( n ) );
+
+      chart.add( "series.0.data", e );
+    } );
+
+    os << chart.to_target_div();
+    p.sim->add_chart_data( chart );
+  }
+
+  void dre_proc_distribution_contents( report::sc_html_stream& os )
   {
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
@@ -11641,7 +11686,8 @@ public:
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Deeply Rooted Elements Proc Details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      dre_distribution_contents( os );
+      dre_proc_distribution_contents( os );
+      dre_uptime_distribution_contents( os );
 
       os << "\t\t\t\t\t</div>\n";
 

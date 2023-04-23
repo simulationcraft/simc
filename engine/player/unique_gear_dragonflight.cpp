@@ -3940,11 +3940,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578 } }; // Invoke Niuzao. TOCHECK: Weapons of Order, Fury of Xuen
+      proc_spell_id = { { 132578, 395267 } };  // Invoke Niuzao, Weapons of Order's Call to Arms
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
-      proc_spell_id = { { 123904 } }; // Invoke Xuen
+      proc_spell_id = { { 123904 } }; // Invoke Xuen 
       break;
     case MONK_MISTWEAVER:
       driver_id = 408260;
@@ -3972,7 +3972,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 120679 } }; // Stampede and Dire Beast. TOCHECK: Dire Command?
+      proc_spell_id = { { 201430, 120679, 219199 } }; // Stampede, Dire Beast and Dire Command proc
       break;
     default:
       return;
