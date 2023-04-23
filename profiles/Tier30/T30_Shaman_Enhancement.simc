@@ -1,11 +1,11 @@
-shaman="T29_Shaman_Enhancement_Gamba"
+shaman="T30_Shaman_Enhancement"
 source=default
 spec=enhancement
 level=70
 race=troll
 role=attack
 position=back
-talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJJIJhAJUSIAAAAAAAAAAAAgSESCJoIQSLJpAoEJhkGC
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -137,31 +137,33 @@ actions.single+=/earth_elemental
 actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
-shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
-chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767,gem_id=192948
-hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
-waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192948
-legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
-feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=7977/6652/7937/8822/8818/9144/3300/8767,gem_id=192948,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
-trinket1=windswept_pages,id=144113,bonus_id=7977/6652/7937/8822/8818/9144/3311/8767
-trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192948/192948/192948,crafted_stats=49/36
+shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=201409/192948,enchant_id=6574,crafted_stats=32
+hands=flametouched_handguards,id=193427,bonus_id=9376/9405/8793,crafted_stats=49/36
+waist=flametouched_chain,id=193425,bonus_id=9376/9405/8793/9436,gem_id=192948,crafted_stats=49/36
+legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
+feet=venomsteeped_stompers,id=193460,bonus_id=8836/8840/8902/9405/9376,enchant_id=6607
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
+trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
+trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
+main_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=421.38
-# gear_agility=5436
-# gear_stamina=13199
-# gear_crit_rating=1075
-# gear_haste_rating=5019
-# gear_mastery_rating=3462
-# gear_versatility_rating=1315
-# gear_armor=4851
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=448.63
+# gear_agility=6228
+# gear_stamina=22406
+# gear_crit_rating=1262
+# gear_haste_rating=5249
+# gear_mastery_rating=6049
+# gear_versatility_rating=438
+# gear_speed_rating=250
+# gear_avoidance_rating=200
+# gear_armor=5762
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1

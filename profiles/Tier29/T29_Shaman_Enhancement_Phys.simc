@@ -46,6 +46,7 @@ actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.a
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/invoke_external_buff,name=power_infusion,if=(talent.ascendance.enabled&talent.thorims_invocation.enabled&buff.ascendance.up)|(!talent.ascendance.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.ascendance.enabled&!talent.feral_spirit.enabled)|fight_remains<=20
 actions+=/feral_spirit
 actions+=/ascendance,if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)
 actions+=/doom_winds,if=raid_event.adds.in>=90|active_enemies>1
@@ -57,7 +58,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 # Multi target action priority list
 actions.aoe=crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up
 actions.aoe+=/lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)
-actions.aoe+=/sundering,if=buff.doom_winds.up
+actions.aoe+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
 actions.aoe+=/fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
 actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1
@@ -104,10 +105,11 @@ actions.single+=/windfury_totem,if=!buff.windfury_totem.up
 actions.single+=/stormstrike,if=buff.doom_winds.up
 actions.single+=/crash_lightning,if=buff.doom_winds.up
 actions.single+=/ice_strike,if=buff.doom_winds.up
-actions.single+=/sundering,if=buff.doom_winds.up
+actions.single+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
 actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
+actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
 actions.single+=/elemental_blast,if=talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)&buff.maelstrom_weapon.stack>=8
 actions.single+=/ice_strike,if=talent.hailstorm.enabled
 actions.single+=/stormstrike,if=set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5

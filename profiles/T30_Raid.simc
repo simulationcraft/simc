@@ -42,9 +42,8 @@ T30_Priest_Shadow.simc
 # T30_Rogue_Subtlety.simc
 
 # T30_Shaman_Elemental.simc
-# T30_Shaman_Enhancement.simc
-# T30_Shaman_Enhancement_Phys.simc
-# T30_Shaman_Enhancement_Gamba.simc
+T30_Shaman_Enhancement.simc
+T30_Shaman_Enhancement_Storm.simc
 
 # T30_Warlock_Affliction.simc
 # T30_Warlock_Demonology.simc
