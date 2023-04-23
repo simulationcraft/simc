@@ -218,11 +218,11 @@ void demonology( player_t* p )
   ogcd->add_action( "blood_fury" );
   ogcd->add_action( "fireblood" );
 
-  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&!variable.shadow_timings" );
+  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&!equipped.neltharions_call_to_dominance" );
   tyrant->add_action( "invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|(buff.dreadstalkers.up&variable.next_tyrant-time<=6&(!talent.nether_portal|variable.shadow_timings))" );
   tyrant->add_action( "shadow_bolt,if=time<2&soul_shard<5" );
   tyrant->add_action( "nether_portal" );
-  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&variable.shadow_timings" );
+  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&equipped.neltharions_call_to_dominance" );
   tyrant->add_action( "grimoire_felguard" );
   tyrant->add_action( "summon_vilefiend" );
   tyrant->add_action( "call_dreadstalkers" );
