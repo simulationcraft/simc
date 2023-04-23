@@ -10801,7 +10801,7 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
 
     //_Cooldowns
-    def->add_action( "invoke_external_buff,name=power_infusion,if=(talent.ascendance.enabled&talent.thorims_invocation.enabled&buff.ascendance.up)|(!talent.ascendance.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.ascendance.enabled&!talent.feral_spirit.enabled)|fight_remains<=20" );
+    def->add_action( "invoke_external_buff,name=power_infusion,if=(talent.ascendance.enabled&talent.thorims_invocation.enabled&buff.ascendance.up)|(!talent.thorims_invocation.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.thorims_invocation.enabled&!talent.feral_spirit.enabled)|fight_remains<=20" );
     def->add_action( "feral_spirit" );
     def->add_action( "ascendance,if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)" );
     def->add_action( "doom_winds,if=raid_event.adds.in>=90|active_enemies>1" );
