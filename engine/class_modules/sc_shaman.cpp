@@ -4353,7 +4353,8 @@ struct fire_elemental_t : public shaman_spell_t
     : shaman_spell_t( "fire_elemental", player, player->talent.fire_elemental )
   {
     parse_options( options_str );
-    harmful = may_crit = false;
+    harmful  = true;
+    may_crit = false;
   }
 
   void execute() override
@@ -4383,7 +4384,8 @@ struct storm_elemental_t : public shaman_spell_t
     : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental )
   {
     parse_options( options_str );
-    harmful = may_crit = false;
+    harmful  = true;
+    may_crit = false;
   }
 
   void execute() override
