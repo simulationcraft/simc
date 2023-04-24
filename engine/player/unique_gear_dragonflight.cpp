@@ -633,7 +633,7 @@ void dragonfire_bomb_dispenser( special_effect_t &effect )
   if ( restock_driver )
   {
     auto skilled_restock = make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item) // 408770
-      ->set_quiet( true )
+      ->set_quiet( false ) // TODO: set this back to true after getting the stack drop after combat ends working
       ->set_stack_change_callback( [ & ] ( buff_t *buff, int, int )
     {
       if ( buff->at_max_stacks() )
@@ -646,6 +646,16 @@ void dragonfire_bomb_dispenser( special_effect_t &effect )
 
     restock_driver->custom_buff = skilled_restock;
     restock_driver->proc_flags2_ = PF2_CRIT;
+
+    // Skilled Restock buff resets when dropping combat in dungeon-style fight types
+    restock_driver->activation_cb = [ skilled_restock ]() {
+      skilled_restock->sim->target_non_sleeping_list.register_callback( [ skilled_restock ]( player_t* ) {
+        if ( skilled_restock->sim->target_non_sleeping_list.empty() )
+        {
+          skilled_restock->expire();
+        }
+      } );
+    };
 
     new dbc_proc_callback_t( effect.player, *restock_driver );
   }
