@@ -5333,6 +5333,17 @@ void roiling_shadowflame( special_effect_t& e )
         buff->trigger();
       }
     }
+
+    void activate() override
+    {
+      generic_proc_t::activate();
+
+      // Cooldown reduction is removed when dropping combat in dungeon-style fight types
+      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
+        if ( sim->target_non_sleeping_list.empty() )
+          buff->expire();
+      } );
+    }
   };
 
   auto new_driver_id = 412547;  // Rppm data moved out of the main driver into this spell
