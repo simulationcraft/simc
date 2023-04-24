@@ -4767,6 +4767,84 @@ void shadowed_razing_annihilator( special_effect_t& e )
   e.execute_action = create_proc_action<shadowed_razing_annihilator_t>( "shadowed_razing_annihilator", e, buff );
 }
 
+// Djaruun, Pillar of the Elder Flame
+// 408821 Driver
+// 403545 Damage values
+// 408835 Buff
+// 408815 Siphon Damage effect
+// 408836 AoE Damage per hit effect
+void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
+{
+  struct djaruun_pillar_of_the_elder_flame_siphon_t : public generic_aoe_proc_t
+  {
+    djaruun_pillar_of_the_elder_flame_siphon_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_siphon", effect.player->find_spell( 408815 ) )
+    {
+      base_dd_min = base_dd_max = effect.player->find_spell( 403545 ) -> effectN( 1 ).average( effect.item );
+      split_aoe_damage = false;
+    }
+  };
+
+  //25/04/2023 - 10.1.0.49255
+  //The tooltip doesn't state it increases damage per target, but it does
+  struct djaruun_pillar_of_the_elder_flame_on_hit_t : public generic_aoe_proc_t
+  {
+    djaruun_pillar_of_the_elder_flame_on_hit_t( const special_effect_t& effect )
+      : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_on_hit", effect.player->find_spell( 408836 ), true )
+    {
+      base_dd_min = base_dd_max = effect.player->find_spell( 403545 ) -> effectN( 2 ).average( effect.item );
+    }
+  };
+
+  auto siphon_damage = create_proc_action<djaruun_pillar_of_the_elder_flame_siphon_t>( "djaruun_pillar_of_the_elder_flame_siphon", effect );
+  auto on_hit = new special_effect_t( effect.player );
+  on_hit->name_str = "djaruun_pillar_of_the_elder_flame_cb";
+  on_hit->type = SPECIAL_EFFECT_EQUIP;
+  on_hit->source = SPECIAL_EFFECT_SOURCE_ITEM;
+  on_hit->spell_id = 408835;
+  on_hit->execute_action = create_proc_action<djaruun_pillar_of_the_elder_flame_on_hit_t>( "djaruun_pillar_of_the_elder_flame_on_hit", effect );
+  effect.player->special_effects.push_back( on_hit );
+
+  auto on_hit_cb = new dbc_proc_callback_t( effect.player, *on_hit );
+  on_hit_cb->initialize();
+  on_hit_cb->deactivate();
+
+  auto buff = create_buff<buff_t>( effect.player, effect.player -> find_spell( 408835 ) );
+  buff->set_stack_change_callback( [ on_hit_cb ]( buff_t*, int old_, int new_ ) {
+    if ( !old_ )
+      on_hit_cb->activate();
+    else if ( !new_ )
+      on_hit_cb->deactivate();
+  } );
+  
+  struct djaruun_of_the_elder_flame_t : public generic_proc_t
+  {
+    action_t* siphon;
+    action_t* aoe;
+
+    djaruun_of_the_elder_flame_t( const special_effect_t& effect, action_t *siphon )
+      : generic_proc_t( effect, "elder_flame", effect.player->find_spell( 408821 ) ),
+        siphon( create_proc_action<djaruun_pillar_of_the_elder_flame_siphon_t>( "djaruun_pillar_of_the_elder_flame_siphon", effect ) ),
+        aoe( create_proc_action<djaruun_pillar_of_the_elder_flame_on_hit_t>( "djaruun_pillar_of_the_elder_flame_on_hit", effect ) )
+    {
+      add_child( aoe );
+      add_child( siphon );
+    }
+
+    void execute( ) override
+    {
+      siphon->execute();
+    }
+  };
+
+  effect.custom_buff = buff; 
+
+  effect.player->callbacks.register_callback_execute_function(
+    effect.spell_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->trigger(); } );
+  
+  effect.execute_action = create_proc_action<djaruun_of_the_elder_flame_t>( "djaruun_pillar_of_the_elder_flame", effect, siphon_damage );
+}
+
 // Armor
 void assembly_guardians_ring( special_effect_t& effect )
 {
@@ -6443,13 +6521,14 @@ void register_special_effects()
 
 
   // Weapons
-  register_special_effect( 396442, items::bronzed_grip_wrappings );      // bronzed grip wrappings embellishment
-  register_special_effect( 405226, items::spore_keepers_baton );         // Spore Keepers Baton Weapon
-  register_special_effect( 377708, items::fang_adornments );             // fang adornments embellishment
-  register_special_effect( 381698, items::forgestorm );                  // Forgestorm Weapon
-  register_special_effect( 394928, items::neltharax );                   // Neltharax, Enemy of the Sky
-  register_special_effect( 408790, items::ashkandur );                   // Ashkandur, Fall of the Brotherhood
-  register_special_effect( 408711, items::shadowed_razing_annihilator ); // Shadowed Razing Annihilator 
+  register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
+  register_special_effect( 405226, items::spore_keepers_baton );                // Spore Keepers Baton Weapon
+  register_special_effect( 377708, items::fang_adornments );                    // fang adornments embellishment
+  register_special_effect( 381698, items::forgestorm );                         // Forgestorm Weapon
+  register_special_effect( 394928, items::neltharax );                          // Neltharax, Enemy of the Sky
+  register_special_effect( 408790, items::ashkandur );                          // Ashkandur, Fall of the Brotherhood
+  register_special_effect( 408711, items::shadowed_razing_annihilator );        // Shadowed Razing Annihilator 
+  register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame );  // Djaruun, Pillar of the Elder Flame
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
