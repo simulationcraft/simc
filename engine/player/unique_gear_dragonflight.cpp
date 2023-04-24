@@ -5305,11 +5305,22 @@ void roiling_shadowflame( special_effect_t& e )
   struct roiling_shadowflame_t : public generic_proc_t
   {
     buff_t* buff;
+    double scaled_damage;
 
     roiling_shadowflame_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "roiling_shadowflame", e.player->find_spell( 406251 ) ), buff( b )
     {
-      base_dd_min = base_dd_max = e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
+      scaled_damage = base_dd_min = base_dd_max = e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
+    }
+
+    double base_da_min(const action_state_t*) const override
+    {
+        return scaled_damage;
+    }
+
+    double base_da_max( const action_state_t* ) const override
+    {
+        return scaled_damage;
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -5349,8 +5360,12 @@ void roiling_shadowflame( special_effect_t& e )
   auto new_driver_id = 412547;  // Rppm data moved out of the main driver into this spell
   e.spell_id         = new_driver_id;
 
-  auto damage      = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
-  e.execute_action = damage;
+  auto damage = static_cast<roiling_shadowflame_t*>( e.player->find_action( "roiling_shadowflame" ) );
+  
+  if ( !damage )
+    e.execute_action = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
+  else
+    damage->scaled_damage += e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
 
   new dbc_proc_callback_t( e.player, e );
 }
