@@ -75,7 +75,7 @@ actions+=/throw_glaive
 actions+=/felblade
 
 head=kinslayers_hood,id=202524,bonus_id=4800/4786/1504/6935,gem_id=192945
-neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/9405/8790/8846/9365,crafted_stats=49/32,gem_id=192945/192945/192945,ilevel=447
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/9405/8790/8846/9365,ilevel=447,gem_id=192945/192945/192945,crafted_stats=49/32
 shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=4800/4786/1507,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=kinslayers_vest,id=202527,bonus_id=4800/4786/1501,enchant_id=6625
@@ -95,8 +95,8 @@ off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6649
 # gear_ilvl=444.94
 # gear_agility=6824
 # gear_stamina=21713
-# gear_crit_rating=3044
-# gear_haste_rating=3546
+# gear_crit_rating=3143
+# gear_haste_rating=3756
 # gear_mastery_rating=861
 # gear_versatility_rating=2636
 # gear_armor=4017
