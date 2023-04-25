@@ -49,7 +49,7 @@ void fury( player_t* p )
 
   default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
   default_list->add_action( "use_item,name=irideus_fragment,if=buff.recklessness.up" );
-  default_list->add_action( "use_item,name=manic_grieftorch,if=buff.recklessness.down&buff.avatar.down" );
+  default_list->add_action( "use_item,name=manic_grieftorch,if=buff.avatar.down" );
   default_list->add_action( "use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
   default_list->add_action( "use_items");
 
@@ -286,7 +286,7 @@ void protection( player_t* p )
   default_list->add_action( "bag_of_tricks" );
   default_list->add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
   default_list->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
-  default_list->add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled" );
+  default_list->add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
   default_list->add_action( "ravager" );
   default_list->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_list->add_action( "spear_of_bastion" );
@@ -308,7 +308,6 @@ void protection( player_t* p )
   generic->add_action( "thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
   generic->add_action( "execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
   generic->add_action( "execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50" );
-  generic->add_action( "revenge,if=buff.vanguards_determination.down&rage>=40" );
   generic->add_action( "execute,if=spell_targets.revenge=1&rage>=50" );
   generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic->add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
