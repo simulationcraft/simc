@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49255
-static const std::array<spelltext_data_t, 19886> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17772,6 +17772,7 @@ static const std::array<spelltext_data_t, 19886> __ptr_spelltext_data { {
   { 387140, "$?a393818[$@spellaura393818][Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $387142s1 Haste.]\r\n\r\n", "Your spells and abilities have a chance to store away moments of time. Upon reaching $387141u stacks, release your stored time and gain $w1 Haste.", 0 },
   { 387141, "$@spelldesc387140", "A Moment of Time stored, and then another.", 0 },
   { 387142, "The stored Moments catch up to you, increasing Haste by $s1 for $d.", "Haste increased by $w1.", 0 },
+  { 387143, "$@spelldesc387144", 0, 0 },
   { 387144, "Your damaging spells and abilities have a chance to trigger a burst of Arcane energy at the target's location, dealing $387143s Arcane damage split between nearby enemies.\r\n", 0, 0 },
   { 387153, "Chaos Bolt and Rain of Fire increase the damage of your next $s3 Incinerates by $s1%. Shadowburn increases the damage of your next Incinerate by $s1%.\r\n\r\nStacks up to $387154U times.", 0, 0 },
   { 387154, "$@spelldesc387153", "Incinerate damage increased by $w1%.", 0 },
@@ -19856,6 +19857,7 @@ static const std::array<spelltext_data_t, 19886> __ptr_spelltext_data { {
   { 411013, "Add the Entangling affix to a Mythic Keystone.", 0, 0 },
   { 411014, "Add the Afflicted affix to a Mythic Keystone.", 0, 0 },
   { 411015, "Add the Incorporeal affix to a Mythic Keystone.", 0, 0 },
+  { 411024, "$@spelldesc408711", 0, 0 },
   { 411055, "$@spelldesc370781", "Essence costs of Disintegrate and Pyre are reduced by $s1.", 0 },
   { 411126, "You gain a stack of Determination each second while afflicted by a movement impairing effect, stacking up to $411132U times. Your next weapon attack consumes Determination for $411132s1 Physical damage per stack.", 0, 0 },
   { 411132, "$@spelldesc411126\r\n", "Your next weapon attack will consume this effect to deal $w1 Physical damage.", 0 },
@@ -19889,8 +19891,10 @@ static const std::array<spelltext_data_t, 19886> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.49255
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
+  {  387143,  0, nullptr, "$@spelldesc387144" },
   {  401303,  0, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n" },
+  {  411024,  0, nullptr, "$@spelldesc408711" },
 } };
 
 // Spell description variables, wow build 10.1.0.49255
@@ -20251,7 +20255,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  383317, "$rav=${7}\r\n$bstorm=${9}" },
   {  383885, "$threshold=${35}" },
   {  384110, "$damage=${($AP*1.0)*(1+$@versadmg)}" },
-  {  385786, "$shield=${$s1/100*$AP*(1+$@versadmg)}" },
+  {  385786, "$shield=${$s1/100*1.25*$AP*(1+$@versadmg)}" },
   {  387113, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
@@ -20277,6 +20281,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.1.0.49255
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
+  {  385786,  0, "$shield=${$s1/100*$AP*(1+$@versadmg)}", "$shield=${$s1/100*1.25*$AP*(1+$@versadmg)}" },
 } };
 

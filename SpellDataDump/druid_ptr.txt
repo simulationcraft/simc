@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-22/48999)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -16714,6 +16714,7 @@ Effects          :
 Description      : Ironfur has a $s1% chance to apply two stacks and Frenzied Regeneration has a $s2% chance to not consume a charge.
 
 Name             : Matted Fur (id=385786) [Spell Family (7), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
@@ -16734,7 +16735,7 @@ Effects          :
 #1 (id=1019276)  : Apply Aura (6) | Proc Trigger Spell (42): Matted Fur
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Trigger Spell: 385787 | Target: Self (1)
 Description      : When you use Barkskin or Survival Instincts, absorb $<shield> damage for $280165d.
-Variables        : $shield=${$s1/100*$AP*(1+$@versadmg)}
+Variables        : $shield=${$s1/100*1.25*$AP*(1+$@versadmg)}
 
 Name             : Matted Fur (id=385787) [Spell Family (7)] 
 Class            : Druid
