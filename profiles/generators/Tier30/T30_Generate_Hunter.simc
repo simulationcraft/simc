@@ -1,29 +1,28 @@
-# hunter="T30_Hunter_Beast_Mastery"
-# level=70
-# race=tauren
-# role=attack
-# position=ranged_back
-# spec=beast_mastery
-# talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AgWSAIEAAAAAAAAAAAaEHoIhmEJkIRCaSkWIJkIkoRSE
-# target_race=dragonkin
+hunter="T30_Hunter_Beast_Mastery"
+level=70
+race=tauren
+role=attack
+position=ranged_back
+spec=beast_mastery
+talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AiWaJBgCBAAAAAAAAAAgGESoJSCJEJoJRahkwBiQiGJRA
 
-# head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192988
-# neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8791/8846,gem_id=192919/192919/192919,crafted_stats=49/40
-# shoulders=stormwing_harriers_pinions,id=200392,bonus_id=4800/4786/1498
-# back=cape_of_entanglement,id=144094,bonus_id=4177/6808/4786/3311
-# chest=stormwing_harriers_cuirass,id=200387,bonus_id=4800/4786/1498,enchant=waking_stats_3
-# wrists=ley_dragoons_wristbraces,id=134296,bonus_id=1795/6808/4786/3300,gem_id=192919
-# hands=stormwing_harriers_handguards,id=200389,bonus_id=4800/4786/1498
-# waist=arcanebound_gale_chain,id=137489,bonus_id=1795/6808/4786/3300,gem_id=192919
-# legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=fierce_armor_kit_3
-# feet=venomsteeped_stompers,id=193460,bonus_id=8802/8846
-# finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_mastery_3
-# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192919,enchant=devotion_of_mastery_3
-# trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-# trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# main_hand=neltharax_enemy_of_the_sky,id=195527,bonus_id=4800/4786/1498,enchant=high_intensity_thermal_scanner_3
+head=ashen_predators_faceguard,id=202479,bonus_id=1504/9413,gem_id=192985
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192945/192945/192945,crafted_stats=32/49
+shoulders=ashen_predators_trophy,id=202477,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504
+back=voice_of_the_silent_star,id=204465,bonus_id=1498
+chest=ashen_predators_sling_vest,id=202482,bonus_id=1498,enchant_id=6625
+wrists=ashen_predators_skinwraps,id=202475,bonus_id=6808/4786/8780/1504,gem_id=192945
+hands=scale_rein_grips,id=193465,bonus_id=8960/8840/8836/8902/1537
+waist=wind_spirits_lasso,id=193463,bonus_id=8960/8840/8836/8902/1537/1808,gem_id=192945
+legs=ashen_predators_poleyns,id=202478,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1507,enchant=fierce_armor_kit_3,enchant_id=6490
+feet=crechebound_soldiers_boots,id=204424,bonus_id=1498
+finger1=onyx_impostors_birthright,id=204398,bonus_id=9413/1498,gem_id=192945,enchant=devotion_of_haste_3
+finger2=signet_of_titanic_insight,id=192999,bonus_id=9376/8790/9405,gem_id=192945,enchant=devotion_of_haste_3,crafted_stats=32/36
+trinket1=neltharions_call_to_dominance,id=204202,bonus_id=1498
+trinket2=igneous_flowstone,id=203996,bonus_id=1498
+main_hand=failure_disposal_cannon,id=204322,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
-# save=T30_Hunter_Beast_Mastery.simc
+save=T30_Hunter_Beast_Mastery.simc
 
 
 # hunter="T30_Hunter_Marksmanship"
