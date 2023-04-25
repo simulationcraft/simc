@@ -1583,14 +1583,26 @@ namespace monk
       // T30 Shadowflame Nova =====================================================
       struct shadowflame_nova_t : public monk_melee_attack_t
       {
-        shadowflame_nova_t( monk_t *p )
-          : monk_melee_attack_t( "shadowflame_nova", p, p->passives.shadowflame_nova )
+        shadowflame_nova_t( monk_t *p ) : 
+            monk_melee_attack_t( "shadowflame_nova", p, p->passives.shadowflame_nova )
         {
           background = true;
           aoe = -1;
 
           apply_dual_wield_two_handed_scaling();
         }
+
+        double composite_target_da_multiplier( player_t *target ) const
+        {
+          double multiplier = monk_melee_attack_t::composite_target_da_multiplier( target );
+
+          auto td = p()->find_target_data( target );
+
+          if ( td && td->debuff.shadowflame_vulnerability->check() )
+            multiplier *= 1 + td->debuff.shadowflame_vulnerability->check_value();
+
+          return multiplier;
+        }        
       };
 
       // Rising Sun Kick Damage Trigger ===========================================
@@ -6747,8 +6759,7 @@ namespace monk
 
     debuff.shadowflame_vulnerability = make_buff( *this, "shadowflame_vulnerability", p->find_spell( 411376 ) )
       ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
-      ->set_default_value_from_effect( 1 )
-      ->set_schools_from_effect( 1 );
+      ->set_default_value_from_effect( 1 );
 
     dots.breath_of_fire = target->get_dot( "breath_of_fire_dot", p );
     dots.enveloping_mist = target->get_dot( "enveloping_mist", p );
@@ -8815,10 +8826,6 @@ namespace monk
 
     if ( td && td->debuff.weapons_of_order->check() )
       multiplier *= 1 + td->debuff.weapons_of_order->check_stack_value();
-
-    if ( td && td->debuff.shadowflame_vulnerability->check() &&
-         td->debuff.shadowflame_vulnerability->has_common_school( school ) )
-      multiplier *= 1 + td->debuff.shadowflame_vulnerability->check_value();
 
     return multiplier;
   }

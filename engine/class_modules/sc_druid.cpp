@@ -3770,7 +3770,7 @@ struct ferocious_bite_t : public cat_finisher_t
   int _combo_points() const override
   {
     // special handling for convoke FB
-    return free_spell & free_spell_e::CONVOKE ? 4 : cat_finisher_t::_combo_points();
+    return ( !p()->is_ptr() && ( free_spell & free_spell_e::CONVOKE ) ) ? 4 : cat_finisher_t::_combo_points();
   }
 
   bool ready() override
