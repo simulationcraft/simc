@@ -182,7 +182,7 @@ void marksmanship( player_t* p )
   st->add_action( "stampede" );
   st->add_action( "death_chakram" );
   st->add_action( "wailing_arrow,if=active_enemies>1" );
-  st->add_action( "rapid_fire,if=talent.surging_shots|talent.in_the_rhythm&buff.in_the_rhythm.down" );
+  st->add_action( "rapid_fire,if=talent.surging_shots" );
   st->add_action( "kill_shot" );
   st->add_action( "trueshot,if=variable.trueshot_ready&(buff.trueshot.down|buff.trueshot.remains<5)" );
   st->add_action( "multishot,if=buff.bombardment.up&cooldown.kill_shot.remains&buff.trueshot.down|buff.salvo.up&!talent.volley", "Reset cooldown of Kill Shot from Bombardment if not inside Trueshot, or trigger Salvo if Volley isn't being used to trigger it." );

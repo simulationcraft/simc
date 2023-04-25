@@ -40,7 +40,7 @@ actions.st+=/explosive_shot
 actions.st+=/stampede
 actions.st+=/death_chakram
 actions.st+=/wailing_arrow,if=active_enemies>1
-actions.st+=/rapid_fire,if=talent.surging_shots|talent.in_the_rhythm&buff.in_the_rhythm.down
+actions.st+=/rapid_fire,if=talent.surging_shots
 actions.st+=/kill_shot
 actions.st+=/trueshot,if=variable.trueshot_ready&(buff.trueshot.down|buff.trueshot.remains<5)
 # Reset cooldown of Kill Shot from Bombardment if not inside Trueshot, or trigger Salvo if Volley isn't being used to trigger it.
