@@ -5309,7 +5309,6 @@ void roiling_shadowflame( special_effect_t& e )
     roiling_shadowflame_t( const special_effect_t& e, buff_t* b )
       : generic_proc_t( e, "roiling_shadowflame", e.player->find_spell( 406251 ) ), buff( b )
     {
-      base_dd_min = base_dd_max = e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -5349,7 +5348,11 @@ void roiling_shadowflame( special_effect_t& e )
   auto new_driver_id = 412547;  // Rppm data moved out of the main driver into this spell
   e.spell_id         = new_driver_id;
 
-  auto damage      = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
+  auto damage = create_proc_action<roiling_shadowflame_t>( "roiling_shadowflame", e, stack_buff );
+
+  damage->base_dd_min += e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
+  damage->base_dd_max += e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
+  
   e.execute_action = damage;
 
   new dbc_proc_callback_t( e.player, e );

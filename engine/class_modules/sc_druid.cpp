@@ -10075,7 +10075,7 @@ void druid_t::create_buffs()
 
   buff.matted_fur =
       make_buff<absorb_buff_t>( this, "matted_fur", talent.matted_fur->effectN( 1 ).trigger() )
-          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) );
+          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) * ( is_ptr() ? 1.25 : 1.0 ) );
 
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( this );
 
