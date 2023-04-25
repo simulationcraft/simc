@@ -516,7 +516,7 @@ public:
     spell_data_ptr_t chimaera_shot;
 
     spell_data_ptr_t streamline;
-    spell_data_ptr_t killing_blow;
+    spell_data_ptr_t killer_accuracy;
     spell_data_ptr_t hunters_knowledge;
     spell_data_ptr_t careful_aim;
 
@@ -917,7 +917,7 @@ public:
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
     ab::apply_affecting_aura( p -> talents.streamline );
-    ab::apply_affecting_aura( p -> talents.killing_blow );
+    ab::apply_affecting_aura( p -> talents.killer_accuracy );
     ab::apply_affecting_aura( p -> talents.hunters_knowledge );
     ab::apply_affecting_aura( p -> talents.surging_shots );
     ab::apply_affecting_aura( p -> talents.target_practice );
@@ -6543,7 +6543,7 @@ void hunter_t::init_spells()
     talents.chimaera_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Chimaera Shot", HUNTER_MARKSMANSHIP );
 
     talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
-    talents.killing_blow                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Blow", HUNTER_MARKSMANSHIP );
+    talents.killer_accuracy                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Accuracy", HUNTER_MARKSMANSHIP );
     talents.hunters_knowledge                 = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Knowledge", HUNTER_MARKSMANSHIP );
     talents.careful_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Careful Aim", HUNTER_MARKSMANSHIP );
 
