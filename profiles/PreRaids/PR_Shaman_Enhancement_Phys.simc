@@ -57,9 +57,10 @@ actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
 actions.aoe=lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)
+actions.aoe+=/lava_lash,if=talent.molten_assault.enabled&(talent.primordial_wave.enabled|talent.fire_nova.enabled)&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
+actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
 actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=10&(!talent.crashing_storms.enabled|active_enemies<=3)
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
-actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
 actions.aoe+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up
 actions.aoe+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
 actions.aoe+=/fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
@@ -145,7 +146,7 @@ off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotio
 # Gear Summary
 # gear_ilvl=372.00
 # gear_agility=2683
-# gear_stamina=9056
+# gear_stamina=6737
 # gear_crit_rating=1013
 # gear_haste_rating=3663
 # gear_mastery_rating=3245
