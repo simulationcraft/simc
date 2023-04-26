@@ -9951,6 +9951,9 @@ void shaman_t::trigger_flash_of_lightning()
   {
     cooldown.totemic_recall->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
   }
+  if ( is_ptr() ) {
+    cooldown.flame_shock->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  }
 
   proc.flash_of_lightning->occur();
 }
