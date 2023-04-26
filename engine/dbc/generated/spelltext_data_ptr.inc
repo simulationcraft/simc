@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.0.49255
+// Spell text, wow build 10.1.0.49318
 static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19890,14 +19890,14 @@ static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
   { 413426, "$@spelldesc91144", "Haste increased by $s1.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49255
+// spelltext hotfix entries, wow build 10.1.0.49318
 static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
   {  387143,  0, nullptr, "$@spelldesc387144" },
   {  401303,  0, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n" },
   {  411024,  0, nullptr, "$@spelldesc408711" },
 } };
 
-// Spell description variables, wow build 10.1.0.49255
+// Spell description variables, wow build 10.1.0.49318
 static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20280,7 +20280,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49255
+// spelldesc_vars hotfix entries, wow build 10.1.0.49318
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
   {  385786,  0, "$shield=${$s1/100*$AP*(1+$@versadmg)}", "$shield=${$s1/100*1.25*$AP*(1+$@versadmg)}" },
 } };
