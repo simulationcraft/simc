@@ -6786,6 +6786,10 @@ public:
   {
     parse_options( options_str );
 
+    if ( p()->is_ptr() ) {
+      affected_by_master_of_the_elements = true;
+    }
+
     // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
     // Max Targets value on a spell to mean "aoe this many targets"
     aoe = 0;
@@ -9921,6 +9925,10 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
 
 void shaman_t::trigger_flash_of_lightning()
 {
+  if ( !talent.flash_of_lightning.ok() ) {
+    return;
+  }
+
   if ( !talent.stormkeeper.enabled() && !talent.stormkeeper2.enabled() &&
        !talent.storm_elemental.enabled() && !talent.totemic_recall.enabled() )
   {
