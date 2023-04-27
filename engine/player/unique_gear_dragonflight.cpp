@@ -3964,7 +3964,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_SURVIVAL:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 360952 } }; // Stampede and Coordinated Assault
+      proc_spell_id = { { 201430, 360969 } }; // Stampede and Coordinated Assault
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
