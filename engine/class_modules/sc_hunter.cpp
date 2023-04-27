@@ -4945,19 +4945,28 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     }
   };
 
+  hunter_melee_attack_t* fote_tick;
   fury_of_the_eagle_t( hunter_t* p, util::string_view options_str ):
-    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle )
+    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle ),
+    fote_tick( new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) ) )
   {
     parse_options( options_str );
 
     channeled = true;
     tick_zero = true;
-    tick_action = new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) );
+
+    add_child( fote_tick );
   }
 
   void execute() override
   {
     hunter_melee_attack_t::execute();
+  }
+
+  void tick( dot_t* dot ) override
+  {
+    hunter_melee_attack_t::tick( dot );
+    fote_tick -> execute_on_target( dot -> target );
   }
 };
 
