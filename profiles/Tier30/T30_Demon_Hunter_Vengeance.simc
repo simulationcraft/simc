@@ -86,10 +86,10 @@ legs=kinslayers_legguards,id=202523,bonus_id=4800/4786/1504,enchant_id=6496
 feet=lifebound_boots,id=193398,ilevel=447,crafted_stats=32/36
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
 finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,enchant_id=6550
-trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1498
-trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=4800/4786/1498
-main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6649
-off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6649
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=4800/4786/1498
+trinket2=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
+main_hand=bilestained_crawg_tusks,id=159653,enchant_id=6643,ilevel=447
+off_hand=bilestained_crawg_tusks,id=159653,enchant_id=6655,ilevel=447
 
 # Gear Summary
 # gear_ilvl=444.94
