@@ -11,9 +11,9 @@ talents=BIEAS+uMNo6HaxL/ztTZBhrdcWSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiAC
 head=heartfire_sentinels_forgehelm,gem_id=192948,id=202452,bonus_id=4800/4786/1504/8780
 neck=elemental_lariat,id=193001,gem_id=192985/192948/192948,bonus_id=8836/8840/8902/8960/8783/8782/8802/8793/8846/1501,crafted_stats=49/32
 shoulder=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
-chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1504,enchant=waking_stats_3
+chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant=waking_stats_3
 waist=unstable_frostfire_belt,id=191623,gem_id=192948,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501
-legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1501,enchant=fierce_armor_kit_3
+legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
 feet=spittleresistant_sollerets,id=204396,bonus_id=6652/7981/8823/8818/1498/8767
 wrist=bonds_of_desperate_ascension,id=204390,gem_id=192948,bonus_id=6652/7981/8095/1498/8780/4786
 hands=twisted_visions_demigaunts,id=202601,bonus_id=7981/6652/8829/1498/8767
