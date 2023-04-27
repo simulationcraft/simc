@@ -19764,7 +19764,7 @@ static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
   { 408770, "$@spelldesc408667", "At $u stacks, gain one charge of Dragonfire Bomb Dispenser.", 0 },
   { 408790, "Your auto-attacks have a low chance to strike again with violent purpose, dealing $s1 Shadowflame damage. This damage is doubled against Humanoids.", 0, 0 },
   { 408791, "$@spelldesc408790", 0, 0 },
-  { 408815, "Syphon heat from nearby enemies dealing $s1 Fire damage to them. Grow and you next attacks do a wave of lava damage.", 0, 0 },
+  { 408815, "Syphon heat from nearby enemies dealing $403545s1 Fire damage to them. Grow and you next attacks do a wave of lava damage.", 0, 0 },
   { 408821, "Ignite the Elder Flame to siphon the heat from nearby enemies, dealing $403545s1 Fire damage to them and causing your melee abilities to unleash waves of ancient lava, dealing $403545s2 Fire damage split between all enemies struck for 10 seconds.", 0, 0 },
   { 408832, "Syphon heat from nearby enemies dealing $s1 Fire damage to them. Grow and you next attacks do a wave of lava damage.", 0, 0 },
   { 408835, 0, "Your next melee ability will emit a burst of lava in front of you, dealing $403545w2  bonus Fire damage.", 0 },
@@ -19834,8 +19834,8 @@ static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
   { 410218, "$@spelldesc405582", "Shield Slam unleashes a wave of force dealing $410219s2 Physical damage to enemies in front of you and reducing damage they deal to you by $410219s3% for 5 sec.", 0 },
   { 410219, "Shield Slam unleashes a wave of force dealing $s2 Physical damage to enemies in front of you and reducing damage they deal to you by $s3% for $d.", "Dealing $s3% reduced damage to $@auracaster.", 0 },
   { 410220, "Heals $s1 damage over $409915d", 0, 0 },
-  { 410226, 0, "Storing stacks of Shadowed Immolation.", 0 },
-  { 410228, "[NYI] Taking damage has a chance to store stacks of Hellsteel Immolation.\r\nAfter receiving 5 stacks, your next ability will release the stored energy dealing X Shadowflame damage to all enemies in a Y radius. This effect repeats for each stack of Hellsteel Immolation.", "Points!", 0 },
+  { 410226, "$@spelldesc408392", "Storing stacks of Shadowed Immolation.", 0 },
+  { 410228, "$@spelldesc408392", 0, 0 },
   { 410230, "When above $s2% Health, heal for $s4 every $410231t sec.\r\n\r\nWhen your Health is below $s3% the Symbiotic Spores embedded in your cloak expand, granting a shield that absorbs $s5 damage for $410232d sec. This effect can only occur once every $410233d.", 0, 0 },
   { 410231, "$@spelldesc410230", "Healing for $w1 every $t sec.", 0 },
   { 410232, "$@spelldesc355313", "Absorbing $w1 damage.", 0 },
@@ -19891,9 +19891,13 @@ static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.49318
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 7> __ptr_spelltext_hotfix_data { {
   {  387143,  0, nullptr, "$@spelldesc387144" },
   {  401303,  0, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n" },
+  {  408815,  0, "Syphon heat from nearby enemies dealing $s1 Fire damage to them. Grow and you next attacks do a wave of lava damage.", "Syphon heat from nearby enemies dealing $403545s1 Fire damage to them. Grow and you next attacks do a wave of lava damage." },
+  {  410226,  0, nullptr, "$@spelldesc408392" },
+  {  410228,  0, "[NYI] Taking damage has a chance to store stacks of Hellsteel Immolation.\r\nAfter receiving 5 stacks, your next ability will release the stored energy dealing X Shadowflame damage to all enemies in a Y radius. This effect repeats for each stack of Hellsteel Immolation.", "$@spelldesc408392" },
+  {  410228,  1, "Points!", nullptr },
   {  411024,  0, nullptr, "$@spelldesc408711" },
 } };
 

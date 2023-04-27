@@ -2458,11 +2458,12 @@ $baseDmg=${3*$199552sw2+$200685sw2}
 $firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}
 
 Name             : Momentum (id=206476) [Spell Family (107), Passive] 
+Hotfixed         : Internal Cooldown (500 -> 400)
 Talent Entry     : Havoc [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 0.5 seconds
+Internal Cooldown: 0.4 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x..... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Heal
