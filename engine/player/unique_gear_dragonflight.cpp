@@ -4069,7 +4069,9 @@ void elementium_pocket_anvil( special_effect_t& e )
       : generic_proc_t( e, "echoed_flare", e.player->find_spell( 401324 ) ),
         use( create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e ) )
     {
-      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item );
+      // 27-4-2023, Probably a bug? Damage value on tooltip multiplied by 0.6x. Tooltip matches in game test result.
+      // Retest later to ensure this is still the behavior experienced. 
+      base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item ) * 0.6;
       add_child( use );
     }
 
