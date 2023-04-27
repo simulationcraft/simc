@@ -77,11 +77,11 @@ head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/8780,gem_id
 neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8793/8846/1501,gem_id=192985/192948/192948,crafted_stats=49/32
 shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1504,enchant=waking_stats_3
+chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant=waking_stats_3
 wrists=bonds_of_desperate_ascension,id=204390,bonus_id=6652/7981/8095/1498/8780/4786,gem_id=192948
 hands=twisted_visions_demigaunts,id=202601,bonus_id=7981/6652/8829/1498/8767
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192948
-legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1501,enchant=fierce_armor_kit_3
+legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
 feet=spittleresistant_sollerets,id=204396,bonus_id=6652/7981/8823/8818/1498/8767
 finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192948,enchant=devotion_of_haste_3
@@ -91,13 +91,13 @@ main_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=so
 off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
 # Gear Summary
-# gear_ilvl=445.94
-# gear_strength=5621
-# gear_stamina=21695
-# gear_crit_rating=3559
+# gear_ilvl=446.31
+# gear_strength=5657
+# gear_stamina=21870
+# gear_crit_rating=3567
 # gear_haste_rating=3280
-# gear_mastery_rating=4010
+# gear_mastery_rating=4025
 # gear_versatility_rating=1374
-# gear_armor=12905
+# gear_armor=12962
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
