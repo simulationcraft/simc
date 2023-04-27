@@ -5436,6 +5436,75 @@ void roiling_shadowflame( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Stacking debuff: 407087
+// Damage debuff: 407090
+void ever_decaying_spores( special_effect_t& effect )
+{
+  struct ever_decaying_spores_damage_t : generic_proc_t
+  {
+    ever_decaying_spores_damage_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "everdecaying_spores", effect.player->find_spell( 407090 ) )
+    {
+      base_td = effect.driver()->effectN( 2 ).average( effect.item ) * toxified_mul( effect.player );
+    }
+  };
+
+  struct ever_decaying_spores_cb_t : dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    ever_decaying_spores_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( create_proc_action<ever_decaying_spores_damage_t>( "ever_decaying_spores", effect ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      actor_target_data_t* td = a->player->get_target_data( s->target );
+
+      if ( !td->debuff.ever_decaying_spores->stack_change_callback )
+      {
+        td->debuff.ever_decaying_spores->set_stack_change_callback( [ this ]( buff_t* b, int /* old_ */, int new_ ) {
+          if ( new_ == 0 )
+          {
+            damage->set_target( b->player );
+            damage->execute();
+          }
+        } );
+      }
+
+      td->debuff.ever_decaying_spores->trigger();
+      if ( td->debuff.ever_decaying_spores->at_max_stacks() )
+        td->debuff.ever_decaying_spores->expire();
+    }
+  };
+
+  new ever_decaying_spores_cb_t( effect );
+}
+
+struct ever_decaying_spores_initializer_t : public item_targetdata_initializer_t
+{
+  ever_decaying_spores_initializer_t() : item_targetdata_initializer_t( 406244 )
+  {
+  }
+
+  void operator()( actor_target_data_t* td ) const override
+  {
+    if ( !find_effect( td->source ) )
+    {
+      td->debuff.ever_decaying_spores = make_buff( *td, "ever_decaying_spores" )->set_quiet( true );
+      return;
+    }
+
+    assert( !td->debuff.ever_decaying_spores );
+    td->debuff.ever_decaying_spores = make_buff( *td, "ever_decaying_spores", td->source->find_spell( 407087 ) );
+    td->debuff.ever_decaying_spores->reset();
+  }
+};
+
 }  // namespace items
 
 namespace sets
@@ -6550,6 +6619,7 @@ void register_special_effects()
   register_special_effect( 409434, items::voice_of_the_silent_star, true );
   register_special_effect( 406254, items::roiling_shadowflame );
   register_special_effect( { 406219, 406928 }, items::adaptive_dracothyst_armguards );
+  register_special_effect( 406244, items::ever_decaying_spores );
   // Sets
   register_special_effect( { 393620, 393982 }, sets::playful_spirits_fur );
   register_special_effect( { 393983, 393762 }, sets::horizon_striders_garments );
@@ -6601,6 +6671,7 @@ void register_target_data_initializers( sim_t& sim )
   sim.register_target_data_initializer( items::spiteful_storm_initializer_t() );
   sim.register_target_data_initializer( items::heavens_nemesis_initializer_t() );
   sim.register_target_data_initializer( items::iceblood_deathsnare_initializer_t() );
+  sim.register_target_data_initializer( items::ever_decaying_spores_initializer_t() );
 }
 
 void register_hotfixes()
