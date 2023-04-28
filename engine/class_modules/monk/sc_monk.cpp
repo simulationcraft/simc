@@ -2890,6 +2890,9 @@ namespace monk
           if ( p()->buff.serenity->check() )
             am *= 1 + p()->talent.windwalker.serenity->effectN( 7 ).percent();
 
+          if ( p()->buff.hit_combo->check() )
+            am *= 1 + p()->passives.hit_combo->effectN( 3 ).percent();
+
           return am;
         }
 
@@ -2971,17 +2974,6 @@ namespace monk
           }
 
           trigger_gcd = timespan_t::zero();
-        }
-
-        double action_multiplier() const override
-        {
-          double am = monk_melee_attack_t::action_multiplier();
-
-          am *= 1 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 3 ).percent();
-
-          am *= 1 + p()->buff.storm_earth_and_fire->check() * p()->talent.windwalker.storm_earth_and_fire->effectN( 3 ).percent();
-
-          return am;
         }
 
         bool ready() override
