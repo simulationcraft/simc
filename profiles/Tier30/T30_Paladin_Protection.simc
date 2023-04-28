@@ -2,7 +2,7 @@ paladin="T30_Paladin_Protection"
 source=default
 spec=protection
 level=70
-race=draenei
+race=blood_elf
 role=tank
 position=front
 talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
@@ -74,30 +74,30 @@ actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|(cooldown.moment_of_glory.remains>20|(!talent.moment_of_glory.enabled&cooldown.avenging_wrath.remains>20)))
 
 head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/8780,gem_id=192948
-neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8783/8782/8802/8793/8846/1501,gem_id=192985/192948/192948,crafted_stats=49/32
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,gem_id=192985/192948/192948,crafted_stats=32/49
 shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant=waking_stats_3
+chest=sarkareths_abyssal_embrace,id=202599,bonus_id=4800/4786/1507,enchant=waking_stats_3
 wrists=bonds_of_desperate_ascension,id=204390,bonus_id=6652/7981/8095/1498/8780/4786,gem_id=192948
-hands=twisted_visions_demigaunts,id=202601,bonus_id=7981/6652/8829/1498/8767
+hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1498/8767
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192948
 legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
-feet=spittleresistant_sollerets,id=204396,bonus_id=6652/7981/8823/8818/1498/8767
+feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
 finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192948,enchant=devotion_of_haste_3
 trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
-main_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=sophic_devotion_3
 off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
 # Gear Summary
-# gear_ilvl=446.31
-# gear_strength=5657
-# gear_stamina=21870
-# gear_crit_rating=3567
-# gear_haste_rating=3280
-# gear_mastery_rating=4025
-# gear_versatility_rating=1374
-# gear_armor=12962
+# gear_ilvl=446.69
+# gear_strength=5384
+# gear_stamina=22091
+# gear_crit_rating=4209
+# gear_haste_rating=3827
+# gear_mastery_rating=3132
+# gear_versatility_rating=1106
+# gear_armor=13042
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
