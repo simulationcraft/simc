@@ -704,9 +704,11 @@ void dragonfire_bomb_dispenser( special_effect_t &effect )
 
   };
 
+  // TODO: the driver has two cooldown categories, 1141 for the on-use and 2170 for the charge. currently the generation
+  // script prioritizes the charge category so we manually set it here until the script can be adjusted.
+  effect.cooldown_category_ = 1141;
   effect.execute_action = create_proc_action<dragonfire_bomb_missile_t>( "dragonfire_bomb_dispenser", effect );
 }
-
 
 struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initializer_t
 {
