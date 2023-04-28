@@ -1,31 +1,31 @@
-# paladin="T30_Paladin_Protection"
-# level=70
-# race=draenei
-# region=us
-# server=valdrakken
-# role=tank
-# spec=protection
+paladin="T30_Paladin_Protection"
+level=70
+race=blood_elf
+region=us
+server=valdrakken
+role=tank
+spec=protection
 
-# talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKSKIJhSTSChESAAACAAAAAAAACJJEIJRSKSkkAAiAAQgA
+talents=BIEAS+uMNo6HaxL/ztTZBhrdcWSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
 
-# head=,id=200417,bonus_id=4800/4786/1498,gem_id=192919
-# neck=,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
-# shoulder=,id=200419,bonus_id=4800/4786/1498
-# back=,id=137483,bonus_id=1795/6808/4786/3300/6935
-# chest=,id=195494,bonus_id=4800/4786/1498,enchant=waking_stats_3
-# wrist=,id=200421,ilevel=424,bonus_id=4800/4786/1498,gem_id=192919
-# hands=,id=133628,bonus_id=1795/6808/4786/3300/6935
-# waist=,id=200420,bonus_id=4800/4786/1507,gem_id=192985
-# legs=,id=193706,bonus_id=6808/4786/1643,enchant=frosted_armor_kit_3
-# feet=,id=195517,bonus_id=4800/4786/1498
-# finger1=,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
-# finger2=,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192919,enchant=devotion_of_haste_3
-# trinket1=,id=133641,bonus_id=1795/6808/4786/3300/6935
-# trinket2=,id=194308,bonus_id=4800/4786/1498
-# main_hand=,id=193700,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
-# off_hand=,id=195520,bonus_id=4800/4786/1498
+head=heartfire_sentinels_forgehelm,gem_id=192945,id=202452,bonus_id=4800/4786/1504/8780
+neck=torc_of_passed_time,id=201759,gem_id=192985/192945/192945,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,crafted_stats=32/49
+shoulder=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
+chest=sarkareths_abyssal_embrace,id=202599,bonus_id=4800/4786/1498,enchant=waking_stats_3
+waist=unstable_frostfire_belt,id=191623,gem_id=192945,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501
+legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
+wrist=bonds_of_desperate_ascension,id=204390,gem_id=192945,bonus_id=6652/7981/8095/1498/8780/4786
+hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
+finger1=onyx_annulet,id=203460,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
+trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=sophic_devotion_3
+off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
-# save=T30_Paladin_Protection.simc
+save=T30_Paladin_Protection.simc
 
 
 # paladin="T30_Paladin_Retribution"
