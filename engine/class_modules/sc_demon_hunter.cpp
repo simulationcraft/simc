@@ -5595,6 +5595,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   dots.the_hunt = target->get_dot( "the_hunt_dot", &p );
 
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
 
   target->register_on_demise_callback( &p, [this]( player_t* ) { target_demise(); } );
