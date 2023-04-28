@@ -88,12 +88,12 @@ finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,e
 finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,enchant_id=6550
 trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=4800/4786/1498
 trinket2=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
-main_hand=bilestained_crawg_tusks,id=159653,enchant_id=6643,ilevel=447
-off_hand=bilestained_crawg_tusks,id=159653,enchant_id=6655,ilevel=447
+main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6643
+off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=444.94
-# gear_agility=6824
+# gear_ilvl=445.31
+# gear_agility=6857
 # gear_stamina=21713
 # gear_crit_rating=3143
 # gear_haste_rating=3756
