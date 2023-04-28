@@ -632,27 +632,27 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   auto restock_driver = find_special_effect( effect.player, 408667 );
   if ( restock_driver )
   {
-  auto skilled_restock =
-      make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item )  // 408770
-          ->set_quiet( true )
-          ->set_stack_change_callback( [ & ]( buff_t* buff, int, int ) {
-            if ( buff->at_max_stacks() )
-            {
-              // At 60 stacks gain a charge
-              effect.execute_action->cooldown->reset( true );
-              buff->expire();
-            }
-          } );
+    auto skilled_restock =
+        make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item )  // 408770
+            ->set_quiet( true )
+            ->set_stack_change_callback( [ & ]( buff_t* buff, int, int ) {
+              if ( buff->at_max_stacks() )
+              {
+                // At 60 stacks gain a charge
+                effect.execute_action->cooldown->reset( true );
+                buff->expire();
+              }
+            } );
 
-  restock_driver->custom_buff = skilled_restock;
-  restock_driver->proc_flags2_ = PF2_CRIT;
+    restock_driver->custom_buff = skilled_restock;
+    restock_driver->proc_flags2_ = PF2_CRIT;
 
-  new dbc_proc_callback_t( effect.player, *restock_driver );
+    new dbc_proc_callback_t( effect.player, *restock_driver );
   }
 
   // AoE Explosion
   auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408667 );
-
+  explode->name_str_reporting = "AOE";
   explode->base_dd_min = explode->base_dd_max =
       effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
 
@@ -668,12 +668,13 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   // ST Damage
   struct dragonfire_bomb_st_t : public proc_spell_t
   {
-  dragonfire_bomb_st_t( const special_effect_t& e )
-    : proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
-  {
-    background = true;
-    base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
-  }
+    dragonfire_bomb_st_t( const special_effect_t& e )
+      : proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
+      name_str_reporting = "ST";
+    }
   };
 
   create_proc_action<dragonfire_bomb_st_t>( "dragonfire_bomb_st", effect );
@@ -681,26 +682,26 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   // DoT Driver
   struct dragonfire_bomb_missile_t : public proc_spell_t
   {
-  dragonfire_bomb_missile_t( const special_effect_t& e )
-    : proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
-  {
-    background = true;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    proc_spell_t::impact( s );
-
-    auto td = player->get_target_data( s->target );
-
-    if ( td )
+    dragonfire_bomb_missile_t( const special_effect_t& e )
+      : proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
     {
-      if ( td->debuff.dragonfire_bomb->up() )
-        td->debuff.dragonfire_bomb->expire();
-
-      td->debuff.dragonfire_bomb->trigger();
+      background = true;
     }
-  }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      auto td = player->get_target_data( s->target );
+
+      if ( td )
+      {
+        if ( td->debuff.dragonfire_bomb->up() )
+          td->debuff.dragonfire_bomb->expire();
+
+        td->debuff.dragonfire_bomb->trigger();
+      }
+    }
   };
 
   // TODO: the driver has two cooldown categories, 1141 for the on-use and 2170 for the charge. currently the generation
@@ -711,12 +712,9 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
 
 struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initializer_t
 {
+  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 ) {}
 
-  dragonfire_bomb_dispenser_initializer_t() : item_targetdata_initializer_t( 408671 )
-  {
-  }
-  
-  void operator()( actor_target_data_t *td ) const override
+  void operator()( actor_target_data_t* td ) const override
   {
     if ( !find_effect( td->source ) )
     {
@@ -726,28 +724,28 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
 
     struct dragonfire_bomb_debuff_t : buff_t
     {
-      player_t *target;
-      action_t *bomb;
+      player_t* target;
+      action_t* bomb;
 
-      dragonfire_bomb_debuff_t( actor_target_data_t &td, util::string_view n, const spell_data_t *s ) 
-        : buff_t( td, n, s ), target( td.target ), bomb ( td.source->find_action( "dragonfire_bomb_st" ) )
-      {
-      }
+      dragonfire_bomb_debuff_t( actor_target_data_t& td, util::string_view n, const spell_data_t* s )
+        : buff_t( td, n, s ), target( td.target ), bomb( td.source->find_action( "dragonfire_bomb_st" ) )
+      {}
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
       {
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
-        if ( bomb )   
+        if ( bomb )
           bomb->execute_on_target( target );
       }
     };
 
-    td->debuff.dragonfire_bomb = new dragonfire_bomb_debuff_t( *td, "dragonfire_bomb", td->source->find_spell( 408675 ) ); // IT GONNA BLOW!
+    td->debuff.dragonfire_bomb =
+        new dragonfire_bomb_debuff_t( *td, "dragonfire_bomb", td->source->find_spell( 408675 ) );  // IT GONNA BLOW!
     td->debuff.dragonfire_bomb->reset();
   }
 };
-  
+
 /* Burgeoning Seed
   * id=193634
   * trigger = 382108
@@ -4787,8 +4785,9 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
     djaruun_pillar_of_the_elder_flame_siphon_t( const special_effect_t& effect )
       : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_siphon", effect.player->find_spell( 408815 ) )
     {
-      base_dd_min = base_dd_max = effect.player->find_spell( 403545 ) -> effectN( 1 ).average( effect.item );
+      base_dd_min = base_dd_max = effect.player->find_spell( 403545 )->effectN( 1 ).average( effect.item );
       split_aoe_damage = false;
+      name_str_reporting = "Siphon";
     }
   };
 
@@ -4800,6 +4799,7 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
       : generic_aoe_proc_t( effect, "djaruun_pillar_of_the_elder_flame_on_hit", effect.player->find_spell( 408836 ), true )
     {
       base_dd_min = base_dd_max = effect.player->find_spell( 403545 ) -> effectN( 2 ).average( effect.item );
+      name_str_reporting = "Wave";
     }
   };
 
@@ -6106,6 +6106,7 @@ struct humming_arcane_stone_t : public damage_stone_t
     damage_stone_t( e, "humming_arcane_stone", 405206 )
   {
     damage = create_proc_action<humming_arcane_stone_damage_t>( "humming_arcane_stone_damage", e );
+    damage->name_str_reporting = "Missile";
     add_child( damage );
 
     std::set<primordial_stone_family_e> stone_families;
