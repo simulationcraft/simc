@@ -9445,16 +9445,10 @@ void rogue_t::create_buffs()
 
   // DFALPHA -- This still seems very messed up and still appears to have a 50% value in data
   //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
-  //            2023-01-07 -- Nightstalker still does nothing on live after December hotfixes
   buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
     ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
-  if ( bugs )
-  {
-    buffs.nightstalker->direct_mod.multiplier = 1.0;
-    buffs.nightstalker->periodic_mod.multiplier = 1.0;
-  }
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
