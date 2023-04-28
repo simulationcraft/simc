@@ -10073,7 +10073,7 @@ void shaman_t::create_buffs()
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
-          buff.stormkeeper->trigger( 2 );
+          buff.stormkeeper->trigger( 1 );
           t30_proc_possible = false;
         }
       } );
