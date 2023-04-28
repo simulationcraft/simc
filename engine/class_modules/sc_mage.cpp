@@ -2435,8 +2435,8 @@ struct ignite_t final : public residual_action_t
   {
     residual_action_t::init();
 
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags   |= STATE_TGT_MUL_TA;
+    snapshot_flags = STATE_TGT_MUL_TA;
+    update_flags   = STATE_TGT_MUL_TA;
   }
 
   void tick( dot_t* d ) override
