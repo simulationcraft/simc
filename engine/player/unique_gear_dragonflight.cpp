@@ -3761,12 +3761,12 @@ void screaming_black_dragonscale_use( special_effect_t& effect )
 
 // Anshuul the Cosmic Wanderer
 // 402583 Driver
-// 402574 Damage Value 
+// 402574 Damage Value
 void anshuul_the_cosmic_wanderer( special_effect_t& effect )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "anshuul_the_cosmic_wanderer", effect, "anshuul_the_cosmic_wanderer", effect.driver(), true );
-  damage -> base_dd_min = damage -> base_dd_max = effect.trigger() -> effectN( 1 ).average( effect.item );
-  damage -> set_school( SCHOOL_COSMIC ); // Manually set the spell school, School set to none in data.
+  auto damage = create_proc_action<generic_aoe_proc_t>( "anshuul_the_cosmic_wanderer", effect,
+                                                        "anshuul_the_cosmic_wanderer", effect.driver(), true );
+  damage->base_dd_min = damage->base_dd_max = effect.trigger()->effectN( 1 ).average( effect.item );
   effect.execute_action = damage;
 }
 
