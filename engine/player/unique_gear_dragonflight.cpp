@@ -1492,10 +1492,12 @@ void igneous_flowstone( special_effect_t& effect )
 
   auto low_tide_trigger = create_buff<buff_t>( effect.player, effect.player->find_spell( 402896 ) );
 
-  auto low_tide_driver      = new special_effect_t( effect.player );
-  low_tide_driver->type     = SPECIAL_EFFECT_EQUIP;
-  low_tide_driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
-  low_tide_driver->spell_id = low_tide_trigger->data().id();
+  auto low_tide_driver       = new special_effect_t( effect.player );
+  low_tide_driver->type      = SPECIAL_EFFECT_EQUIP;
+  low_tide_driver->source    = SPECIAL_EFFECT_SOURCE_ITEM;
+  low_tide_driver->spell_id  = low_tide_trigger->data().id();
+  // Add a cooldown to prevent a double trigger for classes like windwalker
+  low_tide_driver->cooldown_ = 1.5_s;
   effect.player->special_effects.push_back( low_tide_driver );
 
   auto low_tide_cb = new low_tide_cb_t( *low_tide_driver, low_tide_trigger, crit_buff );
@@ -1504,10 +1506,12 @@ void igneous_flowstone( special_effect_t& effect )
 
   auto high_tide_trigger = create_buff<buff_t>( effect.player, effect.player->find_spell( 402903 ) );
 
-  auto high_tide_driver      = new special_effect_t( effect.player );
-  high_tide_driver->type     = SPECIAL_EFFECT_EQUIP;
-  high_tide_driver->source   = SPECIAL_EFFECT_SOURCE_ITEM;
-  high_tide_driver->spell_id = high_tide_trigger->data().id();
+  auto high_tide_driver       = new special_effect_t( effect.player );
+  high_tide_driver->type      = SPECIAL_EFFECT_EQUIP;
+  high_tide_driver->source    = SPECIAL_EFFECT_SOURCE_ITEM;
+  high_tide_driver->spell_id  = high_tide_trigger->data().id();
+  // Add a cooldown to prevent a double trigger for classes like windwalker
+  high_tide_driver->cooldown_ = 1.5_s;
   effect.player->special_effects.push_back( high_tide_driver );
 
   auto high_tide_cb = new high_tide_cb_t( *high_tide_driver, high_tide_trigger, damage );
