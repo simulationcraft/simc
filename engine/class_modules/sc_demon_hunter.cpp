@@ -4217,6 +4217,8 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 
     void execute() override
     {
+      demon_hunter_attack_t::execute();
+      
       if ( may_refund )
       {
         // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
@@ -4225,15 +4227,12 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         {
           p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
         }
-
-        // 2023-01-07 -- Logs show the refund and Chaos Theory buff fade happens before damage is dealt
+                
         if ( p()->talent.havoc.chaos_theory->ok() )
         {
           p()->buff.chaos_theory->expire();
         }
       }
-
-      demon_hunter_attack_t::execute();
     }
 
     void impact( action_state_t* s ) override
@@ -5595,6 +5594,7 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   dots.the_hunt = target->get_dot( "the_hunt_dot", &p );
 
   debuffs.serrated_glaive = make_buff( *this, "serrated_glaive", p.spec.serrated_glaive_debuff )
+    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
     ->set_default_value( p.talent.havoc.serrated_glaive->effectN( 1 ).percent() );
 
   target->register_on_demise_callback( &p, [this]( player_t* ) { target_demise(); } );
