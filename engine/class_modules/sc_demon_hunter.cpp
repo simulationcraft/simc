@@ -4218,6 +4218,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     void execute() override
     {
       demon_hunter_attack_t::execute();
+      
       if ( may_refund )
       {
         // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
