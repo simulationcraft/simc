@@ -33,15 +33,15 @@ position=back
 talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJJIJhAJUSIAAAAAAAAAAAAgSESCJoIQSLJpAoEJhkGC
 
 head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192948/192948/192948,crafted_stats=49/36
+neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782,gem_id=192948/192948/192948,ilevel=447
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=201409/192948,enchant_id=6574,crafted_stats=32
-hands=flametouched_handguards,id=193427,bonus_id=9376/9405/8793,crafted_stats=49/36
-waist=flametouched_chain,id=193425,bonus_id=9376/9405/8793/9436,gem_id=192948,crafted_stats=49/36
+wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=192948,enchant_id=6574,crafted_stats=32
+hands=scale_rein_grips,id=193465,bonus_id=9405/9376
+waist=wind_spirits_lasso,id=193463,bonus_id=9405/9376/9436,gem_id=192948
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
-feet=venomsteeped_stompers,id=193460,enchant_id=6607,bonus_id=8836/8840/8902/9405/9376
+feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
 trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
@@ -61,15 +61,15 @@ position=back
 talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
 
 head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192948/192948/192948,crafted_stats=49/36
+neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782,gem_id=192948/192948/192948,ilevel=447
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=201409/192948,enchant_id=6574,crafted_stats=32
-hands=flametouched_handguards,id=193427,bonus_id=9376/9405/8793,crafted_stats=49/36
-waist=flametouched_chain,id=193425,bonus_id=9376/9405/8793/9436,gem_id=192948,crafted_stats=49/36
+wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=192948,enchant_id=6574,crafted_stats=32
+hands=scale_rein_grips,id=193465,bonus_id=9405/9376
+waist=wind_spirits_lasso,id=193463,bonus_id=9405/9376/9436,gem_id=192948
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
-feet=venomsteeped_stompers,id=193460,enchant_id=6607,bonus_id=8836/8840/8902/9405/9376
+feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
 trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
