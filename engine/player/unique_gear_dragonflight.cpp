@@ -626,37 +626,37 @@ namespace items
 {
 // Trinkets
 
-void dragonfire_bomb_dispenser( special_effect_t &effect )
-{ 
+void dragonfire_bomb_dispenser( special_effect_t& effect )
+{
   // Skilled Restock
   auto restock_driver = find_special_effect( effect.player, 408667 );
   if ( restock_driver )
   {
-    auto skilled_restock = make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item) // 408770
-      ->set_quiet( true )
-      ->set_stack_change_callback( [ & ] ( buff_t *buff, int, int )
-    {
-      if ( buff->at_max_stacks() )
-      {
-        // At 60 stacks gain a charge
-        effect.execute_action->cooldown->reset( true );
-        buff->expire();
-      }
-    } );
+  auto skilled_restock =
+      make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item )  // 408770
+          ->set_quiet( true )
+          ->set_stack_change_callback( [ & ]( buff_t* buff, int, int ) {
+            if ( buff->at_max_stacks() )
+            {
+              // At 60 stacks gain a charge
+              effect.execute_action->cooldown->reset( true );
+              buff->expire();
+            }
+          } );
 
-    restock_driver->custom_buff = skilled_restock;
-    restock_driver->proc_flags2_ = PF2_CRIT;
+  restock_driver->custom_buff = skilled_restock;
+  restock_driver->proc_flags2_ = PF2_CRIT;
 
-    new dbc_proc_callback_t( effect.player, *restock_driver );
+  new dbc_proc_callback_t( effect.player, *restock_driver );
   }
 
   // AoE Explosion
   auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408667 );
 
-  explode->base_dd_min = explode->base_dd_max = effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
+  explode->base_dd_min = explode->base_dd_max =
+      effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
 
-  effect.player->register_on_kill_callback( [ effect, explode ] ( player_t *t )
-  {
+  effect.player->register_on_kill_callback( [ effect, explode ]( player_t* t ) {
     if ( effect.player->sim->event_mgr.canceled )
       return;
 
@@ -668,40 +668,39 @@ void dragonfire_bomb_dispenser( special_effect_t &effect )
   // ST Damage
   struct dragonfire_bomb_st_t : public proc_spell_t
   {
-    dragonfire_bomb_st_t( const special_effect_t &e ) :
-      proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
-    {
-      background = true;
-      base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
-    }
+  dragonfire_bomb_st_t( const special_effect_t& e )
+    : proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
+  {
+    background = true;
+    base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
+  }
   };
 
   create_proc_action<dragonfire_bomb_st_t>( "dragonfire_bomb_st", effect );
-  
+
   // DoT Driver
   struct dragonfire_bomb_missile_t : public proc_spell_t
   {
-    dragonfire_bomb_missile_t( const special_effect_t &e ) :
-      proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
+  dragonfire_bomb_missile_t( const special_effect_t& e )
+    : proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
+  {
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    proc_spell_t::impact( s );
+
+    auto td = player->get_target_data( s->target );
+
+    if ( td )
     {
-      background = true;
+      if ( td->debuff.dragonfire_bomb->up() )
+        td->debuff.dragonfire_bomb->expire();
+
+      td->debuff.dragonfire_bomb->trigger();
     }
-
-    void impact( action_state_t *s ) override
-    {
-      proc_spell_t::impact( s );
-
-      auto td = player->get_target_data( s->target );
-
-      if ( td )
-      {
-        if ( td->debuff.dragonfire_bomb->up() )
-          td->debuff.dragonfire_bomb->expire();
-
-        td->debuff.dragonfire_bomb->trigger();
-      }
-    }
-
+  }
   };
 
   // TODO: the driver has two cooldown categories, 1141 for the on-use and 2170 for the charge. currently the generation
