@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49318
-static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19889> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19794,6 +19794,7 @@ static const std::array<spelltext_data_t, 19888> __ptr_spelltext_data { {
   { 409447, "$@spelldesc409434", "$?e0[Critical Strike increased by $w1.]?e1[Haste increased by $w2.]?e2[Mastery increased by $w3.]?e3[Versatility increased by $w4.][Highest secondary stat increased.]", 0 },
   { 409451, "Create a piece of Crimson Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 409479, "$@spelldesc405556", "The damage and healing of your next Holy Word is increased by $s1%.", 0 },
+  { 409483, "$@spelldesc405559", 0, 0 },
   { 409502, "$@spelldesc405558\r\n", "Every $409502u casts of Devouring Plague increases the damage of Shadowy Apparitions conjured within the next $410871d by $410871s1%.", 0 },
   { 409587, "Nature damage increased by $s1%.", "Nature damage increased by $w1%.", 0 },
   { 409604, "Damage you inflict applies a Soulrip, dealing 5% of all damage you deal as physical damage over 8 sec.", "Dealing $w1 Physical damage over $d.", 0 },
@@ -20048,7 +20049,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  203316, "$reduction=${$m2/-1000}" },
   {  203953, "$shield=${$AP*0.075}" },
   {  204019, "$shield=${$AP*$s1/100}" },
-  {  204074, "$reduction=${$m1/10*3}.1" },
+  {  204074, "$reduction=${$m1/100*3}.1" },
   {  205448, "$ext=${$231688s1/1000} sec" },
   {  205523, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  206416, "$mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]\r\n$baseDmg=${3*$199552sw2+$200685sw2} \r\n$firstbloodDmg=${(3*$199552sw2+$200685sw2)*(100+$206416s1)/100*$<mastery>}" },
@@ -20285,7 +20286,8 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.1.0.49318
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelldesc_vars_hotfix_data { {
+  {  204074,  0, "$reduction=${$m1/10*3}.1", "$reduction=${$m1/100*3}.1" },
   {  385786,  0, "$shield=${$s1/100*$AP*(1+$@versadmg)}", "$shield=${$s1/100*1.25*$AP*(1+$@versadmg)}" },
 } };
 
