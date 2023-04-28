@@ -656,9 +656,6 @@ namespace monk
       double composite_persistent_multiplier( const action_state_t *action_state ) const override
       {
         double pm = ab::composite_persistent_multiplier( action_state );
-
-        pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
-
         return pm;
       }
 
@@ -8993,6 +8990,8 @@ namespace monk
     if ( action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
       multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 1 ).percent();
 
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+
     return multiplier;
   }
 
@@ -9003,6 +9002,8 @@ namespace monk
 
     if ( action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
       multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 2 ).percent();
+
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 
     return multiplier;
   }
