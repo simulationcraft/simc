@@ -10040,7 +10040,6 @@ namespace monk
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
       ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
       ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-      ReportIssue( "Ferocity of Xuen not increasing your summoned pet damage", "2023-04-04", true );
 
       // =================================================
 
