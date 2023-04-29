@@ -12106,12 +12106,7 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "dragonflight.player.ominous_chromatic_essence_allies=" + dragonflight_opts.ominous_chromatic_essence_allies + term;
     }
 
-    if ( !dragonflight_opts.ashkandur_humanoid )
-    {
-      profile_str += "dragonflight.player.ashkandur_humanoid=" + dragonflight_opts.ashkandur_humanoid + term;
-    }
-
-    if ( !dragonflight_opts.ominous_chromatic_essence_allies.empty() )
+    if ( !dragonflight_opts.flowstone_starting_state.empty() )
     {
       profile_str += "dragonflight.player.flowstone_starting_state=" + dragonflight_opts.flowstone_starting_state + term;
     }
