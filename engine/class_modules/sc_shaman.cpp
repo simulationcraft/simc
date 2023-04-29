@@ -5463,12 +5463,6 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.windspeakers_lava_resurgence->decrement();
       }
     }
-
-    // Rolls on execute and on impact on live, doesn't roll on impact on ptr
-    if ( !p()->is_ptr() && rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
-    {
-      p()->buff.power_of_the_maelstrom->trigger();
-    }
   }
 
   double action_multiplier() const override
@@ -6786,9 +6780,7 @@ public:
   {
     parse_options( options_str );
 
-    if ( p()->is_ptr() ) {
-      affected_by_master_of_the_elements = true;
-    }
+    affected_by_master_of_the_elements = true;
 
     // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
     // Max Targets value on a spell to mean "aoe this many targets"
@@ -9640,7 +9632,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   }
 
   dre_attempts++;
-  if ( ( options.dre_flat_chance == -1 && is_ptr() ) || options.dre_flat_chance == 0 )
+  if ( options.dre_flat_chance <= 0 )
   {
     // per attempt there exists an ever growing 1% chance
     // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
@@ -9951,9 +9943,8 @@ void shaman_t::trigger_flash_of_lightning()
   {
     cooldown.totemic_recall->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
   }
-  if ( is_ptr() ) {
-    cooldown.flame_shock->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
-  }
+
+  cooldown.flame_shock->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
 
   proc.flash_of_lightning->occur();
 }
