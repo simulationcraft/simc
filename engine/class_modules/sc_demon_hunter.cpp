@@ -1517,6 +1517,8 @@ public:
     // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
     if ( ab::stats->school == SCHOOL_CHROMATIC )
       ab::stats->school = SCHOOL_CHAOS;
+    if ( ab::stats->school == SCHOOL_CHROMASTRIKE )
+      ab::stats->school = SCHOOL_CHAOS;
 
     ab::init_finished();
   }
