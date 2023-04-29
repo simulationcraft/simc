@@ -65,12 +65,14 @@ enum free_spell_e : unsigned
   ORBIT      = 0x0040,  // orbit breaker talent
   // free casts
   APEX       = 0x0080,  // apex predators's craving
+  /* TODO: implement 4pc bug if not fixed in 0day patch
   COSMOS     = 0x0100,  // touch the cosmos 4t29
+  */
   STARWEAVER = 0x0200,  // starweaver talent
   TOOTH      = 0x0400,  // tooth and claw talent
 
   PROCS = CONVOKE | FIRMAMENT | FLASHING | GALACTIC | ORBIT,
-  CASTS = APEX | COSMOS | STARWEAVER | TOOTH
+  CASTS = APEX | /*COSMOS |*/ STARWEAVER | TOOTH
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -307,7 +309,6 @@ public:
   {
     std::vector<dot_t*> moonfire;
     std::vector<dot_t*> sunfire;
-    std::vector<dot_t*> stellar_flare;  // TODO remove in 10.1
   } dot_list;
   // !!!==========================================================================!!!
 
@@ -378,10 +379,11 @@ public:
     action_t* shooting_stars;                // placeholder action
     action_t* shooting_stars_moonfire;
     action_t* shooting_stars_sunfire;
-    action_t* shooting_stars_stellar_flare;  // remove in 10.1
     action_t* crashing_stars;                // 4t30
+    /* TODO: implement 4pc bug if not fixed in 0day patch
     action_t* starfall_cosmos;               // free starfall from 4t29 TODO remove in 10.1
     action_t* starsurge_cosmos;              // free starsurge fromm 4t29 TODO remove in 10.1
+    */
     action_t* starfall_starweaver;           // free starfall from starweaver's warp
     action_t* starsurge_starweaver;          // free starsurge from starweaver's weft
     action_t* sundered_firmament;
@@ -588,7 +590,6 @@ public:
     gain_t* stellar_innervation;
 
     // Feral (Cat)
-    gain_t* berserk;  // TODO remove in 10.1
     gain_t* cats_curiosity;
     gain_t* energy_refund;
     gain_t* incessant_hunter;
@@ -1565,14 +1566,11 @@ struct berserk_cat_buff_t : public druid_buff_t
     if ( inc )
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
 
-    if ( p->is_ptr() )
-    {
-      auto cp = s->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
-      auto gain = p->get_gain( n );
-      set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
-        player->resource_gain( RESOURCE_COMBO_POINT, cp, gain );
-      } );
-    }
+    auto cp = s->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
+    auto gain = p->get_gain( n );
+    set_tick_callback( [ cp, gain, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( RESOURCE_COMBO_POINT, cp, gain );
+    } );
   }
 
   void start( int s, double v, timespan_t d ) override
@@ -1712,7 +1710,7 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
   protector_of_the_pack_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, s ),
       mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() ),
-      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : p->is_ptr() ? 5.0 : 4.0 )
+      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : 5.0 )
   {
     set_trigger_spell( p->talent.protector_of_the_pack );
     set_name_reporting( "protector_of_the_pack" );
@@ -2068,7 +2066,7 @@ public:
 
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
-    // TODO fix fix fix once data is not a disaster
+
     unsigned berserk_ignore_mask = p()->talent.berserk_persistence.ok() ? 0b11111100000U
                                                                         : 0b11111100110U;
                                                                           //10987654321
@@ -2600,9 +2598,7 @@ public:
 
   void post_execute()
   {
-    if ( p()->is_ptr() )
-      p()->buff.touch_the_cosmos->expire();
-
+    p()->buff.touch_the_cosmos->expire();
     p()->buff.gathering_starstuff->trigger();
 
     if ( is_free_proc() )
@@ -3044,11 +3040,8 @@ public:
   {
     auto ea = base_t::composite_energize_amount( s );
 
-    if ( p()->is_ptr() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
-         p()->buff.b_inc_cat->check() )
-    {
+    if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && p()->buff.b_inc_cat->check() )
       ea += berserk_cp;
-    }
 
     return ea;
   }
@@ -3302,15 +3295,11 @@ protected:
   using state_t = druid_action_state_t<Data>;
 
 public:
-  double berserk_finisher = 0.0;  // TODO remove in 10.1
   bool consumes_combo_points = true;
 
   combo_point_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt = {} )
     : cat_attack_t( n, p, s, opt )
-  {
-    if ( p->talent.berserk.ok() && !p->is_ptr() )
-      berserk_finisher = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
-  }
+  {}
 
   action_state_t* new_state() override
   {
@@ -3408,12 +3397,6 @@ public:
                       util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
 
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
-
-      if ( !p()->is_ptr() && p()->buff.b_inc_cat->check() && berserk_finisher &&
-           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
-      {
-        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_finisher, p()->gain.berserk );
-      }
     }
 
     if ( p()->buff.tigers_tenacity->check() )
@@ -3770,12 +3753,6 @@ struct ferocious_bite_t : public cat_finisher_t
     return req;
   }
 
-  int _combo_points() const override
-  {
-    // special handling for convoke FB
-    return ( !p()->is_ptr() && ( free_spell & free_spell_e::CONVOKE ) ) ? 4 : cat_finisher_t::_combo_points();
-  }
-
   bool ready() override
   {
     if ( max_energy && p()->resources.current[ RESOURCE_ENERGY ] < maximum_energy() )
@@ -3965,14 +3942,6 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
     bleed->stats = stats;
 
     dot_name = "rake";
-  }
-
-  bool stealthed() const override
-  {
-    if ( p()->is_ptr() )
-      return base_t::stealthed();
-
-    return p()->buff.b_inc_cat->check() || base_t::stealthed();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -4260,14 +4229,6 @@ struct shred_t : public trigger_thrashing_claws_t<cat_attack_t>
     }
   }
 
-  bool stealthed() const override
-  {
-    if ( p()->is_ptr() )
-      return base_t::stealthed();
-
-    return p()->buff.b_inc_cat->check() || base_t::stealthed();
-  }
-
   double composite_energize_amount( const action_state_t* s ) const override
   {
     double e = base_t::composite_energize_amount( s );
@@ -4331,16 +4292,6 @@ struct swipe_cat_t : public trigger_thrashing_claws_t<cat_attack_t>
   bool ready() override
   {
     return p()->talent.brutal_slash.ok() ? false : base_t::ready();
-  }
-
-  double composite_energize_amount( const action_state_t* s ) const override
-  {
-    auto ea = base_t::composite_energize_amount( s );
-
-    if ( !p()->is_ptr() && p()->buff.b_inc_cat->check() )
-      ea += berserk_cp;
-
-    return ea;
   }
 
   void execute() override
@@ -4408,37 +4359,13 @@ struct thrash_cat_t : public cat_attack_t
   {
     aoe = -1;
 
-    if ( p->is_ptr() )
-    {
-      impact_action = p->get_secondary_action_n<thrash_cat_dot_t>( name_str + "_dot" );
-      impact_action->stats = stats;
-    }
-    else
-    {
-      energize_amount = p->find_spell( 211141 )->effectN( 1 ).base_value();
-      energize_resource = RESOURCE_COMBO_POINT;
-      energize_type = action_energize::ON_HIT;
-    }
+    impact_action = p->get_secondary_action_n<thrash_cat_dot_t>( name_str + "_dot" );
+    impact_action->stats = stats;
 
     dot_name = "thrash_cat";
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
-  }
-
-  void trigger_dot( action_state_t* s ) override
-  {
-    if ( p()->is_ptr() )
-      return;
-
-    // cat thrash is not applied if existing bear thrash has longer duration
-    auto thrash_bear = td( s->target )->dots.thrash_bear;
-    if ( thrash_bear->remains() > composite_dot_duration( s ) )
-      return;
-
-    thrash_bear->cancel();
-
-    cat_attack_t::trigger_dot( s );
   }
 
   void execute() override
@@ -7103,7 +7030,7 @@ struct moonfire_t : public druid_spell_t
       if ( p->spec.astral_power->ok() )
       {
         energize_resource = RESOURCE_ASTRAL_POWER;
-        energize_type = !p->is_ptr() ? action_energize::PER_HIT : action_energize::ON_HIT;
+        energize_type = action_energize::ON_HIT;
         energize_amount = p->spec.astral_power->effectN( 3 ).resource( RESOURCE_ASTRAL_POWER );
       }
       else
@@ -7817,12 +7744,14 @@ struct starfall_t : public astral_power_spender_t
 
   void execute() override
   {
+    /* TODO: implement 4pc bug if not fixed in 0day patch
     if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starfall_cosmos )
     {
       p()->active.starfall_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
       return;
     }
+    */
 
     if ( !is_free() && p()->buff.starweavers_warp->up() && p()->active.starfall_starweaver )
     {
@@ -7875,11 +7804,11 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
                     p->talent.umbral_intensity->effectN( 1 ).percent() ),
       smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
-      sotf_cap( p->is_ptr() ? as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) : 0 )
+      sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
   {
     aoe = -1;
     energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-    if ( p->is_ptr() ) reduced_aoe_targets = 8;
+    reduced_aoe_targets = 8;
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -7898,7 +7827,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
   {
     auto mul = 1.0;
 
-    if ( sotf_mul && p()->buff.eclipse_lunar->check() && s->n_targets > 1 && p()->is_ptr() )
+    if ( sotf_mul && p()->buff.eclipse_lunar->check() && s->n_targets > 1 )
       mul += sotf_mul * std::min( sotf_cap, s->n_targets - 1 );
 
     return mul;
@@ -7960,19 +7889,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     double cam = base_t::composite_aoe_multiplier( s );
 
     if ( s->chain_target )
-    {
-      if ( !p()->is_ptr() )
-      {
-        if ( p()->buff.eclipse_lunar->check() )
-          cam *= ( aoe_base + aoe_mod_flat ) * ( 1.0 + sotf_mul );
-        else
-          cam *= aoe_base;
-      }
-      else
-      {
-        cam *= aoe_base + p()->buff.eclipse_lunar->check() ? aoe_mod_flat : 0.0;
-      }
-    }
+      cam *= aoe_base + p()->buff.eclipse_lunar->check() ? aoe_mod_flat : 0.0;
 
     return cam;
   }
@@ -8065,12 +7982,14 @@ struct starsurge_t : public astral_power_spender_t
 
   void execute() override
   {
+    /* TODO: implement 4pc bug if not fixed in 0day patch
     if ( !is_free_cast() && p()->buff.touch_the_cosmos->up() && p()->active.starsurge_cosmos )
     {
       p()->active.starsurge_cosmos->execute_on_target( target );
       p()->buff.touch_the_cosmos->expire();
       return;
     }
+    */
 
     if ( !is_free() && p()->buff.starweavers_weft->up() && p()->active.starsurge_starweaver )
     {
@@ -8095,7 +8014,7 @@ struct starsurge_t : public astral_power_spender_t
 };
 
 // Stellar Flare ============================================================
-struct stellar_flare_t : public trigger_shooting_stars_t<trigger_waning_twilight_t<druid_spell_t>>
+struct stellar_flare_t : public trigger_waning_twilight_t<druid_spell_t>
 {
   stellar_flare_t( druid_t* p, std::string_view opt )
     : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
@@ -8105,15 +8024,6 @@ struct stellar_flare_t : public trigger_shooting_stars_t<trigger_waning_twilight
     : base_t( n, p, s, opt )
   {
     dot_name = "stellar_flare";
-    dot_list = &p->dot_list.stellar_flare;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    if ( p()->is_ptr() )
-      druid_spell_t::tick( d );
-    else
-      base_t::tick( d );
   }
 };
 
@@ -9168,7 +9078,7 @@ double brambles_handler( const action_state_t* s )
   double attack_power = ( p->cache.attack_power() + weapon_ap ) * p->composite_attack_power_multiplier();
 
   // Brambles coefficient is not in spelldata :(
-  double absorb_cap = attack_power * ( p->is_ptr() ?  0.075 : 0.06 );
+  double absorb_cap = attack_power * 0.075;
 
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s->result_mitigated, absorb_cap );
@@ -10075,7 +9985,7 @@ void druid_t::create_buffs()
 
   buff.matted_fur =
       make_buff<absorb_buff_t>( this, "matted_fur", talent.matted_fur->effectN( 1 ).trigger() )
-          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) * ( is_ptr() ? 1.25 : 1.0 ) );
+          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) * 1.25 );
 
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( this );
 
@@ -10226,9 +10136,6 @@ void druid_t::create_buffs()
 
   buff.shooting_stars_sunfire = make_buff<shooting_stars_buff_t>( this, "shooting_stars_sunfire",
       dot_list.sunfire, active.shooting_stars_sunfire );
-
-  buff.shooting_stars_stellar_flare = make_buff<shooting_stars_buff_t>( this, "shooting_stars_stellar_flare",
-      dot_list.stellar_flare, active.shooting_stars_stellar_flare );
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() )
     ->set_default_value( talent.solstice->effectN( 1 ).percent() );
@@ -10536,7 +10443,7 @@ void druid_t::create_actions()
     auto fm = get_secondary_action_n<full_moon_t>( "orbit breaker", find_spell( 274283 ), "" );
     fm->s_data_reporting = talent.orbit_breaker;
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
-    if ( is_ptr() ) fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
+    fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
     fm->background = true;
     active.orbit_breaker = fm;
@@ -10556,11 +10463,6 @@ void druid_t::create_actions()
     active.shooting_stars->add_child( sf );
     active.shooting_stars_sunfire = sf;
 
-    auto fl = get_secondary_action_n<shooting_stars_t>( "shooting_stars_stellar_flare", spec.shooting_stars_dmg );
-    fl->name_str_reporting = "Stellar Flare";
-    active.shooting_stars->add_child( fl );
-    active.shooting_stars_stellar_flare = fl;
-
     if ( sets->has_set_bonus( DRUID_BALANCE, T30, B4 ) )
     {
       active.crashing_stars = get_secondary_action_n<shooting_stars_t>( "crashing_star", find_spell( 408310 ) );
@@ -10568,7 +10470,8 @@ void druid_t::create_actions()
     }
   }
 
-  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) && !is_ptr() )
+  /* TODO: implement 4pc bug if not fixed in 0day patch
+  if ( sets->has_set_bonus( DRUID_BALANCE, T29, B4 ) )
   {
     if ( talent.starsurge.ok() )
     {
@@ -10588,6 +10491,7 @@ void druid_t::create_actions()
       active.starfall_cosmos = sf;
     }
   }
+  */
 
   if ( talent.starweaver.ok() )
   {
@@ -10740,8 +10644,10 @@ void druid_t::create_actions()
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.maul_tooth_and_claw, talent.raze.ok() ? "raze" : "maul" );
   find_parent( active.orbit_breaker, "full_moon" );
+  /* TODO: implement 4pc bug if not fixed in 0day patch
   find_parent( active.starsurge_cosmos, "starsurge" );
   find_parent( active.starfall_cosmos, "starfall" );
+  */
   find_parent( active.starsurge_starweaver, "starsurge" );
   find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
@@ -10995,7 +10901,6 @@ void druid_t::init_gains()
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    gain.berserk             = get_gain( "Berserk" );
     gain.cats_curiosity      = get_gain( "Cat's Curiosity" );
     gain.energy_refund       = get_gain( "Energy Refund" );
     gain.incessant_hunter    = get_gain( "Incessant Hunter" );
@@ -11282,7 +11187,6 @@ void druid_t::reset()
   astral_power_decay = nullptr;
   dot_list.moonfire.clear();
   dot_list.sunfire.clear();
-  dot_list.stellar_flare.clear();
 }
 
 // druid_t::merge ===========================================================
@@ -11362,7 +11266,7 @@ double druid_t::resource_gain( resource_e r, double amount, gain_t* g, action_t*
   auto actual = player_t::resource_gain( r, amount, g, a );
   auto over = amount - actual;
 
-  if ( is_ptr() && r == RESOURCE_COMBO_POINT && g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
+  if ( r == RESOURCE_COMBO_POINT && g != gain.overflowing_power && over > 0 && buff.b_inc_cat->check() )
   {
     auto avail = std::min( over, as<double>( buff.overflowing_power->max_stack() - buff.overflowing_power->check() ) );
     if ( avail > 0 )
@@ -11409,9 +11313,6 @@ void druid_t::arise()
 
     if ( talent.sunfire.ok() )
       persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_sunfire ) );
-
-    if ( talent.stellar_flare.ok() && !is_ptr() )
-      persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_stellar_flare ) );
   }
 
   if ( active.yseras_gift )
