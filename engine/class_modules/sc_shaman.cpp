@@ -10001,7 +10001,7 @@ void shaman_t::trigger_swirling_maelstrom( const action_state_t* state )
 
 void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks )
 {
-  if ( !dbc->ptr || !talent.static_accumulation.ok() || mw_stacks == 0 )
+  if ( !talent.static_accumulation.ok() || mw_stacks == 0 )
   {
     return;
   }
@@ -11150,15 +11150,8 @@ double shaman_t::composite_player_multiplier( school_e school ) const
        ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ||
          dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
-    if ( dbc->ptr )
-    {
-      unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
-      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
-    }
-    else
-    {
-      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent();
-    }
+    unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
+    m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
   }
 
   return m;
@@ -11637,7 +11630,7 @@ public:
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
     chart.set( "plotOptions.column.color", color::RED.str() );
-    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? p.options.dre_forced_failures + 1 : 1 );
+    chart.set( "plotOptions.column.pointStart", p.options.dre_forced_failures + 1 );
     chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
                                  p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
     chart.set( "yAxis.title.text", "# of Triggered Procs" );
