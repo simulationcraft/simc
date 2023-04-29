@@ -9032,13 +9032,10 @@ namespace monk
     double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
     // Currently is a bug that Ferocity of Xuen is not getting applied to pets. Getting fixed in 10.1
-    if ( is_ptr() )
-    {
-      if ( guardian )
-        multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
-      else
-        multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
-    }
+    if ( guardian )
+      multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
+    else
+      multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
 
     multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
@@ -9648,7 +9645,7 @@ namespace monk
     double stagger_base = stagger_base_value();
     // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
     double k = dbc->armor_mitigation_constant( target_level );
-    k *= ( is_ptr() ? 1.62800002098 : 1.38399994373 );  // Mythic Raid
+    k *= 1.62800002098;  // Mythic Raid
 
     double stagger = stagger_base / ( stagger_base + k );
 
