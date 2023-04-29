@@ -10,20 +10,20 @@ flask=phial_of_static_empowerment_3
 
 default_actions=1
 
-head=mask_of_the_furnace_seraph,id=202542,ilevel=447,gem_id=192948
-neck=bromachs_disentombed_locket,id=193809,gem_id=192948/192948/192948,ilevel=447
-shoulders=devotion_of_the_furnace_seraph,id=202540,ilevel=450
-back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,ilevel=457
-chest=command_of_the_furnace_seraph,id=202545,ilevel=447,enchant=waking_stats_3
-wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/9405/8846/8793/8932,gem_id=192948,ilevel=447,crafted_stats=32/49
-hands=grasp_of_the_furnace_seraph,id=202543,ilevel=444
-waist=lost_heros_waist_wrap,id=193816,ilevel=447,gem_id=192948
-legs=riverrider_legwraps,id=134427,ilevel=447,enchant=frozen_spellthread_3
-feet=sandals_of_the_west_wind,id=133370,ilevel=447
-finger1=loop_of_pulsing_veins,id=159463,ilevel=447,enchant=devotion_of_haste_3,gem_id=192948
-finger2=signet_of_titanic_insight,id=192999,bonus_id=8836/8840/8902/8780/8802/8793,ilevel=447,gem_id=192948,crafted_stats=36/49,enchant=devotion_of_haste_3
-trinket1=igneous_flowstone,id=203996,ilevel=447
-trinket2=neltharions_call_to_suffering,id=204211,ilevel=457
-main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+head=mask_of_the_furnace_seraph,id=202542,bonus_id=4800/4786/1504/6935,gem_id=192948
+neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948
+shoulders=devotion_of_the_furnace_seraph,id=202540,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,bonus_id=1498
+chest=command_of_the_furnace_seraph,id=202545,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8846/9405/8793/8932/1498,gem_id=192948,crafted_stats=36/49
+hands=grasp_of_the_furnace_seraph,id=202543,bonus_id=4800/4786/1495
+waist=lost_heros_waist_wrap,id=193816,bonus_id=1669/4786,gem_id=192948
+legs=riverrider_legwraps,id=134427,bonus_id=3326/9413/4786,enchant=frozen_spellthread_3
+feet=sandals_of_the_west_wind,id=133370,bonus_id=6245/4786/5855
+finger1=loop_of_pulsing_veins,id=159463,bonus_id=3317/6808/4786,enchant=devotion_of_haste_3,gem_id=192948
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537/8932,gem_id=192948,crafted_stats=36/49,enchant=devotion_of_haste_3
+trinket1=igneous_flowstone,id=203996,bonus_id=1498
+trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
+main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/4786/1498,enchant_id=6643
 
 save=T30_Priest_Shadow.simc
