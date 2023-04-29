@@ -270,8 +270,8 @@ legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lam
 feet=flamebound_huntsmans_footpads,id=202574,bonus_id=9410/1504
 finger1=onyx_annulet,id=203460,ilevel=424,gem_id=204011/204027/204029,enchant=devotion_of_critical_strike_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
-trinket1=dragonfire_bomb_dispenser,id=202610,ilevel=447
-trinket2=beacon_to_the_beyond,id=203963,ilevel=450
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=9410/1498
 main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 # Gear Summary
