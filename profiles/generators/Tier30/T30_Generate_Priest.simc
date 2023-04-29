@@ -8,158 +8,7 @@ talents=BIQAAAAAAAAAAAAAAAAAAAAAAgkQSAAAAAAAAAAAAACp4ARSSLIJJRkIINSSSkGBJIki0CJB
 
 flask=phial_of_static_empowerment_3
 
-default_actions=0
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.    
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/shadowform,if=!buff.shadowform.up
-actions.precombat+=/arcane_torrent
-actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=2
-actions.precombat+=/shadow_crash,if=raid_event.adds.in>=25&spell_targets.shadow_crash<=8&!fight_style.dungeonslice&(spell_targets.shadow_crash>1|talent.mental_decay)
-actions.precombat+=/mind_blast,if=talent.damnation.enabled&(!talent.shadow_crash.enabled|raid_event.adds.in>=25&spell_targets.shadow_crash<=8|fight_style.dungeonslice)
-actions.precombat+=/vampiric_touch,if=!talent.damnation.enabled&(!talent.shadow_crash.enabled|raid_event.adds.in<25|spell_targets.shadow_crash>8|spell_targets.shadow_crash=1&!talent.mental_decay|fight_style.dungeonslice)
-
-# Executed every time the actor is available.
-actions+=/variable,name=dp_cutoff,op=set,value=!talent.mind_sear|(active_enemies<=variable.mind_sear_cutoff&(!buff.mind_devourer.up|active_enemies=1))
-actions+=/variable,name=holding_crash,op=set,value=raid_event.adds.in<15
-actions+=/variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up
-actions+=/run_action_list,name=aoe,if=active_enemies>2|spell_targets.vampiric_touch>3
-actions+=/run_action_list,name=main
-
-actions.main_variables+=/variable,name=dots_up,op=set,value=(dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|action.shadow_crash.in_flight&talent.whispering_shadows
-actions.main_variables+=/variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking
-actions.main_variables+=/variable,name=pool_for_cds,op=set,value=(cooldown.void_eruption.remains<=gcd.max*3&talent.void_eruption|cooldown.dark_ascension.up&talent.dark_ascension)|talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=4&(!raid_event.adds.exists&spell_targets.vampiric_touch>1|raid_event.adds.in<=5|raid_event.adds.remains>=6&!variable.holding_crash)&!buff.voidform.up
-
-actions.aoe_variables+=/variable,name=max_vts,op=set,default=12,value=spell_targets.vampiric_touch>?12
-actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=0,default=1
-actions.aoe_variables+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18
-# Todo Revamp to fix undesired behaviour with unstacked fights
-actions.aoe_variables+=/variable,name=vts_applied,op=set,value=(active_dot.vampiric_touch+8*(action.shadow_crash.in_flight&talent.whispering_shadows))>=variable.max_vts|!variable.is_vt_possible
-actions.aoe_variables+=/variable,name=holding_crash,op=set,value=(variable.max_vts-active_dot.vampiric_touch)<4|raid_event.adds.in<10&raid_event.adds.count>(variable.max_vts-active_dot.vampiric_touch),if=variable.holding_crash&talent.whispering_shadows
-actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+8*!variable.holding_crash)>=variable.max_vts|!variable.is_vt_possible
-
-# Todo Check VE/DA enter conditions based on dots 
-actions.cds=potion,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up&(fight_remains<=cooldown.power_infusion.remains+15)|fight_remains<=30
-actions.cds+=/fireblood,if=buff.power_infusion.up|fight_remains<=8
-actions.cds+=/berserking,if=buff.power_infusion.up|fight_remains<=12
-actions.cds+=/blood_fury,if=buff.power_infusion.up|fight_remains<=15
-actions.cds+=/ancestral_call,if=buff.power_infusion.up|fight_remains<=15
-# Sync Power Infusion with Voidform or Dark Ascension
-actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)
-# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>.
-actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up
-# Make sure Mindbender is active before popping Void Erupti"on and dump charges of Mind Blast before casting
-actions.cds+=/void_eruption,if=!cooldown.fiend.up&(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender|active_enemies>2&!talent.inescapable_torment.rank)&(cooldown.mind_blast.charges=0|time>15)
-# Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets
-actions.cds+=/dark_ascension,if=pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment
-actions.cds+=/call_action_list,name=trinkets
-# Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%
-actions.cds+=/desperate_prayer,if=health.pct<=75
-
-actions.main=call_action_list,name=main_variables
-actions.main+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|active_enemies>2)
-#actions.main+=/psychic_horror,if=variable.dots_up&(fight_remains<30|time_to_die>15)&cooldown.mindbender.up&!pet.fiend.active
-actions.main+=/mindbender,if=variable.dots_up&(fight_remains<30|time_to_die>15)
-# High priority Mind Blast action when using Inescapable Torment
-actions.main+=/mind_blast,target_if=(dot.devouring_plague.ticking&(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time)|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&active_enemies<=7
-actions.main+=/void_bolt,if=variable.dots_up
-# Use Mind Devourer Procs on Mind Sear when facing 2 or more targets
-actions.main+=/mind_sear,target_if=active_enemies>1&buff.mind_devourer.up
-#actions.main+=/psychic_horror,if=(dot.devouring_plague.refreshable&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<(buff.voidform.remains+2))&buff.weakening_reality.stack=7&(target.health.pct>80|!pet.fiend.active)
-actions.main+=/devouring_plague,target_if=refreshable|!talent.distorted_reality,if=refreshable&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<(buff.voidform.remains+2)
-actions.main+=/shadow_crash,if=!variable.holding_crash&dot.vampiric_touch.refreshable
-actions.main+=/vampiric_touch,target_if=min:remains,if=refreshable&target.time_to_die>=12&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains&!action.shadow_crash.in_flight|variable.holding_crash|!talent.whispering_shadows)
-actions.main+=/shadow_word_death,target_if=target.health.pct<20&(cooldown.fiend.remains>=10|!talent.inescapable_torment)|pet.fiend.active>1&talent.inescapable_torment|buff.deathspeaker.up
-# High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active
-actions.main+=/mind_spike_insanity,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)
-actions.main+=/mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!pet.fiend.active)&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)
-actions.main+=/mind_blast,if=variable.dots_up&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)
-# TODO: Dont use if add events are coming soon when talented into PL
-actions.main+=/void_torrent,if=!variable.holding_crash,target_if=variable.all_dots_up&dot.devouring_plague.remains>=2
-actions.main+=/mindgames,target_if=variable.all_dots_up&dot.devouring_plague.remains>=cast_time
-actions.main+=/dark_void,if=raid_event.adds.in>20
-# TODO: Dont use if add events are coming soon when talented into PL
-actions.main+=/call_action_list,name=filler
-
-actions.aoe=call_action_list,name=aoe_variables
-actions.aoe+=/vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&!variable.manual_vts_applied&!action.shadow_crash.in_flight|!talent.whispering_shadows
-actions.aoe+=/shadow_crash,if=!variable.holding_crash,target_if=dot.vampiric_touch.refreshable|dot.vampiric_touch.remains<=target.time_to_die&!buff.voidform.up&(raid_event.adds.in-dot.vampiric_touch.remains)<15
-actions.aoe+=/call_action_list,name=cds,if=fight_remains<30|time_to_die>15&(!variable.holding_crash|active_enemies>2)
-actions.aoe+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.vts_applied|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|time_to_die>15)
-#actions.aoe+=/run_action_list,name=aoe_pl_ire,if=talent.psychic_link.rank=2&talent.insidious_ire.rank=2
-# Use Mind Blast when capped on charges and talented into Mind Devourer to fish for the buff. Only use when facing 3-7 targets.
-actions.aoe+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+cast_time|pet.fiend.remains<=cast_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>cast_time&active_enemies<=7&!buff.mind_devourer.up
-actions.aoe+=/void_bolt
-actions.aoe+=/devouring_plague,target_if=refreshable|!talent.distorted_reality,if=refreshable&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<(buff.voidform.remains+2)
-actions.aoe+=/vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash)&!action.shadow_crash.in_flight|!talent.whispering_shadows
-# TODO: Check Yshaarj Gains for pressing this during Inescapable Torment.
-actions.aoe+=/shadow_word_death,target_if=target.health.pct<20&(cooldown.fiend.remains>=10|!talent.inescapable_torment)|pet.fiend.active>1&talent.inescapable_torment|buff.deathspeaker.up
-actions.aoe+=/mind_spike_insanity,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)
-actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!pet.fiend.active)&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)
-actions.aoe+=/mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)
-# Use Mind Sear on 3+ targets and either you have at least 75 insanity, 4pc buff is inactive, or 2pc buff is at 3 stacks, or mind devourer is up on 2+ targets. If Mind Devourer is up do not cancel mind sear.
-actions.aoe+=/call_action_list,name=pl_torrent,target_if=talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=3&(!variable.holding_crash|raid_event.adds.count%(active_dot.vampiric_touch+raid_event.adds.count)<1.5)&((insanity>=50|dot.devouring_plague.ticking|buff.dark_reveries.up)|buff.voidform.up|buff.dark_ascension.up)
-actions.aoe+=/mindgames,if=active_enemies<5&dot.devouring_plague.ticking|talent.psychic_link
-actions.aoe+=/void_torrent,if=!talent.psychic_link,target_if=variable.dots_up
-# High priority action for Mind Flay: Insanity to fish for Idol of C'Thun procs
-actions.aoe+=/mind_flay,if=buff.mind_flay_insanity.up&talent.idol_of_cthun,interrupt_if=ticks>=2,interrupt_immediate=1
-actions.aoe+=/call_action_list,name=filler
-
-actions.pl_torrent=void_bolt
-actions.pl_torrent+=/vampiric_touch,if=remains<=6&cooldown.void_torrent.remains<gcd*2
-# Use Devouring Plague before Void Torrent cast if Voidform is not active and Mind Devourer is not active and fighting 4 or less targets or less not talented into Mind Sear
-actions.pl_torrent+=/devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2
-actions.pl_torrent+=/mind_blast,if=!talent.mindgames|cooldown.mindgames.remains>=3&!prev_gcd.1.mind_blast
-actions.pl_torrent+=/void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up
-actions.pl_torrent+=/mindgames,target_if=variable.all_dots_up|buff.voidform.up
-
-# TODO: Play the game
-actions.aoe_pl_ire=/
-
-actions.filler=vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up
-actions.filler+=/mind_spike_insanity
-actions.filler+=/mind_flay,if=buff.mind_flay_insanity.up
-actions.filler+=/lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75|spell_targets.lights_judgment>1
-# Save up to 20s if adds are coming soon.
-actions.filler+=/halo,if=raid_event.adds.in>20
-actions.filler+=/shadow_word_death,target_if=min:target.time_to_die,if=target.health.pct<20&active_enemies<4|talent.inescapable_torment&pet.fiend.active
-# Save up to 10s if adds are coming soon.
-actions.filler+=/divine_star,if=raid_event.adds.in>10
-actions.filler+=/devouring_plague,if=buff.voidform.up&variable.dots_up
-actions.filler+=/mind_spike
-actions.filler+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
-# Use Shadow Crash while moving as a low-priority action when adds will not come in 30 seconds.
-actions.filler+=/shadow_crash,if=raid_event.adds.in>30
-# Use Shadow Word: Death while moving as a low-priority action in execute
-actions.filler+=/shadow_word_death,target_if=target.health.pct<20
-# Use Divine Star while moving as a low-priority action
-actions.filler+=/divine_star
-# Use Shadow Word: Death while moving as a low-priority action
-actions.filler+=/shadow_word_death
-# Use Shadow Word: Pain while moving as a low-priority action
-actions.filler+=/shadow_word_pain,target_if=min:remains
-
-actions.trinkets=use_item,name=voidmenders_shadowgem,if=buff.power_infusion.up|fight_remains<20
-actions.trinkets+=/use_item,name=darkmoon_deck_box_inferno
-actions.trinkets+=/use_item,name=darkmoon_deck_box_rime
-actions.trinkets+=/use_item,name=darkmoon_deck_box_dance
-# Use Erupting Spear Fragment with cooldowns, adds are currently active, or the fight will end in less than 20 seconds
-actions.trinkets+=/use_item,name=erupting_spear_fragment,if=buff.power_infusion.up|raid_event.adds.up|fight_remains<20
-# Use Beacon to the Beyond on cooldown except to hold for incoming adds or if already facing 5 or more targets
-actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=!raid_event.adds.exists|raid_event.adds.up|spell_targets.beacon_to_the_beyond>=5|fight_remains<20
-actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20
-# Sync with cooldowns for Ancient Madness or use when the fight will end soon or at full stacks
-actions.trinkets+=/use_item,name=desperate_invokers_codex,if=fight_remains<20|!talent.ancient_madness|(cooldown.dark_ascension.remains>10&talent.dark_ascension)|(cooldown.void_eruption.remains>10&talent.void_eruption)|(!talent.void_eruption&!talent.dark_ascension)
+default_actions=1
 
 head=mask_of_the_furnace_seraph,id=202542,ilevel=447,gem_id=192948
 neck=bromachs_disentombed_locket,id=193809,gem_id=192948/192948/192948,ilevel=447
@@ -170,12 +19,11 @@ wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/9405/884
 hands=grasp_of_the_furnace_seraph,id=202543,ilevel=444
 waist=lost_heros_waist_wrap,id=193816,ilevel=447,gem_id=192948
 legs=riverrider_legwraps,id=134427,ilevel=447,enchant=frozen_spellthread_3
-feet=treads_of_fractured_realities,id=204392,ilevel=450
+feet=sandals_of_the_west_wind,id=133370,ilevel=447
 finger1=loop_of_pulsing_veins,id=159463,ilevel=447,enchant=devotion_of_haste_3,gem_id=192948
 finger2=signet_of_titanic_insight,id=192999,bonus_id=8836/8840/8902/8780/8802/8793,ilevel=447,gem_id=192948,crafted_stats=36/49,enchant=devotion_of_haste_3
 trinket1=igneous_flowstone,id=203996,ilevel=447
 trinket2=neltharions_call_to_suffering,id=204211,ilevel=457
-main_hand=lavaflow_control_rod,id=202570,ilevel=447,enchant=sophic_devotion_3
-off_hand=echos_maddening_volume,id=204324,ilevel=450
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
 save=T30_Priest_Shadow.simc

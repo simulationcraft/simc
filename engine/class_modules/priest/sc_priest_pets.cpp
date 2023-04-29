@@ -250,19 +250,16 @@ struct priest_pet_spell_t : public spell_t, public parse_buff_effects_t<priest_t
     parse_buff_effects( p().o().buffs.devoured_pride );
     parse_buff_effects( p().o().buffs.dark_ascension, 0b1000U, false, false );  // Buffs non-periodic spells - Skip E4
 
-    if ( p().o().is_ptr() )
+    if ( p().o().talents.shadow.ancient_madness.enabled() )
     {
-      if ( p().o().talents.shadow.ancient_madness.enabled() )
+      // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
+      if ( p().o().talents.shadow.dark_ascension.enabled() )
       {
-        // We use DA or VF spelldata to construct Ancient Madness to use the correct spell pass-list
-        if ( p().o().talents.shadow.dark_ascension.enabled() )
-        {
-          parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, true );  // Skip E1
-        }
-        else
-        {
-          parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
-        }
+        parse_buff_effects( p().o().buffs.ancient_madness, 0b0001U, true, true );  // Skip E1
+      }
+      else
+      {
+        parse_buff_effects( p().o().buffs.ancient_madness, 0b0011U, true, true );  // Skip E1 and E2
       }
     }
   }
@@ -424,12 +421,6 @@ struct base_fiend_pet_t : public priest_pet_t
   void demise() override
   {
     priest_pet_t::demise();
-
-    if ( !is_ptr() )
-    {
-      o().buffs.devoured_pride->expire();
-      o().buffs.devoured_despair->expire();
-    }
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -598,11 +589,6 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
-      if ( p().o().talents.shadow.puppet_master.enabled() )
-      {
-        p().o().buffs.coalescing_shadows->trigger();
-      }
-
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
@@ -669,8 +655,7 @@ struct inescapable_torment_t final : public priest_pet_spell_t
 
   inescapable_torment_t( base_fiend_pet_t& p )
     : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
-      duration( p.is_ptr() ? data().effectN( 2 ).time_value()
-                           : timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
+      duration( data().effectN( 2 ).time_value() )
   {
     background = true;
 
@@ -772,22 +757,6 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
     channeled                  = true;
     hasted_ticks               = false;
     affected_by_shadow_weaving = true;
-
-    // BUG: This talent is cursed
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
-    if ( p.o().bugs && !p.o().is_ptr() )
-    {
-      if ( p.o().level() == 70 )
-      {
-        base_td += 1667.7628;
-      }
-      else
-      {
-        base_td += 235.46;
-      }
-
-      spell_power_mod.tick *= 0.6;
-    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -863,21 +832,10 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     aoe        = -1;
     radius     = data().effectN( 2 ).radius_max();  // base radius is 100yd, actual is stored in effect 2
     affected_by_shadow_weaving = true;
+    reduced_aoe_targets        = data().effectN( 3 ).base_value();
 
-    if ( p.o().is_ptr() )
-    {
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-    }
-
-    // BUG: The damage this is dealing is not following spell data
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1029
     if ( p.o().bugs )
     {
-      if ( !p.o().is_ptr() )
-      {
-        spell_power_mod.direct *= 0.6;
-      }
-
       da_multiplier_buffeffects.clear();  // This is in spelldata to scale with things but it does not in game
     }
   }
@@ -979,94 +937,19 @@ struct thing_from_beyond_t final : public priest_pet_t
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
-struct void_spike_cleave_t final : public priest_pet_spell_t
-{
-  void_spike_cleave_t( thing_from_beyond_t& p )
-    : priest_pet_spell_t( "void_spike_cleave", p, p.o().find_spell( 396895 ) )
-  {
-    aoe          = -1;
-    travel_speed = 0;
-
-    // Since we manually remove the main target add 1 to the scaling so it SQRT scales correctly
-    reduced_aoe_targets = data().effectN( 3 ).base_value() + 1;
-    radius              = data().effectN( 1 ).radius_max();
-
-    background = dual = true;
-    may_miss          = false;
-    may_crit          = true;
-
-    // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
-    if ( !p.o().bugs )
-    {
-      spell_power_mod.direct = 0.0;
-      may_crit               = false;
-    }
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    merge_pet_stats( p().o(), p(), *this );
-  }
-
-  // Does not hit your main target, but uses it to determine radius
-  std::vector<player_t*>& target_list() const override
-  {
-    target_cache.is_valid = false;
-
-    std::vector<player_t*>& tl = priest_pet_spell_t::target_list();
-
-    tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
-
-    return tl;
-  }
-
-  void trigger( player_t* target, double original_amount )
-  {
-    // BUG: Instead of triggering for 30% of the damage done it has its own spell power scaling
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/1000
-    if ( !p().o().bugs )
-    {
-      base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).percent();
-    }
-
-    set_target( target );
-    execute();
-  }
-};
-
 struct void_spike_t final : public priest_pet_spell_t
 {
-  propagate_const<void_spike_cleave_t*> child_void_spike_cleave;
-
   void_spike_t( thing_from_beyond_t& p, util::string_view options )
-    : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) ), child_void_spike_cleave( nullptr )
+    : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
   {
     parse_options( options );
 
     gcd_type = gcd_haste_type::SPELL_HASTE;
 
-    if ( !p.o().is_ptr() )
-    {
-      child_void_spike_cleave = new void_spike_cleave_t( p );
-      add_child( child_void_spike_cleave );
-    }
-    else
-    {
-      aoe                 = -1;
-      reduced_aoe_targets = data().effectN( 3 ).base_value();
-      radius              = data().effectN( 1 ).radius_max();
-    }
-
-    // BUG: Does not scale with Mastery
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
-    // NOTE: a recent blue post said it should, but on beta it is not
-    if ( !p.o().bugs || p.o().is_ptr() )
-    {
-      affected_by_shadow_weaving = true;
-    }
+    aoe                        = -1;
+    reduced_aoe_targets        = data().effectN( 3 ).base_value();
+    radius                     = data().effectN( 1 ).radius_max();
+    affected_by_shadow_weaving = true;
   }
 
   void init() override
@@ -1081,22 +964,12 @@ struct void_spike_t final : public priest_pet_spell_t
     double m = priest_pet_spell_t::composite_da_multiplier( s );
 
     // Only hit for 30% of the damage when hitting off-targets.
-    if ( p().o().is_ptr() && target != s->target )
+    if ( target != s->target )
     {
       m *= data().effectN( 2 ).percent();
     }
 
     return m;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_pet_spell_t::impact( s );
-
-    if ( !p().o().is_ptr() && result_is_hit( s->result ) )
-    {
-      child_void_spike_cleave->trigger( s->target, s->result_amount );
-    }
   }
 };
 
@@ -1128,12 +1001,9 @@ void priest_t::trigger_inescapable_torment( player_t* target )
 
   if ( get_current_main_pet( *this ).n_active_pets() > 0 )
   {
-    if ( is_ptr() )
-    {
-      auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
-      buffs.devoured_pride->extend_duration( this, extend );
-      buffs.devoured_despair->extend_duration( this, extend );
-    }
+    auto extend = talents.shadow.inescapable_torment->effectN( 2 ).time_value();
+    buffs.devoured_pride->extend_duration( this, extend );
+    buffs.devoured_despair->extend_duration( this, extend );
 
     for ( auto a_pet : get_current_main_pet( *this ) )
     {
