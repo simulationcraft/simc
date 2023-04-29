@@ -2407,7 +2407,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 // ==========================================================================
 // Gargoyle
 // ==========================================================================
-int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
@@ -2422,46 +2421,20 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
+    gargoyle_strike_t( gargoyle_pet_t* p ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
-    {
-      trigger_gcd = 1.5_s;
-      parse_options( options_str );
-    }
-
-    void execute() override
-    {
-      if( !dk() -> is_ptr() )
-      {
-        timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
-        min_gcd = cast_time;
-        if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
-        {
-          min_gcd = 1_s;
-        }
-        else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
-        {
-          min_gcd = 0.75_s;
-        }
-        ++gargoyle_strike_count;
-      }
-      pet_spell_t<gargoyle_pet_t>::execute();
+    { 
+      background = repeating =true;
     }
   };
 
   void arise() override
   {
-    gargoyle_strike_count = 0;
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
     buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
     stun();
-  }
-
-  void reset() override
-  {
-    death_knight_pet_t::reset();
-    gargoyle_strike_count = 0;
+    reschedule_gargoyle();
   }
 
   void init_base_stats() override
@@ -2487,20 +2460,27 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
   }
 
-  void init_action_list() override
+  void create_actions()
   {
-    death_knight_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "gargoyle_strike" );
+    death_knight_pet_t::create_actions();
+    gargoyle_strike = new gargoyle_strike_t( this );
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  void reschedule_gargoyle()
   {
-    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
 
-    return death_knight_pet_t::create_action( name, options_str );
+    else
+    {
+      gargoyle_strike->set_target( dk()->target );
+      gargoyle_strike->schedule_execute();
+    }
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  {
+    reschedule_gargoyle();
   }
 
   // Function that increases the gargoyle's dark empowerment buff value based on RP spent
