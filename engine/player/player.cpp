@@ -12095,6 +12095,26 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
     }
+
+    if ( !dragonflight_opts.ominous_chromatic_essence_dragonflight.empty() )
+    {
+      profile_str += "dragonflight.player.ominous_chromatic_essence_dragonflight=" + dragonflight_opts.ominous_chromatic_essence_dragonflight + term;
+    }
+
+    if ( !dragonflight_opts.ominous_chromatic_essence_allies.empty() )
+    {
+      profile_str += "dragonflight.player.ominous_chromatic_essence_allies=" + dragonflight_opts.ominous_chromatic_essence_allies + term;
+    }
+
+    if ( !dragonflight_opts.ashkandur_humanoid )
+    {
+      profile_str += "dragonflight.player.ashkandur_humanoid=" + dragonflight_opts.ashkandur_humanoid + term;
+    }
+
+    if ( !dragonflight_opts.ominous_chromatic_essence_allies.empty() )
+    {
+      profile_str += "dragonflight.player.flowstone_starting_state=" + dragonflight_opts.flowstone_starting_state + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12684,6 +12704,10 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
   add_option( opt_string( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
   add_option( opt_string( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
+  add_option( opt_string( "dragonflight.player.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight ) );
+  add_option( opt_string( "dragonflight.player.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies ) );
+  add_option( opt_bool( "dragonflight.player.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
+  add_option( opt_string( "dragonflight.player.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
 
   // Obsolete options
 
