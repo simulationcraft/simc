@@ -107,15 +107,8 @@ void blood( player_t* p )
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "raise_dead" );
   default_->add_action( "icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)");
-  if( p -> is_ptr() )
-  {
-    default_->add_action( "vampiric_blood,if=!(buff.vampiric_blood.up|buff.vampiric_strength.up)");
-    default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up|buff.vampiric_blood.up|buff.vampiric_strength.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
-  }
-  else
-  {
-    default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
-  }
+  default_->add_action( "vampiric_blood,if=!(buff.vampiric_blood.up|buff.vampiric_strength.up)");
+  default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up|buff.vampiric_blood.up|buff.vampiric_strength.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)");
   default_->add_action( "deaths_caress,if=!buff.bone_shield.up" );
   default_->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.unholy_ground|talent.sanguine_ground|spell_targets.death_and_decay>3|buff.crimson_scourge.up)" );
   default_->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd|runic_power>=variable.death_strike_dump_amount|runic_power.deficit<=variable.heart_strike_rp|target.time_to_die<10" );
@@ -376,8 +369,8 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)&!variable.trinket_2_exclude" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%45=0)" );
-  precombat->add_action( "actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box" );
-  precombat->add_action( "actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box" );
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown&!variable.trinket_2_exclude|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))" );
 
   default_->add_action( "auto_attack" );
@@ -478,7 +471,7 @@ void unholy( player_t* p )
   racials->add_action( "fireblood,if=(buff.fireblood.duration>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(pet.army_ghoul.active&pet.army_ghoul.remains<=buff.fireblood.duration|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.fireblood.duration|active_enemies>=2&death_and_decay.ticking)|fight_remains<=buff.fireblood.duration" );
   racials->add_action( "bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)" );
 
-  trinkets->add_action( "actions.trinkets=use_item,name=algethar_puzzle_box,use_off_gcd=1,if=cooldown.summon_gargoyle.remains<5&rune<=4|!talent.summon_gargoyle&pet.army_ghoul.active|active_enemies>3&variable.adds_remain", "Trinkets" );
+  trinkets->add_action( "use_item,use_off_gcd=1,name=algethar_puzzle_box,use_off_gcd=1,if=cooldown.summon_gargoyle.remains<5&rune<=4|!talent.summon_gargoyle&pet.army_ghoul.active|active_enemies>3&variable.adds_remain", "Trinkets" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_manual&variable.trinket_1_buffs&((!talent.summon_gargoyle&((!talent.army_of_the_dead|cooldown.army_of_the_dead.remains_expected>60|death_knight.disable_aotd)&(pet.apoc_ghoul.active|(!talent.apocalypse|active_enemies>=2)&buff.dark_transformation.up)|pet.army_ghoul.active)|talent.summon_gargoyle&pet.gargoyle.active|cooldown.summon_gargoyle.remains>80)&(pet.apoc_ghoul.active|(!talent.apocalypse|active_enemies>=2)&buff.dark_transformation.up)&(variable.trinket_2_exclude|variable.trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown))|trinket.1.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_manual&variable.trinket_2_buffs&((!talent.summon_gargoyle&((!talent.army_of_the_dead|cooldown.army_of_the_dead.remains_expected>60|death_knight.disable_aotd)&(pet.apoc_ghoul.active|(!talent.apocalypse|active_enemies>=2)&buff.dark_transformation.up)|pet.army_ghoul.active)|talent.summon_gargoyle&pet.gargoyle.active|cooldown.summon_gargoyle.remains>80)&(pet.apoc_ghoul.active|(!talent.apocalypse|active_enemies>=2)&buff.dark_transformation.up)&(variable.trinket_1_exclude|variable.trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown))|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_manual&!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!trinket.2.has_cooldown|!variable.trinket_2_buffs|!talent.summon_gargoyle&!talent.army_of_the_dead|!talent.summon_gargoyle&talent.army_of_the_dead&cooldown.army_of_the_dead.remains_expected>20|!talent.summon_gargoyle&!talent.army_of_the_dead&cooldown.dark_transformation.remains>20|cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15" );
