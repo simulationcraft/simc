@@ -4330,8 +4330,6 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
 
-    p() -> buffs.bombardment -> expire();
-
     if ( explosive && p() -> buffs.salvo -> check() )
     {
       std::vector<player_t*>& tl = target_list();
