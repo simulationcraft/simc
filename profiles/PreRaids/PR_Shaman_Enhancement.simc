@@ -48,7 +48,7 @@ actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.as
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/invoke_external_buff,name=power_infusion,if=(talent.ascendance.enabled&talent.thorims_invocation.enabled&buff.ascendance.up)|(!talent.thorims_invocation.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.thorims_invocation.enabled&!talent.feral_spirit.enabled)|fight_remains<=20
 actions+=/feral_spirit
-actions+=/ascendance,if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)
+actions+=/ascendance,if=dot.flame_shock.ticking&((ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1))
 actions+=/doom_winds,if=raid_event.adds.in>=90|active_enemies>1
 # If_only_one_enemy,_priority_follows_the_'single'_action_list.
 actions+=/call_action_list,name=single,if=active_enemies=1
@@ -88,38 +88,34 @@ actions.aoe+=/flame_shock,if=!ticking
 actions.aoe+=/frost_shock,if=!talent.hailstorm.enabled
 
 # Single target action priority list
-actions.single=elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4
-actions.single+=/sundering,if=set_bonus.tier30_2pc
-actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1
-actions.single+=/lava_lash,if=buff.hot_hand.up|buff.ashen_catalyst.stack=8|(buff.ashen_catalyst.stack>=5&buff.maelstrom_of_elements.up&buff.maelstrom_weapon.stack<=6)
-actions.single+=/windfury_totem,if=!buff.windfury_totem.up
+actions.single=primordial_wave,if=!dot.flame_shock.ticking&talent.lashing_flames.enabled&(raid_event.adds.in>42|raid_event.adds.in<6)
+actions.single+=/flame_shock,if=!ticking&talent.lashing_flames.enabled
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4
+actions.single+=/sundering,if=set_bonus.tier30_2pc&raid_event.adds.in>=40
+actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1&(talent.deeply_rooted_elements.enabled|ti_lightning_bolt)
 actions.single+=/stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled
-actions.single+=/crash_lightning,if=buff.doom_winds.up
-actions.single+=/ice_strike,if=buff.doom_winds.up
-actions.single+=/sundering,if=buff.doom_winds.up
-actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
-actions.single+=/flame_shock,if=!ticking
+actions.single+=/lava_lash,if=buff.hot_hand.up
+actions.single+=/windfury_totem,if=!buff.windfury_totem.up
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
 actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
-actions.single+=/elemental_blast,if=talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)&buff.maelstrom_weapon.stack>=8
-actions.single+=/ice_strike,if=talent.hailstorm.enabled
-actions.single+=/stormstrike,if=set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5
-actions.single+=/frost_shock,if=buff.hailstorm.up
-actions.single+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable
-actions.single+=/windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
-actions.single+=/stormstrike,if=buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
-actions.single+=/elemental_blast,if=(talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack=10)|(!talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack>=5)
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
 actions.single+=/lava_burst,if=buff.maelstrom_weapon.stack>=5
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
+actions.single+=/ice_strike,if=buff.doom_winds.up
+actions.single+=/sundering,if=buff.doom_winds.up&raid_event.adds.in>=40
+actions.single+=/crash_lightning,if=buff.doom_winds.up
+actions.single+=/primordial_wave,if=raid_event.adds.in>42|raid_event.adds.in<6
+actions.single+=/flame_shock,if=!ticking
+actions.single+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable
+actions.single+=/ice_strike
+actions.single+=/frost_shock,if=buff.hailstorm.up
+actions.single+=/lava_lash
 actions.single+=/windstrike
 actions.single+=/stormstrike
-actions.single+=/windfury_totem,if=buff.windfury_totem.remains<10
-actions.single+=/ice_strike
-actions.single+=/lava_lash
-actions.single+=/elemental_blast,if=talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)&buff.maelstrom_weapon.stack>=5
-actions.single+=/bag_of_tricks
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/sundering,if=raid_event.adds.in>=40
+actions.single+=/bag_of_tricks
 actions.single+=/fire_nova,if=talent.swirling_maelstrom.enabled&active_dot.flame_shock
 actions.single+=/frost_shock
 actions.single+=/crash_lightning
@@ -148,7 +144,7 @@ off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotio
 # Gear Summary
 # gear_ilvl=372.00
 # gear_agility=2683
-# gear_stamina=9056
+# gear_stamina=6737
 # gear_crit_rating=1047
 # gear_haste_rating=3032
 # gear_mastery_rating=3842
