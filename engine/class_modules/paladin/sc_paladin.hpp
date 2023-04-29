@@ -1369,7 +1369,8 @@ struct holy_power_consumer_t : public Base
       {
         timespan_t reduction = timespan_t::from_seconds(
             // Why is this in deciseconds?
-            -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 10 );
+            // 23-04-29 Plot twist, this is now in centiseconds! PTR only now, will go live on 23-05-02 - Until then, live Sims will heavily undersim.
+            -1.0 * p->talents.righteous_protector->effectN( 1 ).base_value() / 100 );
         reduction *= num_hopo_spent;
         ab::sim->print_debug(
             "Righteous protector reduced the cooldown of Avenging Wrath and Guardian of Ancient Kings by {} sec",
