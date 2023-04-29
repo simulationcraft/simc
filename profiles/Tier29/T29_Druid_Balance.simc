@@ -5,7 +5,7 @@ level=70
 race=troll
 role=spell
 position=back
-talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlAIJJJBJhgkEJRKAkkkQJJEJJhWSJCBNACNAA
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlAIJJJBJhgkEJRKAkkkQJJEJJhWSJCBNAK0AA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -135,7 +135,7 @@ main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant_id=6643
 
 # Gear Summary
 # gear_ilvl=421.80
-# gear_stamina=13349
+# gear_stamina=13375
 # gear_intellect=7147
 # gear_crit_rating=1021
 # gear_haste_rating=4078

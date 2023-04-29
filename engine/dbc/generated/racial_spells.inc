@@ -1,5 +1,5 @@
-// Racial abilities, wow build 10.0.7.48999
-static const std::array<racial_spell_entry_t, 156> __racial_spell_data { {
+// Racial abilities, wow build 10.1.0.49318
+static const std::array<racial_spell_entry_t, 160> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
@@ -111,6 +111,10 @@ static const std::array<racial_spell_entry_t, 156> __racial_spell_data { {
   { 0x0000000000200000, 0x00000020,  68976, "Aberration"                         },
   { 0x0000000000200000, 0x000007df,  94293, "Altered Form"                       },
   { 0x0000000000200000, 0x00000020,  94293, "Altered Form"                       },
+  { 0x0000000000200000, 0x000007df, 406087, "Calm the Wolf"                      },
+  { 0x0000000000200000, 0x000007df, 406096, "Calm the Wolf"                      },
+  { 0x0000000000200000, 0x00000020, 406087, "Calm the Wolf"                      },
+  { 0x0000000000200000, 0x00000020, 406096, "Calm the Wolf"                      },
   { 0x0000000000200000, 0x000007df,  68992, "Darkflight"                         },
   { 0x0000000000200000, 0x00000020,  68992, "Darkflight"                         },
   { 0x0000000000200000, 0x000007df,  68978, "Flayer"                             },
