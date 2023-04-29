@@ -1,6 +1,3 @@
-# TODO: Remove this once it goes live
-ptr=1
-
 # T30
 # Tier 30 Aberrus, the Shadowed Crucible (WIP)
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
