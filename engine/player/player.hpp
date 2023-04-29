@@ -746,6 +746,18 @@ struct player_t : public actor_t
     // A list of context-aware procs for Ruby Whelp Shell
     // Overrides sim-wide option with a player-specific one
     std::string ruby_whelp_shell_context = "";
+    // Set the dragonflight for Glimmering Chromatic Orb
+    // Overrides sim-wide option with a player-specific one
+    std::string ominous_chromatic_essence_dragonflight = "obsidian";
+    // Set the allies dragonflights for Glimmering Chromatic Orb
+    // Overrides sim-wide option with a player-specific one
+    std::string ominous_chromatic_essence_allies = "";
+    // Set the target type for Askhandur's Damage Doubling
+    // Overrides sim-wide option with a player-specific one
+    bool ashkandur_humanoid = false;
+    // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
+    // Overrides sim-wide option with a player-specific one
+    std::string flowstone_starting_state = "high";
   } dragonflight_opts;
 
 private:

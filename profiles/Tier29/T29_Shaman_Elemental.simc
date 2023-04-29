@@ -6,6 +6,8 @@ race=tauren
 role=spell
 position=ranged_back
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAgUSpUSCAJlkUoEOgkkEBAAAAAoEgIJgkCOQJJplSAJJJAC
+dragonflight.player.ominous_chromatic_essence_dragonflight=obsidian
+dragonflight.player.ashkandur_humanoid=
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -231,7 +233,7 @@ off_hand=broodsworn_legionnaires_pavise,id=195520,ilevel=424
 # Gear Summary
 # gear_ilvl=422.31
 # gear_strength=256
-# gear_stamina=13435
+# gear_stamina=13461
 # gear_intellect=7204
 # gear_crit_rating=1011
 # gear_haste_rating=4934

@@ -1,4 +1,4 @@
-shaman="PR_Shaman_Enhancement_Gamba"
+shaman="T29_Shaman_Enhancement_Storm"
 source=default
 spec=enhancement
 level=70
@@ -6,10 +6,12 @@ race=troll
 role=attack
 position=back
 talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+dragonflight.player.ominous_chromatic_essence_dragonflight=obsidian
+dragonflight.player.ashkandur_humanoid=
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=disabled
@@ -88,13 +90,15 @@ actions.aoe+=/flame_shock,if=!ticking
 actions.aoe+=/frost_shock,if=!talent.hailstorm.enabled
 
 # Single target action priority list
-actions.single=windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1
+actions.single=elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4
+actions.single+=/sundering,if=set_bonus.tier30_2pc
+actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1
 actions.single+=/lava_lash,if=buff.hot_hand.up|buff.ashen_catalyst.stack=8|(buff.ashen_catalyst.stack>=5&buff.maelstrom_of_elements.up&buff.maelstrom_weapon.stack<=6)
 actions.single+=/windfury_totem,if=!buff.windfury_totem.up
-actions.single+=/stormstrike,if=buff.doom_winds.up
+actions.single+=/stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled
 actions.single+=/crash_lightning,if=buff.doom_winds.up
 actions.single+=/ice_strike,if=buff.doom_winds.up
-actions.single+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
+actions.single+=/sundering,if=buff.doom_winds.up
 actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
@@ -105,7 +109,7 @@ actions.single+=/stormstrike,if=set_bonus.tier29_2pc&buff.maelstrom_of_elements.
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable
 actions.single+=/windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
-actions.single+=/stormstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
+actions.single+=/stormstrike,if=buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
 actions.single+=/elemental_blast,if=(talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack=10)|(!talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack>=5)
 actions.single+=/lava_burst,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down
@@ -126,29 +130,31 @@ actions.single+=/earth_elemental
 actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
-neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
-shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
-back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
-hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
-waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
-legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
-feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_haste_2
-finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant=devotion_of_haste_2
-trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
-trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
-main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
-off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
+head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
+neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
+shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
+back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
+chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=shikaar_ranger_bracers,id=193693,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767,gem_id=192948
+hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
+waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192948
+legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
+feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=7977/6652/7937/8822/8818/9144/3300/8767,gem_id=192948,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
+trinket1=windswept_pages,id=144113,bonus_id=7977/6652/7937/8822/8818/9144/3311/8767
+trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=372.00
-# gear_agility=2683
-# gear_stamina=9056
-# gear_crit_rating=1013
-# gear_haste_rating=3663
-# gear_mastery_rating=3245
-# gear_versatility_rating=191
-# gear_armor=3603
+# gear_ilvl=421.38
+# gear_agility=5436
+# gear_stamina=13199
+# gear_crit_rating=1075
+# gear_haste_rating=5019
+# gear_mastery_rating=3462
+# gear_versatility_rating=1315
+# gear_armor=4851
+# set_bonus=tier29_2pc=1
+# set_bonus=tier29_4pc=1

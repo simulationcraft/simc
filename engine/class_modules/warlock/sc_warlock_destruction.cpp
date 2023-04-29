@@ -132,6 +132,11 @@ struct internal_combustion_t : public destruction_spell_t
     dot->current_action->calculate_tick_amount( state, 1.0 );
 
     double tick_base_damage = state->result_raw;
+
+    // 2023-04-29 Internal Combustion does not benefit from the Roaring Blaze multiplier only
+    if ( td->debuffs_conflagrate->up() )
+      tick_base_damage /= 1.0 + td->debuffs_conflagrate->check_value();
+
     timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
     timespan_t dot_tick_time = dot->current_action->tick_time( state );
     double ticks_left = remaining / dot_tick_time;

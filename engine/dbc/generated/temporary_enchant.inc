@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.0.7.48999
-static const std::array<temporary_enchant_entry_t, 70> __temporary_enchant_data { {
+// Temporary item enchants, wow build 10.1.0.49318
+static const std::array<temporary_enchant_entry_t, 73> __temporary_enchant_data { {
   {  2713,  0,  29453, "adamantite_sharpening_stone"  },
   {  2955,  0,  34340, "adamantite_weightstone"       },
   {  3265,  0,  45395, "blessed_weapon_coating"       },
@@ -37,6 +37,9 @@ static const std::array<temporary_enchant_entry_t, 70> __temporary_enchant_data 
   {  6225,  0, 324068, "heavy_desolate_armor_kit"     },
   {    14,  0,   2830, "heavy_sharpening_stone"       },
   {    21,  0,   3114, "heavy_weightstone"            },
+  {  6838,  1, 409654, "hissing_rune"                 },
+  {  6837,  2, 409659, "hissing_rune"                 },
+  {  6839,  3, 409660, "hissing_rune"                 },
   {  6516,  1, 385575, "howling_rune"                 },
   {  6517,  2, 385576, "howling_rune"                 },
   {  6518,  3, 385577, "howling_rune"                 },

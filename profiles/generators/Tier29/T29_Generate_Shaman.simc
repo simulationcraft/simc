@@ -32,7 +32,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJgkEikkQJhAAAAAAAAAAAAAKRIJkgiAJtkkCiQQIBC
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJJIJhAJUSIAAAAAAAAAAAAgSESCJoIQSLJpAoEJhkGC
 
 head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192988
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192961/192961/192961,crafted_stats=49/36
@@ -53,34 +53,7 @@ off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=so
 
 save=T29_Shaman_Enhancement.simc
 
-shaman="T29_Shaman_Enhancement_Phys"
-level=70
-race=troll
-spec=enhancement
-role=attack
-position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikGC
-
-head=faceguard_of_infused_earth,id=200399,bonus_id=4800/4786/1498/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1540/8767/6935/6935,gem_id=192948/192948/192948,crafted_stats=49/36
-shoulders=calderas_of_infused_earth,id=200401,bonus_id=4800/4786/1498
-back=vibrant_wildercloth_shawl,id=193511,bonus_id=6652/7936/7979/1540/8767/8932,crafted_stats=49/36
-chest=robe_of_infused_earth,id=200396,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767,gem_id=192948
-hands=gauntlets_of_infused_earth,id=200398,bonus_id=4800/4786/1501
-waist=morningscale_waistguard,id=109843,bonus_id=7977/6652/7937/8822/8818/9144/3306/8767,gem_id=192948
-legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=frosted_armor_kit_3
-feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=7977/6652/7937/8822/8818/9144/3300/8767,gem_id=192948,enchant=devotion_of_haste_3
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192948,enchant=devotion_of_haste_3
-trinket1=algethar_puzzle_box,id=193701,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
-trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-
-save=T29_Shaman_Enhancement_Phys.simc
-
-shaman="T29_Shaman_Enhancement_Gamba"
+shaman="T29_Shaman_Enhancement_Storm"
 level=70
 race=troll
 spec=enhancement
@@ -105,7 +78,7 @@ trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
-save=T29_Shaman_Enhancement_Gamba.simc
+save=T29_Shaman_Enhancement_Storm.simc
 
 # shaman="T29_Shaman_Restoration"
 # level=70

@@ -10001,7 +10001,7 @@ void shaman_t::trigger_swirling_maelstrom( const action_state_t* state )
 
 void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks )
 {
-  if ( !dbc->ptr || !talent.static_accumulation.ok() || mw_stacks == 0 )
+  if ( !talent.static_accumulation.ok() || mw_stacks == 0 )
   {
     return;
   }
@@ -10461,7 +10461,7 @@ std::string shaman_t::default_flask() const
                                 ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                 "disabled";
 
-  std::string enhancement_flask = ( true_level >= 61 ) ? "phial_of_elemental_chaos_3" :
+  std::string enhancement_flask = ( true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
                                   ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                   ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
                                   "disabled";
@@ -10820,13 +10820,15 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "call_action_list,name=single,if=active_enemies=1", "If_only_one_enemy,_priority_follows_the_'single'_action_list." );
     def->add_action( "call_action_list,name=aoe,if=active_enemies>1", "On_multiple_enemies,_the_priority_follows_the_'aoe'_action_list." );
 
+    single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4" );
+    single->add_action( "sundering,if=set_bonus.tier30_2pc" );
     single->add_action( "windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1" );
     single->add_action( "lava_lash,if=buff.hot_hand.up|buff.ashen_catalyst.stack=8|(buff.ashen_catalyst.stack>=5&buff.maelstrom_of_elements.up&buff.maelstrom_weapon.stack<=6)" );
     single->add_action( "windfury_totem,if=!buff.windfury_totem.up" );
-    single->add_action( "stormstrike,if=buff.doom_winds.up" );
+    single->add_action( "stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled" );
     single->add_action( "crash_lightning,if=buff.doom_winds.up" );
     single->add_action( "ice_strike,if=buff.doom_winds.up" );
-    single->add_action( "sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc" );
+    single->add_action( "sundering,if=buff.doom_winds.up" );
     single->add_action( "primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)" );
     single->add_action( "flame_shock,if=!ticking" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)" );
@@ -10837,7 +10839,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "frost_shock,if=buff.hailstorm.up" );
     single->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable" );
     single->add_action( "windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
-    single->add_action( "stormstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
+    single->add_action( "stormstrike,if=buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up" );
     single->add_action( "elemental_blast,if=(talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack=10)|(!talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack>=5)" );
     single->add_action( "lava_burst,if=buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down" );
@@ -11150,15 +11152,8 @@ double shaman_t::composite_player_multiplier( school_e school ) const
        ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ||
          dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
-    if ( dbc->ptr )
-    {
-      unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
-      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
-    }
-    else
-    {
-      m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent();
-    }
+    unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
+    m *= 1.0 + talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
   }
 
   return m;
@@ -11637,7 +11632,7 @@ public:
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
     chart.set( "plotOptions.column.color", color::RED.str() );
-    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? p.options.dre_forced_failures + 1 : 1 );
+    chart.set( "plotOptions.column.pointStart", p.options.dre_forced_failures + 1 );
     chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
                                  p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
     chart.set( "yAxis.title.text", "# of Triggered Procs" );

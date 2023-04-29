@@ -34,9 +34,7 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJgkEikkQJhAAAAAAAAAAAAAKRIJkgiAJtkkCiQQIBC
-# class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
-# spec_talents=stormstrike:1/windfury_weapon:1/lava_lash:1/improved_maelstrom_weapon:2/molten_assault:2/raging_maelstrom:1/ice_strike:1/hailstorm:1/sundering:1/overflowing_maelstrom:1/windfury_totem:1/swirling_maelstrom:1/hot_hand:2/storms_wrath:1/ashen_catalyst:1/elemental_blast:1/elemental_weapons:2/lashing_flames:1/primordial_wave:1/feral_spirit:1/primal_maelstrom:2/witch_doctors_ancestry:2/splintered_elements:1/elemental_spirits:1
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJJIJhAJUSIAAAAAAAAAAAAgSESCJoIQSLJpAoEJhkGC
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
 neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
@@ -57,42 +55,13 @@ off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotio
 
 save=PR_Shaman_Enhancement.simc
 
-shaman="PR_Shaman_Enhancement_Phys"
-level=70
-race=troll
-spec=enhancement
-role=attack
-position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikGC
-# class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
-
-head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
-neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
-shoulders=neverdare_shoulders,id=143970,bonus_id=1795/3262/657/7977
-back=cloak_of_violent_harmony,id=109906,bonus_id=1795/3257/657/7977
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1795/3251/657/7977,enchant=waking_stats_2
-wrists=shikaar_ranger_bracers,id=193693,bonus_id=1594/657/7977
-hands=sharpeye_gauntlets,id=109853,bonus_id=1795/3257/657/7977
-waist=morningscale_waistguard,id=109843,bonus_id=1795/3257/657/7977
-legs=stasisfreed_leggings,id=193643,bonus_id=1594/657/7977,enchant=frosted_armor_kit_2
-feet=lightningcharged_striders,id=193685,bonus_id=1594/657/7977
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/3251/657/7977,enchant=devotion_of_haste_2
-finger2=unstable_arcane_loop,id=193633,bonus_id=1594/657/7977,enchant=devotion_of_haste_2
-trinket1=irideus_fragment,id=193743,bonus_id=1594/657/7977
-trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
-main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
-off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
-
-save=PR_Shaman_Enhancement_Phys.simc
-
-shaman="PR_Shaman_Enhancement_Gamba"
+shaman="PR_Shaman_Enhancement_Storm"
 level=70
 race=troll
 spec=enhancement
 role=attack
 position=back
 talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
-# class_talents=lava_burst:1/chain_lightning:1/earth_elemental:1/frost_shock:1/maelstrom_weapon:1/fire_and_ice:1/natures_fury:2/improved_lightning_bolt:2
 
 head=collar_of_honorable_exultation,id=136777,bonus_id=1795/3251/657/7977
 neck=wolfstride_pendant,id=133633,bonus_id=1795/3251/657/7977
@@ -111,7 +80,7 @@ trinket2=bottle_of_spiraling_winds,id=193697,bonus_id=1594/657/7977
 main_hand=forgestorm,id=193785,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 off_hand=bouldersplitter,id=193797,bonus_id=1594/657/7977,enchant=sophic_devotion_2
 
-save=PR_Shaman_Enhancement_Gamba.simc
+save=PR_Shaman_Enhancement_Storm.simc
 
 # shaman="PR_Shaman_Restoration"
 # level=70

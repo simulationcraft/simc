@@ -5,7 +5,7 @@ level=70
 race=orc
 role=spell
 position=ranged_back
-talents=BIQAAAAAAAAAAAAAAAAAAAAAAIk0CBAAAAAAAAAAAAQikkSkmU0iEJlESEkGJJJSjgEESRahkAA
+talents=BIQAAAAAAAAAAAAAAAAAAAAAAIkAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -182,7 +182,7 @@ off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
 
 # Gear Summary
 # gear_ilvl=421.94
-# gear_stamina=13370
+# gear_stamina=13396
 # gear_intellect=7187
 # gear_crit_rating=700
 # gear_haste_rating=5722

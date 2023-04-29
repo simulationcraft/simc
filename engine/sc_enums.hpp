@@ -685,6 +685,7 @@ enum school_e
   SCHOOL_ELEMENTAL,
   SCHOOL_COSMIC,
   SCHOOL_CHROMATIC,
+  SCHOOL_CHROMASTRIKE,
   SCHOOL_MAGIC,
   SCHOOL_CHAOS,
   SCHOOL_DRAIN,
@@ -714,33 +715,23 @@ const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_PHYSICAL ) |
                                      ( int64_t( 1 ) << SCHOOL_COSMIC ) );
 // SCHOOL_CHAOS should probably be added here too.
 
-const int64_t SCHOOL_SPELL_MASK(
-    ( int64_t( 1 ) << SCHOOL_ARCANE ) | ( int64_t( 1 ) << SCHOOL_CHAOS ) |
-    ( int64_t( 1 ) << SCHOOL_FIRE ) | ( int64_t( 1 ) << SCHOOL_FROST ) |
-    ( int64_t( 1 ) << SCHOOL_FROSTFIRE ) | ( int64_t( 1 ) << SCHOOL_HOLY ) |
-    ( int64_t( 1 ) << SCHOOL_NATURE ) | ( int64_t( 1 ) << SCHOOL_SHADOW ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYFIRE ) |
-    ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYSTORM ) |
-    ( int64_t( 1 ) << SCHOOL_FIRESTORM ) |
-    ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYFROST ) |
-    ( int64_t( 1 ) << SCHOOL_FROSTSTORM ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWLIGHT ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWFLAME ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWSTORM ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWFROST ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) | ( int64_t( 1 ) << SCHOOL_DIVINE ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLFIRE ) |
-    ( int64_t( 1 ) << SCHOOL_ASTRAL ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLFROST ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
-    ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) |
-    ( int64_t( 1 ) << SCHOOL_COSMIC ) |
-    ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_MAGIC ) );
+const int64_t SCHOOL_SPELL_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) | ( int64_t( 1 ) << SCHOOL_CHAOS ) |
+                                 ( int64_t( 1 ) << SCHOOL_FIRE ) | ( int64_t( 1 ) << SCHOOL_FROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTFIRE ) | ( int64_t( 1 ) << SCHOOL_HOLY ) |
+                                 ( int64_t( 1 ) << SCHOOL_NATURE ) | ( int64_t( 1 ) << SCHOOL_SHADOW ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE ) | ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLYFIRE ) | ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLYSTORM ) | ( int64_t( 1 ) << SCHOOL_FIRESTORM ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) | ( int64_t( 1 ) << SCHOOL_HOLYFROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTSTORM ) | ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_SHADOWLIGHT ) | ( int64_t( 1 ) << SCHOOL_SHADOWFLAME ) |
+                                 ( int64_t( 1 ) << SCHOOL_SHADOWSTORM ) | ( int64_t( 1 ) << SCHOOL_SHADOWFROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) | ( int64_t( 1 ) << SCHOOL_DIVINE ) |
+                                 ( int64_t( 1 ) << SCHOOL_SPELLFIRE ) | ( int64_t( 1 ) << SCHOOL_ASTRAL ) |
+                                 ( int64_t( 1 ) << SCHOOL_SPELLFROST ) | ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
+                                 ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) | ( int64_t( 1 ) << SCHOOL_COSMIC ) |
+                                 ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_CHROMASTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_MAGIC ) );
 
 const int64_t SCHOOL_MAGIC_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) |
                                  ( int64_t( 1 ) << SCHOOL_FIRE ) |
