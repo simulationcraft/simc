@@ -853,6 +853,7 @@ uint32_t dbc::get_school_mask( school_e s )
     case SCHOOL_ELEMENTAL     : return 0x1c;
     case SCHOOL_COSMIC        : return 0x6a;
     case SCHOOL_CHROMATIC     : return 0x7c;
+    case SCHOOL_CHROMASTRIKE  : return 0x7d;
     case SCHOOL_MAGIC         : return 0x7e;
     case SCHOOL_CHAOS         : return 0x7f;
     default                   : return 0x00;
@@ -894,6 +895,7 @@ school_e dbc::get_school_type( uint32_t school_id )
     case 0x1c: return SCHOOL_ELEMENTAL;
     case 0x6a: return SCHOOL_COSMIC;
     case 0x7c: return SCHOOL_CHROMATIC;
+    case 0x7d: return SCHOOL_CHROMASTRIKE;
     case 0x7e: return SCHOOL_MAGIC;
     case 0x7f: return SCHOOL_CHAOS;
     default:   return SCHOOL_NONE;
