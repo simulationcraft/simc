@@ -1,11 +1,11 @@
-monk="T29_Monk_Windwalker"
+monk="T30_Monk_Windwalker_SEF"
 source=default
 spec=windwalker
 level=70
 race=orc
 role=hybrid
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJBAAAAAAAAAAAAAAAAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAESkkEJiEBAAAASkkSAkkkkApkkERClIJJJAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -40,9 +40,9 @@ actions+=/flying_serpent_kick,if=movement.distance>5
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 actions+=/variable,name=hold_xuen,op=set,value=!talent.invoke_xuen_the_white_tiger|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))
 # Potion
-actions+=/potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&fight_remains<=60
+actions+=/potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60
 # Build Chi at the start of combat
-actions+=/call_action_list,name=opener,if=time<4&chi<5&!talent.serenity
+actions+=/call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active&!talent.serenity
 # Prioritize Faeline Stomp if playing with Faeline Harmony
 actions+=/faeline_stomp,target_if=min:debuff.fae_exposure_damage.remains,if=combo_strike&talent.faeline_harmony&debuff.fae_exposure_damage.remains<1
 # TP if not overcapping Chi or TotM
@@ -99,7 +99,7 @@ actions.cd_sef+=/storm_earth_and_fire,if=fight_remains<20|(cooldown.storm_earth_
 actions.cd_sef+=/touch_of_death,target_if=max:target.health,if=fight_style.dungeonroute&!buff.serenity.up&(combo_strike&target.health<health)|(buff.hidden_masters_forbidden_touch.remains<2)|(buff.hidden_masters_forbidden_touch.remains>target.time_to_die)
 actions.cd_sef+=/touch_of_death,cycle_targets=1,if=fight_style.dungeonroute&combo_strike&(target.time_to_die>60|debuff.bonedust_brew_debuff.up|fight_remains<10)
 actions.cd_sef+=/touch_of_death,cycle_targets=1,if=!fight_style.dungeonroute&combo_strike
-actions.cd_sef+=/touch_of_karma,if=fight_remains>159|variable.hold_xuen
+actions.cd_sef+=/touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
 actions.cd_sef+=/lights_judgment
@@ -254,34 +254,34 @@ actions.st_cleave+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,
 
 # Trinkets
 actions.trinkets=use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)
-actions.trinkets+=/use_item,name=windscar_whetstone,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger|fight_remains<6
-actions.trinkets+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=!pet.xuen_the_white_tiger.active&!buff.storm_earth_and_fire.up&(trinket.1.cooldown.remains|trinket.2.cooldown.remains|!trinket.1.cooldown.duration|!trinket.2.cooldown.duration)|fight_remains<5
+actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser
+actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
+actions.trinkets+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
 
-head=flaring_cowl,id=193494,bonus_id=8780,ilevel=418,gem_id=192991
-neck=elemental_lariat,id=193001,bonus_id=3524/8782,ilevel=418,gem_id=192932/192932/192932,crafted_stats=32/40
-shoulders=mantle_of_the_waking_fist,id=200365,ilevel=424
-back=cape_of_valarjar_courage,id=133765,bonus_id=3524,ilevel=421
-chest=chestwrap_of_the_waking_fist,id=200360,ilevel=421,enchant_id=6625
-wrists=loyal_flametenders_bracers,id=195525,bonus_id=3524/8780,ilevel=424,gem_id=192932
-hands=palms_of_the_waking_fist,id=200362,ilevel=421
-waist=bjorns_hunting_strap,id=136776,bonus_id=3524/8780,ilevel=421,gem_id=192932
-legs=legguards_of_the_waking_fist,id=200364,ilevel=415,enchant_id=6496
-feet=biornskin_moccasins,id=134193,bonus_id=3524,ilevel=421
-finger1=valkyr_ascension_signet,id=133679,bonus_id=3524/7580,ilevel=421,gem_id=192932,enchant_id=6568
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=3524/8780,ilevel=421,gem_id=192932,enchant_id=6568
-trinket1=windscar_whetstone,id=137486,bonus_id=3524,ilevel=421
-trinket2=manic_grieftorch,id=194308,bonus_id=3524,ilevel=424
-main_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
-off_hand=refractions_edge,id=193646,bonus_id=3524,ilevel=421,enchant_id=6643
+head=cover_of_the_vermillion_forge,id=202506,bonus_id=9410/1504/9413,gem_id=192991
+neck=tuskarr_bone_necklace,id=193666,bonus_id=8782/1669/9380,gem_id=192925/192925/192925
+shoulders=spore_colony_shoulderguards,id=204706,bonus_id=9366/9376/9405
+back=voice_of_the_silent_star,id=204465,bonus_id=9410/1498
+chest=cuirass_of_the_vermillion_forge,id=202509,bonus_id=9410/1498,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=9366/9405/9376/8795/9436/8797,gem_id=192925,crafted_stats=32/40
+hands=fists_of_the_vermillion_forge,id=202507,bonus_id=9410/1501
+waist=blackbelt_of_the_vermillion_forge,id=202503,ilevel=450,gem_id=192925
+legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lambent_armor_kit_3
+feet=flamebound_huntsmans_footpads,id=202574,bonus_id=9410/1504
+finger1=onyx_annulet,id=203460,ilevel=424,gem_id=204011/204027/204029,enchant=devotion_of_critical_strike_3
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
+trinket1=dragonfire_bomb_dispenser,id=202610,ilevel=447
+trinket2=beacon_to_the_beyond,id=203963,ilevel=450
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 # Gear Summary
-# gear_ilvl=420.81
-# gear_agility=4914
-# gear_stamina=16920
-# gear_crit_rating=4587
-# gear_haste_rating=522
-# gear_mastery_rating=2854
-# gear_versatility_rating=4033
-# gear_armor=3319
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=445.00
+# gear_agility=6202
+# gear_stamina=21559
+# gear_crit_rating=3711
+# gear_haste_rating=2186
+# gear_mastery_rating=1988
+# gear_versatility_rating=3727
+# gear_armor=3981
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1
