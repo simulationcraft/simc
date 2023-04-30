@@ -1257,6 +1257,9 @@ public:
   std::string default_potion() const override { return death_knight_apl::potion( this ); }
   std::string default_rune() const override { return death_knight_apl::rune( this ); }
   std::string default_temporary_enchant() const override { return death_knight_apl::temporary_enchant( this ); }
+  
+  // Create Profile options
+  std::string create_profile( save_e ) override;
 
   // Death Knight specific methods
   // Rune related methods
@@ -8292,6 +8295,26 @@ void death_knight_t::merge( player_t& other )
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
 
+}
+
+std::string death_knight_t::create_profile( save_e type )
+{
+  std::string term;
+  std::string profile_str = player_t::create_profile( type );
+  term = "\n";
+  if ( type & SAVE_PLAYER )
+  {
+    if( options.ams_absorb_percent > 0 )
+    {
+      profile_str += "deathknight.ams_absorb_percent=" + util::to_string( options.ams_absorb_percent ) + term;
+    }
+
+    if( options.amz_absorb_percent > 0 )
+    {
+      profile_str += "deathknight.amz_absorb_percent=" + util::to_string( options.amz_absorb_percent ) + term;
+    }
+  }
+  return profile_str;
 }
 
 // death_knight_t::datacollection_begin ===========================================
