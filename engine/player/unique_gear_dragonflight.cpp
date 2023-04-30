@@ -1916,15 +1916,8 @@ void way_of_controlled_currents( special_effect_t& effect )
       create_buff<buff_t>( effect.player, "way_of_controlled_currents_stack", effect.player->find_spell( 381965 ) )
           ->set_name_reporting( "Stack" )
           ->add_invalidate( CACHE_ATTACK_SPEED );
-  //In 10.1 the effect is always 2% rather than scaling with item level
-  if( effect.player -> is_ptr() )
-  {
-    stack->set_default_value( stack->data().effectN( 1 ).base_value() * 0.01 );
-  }
-  else
-  {
-    stack->set_default_value( stack->data().effectN( 1 ).average( effect.item ) * 0.01 ); 
-  }
+  
+  stack->set_default_value( stack->data().effectN( 1 ).base_value() * 0.01 );
 
   effect.player->buffs.way_of_controlled_currents = stack;
 
@@ -5008,10 +5001,9 @@ void elemental_lariat( special_effect_t& effect )
     return;
 
   auto val = effect.driver()->effectN( 1 ).average( effect.item );
-  auto dur = effect.player->is_ptr()
-                 ? timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() +
-                                             effect.driver()->effectN( 2 ).base_value() * gem_count )
-                 : timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  auto dur = timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() +
+                                       effect.driver()->effectN( 2 ).base_value() * gem_count );
+
   auto cb = new dbc_proc_callback_t( effect.player, effect );
   std::vector<buff_t*> buffs;
 
