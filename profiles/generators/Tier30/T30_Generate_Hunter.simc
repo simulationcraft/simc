@@ -4,7 +4,7 @@ race=tauren
 role=attack
 position=ranged_back
 spec=beast_mastery
-talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AiWaJBgCBAAAAAAAAAAgGESoJSCJEJoJRahkwBiQiGJRA
+talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AgWSAoQAAAAAAAAAAAoRESoJRCJSkgmEpFSCJCJakEB
 
 head=ashen_predators_faceguard,id=202479,bonus_id=1504/9413,gem_id=192985
 neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192945/192945/192945,crafted_stats=32/36
