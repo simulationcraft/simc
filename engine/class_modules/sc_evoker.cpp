@@ -514,10 +514,7 @@ public:
     parse_buff_effects( p()->buff.snapfire );
     parse_buff_effects( p()->buff.tip_the_scales );
 
-    if ( p()->is_ptr() )
-    {
-      parse_buff_effects( p()->buff.imminent_destruction );
-    }
+    parse_buff_effects( p()->buff.imminent_destruction );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -651,11 +648,6 @@ public:
   void execute() override
   {
     ab::execute();
-
-    if ( p()->talent.causality.ok() && current_resource() == RESOURCE_ESSENCE && !p()->is_ptr() )
-    {
-      p()->cooldown.eternity_surge->adjust( p()->talent.causality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
-    }
   }
 
   virtual void trigger_charged_blast( action_state_t* s )
@@ -869,8 +861,6 @@ struct empowered_charge_spell_t : public empowered_base_t
     dot_duration = base_tick_time = base_empower_duration =
         base_time_to_empower( static_cast<empower_e>( empower_to ) );
 
-    if ( !p->is_ptr() )
-      apply_affecting_aura( p->talent.imminent_destruction );
   }
 
   template <typename T>
@@ -1051,9 +1041,6 @@ struct essence_spell_t : public evoker_spell_t
     {
       if ( !rng().roll( hoarded_pct ) )
         p()->buff.essence_burst->decrement();
-
-      if ( p()->talent.feed_the_flames.ok() && !p()->is_ptr() )
-        p()->cooldown.fire_breath->adjust( ftf_dur );
     }
   }
 };
@@ -1132,7 +1119,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       auto m = base_t::composite_da_multiplier( s );
 
-      if ( p()->is_ptr() && p()->talent.eye_of_infinity.enabled() )
+      if ( p()->talent.eye_of_infinity.enabled() )
       {
         m *= 1 + p()->talent.eye_of_infinity->effectN( 1 ).percent();
       }
@@ -1165,7 +1152,7 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
       : base_t( name, p, p->find_spell( 359077 ) ),
-        eoi_ess( p->is_ptr() ? 0.0 : p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
+        eoi_ess( p->talent.eye_of_infinity->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ) )
     {
     }
 
@@ -1262,17 +1249,13 @@ struct deep_breath_t : public evoker_spell_t
     void impact( action_state_t* s )
     {
       evoker_spell_t::impact( s );
-      if ( p()->is_ptr() )
-      {
-        auto td = p()->get_target_data( s->target );
-      }
     }
 
     void execute() override
     {
       evoker_spell_t::execute();
 
-      if ( p()->is_ptr() && p()->talent.imminent_destruction->ok() )
+      if ( p()->talent.imminent_destruction->ok() )
       {
         p()->buff.imminent_destruction->trigger();
       }
@@ -1377,7 +1360,7 @@ struct disintegrate_t : public essence_spell_t
                                 d->state->result_amount * obsidian_shards_mul );
     }
         
-    if ( p()->talent.causality.ok() && p()->is_ptr() )
+    if ( p()->talent.causality.ok() )
     {
       auto cdr = p()->talent.causality->effectN( 1 ).time_value();
       p()->cooldown.eternity_surge->adjust( cdr );
@@ -1729,21 +1712,13 @@ struct shattering_star_t : public evoker_spell_t
   {
     aoe = as<int>( data().effectN( 1 ).base_value() * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
     aoe = ( aoe == 1 ) ? 0 : aoe;
-    
-
-    if ( p->talent.arcane_vigor.ok() && !p->is_ptr() )
-    {
-      energize_type = action_energize::ON_CAST;
-      energize_amount +=
-          p->find_spelleffect( p->talent.arcane_vigor, A_ADD_FLAT_MODIFIER, P_EFFECT_4, &data() )->base_value();
-    }
   }
 
   void execute() override
   {
     evoker_spell_t::execute();
 
-    if ( p()->is_ptr() && p()->talent.arcane_vigor.ok() )
+    if ( p()->talent.arcane_vigor.ok() )
     {
       p()->buff.essence_burst->trigger();
     }
@@ -1807,7 +1782,7 @@ struct pyre_t : public essence_spell_t
       dual = true;
       aoe  = -1;
 
-      if ( p->is_ptr() && p->talent.raging_inferno->ok() )
+      if ( p->talent.raging_inferno->ok() )
         target_multiplier_dotdebuffs.emplace_back(
             []( evoker_td_t* t ) { return t->debuffs.in_firestorm->check() > 0; },
                                                  p->talent.raging_inferno->effectN( 2 ).percent(), false );
@@ -1834,7 +1809,7 @@ struct pyre_t : public essence_spell_t
     {
       essence_spell_t::impact( s );
 
-      if ( p()->talent.causality.ok() && p()->is_ptr() && s->chain_target == 0 )
+      if ( p()->talent.causality.ok() && s->chain_target == 0 )
       {
         auto cdr = std::min( 5u, s->n_targets ) * p()->talent.causality->effectN( 2 ).time_value();
         p()->cooldown.eternity_surge->adjust( cdr );
@@ -1894,7 +1869,7 @@ struct pyre_t : public essence_spell_t
   {
     essence_spell_t::execute();
     p()->buff.charged_blast->expire();
-    if ( p()->talent.feed_the_flames.enabled() && p()->is_ptr() &&
+    if ( p()->talent.feed_the_flames.enabled() &&
          ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
     {
       p()->buff.feed_the_flames_stacking->trigger();
@@ -2419,9 +2394,6 @@ void evoker_t::create_buffs()
                          ->set_affects_regen( true )
                          ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT );
 
-  if ( !is_ptr() )
-    buff.power_swell->set_duration( talent.power_swell->effectN( 1 ).time_value() );
-
   buff.snapfire = make_buff( this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
                       ->set_chance( talent.snapfire->effectN( 1 ).percent() )
                       ->set_default_value_from_effect( 2 )
@@ -2434,7 +2406,7 @@ void evoker_t::create_buffs()
   buff.feed_the_flames_stacking = make_buff( this, "feed_the_flames", find_spell( 405874 ) );
   buff.feed_the_flames_pyre     = make_buff( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
 
-  if ( is_ptr() && talent.feed_the_flames.enabled() )
+  if ( talent.feed_the_flames.enabled() )
   {
     buff.feed_the_flames_stacking->set_max_stack( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() )
         ->set_expire_at_max_stack( true )
