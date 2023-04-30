@@ -224,3 +224,5 @@ main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,en
 # gear_armor=8558
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
+deathknight.ams_absorb_percent=1
+deathknight.amz_absorb_percent=1

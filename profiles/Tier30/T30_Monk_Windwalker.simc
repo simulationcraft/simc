@@ -5,7 +5,7 @@ level=70
 race=orc
 role=hybrid
 position=back
-talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEJJRLSSAAAAASkk0AkkkkkQSBRkQikkkk0SAAAA
+talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACikkoFJJAAAAAJSSaASSSSgkSkISIFJJJJplAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -276,7 +276,7 @@ main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant
 # Gear Summary
 # gear_ilvl=445.00
 # gear_agility=6823
-# gear_stamina=21644
+# gear_stamina=16746
 # gear_crit_rating=3715
 # gear_haste_rating=2186
 # gear_mastery_rating=1363
