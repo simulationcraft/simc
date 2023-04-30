@@ -33,6 +33,10 @@ spec=frost
 role=attack
 position=back
 talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIREigERikkkkkkWOAAAAAAAAAAAAAA
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/obsidian/ruby
+deathknight.ams_absorb_percent=1
+deathknight.amz_absorb_percent=1
 
 head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192948/192948/192948,crafted_stats=36/32
@@ -46,7 +50,7 @@ legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fie
 feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=32/49
 finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/32
-trinket1=screaming_black_dragonscale,id=202612,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
 main_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 off_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=rune_of_hysteria
@@ -60,6 +64,8 @@ spec=frost
 role=attack
 position=back
 talents=BsPAAAAAAAAAAAAAAAAAAAAAAICAJkkQSLSQIJJhQiIRkggESSEJJJJpkEAAAAAAAAAAAAA
+deathknight.ams_absorb_percent=1
+deathknight.amz_absorb_percent=1
 
 head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
 neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192948/192948/192948,crafted_stats=49/36
