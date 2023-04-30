@@ -12101,6 +12101,7 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "dragonflight.ominous_chromatic_essence_dragonflight=" + dragonflight_opts.ominous_chromatic_essence_dragonflight + term;
     }
+
     if ( !dragonflight_opts.ominous_chromatic_essence_allies.empty() )
     {
       profile_str += "dragonflight.ominous_chromatic_essence_allies=" + dragonflight_opts.ominous_chromatic_essence_allies + term;
