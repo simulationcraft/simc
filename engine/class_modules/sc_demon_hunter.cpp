@@ -348,7 +348,7 @@ public:
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
-      player_talent_t accelerating_blade;
+      player_talent_t accelerated_blade;
       player_talent_t ragefire;
 
       player_talent_t know_your_enemy;
@@ -1383,7 +1383,7 @@ public:
     ab::apply_affecting_aura( p->talent.havoc.blind_fury );
     ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
     ab::apply_affecting_aura( p->talent.havoc.tactical_retreat );
-    ab::apply_affecting_aura( p->talent.havoc.accelerating_blade );
+    ab::apply_affecting_aura( p->talent.havoc.accelerated_blade );
     ab::apply_affecting_aura( p->talent.havoc.any_means_necessary );
     ab::apply_affecting_aura( p->talent.havoc.dancing_with_fate );
 
@@ -1516,6 +1516,8 @@ public:
 
     // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
     if ( ab::stats->school == SCHOOL_CHROMATIC )
+      ab::stats->school = SCHOOL_CHAOS;
+    if ( ab::stats->school == SCHOOL_CHROMASTRIKE )
       ab::stats->school = SCHOOL_CHAOS;
 
     ab::init_finished();
@@ -6479,12 +6481,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.chaos_theory = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
   talent.havoc.restless_hunter = find_talent_spell( talent_tree::SPECIALIZATION, "Restless Hunter" );
   talent.havoc.inner_demon = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Demon" );
-  // TODO 10.1: rename accelerating_blade and remove fallback
-  talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerating Blade" );
-  if ( talent.havoc.accelerating_blade.spell() == spell_data_t::not_found() )
-  {
-    talent.havoc.accelerating_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
-  }
+  talent.havoc.accelerated_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Accelerated Blade" );
   talent.havoc.ragefire = find_talent_spell( talent_tree::SPECIALIZATION, "Ragefire" );
 
   talent.havoc.know_your_enemy = find_talent_spell( talent_tree::SPECIALIZATION, "Know Your Enemy" );
