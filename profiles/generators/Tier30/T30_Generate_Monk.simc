@@ -38,16 +38,16 @@ neck=tuskarr_bone_necklace,id=193666,bonus_id=8782:1669:9380,gem_id=192925/19292
 shoulders=spore_colony_shoulderguards,id=204706,bonus_id=9366/9376/9405
 back=voice_of_the_silent_star,id=204465,bonus_id=9410/1498
 chest=cuirass_of_the_vermillion_forge,id=202509,bonus_id=9410/1498,enchant=waking_stats_3
-wrists=lifebound_bindings,id=193419,bonus_id=9366:9405:9376:8795:9436:8797,gem_id=192925,crafted_stats=32/40
+wrists=lifebound_bindings,id=193419,bonus_id=9366/9405/9376/8795/9436/8797,gem_id=192925,crafted_stats=32/40
 hands=fists_of_the_vermillion_forge,id=202507,bonus_id=9410/1501
 waist=blackbelt_of_the_vermillion_forge,id=202503,bonus=9410/1507/9413,ilevel=450,gem_id=192925
-legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lambent_armor_kit_3
+legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1504,enchant=lambent_armor_kit_3
 feet=flamebound_huntsmans_footpads,id=202574,bonus_id=9410/1504
 finger1=onyx_annulet,id=203460,ilevel=424,gem_id=204011/204027/204029,enchant=devotion_of_critical_strike_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
-trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410:1498
-trinket2=beacon_to_the_beyond,id=203963,bonus_id=9410:1498
-main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410:1498,enchant=shadowflame_wreathe_3
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
+trinket2=igneous_flowstone,id=203996,bonus_id=9410/1498
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 save=T30_Monk_Windwalker.simc
 
@@ -63,15 +63,15 @@ neck=tuskarr_bone_necklace,id=193666,bonus_id=8782:1669:9380,gem_id=192925/19292
 shoulders=spore_colony_shoulderguards,id=204706,bonus_id=9366/9376/9405
 back=voice_of_the_silent_star,id=204465,bonus_id=9410/1498
 chest=cuirass_of_the_vermillion_forge,id=202509,bonus_id=9410/1498,enchant=waking_stats_3
-wrists=lifebound_bindings,id=193419,bonus_id=9366:9405:9376:8795:9436:8797,gem_id=192925,crafted_stats=32/40
+wrists=lifebound_bindings,id=193419,bonus_id=9366/9405/9376/8795/9436/8797,gem_id=192925,crafted_stats=32/40
 hands=fists_of_the_vermillion_forge,id=202507,bonus_id=9410/1501
 waist=blackbelt_of_the_vermillion_forge,id=202503,bonus=9410/1507/9413,ilevel=450,gem_id=192925
-legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lambent_armor_kit_3
+legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1504,enchant=lambent_armor_kit_3
 feet=flamebound_huntsmans_footpads,id=202574,bonus_id=9410/1504
 finger1=onyx_annulet,id=203460,ilevel=424,gem_id=204011/204027/204029,enchant=devotion_of_critical_strike_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
-trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410:1498
-trinket2=beacon_to_the_beyond,id=203963,bonus_id=9410:1498
-main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410:1498,enchant=shadowflame_wreathe_3
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
+trinket2=igneous_flowstone,id=203996,bonus_id=9410/1498
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 save=T30_Monk_Windwalker_SEF.simc
