@@ -1563,7 +1563,7 @@ void igneous_flowstone( special_effect_t& effect )
 
   effect.player->register_combat_begin(
       [ low_tide_trigger, high_tide_trigger, low_tide_counter, high_tide_counter ]( player_t* p ) {
-        auto starting_state = p->sim->dragonflight_opts.flowstone_starting_state;
+        auto starting_state = p->dragonflight_opts.flowstone_starting_state;
         if ( util::str_compare_ci( starting_state, "low" ) )
           low_tide_trigger->trigger();
         else if ( util::str_compare_ci( starting_state, "ebb" ) )
@@ -4232,7 +4232,7 @@ void ominous_chromatic_essence( special_effect_t& e )
   buff_t* emerald_minor;
   double main_value       = e.driver()->effectN( 1 ).average( e.item );
   double minor_value      = e.driver()->effectN( 2 ).average( e.item );
-  const auto& flight      = e.player->sim->dragonflight_opts.ominous_chromatic_essence_dragonflight;
+  const auto& flight      = e.player->dragonflight_opts.ominous_chromatic_essence_dragonflight;
   bool valid              = false;
   bool has_obsidian_major = false;
   bool has_ruby_major     = false;
@@ -4290,7 +4290,7 @@ void ominous_chromatic_essence( special_effect_t& e )
   }
 
   auto splits =
-      util::string_split<std::string_view>( e.player->sim->dragonflight_opts.ominous_chromatic_essence_allies, "/" );
+      util::string_split<std::string_view>( e.player->dragonflight_opts.ominous_chromatic_essence_allies, "/" );
   for ( auto s : splits )
   {
     if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
@@ -4708,7 +4708,7 @@ void ashkandur( special_effect_t& e )
 
       if ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
            player->target->race == RACE_HUMANOID ||
-       player->sim->dragonflight_opts.ashkandur_humanoid )
+       player->dragonflight_opts.ashkandur_humanoid )
       {
         m *= 2; // Doubles damage against humanoid targets. 
       }
