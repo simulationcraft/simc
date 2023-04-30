@@ -43,8 +43,8 @@ actions.st+=/wailing_arrow,if=active_enemies>1
 actions.st+=/rapid_fire,if=talent.surging_shots
 actions.st+=/kill_shot
 actions.st+=/trueshot,if=variable.trueshot_ready&(buff.trueshot.down|buff.trueshot.remains<5)
-# Reset cooldown of Kill Shot from Bombardment if not inside Trueshot, or trigger Salvo if Volley isn't being used to trigger it.
-actions.st+=/multishot,if=buff.bombardment.up&cooldown.kill_shot.remains&buff.trueshot.down|buff.salvo.up&!talent.volley
+# Trigger Salvo if Volley isn't being used to trigger it.
+actions.st+=/multishot,if=buff.salvo.up&!talent.volley
 # With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Without Chimaera Shot don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. On two targets with Chimaera Shot don't overwrite Precise Shots unless the target is within Careful Aim range in addition to either Trueshot being active or Aimed Shot capping before its next cast. Overwrite freely if it can cleave.
 actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1)
 # Without Serpentstalker's Trickery, target the highest Latent Poison stack. Same rules as the previous line.
