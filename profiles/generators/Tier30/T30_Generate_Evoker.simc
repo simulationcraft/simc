@@ -1,27 +1,25 @@
-# evoker="T30_Evoker_Devastation"
-# spec=devastation
-# level=70
-# race=dracthyr
-# role=spell
-# position=back
-# talents=BsbBP6s2QqC9+fmxbctIlW1vfDkAAAAAAgiWKkIkQCJJJtkENINkIRSIhkEJSkkE
+evoker="T30_Evoker_Devastation"
+spec=devastation
+level=70
+race=dracthyr
+role=spell
+position=back
+talents=BsbBP6s2QqC9+BsbBAAAAAAAAAAAAAAAAAAAAAAkAAAAAAApkWkIHQCCJJJlkENINkIRSIhkEJSkkEB
 
-# flask=phial_of_static_empowerment_3
+head=,id=202488,gem_id=192988,ilevel=447
+neck=,id=193001,bonus_id=8836/8840/8902/8960/9477/8782/9405/8791/9366,gem_id=192988/192961/192961,ilevel=447,crafted_stats=36/49
+shoulder=,id=202486,ilevel=450
+back=,id=204465,ilevel=457
+chest=,id=193782,enchant_id=6625,enchant=waking_stats_3,ilevel=447
+wrist=,id=204704,bonus_id=8780,enchant_id=6580,gem_id=192961,ilevel=447
+hands=,id=202489,ilevel=447
+waist=,id=193425,bonus_id=8836/8840/8902/9405/8793/9366/9415/8780,enchant_id=6904,gem_id=192961,ilevel=447,crafted_stats=49/36
+legs=,id=202487,enchant_id=6541,enchant=temporal_spellthread_3,ilevel=450
+feet=,id=204424,ilevel=450
+finger1=,id=193768,enchant=devotion_of_mastery_3,gem_id=192958,ilevel=447
+finger2=,id=159463,enchant=devotion_of_mastery_3,gem_id=192958,ilevel=447
+trinket1=,id=193773,ilevel=447
+trinket2=,id=204201,bonus_id=6652/9330/7979/1485/8767,ilevel=457
+main_hand=,id=202565,enchant=sophic_devotion_3,ilevel=450
 
-# head=crown_of_the_awakened,id=200381,bonus_id=7977/8807,gem_id=192988
-# neck=elemental_lariat,id=193001,ilevel=418,bonus_id=8836/8840/8902/8802/8793,gem_id=192967/192961/192961,crafted_stats=40/32
-# shoulders=talons_of_the_awakened,id=200383,bonus_id=7977/8807
-# back=cape_of_entanglement,id=144094,bonus_id=1594/657/3189/7981
-# chest=hauberk_of_the_awakened,id=200378,bonus_id=7977/8807,enchant=waking_stats_3
-# wrists=shikaar_ranger_bracers,id=193693,gem_id=192961,bonus_id=7977/6652/8813/1594/8767/5894
-# hands=gauntlets_of_the_awakened,id=200380,bonus_id=7977/8807
-# waist=flametouched_chain,id=193425,ilevel=418,bonus_id=1530/8802/8793/8932/8810,gem_id=192961,crafted_stats=40/32
-# legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=7977/8807,enchant=temporal_spellthread_3
-# feet=ley_dragoons_stompers,id=134298,bonus_id=1594/657/3178/7981
-# finger1=seal_of_filial_duty,id=195526,gem_id=192961,bonus_id=7977/8807,enchant=devotion_of_mastery_3
-# finger2=seal_of_diurnas_chosen,id=195480,gem_id=192961,bonus_id=7977/8807,enchant=devotion_of_mastery_3
-# trinket1=voidmenders_shadowgem,id=110007,bonus_id=6808/4786/3306
-# trinket2=whispering_incarnate_icon,id=194301,bonus_id=7977/8807
-# main_hand=kharnalex_the_first_light,id=195519,bonus_id=7977/8807,enchant=sophic_devotion_3
-
-# save=T30_Evoker_Devastation.simc
+save=T30_Evoker_Devastation.simc
