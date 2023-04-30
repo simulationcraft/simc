@@ -12095,6 +12095,22 @@ std::string player_t::create_profile( save_e stype )
     {
       profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
     }
+    
+    const auto& flight = dragonflight_opts.ominous_chromatic_essence_dragonflight;
+    if ( !util::str_compare_ci( flight, "obsidian" ) )
+    {
+      profile_str += "dragonflight.ominous_chromatic_essence_dragonflight=" + dragonflight_opts.ominous_chromatic_essence_dragonflight + term;
+    }
+    if ( !dragonflight_opts.ominous_chromatic_essence_allies.empty() )
+    {
+      profile_str += "dragonflight.ominous_chromatic_essence_allies=" + dragonflight_opts.ominous_chromatic_essence_allies + term;
+    }
+
+    const auto& tide = dragonflight_opts.flowstone_starting_state;
+    if ( !util::str_compare_ci( tide, "high" ) )
+    {
+      profile_str += "dragonflight.flowstone_starting_state=" + dragonflight_opts.flowstone_starting_state + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
