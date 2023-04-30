@@ -449,7 +449,6 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* lethal_shots;
     proc_t* calling_the_shots;
     proc_t* windrunners_guidance;
 
@@ -520,7 +519,6 @@ public:
     spell_data_ptr_t hunters_knowledge;
     spell_data_ptr_t careful_aim;
 
-    spell_data_ptr_t lethal_shots;
     spell_data_ptr_t in_the_rhythm;
     spell_data_ptr_t surging_shots;
     spell_data_ptr_t deathblow;
@@ -529,15 +527,16 @@ public:
 
     spell_data_ptr_t multishot_mm;
     spell_data_ptr_t razor_fragments;
+    spell_data_ptr_t tactical_reload;
     spell_data_ptr_t dead_eye;
     spell_data_ptr_t bursting_shot;
 
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t bombardment;
     spell_data_ptr_t volley;
-    spell_data_ptr_t tactical_reload;
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t serpentstalkers_trickery;
+    spell_data_ptr_t quick_load; //NYI - When you fall below 40% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every 25 sec.
 
     spell_data_ptr_t light_ammo;
     spell_data_ptr_t heavy_ammo;
@@ -839,7 +838,6 @@ public:
 
   void trigger_bloodseeker_update();
   void trigger_t30_sv_4p( action_t* action, double cost );
-  void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
   void trigger_bloody_frenzy();
@@ -2607,19 +2605,6 @@ void hunter_t::trigger_t30_sv_4p( action_t* action, double cost )
   
 }
 
-void hunter_t::trigger_lethal_shots()
-{
-  if ( !talents.lethal_shots.ok() )
-    return;
-
-  if ( rng().roll( talents.lethal_shots -> proc_chance() ) )
-  {
-    const auto base_value = talents.lethal_shots -> effectN( 1 ).base_value();
-    cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( base_value / 10 ) );
-    procs.lethal_shots -> occur();
-  }
-}
-
 void hunter_t::trigger_calling_the_shots( action_t* action, double cost )
 {
   if ( !talents.calling_the_shots.ok() )
@@ -3029,7 +3014,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> trigger_lethal_shots();
     p() -> trigger_bloody_frenzy();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
@@ -3875,8 +3859,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> trigger_lethal_shots();
-
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
@@ -4324,8 +4306,6 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
-
-    p() -> trigger_lethal_shots();
 
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
@@ -6525,7 +6505,6 @@ void hunter_t::init_spells()
     talents.hunters_knowledge                 = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Knowledge", HUNTER_MARKSMANSHIP );
     talents.careful_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Careful Aim", HUNTER_MARKSMANSHIP );
 
-    talents.lethal_shots                      = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Shots", HUNTER_MARKSMANSHIP );
     talents.in_the_rhythm                     = find_talent_spell( talent_tree::SPECIALIZATION, "In the Rhythm", HUNTER_MARKSMANSHIP );
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
@@ -7100,9 +7079,6 @@ void hunter_t::init_position()
 void hunter_t::init_procs()
 {
   player_t::init_procs();
-
-  if ( talents.lethal_shots.ok() )
-    procs.lethal_shots        = get_proc( "Lethal Shots" );
 
   if ( talents.calling_the_shots.ok() )
     procs.calling_the_shots   = get_proc( "Calling the Shots" );
