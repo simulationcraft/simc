@@ -2731,7 +2731,7 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
 
   double action_ta_multiplier() const override
   {
-    double am = demon_hunter_spell_t::action_multiplier();
+    double am = demon_hunter_sigil_t::action_ta_multiplier();
 
     // 2023-05-01 -- Sigil of Flame's DoT currently deals twice the intended damage.
     //               There are currently two Apply Aura: Periodic Damage effects in the spell data
