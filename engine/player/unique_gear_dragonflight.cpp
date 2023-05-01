@@ -6661,6 +6661,7 @@ void register_special_effects()
   register_special_effect( 377465, DISABLED_EFFECT );  // Desperate Invocation (cdr proc)
   register_special_effect( 398396, DISABLED_EFFECT );  // emerald coach's whistle on-use
   register_special_effect( 382132, DISABLED_EFFECT );  // Iceblood Deathsnare damage data
+  register_special_effect( 410530, DISABLED_EFFECT );  // Infurious Boots of Reprieve - Mettle (NYI)
 }
 
 void register_target_data_initializers( sim_t& sim )
