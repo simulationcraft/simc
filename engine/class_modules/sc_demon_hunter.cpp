@@ -2736,7 +2736,8 @@ struct sigil_of_flame_damage_t : public demon_hunter_sigil_t
     // 2023-05-01 -- Sigil of Flame's DoT currently deals twice the intended damage.
     //               There are currently two Apply Aura: Periodic Damage effects in the spell data
     //               (Effects #2 and #3) which could potentially be the reason for this.
-    am *= 2.0;
+    if ( p()->bugs )
+      am *= 2.0;
 
     return am;
   }
