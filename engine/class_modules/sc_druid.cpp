@@ -10291,7 +10291,7 @@ void druid_t::create_buffs()
 
   buff.furious_regeneration = make_buff( this, "furious_regeneration", spec.furious_regeneration )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T30, B2 ) )
-    ->set_default_value_from_effect( 5, 0.1 );
+    ->set_default_value_from_effect( 5 );
 
   // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
