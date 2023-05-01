@@ -3948,7 +3948,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case WARLOCK_DESTRUCTION:
       driver_id = 408256;
-      proc_spell_id = { { 1122, 387160 } }; // Summon Infernal and Summon Blasphemy (Avatar of Destruction)
+      proc_spell_id = { { 1122 /*, 387160 */ } }; // Summon Infernal. 2023-04-30 PTR: Summon Blasphemy no longer procs trinket. May be intentional.
       break;
     case WARLOCK_DEMONOLOGY:
       driver_id = 408256;
