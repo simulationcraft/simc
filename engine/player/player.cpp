@@ -12083,7 +12083,12 @@ std::string player_t::create_profile( save_e stype )
 
     auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
       if ( !option.is_default() )
-        profile_str += fmt::format( "{}={}{}", n, option, term );
+      {
+        if constexpr ( std::is_same_v<decltype( option ), player_option_t<bool>> )
+          profile_str += fmt::format( "{}={}{}", n, static_cast<int>( option ), term );
+        else
+          profile_str += fmt::format( "{}={}{}", n, option, term );
+      }
     };
 
     print_option( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type );
@@ -12093,6 +12098,7 @@ std::string player_t::create_profile( save_e stype )
     print_option( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context );
     print_option( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight );
     print_option( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies );
+    print_option( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid );
     print_option( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state );
   }
 
