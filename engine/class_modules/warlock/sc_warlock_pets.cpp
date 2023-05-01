@@ -604,7 +604,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   action_list_str = "travel";
   action_list_str += "/felstorm_demonic_strength";
-  action_list_str += "/felstorm";
+  if ( !owner->disable_auto_felstorm )
+    action_list_str += "/felstorm";
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   felstorm_cd = get_cooldown( "felstorm" );
