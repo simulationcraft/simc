@@ -1009,7 +1009,6 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     travel_speed = p->talents.channel_demonfire_travel->missile_speed();
   }
 
-  // TOCHECK: As of 2023-04-03, PTR is not canceling/resetting the Umbrafire buff when starting CDF. Presumably this will change before Live
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
