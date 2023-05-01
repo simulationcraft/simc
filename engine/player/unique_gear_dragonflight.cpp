@@ -3859,7 +3859,7 @@ void neltharions_call_to_chaos( special_effect_t& effect )
 
   // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
   effect.spell_id = driver_id;
-  std::set<int> proc_spell_id;
+  std::set<unsigned> proc_spell_id;
 
   // Triggers only on AoE Abilities - Abilities that *can* AoE or abilities that *did* AoE. Evokers need a hack.
   switch ( effect.player->type )
@@ -3879,13 +3879,14 @@ void neltharions_call_to_chaos( special_effect_t& effect )
       break;
     case WARRIOR:
       proc_spell_id = { { 1680, 190411, 396719, 6343, 384318, 376079, 46968, 845, 262161, 227847, 385059, 228920, 6572  } };
-// only true AoE, in order - Whirlwind Arms, Whirlwind Fury, Thunder Clap, Thunder Clap Prot, Thunderous Roar, Spear of Bastion
-// Shockwave, Cleave, Warbreaker, Bladestorm, Odyns Fury, Ravager, Revenge
+      // only true AoE, in order - Whirlwind Arms, Whirlwind Fury, Thunder Clap, Thunder Clap Prot, Thunderous Roar
+      // Spear of Bastion, Shockwave, Cleave, Warbreaker, Bladestorm, Odyns Fury, Ravager, Revenge
       effect.player->callbacks.register_callback_trigger_function(
           driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
           [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
             return range::contains( proc_spell_id, a->data().id() );
           } );
+      break;
     case PALADIN:
     case MAGE:
     case DEMON_HUNTER:
