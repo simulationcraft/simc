@@ -7176,7 +7176,7 @@ struct moonfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  std::vector<player_t*>& target_list() const
+  std::vector<player_t*>& target_list() const override
   {
     if ( !target_cache.is_valid )
       damage->target_cache.is_valid = false;
@@ -8058,7 +8058,7 @@ struct sunfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  std::vector<player_t*>& target_list() const
+  std::vector<player_t*>& target_list() const override
   {
     if ( !target_cache.is_valid )
       damage->target_cache.is_valid = false;
