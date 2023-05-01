@@ -12086,7 +12086,9 @@ std::string player_t::create_profile( save_e stype )
         profile_str += fmt::format( "{}={}{}", n, option, term );
     };
 
-    print_option( "shadowlands.soleaths_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type );
+    print_option( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type );
+
+    print_option( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat );
     print_option( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training );
     print_option( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context );
     print_option( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight );
