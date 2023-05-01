@@ -12081,37 +12081,17 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    if ( !shadowlands_opts.soleahs_secret_technique_type.empty() )
-    {
-      profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
-    }
+    auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
+      if ( !option.is_default() )
+        profile_str += fmt::format( "{}={}{}", n, option, term );
+    };
 
-    if ( !dragonflight_opts.ruby_whelp_shell_training.empty() )
-    {
-      profile_str += "dragonflight.player.ruby_whelp_shell_training=" + dragonflight_opts.ruby_whelp_shell_training + term;
-    }
-
-    if ( !dragonflight_opts.ruby_whelp_shell_context.empty() )
-    {
-      profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
-    }
-    
-    const auto& flight = dragonflight_opts.ominous_chromatic_essence_dragonflight;
-    if ( !util::str_compare_ci( flight, "obsidian" ) )
-    {
-      profile_str += "dragonflight.ominous_chromatic_essence_dragonflight=" + dragonflight_opts.ominous_chromatic_essence_dragonflight + term;
-    }
-
-    if ( !dragonflight_opts.ominous_chromatic_essence_allies.empty() )
-    {
-      profile_str += "dragonflight.ominous_chromatic_essence_allies=" + dragonflight_opts.ominous_chromatic_essence_allies + term;
-    }
-
-    const auto& tide = dragonflight_opts.flowstone_starting_state;
-    if ( !util::str_compare_ci( tide, "high" ) )
-    {
-      profile_str += "dragonflight.flowstone_starting_state=" + dragonflight_opts.flowstone_starting_state + term;
-    }
+    print_option( "shadowlands.soleaths_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type );
+    print_option( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training );
+    print_option( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context );
+    print_option( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight );
+    print_option( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies );
+    print_option( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state );
   }
 
   if ( stype & SAVE_PLAYER )

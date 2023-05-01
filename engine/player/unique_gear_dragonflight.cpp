@@ -3321,13 +3321,13 @@ void ruby_whelp_shell( special_effect_t& effect )
   std::vector<std::string_view> splits;
 
   std::string_view training_str = effect.player->sim->dragonflight_opts.ruby_whelp_shell_training;
-  if ( !effect.player->dragonflight_opts.ruby_whelp_shell_training.empty() )
+  if ( !effect.player->dragonflight_opts.ruby_whelp_shell_training.is_default() )
   {
     training_str = effect.player->dragonflight_opts.ruby_whelp_shell_training;
   }
 
   std::string_view context_str = effect.player->sim->dragonflight_opts.ruby_whelp_shell_context;
-  if ( !effect.player->dragonflight_opts.ruby_whelp_shell_context.empty() )
+  if ( !effect.player->dragonflight_opts.ruby_whelp_shell_context.is_default() )
   {
     context_str = effect.player->dragonflight_opts.ruby_whelp_shell_context;
   }
