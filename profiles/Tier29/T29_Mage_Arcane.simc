@@ -173,6 +173,7 @@ actions.touch_phase+=/arcane_blast,if=buff.presence_of_mind.up&buff.arcane_charg
 actions.touch_phase+=/arcane_barrage,if=(buff.arcane_harmony.up|(talent.arcane_bombardment&target.health.pct<35))&debuff.touch_of_the_magi.remains<=gcd.max
 actions.touch_phase+=/arcane_missiles,if=buff.clearcasting.stack>1&talent.conjure_mana_gem&cooldown.use_mana_gem.ready,chain=1
 actions.touch_phase+=/arcane_blast,if=buff.nether_precision.up
+actions.touch_phase+=/cancel_action,if=debuff.touch_of_the_magi.up&action.arcane_missiles.channeling&gcd.remains=0&(buff.arcane_surge.up|talent.conjure_mana_gem|set_bonus.tier30_4pc)&mana.pct>30
 actions.touch_phase+=/arcane_missiles,if=buff.clearcasting.react&(debuff.touch_of_the_magi.remains>execute_time|!talent.presence_of_mind),chain=1
 actions.touch_phase+=/arcane_blast
 actions.touch_phase+=/arcane_barrage
@@ -196,7 +197,7 @@ off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
 
 # Gear Summary
 # gear_ilvl=421.38
-# gear_stamina=13122
+# gear_stamina=17111
 # gear_intellect=7139
 # gear_crit_rating=3572
 # gear_haste_rating=2274

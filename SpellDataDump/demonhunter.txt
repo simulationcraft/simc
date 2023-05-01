@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49365 Live (hotfix 2023-05-01/49365)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -19,7 +19,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 
 Name             : Chaos Brand (id=1490) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : None
+School           : Chromastrike
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : Aura (infinite)
@@ -4701,7 +4701,7 @@ Heals $s2 to allies within $A1.
 Name             : Essence Break (id=258860) [Spell Family (107)] 
 Talent Entry     : Havoc [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Demon Hunter
-School           : None
+School           : Chromastrike
 Spell Type       : Melee
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -4719,7 +4719,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=483076)   : School Damage (2): none
+#1 (id=483076)   : School Damage (2): chromastrike
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 0.80000 | Radius: 10 yards | Target: Cone Front (104)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
@@ -7511,7 +7511,7 @@ Description      : $@spelldesc320331
 
 Name             : Essence Break (id=320338) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : None
+School           : Chromastrike
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 4 seconds

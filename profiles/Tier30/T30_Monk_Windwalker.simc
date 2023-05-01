@@ -48,7 +48,7 @@ actions+=/faeline_stomp,target_if=min:debuff.fae_exposure_damage.remains,if=comb
 # TP if not overcapping Chi or TotM
 actions+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=!buff.serenity.up&buff.teachings_of_the_monastery.stack<3&combo_strike&chi.max-chi>=(2+buff.power_strikes.up)&(!talent.invoke_xuen_the_white_tiger&!talent.serenity|(!talent.skyreach|time>5|pet.xuen_the_white_tiger.active))
 # Use Chi Burst to reset Faeline Stomp
-actions+=/chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)
+actions+=/chi_burst,if=talent.faeline_stomp&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!talent.faeline_harmony
 # Use Trinkets
 actions+=/call_action_list,name=trinkets
 # Use Cooldowns
@@ -66,11 +66,14 @@ actions+=/call_action_list,name=fallthru
 # 4 Targets
 actions.aoe=spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&spinning_crane_kick.max
 actions.aoe+=/strike_of_the_windlord,if=talent.thunderfist
-actions.aoe+=/fists_of_fury,target_if=max:target.time_to_die
+actions.aoe+=/fists_of_fury
+actions.aoe+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc
 actions.aoe+=/spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&spinning_crane_kick.max
-actions.aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=!buff.bonedust_brew.up&buff.pressure_point.up&cooldown.fists_of_fury.remains>5
+actions.aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!buff.bonedust_brew.up&buff.pressure_point.up&cooldown.fists_of_fury.remains>5
 actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads
+actions.aoe+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=set_bonus.tier30_2pc
 actions.aoe+=/spinning_crane_kick,if=combo_strike&cooldown.fists_of_fury.remains>3&buff.chi_energy.stack>10
+actions.aoe+=/blackout_kick,if=min:debuff.mark_of_the_crane.remains,if=combo_strike&set_bonus.tier30_2pc
 actions.aoe+=/spinning_crane_kick,if=combo_strike&(cooldown.fists_of_fury.remains>3|chi>4)&spinning_crane_kick.max
 actions.aoe+=/whirling_dragon_punch
 actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3
@@ -80,11 +83,12 @@ actions.aoe+=/spinning_crane_kick,if=combo_strike&(cooldown.fists_of_fury.remain
 actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 
 # Bonedust Brew Setup
-actions.bdb_setup=bonedust_brew,if=spinning_crane_kick.max&chi>=4
+actions.bdb_setup=strike_of_the_windlord,if=talent.thunderfist&active_enemies>3
+actions.bdb_setup+=/bonedust_brew,if=spinning_crane_kick.max&chi>=4
 actions.bdb_setup+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&buff.storm_earth_and_fire.up
 actions.bdb_setup+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&!talent.whirling_dragon_punch&!spinning_crane_kick.max
-actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=combo_strike&chi>=5&talent.whirling_dragon_punch
-actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=combo_strike&active_enemies>=2&talent.whirling_dragon_punch
+actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi>=5&talent.whirling_dragon_punch
+actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies>=2&talent.whirling_dragon_punch
 
 # Storm, Earth and Fire Cooldowns
 actions.cd_sef=summon_white_tiger_statue,if=!cooldown.invoke_xuen_the_white_tiger.remains|active_enemies>4|cooldown.invoke_xuen_the_white_tiger.remains>50|fight_remains<=30
@@ -114,7 +118,7 @@ actions.cd_serenity+=/invoke_external_buff,name=power_infusion,if=pet.xuen_the_w
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&talent.bonedust_brew&cooldown.bonedust_brew.remains<=5|fight_remains<25
 actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!talent.bonedust_brew&(cooldown.rising_sun_kick.remains<2)|fight_remains<25
 actions.cd_serenity+=/bonedust_brew,if=!buff.bonedust_brew.up&(cooldown.serenity.up|cooldown.serenity.remains>15|fight_remains<30&fight_remains>10)|fight_remains<10
-actions.cd_serenity+=/serenity,if=pet.xuen_the_white_tiger.active&target.time_to_die>15|!talent.invoke_xuen_the_white_tiger|fight_remains<15|active_enemies>4
+actions.cd_serenity+=/serenity,if=pet.xuen_the_white_tiger.active&target.time_to_die>15|!talent.invoke_xuen_the_white_tiger|fight_remains<15
 actions.cd_serenity+=/touch_of_death,target_if=max:target.health,if=fight_style.dungeonroute&!buff.serenity.up&(combo_strike&target.health<health)|(buff.hidden_masters_forbidden_touch.remains<2)|(buff.hidden_masters_forbidden_touch.remains>target.time_to_die)
 actions.cd_serenity+=/touch_of_death,cycle_targets=1,if=fight_style.dungeonroute&combo_strike&(target.time_to_die>60|debuff.bonedust_brew_debuff.up|fight_remains<10)&!buff.serenity.up
 actions.cd_serenity+=/touch_of_death,cycle_targets=1,if=!fight_style.dungeonroute&combo_strike&!buff.serenity.up
@@ -130,16 +134,18 @@ actions.cd_serenity+=/bag_of_tricks,if=buff.serenity.up|fight_remains<20
 actions.cleave=blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads
 actions.cleave+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
 actions.cleave+=/strike_of_the_windlord,if=talent.thunderfist
-actions.cleave+=/fists_of_fury,target_if=max:target.time_to_die
+actions.cleave+=/fists_of_fury
+actions.cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc
 actions.cleave+=/spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike
-actions.cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=!buff.bonedust_brew.up&buff.pressure_point.up
+actions.cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!buff.bonedust_brew.up&buff.pressure_point.up
+actions.cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=set_bonus.tier30_2pc
 actions.cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=2
 actions.cleave+=/strike_of_the_windlord
 actions.cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads|cooldown.rising_sun_kick.remains>1)
 actions.cleave+=/whirling_dragon_punch
 actions.cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3
 actions.cleave+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<3&buff.chi_energy.stack>15
-actions.cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=cooldown.fists_of_fury.remains>4&chi>3
+actions.cleave+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains>4&chi>3
 actions.cleave+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&chi>4&((talent.storm_earth_and_fire&!talent.bonedust_brew)|(talent.serenity))
 actions.cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains
 actions.cleave+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up
@@ -164,12 +170,17 @@ actions.fallthru+=/tiger_palm
 actions.heavy_aoe=spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&spinning_crane_kick.max
 actions.heavy_aoe+=/strike_of_the_windlord,if=talent.thunderfist
 actions.heavy_aoe+=/whirling_dragon_punch,if=active_enemies>8
-actions.heavy_aoe+=/fists_of_fury,target_if=max:target.time_to_die
+actions.heavy_aoe+=/fists_of_fury
 actions.heavy_aoe+=/spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&spinning_crane_kick.max
+actions.heavy_aoe+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=buff.bonedust_brew.up&buff.pressure_point.up&set_bonus.tier30_2pc
 actions.heavy_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads
 actions.heavy_aoe+=/whirling_dragon_punch,if=active_enemies>=5
-actions.heavy_aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=talent.whirling_dragon_punch&cooldown.whirling_dragon_punch.remains<3&cooldown.fists_of_fury.remains>3&!buff.kicks_of_flowing_momentum.up
+actions.heavy_aoe+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=buff.pressure_point.up&set_bonus.tier30_2pc
+actions.heavy_aoe+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=set_bonus.tier30_2pc
+actions.heavy_aoe+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=talent.whirling_dragon_punch&cooldown.whirling_dragon_punch.remains<3&cooldown.fists_of_fury.remains>3&!buff.kicks_of_flowing_momentum.up
 actions.heavy_aoe+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<5&buff.chi_energy.stack>10
+actions.heavy_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&combo_strike&set_bonus.tier30_2pc&!buff.bonedust_brew.up&active_enemies<15&!talent.crane_vortex
+actions.heavy_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&combo_strike&set_bonus.tier30_2pc&!buff.bonedust_brew.up&active_enemies<8
 actions.heavy_aoe+=/spinning_crane_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(cooldown.fists_of_fury.remains>3|chi>4)&spinning_crane_kick.max
 actions.heavy_aoe+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up
 actions.heavy_aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3
@@ -188,30 +199,33 @@ actions.opener+=/chi_burst,if=chi>1&chi.max-chi>=2
 
 # Serenity Priority
 actions.serenity=fists_of_fury,if=buff.serenity.remains<1
+actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&!spinning_crane_kick.max&active_enemies>4&talent.shdaowboxing_treads
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.teachings_of_the_monastery.stack=3&buff.teachings_of_the_monastery.remains<1
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=active_enemies=4&buff.pressure_point.up&!talent.bonedust_brew
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=active_enemies=1
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=active_enemies<=3&buff.pressure_point.up
-actions.serenity+=/fists_of_fury,target_if=max:target.time_to_die,if=buff.invokers_delight.up&active_enemies<3&talent.Jade_Ignition,interrupt=1
-actions.serenity+=/fists_of_fury,target_if=max:target.time_to_die,if=buff.invokers_delight.up&active_enemies>4,interrupt=1
-actions.serenity+=/fists_of_fury,target_if=max:target.time_to_die,if=buff.bloodlust.up,interrupt=1
-actions.serenity+=/fists_of_fury,target_if=max:target.time_to_die,if=active_enemies=2
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=4&buff.pressure_point.up&!talent.bonedust_brew
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=1
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<=3&buff.pressure_point.up
+actions.serenity+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=buff.pressure_point.up&set_bonus.tier30_2pc
+actions.serenity+=/fists_of_fury,if=buff.invokers_delight.up&active_enemies<3&talent.Jade_Ignition,interrupt=1
+actions.serenity+=/fists_of_fury,if=buff.invokers_delight.up&active_enemies>4,interrupt=1
+actions.serenity+=/fists_of_fury,if=buff.bloodlust.up,interrupt=1
+actions.serenity+=/fists_of_fury,if=active_enemies=2,interrupt=1
 actions.serenity+=/fists_of_fury_cancel,target_if=max:target.time_to_die
 actions.serenity+=/strike_of_the_windlord,if=talent.thunderfist
 actions.serenity+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&active_enemies>=2
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=active_enemies=4&buff.pressure_point.up
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=4&buff.pressure_point.up
+actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=3&combo_strike&set_bonus.tier30_2pc
 actions.serenity+=/spinning_crane_kick,if=combo_strike&active_enemies>=3&spinning_crane_kick.max
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies>1&active_enemies<4&buff.teachings_of_the_monastery.stack=2
 actions.serenity+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up&active_enemies>=5
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&active_enemies>=3&combo_strike
 actions.serenity+=/spinning_crane_kick,if=combo_strike&(active_enemies>3|active_enemies>2&spinning_crane_kick.modifier>=2.3)
 actions.serenity+=/strike_of_the_windlord,if=active_enemies>=3
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=active_enemies=2&cooldown.fists_of_fury.remains>5
+actions.serenity+=/rising_sun_kick,if=min:debuff.mark_of_the_crane.remains,if=active_enemies=2&cooldown.fists_of_fury.remains>5
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies=2&cooldown.fists_of_fury.remains>5&talent.shadowboxing_treads&buff.teachings_of_the_monastery.stack=1&combo_strike
 actions.serenity+=/spinning_crane_kick,if=combo_strike&active_enemies>1
 actions.serenity+=/whirling_dragon_punch,if=active_enemies>1
 actions.serenity+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up&active_enemies>=3
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
 actions.serenity+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
 actions.serenity+=/blackout_kick,if=combo_strike
 actions.serenity+=/whirling_dragon_punch
@@ -236,26 +250,27 @@ actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=com
 # 2 Targets
 actions.st_cleave=blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3&talent.shadowboxing_treads
 actions.st_cleave+=/strike_of_the_windlord,if=talent.thunderfist
-actions.st_cleave+=/fists_of_fury,target_if=max:target.time_to_die
-actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=buff.kicks_of_flowing_momentum.up|buff.pressure_point.up
+actions.st_cleave+=/fists_of_fury
+actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=set_bonus.tier30_2pc
+actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.kicks_of_flowing_momentum.up|buff.pressure_point.up
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=2
 actions.st_cleave+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
 actions.st_cleave+=/strike_of_the_windlord
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.up&(talent.shadowboxing_treads|cooldown.rising_sun_kick.remains>1)
 actions.st_cleave+=/whirling_dragon_punch
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=3
-actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die,if=!talent.shadowboxing_treads&cooldown.fists_of_fury.remains>4&talent.xuens_battlegear
+actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!talent.shadowboxing_treads&cooldown.fists_of_fury.remains>4&talent.xuens_battlegear
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.rising_sun_kick.remains&cooldown.fists_of_fury.remains&(!buff.bonedust_brew.up|spinning_crane_kick.modifier<1.5)
 actions.st_cleave+=/rushing_jade_wind,if=!buff.rushing_jade_wind.up
 actions.st_cleave+=/spinning_crane_kick,if=buff.bonedust_brew.up&combo_strike&spinning_crane_kick.modifier>=2.7
-actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains+spinning_crane_kick.max*target.time_to_die
+actions.st_cleave+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
 actions.st_cleave+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
 actions.st_cleave+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,if=(combo_strike&chi>5&talent.storm_earth_and_fire|combo_strike&chi>4&talent.serenity)
 
 # Trinkets
 actions.trinkets=use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)
 actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser
-actions.trinkets+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
+actions.trinkets+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12
 
 head=cover_of_the_vermillion_forge,id=202506,bonus_id=9410/1504/9413,gem_id=192991
 neck=tuskarr_bone_necklace,id=193666,bonus_id=8782/1669/9380,gem_id=192925/192925/192925
@@ -276,11 +291,11 @@ main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant
 # Gear Summary
 # gear_ilvl=445.00
 # gear_agility=6823
-# gear_stamina=16746
-# gear_crit_rating=3715
-# gear_haste_rating=2186
-# gear_mastery_rating=1363
-# gear_versatility_rating=3727
+# gear_stamina=21644
+# gear_crit_rating=4065
+# gear_haste_rating=1940
+# gear_mastery_rating=1615
+# gear_versatility_rating=3371
 # gear_armor=3993
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

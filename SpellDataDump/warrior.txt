@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49365 Live (hotfix 2023-05-01/49365)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -9544,7 +9544,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333)
 Effects          :
 #1 (id=813547)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
-                   Base Value: 0 | Scaled Value: 403.9366 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 550.1718 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Misc Value: 33554432 | Target: Self (1)
 #2 (id=845745)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=880295)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -9638,7 +9638,7 @@ Attributes       : ........ ........ ........ x..x.x..   ...x.x.x ..x..... ...x.
                  : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Only On Player (104), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=816612)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
-                   Base Value: 0 | Scaled Value: 403.9366 (coefficient=0.017155) | PvP Coefficient: 0.66667 | Misc Value: 33554432 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 550.1718 (coefficient=0.017155) | PvP Coefficient: 0.66667 | Misc Value: 33554432 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=816613)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 #3 (id=880301)   : Apply Aura (6) | Modify Min Speed% (305)

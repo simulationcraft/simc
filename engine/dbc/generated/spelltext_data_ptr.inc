@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49365
-static const std::array<spelltext_data_t, 19890> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19895> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19623,9 +19623,14 @@ static const std::array<spelltext_data_t, 19890> __ptr_spelltext_data { {
   { 406485, "$@spelldesc406459", "$?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $?e2[$w3]?e3[$w4]?e4[$w5]?e5[$w6][Highest secondary stat].", 0 },
   { 406488, "$@spelldesc406459", "Stunned.", 0 },
   { 406545, "Your damaging Holy Power abilities cost $s1 additional Holy Power and deal $s2% increased damage.", 0, 0 },
+  { 406610, "Whenever you attack a new enemy for the first time, you demoralize it, reducing its damage done by $s2% up to $s1 for $406635d.", 0, 0 },
+  { 406635, "$@spelldesc406610", "This unit deals $w1% less damage to $@auracaster.", 0 },
   { 406646, "Crusader Strike becomes a 2 part combo.\r\n\r\nTemplar Strike slashes an enemy for $407480s1 $?s403664 [Holystrike][Radiant] damage. \r\n\r\nYou have $406648d to continue the combo.\r\n\r\nTemplar Slash strikes an enemy for $406647s1 $?s403664[Holystrike][Radiant] damage and is always a critical strike.\r\n\r\nInherits Crusader Strike benefits.", 0, 0 },
   { 406647, "Complete the Templar combo, slash the target with a $406648s2% increased chance to critically strike for $<damage> $?s403664[Holystrike][Radiant] damage.\r\n\r\n|cFFFFFFFFGenerate $s2 Holy Power.", 0, 0 },
   { 406648, "Crusader Strike becomes a 3 part combo and deals radiant damage.", 0, 0 },
+  { 406743, "Your ranged offensive abilities have a high chance to apply a stack of Sulfuric Burning to the target, dealing ${$s1*($406744d/($406744t1))} Fire damage over $406744d. When applying the $406744uth stack of Sulfuric Burning, all stacks are removed and the target is disoriented for $406747d.", 0, 0 },
+  { 406744, 0, "Deal ${$w1*($d/($t1))} damage over $d.", 0 },
+  { 406747, "$@spelldesc406743", "Disoriented.", 0 },
   { 406753, "$@spelldesc405076", 0, 0 },
   { 406764, "$@spelldesc405076", "Suffering $w1 Shadowflame damage every $t1 sec.", 0 },
   { 406770, "$@spelldesc405076", "Suffering $w1 Shadowflame damage.", 0 },
