@@ -3893,7 +3893,7 @@ void neltharions_call_to_chaos( special_effect_t& effect )
       // Evoker is unique with it working on cleave abilities. Other classes likely need an ability whitelist but this is a better aproximation for now.
       effect.player->callbacks.register_callback_trigger_function(
           driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) { return a->n_targets() == -1; } );
+          []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) { return a->n_targets() == -1; } );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -3926,8 +3926,8 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   stat_effect->type = SPECIAL_EFFECT_EQUIP;
   stat_effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
 
-  std::set<int> proc_spell_id;
-  int driver_id = effect.spell_id;
+  std::set<unsigned> proc_spell_id;
+  unsigned driver_id = effect.spell_id;
 
   switch ( effect.player->specialization() )
   {
@@ -3994,7 +3994,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
     } );
 
   stat_effect->player->callbacks.register_callback_execute_function(
-    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
       // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
       if ( stacking_buff->check() )
       {
@@ -4350,7 +4350,7 @@ void ominous_chromatic_essence( special_effect_t& e )
   {
     e.player->register_combat_begin( [ buff, obsidian_minor, ruby_minor, bronze_minor, azure_minor, emerald_minor,
                                        has_obsidian_minor, has_ruby_minor, has_bronze_minor, has_azure_minor,
-                                       has_emerald_minor ]( player_t* p ) {
+                                       has_emerald_minor ]( player_t* ) {
       buff->trigger();
 
       if ( has_obsidian_minor )
@@ -4548,7 +4548,7 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
         switch ( s->proc_type() )
         {
           case PROC1_MAGIC_HEAL:
@@ -4708,9 +4708,8 @@ void ashkandur( special_effect_t& e )
     {
       double m = generic_proc_t::composite_target_multiplier( t );
 
-      if ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
-           player->target->race == RACE_HUMANOID ||
-       player->dragonflight_opts.ashkandur_humanoid )
+      if ( ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && player->target->race == RACE_HUMANOID ) ||
+           player->dragonflight_opts.ashkandur_humanoid )
       {
         m *= 2; // Doubles damage against humanoid targets. 
       }
@@ -5240,7 +5239,7 @@ void adaptive_dracothyst_armguards( special_effect_t& effect )
     buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
     effect.custom_buff  = buff;
     effect.proc_flags2_ = PF2_CRIT;
-    auto dbc            = new dbc_proc_callback_t( effect.player, effect );
+    new dbc_proc_callback_t( effect.player, effect );
   }
   else
   {
