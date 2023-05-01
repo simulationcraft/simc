@@ -732,7 +732,7 @@ struct player_t : public actor_t
     T default_value;
     T current_value;
 
-    player_option_t( T val = T() ) : default_value( val ), current_value( val ) {}
+    player_option_t( const T val = T() ) : default_value( val ), current_value( val ) {}
 
     operator T&() { return current_value; }
     operator T&() const { return current_value; }
