@@ -734,6 +734,9 @@ struct player_t : public actor_t
 
     player_option_t( const T val = T() ) : default_value( val ), current_value( val ) {}
 
+    template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
+    player_option_t( const char* val ) : default_value( val ), current_value( val ) {}
+
     operator T&() { return current_value; }
     operator T&() const { return current_value; }
 
