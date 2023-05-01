@@ -5475,9 +5475,14 @@ void ever_decaying_spores( special_effect_t& effect )
         } );
       }
 
-      td->debuff.ever_decaying_spores->trigger();
-      if ( td->debuff.ever_decaying_spores->at_max_stacks() )
-        td->debuff.ever_decaying_spores->expire();
+      // Every time this procs it has a chance to damage the player instead of applying a debuff stack.
+      // Testing shows this chance is currently 20% but since it's not found in spell data will have to rechecked in case this changes.
+      if ( rng().roll( 0.8 ) )
+      {
+        td->debuff.ever_decaying_spores->trigger();
+        if ( td->debuff.ever_decaying_spores->at_max_stacks() )
+          td->debuff.ever_decaying_spores->expire();
+      }
     }
   };
 
