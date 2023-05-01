@@ -1009,7 +1009,6 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     travel_speed = p->talents.channel_demonfire_travel->missile_speed();
   }
 
-  // TOCHECK: As of 2023-04-03, PTR is not canceling/resetting the Umbrafire buff when starting CDF. Presumably this will change before Live
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
@@ -1427,6 +1426,12 @@ struct channel_demonfire_tier_t : public destruction_spell_t
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
+
+    // Raging Demonfire will adjust the time remaining on all targets hit by an AoE pulse
+    if ( p()->talents.raging_demonfire->ok() && td( s->target )->dots_immolate->is_ticking() )
+    {
+      td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
 
     if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
       p()->buffs.umbrafire_embers->trigger();
