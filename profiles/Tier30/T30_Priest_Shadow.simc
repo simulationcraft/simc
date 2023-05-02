@@ -168,7 +168,7 @@ actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=!raid_event.adds.exists
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|fight_remains<20
 actions.trinkets+=/use_item,name=desperate_invokers_codex
 
-head=mask_of_the_furnace_seraph,id=202542,bonus_id=4800/4786/1504/6935,gem_id=192948
+head=mask_of_the_furnace_seraph,id=202542,bonus_id=4800/4786/1504/6935,gem_id=192985
 neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948
 shoulders=devotion_of_the_furnace_seraph,id=202540,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=1498
@@ -187,10 +187,10 @@ main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/4786/1498,enchant=wa
 # Gear Summary
 # gear_ilvl=448.93
 # gear_stamina=22495
-# gear_intellect=8420
+# gear_intellect=8495
 # gear_crit_rating=1412
-# gear_haste_rating=6346
-# gear_mastery_rating=3935
+# gear_haste_rating=6342
+# gear_mastery_rating=3902
 # gear_versatility_rating=1707
 # gear_armor=2447
 # set_bonus=tier30_2pc=1
