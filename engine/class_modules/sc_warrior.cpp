@@ -8896,7 +8896,7 @@ void warrior_t::apl_fury()
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
   single_target->add_action( this, spec.bloodbath, "bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
-  single_target->add_action( "bloodthirst,if=action.bloodthirst.crit_pct_current>=95" );
+  single_target->add_action( "bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
