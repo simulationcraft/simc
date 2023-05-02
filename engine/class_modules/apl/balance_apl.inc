@@ -67,7 +67,9 @@ aoe->add_action( "starfall,if=variable.cd_condition_aoe&(talent.orbital_strike&a
 aoe->add_action( "celestial_alignment,if=variable.cd_condition_aoe" );
 aoe->add_action( "incarnation,if=variable.cd_condition_aoe" );
 aoe->add_action( "warrior_of_elune" );
-aoe->add_action( "wrath,if=eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time" );
+aoe->add_action( "variable,name=enter_solar,value=spell_targets.starfire<3" );
+aoe->add_action( "starfire,if=variable.enter_solar&(eclipse.any_next|buff.eclipse_solar.remains<action.starfire.execute_time)" );
+aoe->add_action( "wrath,if=!variable.enter_solar&(eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time)" );
 aoe->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.fungal_growth|!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)" );
 aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2" );
 aoe->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
@@ -81,7 +83,7 @@ aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17" );
-aoe->add_action( "starfire,if=spell_targets>1" );
+aoe->add_action( "starfire,if=spell_targets>2&buff.eclipse_lunar.up" );
 aoe->add_action( "wrath" );
 aoe->add_action( "run_action_list,name=fallthru" );
 
