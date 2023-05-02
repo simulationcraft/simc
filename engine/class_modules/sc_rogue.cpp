@@ -1648,11 +1648,6 @@ public:
     register_damage_buff( p()->buffs.t29_subtlety_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_4pc_black_powder );
 
-    if ( p()->talent.rogue.nightstalker->ok() )
-    {
-      affected_by.nightstalker = p()->buffs.nightstalker->is_affecting( ab::s_data );
-    }
-
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
       affected_by.alacrity = true;
@@ -1996,9 +1991,9 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    // Apply Nightstalker direct damage increase via the corresponding driver spell.
-    // And yes, this can cause double dips with the persistent multiplier on DoTs which was the case with Crimson Tempest once.
-    if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
+    // Nightstalker
+    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) && 
+         p()->buffs.nightstalker->is_affecting_direct( ab::s_data ) )
     {
       m *= p()->buffs.nightstalker->direct_mod.multiplier;
     }
@@ -2018,6 +2013,14 @@ public:
     // Registered Damage Buffs
     for ( auto damage_buff : periodic_damage_buffs )
       m *= damage_buff->is_stacking ? damage_buff->stack_value_periodic() : damage_buff->value_periodic();
+
+    // Nightstalker
+    // 2023-05-01 -- Unclear if this snapshots yet, needs to be verified
+    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) &&
+         p()->buffs.nightstalker->is_affecting_periodic( ab::s_data ) )
+    {
+      m *= p()->buffs.nightstalker->periodic_mod.multiplier;
+    }
 
     // Masteries for Assassination and Subtlety have periodic damage in a separate effect. Just to be sure, use that instead of direct mastery_value.
     if ( affected_by.mastery_executioner.periodic )
@@ -2078,6 +2081,9 @@ public:
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = ab::composite_persistent_multiplier( state );
+
+    // 2023-05-01 -- Nightstalker may be intended to snapshot modifiers for 10.1, needs testing
+
     return m;
   }
 
@@ -9443,10 +9449,7 @@ void rogue_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
 
-  // DFALPHA -- This still seems very messed up and still appears to have a 50% value in data
-  //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
-  buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
-    ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
+  buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff );
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
 
