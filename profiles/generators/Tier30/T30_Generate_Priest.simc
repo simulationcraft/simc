@@ -6,10 +6,6 @@ role=spell
 position=ranged_back
 talents=BIQAAAAAAAAAAAAAAAAAAAAAAgkQSAAAAAAAAAAAAACp4ARSSLIJJRkIINSSSkGBJIki0CJBQSA
 
-flask=phial_of_static_empowerment_3
-
-default_actions=1
-
 head=mask_of_the_furnace_seraph,id=202542,bonus_id=4800/4786/1504/6935,gem_id=192985
 neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948
 shoulders=devotion_of_the_furnace_seraph,id=202540,bonus_id=4800/4786/1507
