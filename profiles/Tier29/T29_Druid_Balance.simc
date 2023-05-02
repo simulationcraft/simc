@@ -60,7 +60,9 @@ actions.aoe+=/starfall,if=variable.cd_condition_aoe&(talent.orbital_strike&astra
 actions.aoe+=/celestial_alignment,if=variable.cd_condition_aoe
 actions.aoe+=/incarnation,if=variable.cd_condition_aoe
 actions.aoe+=/warrior_of_elune
-actions.aoe+=/wrath,if=eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time
+actions.aoe+=/variable,name=enter_solar,value=spell_targets.starfire<3
+actions.aoe+=/starfire,if=variable.enter_solar&(eclipse.any_next|buff.eclipse_solar.remains<action.starfire.execute_time)
+actions.aoe+=/wrath,if=!variable.enter_solar&(eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time)
 actions.aoe+=/wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.fungal_growth|!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)
 actions.aoe+=/fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2
 actions.aoe+=/full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
@@ -74,7 +76,7 @@ actions.aoe+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
 actions.aoe+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.aoe+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17
-actions.aoe+=/starfire,if=spell_targets>1
+actions.aoe+=/starfire,if=spell_targets>2&buff.eclipse_lunar.up
 actions.aoe+=/wrath
 actions.aoe+=/run_action_list,name=fallthru
 
