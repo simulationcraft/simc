@@ -4157,13 +4157,13 @@ void elementium_pocket_anvil( special_effect_t& e )
       break;
     case ROGUE:
       driver_id = 408534;
-      e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*
-      proc_spell_id = {
-        {
-          Spell Ids, seperated by commas
-        }
-      };*/
+      // Does not currently work on Shadowstrike for Subtley or Ambush for Assassination/Outlaw
+      proc_spell_id = { { // Assassination
+                          5374, 27576,
+                          // Outlaw -- Sinister Strike
+                          193315, 197834,
+                          // Subtlety -- Backstab, Gloomblade
+                          53, 200758 } };
       break;
     case SHAMAN:
       driver_id     = 408584;
