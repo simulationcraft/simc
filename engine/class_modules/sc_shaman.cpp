@@ -10825,7 +10825,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)" );
     single->add_action( "lava_burst,if=buff.maelstrom_weapon.stack>=5" );
-    single->add_action( "lightning_bolt,if=talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down" );
+    single->add_action( "lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down" );
     single->add_action( "ice_strike,if=buff.doom_winds.up" );
     single->add_action( "sundering,if=buff.doom_winds.up&raid_event.adds.in>=40" );
     single->add_action( "crash_lightning,if=buff.doom_winds.up" );
