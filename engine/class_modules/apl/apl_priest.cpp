@@ -132,7 +132,6 @@ void shadow( player_t* p )
   filler->add_action( "vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up", "Cast Vampiric Touch to consume Unfurling Darkness, prefering the target with the lowest DoT duration active" );
   filler->add_action( "mind_spike_insanity" );
   filler->add_action( "mind_flay,if=buff.mind_flay_insanity.up" );
-  filler->add_action( "lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75|spell_targets.lights_judgment>1" );
   filler->add_action( "halo,if=raid_event.adds.in>20", "Save up to 20s if adds are coming soon." );
   filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=target.health.pct<20&active_enemies<4|talent.inescapable_torment&pet.fiend.active" );
   filler->add_action( "divine_star,if=raid_event.adds.in>10", "Save up to 10s if adds are coming soon." );
