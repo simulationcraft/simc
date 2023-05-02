@@ -1,6 +1,6 @@
 priest="T30_Priest_Shadow"
 level=70
-race=orc
+race=human
 spec=shadow
 role=spell
 position=ranged_back
