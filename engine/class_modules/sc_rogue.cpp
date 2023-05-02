@@ -390,6 +390,7 @@ public:
     damage_buff_t* t29_subtlety_2pc;
     damage_buff_t* t29_subtlety_4pc;
     damage_buff_t* t29_subtlety_4pc_black_powder;
+    buff_t* t30_assassination_4pc;
 
   } buffs;
 
@@ -629,6 +630,8 @@ public:
     const spell_data_t* rupture; // Assassination + Subtlety
 
     // Set Bonuses
+    const spell_data_t* t30_assassination_2pc_tick;
+    const spell_data_t* t30_assassination_4pc_buff;
     const spell_data_t* t30_subtlety_4pc_buff;
 
   } spec;
@@ -3444,11 +3447,38 @@ struct cold_blood_t : public rogue_spell_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
+  struct poisoned_edges_tick_t : public rogue_attack_t
+  {
+    poisoned_edges_tick_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
+    {
+    }
+
+    bool procs_poison() const override
+    { return false; }
+  };
+
+  poisoned_edges_tick_t* poisoned_edges_tick;
+
   crimson_tempest_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str )
+    rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str ),
+    poisoned_edges_tick( nullptr )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->set_bonuses.t30_assassination_2pc->ok() )
+    {
+      poisoned_edges_tick = p()->get_background_action<poisoned_edges_tick_t>(
+        secondary_trigger_type == secondary_trigger::DEATHMARK ? "crimson_tempest_deathmark_t30" :
+                                                                 "crimson_tempest_t30" );
+      add_child( poisoned_edges_tick );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3463,6 +3493,22 @@ struct crimson_tempest_t : public rogue_attack_t
   double combo_point_da_multiplier( const action_state_t* s ) const override
   {
     return static_cast<double>( cast_state( s )->get_combo_points() ) + 1.0;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+
+    if ( poisoned_edges_tick )
+    {
+      // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 20% tooltip value
+      // Additionally, appears to deal half damage from Deathmark DoT ticks
+      double multiplier = p()->bugs ? 0.25 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
+      if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
+        multiplier *= 0.5;
+      double damage = d->state->result_total * multiplier;
+      poisoned_edges_tick->execute_on_target( d->target, damage );
+    }
   }
 
   bool procs_poison() const override
@@ -3529,6 +3575,8 @@ struct deathmark_t : public rogue_attack_t
     tdata->dots.garrote_deathmark->cancel();
     tdata->dots.rupture_deathmark->cancel();
     tdata->debuffs.amplifying_poison_deathmark->expire();
+
+    p()->buffs.t30_assassination_4pc->trigger();
   }
 };
 
@@ -4545,16 +4593,43 @@ struct rupture_t : public rogue_attack_t
     { return false; }
   };
 
+  struct poisoned_edges_tick_t : public rogue_attack_t
+  {
+    poisoned_edges_tick_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
+    {
+    }
+
+    bool procs_poison() const override
+    { return false; }
+  };
+
   replicating_shadows_tick_t* replicating_shadows_tick;
+  poisoned_edges_tick_t* poisoned_edges_tick;
   
   rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str ),
-    replicating_shadows_tick( nullptr )
+    replicating_shadows_tick( nullptr ), poisoned_edges_tick( nullptr )
   {
     if ( p->talent.subtlety.replicating_shadows->ok() )
     {
       replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
       add_child( replicating_shadows_tick );
+    }
+
+    
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->set_bonuses.t30_assassination_2pc->ok() )
+    {
+      poisoned_edges_tick = p()->get_background_action<poisoned_edges_tick_t>(
+        secondary_trigger_type == secondary_trigger::DEATHMARK ? "rupture_deathmark_t30" :
+                                                                 "rupture_t30" );
+      add_child( poisoned_edges_tick );
     }
   }
 
@@ -4638,6 +4713,17 @@ struct rupture_t : public rogue_attack_t
     if ( replicating_shadows_tick )
     {
       replicating_shadows_tick->execute_on_target( d->target );
+    }
+
+    if ( poisoned_edges_tick )
+    {
+      // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 40% tooltip value
+      // Additionally, appears to deal half damage from Deathmark DoT ticks
+      double multiplier = p()->bugs ? 0.5 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
+      if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
+        multiplier *= 0.5;
+      double damage = d->state->result_total * multiplier;
+      poisoned_edges_tick->execute_on_target( d->target, damage );
     }
   }
 
@@ -7976,6 +8062,12 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= buffs.deeper_daggers->value_direct();
   }
 
+  if ( set_bonuses.t30_assassination_4pc->ok() &&
+       spec.t30_assassination_4pc_buff->effectN( 1 ).has_common_school( school ) )
+  {
+    m *= 1.0 + buffs.t30_assassination_4pc->value();
+  }
+
   return m;
 }
 
@@ -9144,6 +9236,8 @@ void rogue_t::init_spells()
   set_bonuses.t30_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T30, B2 );
   set_bonuses.t30_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T30, B4 );
 
+  spec.t30_assassination_2pc_tick = set_bonuses.t30_assassination_2pc->ok() ? find_spell( 409483 ) : spell_data_t::not_found();
+  spec.t30_assassination_4pc_buff = set_bonuses.t30_assassination_4pc->ok() ? find_spell( 409587 ) : spell_data_t::not_found();
   spec.t30_subtlety_4pc_buff = set_bonuses.t30_subtlety_4pc->ok() ? find_spell( 409987 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
@@ -9736,6 +9830,11 @@ void rogue_t::create_buffs()
   buffs.t29_subtlety_2pc = make_buff<damage_buff_t>( this, "honed_blades", set_bonuses.t29_subtlety_2pc->ok() ?
                                                      find_spell( 394894 ) : spell_data_t::not_found() );
   buffs.t29_subtlety_2pc->set_max_stack( as<int>( consume_cp_max() ) );
+
+  buffs.t30_assassination_4pc = make_buff( this, "poisoned_edges", set_bonuses.t30_assassination_4pc->ok() ?
+                                           find_spell( 409587 ) : spell_data_t::not_found() )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Cannot fully auto-parse as a single damage_buff_t since it has different mod for Black Powder
   const spell_data_t* t29_buff = ( set_bonuses.t29_subtlety_4pc->ok() ?
