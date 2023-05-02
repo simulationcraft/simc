@@ -1,79 +1,79 @@
-# warlock="T30_Warlock_Affliction"
-# level=70
-# spec=affliction
-# race=mechagnome
-# role=spell
-# position=ranged_back
-# talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
+warlock="T30_Warlock_Affliction"
+level=70
+spec=affliction
+race=mechagnome
+role=spell
+position=ranged_back
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
 
-# head=grimhorns_of_the_sinister_savant,id=202533,ilevel=447,gem_id=192985
-# neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192985/192961/192961
-# shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
-# back=voice_of_the_silent_star,id=204465,ilevel=457
-# chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
-# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192961,enchant_id=6574,crafted_stats=40/32
-# hands=grips_of_the_sinister_savant,id=202534,ilevel=447
-# waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192961,crafted_stats=36/49
-# legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
-# feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
-# finger1=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192961,enchant_id=6550,crafted_stats=36/49
-# finger2=scalebane_signet,id=193768,bonus_id=523,ilevel=447,gem_id=192961,enchant_id=6562
-# trinket1=igneous_flowstone,id=203996,ilevel=447
-# trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
-# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+head=grimhorns_of_the_sinister_savant,id=202533,ilevel=447,gem_id=192985
+neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192985/192961/192961
+shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
+back=voice_of_the_silent_star,id=204465,ilevel=457
+chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192961,enchant_id=6574,crafted_stats=40/32
+hands=grips_of_the_sinister_savant,id=202534,ilevel=447
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192961,crafted_stats=36/49
+legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
+feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
+finger1=signet_of_titanic_insight,id=192999,ilevel=447,gem_id=192961,enchant_id=6550,crafted_stats=36/49
+finger2=scalebane_signet,id=193768,bonus_id=523,ilevel=447,gem_id=192961,enchant_id=6562
+trinket1=igneous_flowstone,id=203996,ilevel=447
+trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
-# save=T30_Warlock_Affliction.simc
+save=T30_Warlock_Affliction.simc
 
-# warlock="T30_Warlock_Demonology"
-# level=70
-# spec=demonology
-# race=troll
-# role=spell
-# position=ranged_back
-# talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSIgQikDkiWSSOABAAAAAAJ
+warlock="T30_Warlock_Demonology"
+level=70
+spec=demonology
+race=troll
+role=spell
+position=ranged_back
+talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSIgQikDkiWSSOABAAAAAAJ
 
-# head=grimhorns_of_the_sinister_savant,id=202533,ilevel=447,gem_id=192985
-# neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192985/192948/192948
-# shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
-# back=voice_of_the_silent_star,id=204465,ilevel=457
-# chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
-# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192948,enchant_id=6574,crafted_stats=40/32
-# hands=grips_of_the_sinister_savant,id=202534,ilevel=447
-# waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192948,crafted_stats=36/49
-# legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
-# feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
-# finger1=onyx_impostors_birthright,id=204398,bonus_id=523,ilevel=450,gem_id=192948,enchant_id=6568
-# finger2=seal_of_questionable_loyalties,id=158314,bonus_id=523,ilevel=447,gem_id=192948,enchant_id=6556
-# trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
-# trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
-# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+head=grimhorns_of_the_sinister_savant,id=202533,ilevel=447,gem_id=192985
+neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192985/192948/192948
+shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
+back=voice_of_the_silent_star,id=204465,ilevel=457
+chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192948,enchant_id=6574,crafted_stats=40/32
+hands=grips_of_the_sinister_savant,id=202534,ilevel=447
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192948,crafted_stats=36/49
+legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
+feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
+finger1=onyx_impostors_birthright,id=204398,bonus_id=523,ilevel=450,gem_id=192948,enchant_id=6568
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=523,ilevel=447,gem_id=192948,enchant_id=6556
+trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
+trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
-# save=T30_Warlock_Demonology.simc
+save=T30_Warlock_Demonology.simc
 
-# warlock="T30_Warlock_Destruction"
-# level=70
-# spec=destruction
-# race=mechagnome
-# role=spell
-# position=ranged_back
-# talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAatmkAAAAAAAAAAAAIIpkEJ
-# dragonflight.ominous_chromatic_essence_dragonflight=bronze
-# dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+warlock="T30_Warlock_Destruction"
+level=70
+spec=destruction
+race=mechagnome
+role=spell
+position=ranged_back
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAatmkAAAAAAAAAAAAIIpkEJ
+dragonflight.ominous_chromatic_essence_dragonflight=bronze
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
-# head=grimhorns_of_the_sinister_savant,id=202533,ilevel=447,gem_id=192985
-# neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8793/9366,ilevel=447,gem_id=192985/192961/192961,crafted_stats=36/32
-# shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
-# back=voice_of_the_silent_star,id=204465,ilevel=457
-# chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
-# wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192961,enchant_id=6574,crafted_stats=40/32
-# hands=grips_of_the_sinister_savant,id=202534,ilevel=447
-# waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192961,crafted_stats=36/49
-# legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
-# feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
-# finger1=loop_of_pulsing_veins,id=159463,bonus_id=523,ilevel=447,gem_id=192961,enchant_id=6556
-# finger2=signet_of_titanic_insight,id=192999,bonus_id=8780/8793/8960,ilevel=447,gem_id=192961,enchant_id=6556
-# trinket1=igneous_flowstone,id=203996,ilevel=447
-# trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
-# main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
+head=grimhorns_of_the_sinister_savant,id=202533,ilevel=447,gem_id=192985
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8793/9366,ilevel=447,gem_id=192985/192961/192961,crafted_stats=36/32
+shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
+back=voice_of_the_silent_star,id=204465,ilevel=457
+chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192961,enchant_id=6574,crafted_stats=40/32
+hands=grips_of_the_sinister_savant,id=202534,ilevel=447
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192961,crafted_stats=36/49
+legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
+feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
+finger1=loop_of_pulsing_veins,id=159463,bonus_id=523,ilevel=447,gem_id=192961,enchant_id=6556
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8780/8793/8960,ilevel=447,gem_id=192961,enchant_id=6556
+trinket1=igneous_flowstone,id=203996,ilevel=447
+trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
-# save=T30_Warlock_Destruction.simc
+save=T30_Warlock_Destruction.simc
