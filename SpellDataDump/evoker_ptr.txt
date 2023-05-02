@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-02/49407)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -811,7 +811,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #16 (id=1082253)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.50000 | Misc Value: 37 | Misc Value 2: 2675 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -7040,7 +7039,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053857)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.50000 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 4), PvP Coefficient (2 -> 1.5)
 Description      : After casting $s1 empower spells, gain Essence Burst immediately and another $409899t1 sec later.
 
 Name             : Imminent Destruction (id=405651) [Spell Family (224)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-02/49407)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4215,12 +4215,10 @@ Effects          :
                    Base Value: 26.5 | Scaled Value: 26.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 10, 118
-Hotfixed         : Base Value (10 -> 26.5)
 #16 (id=984572)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 26.5 | Scaled Value: 26.5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
-Hotfixed         : Base Value (10 -> 26.5)
 #17 (id=984590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
@@ -4255,7 +4253,6 @@ Hotfixed         : Base Value (10 -> 26.5)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : NEW EFFECT
 
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin, Monk
@@ -15924,7 +15921,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (70 -> 75)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-02/49407)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -2446,10 +2446,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=128371)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.75 -> 1.5)
 #2 (id=128372)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (0.7 -> 1.75)
 #3 (id=128388)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE Custom (8)
 #4 (id=1072773)  : Energize Power (30)
@@ -2479,10 +2477,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (1.4 -> 3.5)
 #2 (id=128397)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.45 -> 0.9)
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(132) -> AOE Custom (8)
 Description      : $@spelldesc114165
@@ -2615,7 +2611,6 @@ Attributes       : ........ ........ ........ ...x....   ........ ........ .....
 Effects          :
 #1 (id=139112)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
-Hotfixed         : SP Coefficient (0.25 -> 0.4)
 Description      : $@spelldesc114158
 
 Name             : Contemplation (id=121183) [Spell Family (10)] 
@@ -4510,7 +4505,6 @@ Description      : Your Consecration is $s1% larger, and enemies within it have 
 Your Divine Hammer is $s4% larger, and enemies within them have ${$198137s3*-1}% reduced movement speed.][]
 
 Name             : Righteous Protector (id=204074) [Spell Family (10), Passive] 
-Hotfixed         : Variables
 Talent Entry     : Protection [tree=spec, row=10, col=5, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
@@ -4532,7 +4526,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301163)   : Apply Aura (6) | Dummy (4)
                    Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 0.50000 | Misc Value: 5 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 66)
 Description      : Holy Power abilities reduce the remaining cooldown on Avenging Wrath and Guardian of Ancient Kings by $<reduction> sec.
 Variables        : $reduction=${$m1/100*3}.1
 
@@ -11564,10 +11557,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=885104)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
-Hotfixed         : Base Value (35 -> 30)
 #2 (id=894604)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 10)
 #3 (id=894606)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -15160,7 +15151,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #11 (id=1033322)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (2 -> 1)
 #12 (id=1033323)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -17129,7 +17119,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Holy Shock (25914)
                    Family Flags: 48
-Hotfixed         : Base Value (15 -> 60)
 #2 (id=1072761)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=1072762)  : Apply Aura (6) | Dummy (4)

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-02/49407)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -16343,7 +16343,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
                    Affected Spells: Soul Swap (86121), Demonfire (270481), Soul Swap (386951)
                    Family Flags: 120
-Hotfixed         : Base Value (50 -> 40)
 Description      : Demonic Tyrant deals $s4% additional damage.
 
 Active Wild Imps grant $s1 stack of Demonic Servitude. Active greater demons grant $s2 stacks of Demonic Servitude.
@@ -16960,7 +16959,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1054078)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.60000 | Target: Self (1)
-Hotfixed         : Base Value (120 -> 100), PvP Coefficient (0.5 -> 0.6)
 #2 (id=1054088)  : None (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 #3 (id=1054159)  : None (0)

@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-02/49407)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -17086,7 +17086,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053868)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 30)
 #2 (id=1075530)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Every $s1 Focus spent reduces the cooldown of Wildfire Bomb by ${$m2/1000}.1 sec, and the target of your latest Kill Command takes $410167s2% increased damage from Wildfire Bomb for $410167d.
@@ -17341,7 +17340,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Enemy (6)
                    Affected Spells: Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
-Hotfixed         : Base Value (75 -> 40)
 Description      : $@spelldesc405530
 Tooltip          : Damage taken from Wildfire Bomb increased by $s1%.
 
