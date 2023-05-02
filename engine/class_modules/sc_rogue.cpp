@@ -3447,9 +3447,9 @@ struct cold_blood_t : public rogue_spell_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
-  struct poisoned_edges_tick_t : public rogue_attack_t
+  struct poisoned_edges_t : public rogue_attack_t
   {
-    poisoned_edges_tick_t( util::string_view name, rogue_t* p ) :
+    poisoned_edges_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
     {
     }
@@ -3458,26 +3458,19 @@ struct crimson_tempest_t : public rogue_attack_t
     { return false; }
   };
 
-  poisoned_edges_tick_t* poisoned_edges_tick;
+  poisoned_edges_t* poisoned_edges_damage;
 
   crimson_tempest_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str ),
-    poisoned_edges_tick( nullptr )
+    poisoned_edges_damage( nullptr )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
-  }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    if ( p()->set_bonuses.t30_assassination_2pc->ok() )
+    if ( p->set_bonuses.t30_assassination_2pc->ok() )
     {
-      poisoned_edges_tick = p()->get_background_action<poisoned_edges_tick_t>(
-        secondary_trigger_type == secondary_trigger::DEATHMARK ? "crimson_tempest_deathmark_t30" :
-                                                                 "crimson_tempest_t30" );
-      add_child( poisoned_edges_tick );
+      poisoned_edges_damage = p->get_background_action<poisoned_edges_t>( "crimson_tempest_t30" );
+      add_child( poisoned_edges_damage );
     }
   }
 
@@ -3495,19 +3488,29 @@ struct crimson_tempest_t : public rogue_attack_t
     return static_cast<double>( cast_state( s )->get_combo_points() ) + 1.0;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( poisoned_edges_damage )
+    {
+      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
+      double damage = state->result_total * multiplier;
+      poisoned_edges_damage->execute_on_target( state->target, damage );
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     rogue_attack_t::tick( d );
 
-    if ( poisoned_edges_tick )
+    if ( poisoned_edges_damage )
     {
-      // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 20% tooltip value
-      // Additionally, appears to deal half damage from Deathmark DoT ticks
-      double multiplier = p()->bugs ? 0.25 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
-      if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
-        multiplier *= 0.5;
+      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
       double damage = d->state->result_total * multiplier;
-      poisoned_edges_tick->execute_on_target( d->target, damage );
+      poisoned_edges_damage->execute_on_target( d->target, damage );
     }
   }
 
@@ -4720,6 +4723,7 @@ struct rupture_t : public rogue_attack_t
       // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 40% tooltip value
       // Additionally, appears to deal half damage from Deathmark DoT ticks
       double multiplier = p()->bugs ? 0.5 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
+      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
       if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
         multiplier *= 0.5;
       double damage = d->state->result_total * multiplier;
