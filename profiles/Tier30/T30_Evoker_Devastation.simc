@@ -147,29 +147,29 @@ actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&(!trinket.1.has_
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_1_manual
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_2_manual
 
-head=crown_of_obsidian_secrets,id=202488,ilevel=447,gem_id=192988
-neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/9477/8782/9405/8791/9366,ilevel=447,gem_id=192988/192961/192961,crafted_stats=36/49
+head=crown_of_obsidian_secrets,id=202488,bonus_id=8780,ilevel=447,gem_id=192982
+neck=choker_of_stolen_thunder,id=206180,ilevel=447,gem_id=192958/192958/192958
 shoulders=wingspan_of_obsidian_secrets,id=202486,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457
-chest=emberguard_harness,id=193782,ilevel=447,enchant=waking_stats_3,enchant_id=6625
-wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8780,ilevel=447,gem_id=192961,enchant_id=6580
+chest=flametouched_chainmail,id=193422,bonus_id=8840/8836/8902/1537,enchant=waking_stats_3,crafted_stats=49/32
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=8780/8960,ilevel=447,gem_id=192961,enchant=devotion_of_leech_3
 hands=claws_of_obsidian_secrets,id=202489,ilevel=447
-waist=flametouched_chain,id=193425,bonus_id=8836/8840/8902/9405/8793/9366/9415/8780,ilevel=447,gem_id=192961,enchant_id=6904,crafted_stats=49/36
+waist=flametouched_chain,id=193425,bonus_id=8836/8840/8902/9405/8793/9366/9415/8780/9379/8960,ilevel=447,gem_id=192961,enchant=shadowed_belt_clasp_3,crafted_stats=49/36
 legs=chausses_of_obsidian_secrets,id=202487,ilevel=450,enchant=temporal_spellthread_3,enchant_id=6541
 feet=crechebound_soldiers_boots,id=204424,ilevel=450
-finger1=scalebane_signet,id=193768,ilevel=447,gem_id=192958,enchant=devotion_of_mastery_3
-finger2=loop_of_pulsing_veins,id=159463,ilevel=447,gem_id=192958,enchant=devotion_of_mastery_3
-trinket1=spoils_of_neltharus,id=193773,ilevel=447
+finger1=scalebane_signet,id=193768,bonus_id=8780,ilevel=447,gem_id=192961,enchant=devotion_of_critical_strike_3
+finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192961,enchant=devotion_of_critical_strike_3
+trinket1=igneous_flowstone,id=203996,ilevel=447
 trinket2=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1485/8767,ilevel=457
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=449.13
-# gear_stamina=22538
-# gear_intellect=8583
-# gear_crit_rating=3006
-# gear_haste_rating=3632
-# gear_mastery_rating=5913
+# gear_ilvl=449.33
+# gear_stamina=22588
+# gear_intellect=8508
+# gear_crit_rating=4052
+# gear_haste_rating=3052
+# gear_mastery_rating=5510
 # gear_versatility_rating=784
 # gear_leech_rating=200
 # gear_armor=5775
