@@ -1187,8 +1187,7 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
-    if ( p()->dbc->ptr )
-      affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
     affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
@@ -2530,7 +2529,7 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
-    if ( p()->dbc->ptr && p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
     {
       rend_dot->set_target( s->target );
       rend_dot->execute();
