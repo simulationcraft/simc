@@ -451,6 +451,7 @@ public:
     gain_t* venomous_wounds_death;
     gain_t* relentless_strikes;
     gain_t* symbols_of_death;
+    gain_t* symbols_of_death_t30;
     gain_t* slice_and_dice;
 
     // CP Gains
@@ -626,6 +627,9 @@ public:
 
     // Multi-Spec
     const spell_data_t* rupture; // Assassination + Subtlety
+
+    // Set Bonuses
+    const spell_data_t* t30_subtlety_4pc_buff;
 
   } spec;
 
@@ -932,6 +936,13 @@ public:
     const spell_data_t* t29_outlaw_4pc;
     const spell_data_t* t29_subtlety_2pc;
     const spell_data_t* t29_subtlety_4pc;
+
+    const spell_data_t* t30_assassination_2pc;
+    const spell_data_t* t30_assassination_4pc;
+    const spell_data_t* t30_outlaw_2pc;
+    const spell_data_t* t30_outlaw_4pc;
+    const spell_data_t* t30_subtlety_2pc;
+    const spell_data_t* t30_subtlety_4pc;
   } set_bonuses;
 
   // Options
@@ -1435,6 +1446,7 @@ public:
     bool zoldyck_insignia = false;
 
     bool t29_assassination_2pc = false;
+    bool t30_subtlety_4pc = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1584,6 +1596,11 @@ public:
     if ( p->set_bonuses.t29_assassination_2pc->ok() )
     {
       affected_by.t29_assassination_2pc = ab::data().affected_by( p->spec.envenom->effectN( 7 ) );
+    }
+
+    if ( p->set_bonuses.t30_subtlety_4pc->ok() )
+    {
+      affected_by.t30_subtlety_4pc = ab::data().affected_by( p->spec.t30_subtlety_4pc_buff->effectN( 1 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
@@ -2101,6 +2118,18 @@ public:
     }
 
     return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by.t30_subtlety_4pc && p()->buffs.symbols_of_death->check() )
+    {
+      cm += p()->spec.t30_subtlety_4pc_buff->effectN( 1 ).percent();
+    }
+
+    return cm;
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
@@ -4838,6 +4867,30 @@ struct shadow_dance_t : public rogue_spell_t
     {
       trigger_combo_point_gain( as<int>( p()->talent.subtlety.the_first_dance->effectN( 1 ).base_value() ),
                                 p()->gains.the_first_dance );
+    }
+
+    if ( p()->set_bonuses.t30_subtlety_2pc->ok() )
+    {
+      // 2023-05-01 -- This currently acts like a normal cast, including The Rotten and resetting the duration
+      //               Tooltip states 6 seconds, but this still just seems to add the normal 10s + pandemic duration
+      timespan_t symbols_duration = p()->bugs ? p()->buffs.symbols_of_death->base_buff_duration :
+        timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 1 ).base_value() );
+
+      p()->buffs.symbols_of_death->trigger( symbols_duration );
+      p()->buffs.the_rotten->trigger();
+      p()->resource_gain( RESOURCE_ENERGY, p()->spec.symbols_of_death->effectN( 5 ).resource(),
+                          p()->gains.symbols_of_death_t30 );
+
+      // Extends Rupture DoTs on all active targets
+      timespan_t extend_duration = timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 2 ).base_value() );
+      for ( auto t : sim->target_non_sleeping_list )
+      {
+        rogue_td_t* tdata = p()->get_target_data( t );
+        if ( tdata->dots.rupture->is_ticking() )
+        {
+          tdata->dots.rupture->adjust_duration( extend_duration );
+        }
+      }
     }
   }
 
@@ -9084,6 +9137,15 @@ void rogue_t::init_spells()
   set_bonuses.t29_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T29, B2 );
   set_bonuses.t29_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T29, B4 );
 
+  set_bonuses.t30_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T30, B2 );
+  set_bonuses.t30_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T30, B4 );
+  set_bonuses.t30_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T30, B2 );
+  set_bonuses.t30_outlaw_4pc        = sets->set( ROGUE_OUTLAW, T30, B4 );
+  set_bonuses.t30_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T30, B2 );
+  set_bonuses.t30_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T30, B4 );
+
+  spec.t30_subtlety_4pc_buff = set_bonuses.t30_subtlety_4pc->ok() ? find_spell( 409987 ) : spell_data_t::not_found();
+
   // Active Spells ==========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -9205,6 +9267,7 @@ void rogue_t::init_gains()
   gains.shadow_techniques         = get_gain( "Shadow Techniques" );
   gains.slice_and_dice            = get_gain( "Slice and Dice" );
   gains.symbols_of_death          = get_gain( "Symbols of Death" );
+  gains.symbols_of_death_t30      = get_gain( "Symbols of Death (T30)" );
   gains.the_rotten                = get_gain( "The Rotten" );
   gains.venom_rush                = get_gain( "Venom Rush" );
   gains.venomous_wounds           = get_gain( "Venomous Vim" );
