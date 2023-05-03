@@ -31,14 +31,32 @@ struct expiation_t final : public priest_spell_t
       consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
     background = dual = true;
-    may_crit          = false;
-    tick_may_crit     = false;
+    may_crit          = true;
+    tick_may_crit     = true;
     // Spell data has this listed as physical, but in-game it's shadow
     school = SCHOOL_SHADOW;
 
     // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
     // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
     snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.discipline.schism.enabled() )
+    {
+      const priest_td_t* td = priest().find_target_data( s->target );
+      if ( td && td->buffs.schism->check() )
+      {
+        auto adjust_percent = priest().talents.discipline.schism->effectN( 2 ).percent();
+        d *= 1.0 + adjust_percent;
+        sim->print_debug( "schism modifies expiation damage by {} (new total: {})", adjust_percent, d );
+      }
+    }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
