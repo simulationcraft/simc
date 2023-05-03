@@ -5498,12 +5498,19 @@ void ever_decaying_spores( special_effect_t& effect )
       // Every time this procs it has a chance to damage the player instead of applying a debuff stack and it will also eat the proc 
       // if the debuff is ticking on the target.
       // Testing shows this chance is currently 20% but since it's not found in spell data will have to rechecked in case this changes.
-      if ( rng().roll( 0.8 ) && !damage->get_dot( s->target )->is_ticking() )
+      if ( rng().roll( 0.8 ) )
       {
         td->debuff.ever_decaying_spores->trigger();
         if ( td->debuff.ever_decaying_spores->at_max_stacks() )
           td->debuff.ever_decaying_spores->expire();
       }
+    }
+
+    
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( !damage->get_dot( s->target )->is_ticking() )
+        dbc_proc_callback_t::trigger( a, s );    
     }
   };
 
