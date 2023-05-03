@@ -4480,6 +4480,17 @@ void vessel_of_searing_shadow( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Heart of Thunder
+// 413419 Driver
+// 413423 Damage
+void heart_of_thunder ( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "thunderous_pulse", e, "thunderous_pulse", e.trigger() );
+
+  e.execute_action = damage;
+  new dbc_proc_callback_t( e.player, e );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -6601,7 +6612,7 @@ void register_special_effects()
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
   register_special_effect( 395175, items::treemouths_festering_splinter );
   register_special_effect( 401395, items::vessel_of_searing_shadow );
-
+  register_special_effect( 413419, items::heart_of_thunder );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
