@@ -586,6 +586,10 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       child_searing_light = priest().background_actions.searing_light;
     }
+    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T30, B2 ) )
+    {
+      apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
+    }
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -2114,8 +2118,8 @@ void priest_t::create_buffs_shadow()
   buffs.unfurling_darkness_cd =
       make_buff( this, "unfurling_darkness_cd",
                  talents.shadow.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-  buffs.void_torrent            = make_buff( this, "void_torrent", talents.shadow.void_torrent );
-  buffs.mind_devourer           = make_buff( this, "mind_devourer", find_spell( 373204 ) )
+  buffs.void_torrent  = make_buff( this, "void_torrent", talents.shadow.void_torrent );
+  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                             ->set_trigger_spell( talents.shadow.mind_devourer )
                             ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
   buffs.shadowy_insight = make_buff<buffs::shadowy_insight_t>( *this );
