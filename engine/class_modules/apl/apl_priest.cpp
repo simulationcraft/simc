@@ -213,8 +213,8 @@ void holy( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* main_variables = p->get_action_priority_list( "main_variables" );
   action_priority_list_t* main = p->get_action_priority_list( "main" );
+  action_priority_list_t* divine_favor_chastise_prep = p->get_action_priority_list( "divine_favor_chastise_prep" );
   action_priority_list_t* divine_favor_chastise_active = p->get_action_priority_list( "divine_favor_chastise_active" );
   action_priority_list_t* divine_favor_filler = p->get_action_priority_list( "divine_favor_filler" );
   action_priority_list_t* divine_image = p->get_action_priority_list( "divine_image" );
@@ -226,65 +226,67 @@ void holy( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  main_variables->add_action( "variable,name=chastise_cdr,op=set,value=((cooldown.divine_word.remains%action.smite.execute_time)*4)", "VARIABLES" );
-
   default_->add_action( "run_action_list,name=main", "RUN ACTIONS" );
 
-  main->add_action( "call_action_list,name=main_variables", "MAIN" );
-  main->add_action( "call_action_list,name=cooldowns" );
-  main->add_action( "holy_fire,if=(talent.empyreal_blaze|talent.harmonious_apparatus)|(!ticking|refreshable)", "Always use HF if we have empyreal blaze or harmonious apparatus  Otherwise, only use it if not ticking or refreshable" );
-  main->add_action( "shadow_word_pain,if=(refreshable|!ticking)&buff.apotheosis.down", "Don't cast SW:P during apotheosis" );
-  main->add_action( "divine_word,if=cooldown.holy_word_chastise.up&(!talent.empyreal_blaze|cooldown.empyreal_blaze.up)", "Divine Word only if we can sync with Chastise.  If we have Empyreal Blaze, sync with that as well." );
-  main->add_action( "holy_word_chastise,if=buff.divine_word.up", "Holy word chastise early to trigger divine favor: chastise" );
+  main->add_action( "call_action_list,name=cooldowns", "---------------------------------------------------------------------------  Main Actions  ---------------------------------------------------------------------------" );
+  main->add_action( "holy_fire,cycle_targets=1,target_if=min:dot.holy_fire.remains,if=(talent.empyreal_blaze|talent.harmonious_apparatus|!ticking|refreshable)&!(buff.empyreal_blaze.up&(cooldown.divine_word.up|buff.divine_word.up)&cooldown.holy_word_chastise.up)", "Always use HF if we have empyreal blaze (dot extension) or harmonious apparatus (cd reduction) or if it's not currently ticking. Otherwise, only use when refreshable to be sure we get the longest duration possible. It's worth it to cast even when the target will die soon based on just the initial hit damage. We also don't want to cast immediately once empyreal blaze is up when we are prepping divine word" );
+  main->add_action( "shadow_word_pain,if=(refreshable|!ticking)&(target.time_to_die>=dot.shadow_word_pain.duration)&!buff.divine_favor_chastise.up&!buff.apotheosis.up", "Don't cast SW:P during apotheosis or divine favor: chastise. We also don't cycle targets because it isn't worth the GCDs, since Smite deals slightly more damage than a full SW:P." );
+  main->add_action( "call_action_list,name=divine_favor_chastise_prep,if=talent.divine_word&talent.holy_word_chastise&buff.divine_favor_chastise.down", "Prepare to enter divine favor: chastise" );
   main->add_action( "run_action_list,name=divine_favor_chastise_active,if=buff.divine_favor_chastise.up", "Enter Divine Favor rotation with divine favor: chastise buff up" );
   main->add_action( "run_action_list,name=divine_favor_filler,if=talent.divine_word&talent.holy_word_chastise&buff.divine_favor_chastise.down", "Run divine favor fillers rotation with buff down" );
-  main->add_action( "run_action_list,name=divine_image,if=talent.divine_image", "Run divine image rotation with divine image" );
+  main->add_action( "run_action_list,name=divine_image,if=talent.divine_image", "Run divine image rotation with divine image talented" );
   main->add_action( "run_action_list,name=generic", "Otherwise generic rotation" );
 
-  divine_favor_chastise_active->add_action( "holy_word_chastise", "Divine Favor (Active)" );
-  divine_favor_chastise_active->add_action( "empyreal_blaze" );
-  divine_favor_chastise_active->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
-  divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<50" );
+  divine_favor_chastise_prep->add_action( "variable,name=empyreal_exec_time,op=setif,condition=talent.empyreal_blaze,value=action.empyreal_blaze.execute_time,value_else=0", "---------------------------------------------------------------------------  Divine Favor (Prep)  ---------------------------------------------------------------------------  empyreal_exec_time: Store how long EB will take to execute" );
+  divine_favor_chastise_prep->add_action( "variable,name=apotheosis_exec_time,op=setif,condition=talent.apotheosis,value=action.apotheosis.execute_time,value_else=0", "apotheosis_exec_time: Store how long Apotheosis will take to execute" );
+  divine_favor_chastise_prep->add_action( "apotheosis,if=(cooldown.holy_word_chastise.remains>cooldown.divine_word.remains)&(cooldown.divine_word.remains<=(variable.empyreal_exec_time+variable.apotheosis_exec_time))", "Use apotheosis to get Chastise back if its on cooldown and Divine Word will be up soon. We can use Apotheosis (2min CD) to reset Chastise for every other Divine Word (1min CD)." );
+  divine_favor_chastise_prep->add_action( "empyreal_blaze,if=cooldown.divine_word.remains<=action.empyreal_blaze.execute_time", "If we're about to cast divine favor, cast empyreal blaze first so we don't waste a GCD on non-damage during the buff window" );
+  divine_favor_chastise_prep->add_action( "divine_word,if=cooldown.holy_word_chastise.up&(!talent.empyreal_blaze|buff.empyreal_blaze.up)", "Divine Word only if we can sync with Chastise and (if talented) Empyreal Blaze" );
+  divine_favor_chastise_prep->add_action( "holy_word_chastise,if=buff.divine_word.up", "Holy word chastise to trigger divine favor: chastise" );
+
+  divine_favor_chastise_active->add_action( "halo,if=spell_targets.halo>=2", "---------------------------------------------------------------------------  Divine Favor (Active)  ---------------------------------------------------------------------------" );
+  divine_favor_chastise_active->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_favor_chastise_active->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_favor_chastise_active->add_action( "mindgames" );
-  divine_favor_chastise_active->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets.holy_nova>=3" );
-  divine_favor_chastise_active->add_action( "divine_star" );
-  divine_favor_chastise_active->add_action( "halo" );
+  divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<20" );
+  divine_favor_chastise_active->add_action( "holy_word_chastise" );
+  divine_favor_chastise_active->add_action( "smite,cycle_targets=1,target_if=min:dot.holy_fire.remains,if=spell_targets.holy_nova>=2", "We want to cycle smite to different targets to spread holy fire dots in AOE situations, this will buff holy nova's damage" );
   divine_favor_chastise_active->add_action( "smite" );
 
-  divine_favor_filler->add_action( "holy_word_chastise,if=(cooldown.holy_word_chastise.duration-variable.chastise_cdr)<cooldown.divine_word.remains", "Divine Favor (Filler)" );
-  divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<50" );
+  divine_favor_filler->add_action( "halo,if=spell_targets.halo>=2", "---------------------------------------------------------------------------  Divine Favor (Filler)  ---------------------------------------------------------------------------" );
+  divine_favor_filler->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_favor_filler->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_favor_filler->add_action( "mindgames" );
-  divine_favor_filler->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3" );
-  divine_favor_filler->add_action( "divine_star" );
-  divine_favor_filler->add_action( "halo" );
+  divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<20" );
+  divine_favor_filler->add_action( "holy_word_chastise,if=(cooldown.apotheosis.remains<cooldown.divine_word.remains)|(cooldown.holy_word_chastise.duration_expected<=cooldown.divine_word.remains)", "We can use chastise for damage as long as we will have apotheosis available before the next divine word, otherwise only use it when it will be back up at the same time as divine word" );
   divine_favor_filler->add_action( "smite" );
 
-  divine_image->add_action( "holy_word_sanctify", "Divine Image" );
-  divine_image->add_action( "holy_word_serenity" );
+  divine_image->add_action( "apotheosis,if=buff.answered_prayers.down&!(cooldown.holy_word_sanctify.up|cooldown.holy_word_serenity.up|cooldown.holy_word_chastise.up)", "---------------------------------------------------------------------------  Divine Image  ---------------------------------------------------------------------------  We want to apotheosis when our holy words aren't about to come off of cooldown, and when answered prayers apotheosis is not already active." );
+  divine_image->add_action( "holy_word_sanctify,line_cd=9", "line_cd prevents re-casting sanctify and serenity right away, wasting GCDs that could be used to proc divine image damage. In testing, the sweet spot balance between adding more divine images, triggering apotheosis, and casting damage CDs was to let the image from each healing holy word expire before re-casting" );
+  divine_image->add_action( "holy_word_serenity,line_cd=9" );
   divine_image->add_action( "holy_word_chastise" );
   divine_image->add_action( "empyreal_blaze" );
-  divine_image->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
-  divine_image->add_action( "shadow_word_death,if=target.health.pct<50&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "mindgames,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "divine_star,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "halo,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "halo,if=spell_targets.halo>=2" );
+  divine_image->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_image->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  divine_image->add_action( "mindgames" );
+  divine_image->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_image->add_action( "smite" );
 
-  generic->add_action( "holy_word_chastise", "Generic" );
+  generic->add_action( "holy_word_chastise", "---------------------------------------------------------------------------  Generic  ---------------------------------------------------------------------------" );
   generic->add_action( "empyreal_blaze" );
-  generic->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
-  generic->add_action( "shadow_word_death,if=target.health.pct<50&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "mindgames,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "divine_star,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "halo,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>(gcd.max*3)", "Hold Apotheosis if chastise will be up soon" );
+  generic->add_action( "halo,if=spell_targets.halo>=2" );
+  generic->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  generic->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  generic->add_action( "mindgames" );
+  generic->add_action( "shadow_word_death,if=target.health.pct<20" );
   generic->add_action( "smite" );
 
-  cooldowns->add_action( "power_infusion,if=!talent.divine_word|(talent.divine_word&buff.divine_favor_chastise.up)", "Cooldowns  Sync PI with divine favor: chastise if we took divine word" );
+  cooldowns->add_action( "shadowfiend", "---------------------------------------------------------------------------  Cooldowns  ---------------------------------------------------------------------------" );
+  cooldowns->add_action( "power_infusion,if=(!talent.divine_word|(cooldown.divine_word.up&cooldown.holy_word_chastise.up))", "Sync PI with divine favor: chastise if we took divine word" );
   cooldowns->add_action( "potion,if=buff.power_infusion.up", "Only potion in sync with power infusion" );
   cooldowns->add_action( "use_items,if=buff.power_infusion.up", "hold trinkets to use with PI" );
-  cooldowns->add_action( "shadowfiend" );
 }
 //holy_apl_end
 //nospec_apl_start
