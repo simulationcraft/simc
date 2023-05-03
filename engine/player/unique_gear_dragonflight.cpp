@@ -456,7 +456,7 @@ void wafting_devotion( special_effect_t& effect )
     buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
   }
   
-  buff->set_stat( STAT_HASTE_RATING, haste )
+  buff->add_stat( STAT_HASTE_RATING, haste )
       ->add_stat( STAT_SPEED_RATING, speed );
   
   effect.name_str = buff_name;
@@ -5510,7 +5510,7 @@ void ever_decaying_spores( special_effect_t& effect )
     void trigger( action_t* a, action_state_t* s ) override
     {
       if ( !damage->get_dot( s->target )->is_ticking() )
-        dbc_proc_callback_t::trigger( a, s );    
+        dbc_proc_callback_t::trigger( a, s );
     }
   };
 
