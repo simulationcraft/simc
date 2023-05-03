@@ -7594,9 +7594,8 @@ namespace monk
     passives.chi_wave_heal = find_spell( 132463 );
     passives.claw_of_the_white_tiger = find_spell( 389541 );
     passives.chi_burst_damage = find_spell( 148135 );
-    passives.faeline_stomp_damage = find_spell( 345727 );
+    passives.faeline_stomp_damage = find_spell( 388207 );
     passives.fortifying_brew = find_spell( 120954 );
-    // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
     passives.healing_elixir = find_spell( 122281 );
     passives.mystic_touch = find_spell( 8647 );
 
@@ -7639,7 +7638,7 @@ namespace monk
     passives.empowered_tiger_lightning = find_spell( 335913 );
     passives.fae_exposure_dmg = find_spell( 395414 );
     passives.fae_exposure_heal = find_spell( 395413 );
-    passives.faeline_stomp_ww_damage = find_spell( 327264 );
+    passives.faeline_stomp_ww_damage = find_spell( 388201 );
     passives.fists_of_fury_tick = find_spell( 117418 );
     passives.flying_serpent_kick_damage = find_spell( 123586 );
     passives.focus_of_xuen = find_spell( 252768 );
