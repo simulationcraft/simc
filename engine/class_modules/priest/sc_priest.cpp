@@ -2009,6 +2009,10 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
+  // Four Divine Stars
+  if ( specialization() == PRIEST_SHADOW && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 )
+    resources.initial_opt[ RESOURCE_INSANITY ] = 24;
+
   base_t::init_resources( force );
 }
 
