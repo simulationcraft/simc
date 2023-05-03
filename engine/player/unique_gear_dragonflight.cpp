@@ -4296,21 +4296,52 @@ void ominous_chromatic_essence( special_effect_t& e )
       util::string_split<std::string_view>( e.player->dragonflight_opts.ominous_chromatic_essence_allies, "/" );
   for ( auto s : splits )
   {
-    if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
-      has_obsidian_minor = true;
-    else if ( util::str_compare_ci( s, "ruby" ) && !has_ruby_major )
-      has_ruby_minor = true;
-    else if ( util::str_compare_ci( s, "bronze" ) && !has_bronze_major )
-      has_bronze_minor = true;
-    else if ( util::str_compare_ci( s, "azure" ) && !has_azure_major )
-      has_azure_minor = true;
-    else if ( util::str_compare_ci( s, "emerald" ) && !has_emerald_major )
-      has_emerald_minor = true;
+    if ( util::str_compare_ci( s, "obsidian" ) )
+    {
+      if ( !has_obsidian_major )
+      {
+        has_obsidian_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "ruby" ) )
+    {
+      if ( !has_ruby_major )
+      {
+        has_ruby_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "bronze" ) )
+    {
+      if ( !has_bronze_major )
+      {
+        has_bronze_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "azure" ) )
+    {
+      if ( !has_azure_major )
+      {
+        has_azure_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "emerald" ) )
+    {
+      if ( !has_emerald_major )
+      {
+        has_emerald_minor = true;
+      }
+    }
     else if ( util::str_compare_ci( s, "" ) )
+    {
       return;
+    }
     else
+    {
       e.player->sim->error(
-          "Invalid Option for Ominous Chromatic Essence Allies. Your Main Dragonflight can not be entered." );
+          "'{}' Is not a valid Dragonflight for Ominous Chromatic Essence Allies. Options are: obsidian, azure, "
+          "emerald, ruby, or bronze",
+          s );
+    }
   }
 
   // Minor Buffs
