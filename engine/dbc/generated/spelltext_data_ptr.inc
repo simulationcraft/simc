@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49407
-static const std::array<spelltext_data_t, 19895> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19895,6 +19895,7 @@ static const std::array<spelltext_data_t, 19895> __ptr_spelltext_data { {
   { 413419, "Melee attacks against you have a chance to make the heart pulse, dealing $413423s1 Nature damage split between nearby enemies.", 0, 0 },
   { 413423, "$@spelldesc413419", 0, 0 },
   { 413426, "$@spelldesc91144", "Haste increased by $s1.", 0 },
+  { 414380, "Contains 10 Flightstones.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.49407
