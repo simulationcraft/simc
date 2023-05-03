@@ -341,6 +341,7 @@ public:
     // Feral
     double predator_rppm_rate = 0.0;
     bool owlweave_cat = true;
+    bool zerk_biteweave = false;
 
     // Guardian
     bool catweave_bear = false;
