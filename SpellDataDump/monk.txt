@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-11/48966)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-22/48999)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3696,7 +3696,7 @@ Effects          :
                    Affected School(s): Physical
 #4 (id=982195)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520), Invoke Niuzao, the Black Ox (395267)
                    Family Flags: 3
 Description      : Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target, and frequently Stomps, damaging all nearby enemies$?s322740[ for $227291s1 plus $322740s1% of Stagger damage you have recently purified.][.]
 
@@ -15041,11 +15041,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023740)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -120000 | Scaled Value: -120000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520), Invoke Niuzao, the Black Ox (395267)
                    Family Flags: 3
 #2 (id=1023741)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -13000 | Scaled Value: -13000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520), Invoke Niuzao, the Black Ox (395267)
                    Family Flags: 3
 #3 (id=1026491)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7000 | Scaled Value: 7000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -17652,6 +17652,38 @@ Effects          :
                    Family Flags: 20
 Description      : $@spelldesc393668
 Tooltip          : Fists of Fury damage increased by $w1%.
+
+Name             : Invoke Niuzao, the Black Ox (id=395267) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 12 seconds
+Cooldown         : 180 seconds
+Affecting spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2)
+Family Flags     : 3
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ....x...   ........ ........ ..x..... ....x... 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1035629)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 180743 | Misc Value 2: 0x135e | Target: Self (1)
+#2 (id=1035630)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1035631)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
+                   Affected School(s): Physical
+Description      : Summons an effigy of Niuzao, the Black Ox for $d. Niuzao attacks your primary target, and frequently Stomps, damaging all nearby enemies$?s322740[ for $227291s1 plus $322740s1% of Stagger damage recently purified.][.]
+
+While active, $s2% of damage delayed by Stagger is instead Staggered by Niuzao.
+Tooltip          : Niuzao is staggering $s2% of the Monk's Stagger damage.
 
 Name             : Fae Exposure (id=395413) [Spell Family (53)] 
 Class            : Monk

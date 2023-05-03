@@ -138,7 +138,11 @@ actions.single_target+=/primordial_wave,target_if=min:dot.flame_shock.remains,if
 actions.single_target+=/flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies=1&refreshable&!buff.surge_of_power.up
 # Spread Flame Shock to multiple targets only if talents were selected that benefit from it.
 actions.single_target+=/flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&refreshable&!buff.surge_of_power.up&(talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|talent.primordial_wave.enabled|talent.searing_flames.enabled|talent.magma_chamber.enabled),cycle_targets=1
-actions.single_target+=/stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up
+# {EB/Swelling/SoP Lighting build} Start SK window if you have enough maelstrom to: EB > SoP SK_LB > LvB > EB.
+actions.single_target+=/stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&maelstrom>=116&talent.elemental_blast.enabled&talent.surge_of_power.enabled&talent.swelling_maelstrom.enabled&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled
+# {EB/SoP Lightning builds} Use Stormkeeper if you already got Surge of Power buff rolling.
+actions.single_target+=/stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&buff.surge_of_power.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled
+actions.single_target+=/stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&(!talent.surge_of_power.enabled|!talent.elemental_blast.enabled|talent.lava_surge.enabled|talent.echo_of_the_elements.enabled|talent.primordial_surge.enabled)
 actions.single_target+=/ascendance,if=!buff.stormkeeper.up
 # Stormkeeper is strong and should be used.
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up
@@ -158,14 +162,18 @@ actions.single_target+=/icefury,if=talent.electrified_shocks.enabled
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up
 actions.single_target+=/lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time
-# Windspeaker's Lava Resurgence is strong. Don't sit on it.
-actions.single_target+=/lava_burst,if=buff.windspeakers_lava_resurgence.up
-# Lava Surge is neat. Utilize it.
-actions.single_target+=/lava_burst,if=cooldown_react&buff.lava_surge.up
+# {EB/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge.
+actions.single_target+=/frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled&talent.elemental_blast.enabled&(maelstrom>=61&maelstrom<75&cooldown.lava_burst.remains>gcd|maelstrom>=49&maelstrom<63&cooldown.lava_burst.ready)
+# {ES/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge.
+actions.single_target+=/frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.elemental_blast.enabled&(maelstrom>=36&maelstrom<50&cooldown.lava_burst.remains>gcd|maelstrom>=24&maelstrom<38&cooldown.lava_burst.ready)
+# Windspeaker's Lava Resurgence is strong. Don't sit on it...Unless it's Lightning build and you save it to buff Elemental Blast.
+actions.single_target+=/lava_burst,if=buff.windspeakers_lava_resurgence.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|maelstrom>=63&talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)
+# Lava Surge is neat. Utilize it...Unless it's Lightning build and you save it to buff Elemental Blast.
+actions.single_target+=/lava_burst,if=cooldown_react&buff.lava_surge.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)
 # Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom.
 actions.single_target+=/lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&!talent.swelling_maelstrom.enabled&maelstrom<=80
 # Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom.
-actions.single_target+=/lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&talent.swelling_maelstrom.enabled&maelstrom<=130
+actions.single_target+=/lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=75|maelstrom>=50&!talent.elemental_blast.enabled)&talent.swelling_maelstrom.enabled&maelstrom<=130
 # Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. Additionally Elemental Blast is stronger than EoGS. In this case don't use Earthquake on single target.
 actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)
 # Use Earthquake against two enemies unless you have to alternate because of Echoes of Great Sundering.
@@ -186,14 +194,15 @@ actions.single_target+=/icefury
 # Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities.
 actions.single_target+=/lightning_bolt,if=pet.storm_elemental.active&debuff.lightning_rod.up&(debuff.electrified_shocks.up|buff.power_of_the_maelstrom.up)
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
-actions.single_target+=/frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled
+actions.single_target+=/frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.flux_melting.enabled
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
-actions.single_target+=/lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echoes_of_the_elements.enabled)
-actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2
+actions.single_target+=/lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)
+# Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use Lightning Bolt without wasting Stormkeeper charges.
+actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.elemental_blast.enabled|!talent.master_of_the_elements.enabled|buff.stormkeeper.up|t30_2pc_timer.next_tick<2&set_bonus.tier30_2pc
 # Use your Icefury buffs if you didn't improve the talent.
 actions.single_target+=/frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled
-# Casting Chain Lightning at two targets is mor efficient than Lightning Bolt.
+# Casting Chain Lightning at two targets is more efficient than Lightning Bolt.
 actions.single_target+=/chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)
 # Filler spell. Always available. Always the bottom line.
 actions.single_target+=/lightning_bolt

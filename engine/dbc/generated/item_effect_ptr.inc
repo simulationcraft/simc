@@ -1,4 +1,4 @@
-// Item effects, wow build 10.1.0.49092
+// Item effects, wow build 10.1.0.49318
 static const std::array<item_effect_t, 8408> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -2509,7 +2509,7 @@ static const std::array<item_effect_t, 8408> __ptr_item_effect_data { {
   {  12092,  92185,  56347,   0,   1,    0,      -1,      -1 }, // Lead Plating
   {  12093,  91140,  56351,   0,   1,    0,      -1,      -1 }, // Cleansing Tears
   {  12094,  92187,  56370,   0,   0, 1190,  180000,  180000 }, // Amazing Fortitude
-  {  12095,  91144,  56377,   0,   1,    0,      -1,      -1 }, // Anthem
+  {  12095,  91144,  56377,   0,   1,    0,      -1,      -1 }, // Rainsong
   {  12096,  91365,  56393,   0,   1,    0,      -1,      -1 }, // Heartened
   {  12097,  92090,  56394,   0,   1,    0,      -1,      -1 }, // Grace
   {  12098,  91003,  56400,   0,   1,    0,      -1,      -1 }, // Crescendo of Suffering
@@ -5638,8 +5638,8 @@ static const std::array<item_effect_t, 8408> __ptr_item_effect_data { {
   {  27297,  91352, 133222,   0,   0, 1141,   90000,   15000 }, // Polarization
   {  27298,  92185, 133224,   0,   1,    0,      -1,      -1 }, // Lead Plating
   {  27299,  91140, 133227,   0,   1,    0,      -1,      -1 }, // Cleansing Tears
-  {  27300,  92187, 133246,   0,   0, 1190,  120000,   20000 }, // Amazing Fortitude
-  {  27301,  91144, 133252,   0,   1,    0,      -1,      -1 }, // Anthem
+  {  27300, 413419, 133246,   0,   1,    0,      -1,      -1 }, // Heart of Thunder
+  {  27301,  91144, 133252,   0,   1,    0,      -1,      -1 }, // Rainsong
   {  27302,  91365, 133268,   0,   1,    0,      -1,      -1 }, // Heartened
   {  27303,  92090, 133269,   0,   1,    0,      -1,      -1 }, // Grace
   {  27304,  91003, 133275,   0,   1,    0,      -1,      -1 }, // Crescendo of Suffering

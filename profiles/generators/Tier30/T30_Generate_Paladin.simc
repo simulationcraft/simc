@@ -1,0 +1,83 @@
+# paladin="T30_Paladin_Protection"
+# level=70
+# race=draenei
+# region=us
+# server=valdrakken
+# role=tank
+# spec=protection
+
+# talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKSKIJhSTSChESAAACAAAAAAAACJJEIJRSKSkkAAiAAQgA
+
+# head=,id=200417,bonus_id=4800/4786/1498,gem_id=192919
+# neck=,id=195496,bonus_id=4800/4786/1498,gem_id=192919/192919/192919
+# shoulder=,id=200419,bonus_id=4800/4786/1498
+# back=,id=137483,bonus_id=1795/6808/4786/3300/6935
+# chest=,id=195494,bonus_id=4800/4786/1498,enchant=waking_stats_3
+# wrist=,id=200421,ilevel=424,bonus_id=4800/4786/1498,gem_id=192919
+# hands=,id=133628,bonus_id=1795/6808/4786/3300/6935
+# waist=,id=200420,bonus_id=4800/4786/1507,gem_id=192985
+# legs=,id=193706,bonus_id=6808/4786/1643,enchant=frosted_armor_kit_3
+# feet=,id=195517,bonus_id=4800/4786/1498
+# finger1=,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
+# finger2=,id=134542,bonus_id=1795/6808/4786/3300/6935,gem_id=192919,enchant=devotion_of_haste_3
+# trinket1=,id=133641,bonus_id=1795/6808/4786/3300/6935
+# trinket2=,id=194308,bonus_id=4800/4786/1498
+# main_hand=,id=193700,bonus_id=6808/4786/1643,enchant=sophic_devotion_3
+# off_hand=,id=195520,bonus_id=4800/4786/1498
+
+# save=T30_Paladin_Protection.simc
+
+
+# paladin="T30_Paladin_Retribution"
+# spec=retribution
+# level=70
+# race=dark_iron_dwarf
+# role=attack
+# position=back
+# talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjkWkkWSAAAAAAAEBJJFBSQkSESCpkmAJiQIKNaBA
+
+# head=virtuous_silver_heaume,id=200417,bonus_id=4800/4786/1498/6935,gem_id=192985
+# neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498/6935/6935/6935,gem_id=192948/192948/192948
+# shoulders=virtuous_silver_pauldrons,id=200419,bonus_id=4800/4786/1498
+# back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300
+# chest=virtuous_silver_breastplate,id=200414,bonus_id=4800/4786/1498,enchant_id=6625
+# wrists=allied_wristguard_of_companionship,id=190526,bonus_id=8836/8802/8960/1498,gem_id=192948
+# hands=virtuous_silver_gauntlets,id=200416,bonus_id=4800/4786/1498
+# waist=unstable_frostfire_belt,id=191623,,bonus_id=8836/8802/8960/1498,gem_id=192948
+# legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,enchant_id=6490
+# feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
+# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant_id=6556
+# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant_id=6556
+# trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+# trinket2=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
+# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+
+# save=T30_Paladin_Retribution.simc
+
+
+# # paladin="T27_Paladin_Holy"
+# # level=70
+# # race=blood_elf
+# # spec=holy
+# # role=attack
+# # position=back
+# # talents=1212331
+
+# # head=dark_tormentors_gaze,id=186315,bonus_id=7187/1498,gem_id=187312
+# # neck=interplanar_keystone,id=186379,bonus_id=6807/1498/6935,gem_id=173129
+# # shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187314
+# # back=blighted_margraves_cloak,id=178755,bonus_id=6536/1566/6646,enchant=fortified_leech
+# # chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187313,enchant=eternal_stats
+# # wrists=airborne_abductors_vambraces,id=186316,bonus_id=7187/1498,gem_id=187318,enchant=eternal_intellect
+# # hands=guillotine_gauntlets,id=186369,bonus_id=7187/1498,gem_id=187315
+# # waist=shadowghast_waistguard,id=171418,bonus_id=6649/6650/7054/7451/1559,gem_id=173129
+# # legs=halkiass_towering_pillars,id=178818,bonus_id=6536/1566/6646
+# # feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+# # finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1566/6536/6646,gem_id=173129,enchant=tenet_of_versatility
+# # finger2=entwined_gorger_tendril,id=178848,bonus_id=1566/6536/6646,gem_id=173129,enchant=tenet_of_haste
+# # trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
+# # trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+# # main_hand=amarths_spellblade,id=178737,bonus_id=6536/1566/6646,enchant=celestial_guidance
+# # off_hand=moriazs_spare_targe,id=186415,bonus_id=7187/1498
+
+# # save=T27_Paladin_Holy.simc

@@ -2431,18 +2431,21 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     void execute() override
     {
-      timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
-      min_gcd = cast_time;
-      if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
+      if( !dk() -> is_ptr() )
       {
-        min_gcd = 1_s;
-      }
-      else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
-      {
-        min_gcd = 0.75_s;
+        timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
+        min_gcd = cast_time;
+        if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
+        {
+          min_gcd = 1_s;
+        }
+        else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
+        {
+          min_gcd = 0.75_s;
+        }
+        ++gargoyle_strike_count;
       }
       pet_spell_t<gargoyle_pet_t>::execute();
-      ++gargoyle_strike_count;
     }
   };
 
@@ -6831,7 +6834,7 @@ struct frostwhelps_aid_t final : public death_knight_spell_t
 struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
 {
   wrath_of_the_frostwyrm_damage_t( util::string_view name, death_knight_t* p) :
-    death_knight_spell_t( "frostwyrms_fury_t30", p,  p -> spell.wrath_of_the_frostwyrm_damage )
+    death_knight_spell_t( name, p,  p -> spell.wrath_of_the_frostwyrm_damage )
   {
     aoe = -1;
     background = true;
@@ -6879,7 +6882,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 
     if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
-      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury", p );
+      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury_t30", p );
       add_child( t30_frostwyrm );
     }
 
@@ -8229,8 +8232,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     }
   }
 
-  // Procs from RP spent
-  if ( resource_type == RESOURCE_RUNIC_POWER )
+ // Procs from RP spent
+  if ( resource_type == RESOURCE_RUNIC_POWER && action )
   {
     // 2019-02-12: Runic Empowerment, Runic Corruption, Red Thirst and gargoyle's shadow empowerment
     // seem to be using the base cost of the ability rather than the last resource cost
@@ -8249,7 +8252,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
-    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost );
+    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() && pets.gargoyle )
     {

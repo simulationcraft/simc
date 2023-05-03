@@ -1,0 +1,55 @@
+# demonhunter="T30_Demon_Hunter_Havoc"
+# spec=havoc
+# level=70
+# race=night_elf
+# timeofday=day
+# role=attack
+# position=back
+# talents=BEkAAAAAAAAAAAAAAAAAAAAAAIBkQKBaJJSSkGCAAAAAAASCSLlIJpgItkQSSSSSA
+
+# head=skybound_avengers_visor,id=200345,bonus_id=4800/4786/1498,gem_id=192958
+# neck=elemental_lariat,id=193001,ilevel=418,gem_id=192982/192958/192958,crafted_stats=32/49
+# shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
+# back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
+# chest=lifebound_chestpiece,id=193399,bonus_id=3524/8836/8840/8902/8960/8932/8780,ilevel=418,enchant_id=6625,crafted_stats=32/36
+# wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/4786/1498,gem_id=192958
+# hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
+# waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300,gem_id=192958
+# legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,ilevel=424,enchant_id=6496
+# feet=biornskin_moccasins,id=134193,bonus_id=1795/6808/4786/3300
+# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant_id=6550
+# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant_id=6550
+# trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+# trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
+# main_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
+# off_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
+
+# save=T30_Demon_Hunter_Havoc.simc
+
+demonhunter="T30_Demon_Hunter_Vengeance"
+spec=vengeance
+level=70
+race=night_elf
+timeofday=day
+role=tank
+position=front
+talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAoEBJJIJaIJRgkSCIahEJSCJpkEkkkQJIAAAAA
+
+head=kinslayers_hood,id=202524,bonus_id=4800/4786/1504/6935,gem_id=192945
+neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/9405/8790/8846/9365,gem_id=192945/192945/192945,crafted_stats=49/32,ilevel=447
+shoulder=kinslayers_tainted_spaulders,id=202522,bonus_id=4800/4786/1507,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=kinslayers_vest,id=202527,bonus_id=4800/4786/1501,enchant_id=6625
+wrist=lifebound_bindings,id=193419,bonus_id=8836/8840/8902/7936/9405/9379/8960/8790/9366,crafted_stats=32/36,gem_id=192945,ilevel=447
+hands=kinslayers_bloodstained_grips,id=202525,bonus_id=4800/4786/1501,ilevel=450
+waist=kinslayers_sash,id=202521,gem_id=192985,ilevel=450
+legs=kinslayers_legguards,id=202523,bonus_id=4800/4786/1504,enchant_id=6496
+feet=lifebound_boots,id=193398,crafted_stats=32/36,ilevel=447
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
+finger2=onyx_annulet,id=203460,enchant_id=6550,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491
+trinket1=elementium_pocket_anvil,id=202617,bonus_id=4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=4800/4786/1498
+main_hand=bilestained_crawg_tusks,id=159653,enchant_id=6649,ilevel=447
+off_hand=bilestained_crawg_tusks,id=159653,enchant_id=6649,ilevel=447
+
+save=T30_Demon_Hunter_Vengeance.simc

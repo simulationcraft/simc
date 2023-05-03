@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
+SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-22/48999)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -910,7 +910,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Item Cast With Owner Skill (88), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=2042)     : Apply Aura (6) | Modify Casting Speed (216)
+#1 (id=2042)     : Apply Aura (6) | Unknown(355)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.53333 | Target: Enemy (6)
 #2 (id=806027)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.53333 | Target: Enemy (6)
@@ -11489,7 +11489,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : ........ ........ ........ ........   
                  : No Redirection (35), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Item Cast With Owner Skill (88), Do Not Display Range (126), No Partial Immunity (139), Show Mechanic as Combat Text (213), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=894884)   : Apply Aura (6) | Modify Casting Speed (216)
+#1 (id=894884)   : Apply Aura (6) | Unknown(355)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48000 | Target: Enemy (6)
 #2 (id=894885)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 0.48000 | Target: Enemy (6)
@@ -12935,7 +12935,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012995)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 3.00000 | Misc Value 2: 0x4 | Target: Self (1)
 Description      : Stamina increased by $s1%.
 
 Name             : Deft Maneuvers (id=381878) [Spell Family (8), Passive] 
@@ -14536,7 +14536,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032824)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Envenom also increases your weapon poisons' damage by $s1%.
 
 Name             : Rogue Assassination Class Set 4pc (id=393725) [Spell Family (8), Passive, Hidden] 
@@ -14704,7 +14704,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Can't Crit (93), Not In Spellbook (143), Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=1033248)  : Apply Aura (6) | Periodic Heal% (20): every 2 seconds
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : $@spelldesc393970
 Tooltip          : Healing $w1% of max health every $t.
 
@@ -15368,7 +15368,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034917)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Ambush (8676), Sinister Strike (193315), Sinister Strike (197834), Sinister Strike (341541), Ambush (385794), Ambush (385897)
                    Family Flags: 9, 98
 Tooltip          : Sinister Strike and Ambush critical strike chance increased by $w1%.
@@ -15393,7 +15393,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034928)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Dispatch (2098)
                    Family Flags: 112
 Tooltip          : Dispatch damage increased by $w1%.
@@ -15418,11 +15418,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1034937)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Backstab (53), Shadowstrike (185438), Shuriken Storm (197835), Gloomblade (200758), Shadowstrike (345121)
                    Family Flags: 2, 104, 109, 127
 #2 (id=1034938)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Backstab (53), Shadowstrike (185438), Shuriken Storm (197835), Gloomblade (200758), Shadowstrike (345121)
                    Family Flags: 2, 104, 109, 127
 Description      : $@spelldesc393729
@@ -15561,15 +15561,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=1035133)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rupture (1943), Eviscerate (196819), Eviscerate (328082), Rupture (360826), Rupture (394031)
                    Family Flags: 17, 20
 #2 (id=1035135)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Black Powder (319175), Black Powder (319190)
                    Family Flags: 44
 #3 (id=1037883)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Eviscerate (196819), Eviscerate (328082), Rupture (360826), Rupture (394031)
                    Family Flags: 17, 20
 Description      : $@spelldesc393730
@@ -15667,8 +15667,8 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
-Proc Flags       : ........ ....x... x.x..... ........   ........ ........ ........ ........   
-                 : Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : ....x... ....x... x.x..... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -15680,9 +15680,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268)
 Effects          :
 #1 (id=1053897)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1077238)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Rupture deals an additional $s1% damage as Nature. Crimson Tempest deals an additional $s2% damage as Nature.
 Tooltip          : Rupture deals an additional $s1% damage as Nature. Crimson Tempest deals an additional $s2% damage as Nature.
 
@@ -15723,9 +15723,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053900)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damage you inflict applies a Soulrip, dealing 5% of all damage you deal as physical damage over 8 sec.
-Tooltip          : Damage you inflict applies a Soulrip, dealing 5% of all damage you deal as physical damage over 8 sec.
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Damage you inflict applies a Soulrip, dealing $s1% of all damage you deal as physical damage over $409604d.
+Tooltip          : Damage you inflict applies a Soulrip, dealing $s1% of all damage you deal as physical damage over $409604d.
 
 Name             : Rogue Outlaw 10.1 Class Set 4pc (id=405562) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -15767,10 +15767,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053903)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Shadow Dance grants you Symbols of Death for 10 sec and extends the duration of Rupture by 4 sec. 
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
+#2 (id=1080613)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Shadow Dance grants you Symbols of Death for $s1 sec and extends the duration of Rupture by $s2 sec. 
 
-Tooltip          : Shadow Dance grants you Symbols of Death for 10 sec and extends the duration of Rupture by 4 sec.
+Tooltip          : Shadow Dance grants you Symbols of Death for $s1 sec and extends the duration of Rupture by $s2 sec.
 
 Name             : Rogue Subtlety 10.1 Class Set 4pc (id=405564) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
@@ -15892,8 +15894,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1074557)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 0x8 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 0x8 | Target: Self (1)
                    Affected School(s): Nature
+#2 (id=1080961)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value 2: 2668 (Label) | Target: Self (1)
 Description      : Nature damage increased by $s1%.
 Tooltip          : Nature damage increased by $w1%.
 
@@ -15904,14 +15908,14 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
+                 : Can't Crit (93), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334)
 Effects          :
 #1 (id=1074591)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15924,14 +15928,14 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display Range (126)
+                 : Can't Crit (93), Do Not Display Range (126), Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1074592)  : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -15954,7 +15958,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1074593)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Increases Agility by $s1%. 
 Tooltip          : Increases Agility by $w1%.
 
@@ -15974,7 +15978,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1075254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Black Powder (319175), Black Powder (319190), Eviscerate (328082)
                    Family Flags: 17, 44
 Description      : Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $s1%.

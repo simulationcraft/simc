@@ -464,6 +464,7 @@ public:
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
     player_talent_t avatar_of_destruction; // Summons Blasphemy when consuming Ritual of Ruin
+    const spell_data_t* summon_blasphemy;
   } talents;
 
   struct proc_actions_t

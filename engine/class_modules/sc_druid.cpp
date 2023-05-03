@@ -1712,7 +1712,7 @@ struct protector_of_the_pack_buff_t : public druid_buff_t
   protector_of_the_pack_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, s ),
       mul( p->talent.protector_of_the_pack->effectN( 1 ).percent() ),
-      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : 4.0 )
+      cap_coeff( p->specialization() == DRUID_RESTORATION ? 3.0 : p->is_ptr() ? 5.0 : 4.0 )
   {
     set_trigger_spell( p->talent.protector_of_the_pack );
     set_name_reporting( "protector_of_the_pack" );
@@ -1751,6 +1751,9 @@ struct shadows_of_the_predator_buff_t : public druid_buff_t
       p()->predator_revealed_stacks->add( current_stack );
 
       base_t::decrement( current_stack - reset, v );
+
+      // as we are using decrement, manually reschedule buff expiration
+      expiration.front()->reschedule( refresh_duration( buff_duration() ) );
 
       p()->buff.predator_revealed->trigger();
     }
@@ -7876,6 +7879,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
   {
     aoe = -1;
     energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
+    if ( p->is_ptr() ) reduced_aoe_targets = 8;
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -9164,7 +9168,7 @@ double brambles_handler( const action_state_t* s )
   double attack_power = ( p->cache.attack_power() + weapon_ap ) * p->composite_attack_power_multiplier();
 
   // Brambles coefficient is not in spelldata :(
-  double absorb_cap = attack_power * 0.06;
+  double absorb_cap = attack_power * ( p->is_ptr() ?  0.075 : 0.06 );
 
   // Calculate actual amount absorbed.
   double amount_absorbed = std::min( s->result_mitigated, absorb_cap );
@@ -10071,7 +10075,7 @@ void druid_t::create_buffs()
 
   buff.matted_fur =
       make_buff<absorb_buff_t>( this, "matted_fur", talent.matted_fur->effectN( 1 ).trigger() )
-          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) );
+          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) * ( is_ptr() ? 1.25 : 1.0 ) );
 
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( this );
 
@@ -10532,6 +10536,7 @@ void druid_t::create_actions()
     auto fm = get_secondary_action_n<full_moon_t>( "orbit breaker", find_spell( 274283 ), "" );
     fm->s_data_reporting = talent.orbit_breaker;
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
+    if ( is_ptr() ) fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
     fm->background = true;
     active.orbit_breaker = fm;

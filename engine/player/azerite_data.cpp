@@ -4306,10 +4306,10 @@ struct blood_of_the_enemy_t : public azerite_essence_major_t
     // R3 25% critical hit damage buff
     if ( essence.rank() >= 3 )
     {
-      player->buffs.seething_rage->trigger();  // First buff the player
+      player->buffs.seething_rage_essence->trigger();  // First buff the player
       range::for_each( player->pet_list, []( pet_t* pet ) {
         if ( !pet->is_sleeping() )
-          pet->buffs.seething_rage->trigger();
+          pet->buffs.seething_rage_essence->trigger();
       } );
     }
 

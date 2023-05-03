@@ -287,6 +287,7 @@ public:
 
   /// Deeply Rooted Elements tracking
   extended_sample_data_t dre_samples;
+  extended_sample_data_t dre_uptime_samples;
   unsigned dre_attempts;
 
   // Cached actions
@@ -437,6 +438,7 @@ public:
   {
     rotation_type_e rotation = ROTATION_STANDARD;
     int dre_flat_chance = -1;
+    unsigned dre_forced_failures = 2U;
   } options;
 
   // Cooldowns
@@ -771,6 +773,7 @@ public:
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
+      dre_uptime_samples( "dre_uptime_tracker", false ),
       dre_attempts( 0U ),
       action(),
       pet( this ),
@@ -821,6 +824,7 @@ public:
       resource_regeneration = regen_type::DYNAMIC;
 
     dre_samples.reserve( 8192 );
+    dre_uptime_samples.reserve( 8192 );
   }
 
   ~shaman_t() override = default;
@@ -932,6 +936,7 @@ public:
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
+  void datacollection_end() override;
 
   // APL releated methods
   void init_action_list() override;
@@ -1917,7 +1922,7 @@ public:
 
     if ( mw_affected_stacks && affected_by_maelstrom_weapon )
     {
-      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
+      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 1 ).percent() +
                            this->p()->talent.raging_maelstrom->effectN( 2 ).percent();
 
       mw_multiplier = stack_value * mw_affected_stacks;
@@ -4091,13 +4096,28 @@ struct sundering_t : public shaman_attack_t
     may_proc_stormbringer = may_proc_flametongue = true;
   }
 
+  double action_da_multiplier() const override
+  {
+    double m = shaman_attack_t::action_da_multiplier();
+
+    // In-Game, Sundering damage double dips on T30 4PC damage buff
+    if ( player->bugs )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
+    // In-game, Sundering that procs T30 4PC already benefits from the T30 damage buff
+    p()->buff.t30_4pc_enh_damage->trigger();
+    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
+
     shaman_attack_t::execute();
 
     p()->buff.t30_2pc_enh->trigger();
-    p()->buff.t30_4pc_enh_damage->trigger();
-    p()->buff.t30_4pc_enh_cl->trigger( p()->buff.t30_4pc_enh_cl->data().max_stacks() );
   }
 };
 
@@ -4333,7 +4353,8 @@ struct fire_elemental_t : public shaman_spell_t
     : shaman_spell_t( "fire_elemental", player, player->talent.fire_elemental )
   {
     parse_options( options_str );
-    harmful = may_crit = false;
+    harmful  = true;
+    may_crit = false;
   }
 
   void execute() override
@@ -4363,7 +4384,8 @@ struct storm_elemental_t : public shaman_spell_t
     : shaman_spell_t( "storm_elemental", player, player->talent.storm_elemental )
   {
     parse_options( options_str );
-    harmful = may_crit = false;
+    harmful  = true;
+    may_crit = false;
   }
 
   void execute() override
@@ -5244,6 +5266,19 @@ struct fire_nova_explosion_t : public shaman_spell_t
   {
     background = true;
   }
+
+  double action_da_multiplier() const override
+  {
+    double m = shaman_spell_t::action_da_multiplier();
+
+    // In-game, Fire Nova damage double-dips on T30 4PC buff
+    if ( player->bugs )
+    {
+      m *= 1.0 + p()->buff.t30_4pc_enh_damage->value();
+    }
+
+    return m;
+  }
 };
 
 struct fire_nova_t : public shaman_spell_t
@@ -6119,7 +6154,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
     shaman_spell_t( "feral_spirit", player, player->talent.feral_spirit )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful = true;
 
     // Cache pointer for MW tracking uses
     p()->action.feral_spirits = this;
@@ -6751,6 +6786,10 @@ public:
   {
     parse_options( options_str );
 
+    if ( p()->is_ptr() ) {
+      affected_by_master_of_the_elements = true;
+    }
+
     // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
     // Max Targets value on a spell to mean "aoe this many targets"
     aoe = 0;
@@ -7287,7 +7326,7 @@ struct doom_winds_t : public shaman_spell_t
     shaman_spell_t( "doom_winds", player, player->talent.doom_winds )
   {
     parse_options( options_str );
-    may_crit = harmful = false;
+    may_crit = false;
   }
 
   void execute() override
@@ -8712,6 +8751,7 @@ void shaman_t::create_options()
   } ) );
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
   add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
+  add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -8739,6 +8779,7 @@ void shaman_t::copy_from( player_t* source )
   raptor_glyph = p->raptor_glyph;
   options.rotation = p->options.rotation;
   options.dre_flat_chance = p->options.dre_flat_chance;
+  options.dre_forced_failures = p->options.dre_forced_failures;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -8873,6 +8914,20 @@ void shaman_t::analyze( sim_t& sim )
   {
     dre_samples.analyze();
     dre_samples.create_histogram( dre_samples.max() - dre_samples.min() + 1 );
+    dre_uptime_samples.analyze();
+    dre_uptime_samples.create_histogram( std::ceil( dre_uptime_samples.max() ) - std::floor( dre_uptime_samples.min() ) + 1 );
+  }
+}
+
+// shaman_t::datacollection_end ============================================
+
+void shaman_t::datacollection_end()
+{
+  player_t::datacollection_end();
+
+  if ( buff.ascendance->iteration_uptime() > 0_ms )
+  {
+    dre_uptime_samples.add( 100.0 * buff.ascendance->iteration_uptime() / iteration_fight_length );
   }
 }
 
@@ -9589,7 +9644,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   {
     // per attempt there exists an ever growing 1% chance
     // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
-    proc_chance = dre_attempts * 0.01 - 0.02;
+    proc_chance = dre_attempts * 0.01 - 0.01 * options.dre_forced_failures;
   }
 
   if ( !rng().roll( proc_chance ) )
@@ -9870,6 +9925,10 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
 
 void shaman_t::trigger_flash_of_lightning()
 {
+  if ( !talent.flash_of_lightning.ok() ) {
+    return;
+  }
+
   if ( !talent.stormkeeper.enabled() && !talent.stormkeeper2.enabled() &&
        !talent.storm_elemental.enabled() && !talent.totemic_recall.enabled() )
   {
@@ -10633,7 +10692,9 @@ void shaman_t::init_action_list_elemental()
         "Use Primordial Wave as much as possible without wasting buffs." );
     single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies=1&refreshable&!buff.surge_of_power.up" );
     single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&refreshable&!buff.surge_of_power.up&(talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|talent.primordial_wave.enabled|talent.searing_flames.enabled|talent.magma_chamber.enabled),cycle_targets=1", "Spread Flame Shock to multiple targets only if talents were selected that benefit from it." );
-    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up" );
+    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&maelstrom>=116&talent.elemental_blast.enabled&talent.surge_of_power.enabled&talent.swelling_maelstrom.enabled&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled", "{EB/Swelling/SoP Lighting build} Start SK window if you have enough maelstrom to: EB > SoP SK_LB > LvB > EB." );
+    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&buff.surge_of_power.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled", "{EB/SoP Lightning builds} Use Stormkeeper if you already got Surge of Power buff rolling." );
+    single_target->add_action( "stormkeeper,if=!buff.ascendance.up&!buff.stormkeeper.up&(!talent.surge_of_power.enabled|!talent.elemental_blast.enabled|talent.lava_surge.enabled|talent.echo_of_the_elements.enabled|talent.primordial_surge.enabled)" );
     single_target->add_action( "ascendance,if=!buff.stormkeeper.up" );
     single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up", "Stormkeeper is strong and should be used." );
     single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.stormkeeper.up&!talent.surge_of_power.enabled", "Stormkeeper is strong and should be used." );
@@ -10646,10 +10707,12 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&(!debuff.electrified_shocks.up|buff.icefury.remains<=gcd)" );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&maelstrom>=50&debuff.electrified_shocks.remains<2*gcd&buff.stormkeeper.up" );
     single_target->add_action( "lava_beam,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&buff.power_of_the_maelstrom.up&buff.ascendance.remains>cast_time" );
-    single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up", "Windspeaker's Lava Resurgence is strong. Don't sit on it." );
-    single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up", "Lava Surge is neat. Utilize it." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.primordial_surge.enabled&talent.elemental_blast.enabled&(maelstrom>=61&maelstrom<75&cooldown.lava_burst.remains>gcd|maelstrom>=49&maelstrom<63&cooldown.lava_burst.ready)", "{EB/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&buff.stormkeeper.up&!talent.lava_surge.enabled&!talent.echo_of_the_elements.enabled&!talent.elemental_blast.enabled&(maelstrom>=36&maelstrom<50&cooldown.lava_burst.remains>gcd|maelstrom>=24&maelstrom<38&cooldown.lava_burst.ready)", "{ES/SoP Lightning builds} Spend extra Frost Shock if it gives you the ability to get to next spender without using Stormkeeper charge." );
+    single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|maelstrom>=63&talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)", "Windspeaker's Lava Resurgence is strong. Don't sit on it...Unless it's Lightning build and you save it to buff Elemental Blast." );
+    single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up&(talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.master_of_the_elements.enabled|!talent.elemental_blast.enabled)", "Lava Surge is neat. Utilize it...Unless it's Lightning build and you save it to buff Elemental Blast." );
     single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&!talent.swelling_maelstrom.enabled&maelstrom<=80", "Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
-    single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&talent.swelling_maelstrom.enabled&maelstrom<=130", "Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
+    single_target->add_action( "lava_burst,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&(maelstrom>=75|maelstrom>=50&!talent.elemental_blast.enabled)&talent.swelling_maelstrom.enabled&maelstrom<=130", "Buff your next Maelstrom Spender with MotE if it won't cap your maelstrom." );
     single_target->add_action(
         "earthquake,if=buff.echoes_of_great_sundering.up&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. Additionally Elemental Blast is stronger than EoGS. In this case don't use Earthquake on single target." );
@@ -10674,10 +10737,10 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "frost_shock,if=buff.icefury.up&buff.master_of_the_elements.up&!buff.lava_surge.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled&cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled" );
     single_target->add_action( "lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)", "If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB." );
-    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2" );
+    single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.elemental_blast.enabled|!talent.master_of_the_elements.enabled|buff.stormkeeper.up|t30_2pc_timer.next_tick<2&set_bonus.tier30_2pc", "Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use Lightning Bolt without wasting Stormkeeper charges." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled",
                                "Use your Icefury buffs if you didn't improve the talent." );
-    single_target->add_action( "chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Casting Chain Lightning at two targets is mor efficient than Lightning Bolt." );
+    single_target->add_action( "chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Casting Chain Lightning at two targets is more efficient than Lightning Bolt." );
     single_target->add_action( "lightning_bolt", "Filler spell. Always available. Always the bottom line." );
     single_target->add_action( "flame_shock,moving=1,target_if=refreshable" );
     single_target->add_action( "flame_shock,moving=1,if=movement.distance>6" );
@@ -10746,6 +10809,7 @@ void shaman_t::init_action_list_enhancement()
     def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
 
     //_Cooldowns
+    def->add_action( "invoke_external_buff,name=power_infusion,if=(talent.ascendance.enabled&talent.thorims_invocation.enabled&buff.ascendance.up)|(!talent.thorims_invocation.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.thorims_invocation.enabled&!talent.feral_spirit.enabled)|fight_remains<=20" );
     def->add_action( "feral_spirit" );
     def->add_action( "ascendance,if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)" );
     def->add_action( "doom_winds,if=raid_event.adds.in>=90|active_enemies>1" );
@@ -10759,10 +10823,11 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "stormstrike,if=buff.doom_winds.up" );
     single->add_action( "crash_lightning,if=buff.doom_winds.up" );
     single->add_action( "ice_strike,if=buff.doom_winds.up" );
-    single->add_action( "sundering,if=buff.doom_winds.up" );
+    single->add_action( "sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc" );
     single->add_action( "primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)" );
     single->add_action( "flame_shock,if=!ticking" );
     single->add_action( "lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)" );
+    single->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up" );
     single->add_action( "elemental_blast,if=talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)&buff.maelstrom_weapon.stack>=8" );
     single->add_action( "ice_strike,if=talent.hailstorm.enabled" );
     single->add_action( "stormstrike,if=set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5" );
@@ -10790,47 +10855,36 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "flame_shock" );
     single->add_action( "windfury_totem,if=buff.windfury_totem.remains<30" );
 
-    aoe->add_action( "crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up" );
     aoe->add_action( "lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)" );
-    aoe->add_action( "sundering,if=buff.doom_winds.up" );
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)" );
+    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled&(talent.primordial_wave.enabled|talent.fire_nova.enabled)&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
     aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up" );
-    aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1" );
-    aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
-    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
-    aoe->add_action( "flame_shock,if=!ticking" );
-    aoe->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=talent.fire_nova.enabled&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
-    aoe->add_action( "ice_strike,if=talent.hailstorm.enabled" );
-    aoe->add_action( "frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up" );
-    aoe->add_action( "sundering" );
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=4" );
-    aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled" );
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=3" );
     aoe->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=10&(!talent.crashing_storms.enabled|active_enemies<=3)" );
     aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack=10" );
-    aoe->add_action( "crash_lightning,if=buff.cl_crash_lightning.up" );
-    aoe->add_action( "lava_lash,if=buff.crash_lightning.up&buff.ashen_catalyst.stack=8" );
-    aoe->add_action( "windstrike,if=buff.crash_lightning.up" );
-    aoe->add_action( "stormstrike,if=buff.crash_lightning.up&(buff.converging_storms.stack=6|(set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5))" );
-    aoe->add_action( "lava_lash,if=buff.crash_lightning.up,if=talent.molten_assault.enabled" );
-    aoe->add_action( "ice_strike,if=buff.crash_lightning.up,if=talent.swirling_maelstrom.enabled" );
-    aoe->add_action( "stormstrike,if=buff.crash_lightning.up" );
-    aoe->add_action( "ice_strike,if=buff.crash_lightning.up" );
-    aoe->add_action( "lava_lash,if=buff.crash_lightning.up" );
-    aoe->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)" );
-    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=2" );
-    aoe->add_action( "crash_lightning" );
+    aoe->add_action( "crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up" );
+    aoe->add_action( "sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc" );
+    aoe->add_action( "fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)" );
+    aoe->add_action( "windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1" );
+    aoe->add_action( "ice_strike,if=talent.hailstorm.enabled" );
+    aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled" );
+    aoe->add_action( "frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up" );
+    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
+    aoe->add_action( "sundering" );
+    aoe->add_action( "flame_shock,if=talent.molten_assault.enabled&!ticking" );
+    aoe->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
+    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=3" );
+    aoe->add_action( "stormstrike,if=buff.crash_lightning.up&(talent.deeply_rooted_elements.enabled|buff.converging_storms.stack=6)" );
+    aoe->add_action( "crash_lightning,if=talent.crashing_storms.enabled&buff.cl_crash_lightning.up&active_enemies>=4" );
     aoe->add_action( "windstrike" );
-    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled" );
-    aoe->add_action( "ice_strike,if=talent.swirling_maelstrom.enabled" );
     aoe->add_action( "stormstrike" );
     aoe->add_action( "ice_strike" );
     aoe->add_action( "lava_lash" );
-    aoe->add_action( "flame_shock,target_if=refreshable,cycle_targets=1" );
-    aoe->add_action( "frost_shock" );
+    aoe->add_action( "crash_lightning" );
+    aoe->add_action( "fire_nova,if=active_dot.flame_shock>=2" );
+    aoe->add_action( "elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack>=5&(!talent.crashing_storms.enabled|active_enemies<=3)" );
     aoe->add_action( "chain_lightning,if=buff.maelstrom_weapon.stack>=5" );
-    aoe->add_action( "earth_elemental" );
     aoe->add_action( "windfury_totem,if=buff.windfury_totem.remains<30" );
+    aoe->add_action( "flame_shock,if=!ticking" );
+    aoe->add_action( "frost_shock,if=!talent.hailstorm.enabled" );
 
   // def->add_action( "call_action_list,name=opener" );
 }
@@ -11241,6 +11295,7 @@ void shaman_t::merge( player_t& other )
   if ( talent.deeply_rooted_elements.ok() )
   {
     dre_samples.merge( s.dre_samples );
+    dre_uptime_samples.merge( s.dre_uptime_samples );
   }
 }
 
@@ -11548,12 +11603,38 @@ public:
     os << "</table>\n";
   }
 
-  void dre_distribution_contents( report::sc_html_stream& os )
+  void dre_uptime_distribution_contents( report::sc_html_stream& os )
+  {
+    highchart::histogram_chart_t chart( highchart::build_id( p, "dre_uptime" ), *p.sim );
+
+    chart.set( "plotOptions.column.color", color::GREY3.str() );
+    chart.set( "plotOptions.column.pointStart", std::floor( p.dre_uptime_samples.min() ) );
+    chart.set_title( fmt::format( "DRE Iteration Uptime% (min={:.2f}% median={:.2f}% max={:.2f}%)",
+                                 p.dre_uptime_samples.min(),
+                                 p.dre_uptime_samples.percentile( 0.5 ),
+                                 p.dre_uptime_samples.max() ) );
+    chart.set( "yAxis.title.text", "# of Iterations" );
+    chart.set( "xAxis.title.text", "Uptime%" );
+    chart.set( "series.0.name", "# of Iterations" );
+
+    range::for_each( p.dre_uptime_samples.distribution, [ &chart ]( size_t n ) {
+      js::sc_js_t e;
+
+      e.set( "y", static_cast<double>( n ) );
+
+      chart.add( "series.0.data", e );
+    } );
+
+    os << chart.to_target_div();
+    p.sim->add_chart_data( chart );
+  }
+
+  void dre_proc_distribution_contents( report::sc_html_stream& os )
   {
     highchart::histogram_chart_t chart( highchart::build_id( p, "dre" ), *p.sim );
 
     chart.set( "plotOptions.column.color", color::RED.str() );
-    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? 3 : 1 );
+    chart.set( "plotOptions.column.pointStart", p.dbc->ptr ? p.options.dre_forced_failures + 1 : 1 );
     chart.set_title( fmt::format( "DRE Attempts (min={} median={} max={})", p.dre_samples.min(),
                                  p.dre_samples.percentile( 0.5 ), p.dre_samples.max() ) );
     chart.set( "yAxis.title.text", "# of Triggered Procs" );
@@ -11606,7 +11687,8 @@ public:
       os << "\t\t\t\t\t<h3 class=\"toggle open\">Deeply Rooted Elements Proc Details</h3>\n"
          << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-      dre_distribution_contents( os );
+      dre_proc_distribution_contents( os );
+      dre_uptime_distribution_contents( os );
 
       os << "\t\t\t\t\t</div>\n";
 

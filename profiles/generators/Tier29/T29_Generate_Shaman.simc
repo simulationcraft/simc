@@ -46,7 +46,7 @@ legs=tassets_of_the_tarasek_legion,id=195522,bonus_id=4800/4786/1498,enchant=fro
 feet=lightningcharged_striders,id=193685,bonus_id=7977/6652/7937/8822/8819/9144/1643/8767
 finger1=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant=devotion_of_mastery_3
-trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
+trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
 main_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=sophic_devotion_3

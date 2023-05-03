@@ -514,6 +514,10 @@ struct sim_t : private sc_thread_t
     std::string ominous_chromatic_essence_allies = "";
     // Set the target type for Askhandur's Damage Doubling
     bool ashkandur_humanoid = false;
+    // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
+    std::string flowstone_starting_state = "high";
+    // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
+    timespan_t adaptive_stonescales_period = 30_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

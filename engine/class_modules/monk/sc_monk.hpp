@@ -132,6 +132,9 @@ public:
   action_t* generous_pour_aura;
   action_t* windwalking_aura;
 
+  // For Debug reporting, used by create_proc_callback in init_special_effects
+  std::map< std::string, std::vector< action_t *> > proc_tracking;
+
   struct sample_data_t
   {
     sc_timeline_t stagger_effective_damage_timeline;
@@ -167,10 +170,12 @@ public:
     propagate_const<action_t*> exploding_keg;
     propagate_const<heal_t*> gift_of_the_ox_trigger;
     propagate_const<heal_t*> gift_of_the_ox_expire;
+    propagate_const<action_t*> niuzao_call_to_arms_summon;
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
     // Windwalker
     propagate_const<action_t*> empowered_tiger_lightning;
+    propagate_const<action_t*> fury_of_xuen_summon;
     propagate_const<action_t*> fury_of_xuen_empowered_tiger_lightning;
   } active_actions;
 
@@ -298,6 +303,7 @@ public:
     // Brewmaster
     propagate_const<buff_t*> bladed_armor;
     propagate_const<buff_t*> blackout_combo;
+    propagate_const<buff_t*> call_to_arms_invoke_niuzao;
     propagate_const<absorb_buff_t*> celestial_brew;
     propagate_const<buff_t*> celestial_flames;
     propagate_const<buff_t*> charred_passions;
@@ -306,6 +312,7 @@ public:
     propagate_const<buff_t*> exploding_keg;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
+    propagate_const<buff_t*> expel_harm_helper;
     propagate_const<buff_t*> graceful_exit;
     propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
@@ -712,7 +719,6 @@ public:
   {
     const spell_data_t* attenuation;
     const spell_data_t* bonedust_brew;
-    const spell_data_t* bountiful_brew;
     const spell_data_t* faeline_stomp;
     const spell_data_t* healing_elixir;
     const spell_data_t* invokers_delight;
@@ -794,7 +800,6 @@ public:
     propagate_const<cooldown_t*> black_ox_brew;
     propagate_const<cooldown_t*> brewmaster_attack;
     propagate_const<cooldown_t*> bonedust_brew;
-    propagate_const<cooldown_t*> bountiful_brew;
     propagate_const<cooldown_t*> breath_of_fire;
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
@@ -923,7 +928,6 @@ public:
   // RPPM objects
   struct rppms_t
   {
-    real_ppm_t* bountiful_brew;
     real_ppm_t* spirit_of_the_ox;
 
     // Tier 30

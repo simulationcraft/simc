@@ -3921,7 +3921,7 @@ void player_t::create_buffs()
       buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
         worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
 
-      buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
+      buffs.seething_rage_essence = make_buff( this, "seething_rage_essence", find_spell( 297126 ) )
         ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
 
       buffs.guardian_of_azeroth = make_buff( this, "guardian_of_azeroth", find_spell( 295855 ) )
@@ -4982,8 +4982,8 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
     m *= 1.0 + buffs.incensed->check_value();
 
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage )
-    m *= 1.0 + buffs.seething_rage->check_value();
+  if ( buffs.seething_rage_essence )
+    m *= 1.0 + buffs.seething_rage_essence->check_value();
 
   // Critical hit damage buff from follower themed Benthic boots
   if ( buffs.fathom_hunter )
@@ -11483,6 +11483,18 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       }
 
       throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
+    }
+
+    if ( splits[ 0 ] == "dragonflight" )
+    {
+      if ( splits[ 1 ] == "screaming_black_dragonscale_damage" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->dragonflight_opts.screaming_black_dragonscale_damage;
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
     }
   } // splits.size() == 2
 
