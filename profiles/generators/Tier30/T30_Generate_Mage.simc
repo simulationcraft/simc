@@ -1,31 +1,30 @@
 # mage="T30_Mage_Arcane"
-# spec=arcane
-# level=70
-# race=orc
-# role=spell
-# position=back
-# talents=B4DAAAAAAAAAAAAAAAAAAAAAAIJQolIhkUAJtEiIikIhEaBSLJAAAAAAAAAAAAJJJJhkkkcAA
+level=70
+race=tauren
+role=spell
+spec=arcane
+position=back
+talents=B4DAAAAAAAAAAAAAAAAAAAAAAQCgWiIJSRQSLhIiIJSCkWQSLJAAAAAAAAAAAARSSSIJJJHA
 
-# head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498,gem_id=192919
-# neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,crafted_stats=32/40,gem_id=192982/192925/192925
-# shoulder=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
-# back=cape_of_entanglement,id=144094,bonus_id=4177/6808/4786/3311
-# chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
-# wrists=infused_elemental_bands,id=193635,bonus_id=6808/4786/1643,gem_id=192919
-# hands=crystal_scholars_pageturners,id=200317,bonus_id=4800/4786/1498
-# waist=cord_of_wicked_pyromania,id=137488,bonus_id=1795/6808/4786/3300,gem_id=192919
-# legs=crystal_scholars_britches,id=200319,bonus_id=4800/4786/1498,enchant=temporal_spellthread_3
-# feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-# finger1=seal_of_filial_duty,id=195526,ilevel=430,gem_id=192919,enchant=devotion_of_haste_3
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
-# trinket1=voidmenders_shadowgem,id=110007,ilevel=421
-# trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-# off_hand=kokias_burnout_rod,id=193766,bonus_id=6808/4786/1643
+head=underlight_conjurers_arcanocowl,id=202551,bonus_id=9321/7979/6652/9414/9229/1472/8767,ilevel=447,gem_id=192988
+neck=,id=134495,bonus_id=8782,ilevel=447,gem_id=192961/192961/192961
+shoulder=,id=202549,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/9330/7979/1485/8767,ilevel=457
+chest=underlight_conjurers_vestment,id=202554,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
+wrist=vibrant_wildercloth_wristwraps,id=193510,bonus_id=9379/8780,ilevel=447,gem_id=192961,enchant_id=6580,crafted_stats=40/32
+hands=,id=202552,ilevel=447
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8780,ilevel=447,gem_id=192961,crafted_stats=36/49
+legs=underlight_conjurers_trousers,id=202550,ilevel=450,enchant_id=6544
+feet=,id=202553,ilevel=450
+finger1=bloodied_wedding_ring,id=193671,bonus_id=8780,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
+finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192961,enchant=devotion_of_mastery_3
+trinket1=irideus_fragment,id=193743,ilevel=447
+trinket2=igneous_flowstone,id=203996,ilevel=447
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion_3,enchant_id=6655
 
-# flask=phial_of_static_empowerment_3
+flask=phial_of_static_empowerment_3
 
-# save=T30_Mage_Arcane.simc
+save=T30_Mage_Arcane.simc
 
 # mage="T30_Mage_Fire"
 # spec=fire
