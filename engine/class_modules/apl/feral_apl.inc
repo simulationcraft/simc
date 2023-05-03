@@ -38,7 +38,7 @@ variables->add_action( "variable,name=need_bt,value=talent.bloodtalons.enabled&b
 variables->add_action( "variable,name=align_3minutes,value=spell_targets.swipe_cat=1&!fight_style.dungeonslice" );
 variables->add_action( "variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))" );
 variables->add_action( "variable,name=lastZerk,value=fight_remains>(30+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))" );
-variables->add_action( "variable,name=zerk_biteweave,value=zerk_biteweave" );
+variables->add_action( "variable,name=zerk_biteweave,value=0" );
 
 clearcasting->add_action( "thrash_cat,if=refreshable&!talent.thrashing_claws.enabled" );
 clearcasting->add_action( "swipe_cat,if=spell_targets.swipe_cat>1" );
