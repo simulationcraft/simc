@@ -1059,17 +1059,14 @@ public:
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const
-  { return 0; }
-  virtual double composite_player_multiplier   ( school_e ) const;
-  virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = nullptr ) const { return 1; }
-  virtual double composite_player_td_multiplier( school_e,  const action_t* a = nullptr ) const;
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
+  /// Player-wide school based multipliers
+  virtual double composite_player_multiplier( school_e ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
-  virtual double composite_persistent_multiplier( school_e ) const
-  { return 1.0; }
+  virtual double composite_persistent_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double composite_player_dh_multiplier( school_e ) const { return 1; }
+  virtual double composite_player_dh_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;

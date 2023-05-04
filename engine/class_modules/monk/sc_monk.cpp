@@ -668,12 +668,20 @@ namespace monk
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
         double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
+          ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
+
         return ta;
       }
 
       double composite_da_multiplier( const action_state_t *s ) const override
       {
         double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
+          da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
+
         return da;
       }
 
@@ -8984,26 +8992,10 @@ namespace monk
     return active;
   }
 
-  // monk_t::composite_player_dd_multiplier ================================
-  double monk_t::composite_player_dd_multiplier( school_e school, const action_t *action ) const
+  // monk_t::composite_player_multiplier ==================================
+  double monk_t::composite_player_multiplier( school_e school ) const
   {
-    double multiplier = player_t::composite_player_dd_multiplier( school, action );
-
-    if ( action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
-      multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 1 ).percent();
-
-    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
-
-    return multiplier;
-  }
-
-  // monk_t::composite_player_td_multiplier ================================
-  double monk_t::composite_player_td_multiplier( school_e school, const action_t *action ) const
-  {
-    double multiplier = player_t::composite_player_td_multiplier( school, action );
-
-    if ( action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
-      multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 2 ).percent();
+    double multiplier = player_t::composite_player_multiplier( school );
 
     multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 

@@ -2536,7 +2536,7 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
+  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > 0_ms )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
@@ -2554,7 +2554,7 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY );
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
@@ -4000,11 +4000,14 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_VERSATILITY )
     state->versatility = composite_versatility( state );
 
-  if ( flags & STATE_MUL_DA )
+  if ( flags & STATE_MUL_SPELL_DA )
     state->da_multiplier = composite_da_multiplier( state );
 
-  if ( flags & STATE_MUL_TA )
+  if ( flags & STATE_MUL_SPELL_TA )
     state->ta_multiplier = composite_ta_multiplier( state );
+
+  if ( flags & STATE_MUL_PLAYER_DAM )
+    state->player_multiplier = composite_player_multiplier( state );
 
   if ( flags & STATE_MUL_PERSISTENT )
     state->persistent_multiplier = composite_persistent_multiplier( state );
@@ -4517,40 +4520,29 @@ double action_t::composite_total_corruption() const
   return player->composite_total_corruption();
 }
 
-double action_t::composite_da_multiplier(const action_state_t*) const
+double action_t::composite_player_multiplier( const action_state_t* ) const
 {
-  double base_multiplier = action_multiplier();
-  double direct_multiplier = action_da_multiplier();
   double player_school_multiplier = 0.0;
   double tmp;
 
-  for (auto base_school : base_schools)
+  for ( auto base_school : base_schools )
   {
-    tmp = player->cache.player_multiplier(base_school);
-    if (tmp > player_school_multiplier) player_school_multiplier = tmp;
+    tmp = player->cache.player_multiplier( base_school );
+    if ( tmp > player_school_multiplier )
+      player_school_multiplier = tmp;
   }
 
-  return base_multiplier * direct_multiplier * player_school_multiplier *
-    player->composite_player_dd_multiplier(get_school(), this);
+  return player_school_multiplier;
 }
 
-/// Normal ticking modifiers that are updated every tick
-
-double action_t::composite_ta_multiplier(const action_state_t*) const
+double action_t::composite_da_multiplier( const action_state_t* ) const
 {
-  double base_multiplier = action_multiplier();
-  double tick_multiplier = action_ta_multiplier();
-  double player_school_multiplier = 0.0;
-  double tmp;
+  return action_multiplier() * action_da_multiplier();
+}
 
-  for (auto base_school : base_schools)
-  {
-    tmp = player->cache.player_multiplier(base_school);
-    if (tmp > player_school_multiplier) player_school_multiplier = tmp;
-  }
-
-  return base_multiplier * tick_multiplier * player_school_multiplier *
-    player->composite_player_td_multiplier(get_school(), this);
+double action_t::composite_ta_multiplier( const action_state_t* ) const
+{
+  return action_multiplier() * action_ta_multiplier();
 }
 
 /// Persistent modifiers that are snapshot at the start of the spell cast
