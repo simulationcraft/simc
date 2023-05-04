@@ -895,6 +895,7 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::last_tick( d );
 
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1108
     if ( p().o().bugs && !p().o().options.void_lasher_retarget )
     {
       make_event( sim, 10_ms, [ this ] {
