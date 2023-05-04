@@ -1060,11 +1060,8 @@ public:
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
   virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
+  /// Player-wide school based multipliers
   virtual double composite_player_multiplier( school_e ) const;
-  /// These are here for future-proofing in case school based player multipliers are ever specified for direct vs
-  /// periodic. Currently they should be unused and are not cached.
-  virtual double composite_player_dd_multiplier( school_e, const action_t* a = nullptr ) const { return 1.0; }
-  virtual double composite_player_td_multiplier( school_e, const action_t* a = nullptr ) const { return 1.0; }
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
