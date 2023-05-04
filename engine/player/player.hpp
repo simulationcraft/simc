@@ -776,8 +776,9 @@ struct player_t : public actor_t
     // Overrides sim-wide option with a player-specific one
     player_option_t<bool> ashkandur_humanoid;
     // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
+    // Any other input will have it randomly select between High and Low Tide, and this this is default.
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> flowstone_starting_state = "high";
+    player_option_t<std::string> flowstone_starting_state = "random_active";
   } dragonflight_opts;
 
 private:

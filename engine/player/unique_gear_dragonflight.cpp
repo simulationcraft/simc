@@ -1570,6 +1570,13 @@ void igneous_flowstone( special_effect_t& effect )
           low_tide_counter->trigger();
         else if ( util::str_compare_ci( starting_state, "flood" ) )
           high_tide_counter->trigger();
+        else if ( util::str_compare_ci( starting_state, "high" ) )
+          high_tide_trigger->trigger();
+        // As of 04/05/2023 the Active Triggers have no maximum duration and persist through death, so the correct
+        // behaviour is randomly picking either active to start with. Other options are still being offered for the curious.
+        // TODO: Confirm is raid combat start resets the state of this.
+        else if ( p->rng().roll( 0.5 ) )
+          low_tide_trigger->trigger();
         else
           high_tide_trigger->trigger();
       } );
