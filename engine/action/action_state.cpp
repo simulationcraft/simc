@@ -295,8 +295,10 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "HST", STATE_HASTE );
   concat_flag_str( str, "CRIT", STATE_CRIT );
   concat_flag_str( str, "VERS", STATE_VERSATILITY );
-  concat_flag_str( str, "MUL_DA", STATE_MUL_DA );
-  concat_flag_str( str, "MUL_TA", STATE_MUL_TA );
+
+  concat_flag_str( str, "MUL_DA", STATE_MUL_SPELL_DA );
+  concat_flag_str( str, "MUL_TA", STATE_MUL_SPELL_TA );
+  concat_flag_str( str, "MUL_PLY", STATE_MUL_PLAYER_DAM );
   concat_flag_str( str, "MUL_PER", STATE_MUL_PERSISTENT );
   concat_flag_str( str, "MUL_PET", STATE_MUL_PET );
 
@@ -313,6 +315,11 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "TGT_MIT_DA", STATE_TGT_MITG_DA );
   concat_flag_str( str, "TGT_MIT_TA", STATE_TGT_MITG_TA );
   concat_flag_str( str, "TGT_ARMOR", STATE_TGT_ARMOR );
+
+  concat_flag_str( str, "TGT_USR1", STATE_TGT_USER_1 );
+  concat_flag_str( str, "TGT_USR2", STATE_TGT_USER_2 );
+  concat_flag_str( str, "TGT_USR3", STATE_TGT_USER_3 );
+  concat_flag_str( str, "TGT_USR4", STATE_TGT_USER_4 );
 
   return str;
 }
