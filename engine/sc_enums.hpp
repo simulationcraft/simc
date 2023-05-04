@@ -1324,14 +1324,19 @@ enum snapshot_state_e
   STATE_AP             = 0x000004,
   STATE_SP             = 0x000008,
 
-  STATE_MUL_DA         = 0x000010,
-  STATE_MUL_TA         = 0x000020,
+  STATE_MUL_SPELL_DA   = 0x000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
+  STATE_MUL_SPELL_TA   = 0x000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
   STATE_VERSATILITY    = 0x000040,
   STATE_MUL_PERSISTENT = 0x000080,  // Persistent modifier for the few abilities that snapshot
 
   STATE_TGT_CRIT       = 0x000100,
   STATE_TGT_MUL_DA     = 0x000200,
   STATE_TGT_MUL_TA     = 0x000400,
+
+  STATE_MUL_PLAYER_DAM = 0x000800,  // Modify Damage Done% (79) school-based player-wide multiplier
+
+  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
+  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
 
   // User-defined state flags
   STATE_USER_1         = 0x001000,

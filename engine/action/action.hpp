@@ -878,13 +878,17 @@ public:
   virtual double composite_target_ta_multiplier( player_t* target ) const
   { return composite_target_multiplier( target ); }
 
-  virtual double composite_da_multiplier(const action_state_t* /* s */) const;
+  /// School-based generic damage multipliers that affect all player damage
+  virtual double composite_player_multiplier( const action_state_t* ) const;
 
-  /// Normal ticking modifiers that are updated every tick
-  virtual double composite_ta_multiplier(const action_state_t* /* s */) const;
+  /// List-based direct damage multipliers that specifically affect the action
+  virtual double composite_da_multiplier( const action_state_t* ) const;
+
+  /// List-based tick damage multipliers that specifically affect the action
+  virtual double composite_ta_multiplier( const action_state_t* ) const;
 
   /// Persistent modifiers that are snapshot at the start of the spell cast
-  virtual double composite_persistent_multiplier(const action_state_t*) const;
+  virtual double composite_persistent_multiplier( const action_state_t* ) const;
 
   /**
    * @brief Generic aoe multiplier for the action.
@@ -895,9 +899,9 @@ public:
   virtual double composite_aoe_multiplier( const action_state_t* ) const
   { return 1.0; }
 
-  virtual double composite_target_mitigation(player_t* t, school_e s) const;
+  virtual double composite_target_mitigation( player_t* t, school_e s ) const;
 
-  virtual double composite_player_critical_multiplier(const action_state_t* s) const;
+  virtual double composite_player_critical_multiplier( const action_state_t* s ) const;
 
   /// Action proc type, needed for dynamic aoe stuff and such.
   virtual proc_types proc_type() const
