@@ -4522,6 +4522,28 @@ void heart_of_thunder ( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// 407895 driver
+// 407896 damage
+void drogbar_rocks ( special_effect_t& effect ) {
+  effect.proc_flags2_ = PF2_CRIT;
+
+  auto proc = create_proc_action<generic_proc_t> ( "drogbar_rocks", effect, "drogbar_rocks", effect.trigger () );
+  proc->base_td = effect.driver ()->effectN ( 1 ).average ( effect.item );
+  effect.execute_action = proc;
+  new dbc_proc_callback_t ( effect.player, effect );
+}
+
+// 408607 driver
+// 408984 spawned moth
+// 408983 primary stat buff
+void underlight_globe ( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t> ( effect.player, effect.player->find_spell ( 408983 ) )
+    ->add_stat_from_effect ( 1, effect.driver ()->effectN ( 1 ).average ( effect.item ) );
+
+  new dbc_proc_callback_t ( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -5146,28 +5168,6 @@ void broodkeepers_blaze(special_effect_t& effect)
   dot->base_td = effect.driver()->effectN(1).average(effect.item);
   effect.execute_action = dot;
   new broodkeepers_blaze_cb_t( effect );
-}
-
-// 407895 driver
-// 407896 damage
-void drogbar_rocks( special_effect_t& effect ) {
-  effect.proc_flags2_ = PF2_CRIT;
-  
-  auto proc = create_proc_action<generic_proc_t>( "drogbar_rocks", effect, "drogbar_rocks", 407896 );
-  proc->base_td = effect.driver() -> effectN( 1 ).average( effect.item );
-  effect.execute_action = proc;
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
-// 408607 driver
-// 408984 spawned moth
-// 408983 primary stat buff
-void underlight_globe( special_effect_t& effect )
-{
-  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player -> find_spell( 408983 ) )
-    ->add_stat_from_effect( 1, effect.driver() -> effectN(1).average( effect.item ) );
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void amice_of_the_blue( special_effect_t& effect )
