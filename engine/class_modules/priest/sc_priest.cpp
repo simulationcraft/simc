@@ -2436,6 +2436,7 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
+  add_option( opt_bool( "priest.void_lasher_retarget", options.void_lasher_retarget ) );
 }
 
 std::string priest_t::create_profile( save_e type )

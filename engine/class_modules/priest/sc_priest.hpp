@@ -582,6 +582,9 @@ public:
 
     // Time in seconds between prayer of mending bounces
     double prayer_of_mending_bounce_rate = 2;
+
+    // Void Lasher re-target on demise bug
+    bool void_lasher_retarget = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

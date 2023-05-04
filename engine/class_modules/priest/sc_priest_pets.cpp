@@ -890,6 +890,19 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
 
     merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_pet_spell_t::last_tick( d );
+
+    if ( p().o().bugs && !p().o().options.void_lasher_retarget )
+    {
+      make_event( sim, 10_ms, [ this ] {
+        sim->print_debug( "Original target for void_lasher died, destroying pet." );
+        p().demise();
+      } );
+    }
+  }
 };
 
 action_t* void_lasher_t::create_action( util::string_view name, util::string_view options_str )
