@@ -3924,6 +3924,7 @@ void sim_t::create_options()
   add_option( opt_timespan( "dragonflight.blue_silken_lining_update_interval", dragonflight_opts.blue_silken_lining_update_interval, 1_s, timespan_t::max() ) );
   add_option( opt_bool( "dragonflight.screaming_black_dragonscale_damage", dragonflight_opts.screaming_black_dragonscale_damage ) );
   add_option( opt_timespan( "dragonflight.adaptive_stonescales_period", dragonflight_opts.adaptive_stonescales_period, 0_s, timespan_t::max() ) );
+  add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
 }
 
 // sim_t::parse_option ======================================================
