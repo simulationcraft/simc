@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-03/49407)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49426 Live (hotfix 2023-05-04/49426)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid

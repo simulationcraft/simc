@@ -1,4 +1,4 @@
-// Item damage data from ItemDamageOneHand.db2, wow build 10.1.0.49407
+// Item damage data from ItemDamageOneHand.db2, wow build 10.1.0.49426
 static const std::array<item_damage_one_hand_data_t, 1300> __item_damage_one_hand_data { {
   {    1, {       0.17803,       0.28634,       0.29672,       0.29672,       0.29672,       0.29672,       0.29672 } },
   {    2, {       0.20771,       0.33406,       0.34618,       0.34618,       0.34618,       0.34618,       0.34618 } },
@@ -1302,7 +1302,7 @@ static const std::array<item_damage_one_hand_data_t, 1300> __item_damage_one_han
   { 1300, {  612221.43750,  984656.18750, 1020369.12500, 1020369.12500, 1020369.12500, 1020369.12500, 1020369.12500 } },
 } };
 
-// Item damage data from ItemDamageOneHandCaster.db2, wow build 10.1.0.49407
+// Item damage data from ItemDamageOneHandCaster.db2, wow build 10.1.0.49426
 static const std::array<item_damage_one_hand_caster_data_t, 1300> __item_damage_one_hand_caster_data { {
   {    1, {       0.08902,       0.14317,       0.14836,       0.14836,       0.14836,       0.14836,       0.14836 } },
   {    2, {       0.10385,       0.16703,       0.17309,       0.17309,       0.17309,       0.17309,       0.17309 } },
@@ -2606,7 +2606,7 @@ static const std::array<item_damage_one_hand_caster_data_t, 1300> __item_damage_
   { 1300, {  306110.71875,  492328.09375,  510184.53125,  510184.53125,  510184.53125,  510184.53125,  510184.53125 } },
 } };
 
-// Item damage data from ItemDamageTwoHand.db2, wow build 10.1.0.49407
+// Item damage data from ItemDamageTwoHand.db2, wow build 10.1.0.49426
 static const std::array<item_damage_two_hand_data_t, 1300> __item_damage_two_hand_data { {
   {    1, {       0.23579,       0.37922,       0.39298,       0.39298,       0.39298,       0.39298,       0.39298 } },
   {    2, {       0.27508,       0.44243,       0.45847,       0.45847,       0.45847,       0.45847,       0.45847 } },
@@ -3910,7 +3910,7 @@ static const std::array<item_damage_two_hand_data_t, 1300> __item_damage_two_han
   { 1300, {  810815.75000, 1304062.00000, 1351359.50000, 1351359.50000, 1351359.50000, 1351359.50000, 1351359.50000 } },
 } };
 
-// Item damage data from ItemDamageTwoHandCaster.db2, wow build 10.1.0.49407
+// Item damage data from ItemDamageTwoHandCaster.db2, wow build 10.1.0.49426
 static const std::array<item_damage_two_hand_caster_data_t, 1300> __item_damage_two_hand_caster_data { {
   {    1, {       0.11789,       0.18961,       0.19649,       0.19649,       0.19649,       0.19649,       0.19649 } },
   {    2, {       0.13754,       0.22121,       0.22924,       0.22924,       0.22924,       0.22924,       0.22924 } },
