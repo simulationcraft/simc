@@ -16115,7 +16115,7 @@ Description      : Spinning Crane Kick damage increased by $s1%.
 Name             : Rising Star (id=388849) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
-                 : Effect#2 [op=set, values=(6, 12)]
+                 : Effect#2 [op=set, values=(8, 16)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
