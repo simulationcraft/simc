@@ -777,7 +777,10 @@ struct player_t : public actor_t
     player_option_t<bool> ashkandur_humanoid;
     // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
     // Overrides sim-wide option with a player-specific one
-    player_option_t<std::string> flowstone_starting_state = "high";
+    player_option_t<std::string> flowstone_starting_state = "random_active";
+    /// Type stat given by Spoils of Neltharus on pull
+    /// Buff type: "mastery", "haste", "crit", "vers", other for random
+    player_option_t<std::string> spoils_of_neltharus_initial_type = "";
   } dragonflight_opts;
 
 private:

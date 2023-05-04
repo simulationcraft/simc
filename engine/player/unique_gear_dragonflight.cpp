@@ -1811,7 +1811,7 @@ void spoils_of_neltharus( special_effect_t& effect )
 
       if ( sim->current_time() == timespan_t::zero() )
       {
-        const auto& initial = sim->dragonflight_opts.spoils_of_neltharus_initial_type;
+        std::string initial = buff_list.front().first->player->dragonflight_opts.spoils_of_neltharus_initial_type;
         if ( util::str_compare_ci( initial, "crit" ) || util::str_compare_ci( initial, "haste" ) || util::str_compare_ci( initial, "mastery" ) || util::str_compare_ci( initial, "vers" ) )
         {
           while ( !util::str_compare_ci( buff_list.front().first->name_reporting(), "spoils_of_neltharus_" + initial ) )
