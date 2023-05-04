@@ -1279,28 +1279,27 @@ enum role_e
 enum save_e : unsigned
 {
   // Specifies the type of profile data to be saved
-  SAVE_GEAR = 0x1,
+  SAVE_GEAR    = 0x1,
   SAVE_TALENTS = 0x2,
   SAVE_ACTIONS = 0x4,
-  SAVE_PLAYER = 0x8,
-  SAVE_ALL = SAVE_GEAR | SAVE_TALENTS | SAVE_ACTIONS | SAVE_PLAYER,
+  SAVE_PLAYER  = 0x8,
+  SAVE_ALL     = SAVE_GEAR | SAVE_TALENTS | SAVE_ACTIONS | SAVE_PLAYER,
 };
 
 enum power_e
 {
-  POWER_HEALTH      = -2,
-  POWER_MANA        = 0,
-  POWER_RAGE        = 1,
-  POWER_FOCUS       = 2,
-  POWER_ENERGY      = 3,
-  POWER_COMBO_POINT = 4,
-  POWER_RUNE        = 5,
-  POWER_RUNIC_POWER = 6,
-  POWER_SOUL_SHARDS = 7,
-  POWER_ASTRAL_POWER = 8,
-  POWER_HOLY_POWER = 9,
+  POWER_HEALTH        = -2,
+  POWER_MANA          = 0,
+  POWER_RAGE          = 1,
+  POWER_FOCUS         = 2,
+  POWER_ENERGY        = 3,
+  POWER_COMBO_POINT   = 4,
+  POWER_RUNE          = 5,
+  POWER_RUNIC_POWER   = 6,
+  POWER_SOUL_SHARDS   = 7,
+  POWER_ASTRAL_POWER  = 8,
+  POWER_HOLY_POWER    = 9,
   // Not yet used (MoP Monk deprecated resource #1)
-  // Not yet used
   POWER_MAELSTROM     = 11,
   POWER_CHI           = 12,
   POWER_INSANITY      = 13,
@@ -1312,8 +1311,8 @@ enum power_e
   POWER_ESSENSE       = 19,
   // Helpers
   POWER_MAX,
-  POWER_NONE   = 0xFFFFFFFF,  // None.
-  POWER_OFFSET = 2,
+  POWER_NONE          = 0xFFFFFFFF,  // None.
+  POWER_OFFSET        = 2,
 };
 
 // New stuff
@@ -1362,16 +1361,15 @@ enum snapshot_state_e
    * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
-  STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
+  STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
+                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
 
   /// Target-specific state variables, excluding the pet damage multiplier
-  STATE_TARGET_NO_PET =
-      ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA | STATE_TGT_MITG_TA |
-        STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
+  STATE_TARGET_NO_PET  = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA |
+                           STATE_TGT_MITG_TA | STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
 
   /// Target-specific state variables
-  STATE_TARGET = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET
+  STATE_TARGET         = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET
 };
 
 enum ready_e

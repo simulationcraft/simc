@@ -4001,10 +4001,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->versatility = composite_versatility( state );
 
   if ( flags & STATE_MUL_SPELL_DA )
-   state->da_multiplier = composite_da_multiplier( state );
+    state->da_multiplier = composite_da_multiplier( state );
 
   if ( flags & STATE_MUL_SPELL_TA )
-   state->ta_multiplier = composite_ta_multiplier( state );
+    state->ta_multiplier = composite_ta_multiplier( state );
 
   if ( flags & STATE_MUL_PLAYER_DAM )
     state->player_multiplier = composite_player_multiplier( state );
