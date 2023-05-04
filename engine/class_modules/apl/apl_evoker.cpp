@@ -13,7 +13,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "phial_of_corrupting_rage_3" : "greater_flask_of_endless_fathoms";
+  return ( p->true_level > 60 ) ? "phial_of_tepid_versatility_3" : "greater_flask_of_endless_fathoms";
 }
 
 std::string food( const player_t* p )

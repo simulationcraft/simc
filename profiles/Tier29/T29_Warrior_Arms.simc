@@ -78,6 +78,7 @@ actions.hac+=/bladestorm,if=active_enemies>1&(buff.test_of_might.up|!talent.test
 actions.hac+=/cleave,if=active_enemies>2|!talent.battlelord&buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd
 actions.hac+=/whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)
 actions.hac+=/skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)
+actions.hac+=/mortal_strike,if=buff.sweeping_strikes.up&buff.crushing_advance.stack=3,if=set_bonus.tier30_4pc
 actions.hac+=/overpower,if=buff.sweeping_strikes.up&talent.dreadnaught
 actions.hac+=/mortal_strike,cycle_targets=1,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2
 actions.hac+=/execute,cycle_targets=1,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up
@@ -142,7 +143,7 @@ main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=664
 # Gear Summary
 # gear_ilvl=420.80
 # gear_strength=5408
-# gear_stamina=13050
+# gear_stamina=17015
 # gear_crit_rating=2773
 # gear_haste_rating=5179
 # gear_mastery_rating=1324

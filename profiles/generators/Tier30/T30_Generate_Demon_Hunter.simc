@@ -35,15 +35,15 @@ role=tank
 position=front
 talents=BUkAAAAAAAAAAAAAAAAAAAAAAAAoEBJJIJaIJRgkSCIahEJSCJpkEkkkQJIAAAAA
 
-head=kinslayers_hood,id=202524,bonus_id=4800/4786/1504/6935,gem_id=192945
+head=kinslayers_hood,id=202524,bonus_id=9410/1504/9413,gem_id=192945
 neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/9405/8790/8846/9365,gem_id=192945/192945/192945,crafted_stats=49/32,ilevel=447
 shoulder=kinslayers_tainted_spaulders,id=202522,bonus_id=4800/4786/1507,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=kinslayers_vest,id=202527,bonus_id=4800/4786/1501,enchant_id=6625
+chest=kinslayers_vest,id=202527,bonus_id=1498,enchant_id=6625
 wrist=lifebound_bindings,id=193419,bonus_id=8836/8840/8902/7936/9405/9379/8960/8790/9366,crafted_stats=32/36,gem_id=192945,ilevel=447
-hands=kinslayers_bloodstained_grips,id=202525,bonus_id=4800/4786/1501,ilevel=450
+hands=kinslayers_bloodstained_grips,id=202525,bonus_id=9410/1501,ilevel=450
 waist=kinslayers_sash,id=202521,gem_id=192985,ilevel=450
-legs=kinslayers_legguards,id=202523,bonus_id=4800/4786/1504,enchant_id=6496
+legs=kinslayers_legguards,id=202523,bonus_id=9410/1504,enchant_id=6496
 feet=lifebound_boots,id=193398,crafted_stats=32/36,ilevel=447
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192952,enchant_id=6556
 finger2=onyx_annulet,id=203460,enchant_id=6550,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491

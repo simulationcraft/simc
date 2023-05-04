@@ -11,7 +11,7 @@ dragonflight.ominous_chromatic_essence_allies=azure/bronze/obsidian/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=iced_phial_of_corrupting_rage_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
@@ -219,7 +219,7 @@ off_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=run
 # Gear Summary
 # gear_ilvl=448.81
 # gear_strength=6235
-# gear_stamina=17471
+# gear_stamina=22524
 # gear_crit_rating=5436
 # gear_haste_rating=3926
 # gear_mastery_rating=3467

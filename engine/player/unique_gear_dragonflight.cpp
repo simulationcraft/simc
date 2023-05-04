@@ -456,7 +456,7 @@ void wafting_devotion( special_effect_t& effect )
     buff = create_buff<stat_buff_t>( effect.player, buff_name, new_trigger );
   }
   
-  buff->set_stat( STAT_HASTE_RATING, haste )
+  buff->add_stat( STAT_HASTE_RATING, haste )
       ->add_stat( STAT_SPEED_RATING, speed );
   
   effect.name_str = buff_name;
@@ -1570,6 +1570,13 @@ void igneous_flowstone( special_effect_t& effect )
           low_tide_counter->trigger();
         else if ( util::str_compare_ci( starting_state, "flood" ) )
           high_tide_counter->trigger();
+        else if ( util::str_compare_ci( starting_state, "high" ) )
+          high_tide_trigger->trigger();
+        // As of 04/05/2023 the Active Triggers have no maximum duration and persist through death, so the correct
+        // behaviour is randomly picking either active to start with. Other options are still being offered for the curious.
+        // TODO: Confirm is raid combat start resets the state of this.
+        else if ( p->rng().roll( 0.5 ) )
+          low_tide_trigger->trigger();
         else
           high_tide_trigger->trigger();
       } );
@@ -3859,6 +3866,7 @@ void neltharions_call_to_chaos( special_effect_t& effect )
 
   // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
   effect.spell_id = driver_id;
+  std::set<unsigned> proc_spell_id;
 
   // Triggers only on AoE Abilities - Abilities that *can* AoE or abilities that *did* AoE. Evokers need a hack.
   switch ( effect.player->type )
@@ -3877,6 +3885,15 @@ void neltharions_call_to_chaos( special_effect_t& effect )
           } );
       break;
     case WARRIOR:
+      proc_spell_id = { { 1680, 190411, 396719, 6343, 384318, 376079, 46968, 845, 262161, 227847, 385059, 228920, 6572  } };
+      // only true AoE, in order - Whirlwind Arms, Whirlwind Fury, Thunder Clap, Thunder Clap Prot, Thunderous Roar
+      // Spear of Bastion, Shockwave, Cleave, Warbreaker, Bladestorm, Odyns Fury, Ravager, Revenge
+      effect.player->callbacks.register_callback_trigger_function(
+          driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+          [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+            return range::contains( proc_spell_id, a->data().id() );
+          } );
+      break;
     case PALADIN:
     case MAGE:
     case DEMON_HUNTER:
@@ -3884,7 +3901,7 @@ void neltharions_call_to_chaos( special_effect_t& effect )
       // Evoker is unique with it working on cleave abilities. Other classes likely need an ability whitelist but this is a better aproximation for now.
       effect.player->callbacks.register_callback_trigger_function(
           driver_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-          []( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) { return a->n_targets() == -1; } );
+          []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) { return a->n_targets() == -1; } );
   }
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -3917,8 +3934,8 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   stat_effect->type = SPECIAL_EFFECT_EQUIP;
   stat_effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
 
-  std::set<int> proc_spell_id;
-  int driver_id = effect.spell_id;
+  std::set<unsigned> proc_spell_id;
+  unsigned driver_id = effect.spell_id;
 
   switch ( effect.player->specialization() )
   {
@@ -3985,7 +4002,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
     } );
 
   stat_effect->player->callbacks.register_callback_execute_function(
-    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+    stat_effect->spell_id, [ stacking_buff, stat_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
       // 2023-04-21 PTR: Subsequent triggers will override existing buff even if lower value (tested with Beast Mastery)
       if ( stacking_buff->check() )
       {
@@ -4147,13 +4164,13 @@ void elementium_pocket_anvil( special_effect_t& e )
       break;
     case ROGUE:
       driver_id = 408534;
-      e.player->sim->error( "Rogue Abilities not Whitelisted in Elementium Pocket Anvil" );
-      /*
-      proc_spell_id = {
-        {
-          Spell Ids, seperated by commas
-        }
-      };*/
+      // Does not currently work on Shadowstrike for Subtley or Ambush for Assassination/Outlaw
+      proc_spell_id = { { // Assassination
+                          5374, 27576,
+                          // Outlaw -- Sinister Strike
+                          193315, 197834,
+                          // Subtlety -- Backstab, Gloomblade
+                          53, 200758 } };
       break;
     case SHAMAN:
       driver_id     = 408584;
@@ -4286,21 +4303,52 @@ void ominous_chromatic_essence( special_effect_t& e )
       util::string_split<std::string_view>( e.player->dragonflight_opts.ominous_chromatic_essence_allies, "/" );
   for ( auto s : splits )
   {
-    if ( util::str_compare_ci( s, "obsidian" ) && !has_obsidian_major )
-      has_obsidian_minor = true;
-    else if ( util::str_compare_ci( s, "ruby" ) && !has_ruby_major )
-      has_ruby_minor = true;
-    else if ( util::str_compare_ci( s, "bronze" ) && !has_bronze_major )
-      has_bronze_minor = true;
-    else if ( util::str_compare_ci( s, "azure" ) && !has_azure_major )
-      has_azure_minor = true;
-    else if ( util::str_compare_ci( s, "emerald" ) && !has_emerald_major )
-      has_emerald_minor = true;
+    if ( util::str_compare_ci( s, "obsidian" ) )
+    {
+      if ( !has_obsidian_major )
+      {
+        has_obsidian_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "ruby" ) )
+    {
+      if ( !has_ruby_major )
+      {
+        has_ruby_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "bronze" ) )
+    {
+      if ( !has_bronze_major )
+      {
+        has_bronze_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "azure" ) )
+    {
+      if ( !has_azure_major )
+      {
+        has_azure_minor = true;
+      }
+    }
+    else if ( util::str_compare_ci( s, "emerald" ) )
+    {
+      if ( !has_emerald_major )
+      {
+        has_emerald_minor = true;
+      }
+    }
     else if ( util::str_compare_ci( s, "" ) )
+    {
       return;
+    }
     else
+    {
       e.player->sim->error(
-          "Invalid Option for Ominous Chromatic Essence Allies. Your Main Dragonflight can not be entered." );
+          "'{}' Is not a valid Dragonflight for Ominous Chromatic Essence Allies. Options are: obsidian, azure, "
+          "emerald, ruby, or bronze",
+          s );
+    }
   }
 
   // Minor Buffs
@@ -4341,7 +4389,7 @@ void ominous_chromatic_essence( special_effect_t& e )
   {
     e.player->register_combat_begin( [ buff, obsidian_minor, ruby_minor, bronze_minor, azure_minor, emerald_minor,
                                        has_obsidian_minor, has_ruby_minor, has_bronze_minor, has_azure_minor,
-                                       has_emerald_minor ]( player_t* p ) {
+                                       has_emerald_minor ]( player_t* ) {
       buff->trigger();
 
       if ( has_obsidian_minor )
@@ -4470,6 +4518,38 @@ void vessel_of_searing_shadow( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// Heart of Thunder
+// 413419 Driver
+// 413423 Damage
+void heart_of_thunder ( special_effect_t& e )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "thunderous_pulse", e, "thunderous_pulse", e.trigger() );
+
+  e.execute_action = damage;
+  new dbc_proc_callback_t( e.player, e );
+}
+
+// 407895 driver
+// 407896 damage
+void drogbar_rocks( special_effect_t& effect ) {
+  effect.proc_flags2_ = PF2_CRIT;
+  
+  auto proc = create_proc_action<generic_proc_t>( "drogbar_rocks", effect, "drogbar_rocks", effect.trigger() );
+  effect.execute_action = proc;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 408607 driver
+// 408984 spawned moth
+// 408983 primary stat buff
+void underlight_globe( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player -> find_spell( 408983 ) )
+    ->add_stat_from_effect( 1, effect.driver() -> effectN(1).average( effect.item ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -4539,7 +4619,7 @@ void spore_keepers_baton( special_effect_t& effect )
                   ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
 
   effect.player->callbacks.register_callback_execute_function(
-      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* s ) {
+      effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
         switch ( s->proc_type() )
         {
           case PROC1_MAGIC_HEAL:
@@ -4699,9 +4779,8 @@ void ashkandur( special_effect_t& e )
     {
       double m = generic_proc_t::composite_target_multiplier( t );
 
-      if ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE &&
-           player->target->race == RACE_HUMANOID ||
-       player->dragonflight_opts.ashkandur_humanoid )
+      if ( ( player->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && player->target->race == RACE_HUMANOID ) ||
+           player->dragonflight_opts.ashkandur_humanoid )
       {
         m *= 2; // Doubles damage against humanoid targets. 
       }
@@ -5231,7 +5310,7 @@ void adaptive_dracothyst_armguards( special_effect_t& effect )
     buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
     effect.custom_buff  = buff;
     effect.proc_flags2_ = PF2_CRIT;
-    auto dbc            = new dbc_proc_callback_t( effect.player, effect );
+    new dbc_proc_callback_t( effect.player, effect );
   }
   else
   {
@@ -5475,9 +5554,22 @@ void ever_decaying_spores( special_effect_t& effect )
         } );
       }
 
-      td->debuff.ever_decaying_spores->trigger();
-      if ( td->debuff.ever_decaying_spores->at_max_stacks() )
-        td->debuff.ever_decaying_spores->expire();
+      // Every time this procs it has a chance to damage the player instead of applying a debuff stack and it will also eat the proc 
+      // if the debuff is ticking on the target.
+      // Testing shows this chance is currently 20% but since it's not found in spell data will have to rechecked in case this changes.
+      if ( rng().roll( 0.8 ) )
+      {
+        td->debuff.ever_decaying_spores->trigger();
+        if ( td->debuff.ever_decaying_spores->at_max_stacks() )
+          td->debuff.ever_decaying_spores->expire();
+      }
+    }
+
+    
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( !damage->get_dot( s->target )->is_ticking() )
+        dbc_proc_callback_t::trigger( a, s );
     }
   };
 
@@ -6587,7 +6679,9 @@ void register_special_effects()
   register_special_effect( 401238, items::ward_of_the_faceless_ire );
   register_special_effect( 395175, items::treemouths_festering_splinter );
   register_special_effect( 401395, items::vessel_of_searing_shadow );
-
+  register_special_effect( 413419, items::heart_of_thunder );
+  register_special_effect( 407895, items::drogbar_rocks );
+  register_special_effect( 408607, items::underlight_globe );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

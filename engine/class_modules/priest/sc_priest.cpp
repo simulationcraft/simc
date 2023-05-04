@@ -31,14 +31,32 @@ struct expiation_t final : public priest_spell_t
       consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
     background = dual = true;
-    may_crit          = false;
-    tick_may_crit     = false;
+    may_crit          = true;
+    tick_may_crit     = true;
     // Spell data has this listed as physical, but in-game it's shadow
     school = SCHOOL_SHADOW;
 
     // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
     // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
     snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.discipline.schism.enabled() )
+    {
+      const priest_td_t* td = priest().find_target_data( s->target );
+      if ( td && td->buffs.schism->check() )
+      {
+        auto adjust_percent = priest().talents.discipline.schism->effectN( 2 ).percent();
+        d *= 1.0 + adjust_percent;
+        sim->print_debug( "schism modifies expiation damage by {} (new total: {})", adjust_percent, d );
+      }
+    }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -717,11 +735,13 @@ struct mindgames_t final : public priest_spell_t
 {
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
+  propagate_const<action_t*> child_searing_light;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.talents.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
-      child_mindgames_damage_reversal( nullptr )
+      child_mindgames_damage_reversal( nullptr ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
 
@@ -742,6 +762,18 @@ struct mindgames_t final : public priest_spell_t
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    if ( child_searing_light && priest().buffs.divine_image->check() )
+    {
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_searing_light->execute();
+      }
     }
   }
 
@@ -1104,10 +1136,15 @@ struct shadow_word_death_t final : public priest_spell_t
 // ==========================================================================
 struct holy_nova_t final : public priest_spell_t
 {
-  holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
+  action_t* child_light_eruption;
+  holy_nova_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "holy_nova", p, p.talents.holy_nova ),
+      child_light_eruption( priest().background_actions.light_eruption )
   {
     parse_options( options_str );
-    aoe = -1;
+    aoe                 = -1;
+    full_amount_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
+    reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1129,6 +1166,13 @@ struct holy_nova_t final : public priest_spell_t
     if ( priest().talents.rhapsody )
     {
       priest().buffs.rhapsody_timer->trigger();
+    }
+    if ( child_light_eruption && priest().buffs.divine_image->check() )
+    {
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_light_eruption->execute();
+      }
     }
   }
 
@@ -2009,6 +2053,10 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
+  // Four Divine Stars
+  if ( specialization() == PRIEST_SHADOW && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 )
+    resources.initial_opt[ RESOURCE_INSANITY ] = 24;
+
   base_t::init_resources( force );
 }
 

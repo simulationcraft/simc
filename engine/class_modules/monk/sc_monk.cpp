@@ -668,12 +668,20 @@ namespace monk
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
         double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
+          ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
+
         return ta;
       }
 
       double composite_da_multiplier( const action_state_t *s ) const override
       {
         double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
+          da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
+
         return da;
       }
 
@@ -7594,9 +7602,8 @@ namespace monk
     passives.chi_wave_heal = find_spell( 132463 );
     passives.claw_of_the_white_tiger = find_spell( 389541 );
     passives.chi_burst_damage = find_spell( 148135 );
-    passives.faeline_stomp_damage = find_spell( 345727 );
+    passives.faeline_stomp_damage = find_spell( 388207 );
     passives.fortifying_brew = find_spell( 120954 );
-    // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
     passives.healing_elixir = find_spell( 122281 );
     passives.mystic_touch = find_spell( 8647 );
 
@@ -7639,7 +7646,7 @@ namespace monk
     passives.empowered_tiger_lightning = find_spell( 335913 );
     passives.fae_exposure_dmg = find_spell( 395414 );
     passives.fae_exposure_heal = find_spell( 395413 );
-    passives.faeline_stomp_ww_damage = find_spell( 327264 );
+    passives.faeline_stomp_ww_damage = find_spell( 388201 );
     passives.fists_of_fury_tick = find_spell( 117418 );
     passives.flying_serpent_kick_damage = find_spell( 123586 );
     passives.focus_of_xuen = find_spell( 252768 );
@@ -8985,26 +8992,10 @@ namespace monk
     return active;
   }
 
-  // monk_t::composite_player_dd_multiplier ================================
-  double monk_t::composite_player_dd_multiplier( school_e school, const action_t *action ) const
+  // monk_t::composite_player_multiplier ==================================
+  double monk_t::composite_player_multiplier( school_e school ) const
   {
-    double multiplier = player_t::composite_player_dd_multiplier( school, action );
-
-    if ( action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
-      multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 1 ).percent();
-
-    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
-
-    return multiplier;
-  }
-
-  // monk_t::composite_player_td_multiplier ================================
-  double monk_t::composite_player_td_multiplier( school_e school, const action_t *action ) const
-  {
-    double multiplier = player_t::composite_player_td_multiplier( school, action );
-
-    if ( action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
-      multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 2 ).percent();
+    double multiplier = player_t::composite_player_multiplier( school );
 
     multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 

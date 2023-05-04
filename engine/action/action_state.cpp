@@ -102,6 +102,7 @@ void action_state_t::copy_state( const action_state_t* o )
   versatility           = o->versatility;
   da_multiplier         = o->da_multiplier;
   ta_multiplier         = o->ta_multiplier;
+  player_multiplier     = o->player_multiplier;
   persistent_multiplier = o->persistent_multiplier;
   pet_multiplier        = o->pet_multiplier;
 
@@ -141,6 +142,7 @@ action_state_t::action_state_t( action_t* a, player_t* t )
     versatility( 1.0 ),
     da_multiplier( 1.0 ),
     ta_multiplier( 1.0 ),
+    player_multiplier( 1.0 ),
     persistent_multiplier( 1.0 ),
     pet_multiplier( 1.0 ),
     target_da_multiplier( 1.0 ),
@@ -216,6 +218,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " versatility=" << versatility;
   s << " da_mul=" << da_multiplier;
   s << " ta_mul=" << ta_multiplier;
+  s << " ply_mul=" << player_multiplier;
   s << " per_mul=" << persistent_multiplier;
   if ( action->player->is_pet() )
   {
@@ -292,8 +295,10 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "HST", STATE_HASTE );
   concat_flag_str( str, "CRIT", STATE_CRIT );
   concat_flag_str( str, "VERS", STATE_VERSATILITY );
-  concat_flag_str( str, "MUL_DA", STATE_MUL_DA );
-  concat_flag_str( str, "MUL_TA", STATE_MUL_TA );
+
+  concat_flag_str( str, "MUL_DA", STATE_MUL_SPELL_DA );
+  concat_flag_str( str, "MUL_TA", STATE_MUL_SPELL_TA );
+  concat_flag_str( str, "MUL_PLY", STATE_MUL_PLAYER_DAM );
   concat_flag_str( str, "MUL_PER", STATE_MUL_PERSISTENT );
   concat_flag_str( str, "MUL_PET", STATE_MUL_PET );
 
@@ -310,6 +315,11 @@ std::string action_state_t::flags_to_str( unsigned flags )
   concat_flag_str( str, "TGT_MIT_DA", STATE_TGT_MITG_DA );
   concat_flag_str( str, "TGT_MIT_TA", STATE_TGT_MITG_TA );
   concat_flag_str( str, "TGT_ARMOR", STATE_TGT_ARMOR );
+
+  concat_flag_str( str, "TGT_USR1", STATE_TGT_USER_1 );
+  concat_flag_str( str, "TGT_USR2", STATE_TGT_USER_2 );
+  concat_flag_str( str, "TGT_USR3", STATE_TGT_USER_3 );
+  concat_flag_str( str, "TGT_USR4", STATE_TGT_USER_4 );
 
   return str;
 }

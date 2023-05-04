@@ -1002,8 +1002,7 @@ public:
   double composite_damage_versatility() const override;
   double composite_crit_avoidance() const override;
   double temporary_movement_modifier() const override;
-  double composite_player_dd_multiplier( school_e, const action_t* action ) const override;
-  double composite_player_td_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const override;
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;

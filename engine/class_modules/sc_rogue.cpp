@@ -390,6 +390,7 @@ public:
     damage_buff_t* t29_subtlety_2pc;
     damage_buff_t* t29_subtlety_4pc;
     damage_buff_t* t29_subtlety_4pc_black_powder;
+    buff_t* t30_assassination_4pc;
 
   } buffs;
 
@@ -451,6 +452,7 @@ public:
     gain_t* venomous_wounds_death;
     gain_t* relentless_strikes;
     gain_t* symbols_of_death;
+    gain_t* symbols_of_death_t30;
     gain_t* slice_and_dice;
 
     // CP Gains
@@ -626,6 +628,11 @@ public:
 
     // Multi-Spec
     const spell_data_t* rupture; // Assassination + Subtlety
+
+    // Set Bonuses
+    const spell_data_t* t30_assassination_2pc_tick;
+    const spell_data_t* t30_assassination_4pc_buff;
+    const spell_data_t* t30_subtlety_4pc_buff;
 
   } spec;
 
@@ -932,6 +939,13 @@ public:
     const spell_data_t* t29_outlaw_4pc;
     const spell_data_t* t29_subtlety_2pc;
     const spell_data_t* t29_subtlety_4pc;
+
+    const spell_data_t* t30_assassination_2pc;
+    const spell_data_t* t30_assassination_4pc;
+    const spell_data_t* t30_outlaw_2pc;
+    const spell_data_t* t30_outlaw_4pc;
+    const spell_data_t* t30_subtlety_2pc;
+    const spell_data_t* t30_subtlety_4pc;
   } set_bonuses;
 
   // Options
@@ -1435,6 +1449,7 @@ public:
     bool zoldyck_insignia = false;
 
     bool t29_assassination_2pc = false;
+    bool t30_subtlety_4pc = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1586,6 +1601,11 @@ public:
       affected_by.t29_assassination_2pc = ab::data().affected_by( p->spec.envenom->effectN( 7 ) );
     }
 
+    if ( p->set_bonuses.t30_subtlety_4pc->ok() )
+    {
+      affected_by.t30_subtlety_4pc = ab::data().affected_by( p->spec.t30_subtlety_4pc_buff->effectN( 1 ) );
+    }
+
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
@@ -1647,11 +1667,6 @@ public:
     register_damage_buff( p()->buffs.t29_subtlety_2pc );
     register_damage_buff( p()->buffs.t29_subtlety_4pc );
     register_damage_buff( p()->buffs.t29_subtlety_4pc_black_powder );
-
-    if ( p()->talent.rogue.nightstalker->ok() )
-    {
-      affected_by.nightstalker = p()->buffs.nightstalker->is_affecting( ab::s_data );
-    }
 
     if ( ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 )
     {
@@ -1996,9 +2011,9 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    // Apply Nightstalker direct damage increase via the corresponding driver spell.
-    // And yes, this can cause double dips with the persistent multiplier on DoTs which was the case with Crimson Tempest once.
-    if ( affected_by.nightstalker && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
+    // Nightstalker
+    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) && 
+         p()->buffs.nightstalker->is_affecting_direct( ab::s_data ) )
     {
       m *= p()->buffs.nightstalker->direct_mod.multiplier;
     }
@@ -2018,6 +2033,14 @@ public:
     // Registered Damage Buffs
     for ( auto damage_buff : periodic_damage_buffs )
       m *= damage_buff->is_stacking ? damage_buff->stack_value_periodic() : damage_buff->value_periodic();
+
+    // Nightstalker
+    // 2023-05-01 -- Unclear if this snapshots yet, needs to be verified
+    if ( p()->talent.rogue.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) &&
+         p()->buffs.nightstalker->is_affecting_periodic( ab::s_data ) )
+    {
+      m *= p()->buffs.nightstalker->periodic_mod.multiplier;
+    }
 
     // Masteries for Assassination and Subtlety have periodic damage in a separate effect. Just to be sure, use that instead of direct mastery_value.
     if ( affected_by.mastery_executioner.periodic )
@@ -2078,6 +2101,9 @@ public:
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
     double m = ab::composite_persistent_multiplier( state );
+
+    // 2023-05-01 -- Nightstalker may be intended to snapshot modifiers for 10.1, needs testing
+
     return m;
   }
 
@@ -2095,6 +2121,18 @@ public:
     }
 
     return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double cm = ab::composite_crit_damage_bonus_multiplier();
+
+    if ( affected_by.t30_subtlety_4pc && p()->buffs.symbols_of_death->check() )
+    {
+      cm += p()->spec.t30_subtlety_4pc_buff->effectN( 1 ).percent();
+    }
+
+    return cm;
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
@@ -3409,11 +3447,31 @@ struct cold_blood_t : public rogue_spell_t
 
 struct crimson_tempest_t : public rogue_attack_t
 {
+  struct poisoned_edges_t : public rogue_attack_t
+  {
+    poisoned_edges_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
+    {
+    }
+
+    bool procs_poison() const override
+    { return false; }
+  };
+
+  poisoned_edges_t* poisoned_edges_damage;
+
   crimson_tempest_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str )
+    rogue_attack_t( name, p, p->talent.assassination.crimson_tempest, options_str ),
+    poisoned_edges_damage( nullptr )
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    if ( p->set_bonuses.t30_assassination_2pc->ok() )
+    {
+      poisoned_edges_damage = p->get_background_action<poisoned_edges_t>( "crimson_tempest_t30" );
+      add_child( poisoned_edges_damage );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3428,6 +3486,32 @@ struct crimson_tempest_t : public rogue_attack_t
   double combo_point_da_multiplier( const action_state_t* s ) const override
   {
     return static_cast<double>( cast_state( s )->get_combo_points() ) + 1.0;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+
+    if ( poisoned_edges_damage )
+    {
+      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
+      double damage = state->result_total * multiplier;
+      poisoned_edges_damage->execute_on_target( state->target, damage );
+    }
+  }
+
+  void tick( dot_t* d ) override
+  {
+    rogue_attack_t::tick( d );
+
+    if ( poisoned_edges_damage )
+    {
+      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
+      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
+      double damage = d->state->result_total * multiplier;
+      poisoned_edges_damage->execute_on_target( d->target, damage );
+    }
   }
 
   bool procs_poison() const override
@@ -3494,6 +3578,8 @@ struct deathmark_t : public rogue_attack_t
     tdata->dots.garrote_deathmark->cancel();
     tdata->dots.rupture_deathmark->cancel();
     tdata->debuffs.amplifying_poison_deathmark->expire();
+
+    p()->buffs.t30_assassination_4pc->trigger();
   }
 };
 
@@ -4510,16 +4596,43 @@ struct rupture_t : public rogue_attack_t
     { return false; }
   };
 
+  struct poisoned_edges_tick_t : public rogue_attack_t
+  {
+    poisoned_edges_tick_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
+    {
+    }
+
+    bool procs_poison() const override
+    { return false; }
+  };
+
   replicating_shadows_tick_t* replicating_shadows_tick;
+  poisoned_edges_tick_t* poisoned_edges_tick;
   
   rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str ),
-    replicating_shadows_tick( nullptr )
+    replicating_shadows_tick( nullptr ), poisoned_edges_tick( nullptr )
   {
     if ( p->talent.subtlety.replicating_shadows->ok() )
     {
       replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
       add_child( replicating_shadows_tick );
+    }
+
+    
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->set_bonuses.t30_assassination_2pc->ok() )
+    {
+      poisoned_edges_tick = p()->get_background_action<poisoned_edges_tick_t>(
+        secondary_trigger_type == secondary_trigger::DEATHMARK ? "rupture_deathmark_t30" :
+                                                                 "rupture_t30" );
+      add_child( poisoned_edges_tick );
     }
   }
 
@@ -4603,6 +4716,18 @@ struct rupture_t : public rogue_attack_t
     if ( replicating_shadows_tick )
     {
       replicating_shadows_tick->execute_on_target( d->target );
+    }
+
+    if ( poisoned_edges_tick )
+    {
+      // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 40% tooltip value
+      // Additionally, appears to deal half damage from Deathmark DoT ticks
+      double multiplier = p()->bugs ? 0.5 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
+      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
+      if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
+        multiplier *= 0.5;
+      double damage = d->state->result_total * multiplier;
+      poisoned_edges_tick->execute_on_target( d->target, damage );
     }
   }
 
@@ -4832,6 +4957,30 @@ struct shadow_dance_t : public rogue_spell_t
     {
       trigger_combo_point_gain( as<int>( p()->talent.subtlety.the_first_dance->effectN( 1 ).base_value() ),
                                 p()->gains.the_first_dance );
+    }
+
+    if ( p()->set_bonuses.t30_subtlety_2pc->ok() )
+    {
+      // 2023-05-01 -- This currently acts like a normal cast, including The Rotten and resetting the duration
+      //               Tooltip states 6 seconds, but this still just seems to add the normal 10s + pandemic duration
+      timespan_t symbols_duration = p()->bugs ? p()->buffs.symbols_of_death->base_buff_duration :
+        timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 1 ).base_value() );
+
+      p()->buffs.symbols_of_death->trigger( symbols_duration );
+      p()->buffs.the_rotten->trigger();
+      p()->resource_gain( RESOURCE_ENERGY, p()->spec.symbols_of_death->effectN( 5 ).resource(),
+                          p()->gains.symbols_of_death_t30 );
+
+      // Extends Rupture DoTs on all active targets
+      timespan_t extend_duration = timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 2 ).base_value() );
+      for ( auto t : sim->target_non_sleeping_list )
+      {
+        rogue_td_t* tdata = p()->get_target_data( t );
+        if ( tdata->dots.rupture->is_ticking() )
+        {
+          tdata->dots.rupture->adjust_duration( extend_duration );
+        }
+      }
     }
   }
 
@@ -7917,6 +8066,12 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= buffs.deeper_daggers->value_direct();
   }
 
+  if ( set_bonuses.t30_assassination_4pc->ok() &&
+       spec.t30_assassination_4pc_buff->effectN( 1 ).has_common_school( school ) )
+  {
+    m *= 1.0 + buffs.t30_assassination_4pc->value();
+  }
+
   return m;
 }
 
@@ -9078,6 +9233,17 @@ void rogue_t::init_spells()
   set_bonuses.t29_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T29, B2 );
   set_bonuses.t29_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T29, B4 );
 
+  set_bonuses.t30_assassination_2pc = sets->set( ROGUE_ASSASSINATION, T30, B2 );
+  set_bonuses.t30_assassination_4pc = sets->set( ROGUE_ASSASSINATION, T30, B4 );
+  set_bonuses.t30_outlaw_2pc        = sets->set( ROGUE_OUTLAW, T30, B2 );
+  set_bonuses.t30_outlaw_4pc        = sets->set( ROGUE_OUTLAW, T30, B4 );
+  set_bonuses.t30_subtlety_2pc      = sets->set( ROGUE_SUBTLETY, T30, B2 );
+  set_bonuses.t30_subtlety_4pc      = sets->set( ROGUE_SUBTLETY, T30, B4 );
+
+  spec.t30_assassination_2pc_tick = set_bonuses.t30_assassination_2pc->ok() ? find_spell( 409483 ) : spell_data_t::not_found();
+  spec.t30_assassination_4pc_buff = set_bonuses.t30_assassination_4pc->ok() ? find_spell( 409587 ) : spell_data_t::not_found();
+  spec.t30_subtlety_4pc_buff = set_bonuses.t30_subtlety_4pc->ok() ? find_spell( 409987 ) : spell_data_t::not_found();
+
   // Active Spells ==========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -9199,6 +9365,7 @@ void rogue_t::init_gains()
   gains.shadow_techniques         = get_gain( "Shadow Techniques" );
   gains.slice_and_dice            = get_gain( "Slice and Dice" );
   gains.symbols_of_death          = get_gain( "Symbols of Death" );
+  gains.symbols_of_death_t30      = get_gain( "Symbols of Death (T30)" );
   gains.the_rotten                = get_gain( "The Rotten" );
   gains.venom_rush                = get_gain( "Venom Rush" );
   gains.venomous_wounds           = get_gain( "Venomous Vim" );
@@ -9443,10 +9610,7 @@ void rogue_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 );
 
-  // DFALPHA -- This still seems very messed up and still appears to have a 50% value in data
-  //            2022-10-21 -- Appears hotfixed to not use this value in latest build but unsure how
-  buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff )
-    ->set_periodic_mod( spell.nightstalker_buff, 2 ); // Dummy Value
+  buffs.nightstalker = make_buff<damage_buff_t>( this, "nightstalker", spell.nightstalker_buff );
   buffs.nightstalker->direct_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
   buffs.nightstalker->periodic_mod.multiplier = 1.0 + talent.rogue.nightstalker->effectN( 1 ).percent();
 
@@ -9670,6 +9834,11 @@ void rogue_t::create_buffs()
   buffs.t29_subtlety_2pc = make_buff<damage_buff_t>( this, "honed_blades", set_bonuses.t29_subtlety_2pc->ok() ?
                                                      find_spell( 394894 ) : spell_data_t::not_found() );
   buffs.t29_subtlety_2pc->set_max_stack( as<int>( consume_cp_max() ) );
+
+  buffs.t30_assassination_4pc = make_buff( this, "poisoned_edges", set_bonuses.t30_assassination_4pc->ok() ?
+                                           find_spell( 409587 ) : spell_data_t::not_found() )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Cannot fully auto-parse as a single damage_buff_t since it has different mod for Black Powder
   const spell_data_t* t29_buff = ( set_bonuses.t29_subtlety_4pc->ok() ?

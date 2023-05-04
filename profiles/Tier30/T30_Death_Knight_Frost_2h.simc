@@ -9,7 +9,7 @@ talents=BsPAAAAAAAAAAAAAAAAAAAAAAICAJkkQSLSQIJJhQiIRkggESSEJJJJpkEAAAAAAAAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=iced_phial_of_corrupting_rage_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
@@ -216,7 +216,7 @@ main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,en
 # Gear Summary
 # gear_ilvl=449.33
 # gear_strength=6270
-# gear_stamina=17539
+# gear_stamina=22613
 # gear_crit_rating=3717
 # gear_haste_rating=4704
 # gear_mastery_rating=4111

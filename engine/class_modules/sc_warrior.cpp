@@ -1187,8 +1187,7 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
-    if ( p()->dbc->ptr )
-      affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
     affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
@@ -2530,7 +2529,7 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
-    if ( p()->dbc->ptr && p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
     {
       rend_dot->set_target( s->target );
       rend_dot->execute();
@@ -8792,10 +8791,15 @@ void warrior_t::apl_fury()
       default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
     }
+    else if ( item.name_str == "vial_of_animated_blood" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str + 
+                                ",if=buff.avatar.up" );
+    }
     else if ( item.name_str == "irideus_fragment" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=buff.recklessness.up" );
+                                ",if=buff.avatar.up" );
     }
     else if ( item.name_str == "manic_grieftorch" )
     {
@@ -8863,6 +8867,8 @@ void warrior_t::apl_fury()
   multi_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   multi_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15" );
+  multi_target->add_action( this, spec.bloodbath, "bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
+  multi_target->add_action( "bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
   multi_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   multi_target->add_action( "execute,if=buff.enrage.up" );
   multi_target->add_action( "odyns_fury,if=buff.enrage.up&raid_event.adds.in>15" );
@@ -8889,6 +8895,8 @@ void warrior_t::apl_fury()
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
+  single_target->add_action( "bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
@@ -8944,6 +8952,11 @@ void warrior_t::apl_arms()
     {
       default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.avatar.remains<3" );
+    }
+    else if ( item.name_str == "vial_of_animated_blood" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str + 
+                                ",if=buff.avatar.up" );
     }
     else if ( item.name_str == "irideus_fragment" )
     {
@@ -9031,6 +9044,7 @@ void warrior_t::apl_arms()
   hac->add_action( "cleave,if=active_enemies>2|!talent.battlelord&buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
   hac->add_action( "whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)" );
   hac->add_action( "skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)" );
+  hac->add_action( "mortal_strike,if=buff.sweeping_strikes.up&buff.crushing_advance.stack=3,if=set_bonus.tier30_4pc" );
   hac->add_action( "overpower,if=buff.sweeping_strikes.up&talent.dreadnaught" );
   hac->add_action( "mortal_strike,cycle_targets=1,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2" );
   hac->add_action( "execute,cycle_targets=1,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up" );
@@ -9977,7 +9991,7 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:howling_rune_3/off_hand:howling_rune_3"
+                              ? "main_hand:hissing_rune_3/off_hand:hissing_rune_3"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )

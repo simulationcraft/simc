@@ -13,7 +13,7 @@ potion=elemental_potion_of_ultimate_power_3
 flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
-temporary_enchant=main_hand:howling_rune_3/off_hand:howling_rune_3
+temporary_enchant=main_hand:hissing_rune_3/off_hand:hissing_rune_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -59,6 +59,8 @@ actions.multi_target+=/whirlwind,if=spell_targets.whirlwind>1&talent.improved_wh
 actions.multi_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
 actions.multi_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.multi_target+=/odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15
+actions.multi_target+=/bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
+actions.multi_target+=/bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
 actions.multi_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
 actions.multi_target+=/execute,if=buff.enrage.up
 actions.multi_target+=/odyns_fury,if=buff.enrage.up&raid_event.adds.in>15
@@ -85,6 +87,8 @@ actions.single_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernau
 actions.single_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.single_target+=/odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)
 actions.single_target+=/rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
+actions.single_target+=/bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
+actions.single_target+=/bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
 actions.single_target+=/execute,if=buff.enrage.up
 actions.single_target+=/onslaught,if=buff.enrage.up|talent.tenderize
 actions.single_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
@@ -129,10 +133,10 @@ off_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
 # Gear Summary
 # gear_ilvl=421.63
 # gear_strength=5920
-# gear_stamina=14535
+# gear_stamina=18947
 # gear_crit_rating=3120
-# gear_haste_rating=3737
-# gear_mastery_rating=3746
+# gear_haste_rating=3117
+# gear_mastery_rating=4366
 # gear_versatility_rating=1735
 # gear_armor=7108
 # gear_bonus_armor=141

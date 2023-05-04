@@ -9,7 +9,7 @@ talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJpEJJIJhAJUSIAAAAAAAAAAAAgSESCJoIQSLJpAoEJhkG
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=iced_phial_of_corrupting_rage_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=disabled
@@ -101,8 +101,8 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordia
 actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
-actions.single+=/lava_burst,if=buff.maelstrom_weapon.stack>=5
-actions.single+=/lightning_bolt,if=talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
+actions.single+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5
+actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
 actions.single+=/ice_strike,if=buff.doom_winds.up
 actions.single+=/sundering,if=buff.doom_winds.up&raid_event.adds.in>=40
 actions.single+=/crash_lightning,if=buff.doom_winds.up
@@ -146,7 +146,7 @@ off_hand=fist_of_the_grand_summoner,id=195512,bonus_id=4800/4786/1498,enchant=so
 # Gear Summary
 # gear_ilvl=422.00
 # gear_agility=5436
-# gear_stamina=13301
+# gear_stamina=17344
 # gear_crit_rating=522
 # gear_haste_rating=4195
 # gear_mastery_rating=4925

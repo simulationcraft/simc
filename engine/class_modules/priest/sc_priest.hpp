@@ -386,6 +386,7 @@ public:
       const spell_data_t* divine_image_buff;
       const spell_data_t* divine_image_summon;
       const spell_data_t* divine_image_searing_light;
+      const spell_data_t* divine_image_light_eruption;
       player_talent_t miracle_worker;
     } holy;
 
@@ -543,6 +544,7 @@ public:
     propagate_const<actions::spells::purge_the_wicked_t*> purge_the_wicked;
     propagate_const<action_t*> holy_fire;
     propagate_const<action_t*> searing_light;
+    propagate_const<action_t*> light_eruption;
     propagate_const<actions::spells::burning_vehemence_t*> burning_vehemence;
   } background_actions;
 

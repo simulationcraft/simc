@@ -18,7 +18,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : "greater_flask_of_endless_fathoms";
+  return ( p->true_level > 60 ) ? "phial_of_tepid_versatility_3" : "greater_flask_of_endless_fathoms";
 }
 
 std::string food( const player_t* p )
@@ -50,7 +50,7 @@ void shadow( player_t* p )
   action_priority_list_t* filler = p->get_action_priority_list( "filler" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask", "otion=elemental_potion_of_ultimate_power_ lask=iced_phial_of_corrupting_rage_ ood=fated_fortune_cooki ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
+  precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -95,9 +95,8 @@ void shadow( player_t* p )
   main->add_action( "devouring_plague,target_if=refreshable|!talent.distorted_reality,if=refreshable&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<(buff.voidform.remains+2)", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
   main->add_action( "shadow_crash,if=!variable.holding_crash&dot.vampiric_touch.refreshable", "Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range" );
   main->add_action( "vampiric_touch,target_if=min:remains,if=refreshable&target.time_to_die>=12&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains&!action.shadow_crash.in_flight|variable.holding_crash|!talent.whispering_shadows)", "Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon" );
-  main->add_action( "shadow_word_death,target_if=target.health.pct<20&(cooldown.fiend.remains>=10|!talent.inescapable_torment)|pet.fiend.active>1&talent.inescapable_torment|buff.deathspeaker.up", "High priority Shadow Word: Death action during execute, while Mindbender is active with Inescapable Torment, or Deathspeaker is active" );
-  main->add_action( "mind_spike_insanity,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Spike: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
-  main->add_action( "mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!pet.fiend.active)&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
+  main->add_action( "mind_spike_insanity,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Spike: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available" );
+  main->add_action( "mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available" );
   main->add_action( "mind_blast,if=variable.dots_up&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
   main->add_action( "void_torrent,if=!variable.holding_crash,target_if=variable.all_dots_up&dot.devouring_plague.remains>=2", "Void Torrent if you are not holding Shadow Crash for an add pack coming, prefer the target with the most DoTs active. Only cast if Devouring Plague is on that target and will last at least 2 seconds" );
   main->add_action( "mindgames,target_if=variable.all_dots_up&dot.devouring_plague.remains>=cast_time", "Cast Mindgames if all DoTs will be active by the time the cast finishes" );
@@ -112,9 +111,8 @@ void shadow( player_t* p )
   aoe->add_action( "void_bolt" );
   aoe->add_action( "devouring_plague,target_if=refreshable|!talent.distorted_reality,if=refreshable&!variable.pool_for_cds|insanity.deficit<=20|buff.voidform.up&cooldown.void_bolt.remains>buff.voidform.remains&cooldown.void_bolt.remains<(buff.voidform.remains+2)", "Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 20 or to get out an extra Void Bolt by extending Voidform. With Distorted Reality can maintain more than one at a time in multi-target." );
   aoe->add_action( "vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied),if=variable.max_vts>0&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash)&!action.shadow_crash.in_flight|!talent.whispering_shadows" );
-  aoe->add_action( "shadow_word_death,target_if=target.health.pct<20&(cooldown.fiend.remains>=10|!talent.inescapable_torment)|pet.fiend.active>1&talent.inescapable_torment|buff.deathspeaker.up", "High priority Shadow Word: Death action during execute, while Mindbender is active with Inescapable Torment, or Deathspeaker is active" );
   aoe->add_action( "mind_spike_insanity,if=variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Spike: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
-  aoe->add_action( "mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&(!pet.fiend.active)&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
+  aoe->add_action( "mind_flay,if=buff.mind_flay_insanity.up&variable.dots_up&cooldown.mind_blast.full_recharge_time>=gcd*3&talent.idol_of_cthun&(!cooldown.void_torrent.up|!talent.void_torrent)", "High Priority Mind Flay: Insanity to fish for C'Thun procs when Mind Blast is not capped and Void Torrent is not available and Mindbender is not active" );
   aoe->add_action( "mind_blast,if=variable.vts_applied&(!buff.mind_devourer.up|cooldown.void_eruption.up&talent.void_eruption)", "# Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption" );
   aoe->add_action( "call_action_list,name=pl_torrent,target_if=talent.void_torrent&talent.psychic_link&cooldown.void_torrent.remains<=3&(!variable.holding_crash|raid_event.adds.count%(active_dot.vampiric_touch+raid_event.adds.count)<1.5)&((insanity>=50|dot.devouring_plague.ticking|buff.dark_reveries.up)|buff.voidform.up|buff.dark_ascension.up)", "Void Torrent action list for AoE" );
   aoe->add_action( "mindgames,if=active_enemies<5&dot.devouring_plague.ticking|talent.psychic_link" );
@@ -127,14 +125,14 @@ void shadow( player_t* p )
   pl_torrent->add_action( "devouring_plague,if=remains<=4&cooldown.void_torrent.remains<gcd*2", "Use Devouring Plague before Void Torrent cast" );
   pl_torrent->add_action( "mind_blast,if=!talent.mindgames|cooldown.mindgames.remains>=3&!prev_gcd.1.mind_blast" );
   pl_torrent->add_action( "void_torrent,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking|buff.voidform.up" );
-  pl_torrent->add_action( "mindgames,target_if=variable.all_dots_up|buff.voidform.up" );
+  pl_torrent->add_action( "mindgames,if=dot.vampiric_touch.ticking&dot.shadow_word_pain.ticking&dot.devouring_plague.ticking|buff.voidform.up" );
 
   filler->add_action( "vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up", "Cast Vampiric Touch to consume Unfurling Darkness, prefering the target with the lowest DoT duration active" );
+  filler->add_action( "shadow_word_death,target_if=target.health.pct<20|buff.deathspeaker.up" );
   filler->add_action( "mind_spike_insanity" );
   filler->add_action( "mind_flay,if=buff.mind_flay_insanity.up" );
-  filler->add_action( "lights_judgment,if=!raid_event.adds.exists|raid_event.adds.in>75|spell_targets.lights_judgment>1" );
   filler->add_action( "halo,if=raid_event.adds.in>20", "Save up to 20s if adds are coming soon." );
-  filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=target.health.pct<20&active_enemies<4|talent.inescapable_torment&pet.fiend.active" );
+  filler->add_action( "shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active" );
   filler->add_action( "divine_star,if=raid_event.adds.in>10", "Save up to 10s if adds are coming soon." );
   filler->add_action( "devouring_plague,if=buff.voidform.up&variable.dots_up" );
   filler->add_action( "mind_spike" );
@@ -155,68 +153,184 @@ void shadow( player_t* p )
   trinkets->add_action( "use_item,name=desperate_invokers_codex" );
 }
 //shadow_apl_end
-
 //discipline_apl_start
 void discipline( player_t* p )
 {
-  action_priority_list_t* def     = p->get_action_priority_list( "default" );
-  action_priority_list_t* racials = p->get_action_priority_list( "racials" );
-
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  precombat->add_action( "flask" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
+  action_priority_list_t* main = p->get_action_priority_list( "main" );
+  action_priority_list_t* scov_prep = p->get_action_priority_list( "scov_prep" );
+  action_priority_list_t* short_scov = p->get_action_priority_list( "short_scov" );
+  action_priority_list_t* long_scov = p->get_action_priority_list( "long_scov" );
+  action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+
+  precombat->add_action( "flask", "otion=elemental_potion_of_ultimate_power_ ood=fated_fortune_cooki lask=phial_of_tepid_versatility_ ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "smite" );
 
-  // On-Use Items
-  def->add_action( "use_items", "Default fallback for usable items: Use on cooldown in order by trinket slot." );
+  variables->add_action( "variable,name=te_none,op=set,value=!buff.twilight_equilibrium_holy_amp.up&!buff.twilight_equilibrium_shadow_amp.up", "----------------------------------------------------------------------------  GENERAL VARIABLES  ----------------------------------------------------------------------------  No Twilight Equilibrium active" );
+  variables->add_action( "variable,name=te_shadow,op=set,value=buff.twilight_equilibrium_shadow_amp.up|variable.te_none", "Twilight Equilibrium is buffing shadow damage" );
+  variables->add_action( "variable,name=te_holy,op=set,value=buff.twilight_equilibrium_holy_amp.up|variable.te_none", "Twilight Equilibrium is buffing holy damage" );
+  variables->add_action( "variable,name=long_scov,op=set,value=talent.shadow_covenant&talent.embrace_shadow", "Long Shadow covenant is enabled" );
+  variables->add_action( "variable,name=short_scov,op=set,value=talent.shadow_covenant&!talent.embrace_shadow", "Short shadow covenant is enabled" );
+  variables->add_action( "variable,name=hd_stacks_required,op=set,value=0", "Harsh discipline has been stacked and is ready for shadow covenant.  Zero stacks for no shadow covenant  Full stacks for short results in one HD penance (4 total)  Full stacks + 1 extra results in two HD penances (5 total)" );
+  variables->add_action( "variable,name=hd_stacks_required,op=setif,condition=variable.short_scov,value=4,value_else=5" );
+  variables->add_action( "variable,name=hd_stacks_current,op=set,value=buff.harsh_discipline.stack+(buff.harsh_discipline.max_stack*buff.harsh_discipline_ready.stack)" );
+  variables->add_action( "variable,name=harsh_discipline_ready,op=set,value=!talent.harsh_discipline|(variable.hd_stacks_current>=variable.hd_stacks_required)" );
+  variables->add_action( "variable,name=can_enter_scov,op=set,value=(cooldown.shadow_covenant.up&variable.harsh_discipline_ready)|buff.shadow_covenant.up", "Ready to start shadow covenant phase" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=set,value=0", "----------------------------------------------------------------------------  TWILIGHT EQUILIBRIUM VARIABLES  ----------------------------------------------------------------------------  Count how much execute time is available for all of the talented shadow spells. This is used to help determine if we have time to weave in Twilight Equilibrium proccing holy spells." );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.schism.execute_time,if=talent.schism" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=2", "penance" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.mind_blast.execute_time" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.mind_blast.execute_time,if=talent.dark_indulgence" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.shadow_word_death.execute_time,if=talent.shadow_word_death" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.shadow_word_death.execute_time,if=talent.shadow_word_death&talent.death_and_madness&target.health.pct<20" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.mindgames.execute_time,if=talent.mindgames" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.divine_star.execute_time,if=talent.divine_star" );
+  variables->add_action( "variable,name=shadow_spells_duration_max,op=add,value=action.halo.execute_time,if=talent.halo" );
+  variables->add_action( "variable,name=max_te_holy,op=floor,value=(buff.shadow_covenant.duration-variable.shadow_spells_duration_max)%gcd.max", "(scov duration - shadow spells duration) / GCD time = estimate of holy spells we should need to use during the next scov window  Long scov example: (15 - 12) / 1.5 = 2 GCDs to spend on holy spells  Short scov example: (7 - 12) / 1.5 = -3.3 GCDs to spend on holy spells (none)" );
+  variables->add_action( "variable,name=remaining_te_holy,op=set,value=0", "Counting variable, the number of non-fractional remaining holy casts available" );
+  variables->add_action( "variable,name=remaining_te_holy,op=add,value=variable.max_te_holy" );
+  variables->add_action( "variable,name=expected_penance_reduction,op=setif,condition=talent.train_of_thought,value=1.5,value_else=0", "TODO: duration_expected is buggy on penance/dark reprimand, using a static reduction as a stand-in for now" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=set,value=0", "Calculate how much cast time worth of shadow spells we have currently available. We use shadow_spells_duration to determine if we have time to weave in any holy spells to proc twilight equilibrium." );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.schism.execute_time,if=cooldown.schism.up|(cooldown.schism.remains<buff.shadow_covenant.remains)", "Schism" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=2,if=cooldown.penance.up|((cooldown.penance.remains-variable.expected_penance_reduction)<buff.shadow_covenant.remains)", "Penance" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.mindgames.execute_time,if=cooldown.mindgames.up|(cooldown.mindgames.remains_expected<buff.shadow_covenant.remains)", "Mindgames" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.shadow_word_death.execute_time,if=cooldown.shadow_word_death.up|(cooldown.shadow_word_death.remains<buff.shadow_covenant.remains)", "We always get the first SW:D" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.shadow_word_death.execute_time,if=(cooldown.shadow_word_death.up|(cooldown.shadow_word_death.remains<buff.shadow_covenant.remains))&(target.health.pct<20|target.time_to_pct_20<cooldown.shadow_word_death.remains)&talent.death_and_madness", "Second SW:D only when talented and target health in execute range" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.mind_blast.charges*action.mind_blast.execute_time,if=action.mind_blast.charges>=1", "Add any whole charges of mind blast" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.mind_blast.execute_time,if=((action.mind_blast.charges_fractional>=1&action.mind_blast.charges_fractional<2)&(((1-(action.mind_blast.charges_fractional-1))*action.mind_blast.recharge_time)<buff.shadow_covenant.remains))|((action.mind_blast.charges_fractional<1)&(((1-action.mind_blast.charges_fractional)*action.mind_blast.recharge_time)<buff.shadow_covenant.remains))", "Add any fractional charges of mindblast that will recharge in time" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.divine_star.execute_time,if=cooldown.divine_star.up|(cooldown.divine_star.remains<buff.shadow_covenant.remains)", "Divine Star" );
+  variables->add_action( "variable,name=shadow_spells_duration,op=add,value=action.halo.execute_time,if=cooldown.halo.up|(cooldown.halo.remains<buff.shadow_covenant.remains)", "Halo" );
+  variables->add_action( "variable,name=should_te,op=setif,condition=talent.twilight_equilibrium,value=(buff.shadow_covenant.remains-variable.shadow_spells_duration)>action.smite.execute_time,value_else=0", "Determine if we have enough scov time remaining to weave in a twilight equilibrium activation. If we don't have TE talented, always false. Using smite's execution time to represent a worst-case scenario." );
+  variables->add_action( "variable,name=hd_prep_time,op=setif,condition=!variable.harsh_discipline_ready,value=action.smite.execute_time*(variable.hd_stacks_required-variable.hd_stacks_current),value_else=0", "----------------------------------------------------------------------------  VARIABLES FOR SPELLS BETWEEN SCOV WINDOWS  ----------------------------------------------------------------------------  How many GCDs do we need to spend preparing harsh discipline before entering shadow covenant? Using smite's execution time to represent a worst-case scenario." );
+  variables->add_action( "variable,name=next_penance_time,op=set,value=cooldown.shadow_covenant.remains+variable.hd_prep_time+action.shadow_covenant.execute_time+action.schism.execute_time", "First casts should always be HD prep->covenant->schism->HD dark reprimand" );
+  variables->add_action( "variable,name=next_penance_time,op=add,value=gcd.max,if=variable.remaining_te_holy>0", "If we have enough scov duration, add a holy cast to proc twilight equilibrium" );
+  variables->add_action( "variable,name=remaining_te_holy,op=sub,value=1", "Reduce our counting variable" );
+  variables->add_action( "variable,name=can_penance,op=set,value=(cooldown.penance.duration-variable.expected_penance_reduction)<variable.next_penance_time" );
+  variables->add_action( "variable,name=next_swd_time,op=set,value=variable.next_penance_time+2", "Shadow Word: Death  SW:D is better than other spells if we are in execute phase." );
+  variables->add_action( "variable,name=next_swd_time,op=add,value=gcd.max,if=variable.remaining_te_holy>0", "If we have enough scov duration, add a holy cast to proc twilight equilibrium" );
+  variables->add_action( "variable,name=remaining_te_holy,op=sub,value=1", "Reduce our counting variable" );
+  variables->add_action( "variable,name=next_swd_time,op=add,value=action.mindgames.execute_time,if=((talent.mindgames&talent.shattered_perceptions)|(talent.mindgames&!talent.expiation))&target.health.pct>=20", "indgame  ette ha W:   ren'  xecut has n  av hattere erception  on' av xpiatio" );
+  variables->add_action( "variable,name=next_swd_time,op=add,value=action.mind_blast.execute_time,if=target.health.pct>=20", "Mind blast is better than SW:D if we aren't in execute" );
+  variables->add_action( "variable,name=next_swd_time,op=add,value=action.mind_blast.execute_time,if=target.health.pct>=20&talent.dark_indulgence", "Second mindblast when talented" );
+  variables->add_action( "variable,name=next_swd_time,op=add,value=action.divine_star.execute_time,if=talent.divine_star&target.health.pct>=20&!talent.expiation", "Divine Star and halo are better than SW:D if we aren't in execute and don't have expiation" );
+  variables->add_action( "variable,name=next_swd_time,op=add,value=action.halo.execute_time,if=talent.halo&target.health.pct>=20&!talent.expiation" );
+  variables->add_action( "variable,name=can_swd,op=set,value=cooldown.shadow_word_death.duration_expected<variable.next_swd_time" );
+  variables->add_action( "variable,name=next_mind_blast_time,op=set,value=variable.next_penance_time+2", "Mindblast  Mindblast is better than other spells if we aren't in execute phase" );
+  variables->add_action( "variable,name=next_mind_blast_time,op=add,value=gcd.max,if=variable.remaining_te_holy>0", "If we have enough scov duration, add a holy cast to proc twilight equilibrium" );
+  variables->add_action( "variable,name=remaining_te_holy,op=sub,value=1", "Reduce our counting variable" );
+  variables->add_action( "variable,name=next_mind_blast_time,op=add,value=action.shadow_word_death.execute_time,if=target.health.pct<20", "Add SW:D if we're in execute phase" );
+  variables->add_action( "variable,name=next_mind_blast_time,op=add,value=action.shadow_word_death.execute_time,if=talent.death_and_madness&target.health.pct<20", "Add a second SW:D if we have death and madness" );
+  variables->add_action( "variable,name=next_mind_blast_time,op=add,value=action.mindgames.execute_time,if=talent.mindgames&!talent.expiation", "Add mindgames if we have it talented and don't have expiation" );
+  variables->add_action( "variable,name=can_mind_blast,op=setif,condition=action.mind_blast.charges_fractional>=1,value=((action.mind_blast.max_charges-(action.mind_blast.charges_fractional-1))*action.mind_blast.recharge_time)<variable.next_mind_blast_time,value_else=0", "TODO: This is a little bit simplistic, requiring both charges of mindblast to be available at the moment the first charge needs to be used. Slight optimization should be possible." );
+  variables->add_action( "variable,name=next_mindgames_time,op=set,value=variable.next_penance_time+2", "Mindgames  Mindgames is a better option than other spells if we aren't in execute and don't have expiation" );
+  variables->add_action( "variable,name=next_mindgames_time,op=add,value=gcd.max,if=variable.remaining_te_holy>0", "If we have enough scov duration, add a holy cast to proc twilight equilibrium" );
+  variables->add_action( "variable,name=remaining_te_holy,op=sub,value=1", "Reduce our counting variable" );
+  variables->add_action( "variable,name=next_mindgames_time,op=add,value=action.shadow_word_death.execute_time,if=target.health.pct<20|(talent.expiation&!talent.shattered_perceptions)", "SW:D is better than mindgames in execute phase, or outside of execute phase if we don't have shattered perceptions but do have expiation" );
+  variables->add_action( "variable,name=next_mindgames_time,op=add,value=action.shadow_word_death.execute_time,if=target.health.pct<20&talent.death_and_madness", "Add a second SW:D if we have death and madness" );
+  variables->add_action( "variable,name=next_mindgames_time,op=add,value=action.mind_blast.execute_time,if=talent.expiation", "Mind blast is better than mindgames if we have expiation" );
+  variables->add_action( "variable,name=next_mindgames_time,op=add,value=action.mind_blast.execute_time,if=talent.expiation&talent.dark_indulgence", "Second mindblast when talented" );
+  variables->add_action( "variable,name=can_mindgames,op=set,value=cooldown.mindgames.duration_expected<variable.next_mindgames_time" );
+  variables->add_action( "variable,name=next_divine_star_time,op=set,value=variable.next_penance_time+2", "Divine Star" );
+  variables->add_action( "variable,name=next_divine_star_time,op=add,value=gcd.max,if=variable.remaining_te_holy>0", "If we have enough scov duration, add a holy cast to proc twilight equilibrium" );
+  variables->add_action( "variable,name=remaining_te_holy,op=sub,value=1", "Reduce our counting variable" );
+  variables->add_action( "variable,name=next_divine_star_time,op=add,value=action.shadow_word_death.execute_time,if=target.health.pct<20|talent.expiation", "SW:D is better unless outside of execute phase when expiation is untalented" );
+  variables->add_action( "variable,name=next_divine_star_time,op=add,value=action.shadow_word_death.execute_time,if=target.health.pct<20&talent.death_and_madness", "Add a second SW:D if we have death and madness" );
+  variables->add_action( "variable,name=next_divine_star_time,op=add,value=action.mind_blast.execute_time,if=talent.expiation", "Mind blast is always better" );
+  variables->add_action( "variable,name=next_divine_star_time,op=add,value=action.mind_blast.execute_time,if=talent.dark_indulgence", "Second mindblast when talented" );
+  variables->add_action( "variable,name=next_divine_star_time,op=add,value=action.mindgames.execute_time,if=talent.mindgames", "Mindgames is always better" );
+  variables->add_action( "variable,name=can_divine_star,op=set,value=cooldown.divine_star.duration<variable.next_divine_star_time" );
 
-  // Potions
-  def->add_action( "potion,if=buff.bloodlust.react|buff.power_infusion.up|target.time_to_die<=40",
-                   "Sync potion usage with Bloodlust or Power Infusion." );
+  default_->add_action( "run_action_list,name=main", "----------------------------------------------------------------------------  RUN ACTIONS  ----------------------------------------------------------------------------" );
 
-  // Racials
-  racials->add_action( "arcane_torrent,if=mana.pct<=95" );
+  main->add_action( "call_action_list,name=variables", "START MAIN" );
+  main->add_action( "call_action_list,name=cooldowns" );
+  main->add_action( "run_action_list,name=scov_prep,if=cooldown.shadow_covenant.up&(!variable.harsh_discipline_ready|(variable.short_scov&((talent.purge_the_wicked&dot.purge_the_wicked.remains<20)|(!talent.purge_the_wicked&dot.shadow_word_pain.remains<20))))" );
+  main->add_action( "run_action_list,name=short_scov,if=variable.short_scov&variable.can_enter_scov" );
+  main->add_action( "run_action_list,name=long_scov,if=variable.long_scov&variable.can_enter_scov" );
+  main->add_action( "purge_the_wicked,if=talent.purge_the_wicked&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))&(!ticking|(refreshable&(!talent.painful_punishment|(talent.painful_punishment&(dot.purge_the_wicked.remains<(cooldown.penance.remains-variable.expected_penance_reduction))))))" );
+  main->add_action( "shadow_word_pain,if=!talent.purge_the_wicked&(target.time_to_die>(0.5*dot.shadow_word_pain.duration))&(!ticking|(refreshable&(!talent.painful_punishment|(talent.painful_punishment&(dot.shadow_word_pain.remains<(cooldown.penance.remains-variable.expected_penance_reduction))))))" );
+  main->add_action( "schism,if=!talent.shadow_covenant" );
+  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&target.health.pct<20" );
+  main->add_action( "penance,if=(!talent.shadow_covenant|variable.can_penance)&buff.harsh_discipline_ready.up" );
+  main->add_action( "lights_wrath,if=talent.wrath_unleashed", "For DPS, Lights wrath should always be used outside of scov when you take wrath unleashed to maximize the number of smites it buffs. In a real raid setting, you may want to cast it at the beginning of a scov cycle for additional healing." );
+  main->add_action( "mind_blast,if=!talent.shadow_covenant|variable.can_mind_blast" );
+  main->add_action( "mindgames,if=(!talent.shadow_covenant|variable.can_mindgames)&talent.shattered_perceptions" );
+  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&talent.expiation&(target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration))" );
+  main->add_action( "mindgames,if=(!talent.shadow_covenant|variable.can_mindgames)&!talent.shattered_perceptions" );
+  main->add_action( "halo" );
+  main->add_action( "divine_star,if=(!talent.shadow_covenant|variable.can_divine_star)" );
+  main->add_action( "power_word_solace" );
+  main->add_action( "shadow_word_death,if=(!talent.shadow_covenant|variable.can_swd)&(target.time_to_pct_20>(0.5*cooldown.shadow_word_death.duration))" );
+  main->add_action( "smite" );
 
-  if ( p->race != RACE_BLOOD_ELF )
-  {
-    for ( const auto& racial_action : p->get_racial_actions() )
-    {
-      racials->add_action( racial_action );
-    }
-  }
+  scov_prep->add_action( "purge_the_wicked,if=!ticking&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))", "Prepare to enter shadow covenant" );
+  scov_prep->add_action( "mind_blast,if=!variable.harsh_discipline_ready&variable.can_mind_blast" );
+  scov_prep->add_action( "power_word_solace,if=!variable.harsh_discipline_ready" );
+  scov_prep->add_action( "smite,if=!variable.harsh_discipline_ready" );
+  scov_prep->add_action( "purge_the_wicked,if=(target.time_to_die>(0.5*dot.purge_the_wicked.duration))" );
 
-  def->add_call_action_list( racials );
-  def->add_action( "power_infusion",
-                   "Use Power Infusion before Shadow Covenant to make sure we don't lock out our CD." );
-  def->add_action( "divine_star" );
-  def->add_action( "halo" );
-  def->add_action( "penance" );
-  def->add_action( "power_word_solace" );
-  def->add_action( "shadow_covenant" );
-  def->add_action( "schism" );
-  def->add_action( "mindgames" );
-  def->add_action( "mindbender" );
-  def->add_action( "purge_the_wicked,if=!ticking" );
-  def->add_action( "shadow_word_pain,if=!ticking&!talent.purge_the_wicked.enabled" );
-  def->add_action( "shadow_word_death" );
-  def->add_action( "mind_blast" );
-  def->add_action( "purge_the_wicked,if=refreshable" );
-  def->add_action( "shadow_word_pain,if=refreshable&!talent.purge_the_wicked.enabled" );
-  def->add_action( "smite,if=spell_targets.holy_nova<3", "Use Smite on up to 2 targets." );
-  def->add_action( "holy_nova,if=spell_targets.holy_nova>=3" );
-  def->add_action( "shadow_word_pain" );
+  short_scov->add_action( "shadow_covenant", "Short Shadow Covenant  We want to use entirely shadow spells to optimize our time with the buff" );
+  short_scov->add_action( "schism" );
+  short_scov->add_action( "shadow_word_death,if=target.health.pct<20&talent.expiation" );
+  short_scov->add_action( "penance" );
+  short_scov->add_action( "shadow_word_death,if=target.health.pct<20" );
+  short_scov->add_action( "mind_blast,if=talent.expiation" );
+  short_scov->add_action( "mindgames,if=talent.shattered_perceptions" );
+  short_scov->add_action( "shadow_word_death,if=talent.expiation&(target.time_to_pct_20>buff.shadow_covenant.remains)" );
+  short_scov->add_action( "mindgames" );
+  short_scov->add_action( "halo" );
+  short_scov->add_action( "mind_blast" );
+  short_scov->add_action( "divine_star" );
+  short_scov->add_action( "shadow_word_death,if=(target.time_to_pct_20>buff.shadow_covenant.remains)" );
+  short_scov->add_action( "purge_the_wicked,if=(!ticking|refreshable)&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))", "just in case we run out of shadow spells" );
+  short_scov->add_action( "lights_wrath" );
+  short_scov->add_action( "power_word_solace" );
+  short_scov->add_action( "smite" );
+
+  long_scov->add_action( "shadow_covenant", "Long Shadow Covenant" );
+  long_scov->add_action( "schism" );
+  long_scov->add_action( "shadow_word_death,if=target.health.pct<20&talent.expiation&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "penance,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "shadow_word_death,if=target.health.pct<20&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "mind_blast,if=talent.expiation&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "mindgames,if=talent.shattered_perceptions&(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "shadow_word_death,if=talent.expiation&(!variable.should_te|(variable.should_te&variable.te_shadow))&(target.time_to_pct_20>buff.shadow_covenant.remains)" );
+  long_scov->add_action( "mindgames,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "mind_blast,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "halo,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "divine_star,if=(!variable.should_te|(variable.should_te&variable.te_shadow))" );
+  long_scov->add_action( "shadow_word_death,if=(!variable.should_te|(variable.should_te&variable.te_shadow))&(target.time_to_pct_20>buff.shadow_covenant.remains)" );
+  long_scov->add_action( "purge_the_wicked,if=(!variable.should_te|(variable.should_te&variable.te_holy))&(!ticking|refreshable)&(target.time_to_die>(0.5*dot.purge_the_wicked.duration))" );
+  long_scov->add_action( "lights_wrath,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
+  long_scov->add_action( "power_word_solace,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
+  long_scov->add_action( "smite,if=(!variable.should_te|(variable.should_te&variable.te_holy))" );
+  long_scov->add_action( "penance", "just in case we run out of shadow spells with the above conditions" );
+  long_scov->add_action( "mindgames" );
+  long_scov->add_action( "mind_blast" );
+  long_scov->add_action( "shadow_word_death" );
+  long_scov->add_action( "divine_star" );
+  long_scov->add_action( "halo" );
+  long_scov->add_action( "power_word_solace" );
+  long_scov->add_action( "smite" );
+
+  cooldowns->add_action( "shadowfiend,if=!talent.mindbender.enabled&!buff.shadow_covenant.up", "Cooldowns  Don't use pets during shadow covenant windows, wasting GCDs" );
+  cooldowns->add_action( "mindbender,if=talent.mindbender.enabled&!buff.shadow_covenant.up" );
+  cooldowns->add_action( "power_infusion,if=!talent.shadow_covenant.enabled|(talent.shadow_covenant.enabled&(cooldown.shadow_covenant.up|buff.shadow_covenant.up))", "hold PI to use with shadow covenant if we have it" );
+  cooldowns->add_action( "potion,if=buff.power_infusion.up", "sync potion with PI" );
+  cooldowns->add_action( "use_items,if=buff.power_infusion.up|cooldown.power_infusion.remains>=cooldown", "sync trinkets with PI" );
 }
 //discipline_apl_end
-
 //holy_apl_start
 void holy( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* main_variables = p->get_action_priority_list( "main_variables" );
   action_priority_list_t* main = p->get_action_priority_list( "main" );
+  action_priority_list_t* divine_favor_chastise_prep = p->get_action_priority_list( "divine_favor_chastise_prep" );
   action_priority_list_t* divine_favor_chastise_active = p->get_action_priority_list( "divine_favor_chastise_active" );
   action_priority_list_t* divine_favor_filler = p->get_action_priority_list( "divine_favor_filler" );
   action_priority_list_t* divine_image = p->get_action_priority_list( "divine_image" );
@@ -228,65 +342,67 @@ void holy( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  main_variables->add_action( "variable,name=chastise_cdr,op=set,value=((cooldown.divine_word.remains%action.smite.execute_time)*4)", "VARIABLES" );
-
   default_->add_action( "run_action_list,name=main", "RUN ACTIONS" );
 
-  main->add_action( "call_action_list,name=main_variables", "MAIN" );
-  main->add_action( "call_action_list,name=cooldowns" );
-  main->add_action( "holy_fire,if=(talent.empyreal_blaze|talent.harmonious_apparatus)|(!ticking|refreshable)", "Always use HF if we have empyreal blaze or harmonious apparatus  Otherwise, only use it if not ticking or refreshable" );
-  main->add_action( "shadow_word_pain,if=(refreshable|!ticking)&buff.apotheosis.down", "Don't cast SW:P during apotheosis" );
-  main->add_action( "divine_word,if=cooldown.holy_word_chastise.up&(!talent.empyreal_blaze|cooldown.empyreal_blaze.up)", "Divine Word only if we can sync with Chastise.  If we have Empyreal Blaze, sync with that as well." );
-  main->add_action( "holy_word_chastise,if=buff.divine_word.up", "Holy word chastise early to trigger divine favor: chastise" );
+  main->add_action( "call_action_list,name=cooldowns", "---------------------------------------------------------------------------  Main Actions  ---------------------------------------------------------------------------" );
+  main->add_action( "holy_fire,cycle_targets=1,target_if=min:dot.holy_fire.remains,if=(talent.empyreal_blaze|talent.harmonious_apparatus|!ticking|refreshable)&!(buff.empyreal_blaze.up&(cooldown.divine_word.up|buff.divine_word.up)&cooldown.holy_word_chastise.up)", "Always use HF if we have empyreal blaze (dot extension) or harmonious apparatus (cd reduction) or if it's not currently ticking. Otherwise, only use when refreshable to be sure we get the longest duration possible. It's worth it to cast even when the target will die soon based on just the initial hit damage. We also don't want to cast immediately once empyreal blaze is up when we are prepping divine word" );
+  main->add_action( "shadow_word_pain,if=(refreshable|!ticking)&(target.time_to_die>=dot.shadow_word_pain.duration)&!buff.divine_favor_chastise.up&!buff.apotheosis.up", "Don't cast SW:P during apotheosis or divine favor: chastise. We also don't cycle targets because it isn't worth the GCDs, since Smite deals slightly more damage than a full SW:P." );
+  main->add_action( "call_action_list,name=divine_favor_chastise_prep,if=talent.divine_word&talent.holy_word_chastise&buff.divine_favor_chastise.down", "Prepare to enter divine favor: chastise" );
   main->add_action( "run_action_list,name=divine_favor_chastise_active,if=buff.divine_favor_chastise.up", "Enter Divine Favor rotation with divine favor: chastise buff up" );
   main->add_action( "run_action_list,name=divine_favor_filler,if=talent.divine_word&talent.holy_word_chastise&buff.divine_favor_chastise.down", "Run divine favor fillers rotation with buff down" );
-  main->add_action( "run_action_list,name=divine_image,if=talent.divine_image", "Run divine image rotation with divine image" );
+  main->add_action( "run_action_list,name=divine_image,if=talent.divine_image", "Run divine image rotation with divine image talented" );
   main->add_action( "run_action_list,name=generic", "Otherwise generic rotation" );
 
-  divine_favor_chastise_active->add_action( "holy_word_chastise", "Divine Favor (Active)" );
-  divine_favor_chastise_active->add_action( "empyreal_blaze" );
-  divine_favor_chastise_active->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
-  divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<50" );
+  divine_favor_chastise_prep->add_action( "variable,name=empyreal_exec_time,op=setif,condition=talent.empyreal_blaze,value=action.empyreal_blaze.execute_time,value_else=0", "---------------------------------------------------------------------------  Divine Favor (Prep)  ---------------------------------------------------------------------------  empyreal_exec_time: Store how long EB will take to execute" );
+  divine_favor_chastise_prep->add_action( "variable,name=apotheosis_exec_time,op=setif,condition=talent.apotheosis,value=action.apotheosis.execute_time,value_else=0", "apotheosis_exec_time: Store how long Apotheosis will take to execute" );
+  divine_favor_chastise_prep->add_action( "apotheosis,if=(cooldown.holy_word_chastise.remains>cooldown.divine_word.remains)&(cooldown.divine_word.remains<=(variable.empyreal_exec_time+variable.apotheosis_exec_time))", "Use apotheosis to get Chastise back if its on cooldown and Divine Word will be up soon. We can use Apotheosis (2min CD) to reset Chastise for every other Divine Word (1min CD)." );
+  divine_favor_chastise_prep->add_action( "empyreal_blaze,if=cooldown.divine_word.remains<=action.empyreal_blaze.execute_time", "If we're about to cast divine favor, cast empyreal blaze first so we don't waste a GCD on non-damage during the buff window" );
+  divine_favor_chastise_prep->add_action( "divine_word,if=cooldown.holy_word_chastise.up&(!talent.empyreal_blaze|buff.empyreal_blaze.up)", "Divine Word only if we can sync with Chastise and (if talented) Empyreal Blaze" );
+  divine_favor_chastise_prep->add_action( "holy_word_chastise,if=buff.divine_word.up", "Holy word chastise to trigger divine favor: chastise" );
+
+  divine_favor_chastise_active->add_action( "halo,if=spell_targets.halo>=2", "---------------------------------------------------------------------------  Divine Favor (Active)  ---------------------------------------------------------------------------" );
+  divine_favor_chastise_active->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_favor_chastise_active->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_favor_chastise_active->add_action( "mindgames" );
-  divine_favor_chastise_active->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets.holy_nova>=3" );
-  divine_favor_chastise_active->add_action( "divine_star" );
-  divine_favor_chastise_active->add_action( "halo" );
+  divine_favor_chastise_active->add_action( "shadow_word_death,if=target.health.pct<20" );
+  divine_favor_chastise_active->add_action( "holy_word_chastise" );
+  divine_favor_chastise_active->add_action( "smite,cycle_targets=1,target_if=min:dot.holy_fire.remains,if=spell_targets.holy_nova>=2", "We want to cycle smite to different targets to spread holy fire dots in AOE situations, this will buff holy nova's damage" );
   divine_favor_chastise_active->add_action( "smite" );
 
-  divine_favor_filler->add_action( "holy_word_chastise,if=(cooldown.holy_word_chastise.duration-variable.chastise_cdr)<cooldown.divine_word.remains", "Divine Favor (Filler)" );
-  divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<50" );
+  divine_favor_filler->add_action( "halo,if=spell_targets.halo>=2", "---------------------------------------------------------------------------  Divine Favor (Filler)  ---------------------------------------------------------------------------" );
+  divine_favor_filler->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_favor_filler->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
   divine_favor_filler->add_action( "mindgames" );
-  divine_favor_filler->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3" );
-  divine_favor_filler->add_action( "divine_star" );
-  divine_favor_filler->add_action( "halo" );
+  divine_favor_filler->add_action( "shadow_word_death,if=target.health.pct<20" );
+  divine_favor_filler->add_action( "holy_word_chastise,if=(cooldown.apotheosis.remains<cooldown.divine_word.remains)|(cooldown.holy_word_chastise.duration_expected<=cooldown.divine_word.remains)", "We can use chastise for damage as long as we will have apotheosis available before the next divine word, otherwise only use it when it will be back up at the same time as divine word" );
   divine_favor_filler->add_action( "smite" );
 
-  divine_image->add_action( "holy_word_sanctify", "Divine Image" );
-  divine_image->add_action( "holy_word_serenity" );
+  divine_image->add_action( "apotheosis,if=buff.answered_prayers.down&!(cooldown.holy_word_sanctify.up|cooldown.holy_word_serenity.up|cooldown.holy_word_chastise.up)", "---------------------------------------------------------------------------  Divine Image  ---------------------------------------------------------------------------  We want to apotheosis when our holy words aren't about to come off of cooldown, and when answered prayers apotheosis is not already active." );
+  divine_image->add_action( "holy_word_sanctify,line_cd=9", "line_cd prevents re-casting sanctify and serenity right away, wasting GCDs that could be used to proc divine image damage. In testing, the sweet spot balance between adding more divine images, triggering apotheosis, and casting damage CDs was to let the image from each healing holy word expire before re-casting" );
+  divine_image->add_action( "holy_word_serenity,line_cd=9" );
   divine_image->add_action( "holy_word_chastise" );
   divine_image->add_action( "empyreal_blaze" );
-  divine_image->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
-  divine_image->add_action( "shadow_word_death,if=target.health.pct<50&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "mindgames,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "divine_star,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  divine_image->add_action( "halo,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  divine_image->add_action( "halo,if=spell_targets.halo>=2" );
+  divine_image->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  divine_image->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  divine_image->add_action( "mindgames" );
+  divine_image->add_action( "shadow_word_death,if=target.health.pct<20" );
   divine_image->add_action( "smite" );
 
-  generic->add_action( "holy_word_chastise", "Generic" );
+  generic->add_action( "holy_word_chastise", "---------------------------------------------------------------------------  Generic  ---------------------------------------------------------------------------" );
   generic->add_action( "empyreal_blaze" );
-  generic->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>10" );
-  generic->add_action( "shadow_word_death,if=target.health.pct<50&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "mindgames,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "holy_nova,if=talent.rhapsody&buff.rhapsody.stack=buff.rhapsody.max_stack&spell_targets>=3&!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "divine_star,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
-  generic->add_action( "halo,if=!(buff.apotheosis.up|buff.answered_prayers.up)" );
+  generic->add_action( "apotheosis,if=cooldown.holy_word_chastise.remains>(gcd.max*3)", "Hold Apotheosis if chastise will be up soon" );
+  generic->add_action( "halo,if=spell_targets.halo>=2" );
+  generic->add_action( "divine_star,if=spell_targets.divine_star>=2" );
+  generic->add_action( "holy_nova,if=(spell_targets.holy_nova>=2&buff.rhapsody.stack>=18)|(spell_targets.holy_nova>=3&buff.rhapsody.stack>=9)|(spell_targets.holy_nova>=4&buff.rhapsody.stack>=4)|spell_targets.holy_nova>=5", "There are particular breakpoints combinations of rhapsody and spell targets beyond which holy nova beats everything else we can do" );
+  generic->add_action( "mindgames" );
+  generic->add_action( "shadow_word_death,if=target.health.pct<20" );
   generic->add_action( "smite" );
 
-  cooldowns->add_action( "power_infusion,if=!talent.divine_word|(talent.divine_word&buff.divine_favor_chastise.up)", "Cooldowns  Sync PI with divine favor: chastise if we took divine word" );
+  cooldowns->add_action( "shadowfiend", "---------------------------------------------------------------------------  Cooldowns  ---------------------------------------------------------------------------" );
+  cooldowns->add_action( "power_infusion,if=(!talent.divine_word|(cooldown.divine_word.up&cooldown.holy_word_chastise.up))", "Sync PI with divine favor: chastise if we took divine word" );
   cooldowns->add_action( "potion,if=buff.power_infusion.up", "Only potion in sync with power infusion" );
   cooldowns->add_action( "use_items,if=buff.power_infusion.up", "hold trinkets to use with PI" );
-  cooldowns->add_action( "shadowfiend" );
 }
 //holy_apl_end
 //nospec_apl_start

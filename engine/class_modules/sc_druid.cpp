@@ -1602,7 +1602,7 @@ struct bt_dummy_buff_t : public druid_buff_t
     : base_t( p, n ), count( as<int>( p->talent.bloodtalons->effectN( 2 ).base_value() ) )
   {
     // The counting starts from the end of the triggering ability gcd.
-    set_duration( timespan_t::from_seconds( p->talent.bloodtalons->effectN( 1 ).base_value() ) + 1_s );
+    set_duration( timespan_t::from_seconds( p->talent.bloodtalons->effectN( 1 ).base_value() ) );
     set_quiet( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -7176,7 +7176,7 @@ struct moonfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  std::vector<player_t*>& target_list() const
+  std::vector<player_t*>& target_list() const override
   {
     if ( !target_cache.is_valid )
       damage->target_cache.is_valid = false;
@@ -8058,7 +8058,7 @@ struct sunfire_t : public druid_spell_t
   // needed to allow on-cast procs
   bool has_amount_result() const override { return damage->has_amount_result(); }
 
-  std::vector<player_t*>& target_list() const
+  std::vector<player_t*>& target_list() const override
   {
     if ( !target_cache.is_valid )
       damage->target_cache.is_valid = false;
@@ -10291,7 +10291,7 @@ void druid_t::create_buffs()
 
   buff.furious_regeneration = make_buff( this, "furious_regeneration", spec.furious_regeneration )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T30, B2 ) )
-    ->set_default_value_from_effect( 5, 0.1 );
+    ->set_default_value_from_effect( 5 );
 
   // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )

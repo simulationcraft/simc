@@ -26,30 +26,31 @@
 
 # druid="T30_Druid_Feral"
 # source=default
+# spec=feral
 # level=70
 # race=night_elf
 # timeofday=day
-# position=back
 # role=attack
-# spec=feral
-# talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICIikkkUSJSKJSkkAAAAAAQBgEBBgkkkIJhSOAlEHAAAAAAASAAC
+# position=back
+# talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICkoIJJJl0OgkSiEJJAAAAAAAAJBBgkkkIJRKJgEAAAAAAIBAIA
 
 
-# head=flaring_cowl,id=193494,ilevel=418,gem_id=192958,crafted_stats=32/49
-# neck=wolfstride_pendant,id=133633,ilevel=421,gem_id=192988/192958/192958,crafted_stats=32/49
-# shoulders=lost_landcallers_mantle,id=200356,bonus_id=7977/8807
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=8840/8836/8902/1508,crafted_stats=49/32
-# chest=lost_landcallers_robes,id=200351,ilevel=421,enchant=waking_stats_3,enchant_id=6625
-# wrists=loyal_flametenders_bracers,id=195525,bonus_id=7977/8807/1808,gem_id=192958
-# hands=lost_landcallers_claws,id=200353,ilevel=421
-# waist=bjorns_hunting_strap,id=136776,bonus_id=1808,ilevel=421,gem_id=192958
-# legs=lost_landcallers_leggings,id=200355,ilevel=424,enchant=fierce_armor_kit_3,enchant_id=6490
-# feet=slimy_expulsion_boots,id=193451,ilevel=418
-# finger1=seal_of_filial_duty,id=195526,ilevel=431,gem_id=192958,enchant=devotion_of_critical_strike_3
-# finger2=seal_of_diurnas_chosen,id=195480,ilevel=421,gem_id=192958,enchant=devotion_of_critical_strike_3
-# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# trinket2=manic_grieftorch,id=194308,bonus_id=7977/8807
-# main_hand=obsidian_goaltending_spire,id=193723,bonus_id=7977/6652/8813/1594/8767/5894,enchant=sophic_devotion_3,enchant=sophic_devotion_3
+
+# head=bough_of_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504/1808,gem_id=192982
+# neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192958/192958/192958
+# shoulder=spore_colony_shoulderguards,id=204706,bonus_id=8960/8840/8836/8902/1537
+# back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6592
+# chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=9321/7979/6652/9231/1466/8767,enchant_id=6625,ilevel=447
+# wrist=blood_elders_bindings,id=159324,bonus_id=6652/8811/8812/6808/4786/3317/1808,enchant_id=6574,gem_id=192958
+# hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
+# waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192958
+# legs=pants_of_the_autumn_blaze,id=202514,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,enchant_id=6490
+# feet=toxified_lifebound_boots,id=193398,bonus_id=8840/8836/8902/1537/8797/8960,crafted_stats=32/49
+# finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,enchant_id=6550,gem_id=192958
+# finger2=skyshard_ring,id=206184,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,enchant_id=6550,gem_id=192958
+# trinket1=neltharions_call_to_suffering,id=204211,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+# trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+# main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643
 
 
 # save=T30_Druid_Feral.simc

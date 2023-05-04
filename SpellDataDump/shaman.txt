@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49318 Live (hotfix 2023-04-29/49318)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-04/49444)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -15508,7 +15508,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Bolt Overload (214816), Lightning Lasso (305483), Lightning Lasso (305485), Earth Shock Overload (381725)
                    Family Flags: 0, 1, 20, 28, 45, 63, 82, 96, 98, 108, 118
-Hotfixed         : Affects Spells
 Description      : $@spelldesc382086
 Tooltip          : Damage taken from Nature spells increased by $w1%.
 
@@ -17626,7 +17625,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1082639)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Gain Stormkeeper every $s1 sec.
 
 Name             : Shaman Elemental 10.1 Class Set 4pc (id=405566) [Spell Family (11), Passive, Hidden] 
@@ -17903,7 +17901,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1074118)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.30000 | PvP Coefficient: 0.50000 | Target: Friend (21)
-Hotfixed         : SP Coefficient (1.75 -> 2.3)
 Description      : $@spelldesc405569
 
 Name             : Rainstorm (id=409386) [Spell Family (11)] 
@@ -18042,7 +18039,6 @@ Effects          :
 #1 (id=1075302)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
-Hotfixed         : Base Value (75 -> 50)
 #2 (id=1075303)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Chain Lightning Overload (45297), Earthquake (61882), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Chain Lightning (188443), Earthquake (298762), Earthquake Overload (298765)
@@ -18050,28 +18046,22 @@ Hotfixed         : Base Value (75 -> 50)
 #3 (id=1075467)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 12 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
-Hotfixed         : Base Value (75 -> 50)
 #4 (id=1075468)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 23 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
-Hotfixed         : Base Value (75 -> 50)
 #5 (id=1075469)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 32 | Misc Value 2: 1748 (Label) | Target: Self (1)
                    Affected Spells (Label): Maelstrom (343725)
-Hotfixed         : Base Value (75 -> 50)
 #6 (id=1075470)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Icefury (210714)
                    Family Flags: 119
-Hotfixed         : Base Value (75 -> 50)
 #7 (id=1075471)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Icefury Overload (219271)
                    Family Flags: 5
-Hotfixed         : Base Value (75 -> 50)
 #8 (id=1075472)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1114 (Label) | Target: Self (1)
-Hotfixed         : Base Value (75 -> 50)
 Description      : $@spelldesc405566
 Tooltip          : Maelstrom generated from Lava Burst, Lightning Bolt, Icefury, and Frost Shock increased by $s1%.
 Critical damage dealt by Earthquake, Chain Lightning, and Lava Beam increased by $s2%.

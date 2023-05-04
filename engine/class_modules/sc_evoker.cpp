@@ -1246,7 +1246,7 @@ struct deep_breath_t : public evoker_spell_t
       return p()->talent.tyranny.ok();
     }
 
-    void impact( action_state_t* s )
+    void impact( action_state_t* s ) override
     {
       evoker_spell_t::impact( s );
     }
