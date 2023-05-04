@@ -1,28 +1,28 @@
-# druid="T30_Druid_Balance"
-# level=70
-# race=troll
-# spec=balance
-# role=spell
-# position=back
-# talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlAIJJJBJhgkEJRKAkkkQJJEJJhWSJCBNACNAA
+druid="T30_Druid_Balance"
+level=70
+race=troll
+spec=balance
+role=spell
+position=back
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFASSSEkEgkEJ5ApAtEHIJJRJJkcgQolUiQENAKUAA
 
-# head=lost_landcallers_antlers,id=200354,bonus_id=4800/4786/1498/6935,gem_id=192988
-# neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8793,ilevel=418,gem_id=192961/192961/192961
-# shoulder=lost_landcallers_mantle,id=200356,bonus_id=4800/4786/1498
-# back=fireproof_drape,id=193763,bonus_id=6808/4786/1643
-# chest=lost_landcallers_robes,id=200351,bonus_id=4800/4786/1498,enchant_id=6625
-# wrist=loyal_flametenders_bracers,id=195525,bonus_id=4800/3524/1498/8780,gem_id=192961
-# hands=treacherous_totem_wraps,id=195514,bonus_id=4800/4786/1498
-# waist=swordsingers_belt,id=134287,bonus_id=1795/6808/4786/3300/6935,ilevel=421,gem_id=192961
-# legs=lost_landcallers_leggings,id=200355,bonus_id=6652/7981/8095/8827/1507,enchant_id=6541
-# feet=lifebound_boots,id=193398,bonus_id=8836/8840/8902/8802/8846/8793,enchant_id=6607,crafted_stats=36/49
-# finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8840/8902/8780/8802/8793/8846/8175/8960,enchant_id=6562,gem_id=192961,crafted_stats=49/32
-# finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1497/6935,gem_id=192961,enchant_id=6562
-# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
-# main_hand=final_grade,id=193707,bonus_id=6808/4786/1643,enchant_id=6643
+head=bough_of_the_autumn_blaze,id=202515,bonus_id=1504/9413,gem_id=192961
+neck=torc_of_passed_time,id=201759,bonus_id=8793/8840/8836/8902/8783/8784/8782/1537,gem_id=192961/192961/192961
+shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=1504
+back=voice_of_the_silent_star,id=204465,bonus_id=1498
+chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=1504,ilevel=447,enchant=waking_stats_3
+wrists=wristbands_of_rousing_violence,id=134458,bonus_id=7359/6646/1808,ilevel=447,gem_id=192961
+hands=lifebound_gloves,id=193418,bonus_id=8840/8836/8902/1537/8797/8960,crafted_stats=36/49
+waist=bloodfeaster_belt,id=159325,bonus_id=7359/6646/1808,ilevel=447,gem_id=192961
+legs=pants_of_the_autumn_blaze,id=202514,bonus_id=1504,ilevel=447,enchant=frozen_spellthread_3
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8793,ilevel=447
+finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
+finger2=loop_of_pulsing_veins,id=159463,bonus_id=7359/6646/1808,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
+trinket1=neltharions_call_to_suffering,id=204211,bonus_id=1498
+trinket2=igneous_flowstone,id=203996,bonus_id=1498
+main_hand=ancestral_stoneshaper,id=193674,bonus_id=7359/6646,ilevel=447,enchant=sophic_devotion_3
 
-# save=T30_Druid_Balance.simc
+save=T30_Druid_Balance.simc
 
 # druid="T30_Druid_Feral"
 # source=default
