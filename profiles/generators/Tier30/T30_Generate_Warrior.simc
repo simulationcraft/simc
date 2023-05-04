@@ -1,58 +1,62 @@
-# warrior="T30_Arms_Warrior"
-# spec=arms
-# level=70
-# race=human
-# role=attack
-# position=back
-# professions=blacksmithing=100/engineering=65
-# talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQkkSrkEAAAAQQkIKEQREQiQSoJRIAhECAAAAAAAAJBJJgQ0QA
+warrior="T30_Arms_Warrior"
+spec=arms
+level=70
+race=human
+role=attack
+position=back
+professions=blacksmithing=100/engineering=65
+talents=BcEAAAAAAAAAAAAAAAAAAAAAAAQplIRkQOQiSrkEAAAAQQkIKEQREQiQSoJRIAhECAAAAAAAAJBJJgQ0QA
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
 
-# head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192985
-# neck=elemental_lariat,id=193001,bonus_id=8782/8960,crafted_stats=32/36,ilevel=418,gem_id=192919/192919/192919
-# shoulder=peaks_of_the_walking_mountain,id=200428,bonus_id=4800/4786/1498
-# back=decorated_commanders_cindercloak,id=195482,bonus_id=4800/4786/1498
-# chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
-# wrist=allied_wristguard_of_companionship,id=190526,bonus_id=7935/8960,ilevel=418,gem_id=192919
-# hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=4800/4786/1498
-# waist=matriarchs_opulent_girdle,id=195524,bonus_id=4800/4786/1498/7935,gem_id=192919
-# legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=4800/4786/1498,enchant_id=6496
-# feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
-# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192919,enchant_id=6556
-# finger2=emissarys_flamewrought_seal,id=201992,bonus_id=4800/4786/1498/7935,gem_id=192919,enchant_id=6556
-# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+head=thraexhelm_of_the_onyx_crucible,id=202443,bonus_id=4800/4786/1504/6935,gem_id=192988
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/1537,gem_id=192948/192948/192948,crafted_stats=32/36
+shoulder=pauldrons_of_the_onyx_crucible,id=202441,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=battlechest_of_the_onyx_crucible,id=202446,bonus_id=4800/4786/1501,enchant_id=6625
+wrist=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192948
+hands=handguards_of_the_onyx_crucible,id=202444,bonus_id=4800/4786/1501
+waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537,crafted_stats=32/36,gem_id=192919
+legs=primal_molten_legplates,id=190499,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=32/36,enchant_id=6496
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=32/36
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,crafted_stats=32/36,enchant_id=6556,gem_id=192948
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,crafted_stats=32/36,enchant_id=6556,gem_id=192948
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=wafting_devotion_3
 
-# save=T30_Warrior_Arms.simc
+save=T30_Warrior_Arms.simc
 
 
-# warrior="T30_Fury_Warrior"
-# spec=fury
-# level=70
-# race=human
-# role=attack
-# position=back
-# professions=blacksmithing=100/engineering=65
-# talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAChIoEARQISQUgEiARSIJpFRSkgQSSSkSASSkEAAAAEE
+warrior="T30_Fury_Warrior"
+spec=fury
+level=70
+race=human
+role=attack
+position=back
+professions=blacksmithing=100/engineering=65
+talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAChIoEARQICEFIhIQkEJJpFRSSQCJJJRKBIJkEAAAAEE
+dragonflight.ominous_chromatic_essence_dragonflight=ruby
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/emerald/obsidian
 
-# head=casque_of_the_walking_mountain,id=200426,bonus_id=4800/4786/1498/7935,ilevel=424,gem_id=192988
-# neck=elemental_lariat,id=193001,bonus_id=8782/8960,crafted_stats=32/49,ilevel=418,gem_id=192961/192961/192961
-# shoulders=peaks_of_the_walking_mountain,id=200428,bonus_id=4800/4786/1498
-# back=acidproof_webbing,id=195511,bonus_id=4800/4786/1498
-# chest=datheas_cyclonic_cage,id=195494,bonus_id=4800/4786/1498,enchant_id=6625
-# wrists=allied_wristguard_of_companionship,id=190526,bonus_id=7935/8960,ilevel=418,gem_id=192961
-# hands=gauntlets_of_the_walking_mountain,id=200425,bonus_id=4800/4786/1498
-# waist=matriarchs_opulent_girdle,id=195524,bonus_id=4800/4786/1498/7935,gem_id=192961
-# legs=poleyns_of_the_walking_mountain,id=200427,bonus_id=4800/4786/1498,enchant_id=6496
-# feet=kurogs_thunderhooves,id=195517,bonus_id=4800/4786/1498
-# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192961,enchant_id=6562
-# finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/7935,gem_id=192961,enchant_id=6562
-# trinket1=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# trinket2=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
-# off_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
+head=thraexhelm_of_the_onyx_crucible,id=202443,bonus_id=4800/4786/1504/6935,gem_id=192988
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/1537,gem_id=192961/192961/192961,crafted_stats=36/49
+shoulder=pauldrons_of_the_onyx_crucible,id=202441,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=battlechest_of_the_onyx_crucible,id=202446,bonus_id=4800/4786/1501,enchant_id=6625
+wrist=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192961
+hands=handguards_of_the_onyx_crucible,id=202444,bonus_id=4800/4786/1501
+waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537,crafted_stats=36/49,gem_id=192961
+legs=primal_molten_legplates,id=190499,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49,enchant_id=6496
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,crafted_stats=36/49,enchant_id=6562,gem_id=192961
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,enchant_id=6568,gem_id=192961
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=screaming_black_dragonscale,id=202612,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant_id=6827
+off_hand=obsidian_seared_claymore,id=190514,bonus_id=8840/8836/8902/8783/8784/1537,enchant_id=6655,crafted_stats=36/49
 
-# save=T30_Warrior_Fury.simc
+save=T30_Warrior_Fury.simc
 
 # warrior="T30_Warrior_Protection"
 # source=default
