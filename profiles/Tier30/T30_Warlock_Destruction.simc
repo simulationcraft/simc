@@ -1,11 +1,11 @@
-warlock="T29_Warlock_Destruction"
+warlock="T30_Warlock_Destruction"
 source=default
 spec=destruction
 level=70
-race=human
+race=mechagnome
 role=spell
 position=ranged_back
-talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESLwBSUSSSCSalmkAAAAAAAAAAAAIgSSkA
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAatmkAAAAAAAAAAAAIIpkEJ
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -144,34 +144,33 @@ actions.ogcd+=/berserking,if=pet.infernal.active|!talent.summon_infernal|(fight_
 actions.ogcd+=/blood_fury,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains
 actions.ogcd+=/fireblood,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.fireblood.duration&fight_remains>cooldown.fireblood.duration)|fight_remains<cooldown.summon_infernal.remains
 
-head=scalesworn_cultists_scorn,id=200336,bonus_id=6514,ilevel=424,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=1540/8793/6652/7936/7979/8767/8782,ilevel=418,gem_id=192948/192948/192948
-shoulders=amice_of_the_blue,id=193526,bonus_id=8960/8840/8836/8902/1508
-back=fireproof_drape,id=193763,ilevel=421,enchant_id=6604
-chest=scalesworn_cultists_frock,id=200333,ilevel=421,enchant_id=6625
-wrists=manawracker_bindings,id=134310,bonus_id=6514,ilevel=421,gem_id=192948,enchant_id=6580
-hands=scalesworn_cultists_gloves,id=200335,ilevel=421
-waist=magathas_spiritual_sash,id=195515,bonus_id=6514,ilevel=421,gem_id=192948
-legs=scalesworn_cultists_culottes,id=200337,ilevel=421,enchant_id=6541
-feet=sandals_of_the_wild_sovereign,id=195532,ilevel=424,enchant_id=6607
-finger1=seal_of_filial_duty,id=195526,bonus_id=6514,ilevel=430,gem_id=192948,enchant_id=6556
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192945,enchant_id=6556
-trinket1=whispering_incarnate_icon,id=194301,ilevel=421
-trinket2=furious_ragefeather,id=193677,bonus_id=6808/4786/1643
-main_hand=stormlashs_last_resort,id=195529,ilevel=424,enchant_id=6643
-off_hand=scripture_of_primal_devotion,id=195513,ilevel=421
+head=grimhorns_of_the_sinister_savant,id=202533,bonus_id=8780,ilevel=447,gem_id=192988
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8793/9366,ilevel=447,gem_id=192961/192961/192961,crafted_stats=36/32
+shoulders=amice_of_the_sinister_savant,id=202531,ilevel=450
+back=voice_of_the_silent_star,id=204465,ilevel=457
+chest=cursed_robes_of_the_sinister_savant,id=202536,ilevel=447,enchant_id=6625
+wrists=vibrant_wildercloth_wristwraps,id=193510,bonus_id=8836/8840/8902/8780/8802/8846/8793/9379,ilevel=447,gem_id=192961,enchant_id=6574,crafted_stats=40/32
+hands=grips_of_the_sinister_savant,id=202534,ilevel=447
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=8780/9379/8960,ilevel=447,gem_id=192961,crafted_stats=36/49
+legs=coattails_of_the_rightful_heir,id=202585,ilevel=450,enchant_id=6541
+feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
+finger1=loop_of_pulsing_veins,id=159463,bonus_id=8780,ilevel=447,gem_id=192961,enchant_id=6556
+finger2=signet_of_titanic_insight,id=192999,bonus_id=8780/8793/8960,ilevel=447,gem_id=192961,enchant_id=6562
+trinket1=igneous_flowstone,id=203996,ilevel=447
+trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
+main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=421.75
-# gear_stamina=17369
-# gear_intellect=7166
-# gear_crit_rating=1685
-# gear_haste_rating=4361
-# gear_mastery_rating=3986
-# gear_versatility_rating=1219
-# gear_leech_rating=200
-# gear_speed_rating=375
-# gear_armor=2040
-# set_bonus=tier29_2pc=1
-# set_bonus=tier29_4pc=1
+# gear_ilvl=448.27
+# gear_stamina=22563
+# gear_intellect=9095
+# gear_crit_rating=1092
+# gear_haste_rating=5796
+# gear_mastery_rating=4306
+# gear_versatility_rating=1530
+# gear_speed_rating=250
+# gear_avoidance_rating=200
+# gear_armor=2452
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1
 default_pet=imp

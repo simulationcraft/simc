@@ -23,7 +23,7 @@ T30_Hunter_Survival.simc
 
 # T30_Mage_Fire.simc
 # T30_Mage_Frost.simc
-# T30_Mage_Arcane.simc
+T30_Mage_Arcane.simc
 
 # T30_Monk_Brewmaster.simc
 T30_Monk_Windwalker.simc
@@ -42,10 +42,10 @@ T30_Shaman_Elemental.simc
 T30_Shaman_Enhancement.simc
 T30_Shaman_Enhancement_Storm.simc
 
-# T30_Warlock_Affliction.simc
-# T30_Warlock_Demonology.simc
-# T30_Warlock_Destruction.simc
+T30_Warlock_Affliction.simc
+T30_Warlock_Demonology.simc
+T30_Warlock_Destruction.simc
 
-# T30_Warrior_Arms.simc
-# T30_Warrior_Fury.simc
+T30_Warrior_Arms.simc
+T30_Warrior_Fury.simc
 # T30_Warrior_Protection.simc
