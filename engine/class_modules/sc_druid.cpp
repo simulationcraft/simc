@@ -1602,7 +1602,7 @@ struct bt_dummy_buff_t : public druid_buff_t
     : base_t( p, n ), count( as<int>( p->talent.bloodtalons->effectN( 2 ).base_value() ) )
   {
     // The counting starts from the end of the triggering ability gcd.
-    set_duration( timespan_t::from_seconds( p->talent.bloodtalons->effectN( 1 ).base_value() ) + 1_s );
+    set_duration( timespan_t::from_seconds( p->talent.bloodtalons->effectN( 1 ).base_value() ) );
     set_quiet( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
