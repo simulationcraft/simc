@@ -22,7 +22,7 @@ finger2=seal_of_diurnas_chosen,id=195480,gem_id=192945,bonus_id=6652/7981/1498/8
 trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=sophic_devotion_3
+main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=wafting_devotion_3
 off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
 save=T30_Paladin_Protection.simc
