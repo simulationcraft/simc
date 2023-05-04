@@ -670,7 +670,7 @@ namespace monk
         double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
 
         if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
-          da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
+          ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
 
         return ta;
       }
