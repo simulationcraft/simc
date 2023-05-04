@@ -50,7 +50,7 @@ void shadow( player_t* p )
   action_priority_list_t* filler = p->get_action_priority_list( "filler" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask", "otion=elemental_potion_of_ultimate_power_ lask=iced_phial_of_corrupting_rage_ ood=fated_fortune_cooki ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
+  precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
