@@ -776,6 +776,7 @@ struct player_t : public actor_t
     // Overrides sim-wide option with a player-specific one
     player_option_t<bool> ashkandur_humanoid;
     // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
+    // Any other input will have it randomly select between High and Low Tide, and this this is default.
     // Overrides sim-wide option with a player-specific one
     player_option_t<std::string> flowstone_starting_state = "random_active";
     /// Type stat given by Spoils of Neltharus on pull
@@ -1061,17 +1062,14 @@ public:
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const
-  { return 0; }
-  virtual double composite_player_multiplier   ( school_e ) const;
-  virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = nullptr ) const { return 1; }
-  virtual double composite_player_td_multiplier( school_e,  const action_t* a = nullptr ) const;
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
+  /// Player-wide school based multipliers
+  virtual double composite_player_multiplier( school_e ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
-  virtual double composite_persistent_multiplier( school_e ) const
-  { return 1.0; }
+  virtual double composite_persistent_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double composite_player_dh_multiplier( school_e ) const { return 1; }
+  virtual double composite_player_dh_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;

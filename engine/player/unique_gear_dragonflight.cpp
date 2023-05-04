@@ -1570,6 +1570,13 @@ void igneous_flowstone( special_effect_t& effect )
           low_tide_counter->trigger();
         else if ( util::str_compare_ci( starting_state, "flood" ) )
           high_tide_counter->trigger();
+        else if ( util::str_compare_ci( starting_state, "high" ) )
+          high_tide_trigger->trigger();
+        // As of 04/05/2023 the Active Triggers have no maximum duration and persist through death, so the correct
+        // behaviour is randomly picking either active to start with. Other options are still being offered for the curious.
+        // TODO: Confirm is raid combat start resets the state of this.
+        else if ( p->rng().roll( 0.5 ) )
+          low_tide_trigger->trigger();
         else
           high_tide_trigger->trigger();
       } );
@@ -4534,6 +4541,27 @@ void heart_of_thunder ( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// 407895 driver
+// 407896 damage
+void drogbar_rocks( special_effect_t& effect ) {
+  effect.proc_flags2_ = PF2_CRIT;
+  
+  auto proc = create_proc_action<generic_proc_t>( "drogbar_rocks", effect, "drogbar_rocks", effect.trigger() );
+  effect.execute_action = proc;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 408607 driver
+// 408984 spawned moth
+// 408983 primary stat buff
+void underlight_globe( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player -> find_spell( 408983 ) )
+    ->add_stat_from_effect( 1, effect.driver() -> effectN(1).average( effect.item ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -6664,6 +6692,8 @@ void register_special_effects()
   register_special_effect( 395175, items::treemouths_festering_splinter );
   register_special_effect( 401395, items::vessel_of_searing_shadow );
   register_special_effect( 413419, items::heart_of_thunder );
+  register_special_effect( 407895, items::drogbar_rocks );
+  register_special_effect( 408607, items::underlight_globe );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
