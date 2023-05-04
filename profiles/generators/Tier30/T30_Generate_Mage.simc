@@ -1,4 +1,4 @@
-# mage="T30_Mage_Arcane"
+mage="T30_Mage_Arcane"
 level=70
 race=tauren
 role=spell
