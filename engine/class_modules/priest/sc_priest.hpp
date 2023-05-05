@@ -524,6 +524,7 @@ public:
     propagate_const<proc_t*> mindgames_casts_no_mastery;
     propagate_const<proc_t*> inescapable_torment_missed_mb;
     propagate_const<proc_t*> inescapable_torment_missed_swd;
+    propagate_const<proc_t*> bug_void_lasher_retarget_failure;
     // Holy
     propagate_const<proc_t*> divine_favor_chastise;
     propagate_const<proc_t*> divine_image;
@@ -582,6 +583,9 @@ public:
 
     // Time in seconds between prayer of mending bounces
     double prayer_of_mending_bounce_rate = 2;
+
+    // Void Lasher re-target on demise bug
+    bool void_lasher_retarget = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
