@@ -5134,21 +5134,40 @@ void flaring_cowl( special_effect_t& effect )
 
 void thriving_thorns( special_effect_t& effect )
 {
-  auto mul = toxified_mul( effect.player );
+  struct launched_thorns_cb_t : public dbc_proc_callback_t
+  {
+    action_t* damage;
+    action_t* heal;
 
-  effect.player->passive.add_stat( STAT_STAMINA, effect.driver()->effectN( 2 ).average( effect.item ) * mul );
+    launched_thorns_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      auto mul = toxified_mul( e.player );
 
-  // velocity & triggered missile reference is in 379395 for damage & 379405 for heal
-  // TODO: implement heal
-  auto damage_trg = effect.player->find_spell( 379395 );
-  auto damage = create_proc_action<generic_proc_t>( "launched_thorns", effect, "launched_thorns",
-                                                    damage_trg->effectN( 1 ).trigger() );
-  damage->travel_speed = damage_trg->missile_speed();
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 4 ).average( effect.item ) * mul;
+      e.player->passive.add_stat( STAT_STAMINA, e.driver()->effectN( 2 ).average( e.item ) * mul );
 
-  effect.execute_action = damage;
+      auto damage_trg = e.player->find_spell( 379395 );  // velocity & missile reference for damage
+      damage = create_proc_action<generic_proc_t>( "launched_thorns", e, "launched_thorns",
+                                                   damage_trg->effectN( 1 ).trigger() );
+      damage->travel_speed = damage_trg->missile_speed();
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 4 ).average( e.item ) * mul;
 
-  new dbc_proc_callback_t( effect.player, effect );
+      auto heal_trg = e.player->find_spell( 379405 );  // velocity & missile refenence for heal
+      heal = create_proc_action<base_generic_proc_t<proc_heal_t>>( "launched_thorns_heal", e, "launched_thorns_heal",
+                                                                   heal_trg->effectN( 1 ).trigger() );
+      heal->travel_speed = heal_trg->missile_speed();
+      heal->base_dd_min = heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item ) * mul;
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( dynamic_cast<heal_t*>( a ) )
+        heal->execute_on_target( listener );
+      else
+        damage->execute_on_target( s->target );
+    }
+  };
+
+  new launched_thorns_cb_t( effect );
 }
 
 // Broodkeepers Blaze
