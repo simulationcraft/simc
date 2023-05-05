@@ -6,6 +6,8 @@ race=troll
 role=attack
 position=back
 talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -92,6 +94,7 @@ actions.single=primordial_wave,if=!dot.flame_shock.ticking&talent.lashing_flames
 actions.single+=/flame_shock,if=!ticking&talent.lashing_flames.enabled
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4
 actions.single+=/sundering,if=set_bonus.tier30_2pc&raid_event.adds.in>=40
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning&(buff.ascendance.remains>(cooldown.strike.remains+gcd))
 actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1&(talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)|(talent.elemental_assault.enabled&buff.maelstrom_weapon.stack<buff.maelstrom_weapon.max_stack)|ti_lightning_bolt)
 actions.single+=/stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)|(talent.elemental_assault.enabled&buff.maelstrom_weapon.stack<buff.maelstrom_weapon.max_stack)
 actions.single+=/lava_lash,if=buff.hot_hand.up
@@ -99,7 +102,6 @@ actions.single+=/windfury_totem,if=!buff.windfury_totem.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
 actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
 actions.single+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5
 actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
@@ -127,7 +129,7 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordia
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
-neck=bromachs_disentombed_locket,id=193809,bonus_id=8782/7359/6646,ilevel=447,gem_id=192961/192961/192961
+neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
@@ -138,19 +140,19 @@ legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_a
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
-main_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophic_devotion_3,crafted_stats=49/36
+off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophic_devotion_3,crafted_stats=49/36
 
 # Gear Summary
-# gear_ilvl=448.81
-# gear_agility=6241
+# gear_ilvl=448.63
+# gear_agility=6225
 # gear_stamina=22474
-# gear_crit_rating=1973
-# gear_haste_rating=5659
-# gear_mastery_rating=4192
-# gear_versatility_rating=1213
+# gear_crit_rating=1401
+# gear_haste_rating=5522
+# gear_mastery_rating=5201
+# gear_versatility_rating=911
 # gear_speed_rating=250
 # gear_avoidance_rating=200
 # gear_armor=5775
