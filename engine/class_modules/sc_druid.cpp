@@ -1210,9 +1210,6 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
-      if ( !o->bugs )
-        da *= 1.0 + o->buff.friend_of_the_fae->check_value();
-
       return da;
     }
 
@@ -2047,6 +2044,7 @@ public:
     parse_buff_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     parse_buff_effects( p()->buff.eclipse_lunar, p()->talent.umbral_intensity );
     parse_buff_effects( p()->buff.eclipse_solar, p()->talent.umbral_intensity );
+    parse_buff_effects( p()->buff.friend_of_the_fae );
     parse_buff_effects( p()->buff.gathering_starstuff );
     parse_buff_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
     parse_buff_effects( p()->buff.owlkin_frenzy );
@@ -10062,8 +10060,6 @@ void druid_t::create_buffs()
 
   buff.friend_of_the_fae = make_buff( this, "friend_of_the_fae", find_spell( 394083 ) )
     ->set_trigger_spell( talent.friend_of_the_fae )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
         uptime.friend_of_the_fae->update( true, sim->current_time() );
@@ -11652,9 +11648,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
     cpm *= 1.0 + spec.elunes_favored->effectN( 1 ).percent();
     cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
   }
-
-  if ( buff.friend_of_the_fae->has_common_school( school ) )
-    cpm *= 1.0 + buff.friend_of_the_fae->check_value();
 
   return cpm;
 }
