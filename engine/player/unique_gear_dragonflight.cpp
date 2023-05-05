@@ -4058,8 +4058,8 @@ void elementium_pocket_anvil( special_effect_t& e )
   }
   else
   {
-    e.player->buffs.anvil_strike_combat->set_default_value( 0.33 );
-    e.player->buffs.anvil_strike_no_combat->set_default_value( 0.33 );
+    e.player->buffs.anvil_strike_combat->set_default_value( 0.3333 );
+    e.player->buffs.anvil_strike_no_combat->set_default_value( 0.3333 );
   }
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
