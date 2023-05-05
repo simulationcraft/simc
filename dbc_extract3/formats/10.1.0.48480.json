@@ -694,10 +694,10 @@
   "ItemExtendedCost": {
     "fields": [
       { "data_type": "H", "field": "required_arena_rating" },
-      { "data_type": "B", "field": "arena_bracket" },
+      { "data_type": "b", "field": "arena_bracket" },
       { "data_type": "B", "field": "flags" },
       { "data_type": "B", "field": "id_min_faction" },
-      { "data_type": "B", "field": "min_reputation" },
+      { "data_type": "i", "field": "min_reputation" },
       { "data_type": "B", "field": "required_achievement" },
       { "data_type": "i", "field": "id_item", "elements": 5, "ref": "ItemSparse" },
       { "data_type": "H", "field": "item_count", "elements": 5 },
