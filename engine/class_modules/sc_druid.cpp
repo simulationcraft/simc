@@ -1056,7 +1056,6 @@ public:
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
   double composite_player_multiplier( school_e school ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -1223,9 +1222,6 @@ struct denizen_of_the_dream_t : public pet_t
 
       if ( td->dots.sunfire->is_ticking() )
         tm *= 1.0 + o->cache_mastery_value();
-
-      if ( !o->bugs )
-        tm *= 1.0 + td->debuff.waning_twilight->check_value();
 
       return tm;
     }
@@ -2097,6 +2093,9 @@ public:
     parse_dot_effects( &druid_td_t::dots_t::adaptive_swarm_damage, p()->spec.adaptive_swarm_damage, false,
                        p()->spec.restoration );
     parse_dot_effects( &druid_td_t::dots_t::thrash_bear, p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
+
+    parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.waning_twilight->check(); },
+                          p()->spec.waning_twilight, p()->talent.waning_twilight );
   }
 
   template <typename DOT, typename... Ts>
@@ -11652,16 +11651,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   return cpm;
 }
 
-double druid_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  auto cptm = player_t::composite_player_target_multiplier( target, school );
-
-  // TODO: use buff_t::has_common_school() if this no longer becomes SCHOOL_ALL
-  cptm *= 1.0 + get_target_data( target )->debuff.waning_twilight->check_value();
-
-  return cptm;
-}
-
 // Expressions ==============================================================
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
@@ -12342,9 +12331,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.waning_twilight = make_buff( *this, "waning_twilight", source.spec.waning_twilight )
     ->set_chance( 1.0 )
-    ->set_duration( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
-    ->apply_affecting_aura( source.talent.waning_twilight );
+    ->set_duration( 0_ms );
 
   buff.ironbark = make_buff( *this, "ironbark", source.talent.ironbark )
     ->set_cooldown( 0_ms );
