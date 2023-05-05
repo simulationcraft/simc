@@ -2598,7 +2598,7 @@ struct bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed                      = 0;
 
     bladestorm_mh->weapon             = &( player->main_hand_weapon );
@@ -2755,7 +2755,7 @@ struct torment_bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed = 0;
     dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
     bladestorm_mh->weapon = &( player->main_hand_weapon );
@@ -5259,7 +5259,6 @@ struct ravager_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     hasted_ticks            = true;
-    callbacks               = false;
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
@@ -6974,6 +6973,7 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
     aoe                        = -1;
     reduced_aoe_targets        = 5.0;
     dual                       = true;
+    allow_class_ability_procs  = true;
     energize_type     = action_energize::NONE;
 
     rage_gain *= 1.0 + p->talents.warrior.piercing_verdict->effectN( 2 ).percent();
