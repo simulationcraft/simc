@@ -1874,6 +1874,11 @@ public:
   // a spell to spell level
   virtual bool consume_maelstrom_weapon() const
   {
+    if ( this->exec_type == execute_type::THORIMS_INVOCATION )
+    {
+      return true;
+    }
+
     return benefit_from_maelstrom_weapon() && !this->background;
   }
 
@@ -1884,7 +1889,15 @@ public:
       return 0;
     }
 
-    return std::min( mw_consume_max_stack, this->p()->buff.maelstrom_weapon->check() );
+    auto mw_stacks = std::min( mw_consume_max_stack, this->p()->buff.maelstrom_weapon->check() );
+
+    if ( this->exec_type == execute_type::THORIMS_INVOCATION )
+    {
+      mw_stacks = std::min( mw_stacks,
+                            as<int>( this->p()->talent.thorims_invocation->effectN( 1 ).base_value() ) );
+    }
+
+    return mw_stacks;
   }
 
   timespan_t execute_time() const override
@@ -5725,29 +5738,6 @@ struct lightning_bolt_t : public shaman_spell_t
       default:
         break;
     }
-  }
-
-  bool consume_maelstrom_weapon() const override
-  {
-    if ( exec_type == execute_type::THORIMS_INVOCATION )
-    {
-      return true;
-    }
-
-    return shaman_spell_t::consume_maelstrom_weapon();
-  }
-
-  int maelstrom_weapon_stacks() const override
-  {
-    auto mw_stacks = shaman_spell_t::maelstrom_weapon_stacks();
-
-    if ( exec_type == execute_type::THORIMS_INVOCATION )
-    {
-      mw_stacks = std::min( mw_stacks,
-                            as<int>( p()->talent.thorims_invocation->effectN( 1 ).base_value() ) );
-    }
-
-    return mw_stacks;
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
