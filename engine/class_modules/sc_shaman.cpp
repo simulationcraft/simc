@@ -11253,7 +11253,7 @@ void shaman_t::merge( player_t& other )
     mw_source_list.resize( s.mw_source_list.size() );
   }
 
-  for ( auto i = 0U; i < mw_source_list.size(); ++i )
+  for ( auto i = 0U; i < s.mw_source_list.size(); ++i )
   {
     mw_source_list[ i ].first.merge( s.mw_source_list[ i ].first );
     mw_source_list[ i ].second.merge( s.mw_source_list[ i ].second );
@@ -11264,7 +11264,7 @@ void shaman_t::merge( player_t& other )
     mw_spend_list.resize( s.mw_spend_list.size() );
   }
 
-  for ( auto i = 0U; i < mw_spend_list.size(); ++i )
+  for ( auto i = 0U; i < s.mw_spend_list.size(); ++i )
   {
     mw_spend_list[ i ].merge( s.mw_spend_list[ i ] );
   }
