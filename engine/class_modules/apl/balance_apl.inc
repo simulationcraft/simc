@@ -5,7 +5,7 @@ action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
-precombat->add_action( "variable,name=solar_eclipse_st,value=talent.soul_of_the_forest&talent.warrior_of_elune" );
+precombat->add_action( "variable,name=solar_eclipse_st,value=talent.soul_of_the_forest&(talent.warrior_of_elune|talent.rattle_the_stars)" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
