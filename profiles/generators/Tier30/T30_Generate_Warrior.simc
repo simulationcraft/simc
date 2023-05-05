@@ -76,13 +76,13 @@ chest=battlechest_of_the_onyx_crucible,id=202446,bonus_id=4800/4786/1501,enchant
 wrist=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,enchant=devotion_of_leech_3,gem_id=192945
 hands=handguards_of_the_onyx_crucible,id=202444,bonus_id=4800/4786/1501
 waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192945,crafted_stats=32/36
-legs=legplates_of_the_onyx_crycible,id=202442,bonus_id=4800/4786/1504,enchant=frosted_armor_kit_3
+legs=legplates_of_the_onyx_crucible,id=202442,bonus_id=4800/4786/1504,enchant=frosted_armor_kit_3
 feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
 finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_haste_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/1808,gem_id=192948,enchant=devotion_of_haste_3
 trinket1=neltharions_call_to_chaos,id=204201,bonus_id=9410/1498
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=1498
 main_hand=forgestorm,id=193785,bonus_id=1669/6808/4786,enchant=shadowflame_wreathe_3
-off_hand=monsterous_gluttony,id=205974,bonus_id=1669/6808/4786
+off_hand=monstrous_gluttony,id=205974,bonus_id=1669/6808/4786
 
 save=T30_Warrior_Protection.simc
