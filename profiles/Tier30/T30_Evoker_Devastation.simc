@@ -58,26 +58,28 @@ actions+=/run_action_list,name=st
 
 # AOE action list; Actually kinda clean now  Variables for AoE / Testing  This variable controls when you should start holding empowers for upcoming DR. - From my testing 4sec seems like the sweetspot, but it's very minor diff so far - Holding for more than 6 seconds it begins to become a loss.
 actions.aoe=variable,name=dr_prep_time_aoe,value=4
+# Open with star before DR to save a global and start with a free EB
+actions.aoe+=/shattering_star,if=cooldown.dragonrage.up
 # Send DR on CD with no regard to the safety of the mobs - DPS loss to hold DR for empowers, in real world scenario maybe you hold if you are going for longer DRs  DS optimization: Only cast if current fight will last 32s+ or encounter ends in less than 30s
 actions.aoe+=/dragonrage,if=target.time_to_die>=32|fight_remains<30
 # Use tip to get that sweet aggro
 actions.aoe+=/tip_the_scales,if=buff.dragonrage.up&(active_enemies<=3+3*talent.eternitys_span|!cooldown.fire_breath.up)
-# Cast Fire Breath  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
-actions.aoe+=/call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_aoe|!talent.animosity)&(buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)
-# Cast Eternity Surge  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
-actions.aoe+=/call_action_list,name=es,if=buff.dragonrage.up|!talent.dragonrage|(cooldown.dragonrage.remains>variable.dr_prep_time_aoe&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
+# Cast Fire Breath - stagger for swell/blazing shards outside DR  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
+actions.aoe+=/call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_aoe|!talent.animosity)&(buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)
+# Cast Eternity Surge - stagger for swell/blazing shards outside DR  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
+actions.aoe+=/call_action_list,name=es,if=buff.dragonrage.up|!talent.dragonrage|(cooldown.dragonrage.remains>variable.dr_prep_time_aoe&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
 # Cast DB if not in DR and not running imminent destruction. - I'm assuming that casting DB inside of DR with imminent before you start spending should be an increase, but might be worth to save it for outside of DR for more value?
 actions.aoe+=/deep_breath,if=!buff.dragonrage.up
 # Send SS when it doesn't overflow EB, without vigor send on CD
 actions.aoe+=/shattering_star,if=buff.essence_burst.stack<buff.essence_burst.max_stack|!talent.arcane_vigor
 # Cast Firestorm before spending ressources
 actions.aoe+=/firestorm
-# Pyre logic with volatility.  Pyre on 3T+
-actions.aoe+=/pyre,if=talent.volatility&active_enemies>=3
-# Cast LF with burnout proc and leaping flames up as long as you have 0 EB
-actions.aoe+=/living_flame,if=buff.burnout.up&buff.leaping_flames.up&!buff.essence_burst.up&essence<essence.max-1
+# Pyre logic with volatility.  Pyre 4T+  Pyre on 3T if playing CB and neither EB or blue buff is up  Pyre on 3T if not playing CB aslong as both EB and blue buff isn't up at the same time.  Pyre with 15 stacks of CB  Pyre with raging debuff active
+actions.aoe+=/pyre,if=talent.volatility&(active_enemies>=4|(talent.charged_blast&!buff.essence_burst.up&!buff.iridescence_blue.up)|(!talent.charged_blast&(!buff.essence_burst.up|!buff.iridescence_blue.up))|(buff.charged_blast.stack>=15)|(talent.raging_inferno&debuff.in_firestorm.up))
 # Pyre logic without volatility.  Without Vola use pyre if raging debuff is active, or if on 3T with 15 stacks of CB, or if 4T+
 actions.aoe+=/pyre,if=(talent.raging_inferno&debuff.in_firestorm.up)|(active_enemies==3&buff.charged_blast.stack>=15)|active_enemies>=4
+# Cast LF with leaping flames if: not playing burnout, burnout is up, more than 4 enemies, or scarlet adaptation is up.
+actions.aoe+=/living_flame,if=(!talent.burnout|buff.burnout.up|active_enemies>=4|buff.scarlet_adaptation.up)&buff.leaping_flames.up&!buff.essence_burst.up&essence<essence.max-1
 # Use staff on 5T or below
 actions.aoe+=/use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down&active_enemies<=5
 # Yoinked the disintegrate logic from ST
@@ -112,11 +114,11 @@ actions.st+=/dragonrage,if=cooldown.fire_breath.remains<4&cooldown.eternity_surg
 # Tip Eternity Surge without EBF - Tip Fire Breath with EBF
 actions.st+=/tip_the_scales,if=buff.dragonrage.up&(cooldown.eternity_surge.up&!cooldown.fire_breath.up&!talent.everburning_flame)|(talent.everburning_flame&cooldown.fire_breath.up)
 # Cast Fire Breath  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
-actions.st+=/call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&(buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)
+actions.st+=/call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.limitless_potential.remains<variable.r1_cast_time|!buff.power_infusion.up)&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
 # Throw Star on CD, Don't overcap with Arcane Vigor.
 actions.st+=/shattering_star,if=buff.essence_burst.stack<buff.essence_burst.max_stack|!talent.arcane_vigor
 # Cast Eternity Surge  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
-actions.st+=/call_action_list,name=es,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&(buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up)&(target.time_to_die>=8|fight_remains<30)
+actions.st+=/call_action_list,name=es,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.limitless_potential.remains<variable.r1_cast_time|!buff.power_infusion.up)&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
 # Wait for FB/ES to be ready if spending another GCD would result in the cast no longer fitting inside of DR
 actions.st+=/wait,sec=cooldown.fire_breath.remains,if=talent.animosity&buff.dragonrage.up&buff.dragonrage.remains<gcd.max+variable.r1_cast_time*buff.tip_the_scales.down&buff.dragonrage.remains-cooldown.fire_breath.remains>=variable.r1_cast_time*buff.tip_the_scales.down
 actions.st+=/wait,sec=cooldown.eternity_surge.remains,if=talent.animosity&buff.dragonrage.up&buff.dragonrage.remains<gcd.max+variable.r1_cast_time&buff.dragonrage.remains-cooldown.eternity_surge.remains>variable.r1_cast_time*buff.tip_the_scales.down
@@ -128,13 +130,14 @@ actions.st+=/living_flame,if=buff.burnout.up&(buff.leaping_flames.up&!buff.essen
 # Spend pyre if raging inferno debuff is active and you have 20 stacks of CB on 2T
 actions.st+=/pyre,if=debuff.in_firestorm.up&talent.raging_inferno&buff.charged_blast.stack==20&active_enemies>=2
 # Early Chain in DR or if overflowing chain after the 3rd damage tick. Clip after third tick in dragonrage for more important buttons. Will only cast if >2s till movement
-actions.st+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&(buff.dragonrage.up|essence.deficit<=1)&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=raid_event.movement.in>2|buff.hover.up
+actions.st+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=raid_event.movement.in>2|buff.hover.up
 # Hard cast only outside of SS and DR windows
 actions.st+=/firestorm,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down
 # Use Deep Breath on 2T, unless adds will come before it'll be ready again or if talented ID.
 actions.st+=/deep_breath,if=!buff.dragonrage.up&active_enemies>=2&((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))
 actions.st+=/deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!debuff.shattering_star_debuff.up
-actions.st+=/living_flame
+# Cast LF outside of DR, or with red buff/scarlet adaption up
+actions.st+=/living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.scarlet_adaptation.up|buff.iridescence_blue.up)&active_enemies==1
 # Fallback for movement
 actions.st+=/azure_strike
 
@@ -168,9 +171,9 @@ main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=sophic_devotion
 # gear_stamina=22588
 # gear_intellect=8508
 # gear_crit_rating=4052
-# gear_haste_rating=3052
-# gear_mastery_rating=5510
-# gear_versatility_rating=784
+# gear_haste_rating=3361
+# gear_mastery_rating=5798
+# gear_versatility_rating=187
 # gear_leech_rating=200
 # gear_armor=5775
 # set_bonus=tier30_2pc=1
