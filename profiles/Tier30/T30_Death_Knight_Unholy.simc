@@ -157,29 +157,29 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_m
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192961/192948/192948,crafted_stats=36/49
+neck=red_sky_pendant,id=206182,bonus_id=4786/8782/1669,gem_id=192919/192919/192919,crafted_stats=36/49
 shoulders=lingering_phantoms_shoulderplates,id=202459,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
-wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192948
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192919
 hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
 waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192948,crafted_stats=32/49
-legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
-feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
-finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=32/36
-finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
-trinket1=vial_of_animated_blood,id=159625,bonus_id=3317/6808/4786
-trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
+legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=lambent_armor_kit_3
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
+trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
+trinket2=irideus_fragment,id=193743,bonus_id=6808/4786/1669
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=449.33
-# gear_strength=5667
-# gear_stamina=22613
-# gear_crit_rating=3407
-# gear_haste_rating=4813
-# gear_mastery_rating=4936
-# gear_versatility_rating=850
+# gear_ilvl=446.93
+# gear_strength=6118
+# gear_stamina=22482
+# gear_crit_rating=3688
+# gear_haste_rating=4551
+# gear_mastery_rating=4384
+# gear_versatility_rating=773
 # gear_armor=8558
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
