@@ -19278,7 +19278,7 @@ static const std::array<spelltext_data_t, 19896> __spelltext_data { {
   { 402221, "$@spelldesc401515", "Your secondary stats are increased by $w2.", 0 },
   { 402583, "Briefly open a pair of gates to the Void to redirect the orbit of An'shuul, the Cosmic Wanderer through your target, dealing $402574s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to 5 enemies.", 0, 0 },
   { 402642, "Consume the spores and let them transform you.", "A Spore-bound Essence transforms your body.", 0 },
-  { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", 0, 0 },
+  { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds.", 0, 0 },
   { 402822, "$@spelldesc402813", 0, 0 },
   { 402894, "$@spelldesc402813\r\n", "You sense the distant ebb of tidal magma.", 0 },
   { 402896, "$@spelldesc402813\r\n\r\n", "Your next harmful spell or ranged ability will grant Igneous Fury.", 0 },
@@ -19758,7 +19758,7 @@ static const std::array<spelltext_data_t, 19896> __spelltext_data { {
   { 408671, "Stick a Dragonfire Bomb to your target, dealing $408667s1 Fire damage after $408675d. If your target dies with a bomb attached, it deals $408667s2 split between all enemies within $408694A yards instead. Stores a maximum of $408667s4 bombs. (30 Sec Cooldown)\r\n\r\nCritically striking $408770u times triggers a flash of inspiration, allowing you to assemble an extra Bomb charge on the fly.", 0, 0 },
   { 408673, "$@spelldesc405535", "Building up to Flame's Fury.", 0 },
   { 408674, "$@spelldesc405535", "Your next direct damage spell cast on a target with Charring Embers will grant you Flame's Fury.", 0 },
-  { 408675, 0, "IT GONNA BLOW!", 0 },
+  { 408675, 0, "IT'S GONNA BLOW!", 0 },
   { 408682, "$@spelldesc408671", 0, 0 },
   { 408686, "$@spelldesc386474", 0, 0 },
   { 408694, "$@spelldesc408671", 0, 0 },
@@ -19899,8 +19899,10 @@ static const std::array<spelltext_data_t, 19896> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.49444
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
   {  401238,  1, "Absorbs $401239s1 damage.", "Absorbs $w2 damage." },
+  {  402813,  0, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds." },
+  {  408675,  1, "IT GONNA BLOW!", "IT'S GONNA BLOW!" },
 } };
 
 // Spell description variables, wow build 10.1.0.49444
