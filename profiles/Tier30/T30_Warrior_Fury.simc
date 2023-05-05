@@ -126,20 +126,20 @@ waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537,gem_id=1929
 legs=primal_molten_legplates,id=190499,bonus_id=8840/8836/8902/1537/9379,enchant_id=6496,crafted_stats=36/49
 feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192961,enchant_id=6562,crafted_stats=36/49
-finger2=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192961,enchant_id=6568
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192961,enchant_id=6562,crafted_stats=36/49
 trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=screaming_black_dragonscale,id=202612,bonus_id=4800/4786/1498
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant_id=6827
 off_hand=obsidian_seared_claymore,id=190514,bonus_id=8840/8836/8902/8783/8784/1537,enchant_id=6655,crafted_stats=36/49
 
 # Gear Summary
-# gear_ilvl=446.75
+# gear_ilvl=448.38
 # gear_strength=7492
-# gear_stamina=24506
-# gear_crit_rating=1832
-# gear_haste_rating=4933
-# gear_mastery_rating=5143
-# gear_versatility_rating=1784
+# gear_stamina=24873
+# gear_crit_rating=1531
+# gear_haste_rating=5650
+# gear_mastery_rating=5942
+# gear_versatility_rating=793
 # gear_armor=8558
 # gear_bonus_armor=141
 # set_bonus=tier30_2pc=1
