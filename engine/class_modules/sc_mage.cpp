@@ -2584,6 +2584,14 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
   }
 
+  timespan_t travel_time() const override
+  {
+    // Add a small amount of travel time so that Arcane Blast's damage can be stored
+    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
+    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
+    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
+  }
+
   double cost() const override
   {
     double c = arcane_mage_spell_t::cost();
@@ -3017,6 +3025,14 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+    // Add a small amount of travel time so that Arcane Surge's damage can be stored
+    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
+    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
+    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
+  }
+
   double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
@@ -3034,9 +3050,18 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     p()->buffs.rune_of_power->trigger();
 
     arcane_mage_spell_t::execute();
-
-    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( s->chain_target == 0 )
+    {
+      p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
+    }
+  }
+
 };
 
 // Blast Wave Spell =========================================================
