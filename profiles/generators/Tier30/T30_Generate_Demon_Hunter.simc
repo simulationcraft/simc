@@ -1,30 +1,30 @@
-# demonhunter="T30_Demon_Hunter_Havoc"
-# spec=havoc
-# level=70
-# race=night_elf
-# timeofday=day
-# role=attack
-# position=back
-# talents=BEkAAAAAAAAAAAAAAAAAAAAAAIBkQKBaJJSSkGCAAAAAAASCSLlIJpgItkQSSSSSA
+demonhunter="T30_Demon_Hunter_Havoc"
+spec=havoc
+level=70
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAQAJkSEaJJSSkGCAAAAAAAkg0SJSSKSi0SC5AJJJRA
 
-# head=skybound_avengers_visor,id=200345,bonus_id=4800/4786/1498,gem_id=192958
-# neck=elemental_lariat,id=193001,ilevel=418,gem_id=192982/192958/192958,crafted_stats=32/49
-# shoulders=skybound_avengers_ailerons,id=200347,bonus_id=4800/4786/1498
-# back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1643
-# chest=lifebound_chestpiece,id=193399,bonus_id=3524/8836/8840/8902/8960/8932/8780,ilevel=418,enchant_id=6625,crafted_stats=32/36
-# wrists=loyal_flametenders_bracers,id=195525,bonus_id=4800/4786/1498,gem_id=192958
-# hands=skybound_avengers_grips,id=200344,bonus_id=4800/4786/1498
-# waist=bjorns_hunting_strap,id=136776,bonus_id=1795/6808/4786/3300,gem_id=192958
-# legs=skybound_avengers_legguards,id=200346,bonus_id=4800/4786/1498,ilevel=424,enchant_id=6496
-# feet=biornskin_moccasins,id=134193,bonus_id=1795/6808/4786/3300
-# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498,gem_id=192958,enchant_id=6550
-# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192958,enchant_id=6550
-# trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-# trinket2=whispering_incarnate_icon,id=194301,bonus_id=4800/4786/1498
-# main_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
-# off_hand=stormslash,id=193688,bonus_id=6808/4786/1643,enchant_id=6649
+head=kinslayers_hood,id=202524,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/1504/8780,gem_id=192982
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192919/192919/192919,crafted_stats=32/36
+shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1498,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+chest=kinslayers_vest,id=202527,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/1498,enchant_id=6625
+wrists=blood_elders_bindings,id=159324,bonus_id=6652/8811/8812/6808/4786/3317/8780,gem_id=192919
+hands=kinslayers_bloodstained_grips,id=202525,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
+waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/8780,gem_id=192919
+legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/8780,gem_id=192919,enchant_id=6550
+trinket1=igneous_flowstone,id=203996,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=neltharions_call_to_chaos,id=204201,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=6652/8811/8812/6808/4786/3317,enchant_id=6655
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=6652/8811/8812/6808/4786/3317,enchant_id=6655
 
-# save=T30_Demon_Hunter_Havoc.simc
+save=T30_Demon_Hunter_Havoc.simc
 
 demonhunter="T30_Demon_Hunter_Vengeance"
 spec=vengeance

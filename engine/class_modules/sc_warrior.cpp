@@ -1134,6 +1134,7 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
     ab::apply_affecting_aura( p()->talents.arms.impale );
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
+    ab::apply_affecting_aura( p()->talents.arms.improved_execute );
     ab::apply_affecting_aura( p()->talents.arms.improved_slam );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
@@ -2598,7 +2599,7 @@ struct bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed                      = 0;
 
     bladestorm_mh->weapon             = &( player->main_hand_weapon );
@@ -2755,7 +2756,7 @@ struct torment_bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed = 0;
     dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
     bladestorm_mh->weapon = &( player->main_hand_weapon );
@@ -3573,7 +3574,7 @@ struct execute_damage_t : public warrior_attack_t
   double max_rage;
   double cost_rage;
   execute_damage_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
+    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -5259,7 +5260,6 @@ struct ravager_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     hasted_ticks            = true;
-    callbacks               = false;
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
@@ -6974,6 +6974,7 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
     aoe                        = -1;
     reduced_aoe_targets        = 5.0;
     dual                       = true;
+    allow_class_ability_procs  = true;
     energize_type     = action_energize::NONE;
 
     rage_gain *= 1.0 + p->talents.warrior.piercing_verdict->effectN( 2 ).percent();
@@ -8867,8 +8868,8 @@ void warrior_t::apl_fury()
   multi_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   multi_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15" );
-  multi_target->add_action( this, spec.bloodbath, "bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
-  multi_target->add_action( "bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
+  multi_target->add_action( this, spec.bloodbath, "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
+  multi_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   multi_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   multi_target->add_action( "execute,if=buff.enrage.up" );
   multi_target->add_action( "odyns_fury,if=buff.enrage.up&raid_event.adds.in>15" );
@@ -8895,8 +8896,8 @@ void warrior_t::apl_fury()
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
-  single_target->add_action( this, spec.bloodbath, "bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
-  single_target->add_action( "bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
+  single_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
