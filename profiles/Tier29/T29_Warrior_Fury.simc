@@ -59,8 +59,8 @@ actions.multi_target+=/whirlwind,if=spell_targets.whirlwind>1&talent.improved_wh
 actions.multi_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
 actions.multi_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.multi_target+=/odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15
-actions.multi_target+=/bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
-actions.multi_target+=/bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
+actions.multi_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.multi_target+=/bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
 actions.multi_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
 actions.multi_target+=/execute,if=buff.enrage.up
 actions.multi_target+=/odyns_fury,if=buff.enrage.up&raid_event.adds.in>15
@@ -87,8 +87,8 @@ actions.single_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernau
 actions.single_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.single_target+=/odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)
 actions.single_target+=/rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
-actions.single_target+=/bloodbath,if=action.bloodbath.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
-actions.single_target+=/bloodthirst,if=action.bloodthirst.crit_pct_current>=95|!talent.cold_steel_hot_blood&set_bonus.tier30_4pc
+actions.single_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.single_target+=/bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
 actions.single_target+=/execute,if=buff.enrage.up
 actions.single_target+=/onslaught,if=buff.enrage.up|talent.tenderize
 actions.single_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
