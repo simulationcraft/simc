@@ -5508,8 +5508,6 @@ struct bestial_wrath_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    harmful = false;
-
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
@@ -5519,6 +5517,9 @@ struct bestial_wrath_t: public hunter_spell_t
       add_pet_stats( pet, { "bestial_wrath" } );
 
     hunter_spell_t::init_finished();
+
+    if ( is_precombat )
+      harmful = false;
   }
 
   void execute() override
@@ -5700,8 +5701,6 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
     parse_options( options_str );
-
-    harmful = false;
   }
 
   void execute() override
@@ -5712,6 +5711,14 @@ struct trueshot_t: public hunter_spell_t
     p() -> buffs.trueshot -> expire();
 
     p() -> buffs.trueshot -> trigger();
+  }
+
+  void init_finished() override
+  {
+    hunter_spell_t::init_finished();
+
+    if ( is_precombat )
+      harmful = false;
   }
 };
 
