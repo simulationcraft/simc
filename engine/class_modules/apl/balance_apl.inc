@@ -54,7 +54,7 @@ st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(8*(1+0.5*talent.soul_of_the_forest*buff.eclipse_solar.up))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
 st->add_action( "wild_mushroom,if=talent.fungal_growth&(!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10)" );
-st->add_action( "starfire,if=eclipse.in_lunar&buff.umbral_embrace.react|buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1" );
+st->add_action( "starfire,if=buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1" );
 st->add_action( "wrath" );
 st->add_action( "run_action_list,name=fallthru" );
 
@@ -74,7 +74,6 @@ aoe->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&
 aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2" );
 aoe->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "starfall,if=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)" );
-aoe->add_action( "starfire,if=(buff.gathering_starstuff.stack=3|buff.umbral_embrace.up)&astral_power.deficit>variable.passive_asp+(8*(1+0.4*buff.warrior_of_elune.up))" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<3" );
 aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8+spell_targets.starfire,if=astral_power.deficit>variable.passive_asp+8&spell_targets.starfire<(11-talent.umbral_intensity.rank-talent.astral_smolder.rank)" );
 aoe->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+50" );
