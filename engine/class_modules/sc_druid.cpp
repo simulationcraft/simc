@@ -4365,9 +4365,6 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
-
-    if ( p->bugs )
-      berserk_cp = 0;  // thrash does not grant extra CP during berserk
   }
 
   void execute() override
@@ -10677,7 +10674,7 @@ std::string druid_t::default_flask() const
       case DRUID_RESTORATION:
         return "phial_of_elemental_chaos_3";
       case DRUID_FERAL:
-        return "iced_phial_of_corrupting_rage_3";
+        return "phial_of_elemental_chaos_3";
       default:
         return "disabled";
     }
@@ -10706,7 +10703,22 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-  if      ( true_level >= 70 ) return "fated_fortune_cookie";
+  if ( true_level >= 70 )
+    {
+      switch ( specialization() )
+      {
+        case DRUID_BALANCE:
+          return "fated_fortune_cookie";
+        case DRUID_GUARDIAN:
+          return "fated_fortune_cookie";
+        case DRUID_RESTORATION:
+          return "fated_fortune_cookie";
+        case DRUID_FERAL:
+          return "thousandbone_tongueslicer";
+        default:
+          return "disabled";
+      }
+    }
   else if ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
   else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
   else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
