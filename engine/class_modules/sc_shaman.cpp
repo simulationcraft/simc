@@ -259,7 +259,7 @@ struct shaman_t : public player_t
 public:
   // Misc
   bool lava_surge_during_lvb;
-  bool sk_during_sk;
+  bool sk_during_cast;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* recent_target =
@@ -771,7 +771,7 @@ public:
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
-      sk_during_sk(false),
+      sk_during_cast(false),
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
@@ -2074,7 +2074,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
 
-    if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() && !p()->sk_during_sk )
+    if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
     {
       m *= 1.0 + p()->buff.stormkeeper->value();
     }
@@ -2086,7 +2086,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     timespan_t t = base_t::execute_time();
 
-    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() && !p()->sk_during_sk )
+    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() && !p()->sk_during_cast )
     {
       // stormkeeper has a -100% value as effect 1
       t *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
@@ -2133,7 +2133,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     // Add excessive amount to ensure overload proc with SK,
     // since chain spells divide chance by X
-    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->check() && !p()->sk_during_sk )
+    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->check() && !p()->sk_during_cast )
     {
       chance += 10.0;
     }
@@ -4656,11 +4656,11 @@ struct chained_base_t : public shaman_spell_t
       {
         p()->buff.t30_4pc_ele->trigger();
       }
-      if ( !p()->sk_during_sk )
+      if ( !p()->sk_during_cast )
       {
         p()->buff.stormkeeper->decrement();
       }
-      p()->sk_during_sk = false;
+      p()->sk_during_cast = false;
     }
 
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
@@ -5834,7 +5834,7 @@ struct lightning_bolt_t : public shaman_spell_t
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
 
-      if ( !p()->sk_during_sk )
+      if ( !p()->sk_during_cast )
       {
         if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
         {
@@ -5842,7 +5842,7 @@ struct lightning_bolt_t : public shaman_spell_t
         }
         p()->buff.stormkeeper->decrement();
       }
-      p()->sk_during_sk = false;
+      p()->sk_during_cast = false;
     }
 
     p()->trigger_flash_of_lightning();
@@ -10071,7 +10071,7 @@ void shaman_t::create_buffs()
         {
           if ( executing && ( executing->id == 188196 || executing->id == 188443 || executing->id == 114074 ) )
           {
-            sk_during_sk = true;
+            sk_during_cast = true;
           }
           buff.stormkeeper->trigger( 1 );
           t30_proc_possible = false;
@@ -11240,7 +11240,7 @@ void shaman_t::reset()
   player_t::reset();
 
   lava_surge_during_lvb = false;
-  sk_during_sk          = false;
+  sk_during_cast          = false;
 
   lotfw_counter = 0U;
   dre_attempts = 0U;
