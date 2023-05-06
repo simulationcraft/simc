@@ -16007,9 +16007,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1075254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Black Powder (319175), Black Powder (319190), Eviscerate (328082)
                    Family Flags: 17, 44
+Hotfixed         : Base Value (25 -> 40)
 Description      : Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $s1%.
 Tooltip          : Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $w1%.
 
