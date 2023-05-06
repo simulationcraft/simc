@@ -1965,6 +1965,7 @@ public:
   void trigger_keep_it_rolling();
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
+  void trigger_inevitability( const action_state_t* state );
   void trigger_lingering_shadow( const action_state_t* state );
   void trigger_danse_macabre( const action_state_t* state );
 
@@ -3207,12 +3208,7 @@ struct backstab_t : public rogue_attack_t
     }
 
     trigger_lingering_shadow( state );
-
-    if ( p()->talent.subtlety.inevitability->ok() )
-    {
-      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
-      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
-    }
+    trigger_inevitability( state );
 
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
@@ -4161,12 +4157,7 @@ struct gloomblade_t : public rogue_attack_t
     }
 
     trigger_lingering_shadow( state );
-
-    if ( p()->talent.subtlety.inevitability->ok() )
-    {
-      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
-      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
-    }
+    trigger_inevitability( state );
 
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
@@ -5127,12 +5118,6 @@ struct shadowstrike_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
       p()->buffs.the_rotten->expire( 1_ms );
     }
-
-    if ( p()->talent.subtlety.inevitability->ok() )
-    {
-      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
-      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -5141,9 +5126,8 @@ struct shadowstrike_t : public rogue_attack_t
 
     trigger_perforated_veins( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
-
-    // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
+    trigger_inevitability( state );
 
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
@@ -7787,6 +7771,20 @@ void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state
 
   tcd->start();
   p()->buffs.perforated_veins->trigger();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_inevitability( const action_state_t* state )
+{
+  if ( !p()->talent.subtlety.inevitability->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  // Testing appears to show this does not work on Weaponmaster attacks
+  if ( is_secondary_action() )
+    return;
+
+  timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
+  p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
 }
 
 template <typename Base>
