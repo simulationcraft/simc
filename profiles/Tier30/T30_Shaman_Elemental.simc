@@ -211,7 +211,7 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=spangenhelm_of_the_cinderwolf,id=202470,bonus_id=8780/7187,ilevel=450,gem_id=192985
+head=spangenhelm_of_the_cinderwolf,id=202470,bonus_id=8780/7187,ilevel=447,gem_id=192985
 neck=red_sky_pendant,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192948/192948/192948
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=7187,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/1498
@@ -228,14 +228,14 @@ trinket2=ominous_chromatic_essence,id=203729,bonus_id=6652/8783/8784/9414/9415/4
 main_hand=erethos_the_empty_promise,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,ilevel=450,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=446.93
-# gear_stamina=22336
-# gear_intellect=9113
+# gear_ilvl=446.73
+# gear_stamina=22246
+# gear_intellect=9095
 # gear_crit_rating=3883
-# gear_haste_rating=4573
+# gear_haste_rating=4569
 # gear_mastery_rating=2237
-# gear_versatility_rating=1828
-# gear_armor=5790
+# gear_versatility_rating=1820
+# gear_armor=5775
 # set_bonus=horizon_striders_garments_2pc=1
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

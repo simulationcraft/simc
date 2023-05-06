@@ -6,7 +6,7 @@ spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoVSSLJUSSLRDRJQiEAAAAAgSAikgiog0SSapEoEJBgA
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFBFBISKJREIRBDAUAOVVFFQVCoQCIhEQDUUA
 
-head=,id=202470,bonus_id=8780/7187,gem_id=192985,ilevel=450
+head=,id=202470,bonus_id=8780/7187,gem_id=192985,ilevel=447
 neck=,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948,ilevel=447
 shoulder=,id=202468,bonus_id=7187,ilevel=450
 back=,id=204465,bonus_id=4800/1498
