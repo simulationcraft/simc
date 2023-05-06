@@ -4560,6 +4560,20 @@ void underlight_globe( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 408641 driver
+// 409067 trigger buff
+// TODO: implement self-damage DoT
+void stirring_twilight_ember( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+                           ->add_stat_from_effect( 1, effect.trigger()->effectN( 1 ).average( effect.item ) );
+
+  // Disable self-damage DoT for now
+  effect.action_disabled = true;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -6711,6 +6725,7 @@ void register_special_effects()
   register_special_effect( 413419, items::heart_of_thunder );
   register_special_effect( 407895, items::drogbar_rocks );
   register_special_effect( 408607, items::underlight_globe );
+  register_special_effect( 408641, items::stirring_twilight_ember );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
