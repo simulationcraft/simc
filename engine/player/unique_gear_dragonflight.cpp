@@ -1773,6 +1773,7 @@ void spoils_of_neltharus( special_effect_t& effect )
 
     buffs buff_list;
     dbc_proc_callback_t* cb;
+    buff_t* initial = nullptr;
 
     spoils_of_neltharus_t( const special_effect_t& e ) : proc_spell_t( e )
     {
@@ -1793,14 +1794,24 @@ void spoils_of_neltharus( special_effect_t& effect )
           ->set_duration( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) );
 
         buff_list.emplace_back( counter, stat );
+        if ( util::str_compare_ci( player->dragonflight_opts.spoils_of_neltharus_initial_type, n ) )
+        {
+          initial = buff_list.back().first;
+        }
       };
 
       init_buff( "crit", 381954 );
       init_buff( "haste", 381955 );
       init_buff( "mastery", 381956 );
       init_buff( "vers", 381957 );
+    }
 
-      rng().shuffle( buff_list.begin(), buff_list.end() );
+    void init_finished() override
+    {
+      proc_spell_t::init_finished();
+
+      // Make the first counter buff trigger at the start of combat
+      player->register_combat_begin( [ this ]( player_t* ) { buff_list.front().first->trigger(); } );
     }
 
     void reset() override
@@ -1808,6 +1819,18 @@ void spoils_of_neltharus( special_effect_t& effect )
       proc_spell_t::reset();
 
       cb->activate();
+
+      if ( initial != nullptr )
+      {
+        while ( initial != buff_list.front().first )
+        {
+          std::rotate( buff_list.begin(), buff_list.begin() + 1, buff_list.end() );
+        }
+      }
+      else
+      {
+        rng().shuffle( buff_list.begin(), buff_list.end() );
+      }
     }
 
     void execute() override
