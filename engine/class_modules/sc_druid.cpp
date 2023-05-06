@@ -7052,6 +7052,10 @@ struct moonfire_t : public druid_spell_t
         potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
         add_child( potp );
       }
+
+      // elune's favored applies to ticks via hidden script, so we manually adjust here
+      if ( p->talent.elunes_favored.ok() )
+        base_td_multiplier *= 1.0 + p->talent.elunes_favored->effectN( 1 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -11644,7 +11648,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
-    cpm *= 1.0 + spec.elunes_favored->effectN( 1 ).percent();
     cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
   }
 
@@ -12846,6 +12849,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
 
   // Guardian
+  // elune's favored also applies to periodic damage via hidden script. see moonfire_damage_t
+  action.apply_affecting_aura( spec.elunes_favored );
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
   action.apply_affecting_aura( talent.reinvigoration );
