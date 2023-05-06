@@ -55,31 +55,33 @@ save=T30_Mage_Arcane.simc
 
 # save=T30_Mage_Fire.simc
 
-# mage="T30_Mage_Frost"
-# spec=frost
-# level=70
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJBolIIJFQSLhIiIJBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
+mage="T30_Mage_Frost"
+spec=frost
+level=70
+race=dwarf
+role=spell
+position=ranged_back
+talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJBolIIJFQSLhIiIJBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
 
-# head=,id=200318,bonus_id=523,gem_id=192961,ilevel=424
-# neck=,id=193001,gem_id=192988/192961/192961,crafted_stats=32/49,ilevel=418
-# shoulders=,id=193526,ilevel=418
-# back=,id=193763,ilevel=421
-# chest=,id=200315,enchant=waking_stats_3,ilevel=421
-# wrists=,id=134222,gem_id=192961,ilevel=421
-# hands=,id=200317,ilevel=424
-# waist=,id=195515,gem_id=192961,ilevel=421
-# legs=,id=200319,enchant=temporal_spellthread_3,ilevel=421
-# feet=,id=195532,ilevel=424
-# finger1=,id=133638,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=421
-# finger2=,id=195526,gem_id=192961,enchant=devotion_of_mastery_3,ilevel=431
-# trinket1=,id=194301,ilevel=421
-# trinket2=,id=193677,ilevel=421
-# main_hand=,id=195529,ilevel=424,enchant=sophic_devotion_3
-# off_hand=,id=195513,ilevel=421
+head=underlight_conjurers_arcanocowl,id=205860,ilevel=447
+neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192988/192961/192961
+shoulder=,id=193508,ilevel=447,bonus_id=9379/8960,crafted_stats=32/49
+back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6595
+chest=underlight_conjurers_vestment,id=205862,ilevel=447,enchant_id=6625
+wrist=clasps_of_the_diligent_steward,id=204393,ilevel=447,enchant_id=6574
+hands=underlight_conjurers_gloves,id=205861,ilevel=447
+waist=,id=193516,ilevel=447,bonus_id=9379/8960,crafted_stats=32/49
+legs=underlight_conjurers_trousers,id=205859,ilevel=450,enchant_id=6541
+feet=underlight_conjurers_treads,id=202553,ilevel=450,enchant_id=6613
+finger1=ringbound_hourglass,id=193000,bonus_id=523,ilevel=447,gem_id=192961,enchant_id=6562,crafted_stats=49/36
+finger2=signet_of_titanic_insight,id=192999,bonus_id=523,ilevel=447,gem_id=192961,enchant_id=6562,crafted_stats=49/36
+trinket1=,id=203729,ilevel=444
+trinket2=vessel_of_searing_shadow,id=202615,ilevel=441
+main_hand=,id=202565,ilevel=450,enchant_id=6643
 
-# flask=phial_of_static_empowerment_3
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+flask=phial_of_static_empowerment_3
 
-# save=T30_Mage_Frost.simc
+apl_variable.use_fof=0
+
+save=T30_Mage_Frost.simc
