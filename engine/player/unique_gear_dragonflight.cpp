@@ -4068,22 +4068,12 @@ void elementium_pocket_anvil( special_effect_t& e )
 {
   e.player->buffs.anvil_strike_combat =
       create_buff<buff_t>( e.player, "anvil_strike_combat", e.player->find_spell( 408578 ) )
-          ->set_cooldown( 0_ms );
+          ->set_cooldown( 0_ms )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
   e.player->buffs.anvil_strike_no_combat =
-      create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) );
-
-  // 5-5-2023 This appears to be bugged in game, giving a 33% bonus per stack, rather than the 20% presented
-  if ( !e.player->bugs )
-  {
-    e.player->buffs.anvil_strike_combat->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
-    e.player->buffs.anvil_strike_no_combat->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
-  }
-  else
-  {
-    e.player->buffs.anvil_strike_combat->set_default_value( 0.3333 );
-    e.player->buffs.anvil_strike_no_combat->set_default_value( 0.3333 );
-  }
+      create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
   {
