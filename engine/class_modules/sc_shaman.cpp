@@ -10069,7 +10069,7 @@ void shaman_t::create_buffs()
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
-          if ( executing && executing->id == 188196 )
+          if ( executing && ( executing->id == 188196 || executing->id == 188443 || executing->id == 114074 ) )
           {
             sk_during_sk = true;
           }
