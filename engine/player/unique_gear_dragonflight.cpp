@@ -4033,11 +4033,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
-      proc_spell_id = { { 288613 } };  // Trueshot
+      proc_spell_id = { { 288613, 378905 } }; // Trueshot & Windrunner's Guidance procs
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 19574 } };  // Bestial Wrath
+      proc_spell_id = { { 19574 } }; // Bestial Wrath
       break;
     default:
       return;
