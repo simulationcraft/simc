@@ -3018,6 +3018,19 @@ struct death_knight_action_t : public Base
     bool brittle;
     bool death_rot;
     bool tightening_grasp;
+    bool virulent_plague;
+    bool frost_fever;
+    bool blood_plague;
+    bool unholy_blight;
+    bool war;
+    bool sanguine_ground;
+    bool sanguine_ground_periodic;
+    /*
+    Pre-emptively writing these in, they are likely to be changed to whitelists too
+    bool ghoulish_frenzy;
+    bool bonegrinder;
+    bool bloodshot;
+    */
     // Tier 29
     bool ghoulish_infusion;
     bool vigorous_lifeblood_4pc;
@@ -3063,6 +3076,18 @@ struct death_knight_action_t : public Base
     this -> affected_by.ghoulish_infusion = this -> data().affected_by( p -> spell.ghoulish_infusion -> effectN( 1 ) );
     this -> affected_by.vigorous_lifeblood_4pc = this -> data().affected_by( p -> spell.vigorous_lifeblood_4pc -> effectN( 1 ) );
     this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
+    this -> affected_by.virulent_plague = this -> data().affected_by( p -> spell.virulent_plague -> effectN( 3 ) );
+    this -> affected_by.frost_fever = this -> data().affected_by( p -> spell.frost_fever -> effectN( 2 ) );
+    this -> affected_by.blood_plague = this -> data().affected_by( p -> spell.blood_plague -> effectN( 4 ) );
+    this -> affected_by.unholy_blight = this -> data().affected_by( p -> spell.unholy_blight_dot -> effectN( 2 ) );
+    this -> affected_by.war = this -> data().affected_by( p -> spell.apocalypse_war_debuff -> effectN( 1 ) );
+    this -> affected_by.sanguine_ground = this -> data().affected_by( p -> spell.sanguine_ground -> effectN( 1 ) );
+    this -> affected_by.sanguine_ground_periodic = this -> data().affected_by( p -> spell.sanguine_ground -> effectN( 3 ) );
+    /*
+    this -> affected_by.ghoulish_frenzy = this -> data().affected_by( p -> spell.ghoulish_frenzy_player -> effectN() );
+    this -> affected_by.bonegrinder = this -> data().affected_by( p -> spell.bonegrinder_frost_buff -> effectN() );
+    this -> affected_by.bloodshot = this -> data().affected_by( p -> spell.blood_shield -> effectN() );
+    */
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3115,6 +3140,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
 
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
+    {
+      m *= 1.0 + p() -> spell.sanguine_ground -> effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -3135,6 +3165,11 @@ struct death_knight_action_t : public Base
     if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
     {
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
+    }
+
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground_periodic && p() -> buffs.sanguine_ground -> check() )
+    {
+      m *= 1.0 + p() -> spell.sanguine_ground -> effectN( 3 ).percent();
     }
 
     return m;
@@ -3169,6 +3204,31 @@ struct death_knight_action_t : public Base
     if ( td && td -> dot.blood_plague -> is_ticking() )
     {
       m *= 1.0 + p() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
+    }
+
+    if( td && this -> affected_by.virulent_plague && td -> dot.virulent_plague -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    {
+      m *= 1.0 + p() -> spell.virulent_plague -> effectN( 3 ).percent();
+    }
+
+    if( td && this -> affected_by.frost_fever && td -> dot.frost_fever -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    {
+      m *= 1.0 + p() -> spell.frost_fever -> effectN( 2 ).percent();
+    }
+
+    if( td && this -> affected_by.blood_plague && td -> dot.blood_plague -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    {
+      m *= 1.0 + p() -> spell.blood_plague -> effectN( 4 ).percent();
+    }
+
+    if( td && this -> affected_by.unholy_blight && td -> dot.unholy_blight -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    {
+      m *= 1.0 + p() -> spell.unholy_blight_dot -> effectN( 2 ).percent();
+    }
+
+    if( td && this -> affected_by.war && td -> debuff.apocalypse_war -> check() )
+    {
+      m *= 1.0 + p() -> spell.apocalypse_war_debuff -> effectN( 1 ).percent();
     }
 
     return m;
@@ -10383,21 +10443,6 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
 
   const death_knight_td_t* td = get_target_data( target );
 
-  // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
-  // Does not use a whitelist, affects all damage sources
-  if ( td && runeforge.rune_of_apocalypse )
-  {
-    m *= 1.0 + td -> debuff.apocalypse_war -> check_stack_value();
-  }
-
-  if ( td && talent.unholy.morbidity.ok() )
-  {
-    m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->dot.unholy_blight->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-  }
-
   return m;
 }
 
@@ -10418,11 +10463,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.sanguine_ground -> check() )
-  {
-    m *= 1.0 + buffs.sanguine_ground -> check_value();
   }
 
   return m;
