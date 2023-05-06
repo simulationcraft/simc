@@ -5,7 +5,6 @@ action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
-precombat->add_action( "variable,name=solar_eclipse_st,value=talent.soul_of_the_forest&(talent.warrior_of_elune|talent.rattle_the_stars)" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
@@ -35,6 +34,7 @@ st->add_action( "starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.sta
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
 st->add_action( "incarnation,if=variable.cd_condition_st" );
 st->add_action( "warrior_of_elune" );
+st->add_action( "variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5" );
 st->add_action( "variable,name=enter_eclipse,value=eclipse.any_next|variable.solar_eclipse_st&buff.eclipse_solar.up&(buff.eclipse_solar.remains<action.starfire.cast_time)|!variable.solar_eclipse_st&buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)" );
 st->add_action( "starfire,if=variable.enter_eclipse&variable.solar_eclipse_st" );
 st->add_action( "wrath,if=variable.enter_eclipse" );
@@ -83,7 +83,7 @@ aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17" );
-aoe->add_action( "starfire,if=spell_targets>2&buff.eclipse_lunar.up" );
+aoe->add_action( "starfire,if=spell_targets>3&buff.eclipse_lunar.up" );
 aoe->add_action( "wrath" );
 aoe->add_action( "run_action_list,name=fallthru" );
 
