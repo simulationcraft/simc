@@ -993,8 +993,31 @@ struct empowered_charge_spell_t : public empowered_base_t
       return;
     }
 
+    auto target = d->state->target;
+
+    if ( d->state->target->is_sleeping() )
+    {
+      target = nullptr;
+       
+      for ( auto enemy : p()->sim->target_non_sleeping_list )
+      {
+        if ( enemy->is_sleeping() || enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->check() )
+          continue;
+
+        target = enemy;
+        break;
+      }
+    }
+
+    if ( !target )
+    {
+      p()->was_empowering = false;
+      return;
+    }
+
     auto emp_state    = release_spell->get_state();
-    emp_state->target = d->state->target;
+    emp_state->target = target;
+    release_spell->target = target;
     release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
 
     if ( p()->buff.tip_the_scales->up() )
