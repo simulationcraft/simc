@@ -1055,7 +1055,6 @@ public:
   double passive_movement_modifier() const override;
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
-  double composite_player_multiplier( school_e school ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -7055,10 +7054,6 @@ struct moonfire_t : public druid_spell_t
         potp = p->get_secondary_action<protector_of_the_pack_moonfire_t>( "protector_of_the_pack_moonfire" );
         add_child( potp );
       }
-
-      // elune's favored applies to ticks via hidden script, so we manually adjust here
-      if ( p->talent.elunes_favored.ok() )
-        base_td_multiplier *= 1.0 + p->talent.elunes_favored->effectN( 1 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* s ) const override
@@ -9782,7 +9777,7 @@ void druid_t::init_spells()
   spec.berserk_bear             = check( talent.berserk_ravage ||
                                          talent.berserk_unchecked_aggression ||
                                          talent.berserk_persistence, 50334 );
-  spec.elunes_favored           = check( talent.elunes_favored, 370588 );
+  spec.elunes_favored           = find_spell( 370588 );
   spec.furious_regeneration     = check( sets->set( DRUID_GUARDIAN, T30, B2 ), 408504 );
   spec.incarnation_bear         = check( talent.incarnation_bear, 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
@@ -10289,6 +10284,7 @@ void druid_t::create_buffs()
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
   buff.elunes_favored = make_buff( this, "elunes_favored", spec.elunes_favored )
+    ->set_trigger_spell( talent.elunes_favored )
     ->set_quiet( true )
     ->set_freeze_stacks( true )
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -11646,18 +11642,6 @@ double druid_t::composite_spell_power_multiplier() const
   return player_t::composite_spell_power_multiplier();
 }
 
-double druid_t::composite_player_multiplier( school_e school ) const
-{
-  auto cpm = player_t::composite_player_multiplier( school );
-
-  if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
-  {
-    cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
-  }
-
-  return cpm;
-}
-
 // Expressions ==============================================================
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
@@ -12853,8 +12837,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
 
   // Guardian
-  // elune's favored also applies to moonfire ticks via hidden script. see moonfire_damage_t
-  action.apply_affecting_aura( spec.elunes_favored );
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
   action.apply_affecting_aura( talent.reinvigoration );
@@ -12866,6 +12848,25 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.vulnerable_flesh );
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T29, B4 ) );
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T30, B4 ) );
+
+  // elune's favored applies to periodic effects via script, and fury of nature only applies to those spells that are
+  // affected by elune's favored
+  if ( action.data().affected_by_all( spec.elunes_favored->effectN( 1 ) ) )
+  {
+    auto apply_effect_ = [ &action ]( const spell_data_t* s, double v ) {
+      action.base_dd_multiplier *= 1.0 + v;
+      action.sim->print_debug( "{} base_dd_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
+
+      action.base_td_multiplier *= 1.0 + v;
+      action.sim->print_debug( "{} base_td_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
+    };
+
+    if ( talent.elunes_favored.ok() )
+      apply_effect_( spec.elunes_favored, spec.elunes_favored->effectN( 1 ).percent() );
+
+    if ( talent.fury_of_nature.ok() )
+      apply_effect_( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
+  }
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );
