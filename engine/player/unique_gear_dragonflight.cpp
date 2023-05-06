@@ -1824,7 +1824,7 @@ void spoils_of_neltharus( special_effect_t& effect )
         rng().shuffle( buff_list.begin(), buff_list.end() );
       }
       // Make the first counter buff trigger at the start of combat
-      make_event( *sim, [ this ]() { buff_list.front().first->trigger(); } );
+      // make_event( *sim, [ this ]() { buff_list.front().first->trigger(); } );
     }
 
     void execute() override
