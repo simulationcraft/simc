@@ -3142,7 +3142,7 @@ struct death_knight_action_t : public Base
 
     if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
     {
-      m *= 1.0 + p() -> spell.sanguine_ground -> effectN( 1 ).percent();
+      m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
     }
 
     return m;
@@ -3169,7 +3169,7 @@ struct death_knight_action_t : public Base
 
     if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground_periodic && p() -> buffs.sanguine_ground -> check() )
     {
-      m *= 1.0 + p() -> spell.sanguine_ground -> effectN( 3 ).percent();
+      m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
     }
 
     return m;
@@ -3206,29 +3206,33 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
     }
 
-    if( td && this -> affected_by.virulent_plague && td -> dot.virulent_plague -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    if ( td && this->affected_by.virulent_plague && td->dot.virulent_plague->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
     {
-      m *= 1.0 + p() -> spell.virulent_plague -> effectN( 3 ).percent();
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
     }
 
-    if( td && this -> affected_by.frost_fever && td -> dot.frost_fever -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    if ( td && this->affected_by.frost_fever && td->dot.frost_fever->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
     {
-      m *= 1.0 + p() -> spell.frost_fever -> effectN( 2 ).percent();
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
     }
 
-    if( td && this -> affected_by.blood_plague && td -> dot.blood_plague -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    if ( td && this->affected_by.blood_plague && td->dot.blood_plague->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
     {
-      m *= 1.0 + p() -> spell.blood_plague -> effectN( 4 ).percent();
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
     }
 
-    if( td && this -> affected_by.unholy_blight && td -> dot.unholy_blight -> is_ticking() && p() -> talent.unholy.morbidity -> ok() )
+    if ( td && this->affected_by.unholy_blight && td->dot.unholy_blight->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
     {
-      m *= 1.0 + p() -> spell.unholy_blight_dot -> effectN( 2 ).percent();
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
     }
 
-    if( td && this -> affected_by.war && td -> debuff.apocalypse_war -> check() )
+    if ( td && this->affected_by.war && td->debuff.apocalypse_war->check() )
     {
-      m *= 1.0 + p() -> spell.apocalypse_war_debuff -> effectN( 1 ).percent();
+      m *= 1.0 + td -> debuff.apocalypse_war -> check_stack_value();
     }
 
     return m;
