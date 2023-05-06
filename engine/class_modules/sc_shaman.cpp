@@ -4836,13 +4836,13 @@ struct chain_lightning_t : public chained_base_t
     if ( p()->talent.chain_lightning2->ok() )
     {
       p()->cooldown.crash_lightning->adjust(
-          -( p()->talent.chain_lightning2->effectN( 1 ).time_value() * num_targets_hit ) );
+          -( p()->talent.chain_lightning2->effectN( 3 ).time_value() * num_targets_hit ) );
 
       if ( sim->debug )
       {
         sim->print_debug( "{} reducing Crash Lightning cooldown by {}, remains={}",
             p()->name(),
-            -( p()->talent.chain_lightning2->effectN( 1 ).time_value() * num_targets_hit ),
+            -( p()->talent.chain_lightning2->effectN( 3 ).time_value() * num_targets_hit ),
             p()->cooldown.crash_lightning->remains() );
       }
     }
