@@ -2074,6 +2074,9 @@ public:
     parse_buff_effects( p()->buff.furious_regeneration );
     parse_buff_effects( p()->buff.gory_fur );
     parse_buff_effects( p()->buff.overpowering_aura );
+    // rage of the sleeper also applies to moonfire tick via hidden script. see moonfire_damage_t
+    // note that it DOES NOT apply to thrash ticks
+    parse_buff_effects( p()->buff.rage_of_the_sleeper );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
@@ -7079,6 +7082,10 @@ struct moonfire_t : public druid_spell_t
       if ( feral_override_ta && !p()->buff.moonkin_form->check() )
         tam *= 1.0 + feral_override_ta;
 
+      // rage of the sleeper applies to ticks via hidden script, so we manually adjust here
+      if ( p()->buff.rage_of_the_sleeper->check() )
+        tam *= 1.0 + p()->talent.rage_of_the_sleeper->effectN( 5 ).percent();
+
       return tam;
     }
 
@@ -10326,8 +10333,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
-    ->set_default_value_from_effect( 5, 0.01 )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_LEECH );
 
   buff.tooth_and_claw = make_buff( this, "tooth_and_claw", talent.tooth_and_claw->effectN( 1 ).trigger() )
@@ -11644,8 +11650,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  cpm *= 1.0 + buff.rage_of_the_sleeper->check_value();
-
   if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
     cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
@@ -12849,7 +12853,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
 
   // Guardian
-  // elune's favored also applies to periodic damage via hidden script. see moonfire_damage_t
+  // elune's favored also applies to moonfire ticks via hidden script. see moonfire_damage_t
   action.apply_affecting_aura( spec.elunes_favored );
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
