@@ -188,6 +188,8 @@ actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=enemie
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up
 # Spread out your Icefury usage if you can get more use out of accompanied buffs.
 actions.single_target+=/frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&!debuff.electrified_shocks.up|buff.icefury.remains<6)
+# Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use Lightning Bolt without wasting Stormkeeper charges.
+actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.elemental_blast.enabled|!talent.master_of_the_elements.enabled|buff.stormkeeper.up|t30_2pc_timer.next_tick<2&set_bonus.tier30_2pc
 # Utilize the Power of the Maelstrom buff if your Lightning Bolt is empowered by Unrelenting Calamity.
 actions.single_target+=/lightning_bolt,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled
 actions.single_target+=/icefury
@@ -198,8 +200,6 @@ actions.single_target+=/frost_shock,if=buff.icefury.up&buff.master_of_the_elemen
 actions.single_target+=/frost_shock,if=buff.icefury.up&talent.flux_melting.enabled
 # If you have MotE up and aren't at risk of capping LvB, spend MotE on FrS/LB.
 actions.single_target+=/lightning_bolt,if=buff.master_of_the_elements.up&!buff.lava_surge.up&(cooldown.lava_burst.charges_fractional<1.0&talent.echo_of_the_elements.enabled)
-# Use Lava Burst normally with fire builds. Save it as much as possible in lightning builds unless you cant use Lightning Bolt without wasting Stormkeeper charges.
-actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=talent.echo_of_the_elements.enabled|talent.lava_surge.enabled|talent.primordial_surge.enabled|!talent.elemental_blast.enabled|!talent.master_of_the_elements.enabled|buff.stormkeeper.up|t30_2pc_timer.next_tick<2&set_bonus.tier30_2pc
 # Use your Icefury buffs if you didn't improve the talent.
 actions.single_target+=/frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled
 # Casting Chain Lightning at two targets is more efficient than Lightning Bolt.
@@ -211,30 +211,30 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=spangenhelm_of_the_cinderwolf,id=202470,bonus_id=8780/7187,ilevel=450,gem_id=192982
-neck=torc_of_passed_time,id=201759,bonus_id=8836/8902/8790/8782,ilevel=447,gem_id=192919/192919/192919
+head=spangenhelm_of_the_cinderwolf,id=202470,bonus_id=8780/7187,ilevel=450,gem_id=192985
+neck=red_sky_pendant,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192948/192948/192948
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=7187,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=7187,ilevel=447,enchant_id=6625
-wrists=bitestone_wristwrap,id=134164,bonus_id=8780/7359/6646,ilevel=447,gem_id=192919
+wrists=fierce_boreal_armguards,id=193812,bonus_id=8780/7359/6646,ilevel=447,gem_id=192948
 hands=scale_rein_grips,id=193465,bonus_id=8836/8840/8902/8960/8802/8846,ilevel=447
 waist=wind_spirits_lasso,id=193463,bonus_id=8836/8840/8902/8960/7936/8802/8846,ilevel=447,gem_id=192945
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=7187,ilevel=450,enchant_id=6541
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/1498
-finger1=onyx_impostors_birthright,id=204398,bonus_id=8780/4800/1498,gem_id=192919,enchant_id=6556
-finger2=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/8846/9365/8790,ilevel=447,gem_id=192919,enchant_id=6556
+finger1=onyx_impostors_birthright,id=204398,bonus_id=8780/4800/1498,gem_id=192948,enchant_id=6550
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/8780/1498,ilevel=421,gem_id=192948,enchant_id=6556
 trinket1=igneous_flowstone,id=203996,bonus_id=4800/1498
-trinket2=idol_of_pure_decay,id=193660,bonus_id=7359/6646,ilevel=447
-main_hand=infinite_dragonspire,id=193803,bonus_id=7359/6646,ilevel=447,enchant_id=6643
+trinket2=ominous_chromatic_essence,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,ilevel=444
+main_hand=erethos_the_empty_promise,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,ilevel=450,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=448.67
-# gear_stamina=22613
-# gear_intellect=9049
-# gear_crit_rating=4723
-# gear_haste_rating=5824
-# gear_mastery_rating=1117
-# gear_versatility_rating=1070
+# gear_ilvl=446.93
+# gear_stamina=22336
+# gear_intellect=9113
+# gear_crit_rating=3883
+# gear_haste_rating=4573
+# gear_mastery_rating=2237
+# gear_versatility_rating=1828
 # gear_armor=5790
 # set_bonus=horizon_striders_garments_2pc=1
 # set_bonus=tier30_2pc=1
