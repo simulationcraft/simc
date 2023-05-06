@@ -259,6 +259,7 @@ struct shaman_t : public player_t
 public:
   // Misc
   bool lava_surge_during_lvb;
+  bool sk_during_sk;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* recent_target =
@@ -770,6 +771,7 @@ public:
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
+      sk_during_sk(false),
       lotfw_counter( 0U ),
       raptor_glyph( false ),
       dre_samples( "dre_tracker", false ),
@@ -1240,6 +1242,9 @@ public:
   bool affected_by_enh_t30_4pc_da;
   bool affected_by_enh_t30_4pc_ta;
 
+  bool affected_by_stormkeeper_cast_time;
+  bool affected_by_stormkeeper_damage;
+
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil(),
                   execute_type type_ = execute_type::NORMAL )
     : ab( n, player, s ),
@@ -1264,7 +1269,9 @@ public:
       affected_by_lotfw_da( false ),
       affected_by_lotfw_ta( false ),
       affected_by_enh_t30_4pc_da( false ),
-      affected_by_enh_t30_4pc_ta( false )
+      affected_by_enh_t30_4pc_ta( false ),
+      affected_by_stormkeeper_cast_time( false ),
+      affected_by_stormkeeper_damage( false )
   {
     ab::may_crit = true;
     ab::track_cd_waste = s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero();
@@ -1281,7 +1288,10 @@ public:
       maelstrom_gain    = effect.resource( RESOURCE_MAELSTROM );
       ab::energize_type = action_energize::NONE;  // disable resource generation from spell data.
     }
-
+    affected_by_stormkeeper_cast_time = 
+        ab::data().affected_by( player->find_spell( 191634 )->effectN( 1 ) );
+    affected_by_stormkeeper_damage    =
+        ab::data().affected_by( player->find_spell( 191634 )->effectN( 2 ) );
     affected_by_molten_weapon_da =
         ab::data().affected_by( player->find_spell( 224125 )->effectN( 1 ) );
     affected_by_molten_weapon_ta =
@@ -1596,7 +1606,7 @@ public:
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
 
-    if ( affected_by_ns_cast_time || affected_by_ns_cost )
+    if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()))
     {
       p()->buff.natures_swiftness->decrement();
     }
@@ -2031,15 +2041,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   proc_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
   proc_t* proc_moe;
-  bool affected_by_stormkeeper_cast_time  = false;
-  bool affected_by_stormkeeper_damage     = false;
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                  execute_type type_ = execute_type::NORMAL ) :
     base_t( token, p, s, type_ ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr )
   {
-    affected_by_stormkeeper_cast_time = data().affected_by( p->find_spell( 191634 )->effectN( 1 ) );
-    affected_by_stormkeeper_damage = data().affected_by( p->find_spell( 191634 )->effectN( 2 ) );
 
     may_proc_stormbringer = false;
   }
@@ -2068,7 +2074,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
 
-    if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() )
+    if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() && !p()->sk_during_sk )
     {
       m *= 1.0 + p()->buff.stormkeeper->value();
     }
@@ -2080,7 +2086,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     timespan_t t = base_t::execute_time();
 
-    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() )
+    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() && !p()->sk_during_sk )
     {
       // stormkeeper has a -100% value as effect 1
       t *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
@@ -2127,7 +2133,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     // Add excessive amount to ensure overload proc with SK,
     // since chain spells divide chance by X
-    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->check() )
+    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->check() && !p()->sk_during_sk )
     {
       chance += 10.0;
     }
@@ -4650,7 +4656,11 @@ struct chained_base_t : public shaman_spell_t
       {
         p()->buff.t30_4pc_ele->trigger();
       }
-      p()->buff.stormkeeper->decrement();
+      if ( !p()->sk_during_sk )
+      {
+        p()->buff.stormkeeper->decrement();
+      }
+      p()->sk_during_sk = false;
     }
 
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
@@ -5823,11 +5833,16 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( exec_type == execute_type::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
+
+      if ( !p()->sk_during_sk )
       {
-        p()->buff.t30_4pc_ele->trigger();
+        if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
+        {
+          p()->buff.t30_4pc_ele->trigger();
+        }
+        p()->buff.stormkeeper->decrement();
       }
-      p()->buff.stormkeeper->decrement();
+      p()->sk_during_sk = false;
     }
 
     p()->trigger_flash_of_lightning();
@@ -10054,6 +10069,10 @@ void shaman_t::create_buffs()
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
+          if ( executing && executing->id == 188196 )
+          {
+            sk_during_sk = true;
+          }
           buff.stormkeeper->trigger( 1 );
           t30_proc_possible = false;
         }
@@ -11216,6 +11235,7 @@ void shaman_t::reset()
   player_t::reset();
 
   lava_surge_during_lvb = false;
+  sk_during_sk          = false;
 
   lotfw_counter = 0U;
   dre_attempts = 0U;
