@@ -4365,6 +4365,9 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
+
+    if ( p->bugs )
+      berserk_cp = 0;  // thrash does not grant extra CP during berserk
   }
 
   void execute() override
