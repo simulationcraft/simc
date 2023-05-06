@@ -1806,6 +1806,14 @@ void spoils_of_neltharus( special_effect_t& effect )
       init_buff( "vers", 381957 );
     }
 
+    void init_finished() override
+    {
+      proc_spell_t::init_finished();
+
+      // Make the first counter buff trigger at the start of combat
+      player->register_combat_begin( [ this ]( player_t* ) { buff_list.front().first->trigger(); } );
+    }
+
     void reset() override
     {
       proc_spell_t::reset();
@@ -1823,8 +1831,6 @@ void spoils_of_neltharus( special_effect_t& effect )
       {
         rng().shuffle( buff_list.begin(), buff_list.end() );
       }
-      // Make the first counter buff trigger at the start of combat
-      player->register_combat_begin( [ this ]( player_t* ) { buff_list.front().first->trigger(); } );
     }
 
     void execute() override
