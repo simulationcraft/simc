@@ -3953,7 +3953,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578, 395267 } };  // Invoke Niuzao, Weapons of Order's Call to Arms
+      proc_spell_id = { { 132578 /*, 395267*/ } };  // Invoke Niuzao, Weapons of Order's Call to Arms
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
@@ -3981,11 +3981,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
-      proc_spell_id = { { 201430 } }; // Stampede
+      proc_spell_id = { { 288613 } };  // Trueshot
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 120679, 219199 } }; // Stampede, Dire Beast and Dire Command proc
+      proc_spell_id = { { 19574 } };  // Bestial Wrath
       break;
     default:
       return;
@@ -3996,8 +3996,8 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   effect.player->special_effects.push_back( stat_effect );
 
   stat_effect->player->callbacks.register_callback_trigger_function(
-    stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+      stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
       return range::contains( proc_spell_id, a->data().id() );
     } );
 
