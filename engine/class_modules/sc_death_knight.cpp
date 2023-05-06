@@ -9790,9 +9790,8 @@ void death_knight_t::create_buffs()
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.sanguine_ground = make_buff( this, "sanguine_ground", spell.sanguine_ground )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-        ->set_schools_from_effect( 1 )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        ->set_default_value_from_effect( 1 )
+        ->set_schools_from_effect( 1 );
 
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
         -> set_cooldown( 0_ms ); // Handled by the action
