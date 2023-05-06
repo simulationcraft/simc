@@ -10199,6 +10199,8 @@ void rogue_t::init_special_effects()
     auto const soulrip_driver = new special_effect_t( this );
     soulrip_driver->name_str = "soulrip_driver";
     soulrip_driver->spell_id = set_bonuses.t30_outlaw_2pc->id();
+    soulrip_driver->proc_flags_ = set_bonuses.t30_outlaw_2pc->proc_flags();
+    soulrip_driver->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
     special_effects.push_back( soulrip_driver );
 
     auto cb = new actions::soulrip_cb_t( this, *soulrip_driver );
