@@ -4876,7 +4876,7 @@ struct dark_transformation_t final : public death_knight_spell_t
       p() -> buffs.commander_of_the_dead -> trigger();
     }
 
-    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) && p() -> buffs.unholy_t30_2pc_stacking -> check() )
     {
       p() -> buffs.unholy_t30_2pc_mastery -> trigger( p() -> buffs.unholy_t30_2pc_stacking -> check() );
       p() -> buffs.unholy_t30_2pc_stacking -> expire();
