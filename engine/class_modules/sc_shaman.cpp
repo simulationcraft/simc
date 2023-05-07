@@ -8606,15 +8606,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
       return make_fn_expr( name, [ this ]() {
-        if ( talent.elemental_spirits->ok() )
-        {
-          return pet.fire_wolves.n_active_pets() + pet.frost_wolves.n_active_pets() +
-                 pet.lightning_wolves.n_active_pets();
-        }
-        else
-        {
-          return pet.spirit_wolves.n_active_pets();
-        }
+        return as<double>( pet.all_wolves.size() );
       } );
     }
     else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
