@@ -11263,7 +11263,8 @@ void shaman_t::arise()
   {
     last_t30_proc = timespan_t::min();
     t30_proc_possible = false;
-    buff.t30_2pc_ele_driver->trigger();
+    make_event( sim, timespan_t::from_seconds( rng().range( 0, 5 ) ),
+                [ this ]() { buff.t30_2pc_ele_driver->trigger(); } );
   }
 }
 
