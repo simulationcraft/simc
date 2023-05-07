@@ -78,7 +78,7 @@ head=kinslayers_hood,id=202524,bonus_id=9410/1504/9413,gem_id=192945
 neck=torc_of_passed_time,id=201759,bonus_id=8782,ilevel=447,gem_id=192945/192945/192945,crafted_stats=36/32
 shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=4800/4786/1507,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=lifebound_chestpiece,id=193399,enchant_id=6625,crafted_stats=36/32
+chest=lifebound_chestpiece,id=193399,ilevel=447,enchant_id=6625,crafted_stats=36/32
 wrists=lifebound_bindings,id=193419,bonus_id=8797/8960,ilevel=447,gem_id=192945,crafted_stats=32/36
 hands=kinslayers_bloodstained_grips,id=202525,bonus_id=9410/1501,ilevel=450
 waist=kinslayers_sash,id=202521,ilevel=450,gem_id=192985
@@ -92,14 +92,14 @@ main_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6643
 off_hand=bilestained_crawg_tusks,id=159653,ilevel=447,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=439.25
-# gear_agility=5858
-# gear_stamina=20043
-# gear_crit_rating=3374
-# gear_haste_rating=3810
+# gear_ilvl=445.31
+# gear_agility=6236
+# gear_stamina=21754
+# gear_crit_rating=3559
+# gear_haste_rating=3995
 # gear_mastery_rating=1224
 # gear_versatility_rating=2191
-# gear_armor=3713
+# gear_armor=4003
 # gear_bonus_armor=141
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
