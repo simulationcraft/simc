@@ -111,7 +111,6 @@ struct evoker_t : public player_t
     // Should chained Disintegrates( those with 5 ticks ) be chained after the 3rd tick in Dragonrage
     bool use_early_chaining = true;
     double scarlet_overheal = 0.5;
-    double ancient_flame_chance = 0.05;
     double heal_eb_chance = 0.9;
   } option;
 
@@ -1574,9 +1573,6 @@ struct living_flame_t : public evoker_spell_t
     void execute() override
     {
       base_t::execute();
-
-      if ( rng().roll( p()->option.ancient_flame_chance ) )
-        p()->buff.ancient_flame->trigger();
     }
   };
 
@@ -2451,7 +2447,6 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.use_clipping", option.use_clipping ) );
   add_option( opt_bool( "evoker.use_early_chaining", option.use_early_chaining ) );
   add_option( opt_float( "evoker.scarlet_overheal", option.scarlet_overheal, 0.0, 1.0 ) );
-  add_option( opt_float( "evoker.ancient_flame_chance", option.ancient_flame_chance, 0.0, 1.0 ) );
   add_option( opt_float( "evoker.heal_eb_chance", option.heal_eb_chance, 0.0, 1.0 ) );
 }
 
