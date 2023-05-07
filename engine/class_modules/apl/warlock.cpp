@@ -187,9 +187,9 @@ void demonology( player_t* p )
   default_->add_action( "invoke_external_buff,name=power_infusion,if=!talent.nether_portal&!talent.summon_demonic_tyrant|time_to_die<25|(buff.tyrant.up&variable.shadow_timings)" );
   default_->add_action( "implosion,if=time_to_die<2*gcd" );
   default_->add_action( "nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2|time_to_die<30" );
-  default_->add_action( "hand_of_guldan,if=buff.nether_portal.up" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=ogcd,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)" );
+  default_->add_action( "hand_of_guldan,if=buff.nether_portal.up" );
   default_->add_action( "call_dreadstalkers,if=variable.tyrant_cd>cooldown+8*variable.shadow_timings" );
   default_->add_action( "call_dreadstalkers,if=!talent.summon_demonic_tyrant|time_to_die<14" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant|time_to_die<cooldown.summon_demonic_tyrant.remains_expected" );
@@ -209,9 +209,14 @@ void demonology( player_t* p )
   default_->add_action( "soul_strike,if=soul_shard<5" );
   default_->add_action( "shadow_bolt" );
 
-  items->add_action( "use_item,name=timebreaching_talon,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)" );
-  items->add_action( "use_items,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)" );
-  items->add_action( "use_item,name=voidmenders_shadowgem,if=!variable.shadow_timings|(variable.shadow_timings&(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)))" );
+  items->add_action( "use_item,name=irideus_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
+  items->add_action( "use_item,name=timebreaching_talon,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
+  items->add_action( "use_item,name=spoils_of_neltharus,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
+  items->add_action( "use_item,name=voidmenders_shadowgem,if=!variable.shadow_timings|(variable.shadow_timings&(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)))" );  
+  items->add_action( "use_item,name=erupting_spear_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=11" );
+  items->add_action( "use_items,if=(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal))&(!equipped.irideus_fragment|!equipped.timebreaching_talon|!equipped.spoils_of_neltharus|!equipped.erupting_spear_fragment|!equipped.voidmenders_shadowgem)" );
+  items->add_action( "use_item,actions.items+=/use_item,name=rotcrusted_voodoo_doll" );
+  items->add_action( "use_item,name=beacon_to_the_beyond" );
 
   ogcd->add_action( "potion" );
   ogcd->add_action( "berserking" );
