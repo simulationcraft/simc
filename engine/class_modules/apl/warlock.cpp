@@ -178,7 +178,7 @@ void demonology( player_t* p )
   precombat->add_action( "demonbolt,if=!buff.power_siphon.up" );
   precombat->add_action( "shadow_bolt" );
 
-  variables->add_action( "variable,name=tyrant_cd,op=setif,value=cooldown.invoke_power_infusion_0.remains,value_else=cooldown.summon_demonic_tyrant.remains_expected,condition=((((fight_remains+time)%%120<=75&(fight_remains+time)%%120>=15)|time>=210)&variable.shadow_timings)&cooldown.invoke_power_infusion_0.duration>0&!talent.grand_warlocks_design" );
+  variables->add_action( "variable,name=tyrant_cd,op=setif,value=cooldown.invoke_power_infusion_0.remains,value_else=cooldown.summon_demonic_tyrant.remains_expected,condition=((((fight_remains+time)%%120<=85&(fight_remains+time)%%120>=25)|time>=210)&variable.shadow_timings)&cooldown.invoke_power_infusion_0.duration>0&!talent.grand_warlocks_design" );
   variables->add_action( "variable,name=np_condition,op=set,value=cooldown.nether_portal.up|buff.nether_portal.up|pet.pit_lord.active|!talent.nether_portal|cooldown.nether_portal.remains>30" );
 
   default_->add_action( "call_action_list,name=variables" );
