@@ -60,6 +60,7 @@ void devastation( player_t* p )
   precombat->add_action( "variable,name=dr_prep_time_aoe,default=4,op=reset", "Variable for when to start holding empowers for upcoming DR in AoE. - From my testing 4sec seems like the sweetspot, but it's very minor diff so far - Holding for more than 6 seconds it begins to become a loss." );
   precombat->add_action( "variable,name=dr_prep_time_st,default=13,op=reset", "Variable for when to start holding empowers for upcoming DR in ST." );
   precombat->add_action( "variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0" );
+  precombat->add_action( "verdant_embrace,if=talent.scarlet_adaptation|talent.ancient_flame" );
   precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
   precombat->add_action( "firestorm,if=talent.firestorm" );
   precombat->add_action( "living_flame,if=!talent.firestorm" );
@@ -129,7 +130,8 @@ void devastation( player_t* p )
   st->add_action( "deep_breath,if=!buff.dragonrage.up&active_enemies>=2&((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))", "Use Deep Breath on 2T, unless adds will come before it'll be ready again or if talented ID." );
   st->add_action( "deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!debuff.shattering_star_debuff.up" );
   st->add_action( "living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.scarlet_adaptation.up|buff.iridescence_blue.up)&active_enemies==1", "Cast LF outside of DR, or with red buff/scarlet adaption up" );
-  st->add_action( "azure_strike", "Fallback for movement" );
+  st->add_action( "verdant_embrace,if=talent.ancient_flame", "Fallback for movement" );
+  st->add_action( "azure_strike" );
 
   trinkets->add_action( "use_item,name=spoils_of_neltharus,if=buff.dragonrage.up&(active_enemies>=3|!buff.spoils_of_neltharus_vers.up&!cooldown.fire_breath.up&!cooldown.shattering_star.up|buff.dragonrage.remains+4*(cooldown.eternity_surge.remains<=gcd.max*2+cooldown.fire_breath.remains<=gcd.max*2)<=18)|fight_remains<=20", "With spoils try to fish for non vers buff before you using it on <=2T, use regardless of buff when 18s is left on DR. Don't fish when >=3T." );
   trinkets->add_action( "use_item,slot=trinket1,if=buff.dragonrage.up&((!cooldown.fire_breath.up&!cooldown.shattering_star.up)|active_enemies>=3|(buff.dragonrage.remains+4*(cooldown.eternity_surge.remains<=gcd.max*2+cooldown.fire_breath.remains<=gcd.max*2)<=18))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)", "The trinket with the highest estimated value, will be used first and paired with Dragonrage." );
