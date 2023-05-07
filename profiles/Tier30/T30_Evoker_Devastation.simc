@@ -6,6 +6,8 @@ race=dracthyr
 role=spell
 position=back
 talents=BsbBAAAAAAAAAAAAAAAAAAAAAAkAAAAAAApkWkIHQCCJJJlkENINkIRSIhkEJSkkEB
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -44,6 +46,7 @@ actions.precombat+=/variable,name=dr_prep_time_aoe,default=4,op=reset
 # Variable for when to start holding empowers for upcoming DR in ST.
 actions.precombat+=/variable,name=dr_prep_time_st,default=13,op=reset
 actions.precombat+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
+actions.precombat+=/verdant_embrace,if=talent.scarlet_adaptation|talent.ancient_flame
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/firestorm,if=talent.firestorm
 actions.precombat+=/living_flame,if=!talent.firestorm
@@ -148,6 +151,7 @@ actions.st+=/deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!deb
 # Cast LF outside of DR, or with red buff/scarlet adaption up
 actions.st+=/living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.scarlet_adaptation.up|buff.iridescence_blue.up)&active_enemies==1
 # Fallback for movement
+actions.st+=/verdant_embrace,if=talent.ancient_flame
 actions.st+=/azure_strike
 
 # Opener rotaion
@@ -168,8 +172,8 @@ actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&((!cooldown.fire
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_1_manual
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_2_manual
 
-head=crown_of_obsidian_secrets,id=202488,bonus_id=8780,ilevel=447,gem_id=192988
-neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192958/192958/192958
+head=crown_of_obsidian_secrets,id=202488,bonus_id=8780,ilevel=447,gem_id=192982
+neck=red_sky_pendant,id=206182,ilevel=447,gem_id=192958/192958/192958
 shoulders=wingspan_of_obsidian_secrets,id=202486,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457
 chest=flametouched_chainmail,id=193422,bonus_id=8840/8836/8902/1537,enchant=waking_stats_3,enchant_id=6625,crafted_stats=49/32
@@ -188,9 +192,9 @@ main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=wafting_devotio
 # gear_ilvl=448.47
 # gear_stamina=22588
 # gear_intellect=8492
-# gear_crit_rating=4475
+# gear_crit_rating=4684
 # gear_haste_rating=2931
-# gear_mastery_rating=5778
+# gear_mastery_rating=5569
 # gear_versatility_rating=187
 # gear_leech_rating=200
 # gear_armor=5775
