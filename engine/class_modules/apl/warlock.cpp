@@ -214,7 +214,7 @@ void demonology( player_t* p )
   items->add_action( "use_item,name=spoils_of_neltharus,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
   items->add_action( "use_item,name=voidmenders_shadowgem,if=!variable.shadow_timings|(variable.shadow_timings&(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)))" );  
   items->add_action( "use_item,name=erupting_spear_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=11" );
-  items->add_action( "use_items,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)&!equipped.irideus_fragment|!equipped.timebreaching_talon|!equipped.spoils_of_neltharus|!equipped.erupting_spear_fragment|!equipped.voidmenders_shadowgem" );
+  items->add_action( "use_items,if=(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal))&(!equipped.irideus_fragment&!equipped.timebreaching_talon&!equipped.spoils_of_neltharus&!equipped.erupting_spear_fragment&!equipped.voidmenders_shadowgem)" );
   items->add_action( "use_item,name=rotcrusted_voodoo_doll" );
   items->add_action( "use_item,name=beacon_to_the_beyond" );
 
