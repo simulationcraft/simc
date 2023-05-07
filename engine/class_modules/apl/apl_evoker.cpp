@@ -62,8 +62,9 @@ void devastation( player_t* p )
   precombat->add_action( "variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0" );
   precombat->add_action( "verdant_embrace,if=talent.scarlet_adaptation|talent.ancient_flame" );
   precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
-  precombat->add_action( "firestorm,if=talent.firestorm" );
-  precombat->add_action( "living_flame,if=!talent.firestorm" );
+  precombat->add_action( "deep_breath,if=(raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy)" );
+  precombat->add_action( "firestorm,if=talent.firestorm&!((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))" );
+  precombat->add_action( "living_flame,if=!talent.firestorm&!((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))" );
 
   default_->add_action( "potion,if=buff.dragonrage.up&(!cooldown.shattering_star.up|active_enemies>=2)|fight_remains<35", "Delay pot in ST if you are about to SS - mostly relevant for opener where you want DR->FB->SS->rotation" );
   default_->add_action( "variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)", "Variable that evaluates when next dragonrage is by working out the maximum between the dragonrage cd and your empowers, ignoring CDR effect estimates." );
