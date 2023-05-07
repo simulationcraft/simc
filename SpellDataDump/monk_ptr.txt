@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-03/49407)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-06/49444)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4038,17 +4038,14 @@ Effects          :
                    Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
-Hotfixed         : Base Value (20 -> 92), Affects Spells
 #26 (id=1080996)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
                    Family Flags: 58, 89
-Hotfixed         : Base Value (92 -> 25), Affects Spells
 #27 (id=1080997)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Soothing Mist (209525)
                    Family Flags: 24
-Hotfixed         : Misc Value (0 -> 22), Affects Spells
 
 Name             : Mistweaver Monk (id=137024) [Spell Family (53), Passive, Hidden] 
 Class            : Mistweaver Monk
@@ -16115,7 +16112,7 @@ Description      : Spinning Crane Kick damage increased by $s1%.
 Name             : Rising Star (id=388849) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
-                 : Effect#2 [op=set, values=(6, 12)]
+                 : Effect#2 [op=set, values=(8, 16)]
 Class            : Monk
 School           : Physical
 Spell Type       : None

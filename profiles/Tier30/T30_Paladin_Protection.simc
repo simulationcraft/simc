@@ -2,7 +2,7 @@ paladin="T30_Paladin_Protection"
 source=default
 spec=protection
 level=70
-race=blood_elf
+race=tauren
 role=tank
 position=front
 talents=BIEAAAAAAAAAAAAAAAAAAAAAAUSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
@@ -77,7 +77,7 @@ head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/8780,gem_id
 neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,gem_id=192985/192945/192945,crafted_stats=32/49
 shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=sarkareths_abyssal_embrace,id=202599,bonus_id=4800/4786/1498,enchant=waking_stats_3
+chest=breastplate_of_arterial_protection,id=206197,bonus_id=4800/4786/1669,enchant=waking_stats_3
 wrists=bonds_of_desperate_ascension,id=204390,bonus_id=6652/7981/8095/1498/8780/4786,gem_id=192945
 hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192945
@@ -87,17 +87,17 @@ finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,gem_bon
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192945,enchant=devotion_of_haste_3
 trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
 trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
-main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=wafting_devotion_3
+main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3
 off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
 # Gear Summary
-# gear_ilvl=446.31
-# gear_strength=5340
-# gear_stamina=21870
-# gear_crit_rating=4686
-# gear_haste_rating=3833
-# gear_mastery_rating=2621
-# gear_versatility_rating=1108
-# gear_armor=12962
+# gear_ilvl=446.13
+# gear_strength=5322
+# gear_stamina=21780
+# gear_crit_rating=4666
+# gear_haste_rating=4512
+# gear_mastery_rating=1097
+# gear_versatility_rating=1962
+# gear_armor=12931
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

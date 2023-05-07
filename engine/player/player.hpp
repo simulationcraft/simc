@@ -779,6 +779,9 @@ struct player_t : public actor_t
     // Any other input will have it randomly select between High and Low Tide, and this this is default.
     // Overrides sim-wide option with a player-specific one
     player_option_t<std::string> flowstone_starting_state = "random_active";
+    /// Type stat given by Spoils of Neltharus on pull
+    /// Buff type: "mastery", "haste", "crit", "vers", other for random
+    player_option_t<std::string> spoils_of_neltharus_initial_type = "";
   } dragonflight_opts;
 
 private:

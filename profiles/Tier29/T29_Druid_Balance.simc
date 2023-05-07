@@ -29,7 +29,6 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds
-actions.precombat+=/variable,name=solar_eclipse_st,value=talent.soul_of_the_forest&(talent.warrior_of_elune|talent.rattle_the_stars)
 actions.precombat+=/variable,name=on_use_trinket,value=0
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2
@@ -47,6 +46,7 @@ actions+=/potion,if=!druid.no_cds&(buff.ca_inc.remains>=20|variable.no_cd_talent
 actions+=/use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0
 actions+=/use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0
 actions+=/use_items
+actions+=/natures_vigil
 actions+=/invoke_external_buff,name=power_infusion
 actions+=/run_action_list,name=aoe,if=variable.is_aoe
 actions+=/run_action_list,name=st
@@ -67,7 +67,6 @@ actions.aoe+=/wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!ta
 actions.aoe+=/fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2
 actions.aoe+=/full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.aoe+=/starfall,if=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)
-actions.aoe+=/starfire,if=(buff.gathering_starstuff.stack=3|buff.umbral_embrace.up)&astral_power.deficit>variable.passive_asp+(8*(1+0.4*buff.warrior_of_elune.up))
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<3
 actions.aoe+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8+spell_targets.starfire,if=astral_power.deficit>variable.passive_asp+8&spell_targets.starfire<(11-talent.umbral_intensity.rank-talent.astral_smolder.rank)
 actions.aoe+=/astral_communion,if=astral_power.deficit>variable.passive_asp+50
@@ -76,7 +75,7 @@ actions.aoe+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
 actions.aoe+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.aoe+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17
-actions.aoe+=/starfire,if=spell_targets>2&buff.eclipse_lunar.up
+actions.aoe+=/starfire,if=spell_targets>3&buff.eclipse_lunar.up|eclipse.in_lunar
 actions.aoe+=/wrath
 actions.aoe+=/run_action_list,name=fallthru
 
@@ -94,6 +93,7 @@ actions.st+=/starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.starwea
 actions.st+=/celestial_alignment,if=variable.cd_condition_st
 actions.st+=/incarnation,if=variable.cd_condition_st
 actions.st+=/warrior_of_elune
+actions.st+=/variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5
 actions.st+=/variable,name=enter_eclipse,value=eclipse.any_next|variable.solar_eclipse_st&buff.eclipse_solar.up&(buff.eclipse_solar.remains<action.starfire.cast_time)|!variable.solar_eclipse_st&buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)
 actions.st+=/starfire,if=variable.enter_eclipse&variable.solar_eclipse_st
 actions.st+=/wrath,if=variable.enter_eclipse
@@ -113,7 +113,7 @@ actions.st+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.ecl
 actions.st+=/full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
 actions.st+=/starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(8*(1+0.5*talent.soul_of_the_forest*buff.eclipse_solar.up))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5
 actions.st+=/wild_mushroom,if=talent.fungal_growth&(!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10)
-actions.st+=/starfire,if=eclipse.in_lunar&buff.umbral_embrace.react|buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1
+actions.st+=/starfire,if=buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1
 actions.st+=/wrath
 actions.st+=/run_action_list,name=fallthru
 

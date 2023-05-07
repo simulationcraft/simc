@@ -1773,6 +1773,7 @@ void spoils_of_neltharus( special_effect_t& effect )
 
     buffs buff_list;
     dbc_proc_callback_t* cb;
+    buff_t* initial = nullptr;
 
     spoils_of_neltharus_t( const special_effect_t& e ) : proc_spell_t( e )
     {
@@ -1793,14 +1794,24 @@ void spoils_of_neltharus( special_effect_t& effect )
           ->set_duration( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) );
 
         buff_list.emplace_back( counter, stat );
+        if ( util::str_compare_ci( player->dragonflight_opts.spoils_of_neltharus_initial_type, n ) )
+        {
+          initial = buff_list.back().first;
+        }
       };
 
       init_buff( "crit", 381954 );
       init_buff( "haste", 381955 );
       init_buff( "mastery", 381956 );
       init_buff( "vers", 381957 );
+    }
 
-      rng().shuffle( buff_list.begin(), buff_list.end() );
+    void init_finished() override
+    {
+      proc_spell_t::init_finished();
+
+      // Make the first counter buff trigger at the start of combat
+      player->register_combat_begin( [ this ]( player_t* ) { buff_list.front().first->trigger(); } );
     }
 
     void reset() override
@@ -1808,6 +1819,18 @@ void spoils_of_neltharus( special_effect_t& effect )
       proc_spell_t::reset();
 
       cb->activate();
+
+      if ( initial != nullptr )
+      {
+        while ( initial != buff_list.front().first )
+        {
+          std::rotate( buff_list.begin(), buff_list.begin() + 1, buff_list.end() );
+        }
+      }
+      else
+      {
+        rng().shuffle( buff_list.begin(), buff_list.end() );
+      }
     }
 
     void execute() override
@@ -3953,7 +3976,7 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case MONK_BREWMASTER:
       driver_id = 408260;
-      proc_spell_id = { { 132578, 395267 } };  // Invoke Niuzao, Weapons of Order's Call to Arms
+      proc_spell_id = { { 132578 /*, 395267*/ } };  // Invoke Niuzao, Weapons of Order's Call to Arms
       break;
     case MONK_WINDWALKER:
       driver_id = 408260;
@@ -3981,11 +4004,11 @@ void neltharions_call_to_dominance( special_effect_t& effect )
       break;
     case HUNTER_MARKSMANSHIP:
       driver_id = 408262;
-      proc_spell_id = { { 201430 } }; // Stampede
+      proc_spell_id = { { 288613 } };  // Trueshot
       break;
     case HUNTER_BEAST_MASTERY:
       driver_id = 408262;
-      proc_spell_id = { { 201430, 120679, 219199 } }; // Stampede, Dire Beast and Dire Command proc
+      proc_spell_id = { { 19574 } };  // Bestial Wrath
       break;
     default:
       return;
@@ -3996,8 +4019,8 @@ void neltharions_call_to_dominance( special_effect_t& effect )
   effect.player->special_effects.push_back( stat_effect );
 
   stat_effect->player->callbacks.register_callback_trigger_function(
-    stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-    [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+      stat_effect->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ proc_spell_id ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
       return range::contains( proc_spell_id, a->data().id() );
     } );
 
@@ -4045,22 +4068,12 @@ void elementium_pocket_anvil( special_effect_t& e )
 {
   e.player->buffs.anvil_strike_combat =
       create_buff<buff_t>( e.player, "anvil_strike_combat", e.player->find_spell( 408578 ) )
-          ->set_cooldown( 0_ms );
+          ->set_cooldown( 0_ms )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
   e.player->buffs.anvil_strike_no_combat =
-      create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) );
-
-  // 5-5-2023 This appears to be bugged in game, giving a 33% bonus per stack, rather than the 20% presented
-  if ( !e.player->bugs )
-  {
-    e.player->buffs.anvil_strike_combat->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
-    e.player->buffs.anvil_strike_no_combat->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
-  }
-  else
-  {
-    e.player->buffs.anvil_strike_combat->set_default_value( 0.3333 );
-    e.player->buffs.anvil_strike_no_combat->set_default_value( 0.3333 );
-  }
+      create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) )
+          ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
   {
@@ -4556,6 +4569,20 @@ void underlight_globe( special_effect_t& effect )
 {
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player -> find_spell( 408983 ) )
     ->add_stat_from_effect( 1, effect.driver() -> effectN(1).average( effect.item ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 408641 driver
+// 409067 trigger buff
+// TODO: implement self-damage DoT
+void stirring_twilight_ember( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+                           ->add_stat_from_effect( 1, effect.trigger()->effectN( 1 ).average( effect.item ) );
+
+  // Disable self-damage DoT for now
+  effect.action_disabled = true;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -6711,6 +6738,7 @@ void register_special_effects()
   register_special_effect( 413419, items::heart_of_thunder );
   register_special_effect( 407895, items::drogbar_rocks );
   register_special_effect( 408607, items::underlight_globe );
+  register_special_effect( 408641, items::stirring_twilight_ember );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment

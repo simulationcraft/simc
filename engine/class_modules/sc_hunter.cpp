@@ -3748,6 +3748,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     bestial_wrath_reduction = p -> talents.barbed_wrath -> effectN( 1 ).time_value();
 
+    tick_zero = true; 
+
     p -> actions.barbed_shot = this;
   }
 
@@ -5508,8 +5510,6 @@ struct bestial_wrath_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    harmful = false;
-
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
@@ -5519,6 +5519,9 @@ struct bestial_wrath_t: public hunter_spell_t
       add_pet_stats( pet, { "bestial_wrath" } );
 
     hunter_spell_t::init_finished();
+
+    if ( is_precombat )
+      harmful = false;
   }
 
   void execute() override
@@ -5700,8 +5703,6 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
     parse_options( options_str );
-
-    harmful = false;
   }
 
   void execute() override
@@ -5712,6 +5713,14 @@ struct trueshot_t: public hunter_spell_t
     p() -> buffs.trueshot -> expire();
 
     p() -> buffs.trueshot -> trigger();
+  }
+
+  void init_finished() override
+  {
+    hunter_spell_t::init_finished();
+
+    if ( is_precombat )
+      harmful = false;
   }
 };
 
@@ -6281,7 +6290,11 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
+  if ( splits.size() == 1 && splits[ 0 ] == "dire_pack_count" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.dire_pack_counter; });
+  }
+  else if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
   {
     return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
   }

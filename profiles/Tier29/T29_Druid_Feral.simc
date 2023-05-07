@@ -10,8 +10,8 @@ talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICIKSSSSJlIpkIRSCAAAAAAFASEEASSSikEK5AUS
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=iced_phial_of_corrupting_rage_3
-food=fated_fortune_cookie
+flask=phial_of_elemental_chaos_3
+food=thousandbone_tongueslicer
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3
 
@@ -43,8 +43,8 @@ actions+=/tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.
 actions+=/tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))
 actions+=/rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
+actions+=/natures_vigil
 actions+=/adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5,if=!(variable.need_bt&active_bt_triggers=2)
-# clever way to thrash with bt in opener
 actions+=/call_action_list,name=cooldown
 actions+=/feral_frenzy,target_if=max:target.time_to_die,if=combo_points<2|combo_points<3&buff.bs_inc.up
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)

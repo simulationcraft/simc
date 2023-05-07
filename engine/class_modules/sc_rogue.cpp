@@ -137,6 +137,7 @@ public:
     dot_t* rupture_deathmark;
     dot_t* sepsis;
     dot_t* serrated_bone_spike;
+    dot_t* soulrip;
   } dots;
 
   struct debuffs_t
@@ -391,6 +392,7 @@ public:
     damage_buff_t* t29_subtlety_4pc;
     damage_buff_t* t29_subtlety_4pc_black_powder;
     buff_t* t30_assassination_4pc;
+    buff_t* t30_outlaw_4pc;
 
   } buffs;
 
@@ -632,6 +634,9 @@ public:
     // Set Bonuses
     const spell_data_t* t30_assassination_2pc_tick;
     const spell_data_t* t30_assassination_4pc_buff;
+    const spell_data_t* t30_outlaw_2pc_attack;
+    const spell_data_t* t30_outlaw_4pc_attack;
+    const spell_data_t* t30_outlaw_4pc_buff;
     const spell_data_t* t30_subtlety_4pc_buff;
 
   } spec;
@@ -1960,6 +1965,7 @@ public:
   void trigger_keep_it_rolling();
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
+  void trigger_inevitability( const action_state_t* state );
   void trigger_lingering_shadow( const action_state_t* state );
   void trigger_danse_macabre( const action_state_t* state );
 
@@ -3202,12 +3208,7 @@ struct backstab_t : public rogue_attack_t
     }
 
     trigger_lingering_shadow( state );
-
-    if ( p()->talent.subtlety.inevitability->ok() )
-    {
-      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
-      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
-    }
+    trigger_inevitability( state );
 
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
@@ -3229,10 +3230,39 @@ struct backstab_t : public rogue_attack_t
 
 struct between_the_eyes_t : public rogue_attack_t
 {
+  struct soulreave_t : public rogue_attack_t
+  {
+    soulreave_t( util::string_view name, rogue_t* p ) :
+      rogue_attack_t( name, p, p->spec.t30_outlaw_4pc_attack )
+    {
+      ignores_armor = true; // Not currently in spell data
+    }
+
+    bool procs_poison() const override
+    { return false; }
+  };
+
+  soulreave_t* soulreave_attack;
+
   between_the_eyes_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_attack_t( name, p, p->spec.between_the_eyes, options_str )
+    rogue_attack_t( name, p, p->spec.between_the_eyes, options_str ), soulreave_attack( nullptr )
   {
     ap_type = attack_power_type::WEAPON_BOTH;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    if ( p()->set_bonuses.t30_outlaw_4pc->ok() )
+    {
+      soulreave_attack = p()->get_background_action<soulreave_t>( "soulreave" );
+      action_t* soulrip = p()->find_action( "soulrip" );
+      if ( soulrip )
+      {
+        soulrip->add_child( soulreave_attack );
+      }
+    }
   }
 
   double composite_crit_chance() const override
@@ -3249,6 +3279,26 @@ struct between_the_eyes_t : public rogue_attack_t
 
   void execute() override
   {
+    // Soulreave trigger and consume happens prior to the impact of the triggering BtE cast
+    // Each Soulreave is triggered independently based on the Soulrip on the target
+    if ( p()->set_bonuses.t30_outlaw_4pc->ok() )
+    {
+      for ( auto t : sim->target_non_sleeping_list )
+      {
+        rogue_td_t* tdata = p()->get_target_data( t );
+        if ( tdata->dots.soulrip->is_ticking() )
+        {
+          auto dot_state = debug_cast<residual_action::residual_periodic_state_t*>( tdata->dots.soulrip->state );
+          double amount = dot_state->tick_amount * tdata->dots.soulrip->ticks_left();
+          amount *= p()->set_bonuses.t30_outlaw_4pc->effectN( 1 ).percent();
+          soulreave_attack->execute_on_target( t, amount );
+          tdata->dots.soulrip->cancel();
+        }
+      }
+
+      p()->buffs.t30_outlaw_4pc->trigger();
+    }
+
     rogue_attack_t::execute();
 
     trigger_restless_blades( execute_state );
@@ -4107,12 +4157,7 @@ struct gloomblade_t : public rogue_attack_t
     }
 
     trigger_lingering_shadow( state );
-
-    if ( p()->talent.subtlety.inevitability->ok() )
-    {
-      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
-      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
-    }
+    trigger_inevitability( state );
 
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
@@ -4619,8 +4664,6 @@ struct rupture_t : public rogue_attack_t
       replicating_shadows_tick = p->get_background_action<replicating_shadows_tick_t>( "rupture_replicating_shadows" );
       add_child( replicating_shadows_tick );
     }
-
-    
   }
 
   void init() override
@@ -4962,10 +5005,7 @@ struct shadow_dance_t : public rogue_spell_t
     if ( p()->set_bonuses.t30_subtlety_2pc->ok() )
     {
       // 2023-05-01 -- This currently acts like a normal cast, including The Rotten and resetting the duration
-      //               Tooltip states 6 seconds, but this still just seems to add the normal 10s + pandemic duration
-      timespan_t symbols_duration = p()->bugs ? p()->buffs.symbols_of_death->base_buff_duration :
-        timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 1 ).base_value() );
-
+      timespan_t symbols_duration = timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 1 ).base_value() );
       p()->buffs.symbols_of_death->trigger( symbols_duration );
       p()->buffs.the_rotten->trigger();
       p()->resource_gain( RESOURCE_ENERGY, p()->spec.symbols_of_death->effectN( 5 ).resource(),
@@ -5078,12 +5118,6 @@ struct shadowstrike_t : public rogue_attack_t
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
       p()->buffs.the_rotten->expire( 1_ms );
     }
-
-    if ( p()->talent.subtlety.inevitability->ok() )
-    {
-      timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
-      p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -5092,9 +5126,8 @@ struct shadowstrike_t : public rogue_attack_t
 
     trigger_perforated_veins( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.shadowstrike );
-
-    // Appears to be applied after weaponmastered attacks.
     trigger_find_weakness( state );
+    trigger_inevitability( state );
 
     if ( state->result == RESULT_CRIT && p()->set_bonuses.t29_subtlety_4pc->ok() )
     {
@@ -6027,6 +6060,39 @@ struct serrated_bone_spike_t : public rogue_attack_t
     {
       trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
     }
+  }
+};
+
+// Outlaw T30 Set Bonus
+
+struct soulrip_cb_t : public dbc_proc_callback_t
+{
+  // Note: Uses spell_t instead of rogue_spell_t to avoid action_state casting issues
+  struct soulrip_damage_t : public residual_action::residual_periodic_action_t<spell_t>
+  {
+    rogue_t* rogue;
+
+    soulrip_damage_t( util::string_view name, rogue_t* p ) :
+      base_t( name, p, p->spec.t30_outlaw_2pc_attack ), rogue( p )
+    {
+      dual = true;
+    }
+  };
+
+  soulrip_damage_t* damage;
+  rogue_t* rogue;
+
+  soulrip_cb_t( rogue_t* p, const special_effect_t& e )
+    : dbc_proc_callback_t( p, e ), damage( nullptr ), rogue( p )
+  {
+    damage = rogue->get_background_action<soulrip_damage_t>( "soulrip" );
+  }
+
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    dbc_proc_callback_t::execute( a, s );
+    const double amount = s->result_amount * rogue->set_bonuses.t30_outlaw_2pc->effectN( 1 ).percent();
+    residual_action::trigger( damage, s->target, amount );
   }
 };
 
@@ -7708,6 +7774,20 @@ void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state
 }
 
 template <typename Base>
+void actions::rogue_action_t<Base>::trigger_inevitability( const action_state_t* state )
+{
+  if ( !p()->talent.subtlety.inevitability->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  // Testing appears to show this does not work on Weaponmaster attacks
+  if ( is_secondary_action() )
+    return;
+
+  timespan_t extend_duration = timespan_t::from_seconds( p()->talent.subtlety.inevitability->effectN( 2 ).base_value() / 10.0 );
+  p()->buffs.symbols_of_death->extend_duration( p(), extend_duration );
+}
+
+template <typename Base>
 void actions::rogue_action_t<Base>::trigger_lingering_shadow( const action_state_t* state )
 {
   if ( !p()->talent.subtlety.lingering_shadow->ok() || !ab::result_is_hit( state->result ) )
@@ -7767,6 +7847,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.rupture_deathmark        = target->get_dot( "rupture_deathmark", source );
   dots.sepsis                   = target->get_dot( "sepsis", source );
   dots.serrated_bone_spike      = target->get_dot( "serrated_bone_spike_dot", source );
+  dots.soulrip                  = target->get_dot( "soulrip", source );
 
   debuffs.wound_poison          = new buffs::wound_poison_t( *this );
   debuffs.atrophic_poison       = new buffs::atrophic_poison_t( *this );
@@ -8069,7 +8150,7 @@ double rogue_t::composite_player_multiplier( school_e school ) const
   if ( set_bonuses.t30_assassination_4pc->ok() &&
        spec.t30_assassination_4pc_buff->effectN( 1 ).has_common_school( school ) )
   {
-    m *= 1.0 + buffs.t30_assassination_4pc->value();
+    m *= 1.0 + buffs.t30_assassination_4pc->stack_value();
   }
 
   return m;
@@ -9242,6 +9323,9 @@ void rogue_t::init_spells()
 
   spec.t30_assassination_2pc_tick = set_bonuses.t30_assassination_2pc->ok() ? find_spell( 409483 ) : spell_data_t::not_found();
   spec.t30_assassination_4pc_buff = set_bonuses.t30_assassination_4pc->ok() ? find_spell( 409587 ) : spell_data_t::not_found();
+  spec.t30_outlaw_2pc_attack = set_bonuses.t30_outlaw_2pc->ok() ? find_spell( 409604 ) : spell_data_t::not_found();
+  spec.t30_outlaw_4pc_attack = set_bonuses.t30_outlaw_4pc->ok() ? find_spell( 409605 ) : spell_data_t::not_found();
+  spec.t30_outlaw_4pc_buff = set_bonuses.t30_outlaw_4pc->ok() ? find_spell( 409606 ) : spell_data_t::not_found();
   spec.t30_subtlety_4pc_buff = set_bonuses.t30_subtlety_4pc->ok() ? find_spell( 409987 ) : spell_data_t::not_found();
 
   // Active Spells ==========================================================
@@ -9308,6 +9392,7 @@ void rogue_t::init_spells()
   {
     active.fan_the_hammer = get_secondary_trigger_action<actions::pistol_shot_t>(
       secondary_trigger::FAN_THE_HAMMER, "pistol_shot_fan_the_hammer" );
+    active.fan_the_hammer->not_a_proc = true; // Scripted foreground cast, can trigger cast procs
   }
 
   // Subtlety
@@ -9835,10 +9920,13 @@ void rogue_t::create_buffs()
                                                      find_spell( 394894 ) : spell_data_t::not_found() );
   buffs.t29_subtlety_2pc->set_max_stack( as<int>( consume_cp_max() ) );
 
-  buffs.t30_assassination_4pc = make_buff( this, "poisoned_edges", set_bonuses.t30_assassination_4pc->ok() ?
-                                           find_spell( 409587 ) : spell_data_t::not_found() )
+  buffs.t30_assassination_4pc = make_buff( this, "poisoned_edges", spec.t30_assassination_4pc_buff )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.t30_outlaw_4pc = make_buff( this, "soulripper", spec.t30_outlaw_4pc_buff )
+    ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+    ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
 
   // Cannot fully auto-parse as a single damage_buff_t since it has different mod for Black Powder
   const spell_data_t* t29_buff = ( set_bonuses.t29_subtlety_4pc->ok() ?
@@ -10101,6 +10189,20 @@ void rogue_t::init_special_effects()
       special_effect_t* effect = weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] -> parsed.special_effects[ i ];
       unique_gear::initialize_special_effect_2( effect );
     }
+  }
+
+  if ( set_bonuses.t30_outlaw_2pc->ok() )
+  {
+
+    auto const soulrip_driver = new special_effect_t( this );
+    soulrip_driver->name_str = "soulrip_driver";
+    soulrip_driver->spell_id = set_bonuses.t30_outlaw_2pc->id();
+    soulrip_driver->proc_flags_ = set_bonuses.t30_outlaw_2pc->proc_flags();
+    soulrip_driver->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+    special_effects.push_back( soulrip_driver );
+
+    auto cb = new actions::soulrip_cb_t( this, *soulrip_driver );
+    cb->initialize();
   }
 }
 

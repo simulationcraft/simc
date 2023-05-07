@@ -1055,8 +1055,6 @@ public:
   double passive_movement_modifier() const override;
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
-  double composite_player_multiplier( school_e school ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -1210,9 +1208,6 @@ struct denizen_of_the_dream_t : public pet_t
       da *= 1.0 + o->buff.eclipse_lunar->check_value();
       da *= 1.0 + o->buff.eclipse_solar->check_value();
 
-      if ( !o->bugs )
-        da *= 1.0 + o->buff.friend_of_the_fae->check_value();
-
       return da;
     }
 
@@ -1226,9 +1221,6 @@ struct denizen_of_the_dream_t : public pet_t
 
       if ( td->dots.sunfire->is_ticking() )
         tm *= 1.0 + o->cache_mastery_value();
-
-      if ( !o->bugs )
-        tm *= 1.0 + td->debuff.waning_twilight->check_value();
 
       return tm;
     }
@@ -2047,6 +2039,7 @@ public:
     parse_buff_effects( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     parse_buff_effects( p()->buff.eclipse_lunar, p()->talent.umbral_intensity );
     parse_buff_effects( p()->buff.eclipse_solar, p()->talent.umbral_intensity );
+    parse_buff_effects( p()->buff.friend_of_the_fae );
     parse_buff_effects( p()->buff.gathering_starstuff );
     parse_buff_effects( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
     parse_buff_effects( p()->buff.owlkin_frenzy );
@@ -2080,6 +2073,9 @@ public:
     parse_buff_effects( p()->buff.furious_regeneration );
     parse_buff_effects( p()->buff.gory_fur );
     parse_buff_effects( p()->buff.overpowering_aura );
+    // rage of the sleeper also applies to moonfire tick via hidden script. see moonfire_damage_t
+    // note that it DOES NOT apply to thrash ticks
+    parse_buff_effects( p()->buff.rage_of_the_sleeper );
     parse_passive_effects( p()->talent.reinvigoration, p()->talent.innate_resolve.ok() ? 0b01U : 0b10U );
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects( p()->buff.vicious_cycle_mangle, true, true );
@@ -2099,6 +2095,9 @@ public:
     parse_dot_effects( &druid_td_t::dots_t::adaptive_swarm_damage, p()->spec.adaptive_swarm_damage, false,
                        p()->spec.restoration );
     parse_dot_effects( &druid_td_t::dots_t::thrash_bear, p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
+
+    parse_debuff_effects( []( druid_td_t* td ) { return td->debuff.waning_twilight->check(); },
+                          p()->spec.waning_twilight, p()->talent.waning_twilight );
   }
 
   template <typename DOT, typename... Ts>
@@ -4366,6 +4365,9 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
+
+    if ( p->bugs )
+      berserk_cp = 0;  // thrash does not grant extra CP during berserk
   }
 
   void execute() override
@@ -7078,6 +7080,10 @@ struct moonfire_t : public druid_spell_t
       if ( feral_override_ta && !p()->buff.moonkin_form->check() )
         tam *= 1.0 + feral_override_ta;
 
+      // rage of the sleeper applies to ticks via hidden script, so we manually adjust here
+      if ( p()->buff.rage_of_the_sleeper->check() )
+        tam *= 1.0 + p()->talent.rage_of_the_sleeper->effectN( 5 ).percent();
+
       return tam;
     }
 
@@ -7215,7 +7221,7 @@ struct natures_vigil_t : public Base
       : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) ),
         mul( p->talent.natures_vigil->effectN( 3 ).percent() )
     {
-      Base::background = Base::dual = true;
+      Base::dual = true;
     }
 
     double get_amount() const { return Base::p()->buff.natures_vigil->check_value() * mul; }
@@ -9774,7 +9780,7 @@ void druid_t::init_spells()
   spec.berserk_bear             = check( talent.berserk_ravage ||
                                          talent.berserk_unchecked_aggression ||
                                          talent.berserk_persistence, 50334 );
-  spec.elunes_favored           = check( talent.elunes_favored, 370588 );
+  spec.elunes_favored           = find_spell( 370588 );
   spec.furious_regeneration     = check( sets->set( DRUID_GUARDIAN, T30, B2 ), 408504 );
   spec.incarnation_bear         = check( talent.incarnation_bear, 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
@@ -10062,8 +10068,6 @@ void druid_t::create_buffs()
 
   buff.friend_of_the_fae = make_buff( this, "friend_of_the_fae", find_spell( 394083 ) )
     ->set_trigger_spell( talent.friend_of_the_fae )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
     ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
       if ( !old_ )
         uptime.friend_of_the_fae->update( true, sim->current_time() );
@@ -10283,6 +10287,7 @@ void druid_t::create_buffs()
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
   buff.elunes_favored = make_buff( this, "elunes_favored", spec.elunes_favored )
+    ->set_trigger_spell( talent.elunes_favored )
     ->set_quiet( true )
     ->set_freeze_stacks( true )
     ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -10327,8 +10332,7 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
-    ->set_default_value_from_effect( 5, 0.01 )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_cooldown( 0_ms )
     ->add_invalidate( CACHE_LEECH );
 
   buff.tooth_and_claw = make_buff( this, "tooth_and_claw", talent.tooth_and_claw->effectN( 1 ).trigger() )
@@ -10673,7 +10677,7 @@ std::string druid_t::default_flask() const
       case DRUID_RESTORATION:
         return "phial_of_elemental_chaos_3";
       case DRUID_FERAL:
-        return "iced_phial_of_corrupting_rage_3";
+        return "phial_of_elemental_chaos_3";
       default:
         return "disabled";
     }
@@ -10702,7 +10706,22 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-  if      ( true_level >= 70 ) return "fated_fortune_cookie";
+  if ( true_level >= 70 )
+  {
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:
+        return "fated_fortune_cookie";
+      case DRUID_GUARDIAN:
+        return "fated_fortune_cookie";
+      case DRUID_RESTORATION:
+        return "fated_fortune_cookie";
+      case DRUID_FERAL:
+        return "thousandbone_tongueslicer";
+      default:
+        return "disabled";
+    }
+  }
   else if ( true_level >= 60 ) return "feast_of_gluttonous_hedonism";
   else if ( true_level >= 55 ) return "surprisingly_palatable_feast";
   else if ( true_level >= 45 ) return "famine_evaluator_and_snack_table";
@@ -11641,34 +11660,6 @@ double druid_t::composite_spell_power_multiplier() const
   return player_t::composite_spell_power_multiplier();
 }
 
-double druid_t::composite_player_multiplier( school_e school ) const
-{
-  auto cpm = player_t::composite_player_multiplier( school );
-
-  cpm *= 1.0 + buff.rage_of_the_sleeper->check_value();
-
-  if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
-  {
-    cpm *= 1.0 + spec.elunes_favored->effectN( 1 ).percent();
-    cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
-  }
-
-  if ( buff.friend_of_the_fae->has_common_school( school ) )
-    cpm *= 1.0 + buff.friend_of_the_fae->check_value();
-
-  return cpm;
-}
-
-double druid_t::composite_player_target_multiplier( player_t* target, school_e school ) const
-{
-  auto cptm = player_t::composite_player_target_multiplier( target, school );
-
-  // TODO: use buff_t::has_common_school() if this no longer becomes SCHOOL_ALL
-  cptm *= 1.0 + get_target_data( target )->debuff.waning_twilight->check_value();
-
-  return cptm;
-}
-
 // Expressions ==============================================================
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
@@ -12349,9 +12340,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.waning_twilight = make_buff( *this, "waning_twilight", source.spec.waning_twilight )
     ->set_chance( 1.0 )
-    ->set_duration( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
-    ->apply_affecting_aura( source.talent.waning_twilight );
+    ->set_duration( 0_ms );
 
   buff.ironbark = make_buff( *this, "ironbark", source.talent.ironbark )
     ->set_cooldown( 0_ms );
@@ -12877,6 +12866,25 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.vulnerable_flesh );
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T29, B4 ) );
   action.apply_affecting_aura( sets->set( DRUID_GUARDIAN, T30, B4 ) );
+
+  // elune's favored applies to periodic effects via script, and fury of nature only applies to those spells that are
+  // affected by elune's favored
+  if ( action.data().affected_by_all( spec.elunes_favored->effectN( 1 ) ) )
+  {
+    auto apply_effect_ = [ &action ]( const spell_data_t* s, double v ) {
+      action.base_dd_multiplier *= 1.0 + v;
+      action.sim->print_debug( "{} base_dd_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
+
+      action.base_td_multiplier *= 1.0 + v;
+      action.sim->print_debug( "{} base_td_multiplier modified by {} from {}", action.name(), v, s->name_cstr() );
+    };
+
+    if ( talent.elunes_favored.ok() )
+      apply_effect_( spec.elunes_favored, spec.elunes_favored->effectN( 1 ).percent() );
+
+    if ( talent.fury_of_nature.ok() )
+      apply_effect_( talent.fury_of_nature, talent.fury_of_nature->effectN( 1 ).percent() );
+  }
 
   // Restoration
   action.apply_affecting_aura( spec.cenarius_guidance );

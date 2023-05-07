@@ -12086,6 +12086,7 @@ std::string player_t::create_profile( save_e stype )
     print_option( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies );
     print_option( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid );
     print_option( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state );
+    print_option( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type );
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12679,6 +12680,7 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies ) );
   add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
   add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
+  add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
 
   // Obsolete options
 

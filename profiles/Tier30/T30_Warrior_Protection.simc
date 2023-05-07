@@ -66,7 +66,6 @@ actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
 actions.generic=shield_slam
 actions.generic+=/thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down
 actions.generic+=/execute,if=buff.sudden_death.up&talent.sudden_death.enabled
-actions.generic+=/execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50
 actions.generic+=/execute,if=spell_targets.revenge=1&rage>=50
 actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
 actions.generic+=/revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled
@@ -97,10 +96,10 @@ off_hand=monstrous_gluttony,id=205974,bonus_id=1669/6808/4786
 # gear_strength=5292
 # gear_stamina=22070
 # gear_intellect=973
-# gear_crit_rating=4974
-# gear_haste_rating=4077
-# gear_mastery_rating=1855
-# gear_versatility_rating=1336
+# gear_crit_rating=4560
+# gear_haste_rating=4368
+# gear_mastery_rating=1106
+# gear_versatility_rating=2208
 # gear_leech_rating=200
 # gear_armor=12872
 # gear_bonus_armor=141

@@ -33,19 +33,26 @@ actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5
 actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.dragonrage.duration=0|cooldown.dragonrage.duration%%trinket.2.cooldown.duration=0)
 # Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a intellect modifier (currently 1.5x) to give a higher priority to intellect trinkets. The intellect modifier should be changed as intellect priority increases or decreases. As well as a modifier for if a trinket will or will not sync with cooldowns.
 actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.spoils_of_neltharus
-actions.precombat+=/variable,name=trinket_2_manual,value=trinket.1.is.spoils_of_neltharus
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.spoils_of_neltharus
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon
 actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.intellect)*(variable.trinket_1_sync))
 # Rank 1 empower spell cast time TODO: multiplier should be 1.0 but 1.3 results in more dps for EBF builds
 actions.precombat+=/variable,name=r1_cast_time,value=1.0*spell_haste
+# Variable for when to start holding empowers for upcoming DR in AoE. - From my testing 4sec seems like the sweetspot, but it's very minor diff so far - Holding for more than 6 seconds it begins to become a loss.
+actions.precombat+=/variable,name=dr_prep_time_aoe,default=4,op=reset
+# Variable for when to start holding empowers for upcoming DR in ST.
+actions.precombat+=/variable,name=dr_prep_time_st,default=13,op=reset
 actions.precombat+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
+actions.precombat+=/verdant_embrace,if=talent.scarlet_adaptation|talent.ancient_flame
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
-actions.precombat+=/firestorm,if=talent.firestorm
-actions.precombat+=/living_flame,if=!talent.firestorm
+actions.precombat+=/deep_breath,if=(raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy)
+actions.precombat+=/firestorm,if=talent.firestorm&!((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))
+actions.precombat+=/living_flame,if=!talent.firestorm&!((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))
 
 # Executed every time the actor is available.
-actions=potion,if=buff.dragonrage.up|fight_remains<35
+# Delay pot in ST if you are about to SS - mostly relevant for opener where you want DR->FB->SS->rotation
+actions=potion,if=buff.dragonrage.up&(!cooldown.shattering_star.up|active_enemies>=2)|fight_remains<35
 # Variable that evaluates when next dragonrage is by working out the maximum between the dragonrage cd and your empowers, ignoring CDR effect estimates.
 actions+=/variable,name=next_dragonrage,value=cooldown.dragonrage.remains<?(cooldown.eternity_surge.remains-2*gcd.max)<?(cooldown.fire_breath.remains-gcd.max)
 # Invoke External Power Infusions if they're available during dragonrage
@@ -53,13 +60,13 @@ actions+=/invoke_external_buff,name=power_infusion,if=buff.dragonrage.up&!buff.p
 # Rupt to make the raidleader happy
 actions+=/quell,use_off_gcd=1,if=target.debuff.casting.react
 actions+=/call_action_list,name=trinkets
+# Go into ST opener on 1-2T if you don't have PI or T30
+actions+=/run_action_list,name=st_opener,if=time<9&cooldown.eternity_surge.up&active_enemies<=2&(cooldown.invoke_power_infusion_0.up|!set_bonus.tier30_4pc)
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=st
 
-# AOE action list; Actually kinda clean now  Variables for AoE / Testing  This variable controls when you should start holding empowers for upcoming DR. - From my testing 4sec seems like the sweetspot, but it's very minor diff so far - Holding for more than 6 seconds it begins to become a loss.
-actions.aoe=variable,name=dr_prep_time_aoe,value=4
-# Open with star before DR to save a global and start with a free EB
-actions.aoe+=/shattering_star,if=cooldown.dragonrage.up
+# AOE action list; Actually kinda clean now  Open with star before DR to save a global and start with a free EB
+actions.aoe=shattering_star,if=cooldown.dragonrage.up
 # Send DR on CD with no regard to the safety of the mobs - DPS loss to hold DR for empowers, in real world scenario maybe you hold if you are going for longer DRs  DS optimization: Only cast if current fight will last 32s+ or encounter ends in less than 30s
 actions.aoe+=/dragonrage,if=target.time_to_die>=32|fight_remains<30
 # Use tip to get that sweet aggro
@@ -103,8 +110,6 @@ actions.fb+=/fire_breath,empower_to=4
 
 # ST Action List, it's a mess, but it's getting better!
 actions.st=use_item,name=kharnalex_the_first_light,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down&raid_event.movement.in>6
-# Variable for when to start holding empowers.
-actions.st+=/variable,name=dr_prep_time_st,value=13
 # Movement Logic, Time spiral logic might need some tweaking actions.st+=/time_spiral,if=raid_event.movement.in<3&cooldown.hover.remains>=3&!buff.hover.up
 actions.st+=/hover,use_off_gcd=1,if=raid_event.movement.in<2&!buff.hover.up
 # Spend firestorm procs ASAP
@@ -113,12 +118,16 @@ actions.st+=/firestorm,if=buff.snapfire.up
 actions.st+=/dragonrage,if=cooldown.fire_breath.remains<4&cooldown.eternity_surge.remains<10&target.time_to_die>=32|fight_remains<30
 # Tip Eternity Surge without EBF - Tip Fire Breath with EBF
 actions.st+=/tip_the_scales,if=buff.dragonrage.up&(cooldown.eternity_surge.up&!cooldown.fire_breath.up&!talent.everburning_flame)|(talent.everburning_flame&cooldown.fire_breath.up)
-# Cast Fire Breath  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
-actions.st+=/call_action_list,name=fb,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.limitless_potential.remains<variable.r1_cast_time|!buff.power_infusion.up)&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
+# Cast Fire Breath todo: update comments cba rn  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
+actions.st+=/call_action_list,name=fb,if=set_bonus.tier30_4pc&(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.power_swell.remains<variable.r1_cast_time|buff.bloodlust.up|buff.power_infusion.up)&(buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up))&(target.time_to_die>=8|fight_remains<30)
+# FB logic for T29, keeping for legacy support
+actions.st+=/call_action_list,name=fb,if=!set_bonus.tier30_4pc&(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.limitless_potential.remains<variable.r1_cast_time|!buff.power_infusion.up)&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
 # Throw Star on CD, Don't overcap with Arcane Vigor.
 actions.st+=/shattering_star,if=buff.essence_burst.stack<buff.essence_burst.max_stack|!talent.arcane_vigor
-# Cast Eternity Surge  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
-actions.st+=/call_action_list,name=es,if=(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.limitless_potential.remains<variable.r1_cast_time|!buff.power_infusion.up)&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
+# Cast Eternity Surge todo: update comments cba rn  DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
+actions.st+=/call_action_list,name=es,if=set_bonus.tier30_4pc&(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.power_swell.remains<variable.r1_cast_time|buff.bloodlust.up|buff.power_infusion.up)&(buff.blazing_shards.remains<variable.r1_cast_time|buff.dragonrage.up))&(target.time_to_die>=8|fight_remains<30)
+# ES logic for T29, keeping for legacy support
+actions.st+=/call_action_list,name=es,if=!set_bonus.tier30_4pc&(!talent.dragonrage|variable.next_dragonrage>variable.dr_prep_time_st|!talent.animosity)&((buff.limitless_potential.remains<variable.r1_cast_time|!buff.power_infusion.up)&buff.power_swell.remains<variable.r1_cast_time&buff.blazing_shards.remains<variable.r1_cast_time)&(target.time_to_die>=8|fight_remains<30)
 # Wait for FB/ES to be ready if spending another GCD would result in the cast no longer fitting inside of DR
 actions.st+=/wait,sec=cooldown.fire_breath.remains,if=talent.animosity&buff.dragonrage.up&buff.dragonrage.remains<gcd.max+variable.r1_cast_time*buff.tip_the_scales.down&buff.dragonrage.remains-cooldown.fire_breath.remains>=variable.r1_cast_time*buff.tip_the_scales.down
 actions.st+=/wait,sec=cooldown.eternity_surge.remains,if=talent.animosity&buff.dragonrage.up&buff.dragonrage.remains<gcd.max+variable.r1_cast_time&buff.dragonrage.remains-cooldown.eternity_surge.remains>variable.r1_cast_time*buff.tip_the_scales.down
@@ -126,11 +135,13 @@ actions.st+=/wait,sec=cooldown.eternity_surge.remains,if=talent.animosity&buff.d
 actions.st+=/living_flame,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max&buff.burnout.up
 actions.st+=/azure_strike,if=buff.dragonrage.up&buff.dragonrage.remains<(buff.essence_burst.max_stack-buff.essence_burst.stack)*gcd.max
 # Spend burnout procs without overcapping resources
-actions.st+=/living_flame,if=buff.burnout.up&(buff.leaping_flames.up&!buff.essence_burst.up|!buff.leaping_flames.up&buff.essence_burst.stack<buff.essence_burst.max_stack)&essence<essence.max-1
+actions.st+=/living_flame,if=buff.burnout.up&(buff.leaping_flames.up&!buff.essence_burst.up|!buff.leaping_flames.up&buff.essence_burst.stack<buff.essence_burst.max_stack)&essence.deficit>=2
 # Spend pyre if raging inferno debuff is active and you have 20 stacks of CB on 2T
 actions.st+=/pyre,if=debuff.in_firestorm.up&talent.raging_inferno&buff.charged_blast.stack==20&active_enemies>=2
-# Early Chain in DR or if overflowing chain after the 3rd damage tick. Clip after third tick in dragonrage for more important buttons. Will only cast if >2s till movement
-actions.st+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=raid_event.movement.in>2|buff.hover.up
+# Early Chain in DR or if overflowing chain after the 3rd damage tick. Clip after third tick in dragonrage for more important buttons. Will only cast if >2s till movement todo: update comments cba rn
+actions.st+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&ticks>=2&buff.dragonrage.up&!(buff.power_infusion.up&buff.bloodlust.up)&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(!(buff.power_infusion.up&buff.bloodlust.up)|cooldown.fire_breath.up|cooldown.eternity_surge.up)&(raid_event.movement.in>2|buff.hover.up),if=set_bonus.tier30_4pc&raid_event.movement.in>2|buff.hover.up
+# Dis logic for T29, keeping for legacy support
+actions.st+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=!set_bonus.tier30_4pc&raid_event.movement.in>2|buff.hover.up
 # Hard cast only outside of SS and DR windows
 actions.st+=/firestorm,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down
 # Use Deep Breath on 2T, unless adds will come before it'll be ready again or if talented ID.
@@ -139,13 +150,23 @@ actions.st+=/deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!deb
 # Cast LF outside of DR, or with red buff/scarlet adaption up
 actions.st+=/living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.scarlet_adaptation.up|buff.iridescence_blue.up)&active_enemies==1
 # Fallback for movement
+actions.st+=/verdant_embrace,if=talent.ancient_flame&!buff.dragonrage.up
 actions.st+=/azure_strike
 
+# Opener rotaion
+actions.st_opener=dragonrage
+actions.st_opener+=/call_action_list,name=fb
+actions.st_opener+=/tip_the_scales
+actions.st_opener+=/shattering_star
+actions.st_opener+=/living_flame,if=essence<3&!buff.essence_burst.up&buff.power_infusion.up
+actions.st_opener+=/call_action_list,name=es,if=!buff.power_swell.up
+actions.st_opener+=/disintegrate,chain=1,early_chain_if=evoker.use_early_chaining&buff.dragonrage.up&ticks>=2,interrupt_if=evoker.use_clipping&(buff.power_swell.remains<gcd.max|(essence<3&!buff.essence_burst.up))&ticks>=2
+
 # With spoils try to fish for non vers buff before you using it on <=2T, use regardless of buff when 18s is left on DR. Don't fish when >=3T.
-actions.trinkets=use_item,name=spoils_of_neltharus,if=buff.dragonrage.up&(active_enemies>=3|!buff.spoils_of_neltharus_vers.up|buff.dragonrage.remains+4*(cooldown.eternity_surge.remains<=gcd.max*2+cooldown.fire_breath.remains<=gcd.max*2)<=18)|fight_remains<=20
+actions.trinkets=use_item,name=spoils_of_neltharus,if=buff.dragonrage.up&(active_enemies>=3|!buff.spoils_of_neltharus_vers.up&!cooldown.fire_breath.up&!cooldown.shattering_star.up|buff.dragonrage.remains+4*(cooldown.eternity_surge.remains<=gcd.max*2+cooldown.fire_breath.remains<=gcd.max*2)<=18)|fight_remains<=20
 # The trinket with the highest estimated value, will be used first and paired with Dragonrage.
-actions.trinkets+=/use_item,slot=trinket1,if=buff.dragonrage.up&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)
-actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)
+actions.trinkets+=/use_item,slot=trinket1,if=buff.dragonrage.up&((!cooldown.fire_breath.up&!cooldown.shattering_star.up)|active_enemies>=3|(buff.dragonrage.remains+4*(cooldown.eternity_surge.remains<=gcd.max*2+cooldown.fire_breath.remains<=gcd.max*2)<=18))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1|variable.trinket_2_exclude)&!variable.trinket_1_manual|trinket.1.proc.any_dps.duration>=fight_remains|trinket.1.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=1)
+actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&((!cooldown.fire_breath.up&!cooldown.shattering_star.up)|active_enemies>=3|(buff.dragonrage.remains+4*(cooldown.eternity_surge.remains<=gcd.max*2+cooldown.fire_breath.remains<=gcd.max*2)<=18))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2|variable.trinket_1_exclude)&!variable.trinket_2_manual|trinket.2.proc.any_dps.duration>=fight_remains|trinket.2.cooldown.duration<=60&(variable.next_dragonrage>20|!talent.dragonrage)&(!buff.dragonrage.up|variable.trinket_priority=2)
 # If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_1_manual
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_2_manual

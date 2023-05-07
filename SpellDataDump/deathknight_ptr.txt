@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49407 Live (hotfix 2023-05-03/49407)
+SimulationCraft 1007-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-06/49444)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -644,7 +644,7 @@ Range            : 40 yards
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.1 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2, #3), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Improved Death Coil (377580 effects: #1, #2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Unholy 10.1 Class Set 2pc (405503 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2, #3), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Death March (235556 effect#2), War (327096 effect#1), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Improved Death Coil (377580 effects: #1, #2), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Unholy 10.1 Class Set 2pc (405503 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 13, 43, 64, 78
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -1042,7 +1042,7 @@ Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Razorice (51714 effect#1), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Northrend Winds (204088 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Frost 10.1 Class Set 2pc (405501 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Northrend Winds (204088 effect#1), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Frost 10.1 Class Set 2pc (405501 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 33, 43, 120
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
@@ -1167,7 +1167,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 823: Will to Survive (312922 effect#2)
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1), Improved Death Strike (374277 effects: #1, #2, #3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Heartrend (377656 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Dark Succor (101568 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), War (327096 effect#1), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1), Improved Death Strike (374277 effects: #1, #2, #3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Heartrend (377656 effect#2), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 4, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -1222,7 +1222,7 @@ GCD              : 1.5 seconds
 Charges          : 2 (7.5 seconds cooldown)
 Category         : 1611: Death Knight (137005 effect#3)
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 18, 43, 48
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1520,7 +1520,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Death's Due (324164 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 67, 78
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -1628,7 +1628,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #17), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #17), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), War (327096 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8, #9), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Sanguine Ground (391459 effects: #1, #3), Coagulopathy (391477 effect#1), Coagulopathy (391481 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1649,9 +1649,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 24
-#4 (id=1026997)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
-                   Affected School(s): All
+#4 (id=1026997)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : Sub Type (270 -> 271), Misc Value (127 -> 0), Affects Spells
 #5 (id=1026998)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #6 (id=1038126)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
@@ -1672,7 +1674,7 @@ Max Targets      : 8
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Rotten Touch (390276 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Rotten Touch (390276 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 59, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -1701,7 +1703,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2, #5), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #5), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #10, #11, #12), Plaguebringer (390178 effect#1), Superstrain (390283 effect#2), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 58, 65, 120
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1715,9 +1717,11 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
-#2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
-                   Affected School(s): All
+#2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : Sub Type (270 -> 271), Misc Value (127 -> 0), Affects Spells
 #3 (id=1027000)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #4 (id=1038128)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
@@ -2210,7 +2214,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Dark Succor (101568 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1), Improved Death Strike (374277 effects: #1, #2, #3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Heartrend (377656 effect#2), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Dark Succor (101568 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #3), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Ossuary (219788 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1), Voracious (273953 effects: #2, #3), War (327096 effect#1), Death's Certainty (334898 effect#2), Insatiable Appetite (338330 effect#1), Improved Death Strike (374277 effects: #1, #2, #3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Heartrend (377656 effect#2), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 4, 43
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
@@ -2232,7 +2236,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Improved Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Improved Frost Strike (316803 effect#1), War (327096 effect#1), Eradicating Blow (337936 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 110, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2255,7 +2259,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effects: #1, #2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), War (327096 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Obliterate (49020)
 Family Flags     : 43, 49, 111
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -2343,7 +2347,7 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Scourge Strike (55090)
 Family Flags     : 43, 71, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2504,7 +2508,7 @@ Spell Level      : 17
 Range            : 30 yards
 GCD              : 1.5 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 76, 78
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2731,7 +2735,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Cankerous Wounds (278482 effect#1), Improved Festering Strike (316867 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Cankerous Wounds (278482 effect#1), Improved Festering Strike (316867 effect#1), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 73, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -3266,7 +3270,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #4, #5, #6), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #4, #5, #6), Plaguebringer (390178 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78, 93
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3291,7 +3295,7 @@ Spell Level      : 1
 Duration         : 14 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #4, #5, #6), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #4, #5, #6), Plaguebringer (390178 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Unholy Blight (115989)
 Family Flags     : 43, 78, 93
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3306,9 +3310,11 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=130553)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03976 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-#2 (id=803192)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Affected School(s): All
+#2 (id=803192)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : Sub Type (270 -> 271), Misc Value (127 -> 0), Affects Spells
 #3 (id=844463)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #4 (id=1038123)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
@@ -3845,7 +3851,7 @@ Spell Type       : Magic
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell, Periodic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Breath of Sindragosa (152279)
 Family Flags     : 43, 113, 120
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
@@ -3870,7 +3876,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1080: Withering Ground (341344 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Death's Due (324164 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 67, 78, 114
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ .x....xx 
@@ -4102,7 +4108,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x   ........ ........ ........ ........   
                  : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Festering Wound (194310 effect#2), Ebon Fever (207269 effects: #1, #2, #3), War (327096 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -4119,9 +4125,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
-#3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
-                   Affected School(s): All
+#3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : Sub Type (270 -> 271), Misc Value (127 -> 0), Affects Spells
 #4 (id=1005521)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(63) -> AOE enemy (instant) (16)
 #5 (id=1038114)  : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
@@ -4173,7 +4181,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Ebon Fever (207269 effects: #1, #2, #3), War (327096 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 40, 43, 78
 Attributes       : ........ ........ ........ ...x....   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ......x. ......x. 
@@ -4230,9 +4238,11 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=285231)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
-#2 (id=1005553)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
-                   Affected School(s): All
+#2 (id=1005553)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : Sub Type (270 -> 271), Misc Value (127 -> 0), Affects Spells
 #3 (id=1005554)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating ${$195757s2/10} Runic Power.
@@ -4244,7 +4254,7 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Bursting Sores (207264 effect#1), Improved Festering Strike (316867 effect#1), Convocation of the Dead (338553 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Bursting Sores (207264 effect#1), Improved Festering Strike (316867 effect#1), War (327096 effect#1), Convocation of the Dead (338553 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78, 119
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -4559,7 +4569,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Unholy Coil (184897 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Unholy Coil (184897 effect#2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Bone Shield (195181)
 Family Flags     : 43, 117, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -4597,7 +4607,7 @@ Velocity         : 45 yards/sec
 Min Travel Time  : 0.35 seconds
 Cooldown         : 6 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 87
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -4703,7 +4713,7 @@ Name             : Frozen Pulse (id=195750) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Frozen Pulse (194909)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4748,7 +4758,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 50, 120
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ....x.x.   ........ .x...... ........ ......x. 
@@ -4788,7 +4798,7 @@ Name             : Bonestorm (id=196528) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
-Affecting spells : Veteran of the Third War (48263 effect#2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Veteran of the Third War (48263 effect#2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Bonestorm (194844)
 Family Flags     : 43, 109
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4861,7 +4871,7 @@ Name             : Remorseless Winter (id=196771) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Everfrost (376974 effect#1), Biting Cold (377056 effects: #2, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Gathering Storm (211805 effect#1), Frozen Tempest (278487 effects: #2, #3), War (327096 effect#1), Biting Cold (334678 effects: #2, #3), Everfrost (337989 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Everfrost (376974 effect#1), Biting Cold (377056 effects: #2, #3), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Remorseless Winter (196770)
 Family Flags     : 43, 120, 126
 Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
@@ -5124,7 +5134,7 @@ Range            : 50000 yards
 Velocity         : 20 yards/sec
 Duration         : 0.3 seconds
 Labels           : 1615
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ ........ ....x... 
                  : x.x..... ......x. ...x.... ......x.   ........ ........ ....x... ......x. 
@@ -5280,7 +5290,7 @@ Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 1207
 Stance Mask      : 0x01000000
-Affecting spells : Blood Plague (55078 effect#3), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Blood for Blood (356456 effect#1), Brittle (374557 effect#1), Improved Heart Strike (374717 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effects: #3, #4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#3), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), War (327096 effect#1), Blood for Blood (356456 effect#1), Brittle (374557 effect#1), Improved Heart Strike (374717 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 24, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -5319,7 +5329,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 86
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -5576,7 +5586,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
@@ -5683,7 +5693,7 @@ Range            : 8 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Fist Weapon
 Stance Mask      : 0x01000000
-Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effects: #1, #2, #5), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effects: #1, #2, #5), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 15, 43, 120, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -5764,7 +5774,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Travel Time      : 0.15 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -5880,7 +5890,7 @@ Max Targets      : 8
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Rotten Touch (390276 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 59, 78, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -6264,7 +6274,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
 Max Targets      : 7
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Unholy 10.1 Class Set 2pc (405503 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Unholy 10.1 Class Set 2pc (405503 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6288,7 +6298,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 7
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Unholy 10.1 Class Set 2pc (405503 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effect#1), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Unholy 10.1 Class Set 2pc (405503 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78, 121
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6580,7 +6590,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effects: #1, #2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), War (327096 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Obliterate (49020)
 Family Flags     : 7, 43, 49
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -6604,7 +6614,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger, Spear
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Improved Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Improved Frost Strike (316803 effect#1), War (327096 effect#1), Eradicating Blow (337936 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -6687,7 +6697,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 1207
-Affecting spells : Blood Plague (55078 effect#3), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#3), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), Blood for Blood (356456 effect#1), Brittle (374557 effect#1), Improved Heart Strike (374717 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effects: #3, #4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#3), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Blood for Blood (202846 effect#1), Heart Strike (316575 effect#1), War (327096 effect#1), Blood for Blood (356456 effect#1), Brittle (374557 effect#1), Improved Heart Strike (374717 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Blood 10.1 Class Set 2pc (405499 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 24, 43, 127
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6720,7 +6730,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Northrend Winds (204088 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Frost 10.1 Class Set 2pc (405501 effect#1), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Rime (59052 effects: #1, #2, #3), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Northrend Winds (204088 effect#1), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Death Knight Frost 10.1 Class Set 2pc (405501 effect#1), Lingering Chill (410879 effect#1)
 Family Flags     : 33, 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -6852,7 +6862,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 20 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -7789,7 +7799,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8106,7 +8116,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 125, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -8183,7 +8193,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 90 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Army of the Damned (276837 effect#3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Army of the Damned (276837 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 56, 78, 127
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -8230,7 +8240,7 @@ Class            : Death Knight
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8566,7 +8576,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 45, 120
 Attributes       : ........ ........ .......x x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 
@@ -9364,7 +9374,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Cold Heart (281208)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9388,7 +9398,7 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2300: Proliferating Chill (373930 effect#2)
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ ........ ........ ......x. 
@@ -9588,7 +9598,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -9612,7 +9622,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -9636,7 +9646,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Helchains (286979)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9660,7 +9670,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Helchains (286835)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -9736,7 +9746,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 
@@ -10124,7 +10134,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -10473,7 +10483,7 @@ School           : Shadow
 Spell Type       : Magic
 Spell Level      : 48
 Labels           : 1061: Impenetrable Gloom (338628 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Swarming Mist (311648)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -10507,7 +10517,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x01000000
 Proc Flags       : .....x.. .x...x.. .x...... ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 127
 Attributes       : ....x... ........ ..x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ..x..... 
@@ -10634,7 +10644,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 61, 127
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -11113,7 +11123,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......xx 
@@ -11135,7 +11145,7 @@ Class            : Death Knight
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Unholy Pact (319245)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11159,7 +11169,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Unholy Pact (319233)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -11210,7 +11220,7 @@ Range            : 20 yards
 Max Targets      : 1
 Duration         : 4 seconds
 Labels           : 1062: Brutal Grasp (338651 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Abomination Limb (315443)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -11239,7 +11249,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 20 yards
 Labels           : 1062: Brutal Grasp (338651 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Abomination Limb (315443)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -11370,7 +11380,7 @@ School           : Physical
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff, Spear
-Affecting spells : Killing Machine (51124 effects: #1, #2), Might of the Frozen Wastes (81333 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Killing Machine (51124 effects: #1, #2), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effects: #1, #2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#4), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Koltira's Newfound Will (208782 effect#2), Improved Obliterate (317198 effect#1), War (327096 effect#1), Koltira's Favor (334583 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Frigid Executioner (377073 effect#2), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Obliterate (49020)
 Family Flags     : 7, 43, 49
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -11394,7 +11404,7 @@ School           : Frost
 Spell Type       : Melee
 Range            : 100 yards
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Improved Frost Strike (316803 effect#1), Eradicating Blow (337936 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Improved Frost Strike (316803 effect#1), War (327096 effect#1), Eradicating Blow (337936 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Frost Strike (49143)
 Family Flags     : 34, 43, 120
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
@@ -11847,7 +11857,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78, 124
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -12881,7 +12891,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
 Labels           : 1080: Withering Ground (341344 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Death's Due (324164 effect#3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2, #15), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Death's Due (324164 effect#3), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 67, 78
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -12973,7 +12983,7 @@ Duration         : 5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword
 Cooldown         : 6 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2, #5), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2, #5), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78, 90, 120, 127
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -13042,7 +13052,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Max Targets      : 6
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -14048,7 +14058,7 @@ Name             : Blood Draw (id=374606) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Blood Draw (374598)
 Family Flags     : 43
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14754,7 +14764,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 120
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 
@@ -15298,7 +15308,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Labels           : 1621: Shattering Bone (377640 effect#2)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -15540,7 +15550,7 @@ Range            : 20 yards
 Max Targets      : 1
 Duration         : 4 seconds
 Labels           : 1062: Brutal Grasp (338651 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Abomination Limb (383269)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -15568,7 +15578,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 20 yards
 Labels           : 1062: Brutal Grasp (338651 effect#1)
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Death Rot (377540 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Triggered by     : Abomination Limb (383269)
 Family Flags     : 43, 78
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -16146,11 +16156,18 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
-#1 (id=1028995)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
+#1 (id=1028995)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : Sub Type (79 -> 108), Misc Value (127 -> 0), Affects Spells
 #2 (id=1028996)  : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+#3 (id=1083625)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Frostwhelp's Indignation (287320), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319240), Unholy Pact (319245), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Dark Transformation (344955), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Frostwyrm's Fury (410790)
+                   Family Flags: 43
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc391458
 Tooltip          : Damage dealt increased by $s1%.
 Healing received increased by $s2%.
@@ -17091,7 +17108,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
+Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), War (327096 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1)
 Family Flags     : 43, 45, 120
 Attributes       : ........ ........ .......x x..x....   ...x...x ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ x....... ......x. 

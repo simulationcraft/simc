@@ -5,7 +5,6 @@ action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
-precombat->add_action( "variable,name=solar_eclipse_st,value=talent.soul_of_the_forest&(talent.warrior_of_elune|talent.rattle_the_stars)" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
@@ -22,6 +21,7 @@ def->add_action( "potion,if=!druid.no_cds&(buff.ca_inc.remains>=20|variable.no_c
 def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items" );
+def->add_action( "natures_vigil" );
 def->add_action( "invoke_external_buff,name=power_infusion" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
@@ -35,6 +35,7 @@ st->add_action( "starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.sta
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
 st->add_action( "incarnation,if=variable.cd_condition_st" );
 st->add_action( "warrior_of_elune" );
+st->add_action( "variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5" );
 st->add_action( "variable,name=enter_eclipse,value=eclipse.any_next|variable.solar_eclipse_st&buff.eclipse_solar.up&(buff.eclipse_solar.remains<action.starfire.cast_time)|!variable.solar_eclipse_st&buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)" );
 st->add_action( "starfire,if=variable.enter_eclipse&variable.solar_eclipse_st" );
 st->add_action( "wrath,if=variable.enter_eclipse" );
@@ -54,7 +55,7 @@ st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(8*(1+0.5*talent.soul_of_the_forest*buff.eclipse_solar.up))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
 st->add_action( "wild_mushroom,if=talent.fungal_growth&(!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10)" );
-st->add_action( "starfire,if=eclipse.in_lunar&buff.umbral_embrace.react|buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1" );
+st->add_action( "starfire,if=buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1" );
 st->add_action( "wrath" );
 st->add_action( "run_action_list,name=fallthru" );
 
@@ -74,7 +75,6 @@ aoe->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&
 aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2" );
 aoe->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "starfall,if=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)" );
-aoe->add_action( "starfire,if=(buff.gathering_starstuff.stack=3|buff.umbral_embrace.up)&astral_power.deficit>variable.passive_asp+(8*(1+0.4*buff.warrior_of_elune.up))" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<3" );
 aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8+spell_targets.starfire,if=astral_power.deficit>variable.passive_asp+8&spell_targets.starfire<(11-talent.umbral_intensity.rank-talent.astral_smolder.rank)" );
 aoe->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+50" );
@@ -83,7 +83,7 @@ aoe->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 aoe->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17" );
-aoe->add_action( "starfire,if=spell_targets>2&buff.eclipse_lunar.up" );
+aoe->add_action( "starfire,if=spell_targets>3&buff.eclipse_lunar.up|eclipse.in_lunar" );
 aoe->add_action( "wrath" );
 aoe->add_action( "run_action_list,name=fallthru" );
 

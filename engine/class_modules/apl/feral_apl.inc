@@ -22,8 +22,9 @@ def->add_action( "tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tige
 def->add_action( "tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))" );
 def->add_action( "rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier,if=buff.prowl.up|buff.shadowmeld.up" );
 def->add_action( "auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up" );
+def->add_action( "natures_vigil" );
 def->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5,if=!(variable.need_bt&active_bt_triggers=2)" );
-def->add_action( "call_action_list,name=cooldown","clever way to thrash with bt in opener" );
+def->add_action( "call_action_list,name=cooldown" );
 def->add_action( "feral_frenzy,target_if=max:target.time_to_die,if=combo_points<2|combo_points<3&buff.bs_inc.up" );
 def->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)" );
 def->add_action( "call_action_list,name=berserk,if=buff.bs_inc.up" );

@@ -6,21 +6,21 @@ spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoVSSLJUSSLRDRJQiEAAAAAgSAikgiog0SSapEoEJBgA
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFBFBISKJREIRBDAUAOVVFFQVCoQCIhEQDUUA
 
-head=,id=202470,bonus_id=8780/7187,gem_id=192982,ilevel=450
-neck=,id=201759,bonus_id=8836/8902/8790/8782,gem_id=192919/192919/192919,ilevel=447
+head=,id=202470,bonus_id=8780/7187,gem_id=192985,ilevel=447
+neck=,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948,ilevel=447
 shoulder=,id=202468,bonus_id=7187,ilevel=450
 back=,id=204465,bonus_id=4800/1498
 chest=,id=202473,bonus_id=7187,enchant_id=6625,ilevel=447
-wrist=,id=134164,bonus_id=8780/7359/6646,gem_id=192919,ilevel=447
+wrist=,id=193812,bonus_id=8780/7359/6646,gem_id=192948,ilevel=447
 hands=,id=193465,bonus_id=8836/8840/8902/8960/8802/8846,ilevel=447
 waist=,id=193463,bonus_id=8836/8840/8902/8960/7936/8802/8846,gem_id=192945,ilevel=447
 legs=,id=202469,bonus_id=7187,enchant_id=6541,ilevel=450
 feet=,id=204424,bonus_id=4800/1498
-finger1=,id=204398,bonus_id=8780/4800/1498,enchant_id=6556,gem_id=192919
-finger2=,id=192999,bonus_id=8836/8902/8780/8846/9365/8790,enchant_id=6556,gem_id=192919,ilevel=447
+finger1=,id=204398,bonus_id=8780/4800/1498,enchant_id=6550,gem_id=192948
+finger2=,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/8780/1498,enchant_id=6556,gem_id=192948,ilevel=421
 trinket1=,id=203996,bonus_id=4800/1498
-trinket2=,id=193660,bonus_id=7359/6646,ilevel=447
-main_hand=,id=193803,bonus_id=7359/6646,enchant_id=6643,ilevel=447
+trinket2=,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,ilevel=444
+main_hand=,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643,ilevel=450
 
 save=T30_Shaman_Elemental.simc
 
@@ -30,10 +30,12 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJpEJJIJhAJUSIAAAAAAAAAAAAgSESCJoIQSLJpAoEJhkGC
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLQSSKRSCSSIIJUSIAAAAAAAAAAAAgSESCJoJQSLJpgIEESaI
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
 
 head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
-neck=bromachs_disentombed_locket,id=193809,bonus_id=8782/7359/6646,ilevel=447,gem_id=192961/192961/192961
+neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
@@ -44,10 +46,10 @@ legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_a
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
-main_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
+off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 
 save=T30_Shaman_Enhancement.simc
 
@@ -59,9 +61,11 @@ spec=enhancement
 role=attack
 position=back
 talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
 
 head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
-neck=bromachs_disentombed_locket,id=193809,bonus_id=8782/7359/6646,ilevel=447,gem_id=192961/192961/192961
+neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
@@ -72,10 +76,10 @@ legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_a
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
-main_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
+off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 
 save=T30_Shaman_Enhancement_Storm.simc
 

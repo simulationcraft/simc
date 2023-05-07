@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.0.49407
+// Spell text, wow build 10.1.0.49444
 static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19250,7 +19250,7 @@ static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   { 401183, "Your healing spells have a chance to awaken the Heart, restoring ${$s3*($409898d/($409898t3))} mana over $409898d and causing your healing spells to restore ${$s1*($401186d/($401186t2))} additional health over $401186d.\r\n\r\nOverhealing from this effect invigorates your target, granting them up to $401183s2 Versatility for $401187d.", 0, 0 },
   { 401186, "$@spelldesc401183", "Healing $w2 every $t2 sec.", 0 },
   { 401187, "$@spelldesc401183", "Your Versatility is increased by $w1.", 0 },
-  { 401238, "Grant an ally Writhing Ward for $d, absorbing up to $401239s1 damage. If broken, the Ward coalesces into Writhing Ire, dealing ${$401239s2*($401257d/$401257t1)} Shadowflame damage over $401257d to the last enemy to strike it.\r\n", "Absorbs $401239s1 damage.", 0 },
+  { 401238, "Grant an ally Writhing Ward for $d, absorbing up to $401239s1 damage. If broken, the Ward coalesces into Writhing Ire, dealing ${$401239s2*($401257d/$401257t1)} Shadowflame damage over $401257d to the last enemy to strike it.\r\n", "Absorbs $w2 damage.", 0 },
   { 401253, "Plant a banner representing your successes against the Thundering.", 0, 0 },
   { 401257, "$@spelldesc401238", "Suffering $w2 Shadowflame damage every $t2 sec.", 0 },
   { 401303, "Sharpen your weapon with Elementium, giving your $?a137048[Shield Slam][]$?a137050[Raging Blow and Annihilator][]$?a137049[Mortal Strike][]$?a137028[Hammer of the Righteous and Blessed Hammer][]$?a137027[Crusader Strike, Crusading Strikes, and Templar Strikes][]$?a137023[Tiger Palm][]$?a137025[Tiger Palm][]$?a137009[Mangle, Maul, and Shred][]$?a212613[Soul Cleave][]$?a212612[Chaos Strike and Annihilation][]$?a137008[Heart Strike][]$?a137007[Scourge Strike and Clawing Shadows][]$?a137006[Obliterate][]$?a137035[Backstab and Gloomblade][]$?a137036[Sinister Strike][]$?a137037[Mutilate][]$?a137014[Raptor Strike and Mongoose Bite][]$?a137041[Stormstrike and Windstrike][]$?a137039|$a137031|$a137032|$a137029|$a137024|$a356810|$a137046|$a137044|$a137043|$a137040|$a137033|$a137020|$a137019|$a137021|$a356809|[melee damage dealer specialization's main class ability][] a chance to deal ${$s1*0.6} additional Shadowflame damage on-hit.\r\n\r\n", 0, 0 },
@@ -19278,7 +19278,7 @@ static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   { 402221, "$@spelldesc401515", "Your secondary stats are increased by $w2.", 0 },
   { 402583, "Briefly open a pair of gates to the Void to redirect the orbit of An'shuul, the Cosmic Wanderer through your target, dealing $402574s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to 5 enemies.", 0, 0 },
   { 402642, "Consume the spores and let them transform you.", "A Spore-bound Essence transforms your body.", 0 },
-  { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", 0, 0 },
+  { 402813, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds.", 0, 0 },
   { 402822, "$@spelldesc402813", 0, 0 },
   { 402894, "$@spelldesc402813\r\n", "You sense the distant ebb of tidal magma.", 0 },
   { 402896, "$@spelldesc402813\r\n\r\n", "Your next harmful spell or ranged ability will grant Igneous Fury.", 0 },
@@ -19758,7 +19758,7 @@ static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   { 408671, "Stick a Dragonfire Bomb to your target, dealing $408667s1 Fire damage after $408675d. If your target dies with a bomb attached, it deals $408667s2 split between all enemies within $408694A yards instead. Stores a maximum of $408667s4 bombs. (30 Sec Cooldown)\r\n\r\nCritically striking $408770u times triggers a flash of inspiration, allowing you to assemble an extra Bomb charge on the fly.", 0, 0 },
   { 408673, "$@spelldesc405535", "Building up to Flame's Fury.", 0 },
   { 408674, "$@spelldesc405535", "Your next direct damage spell cast on a target with Charring Embers will grant you Flame's Fury.", 0 },
-  { 408675, 0, "IT GONNA BLOW!", 0 },
+  { 408675, 0, "IT'S GONNA BLOW!", 0 },
   { 408682, "$@spelldesc408671", 0, 0 },
   { 408686, "$@spelldesc386474", 0, 0 },
   { 408694, "$@spelldesc408671", 0, 0 },
@@ -19898,11 +19898,14 @@ static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   { 414380, "Contains 10 Flightstones.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49407
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 10.1.0.49444
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
+  {  401238,  1, "Absorbs $401239s1 damage.", "Absorbs $w2 damage." },
+  {  402813,  0, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds." },
+  {  408675,  1, "IT GONNA BLOW!", "IT'S GONNA BLOW!" },
 } };
 
-// Spell description variables, wow build 10.1.0.49407
+// Spell description variables, wow build 10.1.0.49444
 static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20285,7 +20288,7 @@ static const std::array<spelldesc_vars_data_t, 379> __ptr_spelldesc_vars_data { 
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49407
+// spelldesc_vars hotfix entries, wow build 10.1.0.49444
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
