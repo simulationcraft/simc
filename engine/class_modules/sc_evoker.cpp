@@ -204,6 +204,7 @@ struct evoker_t : public player_t
     player_talent_t extended_flight;
     player_talent_t bountiful_bloom;
     player_talent_t blast_furnace;  // row 7
+    player_talent_t panacea;
     player_talent_t exuberance;
     player_talent_t source_of_magic;
     player_talent_t ancient_flame;
@@ -1652,6 +1653,33 @@ struct living_flame_t : public evoker_spell_t
   }
 };
 
+struct verdant_embrace_t : public heals::evoker_heal_t
+{
+  struct verdant_embrace_heal_t : public heals::evoker_heal_t
+  {
+    verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
+    {
+      harmful = false;
+    }
+  };
+
+  verdant_embrace_t( evoker_t* p, std::string_view options_str )
+    : evoker_heal_t( "verdant_embrace", p, p->talent.verdant_embrace, options_str )
+  {
+    harmful = false;
+    impact_action = p->get_secondary_action<verdant_embrace_heal_t>( "verdant_embrace_heal" );
+  }
+
+  void execute() override
+  {
+    evoker_heal_t::execute();
+
+    if ( p()->talent.ancient_flame->ok() )
+      p()->buff.ancient_flame->trigger();
+  }
+
+};
+
 struct obsidian_scales_t : public evoker_spell_t
 {
   obsidian_scales_t( evoker_t* p, std::string_view options_str )
@@ -2216,6 +2244,7 @@ void evoker_t::init_spells()
   talent.obsidian_scales      = CT( "Obsidian Scales" );
   talent.expunge              = CT( "Expunge" );
   talent.natural_convergence  = CT( "Natural Convergence" );  // Row 2
+  talent.verdant_embrace      = CT( "Verdant Embrace" );
   talent.forger_of_mountains  = CT( "Forger of Mountains" );  // Row 3
   talent.innate_magic         = CT( "Innate Magic" );
   talent.obsidian_bulwark     = CT( "Obsidian Bulwark" );
@@ -2232,6 +2261,7 @@ void evoker_t::init_spells()
   talent.extended_flight      = CT( "Extended Flight" );
   talent.bountiful_bloom      = CT( "Bountiful Bloom" );
   talent.blast_furnace        = CT( "Blast Furnace" );  // Row 7
+  talent.panacea              = CT( "Panacea" );
   talent.exuberance           = CT( "Exuberance" );
   talent.ancient_flame        = CT( "Ancient Flame" );
   talent.protracted_talons    = CT( "Protracted Talons" );  // Row 8
@@ -2615,6 +2645,8 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new shattering_star_t( this, options_str );
   if ( name == "tip_the_scales" )
     return new tip_the_scales_t( this, options_str );
+  if ( name == "verdant_embrace" )
+    return new verdant_embrace_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
