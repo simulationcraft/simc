@@ -2,6 +2,8 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
+#pragma once
+
 #include "pet_spawner.hpp"
 
 #include "sim/expressions.hpp"
@@ -152,6 +154,14 @@ pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_creation_event_callback( const app
 { m_event_create.push_back( fn ); return *this; }
 
 template <typename T, typename O>
+pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_event_callback( pet_event_type t, const event_fn_t& fn )
+{ m_event_callbacks.emplace_back( t, fn ); return *this; }
+
+template <typename T, typename O>
+pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_event_callback( std::initializer_list<pet_event_type> t, const event_fn_t& fn )
+{ range::for_each( t, [ this, &fn ]( pet_event_type type ) { set_event_callback( type, fn ); } ); return *this; }
+
+template <typename T, typename O>
 pet_spawner_t<T, O>& pet_spawner_t<T, O>::set_default_duration( const spell_data_t* spell )
 { m_duration = spell -> duration(); return *this; }
 
@@ -197,7 +207,11 @@ bool pet_spawner_t<T, O>::despawn( T* obj )
 
   if ( ( despawned = it != m_active_pets.end() ) == true )
   {
+    _invoke_callbacks( pet_event_type::PRE_DESPAWN, *it );
+
     ( *it ) -> dismiss();
+
+    _invoke_callbacks( pet_event_type::DESPAWN, *it );
   }
 
   return despawned;
@@ -214,8 +228,12 @@ size_t pet_spawner_t<T, O>::despawn( const std::vector<T*>& obj )
     auto it = range::find( m_active_pets, pet );
     if ( it != m_active_pets.end() )
     {
+      _invoke_callbacks( pet_event_type::PRE_DESPAWN, *it );
+
       ++despawned;
       ( *it ) -> dismiss();
+
+      _invoke_callbacks( pet_event_type::DESPAWN, *it );
     }
   } );
 
@@ -231,11 +249,15 @@ size_t pet_spawner_t<T, O>::despawn( const check_arg_fn_t& fn )
 
   std::vector<T*> tmp = { m_active_pets };
 
-  range::for_each( tmp, [ &despawned, &fn ]( const T* pet ) {
+  range::for_each( tmp, [ this, &despawned, &fn ]( const T* pet ) {
     if ( fn( pet ) )
     {
+      _invoke_callbacks( pet_event_type::PRE_DESPAWN, pet );
+
       ++despawned;
       pet -> dismiss();
+
+      _invoke_callbacks( pet_event_type::DESPAWN, pet );
     }
   } );
 
@@ -285,7 +307,7 @@ T* pet_spawner_t<T, O>::create_pet( create_phase phase )
   pet -> spawner = this;
 
   // Add callbacks to the newly created pet so we can auto-track it's active state
-  pet -> register_on_arise_callback( pet, [ this ]() {
+  pet -> register_on_arise_callback( pet, [ this, pet ]() {
     m_dirty = true;
     if ( ++m_active == 1u )
     {
@@ -293,6 +315,8 @@ T* pet_spawner_t<T, O>::create_pet( create_phase phase )
 
       m_spawn_time = m_owner -> sim -> current_time();
     }
+
+    _invoke_callbacks( pet_event_type::ARISE, pet );
   } );
 
   pet -> register_on_demise_callback( pet, [ this, pet ]( player_t* /*pet*/ ) {
@@ -306,6 +330,8 @@ T* pet_spawner_t<T, O>::create_pet( create_phase phase )
     }
 
     m_inactive_pets.push_back( pet );
+
+    _invoke_callbacks( pet_event_type::DEMISE, pet );
   } );
 
   // Note, only dynamic spawns go through the init process when they are created. Persistent pet
@@ -412,9 +438,12 @@ std::vector<T*> pet_spawner_t<T, O>::spawn( timespan_t duration, unsigned n )
   }
 
   // Summon all selected pets
-  range::for_each( pets, [ &actual_duration ]( T* pet ) {
+  range::for_each( pets, [ &actual_duration, this ]( T* pet ) {
     assert( pet -> is_sleeping() );
+
+    _invoke_callbacks( pet_event_type::PRE_SPAWN, pet );
     pet -> summon( actual_duration );
+    _invoke_callbacks( pet_event_type::SPAWN, pet );
   } );
 
   return pets;
@@ -717,6 +746,17 @@ T* pet_spawner_t<T, O>::replacement_pet()
     default:
       return nullptr;
   }
+}
+
+template <typename T, typename O>
+void pet_spawner_t<T, O>::_invoke_callbacks( pet_event_type t, T* selected_pet )
+{
+  range::for_each( m_event_callbacks, [ t, selected_pet ]( const auto& entry ) {
+    if ( entry.second && entry.first == t )
+    {
+      entry.second( t, selected_pet );
+    }
+  } );
 }
 } // Namespace spawner
 
