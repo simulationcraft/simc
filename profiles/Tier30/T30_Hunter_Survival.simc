@@ -121,12 +121,12 @@ feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1537
 finger1=seal_of_questionable_loyalties,id=158314,bonus_id=3317,gem_id=192925,enchant=devotion_of_haste_3
 finger2=onyx_impostors_birthright,id=204398,bonus_id=1498,gem_id=192925,enchant=devotion_of_haste_3
 trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=1498
-trinket2=igneous_flowstone,id=203996,bonus_id=1498
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=1498
 main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=1498,enchant=sophic_devotion_3
 
 # Gear Summary
-# gear_ilvl=448.27
-# gear_agility=6907
+# gear_ilvl=447.87
+# gear_agility=6874
 # gear_stamina=22455
 # gear_crit_rating=5817
 # gear_haste_rating=5089

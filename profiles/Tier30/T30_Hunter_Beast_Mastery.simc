@@ -113,16 +113,16 @@ feet=acidic_hailstone_treads,id=193466,bonus_id=8960/8840/8836/8902/1537
 finger1=onyx_impostors_birthright,id=204398,bonus_id=9413/1498,gem_id=192945,enchant=devotion_of_haste_3
 finger2=signet_of_titanic_insight,id=192999,bonus_id=9376/8790/9405,gem_id=192945,enchant=devotion_of_haste_3,crafted_stats=32/36
 trinket1=neltharions_call_to_dominance,id=204202,bonus_id=1498
-trinket2=igneous_flowstone,id=203996,bonus_id=1498
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=1498
 main_hand=failure_disposal_cannon,id=204322,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant=high_intensity_thermal_scanner_3
 
 # Gear Summary
-# gear_ilvl=448.93
-# gear_agility=6207
+# gear_ilvl=449.13
+# gear_agility=5604
 # gear_stamina=22324
 # gear_crit_rating=4826
 # gear_haste_rating=4759
-# gear_mastery_rating=2248
+# gear_mastery_rating=2880
 # gear_versatility_rating=1270
 # gear_armor=5762
 # set_bonus=tier30_2pc=1
