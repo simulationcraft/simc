@@ -151,7 +151,7 @@ actions.st+=/deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!deb
 # Cast LF outside of DR, or with red buff/scarlet adaption up
 actions.st+=/living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.scarlet_adaptation.up|buff.iridescence_blue.up)&active_enemies==1
 # Fallback for movement
-actions.st+=/verdant_embrace,if=talent.ancient_flame
+actions.st+=/verdant_embrace,if=talent.ancient_flame&!buff.dragonrage.up
 actions.st+=/azure_strike
 
 # Opener rotaion
