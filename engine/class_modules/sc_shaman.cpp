@@ -6928,6 +6928,8 @@ public:
     {
       shaman_td_t* source_td = td( target );
       player_t* additional_target = nullptr;
+
+      spreader->set_target( state->target );
       // If all targets have flame shock, pick the shortest remaining time
       if ( player->get_active_dots( source_td->dot.flame_shock->current_action->internal_id ) ==
            sim->target_non_sleeping_list.size() )
