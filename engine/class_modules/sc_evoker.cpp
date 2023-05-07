@@ -1254,17 +1254,7 @@ struct deep_breath_t : public evoker_spell_t
   {
     deep_breath_dot_t( evoker_t* p ) : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
     {
-      travel_delay = 0.9;   // guesstimate, TODO: confirm
-      travel_speed = 19.5;  // guesstimate, TODO: confirm
       aoe          = -1;
-    }
-
-    timespan_t travel_time() const override
-    {
-      // we set the execute_time of the base action as travel_time of the damage action so they match, but when we
-      // actually execute the damage action, we want travel_time to be 0_ms since it is already accounted for in the
-      // base action.
-      return execute_state && execute_state->target ? 0_ms : evoker_spell_t::travel_time();
     }
 
     bool use_full_mastery() const override
@@ -1295,6 +1285,9 @@ struct deep_breath_t : public evoker_spell_t
   {
     damage        = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
     damage->stats = stats;
+
+    travel_delay  = 0.9;   // guesstimate, TODO: confirm
+    travel_speed  = 19.5;  // guesstimate, TODO: confirm
   }
 
   timespan_t execute_time() const override
