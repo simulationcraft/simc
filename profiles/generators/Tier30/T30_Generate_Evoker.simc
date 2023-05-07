@@ -6,8 +6,11 @@ role=spell
 position=back
 talents=BsbBAAAAAAAAAAAAAAAAAAAAAAkAAAAAAApkWkIHQCCJJJlkENINkIRSIhkEJSkkEB
 
-head=,id=202488,bonus_id=8780,gem_id=192988,ilevel=447
-neck=,id=134495,bonus_id=8782,gem_id=192958/192958/192958,ilevel=447
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+
+head=,id=202488,bonus_id=8780,gem_id=192982,ilevel=447
+neck=,id=206182,gem_id=192958/192958/192958,ilevel=447
 shoulder=,id=202486,ilevel=450
 back=,id=204465,ilevel=457
 chest=,id=193422,bonus_id=8840/8836/8902/1537,enchant_id=6625,enchant=waking_stats_3,crafted_stats=49/32
