@@ -223,6 +223,11 @@ using spell_totem_pet_t = shaman_totem_pet_t<spell_t>;
 using heal_totem_action_t = totem_pulse_action_t<heal_t>;
 using heal_totem_pet_t = shaman_totem_pet_t<heal_t>;
 
+namespace pet
+{
+struct base_wolf_t;
+}
+
 struct shaman_td_t : public actor_target_data_t
 {
   struct dots
@@ -327,15 +332,17 @@ public:
     pet_t* guardian_storm_elemental;
     pet_t* guardian_earth_elemental;
 
-    spawner::pet_spawner_t<pet_t, shaman_t> spirit_wolves;
-    spawner::pet_spawner_t<pet_t, shaman_t> fire_wolves;
-    spawner::pet_spawner_t<pet_t, shaman_t> frost_wolves;
-    spawner::pet_spawner_t<pet_t, shaman_t> lightning_wolves;
+    spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> spirit_wolves;
+    spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> fire_wolves;
+    spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> frost_wolves;
+    spawner::pet_spawner_t<pet::base_wolf_t, shaman_t> lightning_wolves;
 
     // TODO: Proper dynamic-number-of-totems-spawned system, some day
     std::array<pet_t*, 2> liquid_magma_totem;
     std::array<pet_t*, 2> healing_stream_totem;
     std::array<pet_t*, 2> capacitor_totem;
+
+    std::vector<pet::base_wolf_t*> all_wolves;
 
     pets_t( shaman_t* );
   } pet;
@@ -665,7 +672,6 @@ public:
     // Row 7
     player_talent_t stormblast;
     player_talent_t converging_storms;
-    player_talent_t chain_lightning2;
     player_talent_t hot_hand;
     player_talent_t swirling_maelstrom;
     player_talent_t lashing_flames;
@@ -4843,16 +4849,16 @@ struct chain_lightning_t : public chained_base_t
       p()->buff.cl_crash_lightning->trigger( num_targets_hit );
     }
 
-    if ( p()->talent.chain_lightning2->ok() )
+    if ( p()->talent.crash_lightning.ok() )
     {
       p()->cooldown.crash_lightning->adjust(
-          -( p()->talent.chain_lightning2->effectN( 3 ).time_value() * num_targets_hit ) );
+          -( p()->talent.chain_lightning->effectN( 3 ).time_value() * num_targets_hit ) );
 
       if ( sim->debug )
       {
         sim->print_debug( "{} reducing Crash Lightning cooldown by {}, remains={}",
             p()->name(),
-            -( p()->talent.chain_lightning2->effectN( 3 ).time_value() * num_targets_hit ),
+            -( p()->talent.chain_lightning->effectN( 3 ).time_value() * num_targets_hit ),
             p()->cooldown.crash_lightning->remains() );
       }
     }
@@ -8587,11 +8593,12 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
   if ( util::str_compare_ci( splits[ 0 ], "feral_spirit" ) )
   {
-    if ( talent.elemental_spirits->ok() && !find_action( "feral_spirit" ) )
+    if ( !talent.feral_spirit.ok() )
     {
-      return expr_t::create_constant( name, 0 );
+      return expr_t::create_constant( splits[ 0 ], 0 );
     }
-    else if ( !talent.elemental_spirits->ok() && !find_action( "feral_spirit" ) )
+
+    if ( ( talent.feral_spirit.ok() || talent.elemental_spirits->ok() ) && !find_action( "feral_spirit" ) )
     {
       return expr_t::create_constant( name, 0 );
     }
@@ -8680,6 +8687,30 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_fn_expr( name, [ this ]() {
         return action.ti_trigger == action.chain_lightning_ti;
     } );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "alpha_wolf_min_remains" ) )
+  {
+    if ( talent.alpha_wolf.ok() )
+    {
+      return make_fn_expr( name, [ this ]() {
+        if ( pet.all_wolves.empty() )
+        {
+          return 0_ms;
+        }
+
+        auto it = std::min_element( pet.all_wolves.begin(), pet.all_wolves.end(),
+          []( const pet::base_wolf_t* l, const pet::base_wolf_t* r ) {
+            return l->alpha_wolf_buff->remains() < r->alpha_wolf_buff->remains();
+        } );
+
+        return ( *it )->alpha_wolf_buff->remains();
+      } );
+    }
+    else
+    {
+      return expr_t::create_constant( splits[ 0 ], 0 );
+    }
   }
 
   return player_t::create_expression( name );
@@ -9062,7 +9093,6 @@ void shaman_t::init_spells()
   // Row 7
   talent.stormblast = _ST( "Stormblast" );
   talent.converging_storms = _ST( "Converging Storms" );
-  talent.chain_lightning2 = _ST( "Chain Lightning" );
   talent.hot_hand = _ST( "Hot Hand" );
   talent.swirling_maelstrom = _ST( "Swirling Maelstrom" );
   // Row 8
@@ -11247,6 +11277,8 @@ void shaman_t::reset()
   action.ti_trigger = nullptr;
   action.totemic_recall_totem = nullptr;
 
+  pet.all_wolves.clear();
+
   assert( active_flame_shock.empty() );
 }
 
@@ -11760,6 +11792,35 @@ shaman_t::pets_t::pets_t( shaman_t* s )
   fire_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
   frost_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
   lightning_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+
+  auto event_fn = [ s ]( spawner::pet_event_type t, pet::base_wolf_t* pet ) {
+    auto it = range::find_if( s->pet.all_wolves, [ pet ]( const auto entry ) {
+      return pet == entry;
+    } );
+
+    switch ( t )
+    {
+      case spawner::pet_event_type::ARISE:
+      {
+        assert( it == s->pet.all_wolves.end() );
+        s->pet.all_wolves.emplace_back( pet );
+        break;
+      }
+      case spawner::pet_event_type::DEMISE:
+      {
+        assert( it != s->pet.all_wolves.end() );
+        s->pet.all_wolves.erase( it );
+        break;
+      }
+      default:
+        break;
+    }
+  };
+
+  spirit_wolves.set_event_callback( { spawner::pet_event_type::ARISE, spawner::pet_event_type::DEMISE }, event_fn );
+  fire_wolves.set_event_callback( { spawner::pet_event_type::ARISE, spawner::pet_event_type::DEMISE }, event_fn );
+  frost_wolves.set_event_callback( { spawner::pet_event_type::ARISE, spawner::pet_event_type::DEMISE }, event_fn );
+  lightning_wolves.set_event_callback( { spawner::pet_event_type::ARISE, spawner::pet_event_type::DEMISE }, event_fn );
 }
 
 }  // namespace
