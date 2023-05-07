@@ -3061,7 +3061,6 @@ struct arcane_surge_t final : public arcane_mage_spell_t
       p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
     }
   }
-
 };
 
 // Blast Wave Spell =========================================================
