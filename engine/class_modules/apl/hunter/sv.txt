@@ -30,7 +30,7 @@ actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.ma
 actions.cds+=/use_items,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
-actions.cleave=kill_command,if=debuff.shredded_armor.down&set_bonus.tier30_4pc
+actions.cleave=kill_command,if=debuff.shredded_armor.down&set_bonus.tier30_4pc&target.time_to_die>6
 actions.cleave+=/wildfire_bomb,if=full_recharge_time<gcd|talent.bombardier&!cooldown.coordinated_assault.remains
 actions.cleave+=/death_chakram
 actions.cleave+=/stampede
