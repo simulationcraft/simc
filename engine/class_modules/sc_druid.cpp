@@ -10677,7 +10677,7 @@ std::string druid_t::default_flask() const
       case DRUID_RESTORATION:
         return "phial_of_elemental_chaos_3";
       case DRUID_FERAL:
-        return "phial_of_elemental_chaos_3";
+        return "phial_of_tepid_versatility_3";
       default:
         return "disabled";
     }
