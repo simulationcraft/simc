@@ -1,15 +1,15 @@
 action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* variables = get_action_priority_list( "variables" );
-action_priority_list_t* clearcasting = get_action_priority_list( "clearcasting" );
-action_priority_list_t* builder = get_action_priority_list( "builder" );
 action_priority_list_t* aoe_builder = get_action_priority_list( "aoe_builder" );
-action_priority_list_t* bloodtalons = get_action_priority_list( "bloodtalons" );
 action_priority_list_t* berserk = get_action_priority_list( "berserk" );
-action_priority_list_t* finisher = get_action_priority_list( "finisher" );
+action_priority_list_t* bloodtalons = get_action_priority_list( "bloodtalons" );
+action_priority_list_t* builder = get_action_priority_list( "builder" );
+action_priority_list_t* clearcasting = get_action_priority_list( "clearcasting" );
 action_priority_list_t* cooldown = get_action_priority_list( "cooldown" );
+action_priority_list_t* finisher = get_action_priority_list( "finisher" );
+action_priority_list_t* variables = get_action_priority_list( "variables" );
 
-precombat->add_action( "cat_form,if=!buff.cat_form.up","Snapshot raid buffed stats before combat begins and pre-potting is done." );
+precombat->add_action( "cat_form,if=!buff.cat_form.up","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "heart_of_the_wild" );
 precombat->add_action( "use_item,name=algethar_puzzle_box" );
 precombat->add_action( "prowl,if=!buff.prowl.up" );
@@ -35,29 +35,6 @@ def->add_action( "call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs
 def->add_action( "run_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled" );
 def->add_action( "call_action_list,name=builder,if=combo_points<5&!buff.bs_inc.up" );
 
-variables->add_action( "variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bloodtalons.stack<2" );
-variables->add_action( "variable,name=align_3minutes,value=spell_targets.swipe_cat=1&!fight_style.dungeonslice" );
-variables->add_action( "variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))" );
-variables->add_action( "variable,name=lastZerk,value=fight_remains>(30+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))" );
-variables->add_action( "variable,name=zerk_biteweave,op=reset" );
-
-clearcasting->add_action( "thrash_cat,if=refreshable&!talent.thrashing_claws.enabled" );
-clearcasting->add_action( "swipe_cat,if=spell_targets.swipe_cat>1" );
-clearcasting->add_action( "brutal_slash,if=spell_targets.brutal_slash>2" );
-clearcasting->add_action( "shred" );
-
-builder->add_action( "run_action_list,name=clearcasting,if=buff.clearcasting.react" );
-builder->add_action( "brutal_slash,if=cooldown.brutal_slash.full_recharge_time<4" );
-builder->add_action( "pool_resource,if=!action.rake.ready&(dot.rake.refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6))&!buff.clearcasting.react","stop pooling if we can use a clearcasting proc" );
-builder->add_action( "shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up","this isn't perfect, as it only checks the target with lowest remaining dot. Feel free to improve" );
-builder->add_action( "rake,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6)" );
-builder->add_action( "run_action_list,name=clearcasting,if=buff.clearcasting.react","repeating here is necessary, otherwise moonfire will occassionally be casted instead" );
-builder->add_action( "moonfire_cat,target_if=refreshable" );
-builder->add_action( "thrash_cat,target_if=refreshable&!talent.thrashing_claws.enabled" );
-builder->add_action( "brutal_slash" );
-builder->add_action( "swipe_cat,if=spell_targets.swipe_cat>1|talent.wild_slashes.enabled" );
-builder->add_action( "shred" );
-
 aoe_builder->add_action( "brutal_slash,target_if=min:target.time_to_die,if=cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5","avoid capping brs charges, and in the event of adds, offload charges within reason" );
 aoe_builder->add_action( "thrash_cat,target_if=refreshable,if=buff.clearcasting.react|(spell_targets.thrash_cat>10|(spell_targets.thrash_cat>5&!talent.double_clawed_rake.enabled))&!talent.thrashing_claws" );
 aoe_builder->add_action( "shadowmeld,target_if=max:druid.rake.ticks_gained_on_refresh,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up" );
@@ -72,11 +49,25 @@ aoe_builder->add_action( "moonfire_cat,target_if=refreshable" );
 aoe_builder->add_action( "shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&!buff.sudden_ambush.up","if we have brs and nothing better to cast, check if thrash DD beats shred (or if SA is up)" );
 aoe_builder->add_action( "thrash_cat" );
 
-bloodtalons->add_action( "brutal_slash,target_if=min:target.time_to_die,if=cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5&buff.bt_brutal_slash.down" );
+berserk->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1" );
+berserk->add_action( "call_action_list,name=finisher,if=combo_points=5&!(buff.overflowing_power.stack<=1&active_bt_triggers=2&buff.bloodtalons.stack<=1)","proc bt if 0/1 stack if 5/6 combo points" );
+berserk->add_action( "call_action_list,name=bloodtalons,if=spell_targets.swipe_cat>1","its currently a gain to just contiuously try to proc bt in aoe" );
+berserk->add_action( "prowl,if=!(buff.bt_rake.up&active_bt_triggers=2)&(action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up)","go into stealth to buff rake snapshot-- feral frenzy line is to eliminate an edge case involving ff being casted instead due to higher prio" );
+berserk->add_action( "shadowmeld,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up" );
+berserk->add_action( "rake,if=!(buff.bt_rake.up&active_bt_triggers=2)&(refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&!dot.rake.refreshable))" );
+berserk->add_action( "shred,if=active_bt_triggers=2&buff.bt_shred.down","in single target, you just proc bt when an opportunity arises" );
+berserk->add_action( "brutal_slash,if=active_bt_triggers=2&buff.bt_brutal_slash.down" );
+berserk->add_action( "moonfire_cat,if=active_bt_triggers=2&buff.bt_moonfire.down" );
+berserk->add_action( "thrash_cat,if=active_bt_triggers=2&buff.bt_thrash.down&!talent.thrashing_claws&variable.need_bt&(refreshable|talent.brutal_slash.enabled)" );
+berserk->add_action( "moonfire_cat,if=refreshable" );
+berserk->add_action( "brutal_slash,if=cooldown.brutal_slash.charges>1","don't overcap brs charges, but keep it available for bt" );
+berserk->add_action( "shred" );
+
+bloodtalons->add_action( "brutal_slash,target_if=min:target.time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5)&(buff.bt_brutal_slash.down&(buff.bs_inc.up|variable.need_bt))" );
 bloodtalons->add_action( "prowl,if=action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&buff.bt_rake.down&!buff.prowl.up&!buff.apex_predators_craving.up" );
 bloodtalons->add_action( "shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&buff.bt_rake.down&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up" );
-bloodtalons->add_action( "rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|1.4*persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down" );
-bloodtalons->add_action( "rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier&buff.bt_rake.down" );
+bloodtalons->add_action( "rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down" );
+bloodtalons->add_action( "rake,target_if=buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&buff.bt_rake.down" );
 bloodtalons->add_action( "shred,if=buff.bt_shred.down&buff.clearcasting.react&spell_targets.swipe_cat=1" );
 bloodtalons->add_action( "thrash_cat,target_if=refreshable,if=buff.bt_thrash.down&buff.clearcasting.react&spell_targets.swipe_cat=1&!talent.thrashing_claws.enabled" );
 bloodtalons->add_action( "brutal_slash,if=buff.bt_brutal_slash.down" );
@@ -90,25 +81,22 @@ bloodtalons->add_action( "moonfire_cat,target_if=max:ticks_gained_on_refresh,if=
 bloodtalons->add_action( "shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&buff.bt_shred.down&!buff.sudden_ambush.up","If we have BrS and nothing better to cast, check if shred beats thrash DD (or if SA is up)" );
 bloodtalons->add_action( "thrash_cat,if=buff.bt_thrash.down" );
 
-berserk->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1" );
-berserk->add_action( "call_action_list,name=finisher,if=combo_points=5" );
-berserk->add_action( "call_action_list,name=bloodtalons,if=combo_points<5&spell_targets.swipe_cat>1","its currently a gain to just contiuously try to proc bt in aoe" );
-berserk->add_action( "prowl,if=action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up","go into stealth to buff rake snapshot-- feral frenzy line is to eliminate an edge case involving ff being casted instead due to higher prio" );
-berserk->add_action( "shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up" );
-berserk->add_action( "rake,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&!dot.rake.refreshable)" );
-berserk->add_action( "shred,if=active_bt_triggers=2&buff.bt_shred.down","in single target, you just proc bt when an opportunity arises" );
-berserk->add_action( "brutal_slash,if=active_bt_triggers=2&buff.bt_brutal_slash.down" );
-berserk->add_action( "moonfire_cat,if=active_bt_triggers=2&buff.bt_moonfire.down" );
-berserk->add_action( "thrash_cat,if=active_bt_triggers=2&buff.bt_thrash.down&!talent.thrashing_claws&variable.need_bt" );
-berserk->add_action( "moonfire_cat,if=refreshable" );
-berserk->add_action( "brutal_slash,if=cooldown.brutal_slash.charges>1","don't overcap brs charges, but keep it available for bt" );
-berserk->add_action( "shred" );
+builder->add_action( "run_action_list,name=clearcasting,if=buff.clearcasting.react" );
+builder->add_action( "brutal_slash,if=cooldown.brutal_slash.full_recharge_time<4" );
+builder->add_action( "pool_resource,if=!action.rake.ready&(dot.rake.refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6))&!buff.clearcasting.react","stop pooling if we can use a clearcasting proc" );
+builder->add_action( "shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up","this isn't perfect, as it only checks the target with lowest remaining dot. Feel free to improve" );
+builder->add_action( "rake,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6)" );
+builder->add_action( "run_action_list,name=clearcasting,if=buff.clearcasting.react","repeating here is necessary, otherwise moonfire will occassionally be casted instead" );
+builder->add_action( "moonfire_cat,target_if=refreshable" );
+builder->add_action( "thrash_cat,target_if=refreshable&!talent.thrashing_claws.enabled" );
+builder->add_action( "brutal_slash" );
+builder->add_action( "swipe_cat,if=spell_targets.swipe_cat>1|talent.wild_slashes.enabled" );
+builder->add_action( "shred" );
 
-finisher->add_action( "primal_wrath,if=((dot.primal_wrath.refreshable&!talent.circle_of_life_and_death.enabled)|dot.primal_wrath.remains<6|talent.tear_open_wounds.enabled)&spell_targets.primal_wrath>1&talent.primal_wrath.enabled" );
-finisher->add_action( "rip,target_if=refreshable" );
-finisher->add_action( "pool_resource,for_next=1,if=!action.tigers_fury.ready&buff.apex_predators_craving.down" );
-finisher->add_action( "ferocious_bite,max_energy=1,target_if=max:target.time_to_die,if=buff.apex_predators_craving.down&(!buff.bs_inc.up|(buff.bs_inc.up&!talent.soul_of_the_forest.enabled))" );
-finisher->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=(buff.bs_inc.up&talent.soul_of_the_forest.enabled)|buff.apex_predators_craving.up" );
+clearcasting->add_action( "thrash_cat,if=refreshable&!talent.thrashing_claws.enabled" );
+clearcasting->add_action( "swipe_cat,if=spell_targets.swipe_cat>1" );
+clearcasting->add_action( "brutal_slash,if=spell_targets.brutal_slash>2" );
+clearcasting->add_action( "shred" );
 
 cooldown->add_action( "use_item,name=algethar_puzzle_box,if=fight_remains<35|(!variable.align_3minutes)" );
 cooldown->add_action( "use_item,name=algethar_puzzle_box,if=variable.align_3minutes&(cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13)))" );
@@ -120,3 +108,15 @@ cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<
 cooldown->add_action( "convoke_the_spirits,if=fight_remains<5|(dot.rip.remains>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up))" );
 cooldown->add_action( "use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40" );
 cooldown->add_action( "use_items" );
+
+finisher->add_action( "primal_wrath,if=((dot.primal_wrath.refreshable&!talent.circle_of_life_and_death.enabled)|dot.primal_wrath.remains<6|talent.tear_open_wounds.enabled)&spell_targets.primal_wrath>1&talent.primal_wrath.enabled" );
+finisher->add_action( "rip,target_if=refreshable" );
+finisher->add_action( "pool_resource,for_next=1,if=!action.tigers_fury.ready&buff.apex_predators_craving.down" );
+finisher->add_action( "ferocious_bite,max_energy=1,target_if=max:target.time_to_die,if=buff.apex_predators_craving.down&(!buff.bs_inc.up|(buff.bs_inc.up&!talent.soul_of_the_forest.enabled))" );
+finisher->add_action( "ferocious_bite,target_if=max:target.time_to_die,if=(buff.bs_inc.up&talent.soul_of_the_forest.enabled)|buff.apex_predators_craving.up" );
+
+variables->add_action( "variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bloodtalons.stack<2" );
+variables->add_action( "variable,name=align_3minutes,value=spell_targets.swipe_cat=1&!fight_style.dungeonslice" );
+variables->add_action( "variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))" );
+variables->add_action( "variable,name=lastZerk,value=fight_remains>(30+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))" );
+variables->add_action( "variable,name=zerk_biteweave,op=reset" );
