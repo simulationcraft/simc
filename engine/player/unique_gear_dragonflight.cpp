@@ -1487,7 +1487,9 @@ void igneous_flowstone( special_effect_t& effect )
 
     lava_wave_proc_t( const special_effect_t& e )
       : generic_aoe_proc_t( e, "lava_wave", 407961, true ), min_range( e.driver()->effectN( 5 ).base_value() )
-    {}
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
 
     double composite_target_multiplier( player_t* t ) const override
     {
@@ -1500,8 +1502,7 @@ void igneous_flowstone( special_effect_t& effect )
     }
   };
 
-  auto damage         = create_proc_action<lava_wave_proc_t>( "lava_wave", effect );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  auto damage = create_proc_action<lava_wave_proc_t>( "lava_wave", effect );
 
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 402897 ) )
                        ->set_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
