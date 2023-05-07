@@ -4889,6 +4889,9 @@ void shadowed_razing_annihilator( special_effect_t& e )
 // 408836 AoE Damage per hit effect
 void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "seething_rage" } ) )
+    return;
+
   struct djaruun_pillar_of_the_elder_flame_siphon_t : public generic_aoe_proc_t
   {
     djaruun_pillar_of_the_elder_flame_siphon_t( const special_effect_t& effect )
@@ -6748,7 +6751,7 @@ void register_special_effects()
   register_special_effect( 394928, items::neltharax );                          // Neltharax, Enemy of the Sky
   register_special_effect( 408790, items::ashkandur );                          // Ashkandur, Fall of the Brotherhood
   register_special_effect( 408711, items::shadowed_razing_annihilator );        // Shadowed Razing Annihilator 
-  register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame );  // Djaruun, Pillar of the Elder Flame
+  register_special_effect( 408821, items::djaruun_pillar_of_the_elder_flame, true );  // Djaruun, Pillar of the Elder Flame
 
   // Armor
   register_special_effect( 397038, items::assembly_guardians_ring );
