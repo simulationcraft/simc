@@ -8631,38 +8631,13 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
       };
 
       return make_fn_expr( name, [ this, &max_remains_fn ]() {
-        if ( talent.elemental_spirits->ok() )
+        auto it = std::max_element( pet.all_wolves.cbegin(), pet.all_wolves.cend(), max_remains_fn );
+        if ( it == pet.all_wolves.end() )
         {
-          std::vector<pet_t*> max_remains;
-
-          if ( auto p = pet.fire_wolves.active_pet_max_remains() )
-          {
-            max_remains.push_back( p );
-          }
-
-          if ( auto p = pet.frost_wolves.active_pet_max_remains() )
-          {
-            max_remains.push_back( p );
-          }
-
-          if ( auto p = pet.lightning_wolves.active_pet_max_remains() )
-          {
-            max_remains.push_back( p );
-          }
-
-          auto it = std::max_element( max_remains.cbegin(), max_remains.cend(), max_remains_fn );
-          if ( it == max_remains.end() )
-          {
-            return 0.0;
-          }
-
-          return ( *it )->expiration ? ( *it )->expiration->remains().total_seconds() : 0.0;
+          return 0.0;
         }
-        else
-        {
-          auto p = pet.spirit_wolves.active_pet_max_remains();
-          return p ? p->expiration->remains().total_seconds() : 0;
-        }
+
+        return ( *it )->expiration ? ( *it )->expiration->remains().total_seconds() : 0.0;
       } );
     }
   }
