@@ -43,8 +43,8 @@ actions+=/tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.
 actions+=/tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))
 actions+=/rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier,if=buff.prowl.up|buff.shadowmeld.up
 actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
+actions+=/natures_vigil
 actions+=/adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5,if=!(variable.need_bt&active_bt_triggers=2)
-# clever way to thrash with bt in opener
 actions+=/call_action_list,name=cooldown
 actions+=/feral_frenzy,target_if=max:target.time_to_die,if=combo_points<2|combo_points<3&buff.bs_inc.up
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)
@@ -156,29 +156,29 @@ actions.variables+=/variable,name=lastZerk,value=fight_remains>(30+(cooldown.bs_
 actions.variables+=/variable,name=zerk_biteweave,op=reset
 
 head=bough_of_the_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504/1808,gem_id=192988
-neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192961/192961/192961
+neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192961/192961/192961
 shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6592
 chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
-wrists=blood_elders_bindings,id=159324,bonus_id=6652/8811/8812/6808/4786/3317/1808,gem_id=192961,enchant_id=6574
+wrists=cuffs_of_the_savage_serpent,id=204394,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961,enchant_id=6574
 hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
 waist=oblivions_mortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961
 legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
-feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537,enchant_id=6607
-finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,gem_id=192961,enchant_id=6556
-finger2=skyshard_ring,id=206184,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,gem_id=192961,enchant_id=6556
-trinket1=neltharions_call_to_suffering,id=204211,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-trinket2=igneous_flowstone,id=203996,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6607
+finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,gem_id=192961,enchant_id=6562
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961,enchant_id=6562
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
 main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=449.13
-# gear_agility=6255
-# gear_stamina=22541
-# gear_crit_rating=4737
-# gear_haste_rating=2809
-# gear_mastery_rating=4678
-# gear_versatility_rating=1097
+# gear_ilvl=448.47
+# gear_agility=6842
+# gear_stamina=22591
+# gear_crit_rating=4450
+# gear_haste_rating=2646
+# gear_mastery_rating=4585
+# gear_versatility_rating=1015
 # gear_speed_rating=250
 # gear_avoidance_rating=325
 # gear_armor=4003
