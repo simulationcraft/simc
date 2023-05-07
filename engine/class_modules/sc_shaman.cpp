@@ -10075,7 +10075,8 @@ void shaman_t::create_buffs()
           buff.stormkeeper->trigger( 1 );
           t30_proc_possible = false;
         }
-      } );
+          } )
+          ->set_tick_zero(true);
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
