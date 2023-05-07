@@ -4544,7 +4544,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
     if ( p()->buff.t30_4pc_ele->up() )
     {
-      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+      cm *= p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
 
     return cm;
@@ -4678,7 +4678,7 @@ struct chained_base_t : public shaman_spell_t
 
     if ( p()->buff.t30_4pc_ele->up() )
     {
-      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+      cm *= p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
 
     return cm;
@@ -6262,7 +6262,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
 
     if ( p()->buff.t30_4pc_ele->up() )
     {
-      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+      cm *= p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
 
     return cm;
@@ -10075,7 +10075,8 @@ void shaman_t::create_buffs()
           buff.stormkeeper->trigger( 1 );
           t30_proc_possible = false;
         }
-      } );
+          } )
+          ->set_tick_zero(true);
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
@@ -11263,7 +11264,8 @@ void shaman_t::arise()
   {
     last_t30_proc = timespan_t::min();
     t30_proc_possible = false;
-    buff.t30_2pc_ele_driver->trigger();
+    make_event( sim, timespan_t::from_seconds( rng().range( 0, 5 ) ),
+                [ this ]() { buff.t30_2pc_ele_driver->trigger(); } );
   }
 }
 
