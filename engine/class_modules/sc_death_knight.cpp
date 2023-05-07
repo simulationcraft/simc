@@ -3012,7 +3012,8 @@ struct death_knight_action_t : public Base
   struct affected_by_t
   {
     // Masteries
-    bool frozen_heart, dreadblade;
+    bool frozen_heart, frozen_heart_periodic;
+    bool dreadblade, dreadblade_periodic;
     // Other whitelists
     bool razorice;
     bool brittle;
@@ -3023,8 +3024,7 @@ struct death_knight_action_t : public Base
     bool blood_plague;
     bool unholy_blight;
     bool war;
-    bool sanguine_ground;
-    bool sanguine_ground_periodic;
+    bool sanguine_ground, sanguine_ground_periodic;
     /*
     Pre-emptively writing these in, they are likely to be changed to whitelists too
     bool ghoulish_frenzy;
@@ -3067,7 +3067,9 @@ struct death_knight_action_t : public Base
 
     // Inits to false if the spec doesn't have that mastery
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
+    this -> affected_by.frozen_heart_periodic = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
+    this -> affected_by.dreadblade_periodic = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 2 ) );
 
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
@@ -3152,7 +3154,7 @@ struct death_knight_action_t : public Base
   {
     double m = Base::composite_ta_multiplier( state );
 
-    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade )
+    if ( this -> affected_by.frozen_heart_periodic || this -> affected_by.dreadblade_periodic )
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }
@@ -3244,7 +3246,7 @@ struct death_knight_action_t : public Base
 
     const death_knight_td_t* td = get_td( target );
 
-    if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() )
+    if ( td && this -> affected_by.lingering_chill && td -> debuff.lingering_chill -> check() )
     {
       m *= 1.0 + td -> debuff.lingering_chill -> check_stack_value();
     }
