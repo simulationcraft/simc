@@ -4544,7 +4544,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
     if ( p()->buff.t30_4pc_ele->up() )
     {
-      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+      cm *= p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
 
     return cm;
@@ -4678,7 +4678,7 @@ struct chained_base_t : public shaman_spell_t
 
     if ( p()->buff.t30_4pc_ele->up() )
     {
-      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+      cm *= p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
 
     return cm;
@@ -6262,7 +6262,7 @@ struct earthquake_damage_base_t : public shaman_spell_t
 
     if ( p()->buff.t30_4pc_ele->up() )
     {
-      cm += p()->spell.t30_4pc_ele->effectN( 2 ).percent();
+      cm *= p()->spell.t30_4pc_ele->effectN( 2 ).percent();
     }
 
     return cm;
