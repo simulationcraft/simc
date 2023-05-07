@@ -267,7 +267,7 @@ void survival( player_t* p )
   cds->add_action( "use_items,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!buff.spearhead.up" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  cleave->add_action( "kill_command,if=debuff.shredded_armor.down&set_bonus.tier30_4pc" );
+  cleave->add_action( "kill_command,if=debuff.shredded_armor.down&set_bonus.tier30_4pc&target.time_to_die>6" );
   cleave->add_action( "wildfire_bomb,if=full_recharge_time<gcd|talent.bombardier&!cooldown.coordinated_assault.remains" );
   cleave->add_action( "death_chakram" );
   cleave->add_action( "stampede" );
