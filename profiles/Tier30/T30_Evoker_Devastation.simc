@@ -48,9 +48,8 @@ actions.precombat+=/variable,name=dr_prep_time_st,default=13,op=reset
 actions.precombat+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
 actions.precombat+=/verdant_embrace,if=talent.scarlet_adaptation|talent.ancient_flame
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
-actions.precombat+=/deep_breath,if=(raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy)
-actions.precombat+=/firestorm,if=talent.firestorm&!((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))
-actions.precombat+=/living_flame,if=!talent.firestorm&!((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))
+actions.precombat+=/firestorm,if=talent.firestorm
+actions.precombat+=/living_flame,if=!talent.firestorm
 
 # Executed every time the actor is available.
 # Delay pot in ST if you are about to SS - mostly relevant for opener where you want DR->FB->SS->rotation
