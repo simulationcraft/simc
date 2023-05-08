@@ -27,32 +27,33 @@ off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
 
 save=T30_Paladin_Protection.simc
 
+paladin="T30_Paladin_Retribution"
+spec=retribution
+level=70
+race=tauren
+role=attack
+position=back
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAARQSCBSQkSESCpkmQkICJiSjWA
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/ruby/obsidian
 
-# paladin="T30_Paladin_Retribution"
-# spec=retribution
-# level=70
-# race=dark_iron_dwarf
-# role=attack
-# position=back
-# talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjkWkkWSAAAAAAAEBJJFBSQkSESCpkmAJiQIKNaBA
+head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192991
+neck=ionized_choker,id=206181,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192932/192932/192932
+shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant_id=6625
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192932
+hands=heartfire_sentinels_protectors,id=202453,bonus_id=4800/4786/1501
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192932
+legs=legplates_of_profane_sacrifice,id=159443,bonus_id=1795/6808/4786/3317,enchant_id=6490
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192932,enchant=devotion_of_versatility_3
+finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_versatility_3
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
 
-# head=virtuous_silver_heaume,id=200417,bonus_id=4800/4786/1498/6935,gem_id=192985
-# neck=eye_of_the_vengeful_hurricane,id=195496,bonus_id=4800/4786/1498/6935/6935/6935,gem_id=192948/192948/192948
-# shoulders=virtuous_silver_pauldrons,id=200419,bonus_id=4800/4786/1498
-# back=goldscar_pelt,id=133639,bonus_id=1795/6808/4786/3300
-# chest=virtuous_silver_breastplate,id=200414,bonus_id=4800/4786/1498,enchant_id=6625
-# wrists=allied_wristguard_of_companionship,id=190526,bonus_id=8836/8802/8960/1498,gem_id=192948
-# hands=virtuous_silver_gauntlets,id=200416,bonus_id=4800/4786/1498
-# waist=unstable_frostfire_belt,id=191623,,bonus_id=8836/8802/8960/1498,gem_id=192948
-# legs=greaves_of_the_godking,id=133630,bonus_id=1795/6808/4786/3300,enchant_id=6490
-# feet=stonestep_boots,id=143974,bonus_id=4177/6808/4786/3311
-# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192948,enchant_id=6556
-# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1795/6808/4786/3300,gem_id=192948,enchant_id=6556
-# trinket1=manic_grieftorch,id=194308,bonus_id=4800/4786/1498
-# trinket2=blazebinders_hoof,id=193762,bonus_id=6808/4786/1643
-# main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=6649
-
-# save=T30_Paladin_Retribution.simc
+save=T30_Paladin_Retribution.simc
 
 
 # # paladin="T27_Paladin_Holy"
