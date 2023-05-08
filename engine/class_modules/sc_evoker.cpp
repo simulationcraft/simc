@@ -2264,9 +2264,6 @@ void evoker_t::init_finished()
       timespan_t time_spent = timespan_t::zero();
 
       std::for_each( pre + 1, precombat_action_list.end(), [ this, lf, &actions, &time_spent ]( action_t* a ) {
-
-        sim->print_debug( "{} precombat LF id {} acting on {} w actions {}, timespent {}", *this, lf->internal_id, *a, actions,
-                          time_spent );
         if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
@@ -2274,8 +2271,7 @@ void evoker_t::init_finished()
         }
       } );
 
-      sim->print_debug( "{} precombat LF id {} actions {}, timespent {}", *this, lf->internal_id, actions, time_spent );
-
+      // Only allow precast Living Flame if there's only one GCD action following it - It doesn't have a very long travel time.
       if ( actions == 1 )
       {
         lf->harmful           = false;
