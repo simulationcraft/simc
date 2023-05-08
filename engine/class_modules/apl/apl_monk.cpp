@@ -212,7 +212,7 @@ namespace monk_apl
       { "djaruun_pillar_of_the_elder_flame_main_hand", "" },
 
       // Defaults by slot:
-      { "trinket1", ",if=debuff.weapons_of_order_debuff.stacks>3" },
+      { "trinket1", ",if=debuff.weapons_of_order_debuff.stack>3" },
       { "trinket2", ",if=debuff.weapons_of_order_debuff.up" },
     };
     const static std::unordered_map<std::string, std::string> racials {
