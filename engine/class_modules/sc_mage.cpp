@@ -2621,17 +2621,10 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.concentration->trigger();
+    p()->buffs.nether_precision->decrement();
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->buffs.nether_precision->decrement();
   }
 
   double action_multiplier() const override
