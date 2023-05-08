@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-06/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -10403,6 +10403,27 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
+Name             : Frost Shock (id=289439) [Spell Family (11)] 
+Class            : Shaman
+School           : Frost
+Spell Type       : Magic
+Spell Level      : 18
+Range            : 40 yards
+Labels           : 1114: Maelstrom (343725 effect#7), Primal Fracture (410018 effect#8)
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=753822)   : Energize Power (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
+Description      : $@spelldesc196840
+
 Name             : Restorative Mists (id=294020) [Spell Family (11)] 
 Class            : Shaman
 School           : Nature
@@ -13039,6 +13060,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=845769)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 14 | Scaled Value: 14 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1114 (Label) | Target: Self (1)
+                   Affected Spells (Label): Frost Shock (289439)
 #8 (id=845770)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Icefury (210714)
@@ -18062,6 +18084,7 @@ Effects          :
                    Family Flags: 5
 #8 (id=1075472)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1114 (Label) | Target: Self (1)
+                   Affected Spells (Label): Frost Shock (289439)
 Description      : $@spelldesc405566
 Tooltip          : Maelstrom generated from Lava Burst, Lightning Bolt, Icefury, and Frost Shock increased by $s1%.
 Critical damage dealt by Earthquake, Chain Lightning, and Lava Beam increased by $s2%.

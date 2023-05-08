@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-06/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -2480,7 +2480,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=129901)   : Apply Aura (6) | Modify Healing Recevied% (118)
+#1 (id=129901)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
@@ -2893,7 +2893,7 @@ Attributes       : .......x x....... .......x ..xx.x.x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
 Effects          :
-#1 (id=171791)   : Apply Aura (6) | Modify Healing Recevied% (118)
+#1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=239967)   : Apply Aura (6) | Modify Absorb% Done (422)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14977,7 +14977,7 @@ Effects          :
 #1 (id=1020430)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#2 (id=1020437)  : Apply Aura (6) | Modify Healing Recevied% (118)
+#2 (id=1020437)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Damage taken reduced by $s1%.
 Tooltip          : Damage taken reduced by $s1%.

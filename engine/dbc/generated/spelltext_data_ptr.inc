@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49444
-static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19897> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11372,6 +11372,7 @@ static const std::array<spelltext_data_t, 19896> __ptr_spelltext_data { {
   { 289367, "$@spelldesc289364", "Deals $w1 Shadow damage.", 0 },
   { 289386, "Your attacks have a chance to fire a Buster Shot dealing $289386s1 Nature damage.", 0, 0 },
   { 289391, "$@spelldesc289386", 0, 0 },
+  { 289439, "$@spelldesc196840", 0, 0 },
   { 289467, "$@spelldesc286573", "Gaining $s1 energy over $d.", 0 },
   { 289520, "$@spelldesc288267", 0, 0 },
   { 289521, "Command an invocation of Yu'lon to strike your target, dealing $288282s1 Nature damage split among them and all nearby enemies. Deals increased damage when striking multiple targets.", 0, 0 },

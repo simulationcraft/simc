@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-06/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1386,7 +1386,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0xf | Target: Self (1)
 #3 (id=13025)    : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=1005832)  : Apply Aura (6) | Modify Healing Recevied% (118)
+#4 (id=1005832)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Your skin becomes as tough as bark, reducing all damage you take by $s1% and preventing damage from delaying your spellcasts. Lasts $d.
 
@@ -1420,7 +1420,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62600 | Target: Self (1)
-#2 (id=815630)   : Apply Aura (6) | Modify Healing Recevied% (118)
+#2 (id=815630)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Heals you for $o1% health over $d$?s301768[, and increases healing received by $301768s1%][].
 Tooltip          : Healing $w1% health every $t1 sec.
@@ -1599,7 +1599,7 @@ Effects          :
 #2 (id=23667)    : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Mechanic: Banish | Target: Enemy (6)
                    Affected School(s): All
-#3 (id=23668)    : Apply Aura (6) | Modify Healing Recevied% (118)
+#3 (id=23668)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Mechanic: Banish | Target: Enemy (6)
 Description      : Tosses the enemy target into the air, disorienting them but making them invulnerable for up to $d. Only one target can be affected by your Cyclone at a time.
 Tooltip          : Disoriented and invulnerable.
@@ -2306,7 +2306,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
 Effects          :
 #1 (id=51495)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
-#2 (id=887087)   : Apply Aura (6) | Modify Healing Recevied% (118)
+#2 (id=887087)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc48484
 Tooltip          : Movement speed slowed by $w1%.$?e1[ Healing taken reduced by $w2%.][]
@@ -16091,7 +16091,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
-#3 (id=1005869)  : Apply Aura (6) | Modify Healing Recevied% (118)
+#3 (id=1005869)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Healing done and healing taken increased by $s1%.
 
@@ -19948,7 +19948,7 @@ Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... .x...
                  : ........ ........ ........ ........   
                  : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Allow Cast While Casting (135), Suppress Weapon Procs (151), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Don't close loot window (379)
 Effects          :
-#1 (id=1044800)  : Apply Aura (6) | Modify Healing Recevied% (118)
+#1 (id=1044800)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 #2 (id=1044801)  : Apply Party Aura (35) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
