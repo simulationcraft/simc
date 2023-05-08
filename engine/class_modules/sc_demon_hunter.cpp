@@ -1529,18 +1529,6 @@ public:
     ab::init_finished();
   }
 
-  double action_multiplier() const override
-  {
-    double m = ab::action_multiplier();
-
-    if ( affected_by.fires_of_fel )
-    {
-      m *= 1.0 + p()->buff.t30_vengeance_2pc->check_stack_value();
-    }
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = ab::composite_target_multiplier( target );
@@ -1589,6 +1577,11 @@ public:
     if ( affected_by.any_means_necessary.direct )
     {
       m *= 1.0 + p()->cache.mastery_value() * ( 1.0 + p()->mastery.any_means_necessary_tuning->effectN( 1 ).percent() );
+    }
+
+    if ( affected_by.fires_of_fel )
+    {
+      m *= 1.0 + p()->buff.t30_vengeance_2pc->check_stack_value();
     }
 
     return m;
@@ -5907,8 +5900,7 @@ void demon_hunter_t::create_buffs()
                                               set_bonuses.t30_vengeance_2pc->ok() ? set_bonuses.t30_vengeance_2pc_buff
                                                                                   : spell_data_t::not_found() )
                                ->set_default_value_from_effect( 1 )
-                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                               ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   buff.t30_vengeance_4pc = make_buff<buff_t>(
       this, "recrimination", set_bonuses.t30_vengeance_4pc->ok() ? set_bonuses.t30_vengeance_4pc_buff : spell_data_t::not_found() );
 }
