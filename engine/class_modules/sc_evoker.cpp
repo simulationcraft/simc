@@ -1557,7 +1557,7 @@ struct living_flame_t : public evoker_spell_t
 
     timespan_t travel_time() const override
     {
-      if ( prepull_timespent <= timespan_t::zero() )
+      if ( prepull_timespent == timespan_t::zero() )
         return Base::travel_time();
 
       // for each additional spell in precombat apl, reduce the travel time by the cast time
@@ -2275,8 +2275,11 @@ void evoker_t::init_finished()
       if ( actions == 1 )
       {
         lf->harmful           = false;
-        precombat_travel      = lf->travel_time();
+        // Child contains the travel time
+        precombat_travel      = lf->damage->travel_time();
         lf->prepull_timespent = time_spent;
+
+        sim->print_debug( "{} Prepull LF shenanigans, travel time {}", *this, lf->travel_time() );
         break;
       }
     }
@@ -2334,6 +2337,9 @@ void evoker_t::init_base_stats()
     base.distance = 25;
 
   player_t::init_base_stats();
+
+  // We need to check travel time during init_finished... So we have to initialise current.distance ourselves. Note to self: Never play with prepull actions ever again.
+  current.distance = base.distance;
 
   base.spell_power_per_intellect = 1.0;
 
