@@ -42,8 +42,8 @@ hands=grips_of_the_sinister_savant,id=202534,ilevel=447
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8960/8780,ilevel=447,gem_id=192945,crafted_stats=36/49
 legs=leggings_of_the_sinister_savant,id=205849,ilevel=450,enchant_id=6541
 feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
-finger1=loop_of_pulsing_veins,id=159463,bonus_id=8780,ilevel=447,gem_id=192945,enchant_id=6550
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=8780,ilevel=447,gem_id=192945,enchant_id=6550
+finger1=eternal_sentrys_ring,id=193804,bonus_id=6652/8783/8784/7936/7937/6808/4786/8780/1669,ilevel=447,gem_id=192945,enchant_id=6550
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,ilevel=450,gem_id=192945,enchant_id=6550
 trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
 trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
