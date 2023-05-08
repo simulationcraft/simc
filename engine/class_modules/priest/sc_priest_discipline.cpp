@@ -130,8 +130,8 @@ struct penance_damage_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_td_t& td = get_td( s->target );
-    td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-    td.dots.purge_the_wicked->adjust_duration( dot_extension, true );
+    td.dots.shadow_word_pain->adjust_duration( dot_extension );
+    td.dots.purge_the_wicked->adjust_duration( dot_extension );
   }
 };
 

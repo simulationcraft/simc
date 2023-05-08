@@ -2939,7 +2939,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     ticks += as<int>( std::round( ( d->remains() - tick_remains ) / tt ) );
     timespan_t new_remains = ticks * tt + tick_remains;
 
-    d->adjust_duration( new_remains - d->remains(), timespan_t::min(), 0, false );
+    d->adjust_duration( new_remains - d->remains() );
   }
 
   bool usable_moving() const override

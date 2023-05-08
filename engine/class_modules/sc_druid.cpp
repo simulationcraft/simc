@@ -4144,7 +4144,7 @@ struct primal_wrath_t : public cat_finisher_t
     {
       cat_attack_t::impact( s );
 
-      td( s->target )->dots.rip->adjust_duration( -4_s, 0_ms, -1, false );
+      td( s->target )->dots.rip->adjust_duration( -4_s );
     }
   };
 
@@ -5337,14 +5337,14 @@ struct flourish_t : public druid_heal_t
     for ( const auto& t : sim->player_non_sleeping_list )
     {
       auto hots = td( t )->hots;
-      hots.cenarion_ward->adjust_duration( ext, 0_ms, -1, false );
-      hots.cultivation->adjust_duration( ext, 0_ms, -1, false );
-      hots.germination->adjust_duration( ext, 0_ms, -1, false );
-      hots.lifebloom->adjust_duration( ext, 0_ms, -1, false );
-      hots.regrowth->adjust_duration( ext, 0_ms, -1, false );
-      hots.rejuvenation->adjust_duration( ext, 0_ms, -1, false );
-      hots.spring_blossoms->adjust_duration( ext, 0_ms, -1, false );
-      hots.wild_growth->adjust_duration( ext, 0_ms, -1, false );
+      hots.cenarion_ward->adjust_duration( ext );
+      hots.cultivation->adjust_duration( ext );
+      hots.germination->adjust_duration( ext );
+      hots.lifebloom->adjust_duration( ext );
+      hots.regrowth->adjust_duration( ext );
+      hots.rejuvenation->adjust_duration( ext );
+      hots.spring_blossoms->adjust_duration( ext );
+      hots.wild_growth->adjust_duration( ext );
     }
   }
 };
@@ -7770,8 +7770,8 @@ struct starfall_t : public astral_power_spender_t
     {
       for ( auto t : p()->sim->target_non_sleeping_list )
       {
-        td( t )->dots.moonfire->adjust_duration( dot_ext, max_ext, -1, false );
-        td( t )->dots.sunfire->adjust_duration( dot_ext, max_ext, -1, false );
+        td( t )->dots.moonfire->adjust_duration( dot_ext, max_ext );
+        td( t )->dots.sunfire->adjust_duration( dot_ext, max_ext );
       }
     }
 

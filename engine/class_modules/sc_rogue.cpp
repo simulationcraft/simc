@@ -5019,7 +5019,7 @@ struct shadow_dance_t : public rogue_spell_t
         if ( tdata->dots.rupture->is_ticking() )
         {
           // Pass in state_flags of 0 as this does not change the snapshot
-          tdata->dots.rupture->adjust_duration( extend_duration, 0 );
+          tdata->dots.rupture->adjust_duration( extend_duration );
         }
       }
     }

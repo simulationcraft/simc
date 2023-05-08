@@ -7210,7 +7210,7 @@ struct ascendance_t : public shaman_spell_t
           auto new_duration = max_duration < fs_dot->remains()
                               ? -( fs_dot->remains() - max_duration )
                               : max_duration - fs_dot->remains();
-          fs_dot->adjust_duration( new_duration, -1 );
+          fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
         }
       } );
     }

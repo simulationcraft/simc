@@ -47,8 +47,8 @@ struct mind_flay_base_t final : public priest_spell_t
           timespan_t::from_seconds( priest().talents.shadow.mental_decay->effectN( 1 ).base_value() );
       priest_td_t& td = get_td( d->state->target );
 
-      td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-      td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+      td.dots.shadow_word_pain->adjust_duration( dot_extension );
+      td.dots.vampiric_touch->adjust_duration( dot_extension );
     }
 
     if ( priest().talents.shadow.psychic_link.enabled() )
@@ -147,8 +147,8 @@ struct mind_spike_base_t : public priest_spell_t
             timespan_t::from_seconds( priest().talents.shadow.mental_decay->effectN( 2 ).base_value() );
         priest_td_t& td = get_td( s->target );
 
-        td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-        td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+        td.dots.shadow_word_pain->adjust_duration( dot_extension );
+        td.dots.vampiric_touch->adjust_duration( dot_extension );
       }
 
       priest().trigger_idol_of_cthun( s );
@@ -1277,8 +1277,8 @@ struct void_bolt_t final : public priest_spell_t
 
       priest_td_t& td = get_td( s->target );
 
-      td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-      td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+      td.dots.shadow_word_pain->adjust_duration( dot_extension );
+      td.dots.vampiric_touch->adjust_duration( dot_extension );
 
       priest().refresh_insidious_ire_buff( s );
     }

@@ -692,12 +692,10 @@ public:
     {
       if ( p()->talent.everburning_flame.ok() )
       {
+        auto ext = timespan_t::from_seconds( as<int>( p()->talent.event_horizon->effectN( 1 ).base_value() ) );
+
         for ( auto t : sim->target_non_sleeping_list )
-        {
-          td( t )->dots.fire_breath->adjust_duration(
-              timespan_t::from_seconds( as<int>( p()->talent.everburning_flame->effectN( 1 ).base_value() ) ), 0_ms, -1,
-              false );
-        }
+          td( t )->dots.fire_breath->adjust_duration( ext );
       }
     }
   }
