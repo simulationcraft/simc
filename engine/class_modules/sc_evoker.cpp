@@ -677,6 +677,15 @@ public:
   void execute() override
   {
     ab::execute();
+
+    if ( !ab::background && !ab::dual )
+    {
+      // These happen after any secondary spells are executed, so we schedule as events
+      if ( spell_color == SPELL_BLUE )
+        make_event( *sim, [ this ]() { p()->buff.iridescence_blue->decrement(); } );
+      else if ( spell_color == SPELL_RED )
+        make_event( *sim, [ this ]() { p()->buff.iridescence_red->decrement(); } );
+    }
   }
 
   virtual void trigger_charged_blast( action_state_t* s )
@@ -706,15 +715,6 @@ public:
 
     trigger_charged_blast( s );
     trigger_everburning_flame( s );
-
-    if ( !ab::background && !ab::dual )
-    {
-      // These happen after any secondary spells are executed, so we schedule as events
-      if ( spell_color == SPELL_BLUE )
-        make_event( *sim, [ this ]() { p()->buff.iridescence_blue->decrement(); } );
-      else if ( spell_color == SPELL_RED )
-        make_event( *sim, [ this ]() { p()->buff.iridescence_red->decrement(); } );
-    }
   }
 
   void tick( dot_t* d ) override
