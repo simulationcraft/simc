@@ -52,28 +52,28 @@ main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/87
 
 save=T30_Druid_Feral.simc
 
-# druid=T30_Druid_Guardian
-# spec=guardian
-# level=70
-# race=highmountain_tauren
-# role=tank
-# position=front
-# talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJRKJRikkEIkoBAkEEIQSSSSSkC0ScAAAAAAARARTAA
+druid="T30_Druid_Guardian"
+spec=guardian
+level=70
+race=highmountain_tauren
+role=tank
+position=front
+talents=BgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgEJJJpkoEJJRgQiCAQSQgAJJJJJRKQLxBAAAAAAEBENCA
 
-# head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/1508,gem_id=192925
-# neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8780/1508,gem_id=192982/192925/192925,crafted_stats=32/36
-# shoulders=lost_landcallers_mantle,id=200356,bonus_id=7977/8807
-# back=goldscar_pelt,id=133639,bonus_id=6652/8811/8812/6808/4786/3300
-# chest=lost_landcallers_robes,id=200351,ilevel=421,enchant=waking_stats_3
-# wrists=loyal_flametenders_bracers,id=195525,bonus_id=7977/8807,gem_id=192958
-# hands=lost_landcallers_claws,id=200353,ilevel=421
-# waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/1808/3300,gem_id=192925
-# legs=lost_landcallers_leggings,id=200355,ilevel=424,enchant=frosted_armor_kit_3
-# feet=lost_landcallers_moccasins,id=200352,enchant_id=6606,bonus_id=6808/4786/1504,enchant_id=6606
-# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant=devotion_of_critical_strike_3
-# finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=1594/657/3178/7981,gem_id=192958,enchant=devotion_of_critical_strike_3
-# trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-# trinket2=manic_grieftorch,id=194308,bonus_id=7977/8807
-# main_hand=crux_of_blind_faith,id=201995,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
+head=bough_of_the_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,gem_id=192925
+neck=ionized_choker,id=206181,bonus_id=6652/8783/8784/7936/7937/6808/4786/8780/1669,gem_id=192982/192925/192925
+shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/609/4800/4786/1498,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537,gem_id=192925,crafted_stats=32/36
+hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
+waist=garland_of_the_autumn_blaze,id=202512,bonus_id=4800/4786/1501,ilevel=447,gem_id=192925
+legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant=fierce_armor_kit_3,crafted_stats=32/36
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537,enchant_id=6606
+finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204027/204011/204029,enchant_id=6550
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925,enchant_id=6568
+trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6827
 
-# save=T30_Druid_Guardian.simc
+save=T30_Druid_Guardian.simc
