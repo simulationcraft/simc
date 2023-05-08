@@ -5013,11 +5013,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     const auto& spell_text = player->dbc->spell_text( spell.id() );
     if ( spell_text.rank() )
       desc_str = fmt::format( " (desc={})", spell_text.rank() );
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
-                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
-    }
+
+    sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
+                      spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
   }
 
   // Applies "Spell Effect N" auras if they directly affect damage auras
@@ -5298,7 +5296,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_MOD_MAX_CHARGES:
-        if ( cooldown->action == this )
+        if ( cooldown->action == this && data().charge_cooldown() > 0_ms )
         {
           cooldown->charges += as<int>( effect.base_value() );
           sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
@@ -5328,8 +5326,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_MOD_RECHARGE_MULTIPLIER:
-        base_recharge_multiplier *= 1 + effect.percent();
-        sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        if ( data().charge_cooldown() > 0_ms )
+        {
+          base_recharge_multiplier *= 1 + effect.percent();
+          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        }
         break;
 
       default:

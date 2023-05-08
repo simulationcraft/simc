@@ -2984,29 +2984,29 @@ struct evoker_module_t : public module_t
     p->report_extension = std::make_unique<evoker_report_t>( *p );
     return p;
   }
+
   bool valid() const override
   {
     return true;
   }
+
   void init( player_t* ) const override
   {
   }
+
   void static_init() const override
   {
     unique_gear::register_special_effect( 394927, karnalex_the_first_light );
   }
+
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Evoker", "2023-5-8", "Verdant Embrace is not affected by Aerial Mastery", 360995,
-                            hotfix::HOTFIX_FLAG_LIVE )
-        .field( "category" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0 )
-        .verification_value( 1948 );
   }
+
   void combat_begin( sim_t* ) const override
   {
   }
+
   void combat_end( sim_t* ) const override
   {
   }
