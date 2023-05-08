@@ -70,7 +70,7 @@ head=underlight_conjurers_arcanocowl,id=205860,ilevel=447,gem_id=192961
 neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192988/192961/192961
 shoulder=underlight_conjurers_aurora,id=202549,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6595
-chest=vibrant_wildercloth_vestments,id=193509,ilevel=447,enchant_id=6625
+chest=vibrant_wildercloth_vestments,id=193509,bonus_id=9379/8960,ilevel=447,enchant_id=6625,crafted_stats=32/49
 wrist=clasps_of_the_diligent_steward,id=204393,ilevel=447,gem_id=192961,enchant_id=6574
 hands=underlight_conjurers_gloves,id=205861,ilevel=447
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8960,ilevel=447,gem_id=192961,crafted_stats=32/49
