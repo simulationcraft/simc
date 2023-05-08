@@ -2278,8 +2278,6 @@ void evoker_t::init_finished()
         // Child contains the travel time
         precombat_travel      = lf->damage->travel_time();
         lf->prepull_timespent = time_spent;
-
-        sim->print_debug( "{} Prepull LF shenanigans, travel time {}", *this, lf->travel_time() );
         break;
       }
     }
