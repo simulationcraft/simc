@@ -187,7 +187,7 @@ namespace monk_apl
 
       // 10.0
       // { "manic_grieftorch", ",use_off_gcd=1,if=debuff.weapons_of_order_debuff.stacks>3|fight_remains<5" },
-      // { "windscarred_whetstone", ",if=debuff.weapons_of_order_debuff.stacks>3|fight_remains<7" },
+      // { "windscarred_whetstone", ",if=debuff.weapons_of_order_debuff.stacks>3|fight_remains<25" },
 
       // 10.1
       { "beacon_to_the_beyond_trinket1", ",if="
@@ -196,23 +196,24 @@ namespace monk_apl
       { "beacon_to_the_beyond_trinket2", ",if="
         "(debuff.weapons_of_order_debuff.stack>3)|"                                                                                                                         // 1. if woo debuff is at 4 stacks
         "(fight_remains<cooldown.weapons_of_order.remains-3)" },                                                                                                            // 2. if the fight will over before next woo + 3 seconds
-      // Cannot use the following good conditions until `trinket.dragonfire_bomb_dispenser.cooldown.charges_fractional` returns the charges to the trinket. Until then, it must just be used on cd.
       // TODO: replace 4 with fight remains is less than charges that exist + charges that will naturally recover by then + charges expected to recover via crits + something to prevent clobbering second on-use trinket
-      // { "dragonfire_bomb_dispenser_trinket1", ",if="
-      //   "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&trinket.dragonfire_bomb_dispenser.cooldown.charges_fractional>2.8)|"                                   // 1. if going to cap charges soon and not in woo
-      //   "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&trinket.dragonfire_bomb_dispenser.cooldown.charges_fractional>1.9)|"     // 2. if going to gain a new charge via crit effect soon and not in woo
-      //   "(trinket.2.cooldown.remains>10&debuff.weapons_of_order_debuff.up)|"                                                                                                // 3. if woo is up and it won't put other trinket on bad shared cd
-      //   "(trinket.2.cooldown.remains>10&fight_remains<cooldown.weapons_of_order.remains+40)" },                                                                             // 4. if woo will finish after iteration will and other on-use won't be ready, burn charges
-      // { "dragonfire_bomb_dispenser_trinket2", ",if="
-      //   "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&trinket.dragonfire_bomb_dispenser.cooldown.charges_fractional>2.8)|"                                   // 1. if going to cap charges soon and not in woo
-      //   "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&trinket.dragonfire_bomb_dispenser.cooldown.charges_fractional>1.9)|"     // 2. if going to gain a new charge via crit effect soon and not in woo
-      //   "(trinket.1.cooldown.remains>10&debuff.weapons_of_order_debuff.up)|"                                                                                                // 3. if woo is up and it won't put other trinket on bad shared cd
-      //   "(trinket.1.cooldown.remains>10&fight_remains<cooldown.weapons_of_order.remains+40)" },                                                                             // 4. if woo will finish after iteration will and other on-use won't be ready, burn charges
+      { "dragonfire_bomb_dispenser_trinket1", ",if=(trinket.2.ready_cooldown>10)&("                                                                                 // 1. If DFBD will not clobber Trinket 2 and
+        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|"                                   // 2. if going to cap charges soon and not in woo
+        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|"     // 3. if going to gain a new charge via crit effect soon and not in woo
+        "(debuff.weapons_of_order_debuff.up)|"                                                                                                                      // 4. if woo is up and it won't put other trinket on bad shared cd
+        "((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.2.ready_cooldown<fight_remains)*20<fight_remains)"                                  // 5. If you can't spend all current charges of Dragonfire Bomb Dispenser + other on-use trinket if it will be available before end of fight, start spending immediately.
+        ")" },
+      { "dragonfire_bomb_dispenser_trinket2", ",if=(trinket.1.ready_cooldown>10)&("                                                                                 // 1. If DFBD will not clobber Trinket 1 and
+        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|"                                   // 2. if going to cap charges soon and not in woo
+        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|"     // 3. if going to gain a new charge via crit effect soon and not in woo
+        "(debuff.weapons_of_order_debuff.up)|"                                                                                                                      // 4. if woo is up and it won't put other trinket on bad shared cd
+        "((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains)"                                  // 5. If you can't spend all current charges of Dragonfire Bomb Dispenser + other on-use trinket if it will be available before end of fight, start spending immediately.
+        ")" },
       { "djaruun_pillar_of_the_elder_flame_main_hand", "" },
 
-      // Defaults:
-      { "ITEM_STAT_BUFF", "" },
-      { "ITEM_DMG_BUFF", "" },
+      // Defaults by slot:
+      { "trinket1", ",if=debuff.weapons_of_order_debuff.stacks>3" },
+      { "trinket2", ",if=debuff.weapons_of_order_debuff.up" },
     };
     const static std::unordered_map<std::string, std::string> racials {
       // name_str -> tail
@@ -241,23 +242,21 @@ namespace monk_apl
           // Ignore items that have a 30 second or shorter cooldown (or no cooldown)
           // Unless defined in the map above these will be used on cooldown.
           if ( e->type == SPECIAL_EFFECT_USE && e->cooldown() > timespan_t::from_seconds( 30 ) )
-          {
-
-            if ( e->is_stat_buff() || e->buff_type() == SPECIAL_EFFECT_BUFF_STAT )
-            {
-              // This item grants a stat buff on use
-              concat = trinkets.at( "ITEM_STAT_BUFF" );
-
-              break;
+            try {
+              concat = trinkets.at( item.slot_name() );
             }
-            else
-              // This item has a generic damage effect
-              concat = trinkets.at( "ITEM_DMG_BUFF" );
-          }
+            catch ( ... )
+            {
+              concat = ",if=";
+            }
         }
 
         if ( concat.length() > 0 && duration > 0 )
-          concat = concat + "|fight_remains<" + std::to_string( duration );
+        {
+          if ( concat[concat.length()] != '|' )
+            concat = concat + '|';
+          concat = concat + "fight_remains<" + std::to_string( duration );
+        }
       }
 
       return concat;
