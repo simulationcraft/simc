@@ -103,6 +103,8 @@ struct evoker_t : public player_t
   bool was_empowering;
   // !!!===========================================================================!!!
 
+  timespan_t precombat_travel = 0_s;
+
   // Options
   struct options_t
   {
@@ -112,6 +114,9 @@ struct evoker_t : public player_t
     bool use_early_chaining = true;
     double scarlet_overheal = 0.5;
     double heal_eb_chance   = 0.9;
+    // How much time should prepulling with Deep Breath delay opener
+    timespan_t prepull_deep_breath_delay = timespan_t::from_seconds( 0.3 );
+    timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
   } option;
 
   // Action pointers
@@ -314,6 +319,7 @@ struct evoker_t : public player_t
 
   // Character Definitions
   void init_action_list() override;
+  void init_finished() override;
   void init_base_stats() override;
   // void init_resources( bool ) override;
   void init_benefits() override;
@@ -482,6 +488,26 @@ public:
   const evoker_t* p() const
   {
     return static_cast<evoker_t*>( ab::player );
+  }
+
+  void execute() override
+  {
+    ab::execute();
+
+    // Precombat Hacks Beware
+    if ( ab::is_precombat && p()->precombat_travel > 0_s && ab::gcd() > timespan_t::zero() )
+    {
+      // Start GCD
+      ab::start_gcd();
+      // Set this as the last Executing Action
+      ab::player->last_foreground_action = this;
+      // Work out what is longer, execute time or GCD, then subtract off travel time of precast missile spells.
+      auto gcd_ready = std::max( 0_s, std::max( ab::player->gcd_ready, ab::execute_time() ) - p()->precombat_travel );
+      // Set GCD ready to this, which is when the sim will wake for first action
+      ab::player->gcd_ready = gcd_ready;
+      // Add time spent to stats, because it cost this much time
+      ab::stats->iteration_total_execute_time += gcd_ready;
+    }
   }
 
   evoker_td_t* td( player_t* t ) const
@@ -1302,6 +1328,16 @@ struct deep_breath_t : public evoker_spell_t
     evoker_spell_t::execute();
 
     damage->execute_on_target( target );
+
+    if ( is_precombat )
+    {
+      start_gcd();
+      player->last_foreground_action = this;
+      auto delay                     = std::max(
+          0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
+      player->gcd_ready = delay;
+      stats->iteration_total_execute_time += delay;
+    }
   }
 };
 
@@ -1497,11 +1533,15 @@ struct landslide_t : public evoker_spell_t
 struct living_flame_t : public evoker_spell_t
 {
   template <class Base>
+
   struct living_flame_base_t : public Base
   {
     using base_t = living_flame_base_t<Base>;
 
-    living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s ) : Base( n, p, s )
+    timespan_t prepull_timespent;
+
+    living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s )
+      : Base( n, p, s ), prepull_timespent( timespan_t::zero() )
     {
       base_t::dual         = true;
       base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
@@ -1513,6 +1553,16 @@ struct living_flame_t : public evoker_spell_t
         return 1 + n;
       else
         return Base::n_targets();
+    }
+
+    timespan_t travel_time() const override
+    {
+      if ( prepull_timespent <= timespan_t::zero() )
+        return Base::travel_time();
+
+      // for each additional spell in precombat apl, reduce the travel time by the cast time
+      base_t::player->invalidate_cache( CACHE_SPELL_HASTE );
+      return std::max( 1_ms, Base::travel_time() - prepull_timespent * base_t::composite_haste() );
     }
 
     std::vector<player_t*>& target_list() const override
@@ -1580,11 +1630,13 @@ struct living_flame_t : public evoker_spell_t
   action_t* heal;
   double gcd_mul;
   bool cast_heal;
+  timespan_t prepull_timespent;
 
   living_flame_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ) ),
       gcd_mul( p->find_spelleffect( &p->buff.ancient_flame->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() ),
-      cast_heal( false )
+      cast_heal( false ),
+      prepull_timespent( timespan_t::zero() )
   {
     damage        = p->get_secondary_action<living_flame_damage_t>( "living_flame_damage" );
     damage->stats = stats;
@@ -1601,6 +1653,14 @@ struct living_flame_t : public evoker_spell_t
     return damage->has_amount_result();
   }
 
+  timespan_t travel_time() const override
+  {
+    if ( is_precombat )
+        return 1_ms;
+
+    return evoker_spell_t::travel_time();
+  }
+
   timespan_t gcd() const override
   {
     auto g = evoker_spell_t::gcd();
@@ -1614,6 +1674,14 @@ struct living_flame_t : public evoker_spell_t
   void execute() override
   {
     evoker_spell_t::execute();
+
+    // Single child, update children to parent action on each precombat execute
+
+    if ( is_precombat )
+    {
+      debug_cast<living_flame_damage_t*>( damage )->prepull_timespent = prepull_timespent;
+      debug_cast<living_flame_heal_t*>( heal )->prepull_timespent     = prepull_timespent;
+    }
 
     damage->execute_on_target( target );
 
@@ -1649,6 +1717,13 @@ struct living_flame_t : public evoker_spell_t
 
     if ( p()->buff.burnout->up() )
       p()->buff.burnout->decrement();
+
+    // Reset them after execute
+    if ( is_precombat )
+    {
+      debug_cast<living_flame_damage_t*>( damage )->prepull_timespent = timespan_t::zero();
+      debug_cast<living_flame_heal_t*>( heal )->prepull_timespent     = timespan_t::zero();
+    }
   }
 };
 
@@ -1659,6 +1734,7 @@ struct verdant_embrace_t : public heals::evoker_heal_t
     verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
     {
       harmful = false;
+      dual    = true;
     }
   };
 
@@ -1667,6 +1743,8 @@ struct verdant_embrace_t : public heals::evoker_heal_t
   {
     harmful       = false;
     impact_action = p->get_secondary_action<verdant_embrace_heal_t>( "verdant_embrace_heal" );
+
+    add_child( impact_action );
   }
 
   void execute() override
@@ -2169,6 +2247,46 @@ void evoker_t::init_action_list()
   player_t::init_action_list();
 }
 
+void evoker_t::init_finished()
+{
+  player_t::init_finished();
+
+  /*PRECOMBAT SHENANIGANS
+  we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
+  parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
+  cast*/
+
+  for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
+  {
+    if ( auto lf = dynamic_cast<spells::living_flame_t*>( *pre ) )
+    {
+      int actions           = 0;
+      timespan_t time_spent = timespan_t::zero();
+
+      std::for_each( pre + 1, precombat_action_list.end(), [ this, lf, &actions, &time_spent ]( action_t* a ) {
+
+        sim->print_debug( "{} precombat LF id {} acting on {} w actions {}, timespent {}", *this, lf->internal_id, *a, actions,
+                          time_spent );
+        if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+        {
+          actions++;
+          time_spent += std::max( a->base_execute_time, a->trigger_gcd );
+        }
+      } );
+
+      sim->print_debug( "{} precombat LF id {} actions {}, timespent {}", *this, lf->internal_id, actions, time_spent );
+
+      if ( actions == 1 )
+      {
+        lf->harmful           = false;
+        precombat_travel      = lf->travel_time();
+        lf->prepull_timespent = time_spent;
+        break;
+      }
+    }
+  }
+}
+
 role_e evoker_t::primary_role() const
 {
   switch ( player_t::primary_role() )
@@ -2473,6 +2591,9 @@ void evoker_t::create_options()
   add_option( opt_bool( "evoker.use_early_chaining", option.use_early_chaining ) );
   add_option( opt_float( "evoker.scarlet_overheal", option.scarlet_overheal, 0.0, 1.0 ) );
   add_option( opt_float( "evoker.heal_eb_chance", option.heal_eb_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "evoker.prepull_deep_breath_delay", option.prepull_deep_breath_delay, 0_s, 3_s ) );
+  add_option(
+      opt_timespan( "evoker.prepull_deep_breath_delay_stddev", option.prepull_deep_breath_delay_stddev, 0_s, 1.5_s ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
