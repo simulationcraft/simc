@@ -7,6 +7,7 @@ role=spell
 position=ranged_back
 talents=BAEAAAAAAAAAAAAAAAAAAAAAAIJBolIIJFQSLhIiIJBAAAJJRiEJJhkSSSSJAAAAAAAAAAC
 dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
@@ -104,9 +105,9 @@ actions.st+=/call_action_list,name=movement
 
 head=underlight_conjurers_arcanocowl,id=205860,ilevel=447,gem_id=192961
 neck=chain_of_the_underking,id=134495,bonus_id=8782,ilevel=447,gem_id=192988/192961/192961
-shoulders=vibrant_wildercloth_shoulderspikes,id=193508,bonus_id=9379/8960,ilevel=447,crafted_stats=32/49
+shoulders=underlight_conjurers_aurora,id=202549,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457,enchant_id=6595
-chest=underlight_conjurers_vestment,id=205862,ilevel=447,enchant_id=6625
+chest=vibrant_wildercloth_vestments,id=193509,ilevel=447,enchant_id=6625
 wrists=clasps_of_the_diligent_steward,id=204393,ilevel=447,gem_id=192961,enchant_id=6574
 hands=underlight_conjurers_gloves,id=205861,ilevel=447
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8960,ilevel=447,gem_id=192961,crafted_stats=32/49
@@ -119,14 +120,15 @@ trinket2=vessel_of_searing_shadow,id=202615,ilevel=441
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=447.67
-# gear_stamina=22626
-# gear_intellect=9049
-# gear_crit_rating=4060
-# gear_haste_rating=3083
-# gear_mastery_rating=5573
+# gear_ilvl=447.87
+# gear_stamina=22694
+# gear_intellect=9062
+# gear_crit_rating=3454
+# gear_haste_rating=3545
+# gear_mastery_rating=4649
+# gear_versatility_rating=202
 # gear_leech_rating=125
 # gear_avoidance_rating=200
-# gear_armor=2447
+# gear_armor=2452
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

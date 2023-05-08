@@ -269,6 +269,7 @@ actions.st_cleave+=/spinning_crane_kick,if=min:debuff.mark_of_the_crane.remains,
 
 # Trinkets
 actions.trinkets=use_item,name=manic_grieftorch,if=(trinket.1.is.manic_grieftorch&!trinket.2.has_use_buff|trinket.2.is.manic_grieftorch&!trinket.1.has_use_buff)
+actions.trinkets+=/use_item,name=beacon_to_the_beyond,if=cooldown.invoke_xuen_the_white_tiger.remains>cooldown%%120|cooldown<=60&variable.hold_xuen|!talent.invoke_xuen_the_white_tiger
 actions.trinkets+=/use_item,name=dragonfire_bomb_dispenser
 actions.trinkets+=/use_item,name=djaruun_pillar_of_the_elder_flame,if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12
 
@@ -289,13 +290,13 @@ trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
 main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 # Gear Summary
-# gear_ilvl=445.40
-# gear_agility=6255
-# gear_stamina=22080
-# gear_crit_rating=4914
-# gear_haste_rating=454
+# gear_ilvl=445.20
+# gear_agility=6215
+# gear_stamina=21864
+# gear_crit_rating=4907
+# gear_haste_rating=450
 # gear_mastery_rating=2120
-# gear_versatility_rating=4055
-# gear_armor=4003
+# gear_versatility_rating=4096
+# gear_armor=3991
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

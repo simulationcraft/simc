@@ -157,7 +157,7 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_m
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=red_sky_pendant,id=206182,bonus_id=4786/8782/1669,gem_id=192919/192919/192919,crafted_stats=36/49
+neck=red_sky_pendant,id=206182,bonus_id=4786/8782/1669,gem_id=192919/192919/192919
 shoulders=lingering_phantoms_shoulderplates,id=202459,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
@@ -166,8 +166,8 @@ hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
 waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192948,crafted_stats=32/49
 legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=lambent_armor_kit_3
 feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49
-finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
-finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
 trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
 trinket2=irideus_fragment,id=193743,bonus_id=6808/4786/1669
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader

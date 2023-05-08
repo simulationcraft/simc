@@ -110,8 +110,8 @@ wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_i
 hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192932
 legs=legplates_of_profane_sacrifice,id=159443,bonus_id=3317/6808/4786,enchant=fierce_armor_kit_3
-feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/1537/9379,enchant=plainsrunners_breeze_3,crafted_stats=36/40
-finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/1808,gem_id=192932,enchant=devotion_of_versatility_3
+feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/1537/9379/6935,enchant=plainsrunners_breeze_3,crafted_stats=36/40
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/1808/6935,gem_id=192932,enchant=devotion_of_versatility_3
 finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_versatility_3
 trinket1=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498

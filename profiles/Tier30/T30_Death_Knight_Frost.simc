@@ -200,7 +200,7 @@ actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_b
 actions.trinkets+=/use_item,use_off_gcd=1,slot=main_hand,if=(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
 
 head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192988
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192922/192922/192922,crafted_stats=36/32
+neck=elemental_lariat,id=193001,bonus_id=8840/8836/8902/1537,gem_id=192922/192922/192922,crafted_stats=36/32
 shoulders=pauldrons_of_immutable_truth,id=193802,bonus_id=6808/4786/1669
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
@@ -209,8 +209,8 @@ hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
 waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537/9379,gem_id=192948,crafted_stats=36/32
 legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
 feet=darksky_treads,id=133253,bonus_id=6808/4786/9466
-finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192922,enchant=devotion_of_critical_strike_3,crafted_stats=32/49
-finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192922,enchant=devotion_of_mastery_3,crafted_stats=49/32
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192922,enchant=devotion_of_critical_strike_3,crafted_stats=32/49
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192922,enchant=devotion_of_mastery_3,crafted_stats=49/32
 trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
 main_hand=proctors_tactical_cleaver,id=204320,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
