@@ -34,7 +34,7 @@ role=dps
 talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACikkoFJJAAAAAJSSaASSSSgkSkISIFJJJJplAAAA
 
 head=cover_of_the_vermillion_forge,id=202506,bonus_id=9410/1504/9413,gem_id=192991
-neck=tuskarr_bone_necklace,id=193666,bonus_id=8782:1669:9380,gem_id=192925/192925/192925
+neck=torc_of_passed_time,id=201759,bonus_id=8782/9376/9366/9405,gem_id=192925/192925/192925,crafted_stats=32/40
 shoulders=spines_of_the_vermillion_forge,id=205833,bonus_id=9410/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=9410/1498
 chest=lifebound_chestpiece,id=193399,bonus_id=9366/9405/9376/8795/8797/8960,enchant=waking_stats_3,crafted_stats=32/40
@@ -45,8 +45,8 @@ legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lam
 feet=slimy_expulsion_boots,id=193451,bonus_id=9366/9405/9376/8960,enchant=watchers_loam_3
 finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204027/204029/204011,enchant=devotion_of_versatility_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_versatility_3
-trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
-trinket2=igneous_flowstone,id=203996,bonus_id=9410/1498
+trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
 main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 save=T30_Monk_Windwalker.simc
@@ -59,7 +59,7 @@ role=dps
 talents=B0QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACikkoEJJAAAAAJSSaASSSSgkSkISIFJJJJplAAAA
 
 head=cover_of_the_vermillion_forge,id=202506,bonus_id=9410/1504/9413,gem_id=192991
-neck=tuskarr_bone_necklace,id=193666,bonus_id=8782:1669:9380,gem_id=192925/192925/192925
+neck=torc_of_passed_time,id=201759,bonus_id=8782/9376/9366/9405,gem_id=192925/192925/192925,crafted_stats=32/40
 shoulders=spines_of_the_vermillion_forge,id=205833,bonus_id=9410/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=9410/1498
 chest=lifebound_chestpiece,id=193399,bonus_id=9366/9405/9376/8795/8797/8960,enchant=waking_stats_3,crafted_stats=32/40
@@ -70,8 +70,8 @@ legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=9410/1501,enchant=lam
 feet=slimy_expulsion_boots,id=193451,bonus_id=9366/9405/9376/8960,enchant=watchers_loam_3
 finger1=onyx_annulet,id=203460,bonus_id=1491,gem_id=204027/204029/204011,enchant=devotion_of_versatility_3
 finger2=seal_of_diurnas_chosen,id=195480,bonus_id=7981/7935/1498,gem_id=192925,enchant=devotion_of_versatility_3
-trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
-trinket2=igneous_flowstone,id=203996,bonus_id=9410/1498
+trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=9410/1498
 main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=9410/1498,enchant=shadowflame_wreathe_3
 
 save=T30_Monk_Windwalker_SEF.simc
