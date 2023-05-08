@@ -10,7 +10,7 @@ talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICIKSSSSJlIpkIRSCAAAAAAFASEEASSSikEK5AUS
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=phial_of_tepid_versatility_3
 food=thousandbone_tongueslicer
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3
@@ -27,7 +27,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat+=/cat_form,if=!buff.cat_form.up
 actions.precombat+=/heart_of_the_wild
 actions.precombat+=/use_item,name=algethar_puzzle_box
@@ -76,28 +76,29 @@ actions.aoe_builder+=/shred,target_if=max:target.time_to_die,if=action.shred.dam
 actions.aoe_builder+=/thrash_cat
 
 actions.berserk=ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1
-actions.berserk+=/call_action_list,name=finisher,if=combo_points=5
+# proc bt if 0/1 stack if 5/6 combo points
+actions.berserk+=/call_action_list,name=finisher,if=combo_points=5&!(buff.overflowing_power.stack<=1&active_bt_triggers=2&buff.bloodtalons.stack<=1)
 # its currently a gain to just contiuously try to proc bt in aoe
-actions.berserk+=/call_action_list,name=bloodtalons,if=combo_points<5&spell_targets.swipe_cat>1
+actions.berserk+=/call_action_list,name=bloodtalons,if=spell_targets.swipe_cat>1
 # go into stealth to buff rake snapshot-- feral frenzy line is to eliminate an edge case involving ff being casted instead due to higher prio
-actions.berserk+=/prowl,if=action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up
-actions.berserk+=/shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up
-actions.berserk+=/rake,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&!dot.rake.refreshable)
+actions.berserk+=/prowl,if=!(buff.bt_rake.up&active_bt_triggers=2)&(action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up)
+actions.berserk+=/shadowmeld,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up
+actions.berserk+=/rake,if=!(buff.bt_rake.up&active_bt_triggers=2)&(refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&!dot.rake.refreshable))
 # in single target, you just proc bt when an opportunity arises
 actions.berserk+=/shred,if=active_bt_triggers=2&buff.bt_shred.down
 actions.berserk+=/brutal_slash,if=active_bt_triggers=2&buff.bt_brutal_slash.down
 actions.berserk+=/moonfire_cat,if=active_bt_triggers=2&buff.bt_moonfire.down
-actions.berserk+=/thrash_cat,if=active_bt_triggers=2&buff.bt_thrash.down&!talent.thrashing_claws&variable.need_bt
+actions.berserk+=/thrash_cat,if=active_bt_triggers=2&buff.bt_thrash.down&!talent.thrashing_claws&variable.need_bt&(refreshable|talent.brutal_slash.enabled)
 actions.berserk+=/moonfire_cat,if=refreshable
 # don't overcap brs charges, but keep it available for bt
 actions.berserk+=/brutal_slash,if=cooldown.brutal_slash.charges>1
 actions.berserk+=/shred
 
-actions.bloodtalons=brutal_slash,target_if=min:target.time_to_die,if=cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5&buff.bt_brutal_slash.down
+actions.bloodtalons=brutal_slash,target_if=min:target.time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5)&(buff.bt_brutal_slash.down&(buff.bs_inc.up|variable.need_bt))
 actions.bloodtalons+=/prowl,if=action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&buff.bt_rake.down&!buff.prowl.up&!buff.apex_predators_craving.up
 actions.bloodtalons+=/shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&buff.bt_rake.down&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up
-actions.bloodtalons+=/rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|1.4*persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down
-actions.bloodtalons+=/rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier&buff.bt_rake.down
+actions.bloodtalons+=/rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down
+actions.bloodtalons+=/rake,target_if=buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&buff.bt_rake.down
 actions.bloodtalons+=/shred,if=buff.bt_shred.down&buff.clearcasting.react&spell_targets.swipe_cat=1
 actions.bloodtalons+=/thrash_cat,target_if=refreshable,if=buff.bt_thrash.down&buff.clearcasting.react&spell_targets.swipe_cat=1&!talent.thrashing_claws.enabled
 actions.bloodtalons+=/brutal_slash,if=buff.bt_brutal_slash.down
