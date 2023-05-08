@@ -2999,6 +2999,12 @@ struct evoker_module_t : public module_t
   }
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Evoker", "2023-5-8", "Verdant Embrace is not affected by Aerial Mastery", 360995,
+                            hotfix::HOTFIX_FLAG_LIVE )
+        .field( "category" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0 )
+        .verification_value( 1948 );
   }
   void combat_begin( sim_t* ) const override
   {
