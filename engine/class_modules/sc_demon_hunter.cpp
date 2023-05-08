@@ -1318,6 +1318,7 @@ public:
     // Vengeance
     bool frailty = false;
     bool fiery_demise = false;
+    bool fires_of_fel = false;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1446,6 +1447,11 @@ public:
                                    ( p->set_bonuses.t30_vengeance_4pc->ok() &&
                                      ab::data().affected_by_label( p->spec.fiery_brand_debuff->effectN( 3 ) ) );
       }
+      if ( p->set_bonuses.t30_vengeance_2pc->ok() )
+      {
+        affected_by.fires_of_fel = ab::data().affected_by( p->set_bonuses.t30_vengeance_2pc_buff->effectN( 1 ) ) ||
+                                   ab::data().affected_by( p->set_bonuses.t30_vengeance_2pc_buff->effectN( 2 ) );
+      }
     }
   }
 
@@ -1521,6 +1527,18 @@ public:
       ab::stats->school = SCHOOL_CHAOS;
 
     ab::init_finished();
+  }
+
+  double action_multiplier() const override
+  {
+    double m = ab::action_multiplier();
+
+    if ( affected_by.fires_of_fel )
+    {
+      m *= 1.0 + p()->buff.t30_vengeance_2pc->check_stack_value();
+    }
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -7101,12 +7119,6 @@ double demon_hunter_t::composite_parry_rating() const
 double demon_hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( set_bonuses.t30_vengeance_2pc->ok() &&
-       set_bonuses.t30_vengeance_2pc_buff->effectN( 1 ).has_common_school( school ) )
-  {
-    m *= 1.0 + buff.t30_vengeance_2pc->check_stack_value();
-  }
 
   return m;
 }
