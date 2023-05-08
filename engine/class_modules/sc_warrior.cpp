@@ -8832,10 +8832,10 @@ void warrior_t::apl_fury()
     {
       default_list->add_action( racial_action + ",if=buff.recklessness.down" );
     }
-    //else if ( racial_action == "bag_of_tricks" ) // currently better to ignore entirely due to eating a GCD
-    //{
+    else if ( racial_action == "bag_of_tricks" ) // currently better to ignore entirely due to eating a GCD
+    {
       //default_list->add_action( racial_action + ",if=buff.recklessness.down&buff.enrage.up" );
-    //}
+    }
     else if ( racial_action == "berserking" )
     {
       default_list->add_action( racial_action + ",if=buff.recklessness.up" );
@@ -8985,8 +8985,9 @@ void warrior_t::apl_arms()
   {
     if ( racial_action == "arcane_torrent" )
     {
-      default_list->add_action( racial_action +
-                                ",if=cooldown.mortal_strike.remains>1.5&rage<50" );
+      // Currently not worth casting at such a priority
+      //default_list->add_action( racial_action +
+      //                          ",if=cooldown.mortal_strike.remains>1.5&rage<50" );
     }
     else if ( racial_action == "lights_judgment" )
     {
@@ -8994,7 +8995,8 @@ void warrior_t::apl_arms()
     }
     else if ( racial_action == "bag_of_tricks" )
     {
-      default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
+      // currently not worth casting
+      //default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
     }
     else if ( racial_action == "berserking" )
     {
@@ -9088,6 +9090,7 @@ void warrior_t::apl_arms()
   single_target->add_action( "cleave,if=set_bonus.tier29_2pc&!talent.crushing_force" );
   single_target->add_action( "slam,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)" );
   single_target->add_action( "bladestorm" );
+  single_target->add_action( "arcane_torrent" );
   single_target->add_action( "cleave" );
   single_target->add_action( "wrecking_throw" );
   single_target->add_action( "rend,if=remains<duration*0.3" );
