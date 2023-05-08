@@ -2596,11 +2596,32 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   template <typename T_ACTION>
   struct drw_action_t : public pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>
   {
+    struct affected_by_t
+    {
+      bool blood_plague;
+    } affected_by;
+
     drw_action_t( dancing_rune_weapon_pet_t* p, util::string_view name, const spell_data_t* s ) :
       pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>( p, name, s )
     {
       this -> background = true;
       this -> weapon = &( p -> main_hand_weapon );
+
+      this -> affected_by.blood_plague = this -> data().affected_by( p -> dk() -> spell.blood_plague -> effectN( 4 ) );
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>::composite_target_multiplier( target );
+
+      const death_knight_td_t* td = this -> dk() -> find_target_data( target );
+
+      if ( td && this->affected_by.blood_plague && td -> dot.blood_plague -> is_ticking() )
+      {
+        m *= 1.0 + this -> dk() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
+      }
+
+      return m;
     }
 
     // Override verify actor spec, the pet's abilities are blood's abilities and require blood spec in spelldata
@@ -2830,20 +2851,6 @@ private:
     ability.marrowrend    = new marrowrend_t   ( this );
     ability.soul_reaper   = new soul_reaper_t  ( this );
     ability.consumption   = new consumption_t  ( this );
-  }
-
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = death_knight_pet_t::composite_player_target_multiplier( target, school );
-
-    auto td = dk() -> find_target_data( target );
-
-    if ( td && td -> dot.blood_plague -> is_ticking() )
-    {
-      m *= 1.0 + dk() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
-    }
-
-    return m;
   }
 
   void arise() override
@@ -3203,7 +3210,7 @@ struct death_knight_action_t : public Base
       m *= 1.0 + td -> debuff.death_rot -> check_stack_value();
     }
 
-    if ( td && td -> dot.blood_plague -> is_ticking() )
+    if ( td && this->affected_by.blood_plague && td -> dot.blood_plague -> is_ticking() )
     {
       m *= 1.0 + p() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
     }
@@ -3447,7 +3454,7 @@ struct blood_plague_t final : public death_knight_disease_t
     double m = death_knight_disease_t::composite_ta_multiplier( state );
 
     if( p() -> specialization() == DEATH_KNIGHT_BLOOD)
-    m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
+      m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
 
     return m;
   }
