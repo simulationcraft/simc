@@ -1322,6 +1322,9 @@ struct disintegrate_t : public essence_spell_t
     surge->proc_spell_type    = proc_spell_type_e::SCINTILLATION;
     eternity_surge            = surge;
 
+    // Not in Spell Data, However it would appear to proc class ability related effects. Primarily made to Fix Irideus Fragment Bug - TODO: Review for other class based procs.
+    allow_class_ability_procs = true;
+
     // 25/11/2022 - Override the lag handling for Disintegrate so that it doesn't use channeled ready behavior
     //              In-game tests have shown it is possible to cast after faster than the 250ms channel_lag using a
     //              nochannel macro
