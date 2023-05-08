@@ -4814,7 +4814,7 @@ struct fracture_t : public demon_hunter_attack_t
       // divide the number in 2 as half come from main hand, half come from offhand.
       int number_of_soul_fragments_to_spawn_per_hit = number_of_soul_fragments_to_spawn / 2;
       // handle leftover souls in the event that blizz ever changes Fracture to an odd number of souls generated
-      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn_per_hit % 2;
+      int number_of_soul_fragments_to_spawn_leftover = number_of_soul_fragments_to_spawn % 2;
 
       mh->set_target( s->target );
       mh->execute();
