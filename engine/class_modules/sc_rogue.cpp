@@ -1458,6 +1458,7 @@ public:
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
+    damage_affect_data t30_assassination_4pc;
   } affected_by;
 
   std::vector<damage_buff_t*> direct_damage_buffs;
@@ -1615,6 +1616,7 @@ public:
     // Still requires manual impl below but removes need to hardcode effect numbers.
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
+    parse_damage_affecting_spell( p->spec.t30_assassination_4pc_buff, affected_by.t30_assassination_4pc );
   }
 
   void init() override
@@ -1762,12 +1764,17 @@ public:
 
   void parse_damage_affecting_spell( const spell_data_t* spell, damage_affect_data& flags )
   {
+    if ( !spell->ok() )
+      return;
+
     for ( const spelleffect_data_t& effect : spell->effects() )
     {
-      if ( !effect.ok() || effect.type() != E_APPLY_AURA || effect.subtype() != A_ADD_PCT_MODIFIER )
+      if ( !effect.ok() || !( effect.type() == E_APPLY_AURA ||
+                              effect.subtype() == A_ADD_PCT_MODIFIER ||
+                              effect.subtype() == A_ADD_PCT_LABEL_MODIFIER ) )
         continue;
 
-      if ( ab::data().affected_by( effect ) )
+      if ( ab::data().affected_by_all( effect ) )
       {
         switch ( effect.misc_value1() )
         {
@@ -2029,6 +2036,11 @@ public:
       m *= 1.0 + p()->set_bonuses.t29_assassination_2pc->effectN( 1 ).percent();
     }
 
+    if ( affected_by.t30_assassination_4pc.direct && p()->buffs.t30_assassination_4pc->up() )
+    {
+      m *= 1.0 + affected_by.t30_assassination_4pc.direct_percent;
+    }
+
     return m;
   }
 
@@ -2057,6 +2069,11 @@ public:
     if ( affected_by.mastery_potent_assassin.periodic )
     {
       m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
+    }
+
+    if ( affected_by.t30_assassination_4pc.periodic && p()->buffs.t30_assassination_4pc->up() )
+    {
+      m *= 1.0 + affected_by.t30_assassination_4pc.periodic_percent;
     }
 
     return m;
@@ -3502,6 +3519,7 @@ struct crimson_tempest_t : public rogue_attack_t
     poisoned_edges_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
     {
+      base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
     }
 
     bool procs_poison() const override
@@ -3545,7 +3563,6 @@ struct crimson_tempest_t : public rogue_attack_t
     if ( poisoned_edges_damage )
     {
       double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
-      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
       double damage = state->result_total * multiplier;
       poisoned_edges_damage->execute_on_target( state->target, damage );
     }
@@ -3558,7 +3575,6 @@ struct crimson_tempest_t : public rogue_attack_t
     if ( poisoned_edges_damage )
     {
       double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 2 ).percent();
-      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
       double damage = d->state->result_total * multiplier;
       poisoned_edges_damage->execute_on_target( d->target, damage );
     }
@@ -4641,11 +4657,12 @@ struct rupture_t : public rogue_attack_t
     { return false; }
   };
 
-  struct poisoned_edges_tick_t : public rogue_attack_t
+  struct poisoned_edges_t : public rogue_attack_t
   {
-    poisoned_edges_tick_t( util::string_view name, rogue_t* p ) :
+    poisoned_edges_t( util::string_view name, rogue_t* p ) :
       rogue_attack_t( name, p, p->spec.t30_assassination_2pc_tick )
     {
+      base_dd_min = base_dd_max = 1; // Override from 0 for snapshot_flags
     }
 
     bool procs_poison() const override
@@ -4653,11 +4670,11 @@ struct rupture_t : public rogue_attack_t
   };
 
   replicating_shadows_tick_t* replicating_shadows_tick;
-  poisoned_edges_tick_t* poisoned_edges_tick;
+  poisoned_edges_t* poisoned_edges_damage;
   
   rupture_t( util::string_view name, rogue_t* p, const spell_data_t* s, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, s, options_str ),
-    replicating_shadows_tick( nullptr ), poisoned_edges_tick( nullptr )
+    replicating_shadows_tick( nullptr ), poisoned_edges_damage( nullptr )
   {
     if ( p->talent.subtlety.replicating_shadows->ok() )
     {
@@ -4672,10 +4689,10 @@ struct rupture_t : public rogue_attack_t
 
     if ( p()->set_bonuses.t30_assassination_2pc->ok() )
     {
-      poisoned_edges_tick = p()->get_background_action<poisoned_edges_tick_t>(
+      poisoned_edges_damage = p()->get_background_action<poisoned_edges_t>(
         secondary_trigger_type == secondary_trigger::DEATHMARK ? "rupture_deathmark_t30" :
                                                                  "rupture_t30" );
-      add_child( poisoned_edges_tick );
+      add_child( poisoned_edges_damage );
     }
   }
 
@@ -4761,16 +4778,15 @@ struct rupture_t : public rogue_attack_t
       replicating_shadows_tick->execute_on_target( d->target );
     }
 
-    if ( poisoned_edges_tick )
+    if ( poisoned_edges_damage )
     {
       // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 40% tooltip value
       // Additionally, appears to deal half damage from Deathmark DoT ticks
       double multiplier = p()->bugs ? 0.5 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
-      multiplier *= 1.0 + p()->buffs.t30_assassination_4pc->value(); // Applied by label
       if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
         multiplier *= 0.5;
       double damage = d->state->result_total * multiplier;
-      poisoned_edges_tick->execute_on_target( d->target, damage );
+      poisoned_edges_damage->execute_on_target( d->target, damage );
     }
   }
 
@@ -8148,12 +8164,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
     m *= buffs.deeper_daggers->value_direct();
   }
 
-  if ( set_bonuses.t30_assassination_4pc->ok() &&
-       spec.t30_assassination_4pc_buff->effectN( 1 ).has_common_school( school ) )
-  {
-    m *= 1.0 + buffs.t30_assassination_4pc->stack_value();
-  }
-
   return m;
 }
 
@@ -9922,8 +9932,7 @@ void rogue_t::create_buffs()
   buffs.t29_subtlety_2pc->set_max_stack( as<int>( consume_cp_max() ) );
 
   buffs.t30_assassination_4pc = make_buff( this, "poisoned_edges", spec.t30_assassination_4pc_buff )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    ->set_default_value_from_effect( 1 );
 
   buffs.t30_outlaw_4pc = make_buff( this, "soulripper", spec.t30_outlaw_4pc_buff )
     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
