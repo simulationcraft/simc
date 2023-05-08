@@ -28,34 +28,35 @@ flask=phial_of_static_empowerment_3
 
 save=T30_Mage_Arcane.simc
 
-# mage="T30_Mage_Fire"
-# spec=fire
-# level=70
-# race=dwarf
-# role=spell
-# position=back
-# talents=B8DAAAAAAAAAAAAAAAAAAAAAAkkQIplIkkUA0SiIiIJAAAAAAAAAkQgEhyBkIJRSSSSBAAAA
+mage="T30_Mage_Fire"
+spec=fire
+level=70
+race=dwarf
+role=spell
+position=back
+talents=B8DAAAAAAAAAAAAAAAAAAAAAAkkAhWikIJFQOQLhIiIJAAAAAAAAA4AEIRokkIJRSSSSDAAAA
 
-# head=crystal_scholars_cowl,id=200318,bonus_id=4800/4786/1498/8810,gem_id=192985
-# neck=elemental_lariat,id=193001,bonus_id=8960/8836/8782/1508,gem_id=192952/192952/192952,crafted_stats=36/49
-# shoulder=crystal_scholars_beacons,id=200320,bonus_id=4800/4786/1498
-# back=vibrant_wildercloth_shawl,id=193511,bonus_id=8175/8960/8836/1508,crafted_stats=36/49
-# chest=crystal_scholars_tunic,id=200315,bonus_id=4800/4786/1498,enchant=waking_stats_3
-# wrist=overengineered_sleeve_extenders,id=198322,bonus_id=1508/8836/8810,gem_id=192952,crafted_stats=36
-# hands=crystal_scholars_pageturners,bonus_id=4800/4786/1501,id=200317
-# waist=crystal_scholars_cinch,id=200321,bonus_id=4800/4786/1504/1808,gem_id=192952
-# legs=leggings_of_swirling_runes,id=133610,bonus_id=8767/7977/6216,enchant=frozen_spellthread_3
-# feet=sandals_of_the_wild_sovereign,id=195532,bonus_id=4800/4786/1498
-# finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/8810,enchant=devotion_of_haste_3,gem_id=192952
-# finger2=seal_of_filial_duty,id=195526,bonus_id=4800/4786/1498/8810,enchant=devotion_of_haste_3,gem_id=192952
-# trinket1=desperate_invokers_codex,id=194310,bonus_id=4800/4786/1498
-# trinket2=furious_ragefeather,id=193677,bonus_id=8767/7977/1643
-# main_hand=stormlashs_last_resort,id=195529,bonus_id=4800/4786/1498,enchant=wafting_devotion_3
-# off_hand=scripture_of_primal_devotion,id=195513,bonus_id=4800/4786/1498
+head=vibrant_wildercloth_headcover,id=193523,bonus_id=523/9379/8960,ilevel=447,gem_id=192952,crafted_stats=36/40
+neck=bromachs_disentombed_locket,id=193809,bonus_id=8782,ilevel=447,gem_id=192985/192952/192952
+shoulder=underlight_conjurers_aurora,id=202549,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1498,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6592
+chest=underlight_conjurers_vestment,id=202554,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/1472/4800/4786/1498,enchant_id=6625
+wrist=overengineered_sleeve_extenders,id=198322,bonus_id=523,ilevel=447,gem_id=201409/192952,crafted_stats=36/36
+hands=underlight_conjurers_gloves,id=202552,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1498
+waist=vibrant_wildercloth_girdle,id=193516,bonus_id=523/9379/8960,ilevel=447,gem_id=192952,crafted_stats=36/40
+legs=underlight_conjurers_trousers,id=202550,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1507,enchant_id=6830
+feet=treads_of_fractured_realities,id=204392,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6613
+finger1=loop_of_vitriolic_intent,id=134530,bonus_id=523,ilevel=447,gem_id=192952,enchant_id=6556
+finger2=seal_of_diurnas_chosen,id=195480,bonus_id=523,ilevel=421,gem_id=192952,enchant_id=6556
+trinket1=ominous_chromatic_essence,id=203729,ilevel=444
+trinket2=vessel_of_searing_shadow,id=202615,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/9334
+main_hand=erethos_the_empty_promise,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643
 
-# flask=phial_of_static_empowerment_3
+dragonflight.ominous_chromatic_essence_dragonflight=bronze
+dragonflight.ominous_chromatic_essence_allies=obsidian/emerald/bronze/azure/ruby
+flask=phial_of_static_empowerment_3
 
-# save=T30_Mage_Fire.simc
+save=T30_Mage_Fire.simc
 
 mage="T30_Mage_Frost"
 spec=frost
