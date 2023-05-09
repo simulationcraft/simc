@@ -14852,7 +14852,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1005150)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#1 (id=1005150)  : Apply Aura (6) | Modify Damage Taken% from Spells (Label) (507)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1615 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Chill Streak (204167)
 Description      : $@spelldesc377351

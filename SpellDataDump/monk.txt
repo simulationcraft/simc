@@ -18756,7 +18756,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1077928)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#1 (id=1077928)  : Apply Aura (6) | Modify Damage Taken% from Spells (Label) (507)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 2650 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shadowflame Nova (410139)
 Description      : $@spelldesc411375

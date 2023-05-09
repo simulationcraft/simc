@@ -2917,10 +2917,10 @@ Hotfixed         : Type (6 -> 3), Sub Type (507 -> 0), Misc Value (2618 -> 0), T
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Hotfixed         : NEW EFFECT
-#5 (id=1083838)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#5 (id=1083838)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2618 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Sub Type (507 -> 537)
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to $@auracaster$?s389220[ and taking $w2% more Fire damage from them][].
 
@@ -2974,10 +2974,10 @@ Effects          :
 #3 (id=707094)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Hotfixed         : Sub Type (507 -> 23), Period (0 -> 2000), Base Value (40 -> 0), Misc Value (2618 -> 0)
-#4 (id=1075596)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#4 (id=1075596)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 2618 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
-Hotfixed         : Sub Type (3 -> 507), AP Coefficient (0.309 -> 0), Period (2000 -> 0), Base Value (0 -> 40), Misc Value (0 -> 2618)
+Hotfixed         : Sub Type (507 -> 537)
 #5 (id=1083817)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Hotfixed         : NEW EFFECT
