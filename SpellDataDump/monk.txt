@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474, no-networking)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2293,7 +2293,8 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.25000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.40000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1.25 -> 1.4)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -5023,9 +5024,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40356 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.46409 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.40356 -> 0.464094)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03780 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04347 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : SP Coefficient (0.0378 -> 0.04347)
 Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
@@ -14797,6 +14800,7 @@ Effects          :
 Description      : Gust of Mists has a $s2% chance to do $s1% more healing.
 
 Name             : Ancient Teachings (id=388023) [Spell Family (53), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Mistweaver [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Monk
 School           : Physical
@@ -14819,7 +14823,7 @@ Effects          :
 #2 (id=1070189)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After casting Essence Font or Faeline Stomp, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal up to $s2 injured allies within $388024A1 yds for $<healing>% of the damage done, split evenly among them. Lasts $388026d.
-Variables        : $pvp=$?a134735[${2.5}][${1}]}
+Variables        : $pvp=$?a134735[${2.2}][${1}]}
 $healing=[${$s1*$<pvp>}]
 
 Name             : Ancient Teachings (id=388024) [Spell Family (53)] 
@@ -14840,10 +14844,12 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.50000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.20000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
+Hotfixed         : PvP Coefficient (2.5 -> 2.2)
 Description      : $@spelldesc388023
 
 Name             : Ancient Teachings (id=388026) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -14862,7 +14868,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc388023
 Tooltip          : Tiger Palm, Blackout Kick, and Rising Sun Kick heal up to $388023s2 injured allies within $388024A1 yards for $<healing>% of the damage done, split evenly among them.
-Variables        : $pvp=$?a134735[${2.5}][${1}]}
+Variables        : $pvp=$?a134735[${2.2}][${1}]}
 $healing=[${$388023s1*$<pvp>}]
 
 Name             : Jade Bond (id=388031) [Spell Family (53), Passive] 
