@@ -367,7 +367,7 @@ public:
 
     // Subtlety
     damage_buff_t* danse_macabre;
-    damage_buff_t* deeper_daggers;
+    buff_t* deeper_daggers;
     damage_buff_t* finality_eviscerate;
     buff_t* finality_rupture;
     damage_buff_t* finality_black_powder;
@@ -1456,6 +1456,7 @@ public:
     bool t29_assassination_2pc = false;
     bool t30_subtlety_4pc = false;
 
+    damage_affect_data deeper_daggers;
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
     damage_affect_data t30_assassination_4pc;
@@ -1533,6 +1534,7 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.improved_backstab );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
     ab::apply_affecting_aura( p->talent.subtlety.quick_decisions );
+    ab::apply_affecting_aura( p->talent.subtlety.veiltouched );
     ab::apply_affecting_aura( p->talent.subtlety.swift_death );
     ab::apply_affecting_aura( p->talent.subtlety.replicating_shadows );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
@@ -1614,6 +1616,7 @@ public:
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
     // Still requires manual impl below but removes need to hardcode effect numbers.
+    parse_damage_affecting_spell( p->spec.deeper_daggers_buff, affected_by.deeper_daggers );
     parse_damage_affecting_spell( p->mastery.executioner, affected_by.mastery_executioner );
     parse_damage_affecting_spell( p->mastery.potent_assassin, affected_by.mastery_potent_assassin );
     parse_damage_affecting_spell( p->spec.t30_assassination_4pc_buff, affected_by.t30_assassination_4pc );
@@ -2031,6 +2034,13 @@ public:
       m *= p()->buffs.nightstalker->direct_mod.multiplier;
     }
 
+    // Deeper Daggers
+    if ( affected_by.deeper_daggers.direct )
+    {
+      m *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+    }
+
+    // Set Bonuses
     if ( affected_by.t29_assassination_2pc && p()->buffs.envenom->check() )
     {
       m *= 1.0 + p()->set_bonuses.t29_assassination_2pc->effectN( 1 ).percent();
@@ -2060,6 +2070,12 @@ public:
       m *= p()->buffs.nightstalker->periodic_mod.multiplier;
     }
 
+    // Deeper Daggers
+    if ( affected_by.deeper_daggers.periodic )
+    {
+      m *= 1.0 + p()->buffs.deeper_daggers->stack_value();
+    }
+
     // Masteries for Assassination and Subtlety have periodic damage in a separate effect. Just to be sure, use that instead of direct mastery_value.
     if ( affected_by.mastery_executioner.periodic )
     {
@@ -2071,6 +2087,7 @@ public:
       m *= 1.0 + p()->cache.mastery() * p()->mastery.potent_assassin->effectN( 2 ).mastery_value();
     }
 
+    // Set Bonuses
     if ( affected_by.t30_assassination_4pc.periodic && p()->buffs.t30_assassination_4pc->up() )
     {
       m *= 1.0 + affected_by.t30_assassination_4pc.periodic_percent;
@@ -8146,24 +8163,6 @@ double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( talent.subtlety.veiltouched->effectN( 1 ).has_common_school( school ) )
-  {
-    m *= 1.0 + talent.subtlety.veiltouched->effectN( 1 ).percent();
-  }
-
-  if ( talent.subtlety.dark_brew->effectN( 2 ).has_common_school( school ) )
-  {
-    m *= 1.0 + talent.subtlety.dark_brew->effectN( 2 ).percent();
-  }
-
-  // Dragonflight version of Deeper Daggers is not a whitelisted buff and still a school buff
-  if ( talent.subtlety.deeper_daggers->ok() &&
-       spec.deeper_daggers_buff->effectN( 1 ).has_common_school( school ) )
-  {
-    m *= buffs.deeper_daggers->value_direct();
-  }
-
   return m;
 }
 
@@ -9889,9 +9888,8 @@ void rogue_t::create_buffs()
   buffs.flagellation_persist = make_buff( this, "flagellation_persist", spec.flagellation_persist_buff )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
-  buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers", spec.deeper_daggers_buff )
-    ->set_direct_mod( talent.subtlety.deeper_daggers->effectN( 1 ).percent() );
-  buffs.deeper_daggers->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.deeper_daggers = make_buff( this, "deeper_daggers", spec.deeper_daggers_buff )
+    ->set_default_value( talent.subtlety.deeper_daggers->effectN( 1 ).percent() );
 
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
                                                      spec.perforated_veins_buff,
