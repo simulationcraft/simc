@@ -1152,6 +1152,7 @@ public:
     ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.protection.bloodborne );
     ab::apply_affecting_aura( p()->talents.protection.defenders_aegis );
+    ab::apply_affecting_aura( p()->talents.protection.battering_ram );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -5524,15 +5525,6 @@ struct shield_charge_damage_t : public warrior_attack_t
     return am;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-
-    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
-
-    return c;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5596,15 +5588,6 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
       am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
     }
     return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-
-    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
-
-    return c;
   }
 };
 
@@ -10613,9 +10596,6 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   cdm *= 1.0 + buff.elysian_might_legendary->check_value();
 
   cdm *= 1.0 + buff.elysian_might->check_value();
-
-  if ( s->action->school == SCHOOL_PHYSICAL )
-    cdm *= 1.0 + talents.protection.battering_ram->effectN( 3 ).percent();
 
   return cdm;
 }
