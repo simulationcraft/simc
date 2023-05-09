@@ -1,29 +1,29 @@
-# rogue="T30_Rogue_Assassination"
-# spec=assassination
-# level=70
-# race=tauren
-# role=attack
-# position=back
-# talents=BMQAAAAAAAAAAAAAAAAAAAAAAINJSCcgQJBAAAAAAQSAkIAAAAAAASDp4AlkQSSSapkISQiEJWQA
+rogue="T30_Rogue_Assassination"
+level=70
+race=orc
+role=attack
+position=back
+spec=assassination
+talents=BMQAAAAAAAAAAAAAAAAAAAAAAINJSgIUSAAAAAAAkEAJCAAAAAAg0QiDUSCJJJplSiIJkIRiFE
 
-# head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
-# neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192919/192919/192919,crafted_stats=32/49
-# shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-# back=cape_of_the_duskwatch,id=137483,bonus_id=6652/8811/8812/6808/4786/3300
-# chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
-# wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192922
-# hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-# waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192919
-# legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
-# feet=treads_of_corrupted_water,id=143973,bonus_id=6652/8811/8812/6808/4786/3311
-# finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192919,enchant=devotion_of_haste_3
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192919,enchant=devotion_of_haste_3
-# trinket1=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-# trinket2=algethar_puzzle_box,id=193701,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643
-# main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
-# off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
+head=,id=193400,bonus_id=8780/8960/8797,gem_id=192982,ilevel=447,crafted_stats=32/40
+neck=,id=206180,bonus_id=8782,gem_id=192919/192919/192919,ilevel=447
+shoulder=,id=202495,ilevel=450
+back=,id=204465,ilevel=457
+chest=,id=202500,enchant=waking_stats_3,ilevel=447
+wrist=,id=193419,bonus_id=8780,gem_id=192919,ilevel=447,crafted_stats=32/40
+hands=,id=202498,ilevel=450
+waist=,id=204399,bonus_id=1808,gem_id=192919,ilevel=450
+legs=,id=202496,enchant=fierce_armor_kit_3,ilevel=447
+feet=,id=193451,ilevel=447
+finger1=,id=203460,enchant=devotion_of_critical_strike_3,gem_id=204027/204029/204001,ilevel=424
+finger2=,id=204398,bonus_id=1808,enchant=devotion_of_critical_strike_3,gem_id=192919,ilevel=450
+trinket1=,id=203963,ilevel=450
+trinket2=,id=202610,ilevel=447
+main_hand=,id=202564,enchant=wafting_devotion_3,ilevel=450
+off_hand=,id=190505,bonus_id=8836/8840/8902,enchant=sophic_devotion_3,ilevel=447,crafted_stats=32/36
 
-# save=T30_Rogue_Assassination.simc
+save=T30_Rogue_Assassination.simc
 
 rogue="T30_Rogue_Outlaw"
 level=70
