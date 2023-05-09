@@ -121,6 +121,8 @@ race=troll
 role=attack
 position=back
 talents=BwPAAAAAAAAAAAAAAAAAAAAAAAAIIJRSLSAJJRIkkkEBAAAAAAAAAKJJhIAAgkESLRSSikA
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=emerald/obsidian/ruby/bronze
 
 head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192985
 neck=red_sky_pendant,id=206182,bonus_id=4786/8782/1669,gem_id=192919/192919/192919
@@ -134,8 +136,8 @@ legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=lam
 feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192919,enchant=devotion_of_haste_3,crafted_stats=49/36
-trinket1=algethar_puzzle_box,id=193701,bonus_id=6808/4786/1643
-trinket2=irideus_fragment,id=193743,bonus_id=6808/4786/1669
+trinket1=vial_of_animated_blood,id=159625,bonus_id=3317/6808/4786
+trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 save=T30_Death_Knight_Unholy.simc
