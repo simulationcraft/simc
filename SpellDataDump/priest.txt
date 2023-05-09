@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -6514,6 +6514,10 @@ Effects          :
 #4 (id=1041993)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 2100 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Obsidian Scales (363916)
+#5 (id=1083835)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 1541 | Radius: 40 yards | Target: Raid Members (56)
+                   Affected Spells (Category): Fiery Brand (204021)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc64901
 Tooltip          : Rapidly recovering a major defensive ability, and regaining $64901s2% missing mana every $64901t1 sec.
 

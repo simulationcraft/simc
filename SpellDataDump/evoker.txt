@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1458,6 +1458,7 @@ Resource         : 3% Base Mana (0) (id=232526)
 Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 24 seconds
+Category         : 1948: Aerial Mastery (365933 effect#1), Blessing of the Bronze (381748 effect#1), Flow State (390148 effect#3)
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Category Cooldown: 0.5 seconds
