@@ -159,7 +159,7 @@ void arcane( player_t* p )
   touch_phase->add_action( "arcane_barrage,if=(buff.arcane_harmony.up|(talent.arcane_bombardment&target.health.pct<35))&debuff.touch_of_the_magi.remains<=gcd.max" );
   touch_phase->add_action( "arcane_missiles,if=buff.clearcasting.stack>1&talent.conjure_mana_gem&cooldown.use_mana_gem.ready,chain=1" );
   touch_phase->add_action( "arcane_blast,if=buff.nether_precision.up" );
-  touch_phase->add_action( "cancel_action,if=debuff.touch_of_the_magi.up&action.arcane_missiles.channeling&gcd.remains=0&(buff.arcane_surge.up|talent.conjure_mana_gem|set_bonus.tier30_4pc)&mana.pct>30" );
+  touch_phase->add_action( "cancel_action,if=debuff.touch_of_the_magi.up&action.arcane_missiles.channeling&gcd.remains=0&(buff.arcane_surge.up|talent.conjure_mana_gem|set_bonus.tier30_4pc)&mana.pct>30&buff.nether_precision.up" );
   touch_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&(debuff.touch_of_the_magi.remains>execute_time|!talent.presence_of_mind),chain=1" );
   touch_phase->add_action( "arcane_blast" );
   touch_phase->add_action( "arcane_barrage" );
@@ -204,6 +204,7 @@ void arcane( player_t* p )
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.concentration.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   rotation->add_action( "arcane_blast,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.nether_precision.up" );
   rotation->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&mana.pct<60&variable.conserve_mana&(!talent.rune_of_power|cooldown.rune_of_power.remains>5)&cooldown.touch_of_the_magi.remains>10&cooldown.evocation.remains>40&fight_remains>20" );
+  rotation->add_action( "cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up" );
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.nether_precision.down" );
   rotation->add_action( "arcane_blast" );
   rotation->add_action( "arcane_barrage" );
