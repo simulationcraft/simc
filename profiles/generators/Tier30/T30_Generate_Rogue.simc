@@ -52,29 +52,29 @@ off_hand=,id=193785,enchant=frozen_devotion_3,ilevel=447
 
 save=T30_Rogue_Outlaw.simc
 
-# rogue="T30_Rogue_Subtlety"
-# level=70
-# race=tauren
-# role=attack
-# position=back
-# spec=subtlety
-# talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkICBIhkgkkEJkEpkkElAJlIkkkkWAAAA
+rogue="T30_Rogue_Subtlety"
+level=70
+race=tauren
+role=attack
+position=back
+spec=subtlety
+talents=BUQAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAECkkIikAJhkgkkEJkEIJRLQSJCJJJpFAAAA
 
-# head=flaring_cowl,id=193494,bonus_id=8960/8840/8836/8902/7936/7937/1508,gem_id=192982
-# neck=elemental_lariat,id=193001,bonus_id=8960/8840/8836/8902/8783/8784/8782/1508,gem_id=192958/192958/192958,crafted_stats=32/40
-# shoulders=vault_delvers_epaulets,id=200374,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-# back=windsoaked_drape,id=144111,bonus_id=6652/8811/8812/6808/4786/3311
-# chest=vault_delvers_brigandine,id=200369,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498,enchant=waking_stats_3
-# wrists=loyal_flametenders_bracers,id=195525,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,gem_id=192925
-# hands=vault_delvers_lockbreakers,id=200371,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1498
-# waist=bjorns_hunting_strap,id=136776,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958
-# legs=vault_delvers_pantaloons,id=200373,bonus_id=6652/8783/8784/8828/8826/8830/8829/8827/7936/7937/4800/4786/1507,enchant=fierce_armor_kit_3
-# feet=boots_of_burning_focus,id=109787,bonus_id=6652/8811/8812/6808/4786/3306
-# finger1=valkyr_ascension_signet,id=133679,bonus_id=6652/8811/8812/6808/4786/8780/3300,gem_id=192958,enchant=devotion_of_critical_strike_3
-# finger2=seal_of_diurnas_chosen,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498/1808,gem_id=192958,enchant=devotion_of_critical_strike_3
-# trinket1=controlled_current_technique,id=194305,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-# trinket2=manic_grieftorch,id=194308,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498
-# main_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498,enchant=sophic_devotion_3
-# off_hand=fenryrs_bloodstained_fang,id=201998,bonus_id=6652/8783/8784/7936/7937/6808/4786/1643,enchant=sophic_devotion_3
+head=,id=193400,bonus_id=8780,gem_id=192982,ilevel=447,crafted_stats=32/40
+neck=,id=193666,bonus_id=8782,gem_id=192925/192925/192925,ilevel=447
+shoulder=,id=202495,ilevel=450
+back=,id=204465,ilevel=457
+chest=,id=202500,enchant=waking_stats_3,ilevel=447
+wrist=,id=193419,bonus_id=8797/8780/8960,gem_id=192925,ilevel=447,crafted_stats=32/40
+hands=,id=202498,ilevel=450
+waist=,id=204399,bonus_id=1808,gem_id=192925,ilevel=450
+legs=,id=202496,enchant=fierce_armor_kit_3,ilevel=447
+feet=,id=193452,bonus_id=8960/8840/8836/8902,ilevel=447
+finger1=,id=203460,enchant=devotion_of_versatility_3,gem_id=204027/204029/204011,ilevel=424
+finger2=,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/1498/1808,enchant=devotion_of_versatility_3,gem_id=192925
+trinket1=,id=203963,ilevel=450
+trinket2=,id=202610,ilevel=447
+main_hand=,id=202564,enchant=shadowflame_wreathe_3,ilevel=450
+off_hand=,id=202564,enchant=shadowflame_wreathe_3,ilevel=450
 
-# save=T30_Rogue_Subtlety.simc
+save=T30_Rogue_Subtlety.simc
