@@ -38,11 +38,9 @@ actions+=/pummel,if=target.debuff.casting.react
 actions+=/use_item,name=manic_grieftorch,if=!buff.avatar.up&!debuff.colossus_smash.up
 actions+=/blood_fury,if=debuff.colossus_smash.up
 actions+=/berserking,if=debuff.colossus_smash.remains>6
-actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&rage<50
 actions+=/lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2
 actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 actions+=/run_action_list,name=single_target,if=!raid_event.adds.exists
@@ -120,6 +118,7 @@ actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up
 actions.single_target+=/cleave,if=set_bonus.tier29_2pc&!talent.crushing_force
 actions.single_target+=/slam,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
 actions.single_target+=/bladestorm
+actions.single_target+=/arcane_torrent
 actions.single_target+=/cleave
 actions.single_target+=/wrecking_throw
 actions.single_target+=/rend,if=remains<duration*0.3

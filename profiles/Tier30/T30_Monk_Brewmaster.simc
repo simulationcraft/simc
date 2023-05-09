@@ -8,8 +8,8 @@ position=front
 talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAgkCtSSSgkkWjAAAAkSSkEJSQRSikkSCQLSkWaCB
 
 # Default consumables
-potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_static_empowerment_3
+potion=potion_of_shocking_disclosure_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
@@ -82,7 +82,7 @@ actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=cooldown.purifying_bre
 
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks.
 actions.cooldowns_niuzao_woo=invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
-actions.cooldowns_niuzao_woo+=/weapons_of_order,if=(talent.weapons_of_order.enabled)&((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|(!equipped.beacon_to_the_beyond))
+actions.cooldowns_niuzao_woo+=/weapons_of_order,if=(talent.weapons_of_order.enabled)&(((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|(!equipped.beacon_to_the_beyond)))
 actions.cooldowns_niuzao_woo+=/bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3
 actions.cooldowns_niuzao_woo+=/bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10
 actions.cooldowns_niuzao_woo+=/exploding_keg,if=buff.bonedust_brew.up
@@ -92,7 +92,7 @@ actions.cooldowns_niuzao_woo+=/purifying_brew,if=stagger.amounttototalpct>=0.7&!
 actions.cooldowns_niuzao_woo+=/purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up
 
 actions.item_actions=use_item,name=beacon_to_the_beyond,if=(debuff.weapons_of_order_debuff.stack>3)|(fight_remains<cooldown.weapons_of_order.remains-3)
-actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser,if=(trinket.1.ready_cooldown>10)&((!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|(debuff.weapons_of_order_debuff.up)|((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains))
+actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser,if=(trinket.1.cooldown.remains>10)&((!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|(debuff.weapons_of_order_debuff.up)|((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains))
 
 actions.race_actions=blood_fury
 actions.race_actions+=/berserking
