@@ -7221,7 +7221,7 @@ struct natures_vigil_t : public Base
       : Base( "natures_vigil_tick", p, p->find_spell( p->specialization() == DRUID_RESTORATION ? 124988 : 124991 ) ),
         mul( p->talent.natures_vigil->effectN( 3 ).percent() )
     {
-      Base::dual = true;
+      Base::dual = Base::proc = true;
     }
 
     double get_amount() const { return Base::p()->buff.natures_vigil->check_value() * mul; }
@@ -8578,7 +8578,6 @@ struct convoke_the_spirits_t : public druid_spell_t
     a->set_free_cast( free_spell_e::CONVOKE );
     stats->add_child( a->stats );
     a->gain = gain;
-    a->proc = true;
     return a;
   }
 

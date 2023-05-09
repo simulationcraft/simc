@@ -1278,8 +1278,6 @@ void irideus_fragment( special_effect_t& effect )
   // also reduce. Maybe require individually tailoring per module a la Bron
   reduce->proc_flags_ = PF_ALL_DAMAGE | PF_ALL_HEAL;
   reduce->proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-  reduce->set_can_proc_from_procs( true );
-  reduce->set_can_only_proc_from_class_abilites( true );
   effect.player->special_effects.push_back( reduce );
 
   auto cb = new dbc_proc_callback_t( effect.player, *reduce );
