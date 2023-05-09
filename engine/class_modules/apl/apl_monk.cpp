@@ -12,7 +12,7 @@ namespace monk_apl
     {
       case MONK_BREWMASTER:
         if ( p->true_level > 60 )
-          return "elemental_potion_of_ultimate_power_3";
+          return "potion_of_shocking_disclosure_3";
         else if ( p->true_level > 50 )
           return "phantom_fire";
         else if ( p->true_level > 45 )
@@ -52,7 +52,7 @@ namespace monk_apl
     {
       case MONK_BREWMASTER:
         if ( p->true_level > 60 )
-          return "phial_of_static_empowerment_3";
+          return "phial_of_tepid_versatility_3";
         else if ( p->true_level > 50 )
           return "spectral_flask_of_power";
         else if ( p->true_level > 45 )
@@ -197,19 +197,19 @@ namespace monk_apl
         "(debuff.weapons_of_order_debuff.stack>3)|"                                                                                                                         // 1. if woo debuff is at 4 stacks
         "(fight_remains<cooldown.weapons_of_order.remains-3)" },                                                                                                            // 2. if the fight will over before next woo + 3 seconds
       // TODO: replace 4 with fight remains is less than charges that exist + charges that will naturally recover by then + charges expected to recover via crits + something to prevent clobbering second on-use trinket
-      { "dragonfire_bomb_dispenser_trinket1", ",if=(trinket.2.ready_cooldown>10)&("                                                                                 // 1. If DFBD will not clobber Trinket 2 and
+      { "dragonfire_bomb_dispenser_trinket1", ",if=(trinket.2.cooldown.remains>10)&("                                                                               // 1. If DFBD will not clobber Trinket 2 and
         "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|"                                   // 2. if going to cap charges soon and not in woo
         "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|"     // 3. if going to gain a new charge via crit effect soon and not in woo
         "(debuff.weapons_of_order_debuff.up)|"                                                                                                                      // 4. if woo is up and it won't put other trinket on bad shared cd
         "((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.2.ready_cooldown<fight_remains)*20<fight_remains)"                                  // 5. If you can't spend all current charges of Dragonfire Bomb Dispenser + other on-use trinket if it will be available before end of fight, start spending immediately.
         ")" },
-      { "dragonfire_bomb_dispenser_trinket2", ",if=(trinket.1.ready_cooldown>10)&("                                                                                 // 1. If DFBD will not clobber Trinket 1 and
+      { "dragonfire_bomb_dispenser_trinket2", ",if=(trinket.1.cooldown.remains>10)&("                                                                               // 1. If DFBD will not clobber Trinket 1 and
         "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|"                                   // 2. if going to cap charges soon and not in woo
         "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|"     // 3. if going to gain a new charge via crit effect soon and not in woo
         "(debuff.weapons_of_order_debuff.up)|"                                                                                                                      // 4. if woo is up and it won't put other trinket on bad shared cd
         "((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains)"                                  // 5. If you can't spend all current charges of Dragonfire Bomb Dispenser + other on-use trinket if it will be available before end of fight, start spending immediately.
         ")" },
-      { "djaruun_pillar_of_the_elder_flame_main_hand", "" },
+      { "djaruun_pillar_of_the_elder_flame_main_hand", ",if=debuff.weapons_of_order_debuff.stack>3" },
 
       // Defaults by slot:
       { "trinket1", ",if=debuff.weapons_of_order_debuff.stack>3" },
@@ -345,9 +345,10 @@ namespace monk_apl
     cooldowns_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_niuzao_woo->add_action( "weapons_of_order,if="
-                                      "(talent.weapons_of_order.enabled)&"
+                                      "(talent.weapons_of_order.enabled)&("
                                       "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                      "(!equipped.beacon_to_the_beyond))");
+                                      "(!equipped.beacon_to_the_beyond))"
+                                      ")");
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
