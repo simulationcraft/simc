@@ -88,7 +88,7 @@ void arcane( player_t* p )
   default_->add_action( "fireblood,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "ancestral_call,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=!talent.radiant_spark&prev_gcd.1.arcane_surge" );
-  default_->add_action( "use_items,if=buff.arcane_surge.up&(debuff.touch_of_the_magi.up&equipped.irideus_fragment&set_bonus.tier30_4pc)" );
+  default_->add_action( "use_items,if=(prev_gcd.1.arcane_surge&!set_bonus.tier30_4pc)|(prev_gcd.2.arcane_surge&debuff.touch_of_the_magi.up&set_bonus.tier30_4pc)" );
   default_->add_action( "use_item,name=tinker_breath_of_neltharion,if=cooldown.arcane_surge.remains&buff.rune_of_power.down&buff.arcane_surge.down&debuff.touch_of_the_magi.down" );
   default_->add_action( "use_item,name=conjured_chillglobe,if=mana.pct>65&(!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20)" );
   default_->add_action( "use_item,name=darkmoon_deck_rime,if=!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20" );
@@ -215,11 +215,12 @@ void arcane( player_t* p )
   t30_burst_phase->add_action( "variable,name=conserve_mana,op=set,value=1" );
   t30_burst_phase->add_action( "arcane_orb,if=!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   t30_burst_phase->add_action( "arcane_blast,if=!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&(buff.arcane_charge.stack<2|(buff.arcane_charge.stack<buff.arcane_charge.max_stack&cooldown.arcane_orb.remains>=gcd.max))" );
-  t30_burst_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&(buff.nether_precision.down|buff.nether_precision.remains<gcd.max)" );
+  t30_burst_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&(buff.nether_precision.down|buff.clearcasting.stack>1&buff.nether_precision.remains<gcd.max)" );
   t30_burst_phase->add_action( "radiant_spark,if=cooldown.arcane_surge.remains<=gcd.max*2" );
   t30_burst_phase->add_action( "arcane_orb,if=prev_gcd.1.radiant_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   t30_burst_phase->add_action( "nether_tempest,if=cooldown.arcane_surge.remains<=gcd.max,line_cd=45" );
   t30_burst_phase->add_action( "arcane_surge,if=((!talent.nether_tempest&prev_gcd.2.radiant_spark)|prev_gcd.1.nether_tempest)" );
+  t30_burst_phase->add_action( "use_item,name=timebreaching_talon,if=prev_gcd.1.arcane_surge" );
   t30_burst_phase->add_action( "rune_of_power,if=buff.rune_of_power.down&debuff.touch_of_the_magi.down&cooldown.arcane_surge.remains>22" );
   t30_burst_phase->add_action( "wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15" );
   t30_burst_phase->add_action( "arcane_barrage,if=prev_gcd.1.arcane_surge" );
