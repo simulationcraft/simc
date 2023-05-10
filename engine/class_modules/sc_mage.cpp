@@ -4895,7 +4895,9 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = triggers.ignite = true;
-    callbacks = false;
+    // TODO: PF doesn't trigger normal RPPM effects, but somehow triggers the class trinket.
+    // Enable callbacks for now until we find what exactly causes this.
+    // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
