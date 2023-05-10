@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4274,7 +4274,7 @@ Effects          :
                    Affected Spells (Category): Hammer of the Righteous (53595)
 #4 (id=191098)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)

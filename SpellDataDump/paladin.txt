@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -2821,7 +2821,7 @@ Effects          :
                    Affected Spells (Category): Hammer of the Righteous (53595)
 #4 (id=191098)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
@@ -2869,7 +2869,7 @@ Effects          :
                    Family Flags: 23, 31, 39, 47, 49, 54, 63, 77, 80, 88, 108, 126
 #5 (id=191095)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #6 (id=260907)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 2128 | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
@@ -4347,7 +4347,7 @@ Effects          :
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
 #3 (id=341689)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Reduces the cooldown of Crusader Strike by $s3% and grants it a $h% chance to make your next ability consume $209785s1 less Holy Power.
 Variables        : $reduction=${$m2/-1000}
 
@@ -5089,7 +5089,7 @@ Effects          :
                    Family Flags: 23, 47
 #2 (id=321879)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #3 (id=321880)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
@@ -5484,7 +5484,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349507)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Crusader Strike now has ${$s1+1} charges.
 
 Name             : Blade of Wrath (id=231832) [Spell Family (10), Passive] 
@@ -5719,7 +5719,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=369379)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
-                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Judgment of Light (183811), Light of the Martyr (183998), Tyr's Deliverance (200654), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214), Bestow Faith (343618), Golden Path (377129)
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Judgment of Light (183811), Light of the Martyr (183998), Tyr's Deliverance (200654), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214), Bestow Faith (343618), Golden Path (377129), Resplendent Light (392903)
                    Family Flags: 15, 30, 32, 41, 48, 74, 82, 90, 97, 100, 124
 Description      : $@spelldesc238132
 Tooltip          : Receiving $w1% increased healing from the Paladin.
@@ -12709,7 +12709,7 @@ Effects          :
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
 #2 (id=1049616)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Reduces the cooldown of Judgment by ${$s1/-1000} sec and Crusader Strike by ${$s2/-1000} sec.
 
 Name             : Improved Crusader Strike (id=383254) [Spell Family (10), Passive] 
@@ -12729,7 +12729,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015039)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Crusader Strike now has ${$s1+1} charges.
 
 Name             : Virtuous Command (id=383304) [Spell Family (10), Passive] 
@@ -13528,7 +13528,7 @@ Effects          :
                    Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
 #7 (id=1034409)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #8 (id=1034728)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
@@ -15277,10 +15277,13 @@ Effects          :
 Description      : Holy Light heals up to $s2 targets within $392903a1 yds for $s1% of its healing.
 
 Name             : Resplendent Light (id=392903) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : None
 Range            : 100 yards
+Affecting spells : Sacred Dawn (243174 effect#1)
+Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17642,7 +17645,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406648 | Target: Self (1)
 #2 (id=1073914)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
-                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480), Crusading Strikes (408385)
+                   Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Crusader Strike becomes a 2 part combo.
 
 Templar Strike slashes an enemy for $407480s1 $?s403664 [Holystrike][Radiant] damage. 
@@ -18028,10 +18031,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 5 yards
-GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Charges          : 1 (6 seconds cooldown)
-Category         : 1627: Paladin (137026 effect#4), Retribution Paladin (137027 effect#5), Fires of Justice (203316 effect#3), Avenging Crusader (216331 effect#2), Radiant Onslaught (231667 effect#1), Swift Justice (383228 effect#2), Improved Crusader Strike (383254 effect#1), Blessing of Dusk (385126 effect#7), Templar Strikes (406646 effect#2)
 Labels           : 2580: Divine Arbiter (404306 effect#1)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Blessed Champion (403010 effect#1), Crusader's Reprieve (403042 effect#2), Blades of Light (403664 effect#1), Heart of the Crusader (406154 effects: #3, #4), Adjudication (406157 effect#1)
 Triggered by     : Crusading Strikes (404542)
