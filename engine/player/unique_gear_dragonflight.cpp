@@ -5695,6 +5695,29 @@ void playful_spirits_fur( special_effect_t& effect )
   }
 }
 
+//407914 set driver
+//407913 primary stat buff
+//407939 primary stat value
+void might_of_the_drogbar( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T30_MIGHT_OF_THE_DROGBAR, B2) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player -> specialization(), T30_MIGHT_OF_THE_DROGBAR, B2 ) -> id();
+
+  if ( effect.driver()->id() == set_driver_id )
+  {
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 407913 ) )
+      ->add_stat ( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average(effect.item));
+    auto driver = unique_gear::find_special_effect( effect.player, set_driver_id );
+    driver->custom_buff = buff;
+  }
+}
+
 void horizon_striders_garments( special_effect_t& effect )
 {
   if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T29_HORIZON_STRIDERS_GARMENTS, B2 ) )
@@ -6796,6 +6819,7 @@ void register_special_effects()
   register_special_effect( { 393987, 393768 }, sets::azureweave_vestments );
   register_special_effect( { 393993, 393818 }, sets::woven_chronocloth );
   register_special_effect( { 389987, 389498, 391117 }, sets::raging_tempests );
+  register_special_effect( { 407914, 407939 }, sets::might_of_the_drogbar );
 
   // Primordial Stones
   register_special_effect( primordial_stones::ECHOING_THUNDER_STONE,    primordial_stones::echoing_thunder_stone );
