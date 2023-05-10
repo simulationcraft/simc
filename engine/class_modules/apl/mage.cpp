@@ -215,7 +215,7 @@ void arcane( player_t* p )
   t30_burst_phase->add_action( "variable,name=conserve_mana,op=set,value=1" );
   t30_burst_phase->add_action( "arcane_orb,if=!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   t30_burst_phase->add_action( "arcane_blast,if=!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&(buff.arcane_charge.stack<2|(buff.arcane_charge.stack<buff.arcane_charge.max_stack&cooldown.arcane_orb.remains>=gcd.max))" );
-  t30_burst_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&(buff.nether_precision.down|buff.clearcasting.stack>1&buff.nether_precision.remains<gcd.max)" );
+  t30_burst_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&!debuff.radiant_spark_vulnerability.up&cooldown.radiant_spark.ready&buff.nether_precision.down&buff.nether_precision.remains<gcd.max)" );
   t30_burst_phase->add_action( "radiant_spark,if=cooldown.arcane_surge.remains<=gcd.max*2" );
   t30_burst_phase->add_action( "arcane_orb,if=prev_gcd.1.radiant_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   t30_burst_phase->add_action( "nether_tempest,if=cooldown.arcane_surge.remains<=gcd.max,line_cd=45" );
