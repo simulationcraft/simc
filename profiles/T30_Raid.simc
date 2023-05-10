@@ -33,9 +33,9 @@ T30_Paladin_Retribution.simc
 
 T30_Priest_Shadow.simc
 
-# T30_Rogue_Assassination.simc
-# T30_Rogue_Outlaw.simc
-# T30_Rogue_Subtlety.simc
+T30_Rogue_Assassination.simc
+T30_Rogue_Outlaw.simc
+T30_Rogue_Subtlety.simc
 
 T30_Shaman_Elemental.simc
 T30_Shaman_Enhancement.simc
