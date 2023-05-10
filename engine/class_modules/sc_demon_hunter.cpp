@@ -2583,12 +2583,20 @@ struct fiery_brand_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->spec.fiery_brand_debuff )
     {
       background = dual = true;
+      dot_behavior = DOT_EXTEND;
 
       // Spread radius used for Burning Alive.
       if ( p->talent.vengeance.burning_alive->ok() )
       {
         radius = p->find_spell( 207760 )->effectN( 1 ).radius_max();
       }
+    }
+
+    timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+    {
+      // Fiery Brand is capped to the base duration, regardless of the extension mechanics
+      return std::min( demon_hunter_spell_t::calculate_dot_refresh_duration( dot, triggered_duration ),
+                       p()->spec.fiery_brand_debuff->duration() );
     }
 
     action_state_t* new_state() override
@@ -2995,7 +3003,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
           if ( target_data->dots.fiery_brand->is_ticking() && target_data->debuffs.charred_flesh->up() )
           {
             target_data->dots.fiery_brand->adjust_duration(
-                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
+                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value(), p()->spec.fiery_brand_debuff->duration() );
           }
         }
 
