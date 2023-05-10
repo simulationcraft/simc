@@ -68,7 +68,7 @@ position=front
 professions=blacksmithing=100/jewelcrafting=100
 talents=BkEAAAAAAAAAAAAAAAAAAAAAAIkEAAAAIJJSSCikSSSaNEBCFBUSSAISSCNkkAyB4AhAAAAAAAARAAKaBAC
 
-head=primal_molten_helm,id=190498,bonus_id=8840/8836/8902/1537/9379,gem_id=192985,crafted_stats=36/3
+head=primal_molten_helm,id=190498,bonus_id=8840/8836/8902/1537/9379,gem_id=192985,crafted_stats=36/32
 neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192945/192945/192945
 shoulder=pauldrons_of_the_onyx_crucible,id=202441,bonus_id=4800/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
