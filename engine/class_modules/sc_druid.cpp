@@ -1881,6 +1881,9 @@ public:
     {
       apply_buff_effects();
       apply_debuffs_effects();
+
+      if ( ab::data().flags( spell_attribute::SX_ABILITY ) || ab::trigger_gcd > 0_ms )
+        ab::not_a_proc = true;
     }
   }
 
@@ -3893,7 +3896,7 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
   {
     rake_bleed_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( n, p, s->effectN( 3 ).trigger() )
     {
-      background = dual = not_a_proc = true;
+      background = dual = true;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
       form_mask = 0;
 
@@ -4306,7 +4309,7 @@ struct thrash_cat_dot_t : public trigger_waning_twilight_t<cat_attack_t>
 {
   thrash_cat_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_cat_dot )
   {
-    dual = background = not_a_proc = true;
+    dual = background = true;
 
     dot_name = "thrash_cat";
   }
@@ -5002,7 +5005,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
 
     thrash_bear_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_bear_dot )
     {
-      dual = background = not_a_proc = true;
+      dual = background = true;
 
       dot_name = "thrash_bear";
 
@@ -6984,7 +6987,7 @@ struct moonfire_t : public druid_spell_t
     moonfire_damage_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.moonfire_dmg )
     {
       may_miss = false;
-      dual = background = not_a_proc = true;
+      dual = background = true;
 
       dot_name = "moonfire";
       dot_list = &p->dot_list.moonfire;
@@ -8012,7 +8015,7 @@ struct sunfire_t : public druid_spell_t
   {
     sunfire_damage_t( druid_t* p ) : base_t( "sunfire_dmg", p, p->spec.sunfire_dmg )
     {
-      dual = background = not_a_proc = true;
+      dual = background = true;
       aoe = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
 
@@ -8287,7 +8290,7 @@ struct wild_mushroom_t : public druid_spell_t
         fungal_mul( p->talent.fungal_growth->effectN( 1 ).percent() ),
         ap_max( data().effectN( 2 ).base_value() )
     {
-      background = dual = not_a_proc = true;
+      background = dual = true;
       aoe = -1;
 
       if ( p->talent.fungal_growth.ok() )
@@ -10424,7 +10427,7 @@ void druid_t::create_actions()
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
     fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
-    fm->background = fm->not_a_proc = true;
+    fm->background = true;
     active.orbit_breaker = fm;
   }
 
