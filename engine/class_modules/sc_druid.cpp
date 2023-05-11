@@ -3851,7 +3851,10 @@ struct ferocious_bite_t : public cat_finisher_t
 
 struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
-  frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) ) {}
+  frenzied_assault_t( druid_t* p ) : residual_action_t( "frenzied_assault", p, p->find_spell( 391140 ) )
+  {
+    proc = true;
+  }
 };
 
 // Lunar Inspiration ========================================================
@@ -4563,8 +4566,8 @@ struct brambles_pulse_t : public bear_attack_t
 {
   brambles_pulse_t( druid_t* p, std::string_view n ) : bear_attack_t( n, p, p->find_spell( 213709 ) )
   {
-    background = dual = true;
-    aoe               = -1;
+    background = proc = dual = true;
+    aoe = -1;
   }
 };
 
@@ -4847,6 +4850,7 @@ struct moonless_night_t : public druid_residual_action_t<bear_attack_t>
 {
   moonless_night_t( druid_t* p ) : base_t( "moonless_night", p, p->find_spell( 400360 ) )
   {
+    proc = true;
     residual_mul = p->talent.moonless_night->effectN( 1 ).percent();
   }
 };
@@ -4889,7 +4893,7 @@ struct rage_of_the_sleeper_reflect_t : public bear_attack_t
   rage_of_the_sleeper_reflect_t( druid_t* p )
     : bear_attack_t( "rage_of_the_sleeper_reflect", p, p->find_spell( 219432 ) )
   {
-    background = dual = true;
+    background = proc = dual = true;
   }
 };
 
@@ -4984,7 +4988,7 @@ struct thorns_of_iron_t : public bear_attack_t
     : bear_attack_t( "thorns_of_iron", p, p->talent.thorns_of_iron->effectN( 1 ).trigger() ),
       mul( p->talent.thorns_of_iron->effectN( 1 ).percent() )
   {
-    background = split_aoe_damage = true;
+    background = proc = split_aoe_damage = true;
     aoe = -1;
 
     // 1 point to allow proper snapshot/update flag parsing
@@ -5106,6 +5110,7 @@ struct after_the_wildfire_heal_t : public druid_heal_t
 {
   after_the_wildfire_heal_t( druid_t* p ) : druid_heal_t( "after_the_wildfire", p, p->find_spell( 371982 ) )
   {
+    proc = true;
     aoe = 5;  // TODO: not in known spell data
   }
 };
@@ -5245,7 +5250,7 @@ struct elunes_favored_heal_t : public druid_heal_t
     : druid_heal_t( "elunes_favored", p, p->find_spell( 370602 ) ),
       mul( p->talent.elunes_favored->effectN( 1 ).percent() )
   {
-    background = true;
+    background = proc = true;
   }
 
   double get_amount() const { return p()->buff.elunes_favored->check_value() * mul; }
@@ -5311,7 +5316,10 @@ struct frenzied_regeneration_t : public druid_heal_t
 // Furious Regeneration (Guardian Tier 30 2pc) ==============================
 struct furious_regeneration_t : public residual_action::residual_periodic_action_t<druid_heal_t>
 {
-  furious_regeneration_t( druid_t* p ) : residual_action_t( "furious_regeneration", p, p->spec.furious_regeneration ) {}
+  furious_regeneration_t( druid_t* p ) : residual_action_t( "furious_regeneration", p, p->spec.furious_regeneration )
+  {
+    proc = true;
+  }
 };
 
 // Flourish =================================================================
@@ -6362,7 +6370,10 @@ struct astral_communion_t : public druid_spell_t
 struct astral_smolder_t
   : public residual_action::residual_periodic_action_t<trigger_waning_twilight_t<druid_spell_t>>
 {
-  astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) ) {}
+  astral_smolder_t( druid_t* p ) : residual_action_t( "astral_smolder", p, p->find_spell( 394061 ) )
+  {
+    proc = true;
+  }
 
   void trigger_dot( action_state_t* s ) override
   {
@@ -10577,9 +10588,7 @@ void druid_t::create_actions()
   }
 
   if ( talent.moonless_night.ok() )
-  {
     active.moonless_night = get_secondary_action<moonless_night_t>( "moonless_night" );
-  }
 
   if ( talent.tooth_and_claw.ok() && ( talent.maul.ok() || talent.raze.ok() ) )
   {
