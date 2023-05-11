@@ -5685,10 +5685,11 @@ struct rejuvenation_t : public rejuvenation_base_t
 
   action_t* germination = nullptr;
 
-  rejuvenation_t( druid_t* p, std::string_view opt ) : rejuvenation_t( p, "rejuvenation", opt ) {}
+  rejuvenation_t( druid_t* p, std::string_view opt ) : rejuvenation_t( p, "rejuvenation", p->talent.rejuvenation, opt )
+  {}
 
-  rejuvenation_t( druid_t* p, std::string_view n, std::string_view opt )
-    : rejuvenation_base_t( n, p, p->talent.rejuvenation, opt )
+  rejuvenation_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : rejuvenation_base_t( n, p, s, opt )
   {
     if ( p->talent.germination.ok() )
       germination = p->get_secondary_action<germination_t>( "germination", opt );
@@ -8537,7 +8538,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     actions.conv_rake         = get_convoke_action<rake_t>( "rake", p()->find_spell( 1822 ), "" );
     actions.conv_thrash_bear  = get_convoke_action<thrash_bear_t>( "thrash_bear", p()->find_spell( 77758 ), "" );
     actions.conv_regrowth     = get_convoke_action<regrowth_t>( "regrowth", "" );
-    actions.conv_rejuvenation = get_convoke_action<rejuvenation_t>( "rejuvenation", "" );
+    actions.conv_rejuvenation = get_convoke_action<rejuvenation_t>( "rejuvenation", p()->find_spell( 774 ), "" );
 
     // Call form-specific initialization to create necessary actions & setup variables
     if ( p()->find_action( "moonkin_form" ) )
