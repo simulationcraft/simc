@@ -583,7 +583,7 @@ public:
     cooldown_t* blade_dance;
     cooldown_t* blur;
     cooldown_t* chaos_nova;
-    cooldown_t* chaos_strike_refund;
+    cooldown_t* chaos_strike_refund_icd;
     cooldown_t* essence_break;
     cooldown_t* demonic_appetite;
     cooldown_t* eye_beam;
@@ -591,7 +591,7 @@ public:
     cooldown_t* fel_rush;
     cooldown_t* metamorphosis;
     cooldown_t* netherwalk;
-    cooldown_t* relentless_onslaught;
+    cooldown_t* relentless_onslaught_icd;
     cooldown_t* throw_glaive;
     cooldown_t* vengeful_retreat;
     cooldown_t* movement_shared;
@@ -4262,10 +4262,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       {
         // Technically this appears to have a 0.5s ICD, but this is handled elsewhere
         // Onslaught can currently proc refunds due to being delayed by 600ms
-        if ( p()->cooldown.chaos_strike_refund->up() && p()->rng().roll( this->get_refund_proc_chance() ) )
+        if ( p()->cooldown.chaos_strike_refund_icd->up() && p()->rng().roll( this->get_refund_proc_chance() ) )
         {
           p()->resource_gain( RESOURCE_FURY, p()->spec.chaos_strike_fury->effectN( 1 ).resource( RESOURCE_FURY ), parent->gain );
-          p()->cooldown.chaos_strike_refund->start( p()->spec.chaos_strike_refund->internal_cooldown() );
+          p()->cooldown.chaos_strike_refund_icd->start( p()->spec.chaos_strike_refund->internal_cooldown() );
         }
                 
         if ( p()->talent.havoc.chaos_theory->ok() )
@@ -4284,13 +4284,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
         if ( result_is_hit( s->result ) && may_refund && !parent->from_onslaught )
         {
           double chance = p()->talent.havoc.relentless_onslaught->effectN( 1 ).percent();
-          if ( p()->cooldown.relentless_onslaught->up() && p()->rng().roll( chance ) )
+          if ( p()->cooldown.relentless_onslaught_icd->up() && p()->rng().roll( chance ) )
           {
             attack_t* const relentless_onslaught = p()->buff.metamorphosis->check() ?
               p()->active.relentless_onslaught_annihilation : p()->active.relentless_onslaught;
             relentless_onslaught->set_target( s->target );
             relentless_onslaught->schedule_execute();
-            p()->cooldown.relentless_onslaught->start( p()->talent.havoc.relentless_onslaught->internal_cooldown() );
+            p()->cooldown.relentless_onslaught_icd->start( p()->talent.havoc.relentless_onslaught->internal_cooldown() );
           }
         }
       }
@@ -6868,20 +6868,20 @@ void demon_hunter_t::create_cooldowns()
   cooldown.the_hunt             = get_cooldown( "the_hunt" );
 
   // Havoc
-  cooldown.blade_dance          = get_cooldown( "blade_dance" );
-  cooldown.blur                 = get_cooldown( "blur" );
-  cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
-  cooldown.chaos_strike_refund  = get_cooldown( "chaos_strike" );
-  cooldown.essence_break        = get_cooldown( "essence_break" );
-  cooldown.eye_beam             = get_cooldown( "eye_beam" );
-  cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
-  cooldown.fel_rush             = get_cooldown( "fel_rush" );
-  cooldown.metamorphosis        = get_cooldown( "metamorphosis" );
-  cooldown.netherwalk           = get_cooldown( "netherwalk" );
-  cooldown.relentless_onslaught = get_cooldown( "relentless_onslaught" );
-  cooldown.throw_glaive         = get_cooldown( "throw_glaive" );
-  cooldown.vengeful_retreat     = get_cooldown( "vengeful_retreat" );
-  cooldown.movement_shared      = get_cooldown( "movement_shared" );
+  cooldown.blade_dance              = get_cooldown( "blade_dance" );
+  cooldown.blur                     = get_cooldown( "blur" );
+  cooldown.chaos_nova               = get_cooldown( "chaos_nova" );
+  cooldown.chaos_strike_refund_icd  = get_cooldown( "chaos_strike_refund_icd" );
+  cooldown.essence_break            = get_cooldown( "essence_break" );
+  cooldown.eye_beam                 = get_cooldown( "eye_beam" );
+  cooldown.fel_barrage              = get_cooldown( "fel_barrage" );
+  cooldown.fel_rush                 = get_cooldown( "fel_rush" );
+  cooldown.metamorphosis            = get_cooldown( "metamorphosis" );
+  cooldown.netherwalk               = get_cooldown( "netherwalk" );
+  cooldown.relentless_onslaught_icd = get_cooldown( "relentless_onslaught_icd" );
+  cooldown.throw_glaive             = get_cooldown( "throw_glaive" );
+  cooldown.vengeful_retreat         = get_cooldown( "vengeful_retreat" );
+  cooldown.movement_shared          = get_cooldown( "movement_shared" );
 
   // Vengeance
   cooldown.demon_spikes                      = get_cooldown( "demon_spikes" );
