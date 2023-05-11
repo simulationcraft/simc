@@ -782,6 +782,8 @@ struct player_t : public actor_t
     /// Type stat given by Spoils of Neltharus on pull
     /// Buff type: "mastery", "haste", "crit", "vers", other for random
     player_option_t<std::string> spoils_of_neltharus_initial_type = "";
+    /// Chance for igenous flowstone lave wave to hit twice
+    player_option_t<double> igneous_flowstone_double_lava_wave_chance;
   } dragonflight_opts;
 
 private:

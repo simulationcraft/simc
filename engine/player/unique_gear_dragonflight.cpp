@@ -1471,11 +1471,18 @@ void igneous_flowstone( special_effect_t& effect )
 
       trigger_buff->expire();
 
-      damage->set_target( target( s ) );
-      auto damage_state    = damage->get_state();
-      damage_state->target = damage->target;
-      damage->snapshot_state( damage_state, damage->amount_type( damage_state ) );
-      damage->schedule_execute( damage_state );
+      size_t n = 1;
+      if ( rng().roll( listener->dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) )
+        n++;
+
+      while ( n-- )
+      {
+        damage->set_target( target( s ) );
+        auto damage_state    = damage->get_state();
+        damage_state->target = damage->target;
+        damage->snapshot_state( damage_state, damage->amount_type( damage_state ) );
+        damage->schedule_execute( damage_state );
+      }
     }
   };
 
