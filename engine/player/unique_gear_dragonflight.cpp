@@ -4606,7 +4606,7 @@ void drogbar_stones( special_effect_t& effect )
       "drogbar_stones_damage", *drogbar_stones_damage, "drogbar_stones_damage", effect.player->find_spell( 407907 ) );
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
-      drogbar_stones_damage->spell_id, [buff, drogbar_stones_damage] ( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+      drogbar_stones_damage->spell_id, [buff, drogbar_stones_damage, effect] ( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
         if ( buff->check() )
         {
           drogbar_stones_damage->execute_action->execute();
@@ -4616,7 +4616,21 @@ void drogbar_stones( special_effect_t& effect )
       }
     );
 
-    effect.player->special_effects.push_back( drogbar_stones_damage );
+    auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
+    damage->initialize();
+    damage->deactivate();
+
+    buff->set_stack_change_callback( [damage] ( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      damage->activate();
+    }
+    else
+    {
+      damage->deactivate();
+    }
+    } );
+
   }
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
