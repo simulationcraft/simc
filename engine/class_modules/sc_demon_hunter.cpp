@@ -2387,10 +2387,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
     if ( p()->talent.havoc.blind_fury->ok() )
     {
-      // Blind Fury gains scale with the duration of the channel
-      p()->buff.blind_fury->set_duration( duration );
-      p()->buff.blind_fury->set_period( timespan_t::from_millis( 100 ) * ( duration / dot_duration ) );
-      p()->buff.blind_fury->trigger();
+      p()->buff.blind_fury->trigger( duration );
     }
 
     // Collective Anguish
@@ -5821,8 +5818,8 @@ void demon_hunter_t::create_buffs()
   buff.blind_fury = make_buff( this, "blind_fury", talent.havoc.eye_beam )
     ->set_default_value( talent.havoc.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
     ->set_cooldown( timespan_t::zero() )
-    ->set_period( timespan_t::from_millis( 100 ) ) // Overridden on cast
-    ->set_tick_zero( true )
+    ->set_period( timespan_t::from_millis( 100 ) ) // Fake natural regeneration rate
+    ->set_tick_on_application( false )
     ->set_tick_callback( [this]( buff_t* b, int, timespan_t ) {
       resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
     } );
