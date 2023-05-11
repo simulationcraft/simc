@@ -2803,12 +2803,18 @@ void algethar_puzzle_box( special_effect_t& effect )
       }
     }
   };
+  auto value = effect.driver()->effectN( 1 ).average( effect.item );
+
+  if (effect.player->specialization() == DEATH_KNIGHT_UNHOLY)
+  {
+    auto mod = 1.0 + effect.player -> find_spell( 137007 ) -> effectN( 6 ).percent();
+    value = value * mod;
+  }
 
   auto buff_spell = effect.player->find_spell( 383781 );
   buff_t* buff    = create_buff<stat_buff_t>( effect.player, buff_spell )
-    ->set_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) )
+    ->set_stat_from_effect( 1, value )
     ->set_cooldown( 0_ms );
-  buff->set_default_value( effect.driver()->effectN( 1 ).average( effect.item ) );
 
   auto action = new puzzle_box_channel_t( effect, buff );
   effect.execute_action = action;

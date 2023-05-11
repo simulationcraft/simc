@@ -5517,8 +5517,10 @@ struct regrowth_t : public druid_heal_t
   double sotf_mul;
   bool is_direct = false;
 
-  regrowth_t( druid_t* p, std::string_view opt )
-    : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), opt ),
+  regrowth_t( druid_t* p, std::string_view opt ) : regrowth_t( p, "regrowth", opt ) {}
+
+  regrowth_t( druid_t* p, std::string_view n, std::string_view opt )
+    : druid_heal_t( n, p, p->find_class_spell( "Regrowth" ), opt ),
       gcd_add( p->query_aura_effect( p->spec.cat_form_passive, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value() ),
       bonus_crit( p->talent.improved_regrowth->effectN( 1 ).percent() ),
       sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
@@ -5696,8 +5698,10 @@ struct rejuvenation_t : public rejuvenation_base_t
 
   action_t* germination = nullptr;
 
-  rejuvenation_t( druid_t* p, std::string_view opt )
-    : rejuvenation_base_t( "rejuvenation", p, p->talent.rejuvenation, opt )
+  rejuvenation_t( druid_t* p, std::string_view opt ) : rejuvenation_t( p, "rejuvenation", opt ) {}
+
+  rejuvenation_t( druid_t* p, std::string_view n, std::string_view opt )
+    : rejuvenation_base_t( n, p, p->talent.rejuvenation, opt )
   {
     if ( p->talent.germination.ok() )
       germination = p->get_secondary_action<germination_t>( "germination", opt );
@@ -8506,6 +8510,9 @@ struct convoke_the_spirits_t : public druid_spell_t
     action_t* conv_thrash_cat;
     action_t* conv_shred;
     action_t* conv_lunar_inspiration;
+    // Heals
+    action_t* conv_regrowth;
+    action_t* conv_rejuvenation;
   } actions;
 
   std::vector<convoke_cast_e> cast_list;
@@ -8545,12 +8552,15 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     using namespace bear_attacks;
     using namespace cat_attacks;
+    using namespace heals;
 
     // Create actions used by all specs
-    actions.conv_wrath       = get_convoke_action<wrath_t>( "wrath", "" );
-    actions.conv_moonfire    = get_convoke_action<moonfire_t>( "moonfire", "" );
-    actions.conv_rake        = get_convoke_action<rake_t>( "rake", p()->find_spell( 1822 ), "" );
-    actions.conv_thrash_bear = get_convoke_action<thrash_bear_t>( "thrash_bear", p()->find_spell( 77758 ), "" );
+    actions.conv_wrath        = get_convoke_action<wrath_t>( "wrath", "" );
+    actions.conv_moonfire     = get_convoke_action<moonfire_t>( "moonfire", "" );
+    actions.conv_rake         = get_convoke_action<rake_t>( "rake", p()->find_spell( 1822 ), "" );
+    actions.conv_thrash_bear  = get_convoke_action<thrash_bear_t>( "thrash_bear", p()->find_spell( 77758 ), "" );
+    actions.conv_regrowth     = get_convoke_action<regrowth_t>( "regrowth", "" );
+    actions.conv_rejuvenation = get_convoke_action<rejuvenation_t>( "rejuvenation", "" );
 
     // Call form-specific initialization to create necessary actions & setup variables
     if ( p()->find_action( "moonkin_form" ) )
@@ -8597,7 +8607,8 @@ struct convoke_the_spirits_t : public druid_spell_t
       case CAST_FEROCIOUS_BITE: return actions.conv_ferocious_bite;
       case CAST_THRASH_CAT:     return actions.conv_thrash_cat;
       case CAST_SHRED:          return actions.conv_shred;
-      default: return nullptr;  // heals will fall through and return as null
+      case CAST_HEAL:           return rng().roll( 0.5 ) ? actions.conv_regrowth : actions.conv_rejuvenation;
+      default: return nullptr;
     }
   }
 
@@ -8896,9 +8907,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     conv_cast = convoke_action_from_type( type );
     if ( !conv_cast )
-    {
       return;
-    }
 
     conv_cast->execute_on_target( conv_tar );
   }

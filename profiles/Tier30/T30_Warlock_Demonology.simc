@@ -41,9 +41,9 @@ actions+=/call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&(variable
 actions+=/invoke_external_buff,name=power_infusion,if=!talent.nether_portal&!talent.summon_demonic_tyrant|time_to_die<25|(buff.tyrant.up&variable.shadow_timings)
 actions+=/implosion,if=time_to_die<2*gcd
 actions+=/nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2|time_to_die<30
-actions+=/hand_of_guldan,if=buff.nether_portal.up
 actions+=/call_action_list,name=items
 actions+=/call_action_list,name=ogcd,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)
+actions+=/hand_of_guldan,if=buff.nether_portal.up
 actions+=/call_dreadstalkers,if=variable.tyrant_cd>cooldown+8*variable.shadow_timings
 actions+=/call_dreadstalkers,if=!talent.summon_demonic_tyrant|time_to_die<14
 actions+=/grimoire_felguard,if=!talent.summon_demonic_tyrant|time_to_die<cooldown.summon_demonic_tyrant.remains_expected
@@ -63,9 +63,14 @@ actions+=/doom,target_if=refreshable
 actions+=/soul_strike,if=soul_shard<5
 actions+=/shadow_bolt
 
-actions.items=use_item,name=timebreaching_talon,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)
-actions.items+=/use_items,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)
+actions.items=use_item,name=irideus_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21
+actions.items+=/use_item,name=timebreaching_talon,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21
+actions.items+=/use_item,name=spoils_of_neltharus,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21
 actions.items+=/use_item,name=voidmenders_shadowgem,if=!variable.shadow_timings|(variable.shadow_timings&(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)))
+actions.items+=/use_item,name=erupting_spear_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=11
+actions.items+=/use_items,if=(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal))&(!equipped.irideus_fragment&!equipped.timebreaching_talon&!equipped.spoils_of_neltharus&!equipped.erupting_spear_fragment&!equipped.voidmenders_shadowgem)
+actions.items+=/use_item,name=rotcrusted_voodoo_doll
+actions.items+=/use_item,name=beacon_to_the_beyond
 
 actions.ogcd=potion
 actions.ogcd+=/berserking
@@ -89,7 +94,7 @@ actions.tyrant+=/power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up
 actions.tyrant+=/soul_strike
 actions.tyrant+=/shadow_bolt
 
-actions.variables=variable,name=tyrant_cd,op=setif,value=cooldown.invoke_power_infusion_0.remains,value_else=cooldown.summon_demonic_tyrant.remains_expected,condition=((((fight_remains+time)%%120<=75&(fight_remains+time)%%120>=15)|time>=210)&variable.shadow_timings)&cooldown.invoke_power_infusion_0.duration>0&!talent.grand_warlocks_design
+actions.variables=variable,name=tyrant_cd,op=setif,value=cooldown.invoke_power_infusion_0.remains,value_else=cooldown.summon_demonic_tyrant.remains_expected,condition=((((fight_remains+time)%%120<=85&(fight_remains+time)%%120>=25)|time>=210)&variable.shadow_timings)&cooldown.invoke_power_infusion_0.duration>0&!talent.grand_warlocks_design
 actions.variables+=/variable,name=np_condition,op=set,value=cooldown.nether_portal.up|buff.nether_portal.up|pet.pit_lord.active|!talent.nether_portal|cooldown.nether_portal.remains>30
 
 head=cragshapers_fitted_hood,id=137341,bonus_id=8780,ilevel=447,gem_id=192985
@@ -102,19 +107,19 @@ hands=grips_of_the_sinister_savant,id=202534,ilevel=447
 waist=vibrant_wildercloth_girdle,id=193516,bonus_id=9379/8960/8780,ilevel=447,gem_id=192945,crafted_stats=36/49
 legs=leggings_of_the_sinister_savant,id=205849,ilevel=450,enchant_id=6541
 feet=treads_of_fractured_realities,id=204392,ilevel=450,enchant_id=6607
-finger1=loop_of_pulsing_veins,id=159463,bonus_id=8780,ilevel=447,gem_id=192945,enchant_id=6550
-finger2=seal_of_questionable_loyalties,id=158314,bonus_id=8780,ilevel=447,gem_id=192945,enchant_id=6550
+finger1=eternal_sentrys_ring,id=193804,bonus_id=6652/8783/8784/7936/7937/6808/4786/8780/1669,ilevel=447,gem_id=192945,enchant_id=6550
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,ilevel=450,gem_id=192945,enchant_id=6550
 trinket1=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
 trinket2=neltharions_call_to_dominance,id=204202,ilevel=457
 main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant_id=6643
 
 # Gear Summary
-# gear_ilvl=449.13
-# gear_stamina=22563
+# gear_ilvl=449.33
+# gear_stamina=22613
 # gear_intellect=7905
-# gear_crit_rating=2609
-# gear_haste_rating=6458
-# gear_mastery_rating=3921
+# gear_crit_rating=4225
+# gear_haste_rating=5425
+# gear_mastery_rating=3364
 # gear_versatility_rating=1010
 # gear_speed_rating=250
 # gear_avoidance_rating=200

@@ -2054,9 +2054,27 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
-  // Four Divine Stars
   if ( specialization() == PRIEST_SHADOW && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 )
-    resources.initial_opt[ RESOURCE_INSANITY ] = 24;
+  {
+    if ( talents.shadow.shadow_crash.enabled() )
+    {
+      // Two Crash + 1 Halo / 2 Dstar
+      if ( talents.halo.enabled() || talents.divine_star.enabled() )
+        resources.initial_opt[ RESOURCE_INSANITY ] = 24;
+      else
+        // Two Crash
+        resources.initial_opt[ RESOURCE_INSANITY ] = 12;
+    }
+    else
+    {
+      if ( talents.divine_star.enabled() )
+        // Three Divine Stars
+        resources.initial_opt[ RESOURCE_INSANITY ] = 18;
+      if ( talents.halo.enabled() )
+        // Halo
+        resources.initial_opt[ RESOURCE_INSANITY ] = 12;
+    }
+  }
 
   base_t::init_resources( force );
 }

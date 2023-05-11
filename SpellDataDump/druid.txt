@@ -1901,9 +1901,10 @@ Effects          :
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Fury of Elune (365640), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 0, 23, 55, 63, 88, 89, 102, 105, 116
 #2 (id=816917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984)
                    Family Flags: 0
+Hotfixed         : Base Value (20 -> 40)
 #3 (id=816965)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Sunfire (164815), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Star Burst (356474), Fury of Elune (365640), Fury of Elune (394111), Crashing Star (408310)
@@ -4246,9 +4247,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Eclipse (Solar) (48517)
                    Family Flags: 59
+Hotfixed         : Base Value (30 -> 60)
 #2 (id=325445)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1070146)  : Dummy (3)
@@ -5029,13 +5031,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
+Hotfixed         : Base Value (2 -> 4), PvP Coefficient (0 -> 0.5)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
+Hotfixed         : Base Value (2 -> 4), PvP Coefficient (0 -> 0.5)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)
@@ -6086,7 +6090,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16)
 Effects          :
 #1 (id=274309)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.1888 -> 0.236)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 
@@ -6194,7 +6199,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.6 -> 0.57)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -6907,9 +6913,10 @@ Effects          :
 #1 (id=290831)   : Apply Aura (6) | Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
 #2 (id=349879)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984)
                    Family Flags: 0
+Hotfixed         : Base Value (100 -> 80)
 #3 (id=350584)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Sunfire (93402), Sunfire (197630)
@@ -17262,7 +17269,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1029375)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (35 -> 30)
 #2 (id=1029377)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ferocious Bite hits all nearby enemies affected by your Rip for $s1% of the damage dealt. Damage reduced beyond $s2 $Ltarget:targets;.
@@ -17326,7 +17334,8 @@ Effects          :
 #1 (id=1029484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1029485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 50)
 #3 (id=1042566)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.
@@ -17944,13 +17953,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1030137)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.70000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.7)
 #2 (id=1030140)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.70000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.7)
 #3 (id=1030644)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.70000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
+Hotfixed         : PvP Coefficient (0.5 -> 0.7)
 Description      : Lifebloom's healing is increased by ${$s1}.1% each time it heals, up to $s2%. Also increases Lifebloom's final bloom amount by $s3%.
 
 Name             : Flash of Clarity (id=392220) [Spell Family (7), Passive, Hidden] 
@@ -19448,15 +19460,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1033450)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : Sub Type (79 -> 108), Misc Value (72 -> 0), Affects Spells
+Hotfixed         : Base Value (8 -> 10)
 #2 (id=1083506)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : NEW EFFECT
+Hotfixed         : Base Value (8 -> 10)
 Description      : $@spelldesc394081
 Tooltip          : Arcane and Nature damage increased by $w1%.
 

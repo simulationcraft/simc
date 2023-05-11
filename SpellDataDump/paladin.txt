@@ -3067,13 +3067,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 2.00000
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 4.00000
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914)
                    Family Flags: 46, 90
+Hotfixed         : Base Value (6 -> 3), PvP Coefficient (2 -> 4)
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 2.00000 | Misc Value: 22
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 4.00000 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914)
                    Family Flags: 46
+Hotfixed         : Base Value (6 -> 3), PvP Coefficient (2 -> 4)
 #3 (id=191085)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191086)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -5094,7 +5096,8 @@ Effects          :
 #4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=321882)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 575 | Scaled Value: 575 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x1 | Target: Self (1)
+Hotfixed         : Base Value (575 -> 500)
 #6 (id=321944)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=321945)   : Apply Aura (6) | Unknown(262)

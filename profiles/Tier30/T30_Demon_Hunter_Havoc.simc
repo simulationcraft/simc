@@ -105,30 +105,30 @@ actions.cooldown+=/use_item,name=stormeaters_boon,use_off_gcd=1,if=cooldown.meta
 actions.meta_end=death_sweep
 actions.meta_end+=/annihilation
 
-head=kinslayers_hood,id=202524,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/1504/8780,gem_id=192982
-neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192919/192919/192919,crafted_stats=32/36
-shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1498,ilevel=450
-back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-chest=kinslayers_vest,id=202527,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/1498,enchant_id=6625
-wrists=blood_elders_bindings,id=159324,bonus_id=6652/8811/8812/6808/4786/3317/8780,gem_id=192919
-hands=kinslayers_bloodstained_grips,id=202525,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
-waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/8780,gem_id=192919
-legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
-feet=toxic_thorn_footwraps,id=193452,bonus_id=8960/8840/8836/8902/1537
+head=kinslayers_hood,id=202524,bonus_id=1478/6652/7981/1498/8767/8780,gem_id=192982
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/1537/8782,gem_id=192919/192919/192919,crafted_stats=32/36
+shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=1481/6652/7981/1498/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/7981/1498/8767
+chest=kinslayers_vest,id=202527,bonus_id=6652/7981/1498/8767,enchant_id=6625
+wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/1537/8780,gem_id=192919,crafted_stats=32
+hands=kinslayers_bloodstained_grips,id=202525,bonus_id=1475/6652/7981/1498/8767
+waist=oblivions_immortal_coil,id=204399,bonus_id=6652/7981/1498/8767/8780,gem_id=192919
+legs=lifebound_trousers,id=193408,bonus_id=8836/8840/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/8840/8902/1537/8960
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
-finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498/8780,gem_id=192919,enchant_id=6550
-trinket1=igneous_flowstone,id=203996,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-trinket2=neltharions_call_to_chaos,id=204201,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
-main_hand=bilestained_crawg_tusks,id=159653,bonus_id=6652/8811/8812/6808/4786/3317,enchant_id=6655
-off_hand=bilestained_crawg_tusks,id=159653,bonus_id=6652/8811/8812/6808/4786/3317,enchant_id=6655
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/7981/1498/8767
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=6652/7981/1498/8767
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
 
 # Gear Summary
-# gear_ilvl=447.38
-# gear_agility=6236
+# gear_ilvl=446.38
+# gear_agility=6806
 # gear_stamina=22135
-# gear_crit_rating=6849
+# gear_crit_rating=6412
 # gear_haste_rating=2845
-# gear_mastery_rating=1666
+# gear_mastery_rating=1452
 # gear_versatility_rating=1190
 # gear_armor=4003
 # set_bonus=tier30_2pc=1

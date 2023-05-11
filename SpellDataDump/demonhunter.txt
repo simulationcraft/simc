@@ -214,7 +214,8 @@ Effects          :
 #1 (id=227730)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=227731)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.66809 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.73490 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.668088 -> 0.734897)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
@@ -1921,7 +1922,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300625)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45740 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50314 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.4574 -> 0.50314)
 #2 (id=300626)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
@@ -2028,7 +2030,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300651)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.11804 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12985 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.118044 -> 0.129848)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 9.5 | Scaled Value: 9.5 (coefficient=0, delta coefficient=0.526316) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc203555
@@ -2616,9 +2619,11 @@ Attributes       : ........ ........ ..x..... .......x   ........ .x...... .....
                  : Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Periodic Can Crit (265), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306731)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35805 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42966 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.35805 -> 0.42966)
 #2 (id=318965)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.98000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.65 -> 1.98)
 #3 (id=318966)   : Trigger Spell (64): Soul Carver
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 214743
 #4 (id=318969)   : Dummy (3)
@@ -2912,10 +2917,10 @@ Hotfixed         : Type (6 -> 3), Sub Type (507 -> 0), Misc Value (2618 -> 0), T
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Hotfixed         : NEW EFFECT
-#5 (id=1083838)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#5 (id=1083838)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2618 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
-Hotfixed         : NEW EFFECT
+Hotfixed         : Sub Type (507 -> 537)
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to $@auracaster$?s389220[ and taking $w2% more Fire damage from them][].
 
@@ -2969,10 +2974,10 @@ Effects          :
 #3 (id=707094)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Hotfixed         : Sub Type (507 -> 23), Period (0 -> 2000), Base Value (40 -> 0), Misc Value (2618 -> 0)
-#4 (id=1075596)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#4 (id=1075596)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 2618 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
-Hotfixed         : Sub Type (3 -> 507), AP Coefficient (0.309 -> 0), Period (2000 -> 0), Base Value (0 -> 40), Misc Value (0 -> 2618)
+Hotfixed         : Sub Type (507 -> 537)
 #5 (id=1083817)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Hotfixed         : NEW EFFECT
@@ -3540,6 +3545,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1032438)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=1083935)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -3755,7 +3763,8 @@ Effects          :
 #1 (id=316324)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=316325)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.77792 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85572 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.777924 -> 0.855716)
 #3 (id=316326)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc232893
@@ -3823,7 +3832,8 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
                  : Do Not Sheath (18), No Aura Cancel (31), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=318967)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.98000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.65 -> 1.98)
 Description      : $@spelldesc207407
 
 Name             : Spectral Sight (id=215725) [Spell Family (107)] 
@@ -4086,7 +4096,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=338878)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45320 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49852 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.4532 -> 0.49852)
 #2 (id=338879)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -4112,7 +4123,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Always Hit (114), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=338881)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90640 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.99704 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.9064 -> 0.99704)
 #2 (id=338882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -9605,7 +9617,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 40)
 Description      : Soul Cleave deals $s1% increased damage to your primary target.
 
 Name             : Furious Gaze (id=343311) [Spell Family (107), Passive] 
@@ -10929,7 +10942,8 @@ Effects          :
 #1 (id=1023604)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1026969)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 Description      : Chaos Nova, Eye Beam, and Fel Rush gain bonuses when striking 1 target.
 
 $@spellicon179057 $@spellname179057:
@@ -11995,7 +12009,8 @@ Effects          :
                    Affected Spells: Frailty (247456)
                    Family Flags: 93
 #2 (id=1028375)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 8)
 Description      : Multiple applications of Frailty may overlap.
 
 Soul Cleave applies Frailty to your primary target for $s2 sec.
@@ -13475,7 +13490,8 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1073038)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.50000 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value 2: 0x2 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 10)
 Description      : $@spelldesc405505
 Tooltip          : Agility increased by $w1%.
 
