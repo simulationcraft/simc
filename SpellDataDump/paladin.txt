@@ -2490,7 +2490,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
-Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... .......x ........ ........   ........ .x...... ........ ........ 
@@ -2506,13 +2505,14 @@ Effects          :
 Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
 
 Name             : Light's Hammer (id=114919) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin, Druid
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1)
-Family Flags     : 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1)
+Family Flags     : 65, 67
 Attributes       : ........ ........ ........ ...x....   ........ ........ ...x.... ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4984,7 +4984,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971), Bestow Faith (343618), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
+                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971), Bestow Faith (343618), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
                    Family Flags: 12, 15, 21, 30, 48, 56, 67, 74, 78, 90, 92, 97, 100, 124
 #2 (id=318060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
@@ -17148,14 +17148,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053884)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 19 | Misc Value 2: 2599 (Label) | Target: Self (1)
-                   Affected Spells (Label): Holy Prism (114852), Light's Hammer (114918)
+                   Affected Spells (Label): Holy Prism (114852)
 #2 (id=1072767)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
 #3 (id=1072768)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.50000 | Target: Self (1)
 #4 (id=1072769)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 2599 (Label) | Target: Self (1)
-                   Affected Spells (Label): Holy Prism (114852), Light's Hammer (114918)
+                   Affected Spells (Label): Holy Prism (114852)
 #5 (id=1072770)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1072783)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -17312,14 +17312,15 @@ Effects          :
 Description      : Eye of Tyr deals $s1% increased damage and has $s2% reduced cooldown.
 
 Name             : Fading Light (id=405768) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (87060 -> 2446356), Proc Flags 2 (0 -> 4)
 Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
 Labels           : 2608: Retribution Paladin (137027 effect#24)
 Proc Chance      : 101%
-Proc Flags       : ..x.x... ..x.x.x. x....... ........   ........ ........ ........ ........   
-                 : White Melee, Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : ..x.x... ..x.x.x. x.x..x.. ........   ..x..... ........ ........ ........   
+                 : White Melee, Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Cast Successful
 Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
