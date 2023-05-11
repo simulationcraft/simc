@@ -19463,12 +19463,12 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : Base Value (8 -> 10)
+Hotfixed         : Sub Type (79 -> 108), Base Value (8 -> 10), Misc Value (72 -> 0), Affects Spells
 #2 (id=1083506)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : Base Value (8 -> 10)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc394081
 Tooltip          : Arcane and Nature damage increased by $w1%.
 
