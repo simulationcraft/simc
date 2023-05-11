@@ -500,6 +500,7 @@ void frost( player_t* p )
   aoe->add_action( "call_action_list,name=movement" );
 
   cds->add_action( "time_warp,if=buff.exhaustion.up&buff.bloodlust.down" );
+  cds->add_action( "use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mastery.up|buff.spoils_of_neltharus_haste.up&buff.bloodlust.down&buff.temporal_warp.down&time>0|buff.spoils_of_neltharus_vers.up&(buff.bloodlust.up|buff.temporal_warp.up)" );
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<60" );
   cds->add_action( "flurry,if=time=0&active_enemies<=2" );
   cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power&(remaining_winters_chill=2|active_enemies>=3&talent.ice_caller))" );
