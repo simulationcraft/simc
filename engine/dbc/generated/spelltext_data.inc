@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49474
-static const std::array<spelltext_data_t, 19899> __spelltext_data { {
+static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19686,10 +19686,8 @@ static const std::array<spelltext_data_t, 19899> __spelltext_data { {
   { 407903, "Taking damage has a chance to cause your next melee attack to deal an additional $407907s1 Physical damage.", 0, 0 },
   { 407904, "$@spelldesc407903", "Your next melee attack will deal an additional $407907s1 Physical damage.", 0 },
   { 407907, "$@spelldesc407903", 0, 0 },
-  { 407912, "$@spelldesc110744", 0, 0 },
   { 407913, "$@spelldesc407914", "$pri increased by $w1.", 0 },
   { 407914, "Your melee attacks have a chance to imbue you with drogbar might, increasing your $pri for $407913d. You may also shout about this uncontrollably.", 0, 0 },
-  { 407915, "$@spelldesc122121", 0, 0 },
   { 407949, "Hop onto a plank of wood with a haphazard shadowflame rocket attachment. Absolutely nothing could go wrong, but if it did, deal $408015s1 Shadowflame damage split between you and enemies caught in the theoretical blast.", "WeeeeeeeAAAAAHHH!!!", 0 },
   { 407961, "$@spelldesc402813", 0, 0 },
   { 407986, "$@spelldesc115310", 0, 0 },
@@ -20270,8 +20268,8 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
-  {  388023, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+  {  388023, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
   {  388917, "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
@@ -20291,6 +20289,8 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 10.1.0.49474
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {  388023,  0, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026,  0, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
 } };
 

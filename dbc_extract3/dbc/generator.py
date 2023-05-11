@@ -1417,6 +1417,7 @@ class SpellDataGenerator(DataGenerator):
          400959, # Zaquali Chaos Grapnel
          402813, 402894, 402896, 402897, 402898, 402903, 407961, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
+         407914, 407913, 407939,  # Might of the Drogbar set
         ),
 
         # Warrior:
