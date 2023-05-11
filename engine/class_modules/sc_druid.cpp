@@ -908,6 +908,7 @@ public:
     const spell_data_t* wrath;
 
     // Class
+    const spell_data_t* moonfire;
     const spell_data_t* sunfire_dmg;
     const spell_data_t* thrash_bear_dot;
     const spell_data_t* thrash_cat_dot;
@@ -1865,7 +1866,6 @@ public:
   unsigned form_mask;
   // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
   bool may_autounshift = true;
-  bool triggers_galactic_guardian = true;
   bool is_auto_attack = false;
   bool break_stealth;
 
@@ -1960,7 +1960,6 @@ public:
   void schedule_execute( action_state_t* s = nullptr ) override;
   void execute() override;
   void impact( action_state_t* s ) override;
-  void tick( dot_t* d ) override;
 
   void assess_damage( result_amount_type t, action_state_t* s ) override
   {
@@ -1995,28 +1994,6 @@ public:
   virtual bool can_proc_moonless_night() const
   {
     return ab::special && !ab::background && !ab::dual && !ab::proc && ( ab::aoe == 0 || ab::aoe == 1 );
-  }
-
-  void trigger_galactic_guardian( action_state_t* s )
-  {
-    if ( !p()->talent.galactic_guardian.ok() )
-      return;
-
-    if ( !triggers_galactic_guardian || ab::proc || !ab::harmful )
-      return;
-
-    if ( s->target == p() || !ab::result_is_hit( s->result ) || s->result_total <= 0 )
-      return;
-
-    if ( !p()->buff.galactic_guardian->cooldown->up() )
-      return;
-
-    if ( !ab::rng().roll( p()->talent.galactic_guardian->proc_chance() ) )
-      return;
-
-    p()->active.galactic_guardian->execute_on_target( s->target );
-    p()->proc.galactic_guardian->occur();
-    make_event( ab::sim, [ this ]() { p()->buff.galactic_guardian->trigger(); } );  // schedule buff after damage execute
   }
 
   void apply_buff_effects()
@@ -3916,8 +3893,7 @@ struct rake_t : public trigger_deep_focus_t<cat_attack_t>
   {
     rake_bleed_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( n, p, s->effectN( 3 ).trigger() )
     {
-      background = dual = hasted_ticks = true;
-      may_miss = may_parry = may_dodge = false;
+      background = dual = not_a_proc = true;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
       form_mask = 0;
 
@@ -4330,7 +4306,7 @@ struct thrash_cat_dot_t : public trigger_waning_twilight_t<cat_attack_t>
 {
   thrash_cat_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_cat_dot )
   {
-    dual = background = true;
+    dual = background = not_a_proc = true;
 
     dot_name = "thrash_cat";
   }
@@ -5026,7 +5002,7 @@ struct thrash_bear_t : public trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t
 
     thrash_bear_dot_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.thrash_bear_dot )
     {
-      dual = background = true;
+      dual = background = not_a_proc = true;
 
       dot_name = "thrash_bear";
 
@@ -5977,8 +5953,6 @@ void druid_action_t<Base>::impact( action_state_t* s )
 {
   ab::impact( s );
 
-  trigger_galactic_guardian( s );
-
   if ( p()->active.moonless_night && s->result_amount > 0 && can_proc_moonless_night() )
   {
     auto moonless = debug_cast<druid_residual_action_t<bear_attacks::bear_attack_t>*>( p()->active.moonless_night );
@@ -5987,14 +5961,6 @@ void druid_action_t<Base>::impact( action_state_t* s )
       moonless->set_amount( new_, s->result_amount );
     } );
   }
-}
-
-template <class Base>
-void druid_action_t<Base>::tick( dot_t* d )
-{
-  ab::tick( d );
-
-  trigger_galactic_guardian( d->state );
 }
 
 namespace spells
@@ -7018,9 +6984,8 @@ struct moonfire_t : public druid_spell_t
     moonfire_damage_t( druid_t* p, std::string_view n ) : base_t( n, p, p->spec.moonfire_dmg )
     {
       may_miss = false;
-      dual = background = true;
+      dual = background = not_a_proc = true;
 
-      triggers_galactic_guardian = false;
       dot_name = "moonfire";
       dot_list = &p->dot_list.moonfire;
 
@@ -7180,10 +7145,8 @@ struct moonfire_t : public druid_spell_t
   moonfire_t( druid_t* p, std::string_view opt ) : moonfire_t( p, "moonfire", opt ) {}
 
   moonfire_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_spell_t( n, p, p->find_class_spell( "Moonfire" ), opt )
+    : druid_spell_t( n, p, p->spec.moonfire, opt )
   {
-    may_miss = triggers_galactic_guardian = reset_melee_swing = false;
-
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
   }
@@ -8049,7 +8012,7 @@ struct sunfire_t : public druid_spell_t
   {
     sunfire_damage_t( druid_t* p ) : base_t( "sunfire_dmg", p, p->spec.sunfire_dmg )
     {
-      dual = background = true;
+      dual = background = not_a_proc = true;
       aoe = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
 
@@ -8324,7 +8287,7 @@ struct wild_mushroom_t : public druid_spell_t
         fungal_mul( p->talent.fungal_growth->effectN( 1 ).percent() ),
         ap_max( data().effectN( 2 ).base_value() )
     {
-      background = dual = true;
+      background = dual = not_a_proc = true;
       aoe = -1;
 
       if ( p->talent.fungal_growth.ok() )
@@ -9759,6 +9722,7 @@ void druid_t::init_spells()
     spec.wrath                  = find_class_spell( "Wrath" );
 
   // Class Abilities
+  spec.moonfire                 = find_class_spell( "Moonfire" );
   spec.sunfire_dmg              = check( talent.sunfire, 164815 );
   spec.thrash_bear_dot          = check( talent.thrash, 192090 );
   spec.thrash_cat_dot           = find_spell( 405233 );
@@ -10311,9 +10275,7 @@ void druid_t::create_buffs()
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T30, B2 ) )
     ->set_default_value_from_effect( 5 );
 
-  // trigger spell handled within druid_action_t::trigger_galactic_guardian()
   buff.galactic_guardian = make_buff( this, "galactic_guardian", find_spell( 213708 ) )
-    ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
     ->set_default_value_from_effect( 1, 0.1 /*RESOURCE_RAGE*/ );
 
   buff.gore = make_buff( this, "gore", find_spell( 93622 ) )
@@ -10462,7 +10424,7 @@ void druid_t::create_actions()
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
     fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_spell_e::ORBIT );
-    fm->background = true;
+    fm->background = fm->not_a_proc = true;
     active.orbit_breaker = fm;
   }
 
@@ -10984,7 +10946,7 @@ void druid_t::init_procs()
     predator_revealed_stacks = std::make_unique<extended_sample_data_t>( "Predator Revealed Stack", false );
 
   // Guardian
-  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_interval();
+  proc.galactic_guardian    = get_proc( "Galactic Guardian" )->collect_count();
   proc.gore                 = get_proc( "Gore" )->collect_interval();
   proc.tooth_and_claw       = get_proc( "Tooth and Claw" )->collect_interval();
 }
@@ -11137,6 +11099,37 @@ void druid_t::init_special_effects()
     special_effects.push_back( driver );
 
     auto cb = new dbc_proc_callback_t( this, *driver );
+    cb->initialize();
+  }
+
+  if ( talent.galactic_guardian.ok() )
+  {
+    struct galactic_guardian_cb_t : public dbc_proc_callback_t
+    {
+      galactic_guardian_cb_t( druid_t* p, const special_effect_t& e ) : dbc_proc_callback_t( p, e ) {}
+
+      void trigger( action_t* a, action_state_t* s ) override
+      {
+        if ( a->id != p()->spec.moonfire_dmg->id() && a->id != p()->spec.moonfire->id() )
+          dbc_proc_callback_t::trigger( a, s );
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        p()->active.galactic_guardian->execute_on_target( s->target );
+        p()->proc.galactic_guardian->occur();
+        make_event( p()->sim, [ this ]() { p()->buff.galactic_guardian->trigger(); } );
+      }
+
+      druid_t* p() { return static_cast<druid_t*>( listener ); }
+    };
+
+    const auto driver = new special_effect_t( this );
+    driver->name_str = talent.galactic_guardian->name_cstr();
+    driver->spell_id = talent.galactic_guardian->id();
+    special_effects.push_back( driver );
+
+    auto cb = new galactic_guardian_cb_t( this, *driver );
     cb->initialize();
   }
 
