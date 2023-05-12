@@ -5277,11 +5277,12 @@ void thriving_thorns( special_effect_t& effect )
                                                                    heal_trg->effectN( 1 ).trigger() );
       heal->travel_speed = heal_trg->missile_speed();
       heal->base_dd_min = heal->base_dd_max = e.driver()->effectN( 3 ).average( e.item ) * mul;
+      heal->name_str_reporting = "Heal";
     }
 
     void execute( action_t* a, action_state_t* s ) override
     {
-      if ( dynamic_cast<heal_t*>( a ) )
+      if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
         heal->execute_on_target( listener );
       else
         damage->execute_on_target( s->target );
