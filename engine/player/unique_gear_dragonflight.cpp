@@ -4540,6 +4540,7 @@ void vessel_of_searing_shadow( special_effect_t& e )
   struct vessel_of_searing_shadow_direct_t : public generic_proc_t
   {
     action_t* dot;
+
     vessel_of_searing_shadow_direct_t( const special_effect_t& e )
       : generic_proc_t( e, "shadow_spike", e.player->find_spell( 401422 ) ),
         dot( create_proc_action<vessel_of_searing_shadow_dot_t>( "ravenous_shadowflame", e ) )
@@ -4555,18 +4556,44 @@ void vessel_of_searing_shadow( special_effect_t& e )
     }
   };
 
+  struct vessel_of_searing_shadow_self_t : public generic_proc_t
+  {
+    vessel_of_searing_shadow_self_t( const special_effect_t& e )
+      : generic_proc_t( e, "unstable_flames", e.player->find_spell( 401394 ) )
+    {
+      base_td = e.driver()->effectN( 1 ).average( e.item );
+      not_a_proc = true;
+      stats->type = stats_e::STATS_NEUTRAL;
+      target = e.player;
+    }
+
+    // logs show this can trigger helpful periodic proc flags
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    {
+      return result_amount_type::HEAL_OVER_TIME;
+    }
+  };
+
   auto damage = create_proc_action<vessel_of_searing_shadow_direct_t>( "shadow_spike", e );
+  auto self = create_proc_action<vessel_of_searing_shadow_self_t>( "unstable_flames", e );
 
   auto stack_buff = create_buff<stat_buff_t>( e.player, "unstable_flames", e.player->find_spell( 401394 ) )
                         ->add_stat_from_effect( 3, e.driver()->effectN( 4 ).average( e.item ) )
                         ->set_expire_at_max_stack( true )
-                        ->set_stack_change_callback( [ damage ]( buff_t*, int, int new_ ) {
+                        ->set_stack_change_callback( [ damage, self ]( buff_t* b, int, int new_ ) {
                           if ( !new_ )
                           {
+                            self->find_dot( b->player )->cancel();
                             damage->execute();
                           }
+                          else
+                          {
+                            self->execute();
+                          }
                         } );
+
   e.custom_buff = stack_buff;
+
   new dbc_proc_callback_t( e.player, e );
 }
 
