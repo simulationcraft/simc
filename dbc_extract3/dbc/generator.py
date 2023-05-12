@@ -1417,6 +1417,7 @@ class SpellDataGenerator(DataGenerator):
          400959, # Zaquali Chaos Grapnel
          402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
+         407914, 407913, 407939,  # Might of the Drogbar set
         ),
 
         # Warrior:
@@ -3709,7 +3710,12 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier30',
             'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
             'tier'   : 30
-        }
+        },
+        {
+            'name'   : 'might_of_the_drogbar',
+            'bonuses': [ 1539 ],
+            'tier'   : 30
+        },
     ]
 
     @staticmethod

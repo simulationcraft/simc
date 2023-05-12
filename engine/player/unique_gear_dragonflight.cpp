@@ -4583,11 +4583,63 @@ void heart_of_thunder ( special_effect_t& e )
 
 // 407895 driver
 // 407896 damage
-void drogbar_rocks( special_effect_t& effect ) {
+void drogbar_rocks( special_effect_t& effect ) 
+{
   effect.proc_flags2_ = PF2_CRIT;
   
   auto proc = create_proc_action<generic_proc_t>( "drogbar_rocks", effect, "drogbar_rocks", effect.trigger() );
   effect.execute_action = proc;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 407903 Proc driver
+// 407904 Buff
+// 407907 Damage action
+void drogbar_stones( special_effect_t& effect ) 
+{
+  auto buff = buff_t::find( effect.player, "drogbar_stones" );
+  if ( !buff )
+  {
+    auto buff_spell = effect.trigger();
+    buff = create_buff<buff_t>( effect.player, buff_spell );
+
+    auto drogbar_stones_damage = new special_effect_t( effect.player );
+    drogbar_stones_damage->name_str = "drogbar_stones_damage";
+    drogbar_stones_damage->item = effect.item;
+    drogbar_stones_damage->spell_id = buff->data().id();
+    drogbar_stones_damage->type = SPECIAL_EFFECT_EQUIP;
+    drogbar_stones_damage->source = SPECIAL_EFFECT_SOURCE_ITEM;
+    drogbar_stones_damage->execute_action = create_proc_action<generic_proc_t>(
+      "drogbar_stones_damage", *drogbar_stones_damage, "drogbar_stones_damage", effect.player->find_spell( 407907 ) );
+
+    drogbar_stones_damage->player->callbacks.register_callback_execute_function(
+      drogbar_stones_damage->spell_id, [buff, drogbar_stones_damage, effect] ( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        if ( buff->check() )
+        {
+          drogbar_stones_damage->execute_action->execute();
+
+          buff->expire();
+        }
+      }
+    );
+
+    auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
+    damage->initialize();
+    damage->deactivate();
+
+    buff->set_stack_change_callback( [damage] ( buff_t*, int, int new_ ) {
+    if ( new_ )
+    {
+      damage->activate();
+    }
+    else
+    {
+      damage->deactivate();
+    }
+    } );
+
+  }
+  effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -5850,6 +5902,29 @@ void raging_tempests( special_effect_t& effect )
     } );
   }
 }
+
+//407914 set driver
+//407913 primary stat buff
+//407939 primary stat value
+void might_of_the_drogbar( special_effect_t& effect )
+{
+  if ( !effect.player->sets->has_set_bonus( effect.player->specialization(), T30_MIGHT_OF_THE_DROGBAR, B2 ) )
+    return;
+
+  auto set_driver_id = effect.player->sets->set( effect.player->specialization(), T30_MIGHT_OF_THE_DROGBAR, B2 )->id();
+
+  if ( effect.driver()->id() == set_driver_id )
+  {
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 407913 ) )
+      ->add_stat ( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) );
+    auto driver = unique_gear::find_special_effect( effect.player, set_driver_id );
+    driver->custom_buff = buff;
+  }
+}
 }  // namespace sets
 
 namespace primordial_stones
@@ -6769,6 +6844,7 @@ void register_special_effects()
   register_special_effect( 401395, items::vessel_of_searing_shadow );
   register_special_effect( 413419, items::heart_of_thunder );
   register_special_effect( 407895, items::drogbar_rocks );
+  register_special_effect( 407903, items::drogbar_stones );
   register_special_effect( 408607, items::underlight_globe );
   register_special_effect( 408641, items::stirring_twilight_ember );
 
@@ -6809,6 +6885,7 @@ void register_special_effects()
   register_special_effect( { 393987, 393768 }, sets::azureweave_vestments );
   register_special_effect( { 393993, 393818 }, sets::woven_chronocloth );
   register_special_effect( { 389987, 389498, 391117 }, sets::raging_tempests );
+  register_special_effect( { 407914, 407939 }, sets::might_of_the_drogbar );
 
   // Primordial Stones
   register_special_effect( primordial_stones::ECHOING_THUNDER_STONE,    primordial_stones::echoing_thunder_stone );
