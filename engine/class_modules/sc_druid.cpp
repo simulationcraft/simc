@@ -336,7 +336,7 @@ public:
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
-    bool delay_berserking = false;
+    int initial_orbit_breaker_stacks = -1;
 
     // Feral
     double predator_rppm_rate = 0.0;
@@ -11359,6 +11359,14 @@ void druid_t::arise()
   buff.elunes_favored->trigger();
   buff.natures_balance->trigger();
 
+  if ( talent.orbit_breaker.ok() )
+  {
+    buff.orbit_breaker->trigger(
+        options.initial_orbit_breaker_stacks >= 0
+            ? options.initial_orbit_breaker_stacks
+            : rng().range( 0, as<int>( talent.orbit_breaker->effectN( 1 ).base_value()  ) ) );
+  }
+
   if ( active.shooting_stars )
   {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.shooting_stars_moonfire ) );
@@ -11789,8 +11797,8 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return expr_t::create_constant( "no_cds", options.no_cds );
     if ( util::str_compare_ci( splits[ 1 ], "time_spend_healing" ) )
       return expr_t::create_constant( "time_spend_healing", options.time_spend_healing );
-    if ( util::str_compare_ci( splits[ 1 ], "delay_berserking" ) )
-      return expr_t::create_constant( "delay_berserking", options.delay_berserking );
+    if ( util::str_compare_ci( splits[ 1 ], "initial_orbit_breaker_stacks" ) )
+      return expr_t::create_constant( "initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks );
   }
 
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
@@ -12088,7 +12096,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
-  add_option( opt_bool( "druid.delay_berserking", options.delay_berserking ) );
+  add_option( opt_int( "druid.initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks ) );
 
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
