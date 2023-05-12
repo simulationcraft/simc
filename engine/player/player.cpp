@@ -12681,6 +12681,7 @@ void player_t::create_options()
   add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
   add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
   add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
+  add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
 
   // Obsolete options
 

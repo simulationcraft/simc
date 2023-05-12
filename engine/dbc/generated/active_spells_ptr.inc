@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.1.0.49444
-static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
+// Active class spells, wow build 10.1.5.49516
+static const std::array<active_class_spell_t, 275> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -41,8 +41,10 @@ static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   {  2,    0, 290608,      0, "Crusader's Direhorn"                },
   {  2,    0, 363613,      0, "Summon Lightforged Ruinstrider"     },
   {  2,    0, 391054,      0, "Intercession"                       },
+  {  2,   65,    498,      0, "Divine Protection"                  },
   {  2,   65,   4987,      0, "Cleanse"                            },
   {  2,   65,  53563,      0, "Beacon of Light"                    },
+  {  2,   65,  82326,      0, "Holy Light"                         },
   {  2,   65, 212056,      0, "Absolution"                         },
   {  2,   65, 275773,  20271, "Judgment"                           },
   {  2,   66, 275779,  20271, "Judgment"                           },
@@ -158,6 +160,7 @@ static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   {  7,  264,  52127,      0, "Water Shield"                       },
   {  7,  264,  77130,      0, "Purify Spirit"                      },
   {  7,  264, 212048,      0, "Ancestral Vision"                   },
+  {  8,    0,     66,      0, "Invisibility"                       },
   {  8,    0,    116,      0, "Frostbolt"                          },
   {  8,    0,    120,      0, "Cone of Cold"                       },
   {  8,    0,    122,      0, "Frost Nova"                         },
@@ -172,6 +175,7 @@ static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   {  8,    0, 343127,      0, "Teleport"                           },
   {  8,    0, 343140,      0, "Portal"                             },
   {  8,   62,  30451,      0, "Arcane Blast"                       },
+  {  8,   62,  44425,      0, "Arcane Barrage"                     },
   {  8,   63,    133,      0, "Fireball"                           },
   {  9,    0,    126,      0, "Eye of Kilrogg"                     },
   {  9,    0,    172,      0, "Corruption"                         },
@@ -273,7 +277,7 @@ static const std::array<active_class_spell_t, 271> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.1.0.49444
+// Pet active spells, wow build 10.1.5.49516
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

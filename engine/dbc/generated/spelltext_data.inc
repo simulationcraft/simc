@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49474
-static const std::array<spelltext_data_t, 19897> __spelltext_data { {
+static const std::array<spelltext_data_t, 19896> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19331,7 +19331,7 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 403257, "$@spelldesc402932", 0, 0 },
   { 403336, "$@spelldesc402935", "Absorbing the next $w1 damage taken.", 0 },
   { 403366, "Your area effect spells and abilities have a chance to grant you $s1 $pri and increase damage you receive by $s2% for $403382d.", 0, 0 },
-  { 403368, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Assault][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", 0, 0 },
+  { 403368, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", 0, 0 },
   { 403376, "$@spelldesc402938", "Absorbing the next $w1 damage taken.", 0 },
   { 403380, "$@spelldesc403368", "$pri increased by $w1 and slowed by $408485w1%.", 0 },
   { 403381, "$@spelldesc402939", "Healing $w1 every second.", 0 },
@@ -19686,10 +19686,9 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 407903, "Taking damage has a chance to cause your next melee attack to deal an additional $407907s1 Physical damage.", 0, 0 },
   { 407904, "$@spelldesc407903", "Your next melee attack will deal an additional $407907s1 Physical damage.", 0 },
   { 407907, "$@spelldesc407903", 0, 0 },
-  { 407913, "$@spelldesc407914", "$pri increased by $w1.", 0 },
-  { 407914, "Your melee attacks have a chance to imbue you with drogbar might, increasing your $pri for $407913d. You may also shout about this uncontrollably.", 0, 0 },
   { 407949, "Hop onto a plank of wood with a haphazard shadowflame rocket attachment. Absolutely nothing could go wrong, but if it did, deal $408015s1 Shadowflame damage split between you and enemies caught in the theoretical blast.", "WeeeeeeeAAAAAHHH!!!", 0 },
   { 407961, "$@spelldesc402813", 0, 0 },
+  { 407982, "$@spelldesc402813", 0, 0 },
   { 407986, "$@spelldesc115310", 0, 0 },
   { 407991, "$@spelldesc322118", 0, 0 },
   { 407992, "$@spelldesc114158", 0, 0 },
@@ -19900,8 +19899,9 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 10.1.0.49474
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
   {  402813,  0, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds." },
+  {  403368,  0, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Assault][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d." },
   {  408675,  1, "IT GONNA BLOW!", "IT'S GONNA BLOW!" },
 } };
 

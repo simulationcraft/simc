@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1406,7 +1406,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
 Category         : 1568: Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Heart of the Wild (319454 effect#9), Reinvigoration (372945 effect#2), Innate Resolve (377811 effect#2)
 Stance Mask      : 0x00000010
-Affecting spells : Berserk (50334 effect#11), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #14, #15), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #18, #19, #20), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Verdant Heart (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1), Reinvigoration (372945 effect#1), Innate Resolve (377811 effect#1), Adaptive Swarm (391891 effect#2)
+Affecting spells : Berserk (50334 effect#11), Incarnation: Guardian of Ursoc (102558 effect#1), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #14, #15), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #18, #19, #20), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Verdant Heart (301768 effect#1), Adaptive Swarm (325748 effect#2), Innate Resolve (340543 effect#1), Reinvigoration (372945 effect#1), Adaptive Swarm (391891 effect#2)
 Family Flags     : 62
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1632,7 +1632,7 @@ Effects          :
 Description      : Magical damage and healing increased by $s1%.
 
 Name             : Incarnation: Tree of Life (desc=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100, replace="Incarnation: Tree of Life" (id=407994)]
+Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -1901,7 +1901,7 @@ Effects          :
                    Affected Spells: Wrath (5176), Starfall (50286), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Wrath (190984), Starfall (191034), Starfall (191037), Starsurge (197626), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Fury of Elune (365640), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 0, 23, 55, 63, 88, 89, 102, 105, 116
 #2 (id=816917)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984)
                    Family Flags: 0
 #3 (id=816965)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2153,11 +2153,11 @@ Effects          :
                    Family Flags: 11
 #6 (id=838050)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #7 (id=838051)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #8 (id=838052)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2610,7 +2610,7 @@ Cooldown         : 120 seconds
 Category         : 1257
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting spells : Incarnation: Avatar of Ashamane (102543 effect#3), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2), Front of the Pack (377835 effects: #1, #2)
+Affecting spells : Incarnation: Avatar of Ashamane (102543 effect#3), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)
 Family Flags     : 87
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
@@ -2640,7 +2640,7 @@ Cooldown         : 120 seconds
 Category         : 1257
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting spells : Incarnation: Avatar of Ashamane (102543 effect#3), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2), Front of the Pack (377835 effects: #1, #2)
+Affecting spells : Incarnation: Avatar of Ashamane (102543 effect#3), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)
 Family Flags     : 87
 Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
@@ -3595,11 +3595,11 @@ Effects          :
                    Family Flags: 11
 #6 (id=867842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #7 (id=867843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #8 (id=867844)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3897,7 +3897,7 @@ Cooldown         : 120 seconds
 Category         : 1257
 Category Cooldown: 120 seconds
 Proc Chance      : 101%
-Affecting spells : Cat Form (106840 effect#1), Bear Form (106899 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2), Front of the Pack (377835 effects: #1, #2)
+Affecting spells : Cat Form (106840 effect#1), Bear Form (106899 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#3), Stellar Drift (202461 effect#1), Improved Stampeding Roar (288826 effect#1), Front of the Pack (341450 effects: #1, #2)
 Family Flags     : 27
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
@@ -4177,11 +4177,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119368)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Pulverize (80313), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Thrash (192090), Brutal Slash (202028), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Feral Frenzy (274838), Primal Wrath (285381), Architect's Aligner (363789), Sickle of the Lion (363830), Thorns of Iron (400223), Raze (400254), Thrash (405233)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Pulverize (80313), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Thrash (192090), Brutal Slash (202028), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Feral Frenzy (274838), Primal Wrath (285381), Architect's Aligner (363789), Sickle of the Lion (363830), Thorns of Iron (400223), Raze (400254), Thrash (405233), Lunar Beam (414613)
                    Family Flags: 77, 98
 #2 (id=1005857)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Pulverize (80313), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Thrash (192090), Brutal Slash (202028), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Feral Frenzy (274838), Primal Wrath (285381), Architect's Aligner (363789), Sickle of the Lion (363830), Thorns of Iron (400223), Raze (400254), Thrash (405233)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Pulverize (80313), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Thrash (192090), Brutal Slash (202028), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Feral Frenzy (274838), Primal Wrath (285381), Architect's Aligner (363789), Sickle of the Lion (363830), Thorns of Iron (400223), Raze (400254), Thrash (405233), Lunar Beam (414613)
                    Family Flags: 77, 98
 #3 (id=1005858)  : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -4246,7 +4246,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=127234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Eclipse (Solar) (48517)
                    Family Flags: 59
 #2 (id=325445)   : Dummy (3)
@@ -4280,37 +4280,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc158478
 Tooltip          : Healing of your next Regrowth or Rejuvenation increased by $s1%, or your next Wild Growth by $s2%.
-
-Name             : Light's Hammer (id=114158) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
-Class            : Paladin, Druid
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Holy
-Spell Type       : Magic
-Resource         : 18% Base Mana (0) (id=11150)
-Range            : 40 yards
-GCD              : 1.5 seconds
-Velocity         : 20 yards/sec
-Duration         : 12 seconds
-Cooldown         : 60 seconds
-Labels           : 2648: Paladin Holy 10.1 Class Set 4pc (405546 effect#6)
-Affecting spells : Rule of Law (214202 effect#1)
-Family Flags     : 67
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=127305)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 122773 | Radius: 10 yards | Target: Unknown(87)
-#2 (id=1080484)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Description      : Hurls a Light-infused hammer to the ground, dealing $114919s1 Holy damage to nearby enemies and healing up to 6 nearby allies for $119952s1, every $114918t1 sec for ${$122773d-1.5} sec.
 
 Name             : Treant Form (desc=Shapeshift) (id=114282) [Spell Family (7)] 
 Class            : Druid
@@ -4353,50 +4322,6 @@ Effects          :
                    Base Value: 114302 | Scaled Value: 114302 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
 Description      : Your Moonkin Form now appears as Astral Form, conferring all the same benefits, but appearing as an astrally enhanced version of your normal humanoid form.
 
-Name             : Light's Hammer (id=114918) [Spell Family (10)] 
-Class            : Paladin, Druid
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Nature
-Spell Type       : Magic
-Spell Level      : 1
-Duration         : 14 seconds
-Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... .......x ........ ........   ........ .x...... ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ....x... ........ 
-                 : ........ ........ ........ ........   
-                 : No Cast Log (128), Not In Spellbook (143), Extra Initial Period (169), No Aura Log (202), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
-Effects          :
-#1 (id=128469)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
-
-Name             : Light's Hammer (id=114919) [Spell Family (10)] 
-Class            : Paladin, Druid
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Holy
-Spell Type       : Magic
-Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1)
-Family Flags     : 65
-Attributes       : ........ ........ ........ ...x....   ........ ........ ...x.... ........ 
-                 : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Sitting (27), Exclude Caster (51), Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=128470)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Description      : $@spelldesc114158
-
 Name             : Incarnation (desc=Passive) (id=117679) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
@@ -4419,29 +4344,6 @@ Effects          :
 Description      : Activates a superior shapeshifting form appropriate to your specialization for $d.  You may freely shapeshift in and out of this form for its duration.
 Tooltip          : Incarnation: Tree of Life activated.
 
-Name             : Arcing Light (id=119952) [Spell Family (10)] 
-Class            : Paladin, Druid
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Holy
-Spell Type       : Magic
-Spell Level      : 1
-Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1)
-Family Flags     : 46, 101
-Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
-                 : ........ ........ ........ ........   ........ x....... ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Do Not Display Range (126), Not On Player Controlled NPC (168), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=139112)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE friendly (31)
-Description      : $@spelldesc114158
-
 Name             : Chosen of Elune (id=122114) [Spell Family (7), Hidden] 
 Class            : Druid
 School           : Physical
@@ -4459,29 +4361,6 @@ Attributes       : .......x x....... ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=153504)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 72 | Target: Self (1)
-
-Name             : Light's Hammer (desc=Talent) (id=122773) [Spell Family (10)] 
-Class            : Paladin, Druid
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Range            : 50000 yards
-Duration         : 15.5 seconds
-Triggered by     : Light's Hammer (114158)
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. .....x.. ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Ignore Line of Sight (66), Not In Spellbook Until Learned (269), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), No Summon Log (326), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=154587)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 59738 | Misc Value 2: 0xdb5 | Target: Unknown(87)
-#2 (id=1074247)  : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 
 Name             : Nature's Vigil (id=124974) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
@@ -4884,11 +4763,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179693)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
                    Family Flags: 77
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
                    Family Flags: 77
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5029,11 +4908,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
                    Family Flags: 118
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -5320,7 +5199,7 @@ Effects          :
 Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t1 sec for $81262d. Limit 1.
 
 Name             : Guardian of Elune (id=155578) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=1]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5656,7 +5535,7 @@ Effects          :
 Description      : Your finishing moves grant $s1 Energy per combo point spent and deal $s2% increased damage.
 
 Name             : Soul of the Forest (id=158477) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Guardian [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6086,7 +5965,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16)
 Effects          :
 #1 (id=274309)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18880 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc187875
 
 Name             : Fey Moonwing (id=188083) 
@@ -6194,7 +6073,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.60000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.57000 | PvP Coefficient: 1.50000 | Target: Enemy (6)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -6228,7 +6107,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4756 | Target: Self (1)
 #2 (id=804237)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Primal Fury (16953), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Infected Wounds (58180), Survival Instincts (61336), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: Avatar of Ashamane (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Incarnation: Avatar of Ashamane (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216), Ravenous Frenzy (355315), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), After the Wildfire (371982), Grove Tending (383193), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414), Tear (391356), Convoke the Spirits (391528), Tiger's Tenacity (391874), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Primal Claws (393617), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Overflowing Power (405191), Thrash (405233), Crashing Star (408310), Predator Revealed (411344)
+                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Primal Fury (16953), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Infected Wounds (58180), Survival Instincts (61336), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: Avatar of Ashamane (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Incarnation: Avatar of Ashamane (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216), Ravenous Frenzy (355315), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), After the Wildfire (371982), Grove Tending (383193), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414), Tear (391356), Convoke the Spirits (391528), Tiger's Tenacity (391874), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Primal Claws (393617), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Overflowing Power (405191), Thrash (405233), Crashing Star (408310), Predator Revealed (411344), Lunar Beam (414613)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 #3 (id=844885)   : Apply Aura (6) | Periodic Trigger Spell (23): Starfall every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 50286 | Target: Self (1)
@@ -6320,7 +6199,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=301092)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #3 (id=301093)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -6394,7 +6273,9 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6)
 #4 (id=298448)   : Server Side Script (77)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards.
+#5 (id=1081718)  : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Enemy (6)
+Description      : Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m3/100} Arcane damage to all other enemies within $A1 yards. Deals reduced damage beyond $s5 targets.
 
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
@@ -6639,13 +6520,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290202)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Nourish (50464), Infected Wounds (58180), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Efflorescence (81262), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Lifebloom (188550), Wrath (190984), Thrash (192090), Starfire (194153), Celestial Alignment (194223), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Fury of Elune (202770), Overgrowth (203651), Lunar Beam (204069), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Primal Wrath (285381), Thorns (305497), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Lone Empowerment (338142), Fury of Elune (365640), After the Wildfire (371982), Celestial Alignment (383410), Adaptive Swarm (391889), Adaptive Swarm (391891), Fury of Elune (394111), Raze (400254), Thrash (405233)
+                   Affected Spells: Entangling Roots (339), Tranquility (740), Rejuvenation (774), Rip (1079), Rake (1822), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Shred (5221), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Mangle (33917), Wild Growth (48438), Wild Charge (49376), Nourish (50464), Infected Wounds (58180), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Pulverize (80313), Efflorescence (81262), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Skull Bash (106839), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Lifebloom (188550), Wrath (190984), Thrash (192090), Starfire (194153), Celestial Alignment (194223), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Fury of Elune (202770), Overgrowth (203651), Lunar Beam (204069), Force of Nature (205636), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Primal Wrath (285381), Thorns (305497), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Lone Empowerment (338142), Fury of Elune (365640), After the Wildfire (371982), Celestial Alignment (383410), Adaptive Swarm (391889), Adaptive Swarm (391891), Fury of Elune (394111), Raze (400254), Thrash (405233), Lunar Beam (414613)
                    Family Flags: 0, 2, 3, 4, 5, 6, 9, 11, 12, 13, 15, 21, 22, 23, 24, 25, 28, 33, 35, 36, 37, 38, 39, 40, 41, 49, 52, 53, 54, 56, 58, 63, 64, 66, 68, 69, 73, 74, 79, 81, 82, 85, 87, 88, 89, 90, 91, 94, 99, 100, 102, 103, 104, 105, 106, 108, 110, 111, 113, 115, 117, 120, 123, 126
 #2 (id=314659)   : Apply Aura (6) | Modify Auto Attack Range (153)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=317501)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Maul (6807), Primal Fury (16953), Starfall (50286), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Brutal Slash (202028), Overgrowth (203651), Lunar Beam (204069), Brambles (213709), Swipe (213771), Strength of the Wild (236716), Primal Wrath (285381), Thorns (305497), Berserk (343216), After the Wildfire (371982), Tiger's Tenacity (391874), Primal Claws (393617), Raze (400254), Overflowing Power (405191), Thrash (405233), Predator Revealed (411344)
+                   Affected Spells: Incapacitating Roar (99), Tranquility (740), Maul (6807), Primal Fury (16953), Starfall (50286), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Stampeding Roar (106898), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Brutal Slash (202028), Overgrowth (203651), Lunar Beam (204069), Brambles (213709), Swipe (213771), Strength of the Wild (236716), Primal Wrath (285381), Thorns (305497), Berserk (343216), After the Wildfire (371982), Tiger's Tenacity (391874), Primal Claws (393617), Raze (400254), Overflowing Power (405191), Thrash (405233), Predator Revealed (411344), Lunar Beam (414613)
                    Family Flags: 3, 7, 10, 11, 27, 32, 52, 53, 54, 55, 56, 72, 74, 82, 87, 88, 91, 93, 99, 100, 126
 #4 (id=340874)   : Apply Aura (6) | Unknown(188)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6769,7 +6650,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.87500 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=353245)   : Dummy (3)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m2/100} Arcane damage to all other enemies within $A1 yards.
+#3 (id=1081717)  : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : Call down a burst of energy, causing $s1 Arcane damage to the target, and ${$m1*$m2/100} Arcane damage to all other enemies within $A1 yards. Deals reduced damage beyond $s3 targets.
 
 Name             : Sunfire (id=197630) [Spell Family (7)] 
 Class            : Druid
@@ -6907,7 +6790,7 @@ Effects          :
 #1 (id=290831)   : Apply Aura (6) | Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
 #2 (id=349879)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Wrath (5176), Wrath (190984)
                    Family Flags: 0
 #3 (id=350584)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
@@ -7012,9 +6895,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2071 | Target: Self (1)
 #5 (id=297123)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
                    Family Flags: 77, 92
-Hotfixed         : Sub Type (79 -> 108), Misc Value (127 -> 0), Affects Spells
 Description      : Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers.
 Tooltip          : Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers.
 
@@ -7407,7 +7289,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298471)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Primal Fury (16953), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Infected Wounds (58180), Survival Instincts (61336), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: Avatar of Ashamane (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Incarnation: Avatar of Ashamane (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216), Ravenous Frenzy (355315), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), After the Wildfire (371982), Grove Tending (383193), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414), Tear (391356), Convoke the Spirits (391528), Tiger's Tenacity (391874), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Primal Claws (393617), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Overflowing Power (405191), Thrash (405233), Crashing Star (408310), Predator Revealed (411344)
+                   Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Thick Hide (16931), Primal Fury (16953), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Infected Wounds (58180), Survival Instincts (61336), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: Avatar of Ashamane (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Feline Swiftness (131768), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Incarnation: Avatar of Ashamane (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Dreamwalk (293887), Thorns (305496), Thorns (305497), Ravenous Frenzy (323546), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216), Ravenous Frenzy (355315), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), After the Wildfire (371982), Grove Tending (383193), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414), Tear (391356), Convoke the Spirits (391528), Tiger's Tenacity (391874), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Primal Claws (393617), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Overflowing Power (405191), Thrash (405233), Crashing Star (408310), Predator Revealed (411344), Lunar Beam (414613)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 Description      : Can cast while moving while inside Starfall.
 Tooltip          : Can cast while moving while inside Starfall.
@@ -7685,7 +7567,7 @@ Effects          :
 Description      : Thrash also generates ${$203961s1/10} Rage each time it deals damage.
 
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Guardian [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7823,15 +7705,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416)
+                 : Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301149)   : Create Area Trigger (179)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 5994 | Target: Custom (18)
-Description      : Summons a beam of lunar light at your location, dealing ${$204069s2*8} Arcane damage and healing you for ${$204069s1*8} over $m1 sec.
+#2 (id=1084210)  : Apply Aura (6) | Modify Max Health% (133)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Summons a beam of lunar light at your location, increasing your health by $s2%, dealing ${$414613s1*8} Arcane damage and healing you for ${$204069s1*8} over $m1 sec.
+Tooltip          : Health increased by $w2%.
 
 Name             : Lunar Beam (id=204069) [Spell Family (7)] 
 Class            : Druid
@@ -7853,8 +7738,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=301153)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=301154)   : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc204066
 
 Name             : Force of Nature (desc=Talent) (id=205636) [Spell Family (7)] 
@@ -8976,7 +8859,7 @@ Effects          :
 Description      : Maul the target for $s2% of the target's maximum health in Physical damage.
 
 Name             : Scintillating Moonlight (id=238049) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=5, max_rank=2, req_points=20]
+Talent Entry     : Guardian [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Druid
 School           : Physical
@@ -12622,11 +12505,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=812538)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #2 (id=812560)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #3 (id=812565)   : Apply Aura (6) | Periodic Dummy (226): every 0.1 seconds
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12636,11 +12519,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=832368)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(20)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #7 (id=832369)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Radius: 100 yards | Target: Unknown(20)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #8 (id=832370)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(20)
@@ -12710,11 +12593,11 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=832579)   : Apply Party Aura (35) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #4 (id=832580)   : Apply Party Aura (35) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #5 (id=845636)   : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12781,7 +12664,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=816651)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-                   Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Starfall (50286), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Thrash (192090), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Overgrowth (203651), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Primal Wrath (285381), Fury of Elune (365640), After the Wildfire (371982), Fury of Elune (394111), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Starfall (50286), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Thrash (192090), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Overgrowth (203651), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Primal Wrath (285381), Fury of Elune (365640), After the Wildfire (371982), Fury of Elune (394111), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 9, 12, 23, 40, 54, 55, 66, 85, 92, 94, 105, 116, 120, 126, 127
 Description      : $@spelldesc325727
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and damage over time from $@auracaster increased by $w2%.
@@ -12813,7 +12696,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26250 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=816652)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Unknown(25)
-                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Overgrowth (203651), Lunar Beam (204069), Spring Blossoms (207386), Brambles (213709), Grove Tending (279793), Primal Wrath (285381), After the Wildfire (371982), Grove Tending (383193)
+                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Overgrowth (203651), Lunar Beam (204069), Spring Blossoms (207386), Brambles (213709), Grove Tending (279793), Primal Wrath (285381), After the Wildfire (371982), Grove Tending (383193), Lunar Beam (414613)
                    Family Flags: 4, 7, 8, 20, 36, 54, 58, 62, 65, 82, 106, 121
 Description      : $@spelldesc325727
 Tooltip          : Restoring $w1 health every $t1 sec and healing over time from $@auracaster increased by $w2%.
@@ -13273,11 +13156,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=836566)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #2 (id=836567)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 Description      : Connect with your inner spirit, increasing damage done by $s1% for $d.
 Tooltip          : Damage done increased by $s1%.
@@ -13341,7 +13224,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=837448)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 124
 #2 (id=837449)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
@@ -13349,7 +13232,7 @@ Effects          :
                    Family Flags: 118
 #3 (id=840142)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98
 #4 (id=840143)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -15576,7 +15459,7 @@ Description      : $@spelldesc364423
 Tooltip          : Generating ${$o1/10} Astral Power over $d.
 
 Name             : Elune's Favored (id=370586) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Guardian [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15614,8 +15497,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=981997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 2691 (Label) | Target: Self (1)
-                   Affected Spells (Label): Moonfire (8921), Moonfire (164812), Moonless Night (400360)
-Hotfixed         : Sub Type (79 -> 218), Misc Value (64 -> 0), Misc Value 2 (0 -> 2691)
+                   Affected Spells (Label): Moonfire (8921), Moonfire (164812), Moonless Night (400360), Lunar Beam (414613)
 #2 (id=981998)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370586
@@ -15659,7 +15541,7 @@ Effects          :
 Description      : While in Bear Form, you deal $s1% increased Arcane damage.
 
 Name             : After the Wildfire (id=371905) [Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Guardian [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -15780,7 +15662,7 @@ Description      : $@spelldesc371999
 Tooltip          : Your next Mangle deals $w1% increased damage.
 
 Name             : Dream of Cenarius (id=372119) [Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Guardian [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15888,7 +15770,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Twin Moonfire (id=372567) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Guardian [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16131,46 +16013,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1005889)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Frenzied Regeneration (22842)
-                   Family Flags: 62
+#1 (id=1005889)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1017562)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1568 | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
-Description      : Regrowth and Frenzied Regeneration healing is increased by ${$s1}.1% on yourself.
+Description      : Frenzied Regeneration's healing is increased by up to $s1% based on your missing health.
 
 Frenzied Regeneration has ${$s2} additional charge.
-
-Name             : Front of the Pack (id=377835) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Guardian [tree=spec, row=3, col=1, max_rank=1, req_points=0]
-Class            : Druid
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
-Effects          :
-#1 (id=1005929)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Stampeding Roar (77761), Stampeding Roar (77764), Stampeding Roar (106898)
-                   Family Flags: 27, 87
-#2 (id=1005930)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Stampeding Roar (77761), Stampeding Roar (77764), Stampeding Roar (106898)
-                   Family Flags: 27, 87
-#3 (id=1005931)  : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-Description      : Stampeding Roar's radius and duration are increased by $s1%.
-
-Your movement speed is increased by $s3%.
 
 Name             : Ursine Vigor (id=377842) [Spell Family (7), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
@@ -16553,7 +16403,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1033069)  : None (0)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 0.75000
-Description      : Every $s1th Shooting Star calls down a Full Moon at $s2% power upon its target.
+Description      : Every $s1th Shooting Star calls down a Full Moon at $s2% effectiveness upon its target.
 
 Name             : Tireless Energy (id=383352) [Spell Family (7), Passive] 
 Talent Entry     : Feral [tree=spec, row=4, col=3, max_rank=2, req_points=0]
@@ -17126,7 +16976,7 @@ Effects          :
 Description      : Your melee attacks have a chance to activate Incarnation: Avatar of Ashamane for $s1 sec, without the ability to enter stealth in combat.
 
 Name             : Convoke the Spirits (desc=Shadowlands) (id=391528) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Incarnation: Tree of Life" (id=407994)]
+Talent Entry     : Restoration [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
                  : Feral [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
                  : Guardian [tree=spec, row=9, col=4, max_rank=1, req_points=20, select_idx=1]
                  : Balance [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
@@ -17158,11 +17008,11 @@ Effects          :
                    Base Value: 16 | Scaled Value: 16 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1029096)  : Apply Party Aura (35) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #4 (id=1029097)  : Apply Party Aura (35) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Nourish (50464), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Fungal Growth (81281), Wild Mushroom (88751), Cenarion Ward (102352), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Tranquility (157982), Moonfire (164812), Sunfire (164815), Lifebloom (188550), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Reactive Resin (203406), Brambles (203958), Lunar Beam (204069), Spring Blossoms (207386), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Adaptive Swarm (325748), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Grove Tending (383193), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 98, 118
 #5 (id=1029098)  : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -17262,7 +17112,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1029375)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1029377)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ferocious Bite hits all nearby enemies affected by your Rip for $s1% of the damage dealt. Damage reduced beyond $s2 $Ltarget:targets;.
@@ -17326,7 +17176,7 @@ Effects          :
 #1 (id=1029484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1029485)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1042566)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.
@@ -17576,7 +17426,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=1029659)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-                   Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Starfall (50286), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Thrash (192090), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Overgrowth (203651), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Primal Wrath (285381), Fury of Elune (365640), After the Wildfire (371982), Fury of Elune (394111), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Starfall (50286), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Starfall (191034), Starfall (191037), Thrash (192090), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Overgrowth (203651), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Feral Frenzy (274837), Feral Frenzy (274838), Fury of Elune (281871), Primal Wrath (285381), Fury of Elune (365640), After the Wildfire (371982), Fury of Elune (394111), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 9, 12, 23, 40, 54, 55, 66, 85, 92, 94, 105, 116, 120, 126, 127
 Description      : $@spelldesc391888
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and damage over time from $@auracaster increased by $w2%.
@@ -17608,7 +17458,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26250 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=1029662)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Unknown(25)
-                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Overgrowth (203651), Lunar Beam (204069), Spring Blossoms (207386), Brambles (213709), Grove Tending (279793), Primal Wrath (285381), After the Wildfire (371982), Grove Tending (383193)
+                   Affected Spells: Rejuvenation (774), Frenzied Regeneration (22842), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102351), Cenarion Ward (102352), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Overgrowth (203651), Lunar Beam (204069), Spring Blossoms (207386), Brambles (213709), Grove Tending (279793), Primal Wrath (285381), After the Wildfire (371982), Grove Tending (383193), Lunar Beam (414613)
                    Family Flags: 4, 7, 8, 20, 36, 54, 58, 62, 65, 82, 106, 121
 Description      : $@spelldesc391888
 Tooltip          : Restoring $w1 health every $t1 sec and healing over time from $@auracaster increased by $w2%.
@@ -17676,7 +17526,7 @@ Tooltip          : All damage taken reduced by $w1%.
 
 Name             : Circle of Life and Death (id=391969) [Spell Family (7), Passive] 
 Talent Entry     : Restoration [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
-                 : Guardian [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+                 : Guardian [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -17944,11 +17794,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1030137)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.70000 | Target: Self (1)
 #2 (id=1030140)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.70000 | Target: Self (1)
 #3 (id=1030644)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.70000 | Target: Self (1)
                    Affected Spells: Lifebloom (33763), Lifebloom (33778), Lifebloom (188550)
                    Family Flags: 36
 Description      : Lifebloom's healing is increased by ${$s1}.1% each time it heals, up to $s2%. Also increases Lifebloom's final bloom amount by $s3%.
@@ -18445,7 +18295,7 @@ Effects          :
 Description      : $@spelldesc393381
 
 Name             : Flashing Claws (id=393427) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=2, max_rank=2, req_points=20]
+Talent Entry     : Guardian [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(-15, -30)]
 Class            : Druid
@@ -18507,7 +18357,7 @@ Effects          :
 Description      : $@spelldesc391037
 
 Name             : Reinforced Fur (id=393618) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Guardian [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18816,7 +18666,6 @@ Effects          :
 Description      : Starfall's stars have a chance to deal an additional $s1% damage to nearby enemies when they damage an enemy afflicted by Moonfire. Deals reduced damage beyond $s2 targets.
 
 Name             : Lunar Shrapnel (id=393869) [Spell Family (7)] 
-Hotfixed         : Affecting Spells
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -19022,7 +18871,7 @@ Effects          :
                    Affected Spells (Label): Waning Twilight (393957)
 #3 (id=1033225)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you have $s3 periodic effects on a target, your damage and healing on them are increased by $s1%.
+Description      : When you have $s3 periodic effects from your spells on a target, your damage and healing on them are increased by $s1%.
 
 Name             : Waning Twilight (id=393957) [Spell Family (7)] 
 Class            : Druid
@@ -19045,7 +18894,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : Sub Type (270 -> 271), Misc Value (127 -> 0), Affects Spells
 #2 (id=1033223)  : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
@@ -19448,15 +19296,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1033450)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : Sub Type (79 -> 108), Misc Value (72 -> 0), Affects Spells
 #2 (id=1083506)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
                    Family Flags: 18
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc394081
 Tooltip          : Arcane and Nature damage increased by $w1%.
 
@@ -19874,14 +19720,14 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1036758)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
+                   Affected Spells: Entangling Roots (339), Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
                    Family Flags: 9, 77
 #2 (id=1036759)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=1036760)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
+                   Affected Spells: Entangling Roots (339), Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
                    Family Flags: 9, 77
 Description      : $@spelldesc393637
 Tooltip          : Damage dealt increased by $s1% and damage taken reduced by $s1%.
@@ -20204,7 +20050,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1045213)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Tear (391356), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Tear (391356), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 80, 98, 124
 #2 (id=1045214)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
@@ -20212,7 +20058,7 @@ Effects          :
                    Family Flags: 118
 #3 (id=1045215)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Tear (391356), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Tear (391356), Adaptive Swarm (391889), Lunar Shrapnel (393869), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
                    Family Flags: 18, 77, 80, 98
 #4 (id=1045216)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -20834,27 +20680,6 @@ Effects          :
                    Family Flags: 0, 2
 Description      : Your Wrath and Starfire chance to critically strike is increased by $s1% and they generate ${$s2/10} additional Astral Power.
 
-Name             : Incarnation: Tree of Life (id=407994) [Passive] 
-Class            : Druid
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071862)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc114158
-
 Name             : Crashing Star (id=408310) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
@@ -21055,5 +20880,28 @@ Effects          :
 #1 (id=1077871)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 Description      : $@spelldesc408468
+
+Name             : Lunar Beam (id=414613) [Spell Family (7)] 
+Class            : Druid
+School           : Arcane
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Labels           : 2691: Elune's Favored (370588 effect#1)
+Affecting spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Killer Instinct (108299 effects: #1, #2), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effects: #1, #3), Rage of the Sleeper (200851 effect#5), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Adaptive Swarm (325748 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Adaptive Swarm (391891 effect#2), Overpowering Aura (395944 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3)
+Family Flags     : 54, 77
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ...x.... ........   ........ .x...... ........ ......x. 
+                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1083866)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+Description      : $@spelldesc204066
 
 

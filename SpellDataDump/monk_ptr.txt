@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1322,9 +1322,8 @@ Description      : A swig of strong brew allows you to Stagger substantially mor
 Shares charges with Purifying Brew.
 
 Name             : Revival (id=115310) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100, replace="Revival" (id=407986)]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=100]
 Class            : Monk
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Nature
 Spell Type       : Magic
 Resource         : 4.374% Base Mana (0) (id=5718)
@@ -2293,7 +2292,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Doesn't Reset Swing Timer if Instant (217), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416), Periodic Script Runs Late (420), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.25000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.19665 | PvP Coefficient: 1.40000 | Target: Friend (21)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -2591,7 +2590,7 @@ Effects          :
 Description      : Every $t1 sec, your next Tiger Palm will generate $129914s1 additional Chi and deal $121817s2% additional damage.
 
 Name             : Dampen Harm (id=122278) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -2679,7 +2678,7 @@ Description      : Absorbs all damage taken for $d, up to $s3% of your maximum h
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
 Name             : Diffuse Magic (id=122783) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -5023,9 +5022,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=281444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.40356 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.46409 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=289619)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.03780 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.04347 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
@@ -10084,9 +10083,8 @@ Effects          :
 Description      : Touch of Death can now be used on targets with less than $s1% health remaining, dealing $s2% of your maximum health in damage.
 
 Name             : Invoke Yu'lon, the Jade Serpent (id=322118) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100, replace="Invoke Yu'lon, the Jade Serpent" (id=407991)]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Nature
 Spell Type       : Magic
 Resource         : 5% Base Mana (0) (id=215338)
@@ -10522,7 +10520,7 @@ Tooltip          : Breath of Fire reduces damage taken by an additional $325177s
 Spinning Crane Kick ignites targets with Breath of Fire.
 
 Name             : Invoke Chi-Ji, the Red Crane (id=325197) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, replace="Invoke Yu'lon, the Jade Serpent" (id=407991)]
+Talent Entry     : Mistweaver [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -12613,7 +12611,6 @@ Description      : Disable will root targets that are already snared for $116706
 
 Name             : Soothing Breath (id=343737) [Spell Family (53)] 
 Class            : Monk
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Nature
 Spell Type       : Magic
 Spell Level      : 42
@@ -13140,7 +13137,7 @@ Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden]
 Class            : Monk, Evoker
 School           : Physical
 Spell Type       : None
-Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11)
+Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14819,7 +14816,7 @@ Effects          :
 #2 (id=1070189)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : After casting Essence Font or Faeline Stomp, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal up to $s2 injured allies within $388024A1 yds for $<healing>% of the damage done, split evenly among them. Lasts $388026d.
-Variables        : $pvp=$?a134735[${2.5}][${1}]}
+Variables        : $pvp=$?a134735[${2.2}][${1}]}
 $healing=[${$s1*$<pvp>}]
 
 Name             : Ancient Teachings (id=388024) [Spell Family (53)] 
@@ -14840,7 +14837,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
                  : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Reset Combat Timers (81), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Ignore School Lockout (306), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.50000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 2.20000 | Radius: 0 - 30 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc388023
 
 Name             : Ancient Teachings (id=388026) [Spell Family (53)] 
@@ -14862,7 +14859,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc388023
 Tooltip          : Tiger Palm, Blackout Kick, and Rising Sun Kick heal up to $388023s2 injured allies within $388024A1 yards for $<healing>% of the damage done, split evenly among them.
-Variables        : $pvp=$?a134735[${2.5}][${1}]}
+Variables        : $pvp=$?a134735[${2.2}][${1}]}
 $healing=[${$388023s1*$<pvp>}]
 
 Name             : Jade Bond (id=388031) [Spell Family (53), Passive] 
@@ -15620,7 +15617,7 @@ Effects          :
 Description      : Trigger a Zen Pulse around an ally.  Deals $s2 damage to all enemies within $A2 yds of the target. The ally is healed for $388668s1 per enemy damaged.
 
 Name             : Restoral (id=388615) [Spell Family (53)] 
-Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200, replace="Revival" (id=407986)]
+Talent Entry     : Mistweaver [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -18572,48 +18569,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc353936
 
-Name             : Revival (id=407986) [Passive] 
-Class            : Monk
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071850)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc115310
-
-Name             : Invoke Yu'lon, the Jade Serpent (id=407991) [Passive] 
-Class            : Monk
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071856)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc322118
-
 Name             : Leverage (id=408503) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
@@ -18750,10 +18705,50 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1077928)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (507)
+#1 (id=1077928)  : Apply Aura (6) | Modify Damage Taken% from Spells (Label) (507)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Misc Value: 2650 (Label) | Target: Enemy (6)
                    Affected Spells (Label): Shadowflame Nova (410139)
 Description      : $@spelldesc411375
 Tooltip          : Shadowflame Nova damage increased by $w1%.
+
+Name             : Yu'lon's Grace (id=414131) [Spell Family (53), Passive] 
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8, select_idx=100]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1082937)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1082949)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Find resilience in the flow of chi in battle, gaining a magic absorb shield for ${$s1/10}.1% of your max health every $t second in combat, stacking up to $s2%.
+
+Name             : Dance of the Wind (id=414132) [Passive] 
+Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1082939)  : Apply Aura (6) | Modify Dodge% (49)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your dodge chance is increased by $s1%.
 
 

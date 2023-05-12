@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49444 Live (hotfix 2023-05-08/49444)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -254,7 +254,7 @@ Description      : A word of darkness that causes $?a390707[${$s1*(1+$390707s1/1
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec.
 
 Name             : Prayer of Healing (id=596) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=2, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -1221,7 +1221,7 @@ Description      : Summons a shadowy fiend to attack the target for $d.$?s137033
 Tooltip          : 343726
 
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2649,7 +2649,7 @@ Description      : For $d, Penance, Power Word: Radiance, and Atonement create a
 Tooltip          : Penance, Power Word: Radiance, and Atonement create absorb shields for $w1% of their healing.
 
 Name             : Divine Star (id=110744) [Spell Family (6)] 
-Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Divine Star" (id=407912)]
+Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2670,8 +2670,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=122871)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 2148 | Target: Custom (18)
@@ -2881,7 +2881,7 @@ Description      : $@spelldesc109964
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Halo (id=120517) [Spell Family (6)] 
-Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300, replace="Divine Star" (id=407912)]
+Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2904,8 +2904,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .......x ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=140102)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 658 | Target: Custom (18)
@@ -2935,7 +2935,7 @@ Effects          :
 Description      : Your Levitate targets will appear to be riding on a cloud for the duration of the spell.
 
 Name             : Halo (id=120644) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300, replace="Divine Star" (id=407915)]
+Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -2958,8 +2958,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .......x ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=140359)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 658 | Target: Custom (18)
@@ -3064,7 +3064,7 @@ Description      : $@spelldesc121536
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Divine Star (id=122121) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Divine Star" (id=407915)]
+Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -3085,8 +3085,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : No Aura Icon (60), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : No Aura Icon (60), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=153517)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 2148 | Target: Custom (18)
@@ -4855,7 +4855,7 @@ Description      : Summons a Mindbender to attack the target for $d.
 |cFFFFFFFFGenerates ${$200010s1/100} Insanity each time the Mindbender attacks.|r
 
 Name             : Apotheosis (id=200183) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100, replace="Apotheosis" (id=392941)]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -4880,6 +4880,8 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861), Holy Word: Chastise (88625), Holy Word: Chastise (200196), Holy Word: Chastise (200200)
                    Family Flags: 10, 28, 69
+#3 (id=476562)   : Apply Aura (6) | Modify Attack Power (104)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=476563)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s235587[Gain a charge][Reset the cooldown] of your Holy Words, and enter a pure Holy form for $d, increasing the cooldown reductions to your Holy Words by $s1% and reducing their cost by $s2%.
@@ -5627,7 +5629,7 @@ Description      : Unleashes a psychic explosion, disorienting all enemies withi
 Tooltip          : Disoriented.
 
 Name             : Void Eruption (id=228260) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=300, replace="Dark Ascension" (id=407884)]
+Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=300]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -6514,11 +6516,14 @@ Effects          :
 #4 (id=1041993)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 2100 | Radius: 40 yards | Target: Raid Members (56)
                    Affected Spells (Category): Obsidian Scales (363916)
+#5 (id=1083835)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 1500 | Scaled Value: 1500 | PvP Coefficient: 1.00000 | Misc Value: 1541 | Radius: 40 yards | Target: Raid Members (56)
+                   Affected Spells (Category): Fiery Brand (204021)
 Description      : $@spelldesc64901
 Tooltip          : Rapidly recovering a major defensive ability, and regaining $64901s2% missing mana every $64901t1 sec.
 
 Name             : Holy Word: Salvation (id=265202) [Spell Family (6)] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Apotheosis" (id=392941)]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -9728,7 +9733,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Avatar (401150)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Avatar (401150), Breath of Eons (403631)
 #2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -11681,7 +11686,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=891148)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Unknown(25)
-                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Avatar (401150)
+                   Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Recklessness (1719), Icy Veins (12472), Adrenaline Rush (13750), Bestial Wrath (19574), Avenging Wrath (31884), Rapture (47536), Empower Rune Weapon (47568), Berserk (50334), Feral Spirit (51533), Vampiric Blood (55233), Survival Instincts (61336), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Fortifying Brew (115203), Revival (115310), Shadow Blades (121471), Storm, Earth, and Fire (137639), Serenity (152173), Ravager (152277), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Aspect of the Wild (193530), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Bladestorm (227847), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Feral Spirit (333957), Deathmark (360194), Rewind (363534), Arcane Surge (365350), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Master Handler (389654), Snake Bite (389660), Bladestorm (389774), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Avatar (401150), Breath of Eons (403631)
 #2 (id=891149)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Unknown(25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
@@ -12194,10 +12199,7 @@ Effects          :
 Description      : $@spelldesc368275
 
 Name             : Burning Vehemence (id=372307) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(15, 30)]
-                 : Effect#2 [op=set, values=(15, 30)]
-                 : Effect#3 [op=set, values=(30, 60)]
+Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -12215,15 +12217,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=996847)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Fire (14914)
                    Family Flags: 20
 #2 (id=996848)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Holy Fire (14914)
                    Family Flags: 20
 #3 (id=1045307)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage of Holy Fire by $s1%.
 
 Holy Fire deals $s3% of its initial damage to all nearby enemies within $400370A1 yards of your target. Damage reduced beyond $400370s2 targets.
@@ -12321,27 +12323,6 @@ Effects          :
                    Affected Spells: Divine Hymn (64844)
                    Family Flags: 66
 Description      : Divine Hymn heals for $s1% more. Stacks of Divine Hymn increase healing taken by an additional $s2% per stack.
-
-Name             : Searing Light (id=372611) [Spell Family (6), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
-Class            : Priest
-School           : Holy
-Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=997339)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=997340)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000
-Description      : Smite and Holy Nova deal $s1% additional damage to targets affected by your Holy Fire.
 
 Name             : Empyreal Blaze (id=372616) [Spell Family (6)] 
 Talent Entry     : Holy [tree=spec, row=3, col=4, max_rank=1, req_points=0]
@@ -15570,7 +15551,7 @@ Description      : $@spelldesc391095
 Tooltip          : Periodic Shadow damage increased by $w1%.
 
 Name             : Dark Ascension (id=391109) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200, replace="Dark Ascension" (id=407884)]
+Talent Entry     : Shadow [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -15939,7 +15920,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1028796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Renew instantly heals your target for $s1% of its total periodic effect.
+Description      : Renew casts instantly heal your target for $s1% of its total periodic effect.
 
 Name             : Empowered Renew (id=391359) [Spell Family (6)] 
 Class            : Priest
@@ -16184,26 +16165,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1169 | Target: Self (1)
 Description      : $@spelldesc392507
 Tooltip          : Shadow Word: Death damage increased by $s2% and your next Shadow Word: Death deals full damage regardless of health.
-
-Name             : Apotheosis (id=392941) [Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1031521)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc200183
 
 Name             : Divine Image (id=392988) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
@@ -17181,66 +17142,6 @@ Effects          :
                    Family Flags: 87
 Description      : Reduces the Insanity cost of Devouring Plague by ${$s1/-100}.
 
-Name             : Dark Ascension (id=407884) [Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071704)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc391109
-
-Name             : Divine Star (id=407912) [Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071741)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc110744
-
-Name             : Divine Star (id=407915) [Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071745)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc122121
-
 Name             : Distorted Reality (id=409044) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Priest
@@ -17398,5 +17299,28 @@ Effects          :
 #1 (id=1081317)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.20570 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc341491
+
+Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
+Talent Entry     : Holy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(13, 25)]
+Class            : Priest
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........   ........ ........ ........ ........   
+                 : Magic Heal
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1083738)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your Holy Words have a $s1% chance to reset the cooldown of Prayer of Mending.
 
 

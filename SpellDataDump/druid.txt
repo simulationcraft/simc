@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4362,7 +4362,6 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Duration         : 14 seconds
-Labels           : 2599: Paladin Holy 10.1 Class Set 4pc (405546 effect#1), Paladin Holy 10.1 Class Set 4pc (405546 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... .......x ........ ........   ........ .x...... ........ ........ 
@@ -4378,13 +4377,14 @@ Effects          :
 Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
 
 Name             : Light's Hammer (id=114919) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin, Druid
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1)
-Family Flags     : 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effect#10), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1)
+Family Flags     : 65, 67
 Attributes       : ........ ........ ........ ...x....   ........ ........ ...x.... ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ .x....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 

@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2649,7 +2649,8 @@ Description      : For $d, Penance, Power Word: Radiance, and Atonement create a
 Tooltip          : Penance, Power Word: Radiance, and Atonement create absorb shields for $w1% of their healing.
 
 Name             : Divine Star (id=110744) [Spell Family (6)] 
-Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Divine Star" (id=407912)]
+Hotfixed         : Attributes
+Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2670,8 +2671,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=122871)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 2148 | Target: Custom (18)
@@ -2881,7 +2882,8 @@ Description      : $@spelldesc109964
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Halo (id=120517) [Spell Family (6)] 
-Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300, replace="Divine Star" (id=407912)]
+Hotfixed         : Attributes
+Talent Entry     : Discipline, Holy [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -2904,8 +2906,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .......x ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=140102)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 658 | Target: Custom (18)
@@ -2935,7 +2937,8 @@ Effects          :
 Description      : Your Levitate targets will appear to be riding on a cloud for the duration of the spell.
 
 Name             : Halo (id=120644) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300, replace="Divine Star" (id=407915)]
+Hotfixed         : Attributes
+Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=300]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -2958,8 +2961,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .......x ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=140359)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 658 | Target: Custom (18)
@@ -3064,7 +3067,8 @@ Description      : $@spelldesc121536
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Divine Star (id=122121) [Spell Family (6)] 
-Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200, replace="Divine Star" (id=407915)]
+Hotfixed         : Attributes
+Talent Entry     : Shadow [tree=class, row=8, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -3085,8 +3089,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ...x.... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : No Aura Icon (60), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
+                 : x....... ........ ........ ........   
+                 : No Aura Icon (60), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=153517)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 2148 | Target: Custom (18)
@@ -17204,46 +17208,6 @@ Effects          :
 #1 (id=1071704)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc391109
-
-Name             : Divine Star (id=407912) [Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071741)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc110744
-
-Name             : Divine Star (id=407915) [Passive] 
-Class            : Priest
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-GCD              : 1.5 seconds
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook Until Learned (269), Spellbook Hidden Until Overridden (335), Do Not Log on Learn (355), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1071745)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc122121
 
 Name             : Distorted Reality (id=409044) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Shadow [tree=spec, row=7, col=5, max_rank=1, req_points=8, select_idx=200]

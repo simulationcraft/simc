@@ -1415,7 +1415,7 @@ class SpellDataGenerator(DataGenerator):
          406251, 406254, 406887, # Shadowflame-Tempered Armor Patch
          407087, # Ever-Decaying Spores
          400959, # Zaquali Chaos Grapnel
-         402813, 402894, 402896, 402897, 402898, 402903, 407961, # Igneous Tidestone
+         402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
          407914, 407913, 407939,  # Might of the Drogbar set
         ),
@@ -1954,6 +1954,7 @@ class SpellDataGenerator(DataGenerator):
           ( 389684, 0 ), # Close to Heart Leech Buff
           ( 389685, 0 ), # Generous Pour Avoidance Buff
           ( 392883, 0 ), # Vivacious Vivification buff
+          ( 414143, 0 ), # Yu'lon's Grace buff
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage

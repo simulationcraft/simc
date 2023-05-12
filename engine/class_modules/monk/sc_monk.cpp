@@ -7315,8 +7315,10 @@ namespace monk
     talent.general.expeditious_fortification = _CT( "Expeditious Fortification" );
     // Row 7
     talent.general.profound_rebuttal = _CT( "Profound Rebuttal" );
+    talent.general.yulons_grace = _CT( "Yu'lon's Grace" );
     talent.general.diffuse_magic = _CT( "Diffuse Magic" );
     talent.general.eye_of_the_tiger = _CT( "Eye of the Tiger" );
+    talent.general.dance_of_the_wind = _CT( "Dance of the Wind" );
     talent.general.dampen_harm = _CT( "Dampen Harm" );
     talent.general.improved_touch_of_death = _CT( "Improved Touch of Death" );
     talent.general.strength_of_spirit = _CT( "Strength of Spirit" );
@@ -7928,6 +7930,8 @@ namespace monk
       ->set_default_value_from_effect( 1 );
 
     buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
+
+    buff.yulons_grace = make_buff<absorb_buff_t>( this, "yulons_grace", find_spell( 414143 ) );
 
   // Brewmaster
     buff.blackout_combo = make_buff( this, "blackout_combo", talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
@@ -8909,6 +8913,9 @@ namespace monk
   double monk_t::composite_dodge() const
   {
     double d = player_t::composite_dodge();
+
+    if ( is_ptr() )
+      d += talent.general.dance_of_the_wind->effectN( 1 ).percent();
 
     if ( specialization() == MONK_BREWMASTER )
     {
