@@ -1607,6 +1607,7 @@ class SpellDataGenerator(DataGenerator):
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
             ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
             ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
+            ( 413890, 0 ),          # Nightstalker background spell
         ),
 
         # Priest:
