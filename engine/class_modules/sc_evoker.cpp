@@ -169,6 +169,7 @@ struct evoker_t : public player_t
     const spell_data_t* evoker;        // evoker class aura
     const spell_data_t* devastation;   // devastation class aura
     const spell_data_t* preservation;  // preservation class aura
+    const spell_data_t* augmentation;  // augmentation class aura
 
     const spell_data_t* living_flame_damage;
     const spell_data_t* living_flame_heal;
@@ -2235,6 +2236,8 @@ void evoker_t::init_action_list()
     case EVOKER_PRESERVATION:
       evoker_apl::preservation( this );
       break;
+    case EVOKER_AUGMENTATION:
+      evoker_apl::augmentation( this );
     default:
       evoker_apl::no_spec( this );
       break;
@@ -2431,6 +2434,7 @@ void evoker_t::init_spells()
   spec.evoker              = find_spell( 353167 );  // TODO: confirm this is the class aura
   spec.devastation         = find_specialization_spell( "Devastation Evoker" );
   spec.preservation        = find_specialization_spell( "Preservation Evoker" );
+  spec.augmentation        = find_specialization_spell( "Augmentation Evoker" );
   spec.living_flame_damage = find_spell( 361500 );
   spec.living_flame_heal   = find_spell( 361509 );
 }
@@ -2693,6 +2697,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.evoker );
   action.apply_affecting_aura( spec.devastation );
   action.apply_affecting_aura( spec.preservation );
+  action.apply_affecting_aura( spec.augmentation );
 
   // Class Traits
   action.apply_affecting_aura( talent.aerial_mastery );

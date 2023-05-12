@@ -1947,6 +1947,7 @@ int raidbots_talent_render_width( specialization_e spec, int height )
     case DEMON_HUNTER_HAVOC:
     case EVOKER_DEVASTATION:
     case EVOKER_PRESERVATION:
+    case EVOKER_AUGMENTATION:
     case HUNTER_BEAST_MASTERY:
     case HUNTER_MARKSMANSHIP:
     case HUNTER_SURVIVAL:

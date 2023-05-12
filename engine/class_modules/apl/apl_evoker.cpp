@@ -135,6 +135,10 @@ void preservation( player_t* /*p*/ )
 {
 }
 
+void augmentation( player_t* /*p*/ )
+{
+}
+
 void no_spec( player_t* /*p*/ )
 {
 }

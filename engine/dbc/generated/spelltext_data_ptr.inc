@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49516
-static const std::array<spelltext_data_t, 19986> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 19989> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19710,6 +19710,8 @@ static const std::array<spelltext_data_t, 19986> __ptr_spelltext_data { {
   { 407903, "Taking damage has a chance to cause your next melee attack to deal an additional $407907s1 Physical damage.", 0, 0 },
   { 407904, "$@spelldesc407903", "Your next melee attack will deal an additional $407907s1 Physical damage.", 0 },
   { 407907, "$@spelldesc407903", 0, 0 },
+  { 407913, "$@spelldesc407914", "$pri increased by $w1.", 0 },
+  { 407914, "Your melee attacks have a chance to imbue you with drogbar might, increasing your $pri for $407913d. You may also shout about this uncontrollably.", 0, 0 },
   { 407949, "Hop onto a plank of wood with a haphazard shadowflame rocket attachment. Absolutely nothing could go wrong, but if it did, deal $408015s1 Shadowflame damage split between you and enemies caught in the theoretical blast.", "WeeeeeeeAAAAAHHH!!!", 0 },
   { 407961, "$@spelldesc402813", 0, 0 },
   { 407982, "$@spelldesc402813", 0, 0 },
@@ -19959,6 +19961,7 @@ static const std::array<spelltext_data_t, 19986> __ptr_spelltext_data { {
   { 414131, "Find resilience in the flow of chi in battle, gaining a magic absorb shield for ${$s1/10}.1% of your max health every $t second in combat, stacking up to $s2%.", 0, 0 },
   { 414132, "Your dodge chance is increased by $s1%.", 0, 0 },
   { 414139, "Spending Holy Power has a $s1% chance to trigger Glimmer of Light's healing and damage.", 0, 0 },
+  { 414143, "$@spelldesc414131", "Absorbing the next $w1 magical damage you take.", 0 },
   { 414170, "Absorb your active Glimmer of Lights, triggering their effects at $s3% value and granting $414176s1 Mana per Glimmer of Light consumed.", 0, 0 },
   { 414176, "$@spelldesc414170", 0, 0 },
   { 414193, "$@spelldesc414195", "Your next Judgment deals $s1% increased damage and will critically strike. In addition, it activates Avenging Wrath for $414195s2 sec.", 0 },
