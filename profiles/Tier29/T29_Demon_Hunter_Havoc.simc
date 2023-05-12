@@ -89,6 +89,8 @@ actions+=/demons_bite
 actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)
 actions+=/vengeful_retreat,if=!talent.initiative&movement.distance>15
 actions+=/throw_glaive,if=(talent.demon_blades|buff.out_of_range.up)&!debuff.essence_break.up
+actions+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=fight_remains<20|charges=3|cooldown.vengeful_retreat.remains<5
+actions+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1
 
 # Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over
 actions.cooldown=metamorphosis,if=!talent.demonic&((!talent.chaotic_transformation|cooldown.eye_beam.remains>20)&active_enemies>desired_targets|raid_event.adds.in>60|fight_remains<25)

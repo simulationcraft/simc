@@ -47,7 +47,7 @@ actions+=/blood_fury,if=prev_gcd.1.arcane_surge
 actions+=/fireblood,if=prev_gcd.1.arcane_surge
 actions+=/ancestral_call,if=prev_gcd.1.arcane_surge
 actions+=/invoke_external_buff,name=power_infusion,if=!talent.radiant_spark&prev_gcd.1.arcane_surge
-actions+=/use_items,if=buff.arcane_surge.up&(debuff.touch_of_the_magi.up&equipped.irideus_fragment&set_bonus.tier30_4pc)
+actions+=/use_items,if=(prev_gcd.1.arcane_surge&!set_bonus.tier30_4pc)|(prev_gcd.2.arcane_surge&debuff.touch_of_the_magi.up&set_bonus.tier30_4pc)
 actions+=/use_item,name=tinker_breath_of_neltharion,if=cooldown.arcane_surge.remains&buff.rune_of_power.down&buff.arcane_surge.down&debuff.touch_of_the_magi.down
 actions+=/use_item,name=conjured_chillglobe,if=mana.pct>65&(!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20)
 actions+=/use_item,name=darkmoon_deck_rime,if=!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20
@@ -179,6 +179,7 @@ actions.t30_burst_phase+=/radiant_spark,if=cooldown.arcane_surge.remains<=gcd.ma
 actions.t30_burst_phase+=/arcane_orb,if=prev_gcd.1.radiant_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack
 actions.t30_burst_phase+=/nether_tempest,if=cooldown.arcane_surge.remains<=gcd.max,line_cd=45
 actions.t30_burst_phase+=/arcane_surge,if=((!talent.nether_tempest&prev_gcd.2.radiant_spark)|prev_gcd.1.nether_tempest)
+actions.t30_burst_phase+=/use_item,name=timebreaching_talon,if=prev_gcd.1.arcane_surge
 actions.t30_burst_phase+=/rune_of_power,if=buff.rune_of_power.down&debuff.touch_of_the_magi.down&cooldown.arcane_surge.remains>22
 actions.t30_burst_phase+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15
 actions.t30_burst_phase+=/arcane_barrage,if=prev_gcd.1.arcane_surge

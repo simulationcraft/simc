@@ -58,6 +58,7 @@ actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 
 actions.cds=time_warp,if=buff.exhaustion.up&buff.bloodlust.down
+actions.cds+=/use_item,name=spoils_of_neltharus,if=buff.spoils_of_neltharus_mastery.up|buff.spoils_of_neltharus_haste.up&buff.bloodlust.down&buff.temporal_warp.down&time>0|buff.spoils_of_neltharus_vers.up&(buff.bloodlust.up|buff.temporal_warp.up)
 actions.cds+=/potion,if=prev_off_gcd.icy_veins|fight_remains<60
 actions.cds+=/flurry,if=time=0&active_enemies<=2
 actions.cds+=/icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power&(remaining_winters_chill=2|active_enemies>=3&talent.ice_caller))

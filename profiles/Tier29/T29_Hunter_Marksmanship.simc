@@ -72,8 +72,6 @@ actions.st+=/multishot,if=buff.salvo.up&!talent.volley
 actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.serpentstalkers_trickery&(buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1)
 # Without Serpentstalker's Trickery, target the highest Latent Poison stack. Same rules as the previous line.
 actions.st+=/aimed_shot,target_if=max:debuff.latent_poison.stack,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(!talent.chimaera_shot|active_enemies<2|ca_active)|buff.trick_shots.remains>execute_time&active_enemies>1
-# Refresh Steady Focus if it would run out while refreshing it.
-actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time*2
 actions.st+=/volley
 actions.st+=/rapid_fire
 actions.st+=/wailing_arrow,if=buff.trueshot.down
