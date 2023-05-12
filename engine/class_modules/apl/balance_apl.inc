@@ -5,8 +5,6 @@ action_priority_list_t* aoe = get_action_priority_list( "aoe" );
 action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
-precombat->add_action( "variable,name=wrath_base_asp,value=8+2*talent.wild_surges" );
-precombat->add_action( "variable,name=starfire_base_asp,value=10+2*talent.wild_surges" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
@@ -55,7 +53,7 @@ st->add_action( "stellar_flare,target_if=refreshable&astral_power.deficit>variab
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+10" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
-st->add_action( "starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(variable.wrath_base_asp*(1+0.6*talent.soul_of_the_forest*buff.eclipse_solar.up))+(variable.starfire_base_asp*(1+buff.warrior_of_elune.up*0.4)+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
+st->add_action( "starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5" );
 st->add_action( "wild_mushroom,if=talent.fungal_growth&(!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10)" );
 st->add_action( "starfire,if=buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1" );
 st->add_action( "wrath" );
