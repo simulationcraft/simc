@@ -534,6 +534,7 @@ public:
     buff_t* guardian_of_elune;
     buff_t* incarnation_bear;
     buff_t* indomitable_guardian;  // 4t30
+    buff_t* lunar_beam;
     buff_t* overpowering_aura;  // 2t29
     buff_t* rage_of_the_sleeper;
     buff_t* tooth_and_claw;
@@ -802,7 +803,7 @@ public:
     player_talent_t earthwarden;
     player_talent_t elunes_favored;
     player_talent_t flashing_claws;
-    player_talent_t front_of_the_pack;
+    player_talent_t front_of_the_pack;  // TODO: remove in 10.1.5
     player_talent_t fury_of_nature;
     player_talent_t galactic_guardian;
     player_talent_t gore;
@@ -5250,6 +5251,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   cooldown_t* dummy_cd;
   cooldown_t* orig_cd;
   double goe_mul = 0.0;
+  double ir_mul = 0.0;
 
   frenzied_regeneration_t( druid_t* p, std::string_view opt )
     : druid_heal_t( "frenzied_regeneration", p, p->talent.frenzied_regeneration, opt ),
@@ -5260,6 +5262,9 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     if ( p->talent.guardian_of_elune.ok() )
       goe_mul = p->buff.guardian_of_elune->data().effectN( 2 ).percent();
+
+    if ( p->is_ptr() )
+      ir_mul = p->talent.innate_resolve->effectN( 1 ).percent();
   }
 
   void init() override
@@ -5287,6 +5292,9 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     if ( p()->buff.guardian_of_elune->check() )
       pm *= 1.0 + goe_mul;
+
+    // assume the innate resolve multiplier is snapshot
+    pm *= 1.0 + p()->health_percentage() * ir_mul;
 
     return pm;
   }
@@ -5566,7 +5574,7 @@ struct regrowth_t : public druid_heal_t
   {
     auto ctm = druid_heal_t::composite_target_multiplier( t );
 
-    if ( t == player )
+    if ( t == player && p()->is_ptr() )
       ctm *= 1.0 + p()->talent.innate_resolve->effectN( 1 ).percent();
 
     return ctm;
@@ -6703,7 +6711,8 @@ struct lunar_beam_t : public druid_spell_t
 
   struct lunar_beam_tick_t : public druid_spell_t
   {
-    lunar_beam_tick_t( druid_t* p ) : druid_spell_t( "lunar_beam_tick", p, p->find_spell( 204069 ) )
+    lunar_beam_tick_t( druid_t* p )
+      : druid_spell_t( "lunar_beam_tick", p, p->find_spell( p->is_ptr() ? 414613 : 204069 ) )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
@@ -6726,6 +6735,9 @@ struct lunar_beam_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    if ( p()->is_ptr() )
+      p()->buff.lunar_beam->trigger();
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( target )
@@ -7790,7 +7802,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
   {
     aoe = -1;
     energize_amount += p->talent.wild_surges->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-    reduced_aoe_targets = 8;
+    reduced_aoe_targets = p->is_ptr() ? data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value() : 8;
 
     init_umbral_embrace( p->spec.eclipse_solar, &druid_td_t::dots_t::sunfire, p->spec.sunfire_dmg );
     init_astral_smolder( p->buff.eclipse_solar, &druid_td_t::dots_t::sunfire );
@@ -10295,6 +10307,19 @@ void druid_t::create_buffs()
 
   buff.indomitable_guardian = make_buff( this, "indomitable_guardian", find_spell( 408522 ) )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T30, B4 ) )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
+      auto old_mul = 1.0 + old_ * b->default_value;
+      auto new_mul = 1.0 + new_ * b->default_value;
+      auto hp_mul = new_mul / old_mul;
+
+      resources.max[ RESOURCE_HEALTH ] *= hp_mul;
+      resources.current[ RESOURCE_HEALTH ] *= hp_mul;
+      recalculate_resource_max( RESOURCE_HEALTH );
+    } );
+
+  buff.lunar_beam = make_buff( this, "lunar_beam", talent.lunar_beam )
+    ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT )
     ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       auto old_mul = 1.0 + old_ * b->default_value;
