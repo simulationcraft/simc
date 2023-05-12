@@ -480,6 +480,10 @@ class SpecializationEnumGenerator(DataGenerator):
 
             enum_ids[spec_data.class_id][spec_data.index] = { 'id': spec_id, 'name': spec_name }
 
+        # manually add augmentation evoker to live specialization enums
+        if self._options.build.patch_level() < dbc.WowVersion( 10, 1, 5, 49516 ).patch_level():
+            enum_ids[13][2] = { 'id': 1473, 'name': 'EVOKER_AUGMENTATION' }
+
         return enum_ids
 
     def generate(self, enum_ids = None):
