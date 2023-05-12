@@ -11361,10 +11361,12 @@ void druid_t::arise()
 
   if ( talent.orbit_breaker.ok() )
   {
-    buff.orbit_breaker->trigger(
-        options.initial_orbit_breaker_stacks >= 0
-            ? options.initial_orbit_breaker_stacks
-            : rng().range( 0, as<int>( talent.orbit_breaker->effectN( 1 ).base_value()  ) ) );
+    auto stacks = options.initial_orbit_breaker_stacks >= 0
+                      ? options.initial_orbit_breaker_stacks
+                      : rng().range( 0, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) );
+
+    if ( stacks )
+      buff.orbit_breaker->trigger( stacks );
   }
 
   if ( active.shooting_stars )
