@@ -160,9 +160,10 @@ void demonology( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
-  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* variables = p->get_action_priority_list( "variables" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
+  action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -170,24 +171,29 @@ void demonology( player_t* p )
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=tyrant_prep_start,op=set,value=12" );
-
   precombat->add_action( "variable,name=next_tyrant,op=set,value=14+talent.grimoire_felguard+talent.summon_vilefiend" );
+  precombat->add_action( "variable,name=shadow_timings,default=0,op=reset" );
+  precombat->add_action( "variable,name=shadow_timings,op=set,value=0,if=cooldown.invoke_power_infusion_0.duration!=120" );
   precombat->add_action( "power_siphon" );
   precombat->add_action( "demonbolt,if=!buff.power_siphon.up" );
   precombat->add_action( "shadow_bolt" );
 
-  default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&(time-variable.next_tyrant)<=(variable.tyrant_prep_start+2)&cooldown.summon_demonic_tyrant.up" );
-  default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&cooldown.summon_demonic_tyrant.remains_expected<=variable.tyrant_prep_start" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=!talent.nether_portal&!talent.summon_demonic_tyrant|time_to_die<25" );
+  variables->add_action( "variable,name=tyrant_cd,op=setif,value=cooldown.invoke_power_infusion_0.remains,value_else=cooldown.summon_demonic_tyrant.remains_expected,condition=((((fight_remains+time)%%120<=85&(fight_remains+time)%%120>=25)|time>=210)&variable.shadow_timings)&cooldown.invoke_power_infusion_0.duration>0&!talent.grand_warlocks_design" );
+  variables->add_action( "variable,name=np_condition,op=set,value=cooldown.nether_portal.up|buff.nether_portal.up|pet.pit_lord.active|!talent.nether_portal|cooldown.nether_portal.remains>30" );
+
+  default_->add_action( "call_action_list,name=variables" );
+  default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&(time-variable.next_tyrant)<=(variable.tyrant_prep_start+2)&cooldown.summon_demonic_tyrant.up&variable.np_condition" );
+  default_->add_action( "call_action_list,name=tyrant,if=talent.summon_demonic_tyrant&(variable.tyrant_cd<=variable.tyrant_prep_start|cooldown.summon_demonic_tyrant.up&(buff.power_infusion.up|buff.nether_portal.up))&variable.np_condition" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=!talent.nether_portal&!talent.summon_demonic_tyrant|time_to_die<25|(buff.tyrant.up&variable.shadow_timings)" );
   default_->add_action( "implosion,if=time_to_die<2*gcd" );
   default_->add_action( "nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2|time_to_die<30" );
-  default_->add_action( "hand_of_guldan,if=buff.nether_portal.up" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "call_action_list,name=ogcd,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)" );
-  default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains_expected>cooldown" );
+  default_->add_action( "hand_of_guldan,if=buff.nether_portal.up" );
+  default_->add_action( "call_dreadstalkers,if=variable.tyrant_cd>cooldown+8*variable.shadow_timings" );
   default_->add_action( "call_dreadstalkers,if=!talent.summon_demonic_tyrant|time_to_die<14" );
   default_->add_action( "grimoire_felguard,if=!talent.summon_demonic_tyrant|time_to_die<cooldown.summon_demonic_tyrant.remains_expected" );
-  default_->add_action( "summon_vilefiend,if=!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>cooldown+variable.tyrant_prep_start|time_to_die<cooldown.summon_demonic_tyrant.remains_expected" );
+  default_->add_action( "summon_vilefiend,if=!talent.summon_demonic_tyrant|variable.tyrant_cd>cooldown+variable.tyrant_prep_start|time_to_die<cooldown.summon_demonic_tyrant.remains_expected" );
   default_->add_action( "guillotine,if=cooldown.demonic_strength.remains" );
   default_->add_action( "demonic_strength" );
   default_->add_action( "bilescourge_bombers,if=!pet.demonic_tyrant.active" );
@@ -196,32 +202,39 @@ void demonology( player_t* p )
   default_->add_action( "implosion,if=buff.wild_imps.stack>9&buff.tyrant.up&active_enemies>2+(1*talent.sacrificed_souls.enabled)&cooldown.call_dreadstalkers.remains>17&talent.the_expendables" );
   default_->add_action( "soul_strike,if=soul_shard<5&active_enemies>1" );
   default_->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10&active_enemies>1" );
-  default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4" );
+  default_->add_action( "demonbolt,if=buff.demonic_core.up&soul_shard<4&variable.tyrant_cd>5" );
   default_->add_action( "power_siphon,if=buff.demonic_core.stack<2&(buff.dreadstalkers.remains>gcd*3|buff.dreadstalkers.down)" );
-  default_->add_action( "hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|cooldown.summon_demonic_tyrant.remains_expected>variable.tyrant_prep_start+2)&(buff.demonic_calling.up|soul_shard>4|cooldown.call_dreadstalkers.remains>gcd)" );
+  default_->add_action( "hand_of_guldan,if=soul_shard>2&(!talent.summon_demonic_tyrant|variable.tyrant_cd>variable.tyrant_prep_start+2)&(buff.demonic_calling.up|soul_shard>4|cooldown.call_dreadstalkers.remains>gcd)" );
   default_->add_action( "doom,target_if=refreshable" );
   default_->add_action( "soul_strike,if=soul_shard<5" );
   default_->add_action( "shadow_bolt" );
 
-  items->add_action( "use_item,name=timebreaching_talon,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)" );
-  items->add_action( "use_items" );
+  items->add_action( "use_item,name=irideus_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
+  items->add_action( "use_item,name=timebreaching_talon,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
+  items->add_action( "use_item,name=spoils_of_neltharus,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=21" );
+  items->add_action( "use_item,name=voidmenders_shadowgem,if=!variable.shadow_timings|(variable.shadow_timings&(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)))" );  
+  items->add_action( "use_item,name=erupting_spear_fragment,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)|time_to_die<=11" );
+  items->add_action( "use_items,if=(buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal))&(!equipped.irideus_fragment&!equipped.timebreaching_talon&!equipped.spoils_of_neltharus&!equipped.erupting_spear_fragment&!equipped.voidmenders_shadowgem)" );
+  items->add_action( "use_item,name=rotcrusted_voodoo_doll" );
+  items->add_action( "use_item,name=beacon_to_the_beyond" );
 
   ogcd->add_action( "potion" );
   ogcd->add_action( "berserking" );
   ogcd->add_action( "blood_fury" );
   ogcd->add_action( "fireblood" );
 
-  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time" );
-  tyrant->add_action( "invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|(buff.dreadstalkers.up&variable.next_tyrant-time<=6&!talent.nether_portal)" );
+  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&!equipped.neltharions_call_to_dominance" );
+  tyrant->add_action( "invoke_external_buff,name=power_infusion,if=(buff.nether_portal.up&buff.nether_portal.remains<8&talent.nether_portal)|(buff.dreadstalkers.up&variable.next_tyrant-time<=6&(!talent.nether_portal|variable.shadow_timings))" );
   tyrant->add_action( "shadow_bolt,if=time<2&soul_shard<5" );
   tyrant->add_action( "nether_portal" );
+  tyrant->add_action( "variable,name=next_tyrant,op=set,value=time+13+cooldown.grimoire_felguard.ready+cooldown.summon_vilefiend.ready,if=variable.next_tyrant<=time&equipped.neltharions_call_to_dominance" );
   tyrant->add_action( "grimoire_felguard" );
   tyrant->add_action( "summon_vilefiend" );
   tyrant->add_action( "call_dreadstalkers" );
   tyrant->add_action( "soulburn,if=buff.nether_portal.up&soul_shard>=2,line_cd=40" );
-  tyrant->add_action( "hand_of_guldan,if=variable.next_tyrant-time>2&(buff.nether_portal.up|soul_shard>2&variable.next_tyrant-time<12|soul_shard=5)" );
+  tyrant->add_action( "hand_of_guldan,if=variable.next_tyrant-time>2&(buff.nether_portal.up|soul_shard>2&variable.next_tyrant-time<12|soul_shard=5)&!cooldown.call_dreadstalkers.up" );
   tyrant->add_action( "hand_of_guldan,if=talent.soulbound_tyrant&variable.next_tyrant-time<4&variable.next_tyrant-time>action.summon_demonic_tyrant.cast_time" );
-  tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1|buff.dreadstalkers.remains<cast_time+gcd" );
+  tyrant->add_action( "summon_demonic_tyrant,if=variable.next_tyrant-time<cast_time*2+1|(buff.dreadstalkers.remains<cast_time+gcd&buff.dreadstalkers.up)" );
   tyrant->add_action( "demonbolt,if=buff.demonic_core.up" );
   tyrant->add_action( "power_siphon,if=buff.wild_imps.stack>1&!buff.nether_portal.up" );
   tyrant->add_action( "soul_strike" );
@@ -260,9 +273,9 @@ void destruction( player_t* p )
   default_->add_action( "conflagrate,if=(talent.roaring_blaze&debuff.conflagrate.remains<1.5)|charges=max_charges" );
   default_->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
   default_->add_action( "cataclysm,if=raid_event.adds.in>15" );
-  default_->add_action( "channel_demonfire,if=talent.raging_demonfire" );
+  default_->add_action( "channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))>cast_time&(debuff.conflagrate.remains>execute_time|!talent.roaring_blaze)" );
   default_->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)" );
-  default_->add_action( "immolate,if=((dot.immolate.refreshable&talent.internal_combustion)|dot.immolate.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>dot.immolate.remains)&target.time_to_die>8" );
+  default_->add_action( "immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.infernal_combustion&action.chaos_bolt.usable)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8" );
   default_->add_action( "havoc,if=talent.cry_havoc&((buff.ritual_of_ruin.up&pet.infernal.active&talent.burn_to_ashes)|((buff.ritual_of_ruin.up|pet.infernal.active)&!talent.burn_to_ashes))" );
   default_->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&set_bonus.tier30_4pc" );
   default_->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
@@ -358,6 +371,7 @@ void destruction( player_t* p )
   items->add_action( "use_item,name=conjured_chillglobe" );
 
   ogcd->add_action( "potion,if=pet.infernal.active|!talent.summon_infernal" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.invoke_power_infusion_0.duration&fight_remains>cooldown.invoke_power_infusion_0.duration)|fight_remains<cooldown.summon_infernal.remains+15" );
   ogcd->add_action( "berserking,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<(cooldown.summon_infernal.remains+cooldown.berserking.duration)&(fight_remains>cooldown.berserking.duration))|fight_remains<cooldown.summon_infernal.remains" );
   ogcd->add_action( "blood_fury,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.blood_fury.duration&fight_remains>cooldown.blood_fury.duration)|fight_remains<cooldown.summon_infernal.remains" );
   ogcd->add_action( "fireblood,if=pet.infernal.active|!talent.summon_infernal|(fight_remains<cooldown.summon_infernal.remains+10+cooldown.fireblood.duration&fight_remains>cooldown.fireblood.duration)|fight_remains<cooldown.summon_infernal.remains" );

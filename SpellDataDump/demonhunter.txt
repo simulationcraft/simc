@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48966 Live (hotfix 2023-04-11/48966)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-12/49474)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -19,7 +19,7 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 
 Name             : Chaos Brand (id=1490) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : None
+School           : Chromastrike
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : Aura (infinite)
@@ -159,7 +159,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=129901)   : Apply Aura (6) | Modify Healing Recevied% (118)
+#1 (id=129901)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
@@ -214,7 +214,8 @@ Effects          :
 #1 (id=227730)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=227731)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.61860 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.73490 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.668088 -> 0.734897)
 #3 (id=287985)   : Energize Power (30)
                    Base Value: 25 | Scaled Value: 25 (coefficient=0, delta coefficient=0.4) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Quickly attack for $s2 Physical damage.
@@ -398,6 +399,7 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Affecting spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
@@ -477,7 +479,7 @@ Duration         : 3 seconds
 Cooldown         : 15 seconds
 Category         : 88
 Category Cooldown: 15 seconds
-Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Improved Disrupt (320361 effect#1), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Fiery Demise (212818 effect#1), Improved Disrupt (320361 effect#1), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 19, 72
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ..x..... 
@@ -528,7 +530,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Master of the Glaive (203556 effect#1), Havoc Demon Hunter (212612 effect#5), Perfectly Balanced Glaive (320387 effect#1), Master of the Glaive (389763 effect#2)
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerating Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -783,7 +785,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 1, 70, 72
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
@@ -1091,7 +1093,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=291051)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14076 | PvP Coefficient: 1.00000 | Radius: 20 yards | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.14076 | PvP Coefficient: 1.16000 | Radius: 20 yards | Target: Unknown(129)
 Description      : $@spelldesc198013
 
 Name             : Blur (id=198589) [Spell Family (107)] 
@@ -1182,7 +1184,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1196,7 +1198,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Melee Chain Targeting (172), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.64245 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.69384 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1331,7 +1333,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 50
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1345,7 +1347,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.83518 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90199 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -1906,7 +1908,8 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4, #11), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Shear Fury (389997 effect#1), Demon Hunter Vengeance Class Set 2pc (393630 effects: #1, #2)
+Labels           : 2618
+Affecting spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4, #11), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Shear Fury (389997 effect#1), Demon Hunter Vengeance Class Set 2pc (393630 effects: #1, #2), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2)
 Family Flags     : 22, 32, 70, 85
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1919,7 +1922,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300625)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45740 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50314 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.4574 -> 0.50314)
 #2 (id=300626)   : Energize Power (30)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Shears an enemy for $s1 Physical damage, and shatters $?a187827[two Lesser Soul Fragments][a Lesser Soul Fragment] from your target.
@@ -1962,6 +1966,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
+Affecting spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
@@ -2025,7 +2030,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300651)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.10930 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12985 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.118044 -> 0.129848)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 9.5 | Scaled Value: 9.5 (coefficient=0, delta coefficient=0.526316) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc203555
@@ -2095,9 +2101,9 @@ Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1541: Down in Flames (389732 effect#1), Down in Flames (389732 effect#2)
+Category         : 1541: Symbol of Hope (265144 effect#5), Down in Flames (389732 effect#1), Down in Flames (389732 effect#2)
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fiery Brand (343010 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Fiery Demise (212818 effect#1), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fiery Brand (343010 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 32, 36, 70, 72
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2125,7 +2131,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Master of the Glaive (203556 effect#1), Havoc Demon Hunter (212612 effect#5), Perfectly Balanced Glaive (320387 effect#1), Master of the Glaive (389763 effect#2)
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerating Blade (391275 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerated Blade (391275 effects: #1, #2)
 Family Flags     : 5, 32, 70, 85
 Attributes       : ....x... ........ ..x..x.. ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2313,7 +2319,7 @@ Range            : 100 yards
 Duration         : 6 seconds
 Labels           : 2381: Felfire Heart (388109 effect#2)
 Proc Chance      : 101%
-Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Extended Sigils (389697 effect#1), Chains of Anger (389715 effect#1), Precise Sigils (389799 effect#5), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Extended Sigils (389697 effect#1), Chains of Anger (389715 effect#1), Precise Sigils (389799 effect#5), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 16, 33, 70, 72
 Attributes       : ........ ........ ........ x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ....x.x.   ........ ........ ........ ......x. 
@@ -2382,7 +2388,7 @@ Effects          :
                    Family Flags: 15, 28
 Description      : Leech increased by $s1%.
 
-Gain an additional $s2% Leech while Metamorphosis is active.
+Gain an additional $s2% leech while Metamorphosis is active.
 
 Name             : Desperate Instincts (id=205411) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=3, col=2, max_rank=1, req_points=0, select_idx=100]
@@ -2459,7 +2465,7 @@ Talent Entry     : Havoc [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 0.5 seconds
+Internal Cooldown: 0.4 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x..... ........ ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Heal
@@ -2600,7 +2606,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 32, 46, 70, 72
 Attributes       : ........ ........ ..x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2613,9 +2619,11 @@ Attributes       : ........ ........ ..x..... .......x   ........ .x...... .....
                  : Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Periodic Can Crit (265), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=306731)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35805 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42966 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.35805 -> 0.42966)
 #2 (id=318965)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.98000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.65 -> 1.98)
 #3 (id=318966)   : Trigger Spell (64): Soul Carver
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 214743
 #4 (id=318969)   : Dummy (3)
@@ -2831,7 +2839,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : Do Not Sheath (18), No Threat (42), Extra Initial Period (169), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc207697
 Tooltip          : Healing $w1 health every $t1 sec.
 
@@ -2895,13 +2903,24 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=307322)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
-                   Affected School(s): All
+#1 (id=307322)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Sub Type (269 -> 23), Period (0 -> 2000), Base Value (-40 -> 0), Misc Value (127 -> 0)
 #2 (id=707093)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 43, 72
+#3 (id=1075599)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+Hotfixed         : Type (6 -> 3), Sub Type (507 -> 0), Misc Value (2618 -> 0), Target 1 (6 -> 0)
+#4 (id=1083819)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
+Hotfixed         : NEW EFFECT
+#5 (id=1083838)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2618 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
+Hotfixed         : Sub Type (507 -> 537)
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to $@auracaster$?s389220[ and taking $w2% more Fire damage from them][].
 
@@ -2933,7 +2952,7 @@ Labels           : 2308: Fiery Demise (389220 effect#1)
 Proc Chance      : 100%
 Proc Flags       : .....x.. .....x.. .x.x.... ........   ........ ........ ........ ........   
                  : Yellow Melee Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fiery Brand (343010 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Spirit of the Darkness Flame (235543 effect#1), Frailty (247456 effect#4), Revel in Pain (272985 effect#2), Spirit of the Darkness Flame (337542 effect#1), Fiery Brand (343010 effect#1), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 36, 70, 72
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -2950,10 +2969,18 @@ Effects          :
                    Affected School(s): All
 #2 (id=370871)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 43, 72
-#3 (id=707094)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
+#3 (id=707094)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Sub Type (507 -> 23), Period (0 -> 2000), Base Value (40 -> 0), Misc Value (2618 -> 0)
+#4 (id=1075596)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 2618 (Label) | Target: Enemy (6)
+                   Affected Spells (Label): Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
+Hotfixed         : Sub Type (507 -> 537)
+#5 (id=1083817)  : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30900 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc204021
 Tooltip          : Branded, taking $w3 Fire damage every $t3 sec, and dealing $204021s1% less damage to $@auracaster$?s389220[ and taking $w2% more Fire damage from them][].
 
@@ -3197,6 +3224,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 25 yards/sec
+Affecting spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
@@ -3209,7 +3237,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=310973)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 3.48075 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.35094 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Consume a Soul Fragment, healing you for $s1 health.
 
 Name             : Death Sweep (id=210152) [Spell Family (107)] 
@@ -3369,8 +3397,8 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Burning Blood (390213 effects: #1, #2)
-Family Flags     : 32, 43
+Affecting spells : Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #3, #8), Burning Blood (390213 effects: #1, #2)
+Family Flags     : 32, 43, 55
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3424,7 +3452,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Fires of Fel (409645 effect#1)
 Triggered by     : Fel Devastation (212084)
 Family Flags     : 67, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3458,7 +3486,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Do Not Display Range (126), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=314433)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40950 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.51187 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc212084
 
 Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden] 
@@ -3517,6 +3545,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1032438)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=1083935)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -3560,6 +3591,7 @@ Effects          :
                    Family Flags: 30
 #8 (id=315257)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Fel Eruption (211881)
                    Family Flags: 55
 #9 (id=315258)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
@@ -3577,6 +3609,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=1032440)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#15 (id=1080959)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2667 (Label) | Target: Self (1)
+                   Affected Spells (Label): Charred Warblades (213010)
 
 Name             : Blur (id=212800) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3628,9 +3663,14 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Is Debuff (26), Ignore Line of Sight (66), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=315667)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x4 | Target: Enemy (6)
-                   Affected School(s): Fire
+#1 (id=315667)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Fel Devastation (346503), Fel Devastation (393834)
+                   Family Flags: 72
+#2 (id=1083498)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
+                   Family Flags: 22, 69, 73
 Description      : $@spelldesc389220
 Tooltip          : Fire damage taken from $@auracaster increased by $w1%.
 
@@ -3665,6 +3705,7 @@ Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=0]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Labels           : 2667: Vengeance Demon Hunter (212613 effect#15)
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -3698,7 +3739,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=315976)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : You heal for $s1% of all Fire damage dealt.
+Description      : $@spelldesc213010
 
 Name             : Felblade (id=213243) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3707,7 +3748,7 @@ Spell Type       : Melee
 Spell Level      : 50
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #7), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 16, 30, 42, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3722,7 +3763,8 @@ Effects          :
 #1 (id=316324)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=316325)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.72030 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.85572 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.777924 -> 0.855716)
 #3 (id=316326)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc232893
@@ -3776,7 +3818,7 @@ Spell Type       : Melee
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Triggered by     : Soul Carver (207407)
 Family Flags     : 46, 70, 72
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ........ 
@@ -3790,7 +3832,8 @@ Attributes       : ........ ........ ..x..... .......x   ........ ........ .....
                  : Do Not Sheath (18), No Aura Cancel (31), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=318967)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.98000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.65 -> 1.98)
 Description      : $@spelldesc207407
 
 Name             : Spectral Sight (id=215725) [Spell Family (107)] 
@@ -3993,7 +4036,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4007,7 +4050,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Melee Chain Targeting (172), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40886 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.44157 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -4038,7 +4081,8 @@ School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #11), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1)
+Labels           : 2618
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #11), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2)
 Triggered by     : Fracture (263642)
 Family Flags     : 69, 70
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -4052,7 +4096,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Always Hit (114), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=338878)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.45320 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.49852 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.4532 -> 0.49852)
 #2 (id=338879)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -4063,7 +4108,8 @@ School           : Physical
 Spell Type       : Melee
 Range            : 20 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #11), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1)
+Labels           : 2618
+Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #11), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2)
 Triggered by     : Fracture (263642)
 Family Flags     : 69, 70
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
@@ -4077,7 +4123,8 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Always Hit (114), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=338881)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.90640 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.99704 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.9064 -> 0.99704)
 #2 (id=338882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -4147,7 +4194,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Improved Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1), Serrated Glaive (390155 effect#1), Chaos Theory (390195 effect#1), Burning Blood (390213 effects: #1, #2), Demon Hunter Havoc Class Set 2pc (393628 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4161,7 +4208,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Melee Chain Targeting (172), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.53147 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.57398 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -4304,7 +4351,7 @@ Effects          :
 #2 (id=356555)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 33 | Misc Value 2: 2309 (Label) | Target: Self (1)
                    Affected Spells (Label): Metamorphosis (162264), Metamorphosis (187827)
-Description      : Metamorphosis grants $s2% Versatility and its cooldown is reduced by ${$m1/-1000} sec.
+Description      : Metamorphosis grants $s2% versatility and its cooldown is reduced by ${$m1/-1000} sec.
 
 Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -4384,7 +4431,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Soul Furnace (391172 effect#1)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Soul Furnace (391172 effect#1), Fires of Fel (409645 effect#1)
 Family Flags     : 68, 70, 72
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -4424,7 +4471,7 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : Allow While Mounted (24), Allow While Sitting (27), DoT Stacking Rule (103), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Caster Aura Icon (187), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=377041)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=377042)   : Trigger Spell (64): Frailty
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 391123 | Target: Self (1)
 #3 (id=1028369)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
@@ -4676,7 +4723,7 @@ Heals $s2 to allies within $A1.
 Name             : Essence Break (id=258860) [Spell Family (107)] 
 Talent Entry     : Havoc [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Demon Hunter
-School           : Chromatic
+School           : Chromastrike
 Spell Type       : Melee
 Range            : 10 yards
 GCD              : 1.5 seconds
@@ -4694,7 +4741,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=483076)   : School Damage (2): chromatic
+#1 (id=483076)   : School Damage (2): chromastrike
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50000 | PvP Coefficient: 0.80000 | Radius: 10 yards | Target: Cone Front (104)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
@@ -4849,11 +4896,12 @@ $vengeFury=${$s3+($258922s3*$d)}
 $havocTalentFury=${$s2+($258922s2*$d)}
 
 Name             : Immolation Aura (id=258921) [Spell Family (107)] 
+Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Felfire Heart (388109 effect#1), Any Means Necessary (388114 effects: #1, #2, #3), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2)
-Family Flags     : 11, 16, 49, 70
+Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Felfire Heart (388109 effect#1), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
+Family Flags     : 11, 16, 49, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4871,12 +4919,13 @@ Effects          :
 Description      : $@spelldesc258920
 
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
+Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
-Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Felfire Heart (388109 effect#1), Any Means Necessary (388114 effects: #1, #2, #3), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Immolation Aura (320378 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Felfire Heart (388109 effect#1), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Triggered by     : Immolation Aura (258920)
-Family Flags     : 11, 16, 61, 70
+Family Flags     : 11, 16, 61, 70, 72
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4978,7 +5027,8 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
 Charges          : 2 (4.5 seconds cooldown)
 Category         : 1552: Vengeance Demon Hunter (212613 effect#6)
-Affecting spells : Metamorphosis (187827 effects: #9, #10), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Mark of the Ogre (326486 effect#3), Demon Hunter Vengeance Class Set 2pc (393630 effect#3)
+Labels           : 2618
+Affecting spells : Metamorphosis (187827 effects: #9, #10), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Fiery Demise (212818 effect#2), Mark of the Ogre (326486 effect#3), Demon Hunter Vengeance Class Set 2pc (393630 effect#3), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2)
 Family Flags     : 32, 73
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -5025,13 +5075,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
 
 Consumes all Soul Fragments within 25 yds to add $<fragmentAbsorb> to the shield per fragment.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $baseAbsorb=${5*$AP*$pctH}
-$fragmentAbsorb=${1*$AP*$pctH}
+Variables        : $baseAbsorb=${6.25*$AP*$pctH}
+$fragmentAbsorb=${1.25*$AP*$pctH}
 
 Name             : Resounding Protection (id=263962) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7468,7 +7518,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 2432: Infernal Armor (320331 effect#2)
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 16, 70, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7485,7 +7535,7 @@ Description      : $@spelldesc320331
 
 Name             : Essence Break (id=320338) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : None
+School           : Chromastrike
 Spell Type       : Melee
 Range            : 100 yards
 Duration         : 4 seconds
@@ -7514,7 +7564,7 @@ School           : Fire
 Spell Type       : Magic
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1)
 Family Flags     : 32, 70, 72
 Attributes       : ....x... ........ x....... ........   .......x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7551,7 +7601,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Disrupt (183752)
                    Family Flags: 19
-Description      : Increases the range of Disrupt to ${$s1+$183752r} yards.
+#2 (id=1078593)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases the range of Disrupt to ${$s2+$s1} yds.
 
 Name             : Immolation Aura (desc=Rank 2) (id=320364) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -8393,7 +8445,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Triggered by     : Fel Devastation (333105)
 Family Flags     : 16, 67, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8824,7 +8876,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 40 yards/sec
 Min Travel Time  : 0.1 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerating Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
 Triggered by     : Throw Glaive (185123)
 Family Flags     : 5, 16, 32, 42, 85
 Attributes       : ........ ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -9476,7 +9528,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Suppress Caster Procs (112), Suppress Weapon Procs (151), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=844533)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc343010
 Tooltip          : Absorbs $w1 damage.
@@ -9491,19 +9543,19 @@ Proc Chance      : 100%
 Proc Flags       : ........ ....x... ........ ........   ........ ........ ........ ........   
                  : Generic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+                 : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844535)   : Apply Aura (6) | Proc Trigger Spell (42): Revel in Pain
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 343011 | Target: Self (1)
 #2 (id=845335)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 675 | Scaled Value: 675 | PvP Coefficient: 1.00000
+                   Base Value: 844 | Scaled Value: 844 | PvP Coefficient: 1.00000
 Description      : When Fiery Brand expires on your primary target, you gain a shield that absorbs up ${$AP*($s2/100)*(1+$@versadmg)} damage for $343013d, based on your damage dealt to them while Fiery Brand was active. 
 
 Name             : Improved Fel Rush (id=343017) [Spell Family (107), Passive] 
@@ -9565,7 +9617,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844836)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 40)
 Description      : Soul Cleave deals $s1% increased damage to your primary target.
 
 Name             : Furious Gaze (id=343311) [Spell Family (107), Passive] 
@@ -9888,7 +9941,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Triggered by     : Fel Devastation (346502)
 Family Flags     : 16, 67, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9950,7 +10003,7 @@ Spell Type       : Melee
 Range            : 30 yards
 Velocity         : 50 yards/sec
 Travel Delay     : 0.15 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerating Blade (391275 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Accelerated Blade (391275 effects: #1, #2)
 Triggered by     : Throw Glaive (204157)
 Family Flags     : 5, 32, 70, 85
 Attributes       : ........ ........ ..x..x.. ........   ........ .x...... ........ ........ 
@@ -10008,8 +10061,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=874736)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Tooltip          : Damage of your next Fel Rush increased by $s1%.
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Tooltip          : Damage of your next Fel Rush increased by $w1%.
 
 Name             : Demon Soul (id=347765) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -10089,10 +10142,10 @@ Effects          :
 #1 (id=880357)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.92500 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: AOE enemy (instant) (16)
 #2 (id=880360)   : Direct Heal% (136)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.60000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.60000 | Target: Self (1)
 #3 (id=880382)   : Trigger Spell (64): Fodder to the Flame
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 350644 | Target: Self (1)
-Description      : Your damaging abilities have a chance to call forth a demon from the Theater of Pain for $329554d. Throw Glaive deals lethal damage to the demon, which explodes on death, dealing $s1 $@spelldesc395041 damage to nearby enemies and healing you for $s2% of your maximum health. The explosion deals reduced damage beyond 5 targets.
+Description      : $@spelldesc391429
 
 Name             : Fodder to the Flame (id=350644) [Hidden] 
 Class            : Demon Hunter
@@ -10289,7 +10342,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=890573)   : Apply Aura (6) | Modify Healing Recevied% (118)
+#1 (id=890573)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
@@ -10665,7 +10718,7 @@ Effects          :
 #1 (id=982584)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
 #2 (id=982585)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22058 | Target: Self (1)
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
@@ -10889,7 +10942,8 @@ Effects          :
 #1 (id=1023604)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1026969)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 Description      : Chaos Nova, Eye Beam, and Fel Rush gain bonuses when striking 1 target.
 
 $@spellicon179057 $@spellname179057:
@@ -10983,6 +11037,7 @@ Description      : Gain critical strike damage equal to $s2% of your critical st
 Name             : Fiery Demise (id=389220) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(20, 40)]
+                 : Effect#2 [op=set, values=(20, 40)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -11240,7 +11295,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Elysian Decree (307046), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Elysian Decree (389860)
                    Family Flags: 33
-Description      : Increases the radius of your Sigils by $s1 yards.
+Description      : Increases the radius of your Sigils by $s1 yds.
 
 Name             : Cycle of Binding (id=389718) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=8, col=5, max_rank=1, req_points=20]
@@ -11954,7 +12009,8 @@ Effects          :
                    Affected Spells: Frailty (247456)
                    Family Flags: 93
 #2 (id=1028375)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 8)
 Description      : Multiple applications of Frailty may overlap.
 
 Soul Cleave applies Frailty to your primary target for $s2 sec.
@@ -12105,7 +12161,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026770)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 390155 | Target: Self (1)
-Description      : Enemies hit by Throw Glaive take $s1% increased damage from Eye Beam.
+Description      : Enemies hit by Throw Glaive take $s1% increased damage from Chaos Strike and Eye Beam.
 
 Name             : Serrated Glaive (id=390155) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -12113,7 +12169,7 @@ School           : Magic
 Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
-Duration         : 10 seconds
+Duration         : 15 seconds
 Triggered by     : Serrated Glaive (390154)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -12121,16 +12177,16 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1026771)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Eye Beam (198030), Eye Beam (391058)
-                   Family Flags: 8
+                   Affected Spells: Eye Beam (198030), Chaos Strike (199547), Annihilation (201428), Chaos Strike (222031), Annihilation (227518), Eye Beam (391058)
+                   Family Flags: 6, 8, 14, 50, 127
 Description      : $@spelldesc390154
-Tooltip          : Damage taken from Eye Beam increased by $w1%.
+Tooltip          : Damage taken from Chaos Strike and Eye Beam increased by $w1%.
 
 Name             : Growing Inferno (id=390158) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=6, col=5, max_rank=2, req_points=8]
@@ -12299,11 +12355,11 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1026865)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 43, 72
 #2 (id=1040352)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Fel Devastation (346503), Inner Demon (390137), Soulrend (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 43, 72
 Description      : Fire damage increased by $s1%.
 
@@ -12330,7 +12386,7 @@ Effects          :
                    Base Value: 7.5 | Scaled Value: 7.5 (coefficient=0, delta coefficient=0.666667) | PvP Coefficient: 1.00000 | Trigger Spell: 392997 | Target: Self (1)
 Description      : Immolation Aura generates $m-$M Fury when it deals critical damage.
 
-This effect may only occur once per ${$proccooldown+0.1}.1 sec.
+This effect may only occur once per ${$proccooldown+0.1} sec.
 
 Name             : Eye Beam (id=391057) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
@@ -12607,7 +12663,7 @@ Effects          :
 Description      : $@spelldesc388108
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Accelerating Blade (id=391275) [Spell Family (107), Passive] 
+Name             : Accelerated Blade (id=391275) [Spell Family (107), Passive] 
 Talent Entry     : Havoc [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Demon Hunter
 School           : Physical
@@ -12623,14 +12679,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1028665)  : Apply Aura (6) | Add Percent Modifier (108): Spell Target Bonus (20)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 20 | Target: Self (1)
+                   Base Value: -19 | Scaled Value: -19 | PvP Coefficient: 1.00000 | Misc Value: 20 | Target: Self (1)
                    Affected Spells: Throw Glaive (185123), Throw Glaive (204157), Throw Glaive (337819), Throw Glaive (346665)
                    Family Flags: 5
 #2 (id=1028666)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Throw Glaive (185123), Throw Glaive (204157), Throw Glaive (337819), Throw Glaive (346665)
                    Family Flags: 5
-Description      : Throw Glaive deals $s1% increased damage for each enemy hit.
+Description      : Throw Glaive deals $s2% increased damage, reduced by ${$s2/2}% for each previous enemy hit.
 
 Name             : Misery in Defeat (id=391369) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -12929,11 +12985,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 12, 14, 25, 37, 38, 50, 127
 #2 (id=1034985)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055)
                    Family Flags: 6, 12, 14, 25, 37, 38, 50, 127
 Description      : Chaos Strike and Blade Dance chance to critically strike is increased by $s1% and their critical strike damage is increased by $s2%.
@@ -12978,15 +13034,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032715)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Shear (203782), Fracture (225919), Fracture (225921)
                    Family Flags: 22, 69
 #2 (id=1035062)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shear (203782)
                    Family Flags: 22
 #3 (id=1035063)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 4 (32)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Fracture (263642)
                    Family Flags: 73
 Description      : $?s263642[Fracture][Shear] deals $s1% more damage, generates $s2% more Fury, and has a 15% chance to generate an additional Soul Fragment.
@@ -13006,7 +13062,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1032716)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1036244)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Spirit Bomb and Soul Cleave have a $s2% chance to deal $s1% more damage and cause targets they hit to deal $394958s1% less damage to you for $394958d.
@@ -13028,7 +13084,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1032991)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your Mastery by ${$s1*$mas}.1%.
+Description      : Increases your mastery by ${$s1*$mas}.1%.
 
 Name             : Stoke the Flames (id=393827) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=8, col=3, max_rank=1, req_points=20]
@@ -13061,15 +13117,15 @@ School           : Fire
 Spell Type       : None
 Range            : 20 yards
 Duration         : 2 seconds
-Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ..x..... ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : .......x ........ ........ ........   x..x.... ........ ..x..... ........ 
+                 : .......x ........ ........ ........   x..x.... ........ ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
                  : ........ ........ ....x... ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Channelled (34), Hide Channel Bar (109), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Confused (178), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
+                 : Is Channelled (34), No Aura Icon (60), Hide Channel Bar (109), Allow Cast While Casting (135), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Confused (178), No Caster Aura Icon (187), Allow While Charmed (261), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1033005)  : Apply Aura (6) | Periodic Trigger Spell (23): Fel Devastation every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393834 | Target: Self (1)
@@ -13082,7 +13138,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Fiery Demise (212818 effect#1), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #2, #3), Burning Blood (390213 effects: #1, #2), Stoke the Flames (393827 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1)
 Triggered by     : Fel Devastation (393831)
 Family Flags     : 16, 67, 72
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13167,11 +13223,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034997)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 #2 (id=1034998)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Sigil of Flame (204598), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Fel Devastation (333110), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Elysian Decree (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834)
                    Family Flags: 16
 Description      : $@spelldesc393629
@@ -13194,7 +13250,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035051)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
 Description      : $@spelldesc393631
 Tooltip          : Damage dealt to $@auracaster reduced by $w1%.
@@ -13331,5 +13387,208 @@ Effects          :
 #1 (id=1035940)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Afflicting an enemy with a Sigil generates $m1 Lesser Soul $LFragment:Fragments;. 
+
+Name             : Demon Hunter Havoc 10.1 Class Set 2pc (id=405505) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... ..x.x.x. x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053838)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Every $s1 Fury you spend, gain Seething Fury, increasing your Agility by $408737s1% for $408737d.
+
+Name             : Demon Hunter Havoc 10.1 Class Set 4pc (id=405507) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053841)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each time you gain Seething Fury, gain $408757s1 Fury and the damage of your next Eye Beam is increased by $408754s1%, stacking 5 times.
+
+Name             : Demon Hunter Vengeance 10.1 Class Set 2pc (id=405508) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053842)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Consume Soul (178963), Consume Soul (203794), Consume Soul (210042)
+                   Family Flags: 4, 20
+Description      : Soul Fragments heal for $s1% more and generating a Soul Fragment increases your Fire damage by $409645s1% for $409645d. Multiple applications may overlap.
+
+Name             : Demon Hunter Vengeance 10.1 Class Set 4pc (id=405509) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+Effects          :
+#1 (id=1053843)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1074772)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.50000 | Target: Self (1)
+#3 (id=1074773)  : Apply Aura (6) | Modify Spell School (220)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Affected Spells: Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
+                   Family Flags: 22, 69, 73
+#4 (id=1083486)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2689 (Label) | Target: Self (1)
+                   Affected Spells (Label): Fires of Fel (409645)
+Description      : Shear and Fracture deal Fire damage, and after consuming $s1 Soul Fragments, your next cast of Shear or Fracture will apply Fiery Brand for $s2 sec to its target.
+
+Name             : Seething Fury (id=408737) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ..x..... x....... ........ ........   ........ ........ x....... ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Suppress Caster Procs (112), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1073038)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value 2: 0x2 | Target: Self (1)
+Hotfixed         : Base Value (8 -> 10)
+Description      : $@spelldesc405505
+Tooltip          : Agility increased by $w1%.
+
+Name             : Seething Potential (id=408754) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 60 seconds
+Stacks           : 5 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ..x..... 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1073074)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : $@spelldesc405507
+Tooltip          : Your next Eye Beam deals $w1% increased damage.
+
+Name             : Seething Fury (id=408757) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Casting (135), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1073079)  : Energize Power (30)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.50000 | Misc Value: fury | Target: Self (1)
+Description      : $@spelldesc405507
+
+Name             : Fires of Fel (id=409645) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Fire
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 2689: Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#4)
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Entering Arena (149), Aura Points On Client (268)
+Effects          :
+#1 (id=1074654)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Fel Devastation (346503), Fel Devastation (393834)
+                   Family Flags: 72
+#2 (id=1083485)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Shear (203782), Fracture (225919), Fracture (225921), Fracture (263642)
+                   Family Flags: 22, 69, 73
+Description      : $@spelldesc405508
+Tooltip          : Fire damage increased by $w1%.
+
+Name             : Recrimination (id=409877) [Spell Family (107)] 
+Hotfixed         : Max stacks (6 -> 1)
+Class            : Demon Hunter
+School           : Fire
+Spell Type       : None
+Duration         : 30 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Entering Arena (149), Aura Points On Client (268)
+Effects          :
+#1 (id=1075087)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc405509
+Tooltip          : Next Shear or Fracture applies Fiery Brand.
 
 

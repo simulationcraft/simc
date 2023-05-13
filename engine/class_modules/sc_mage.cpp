@@ -2435,8 +2435,8 @@ struct ignite_t final : public residual_action_t
   {
     residual_action_t::init();
 
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags   |= STATE_TGT_MUL_TA;
+    snapshot_flags = STATE_TGT_MUL_TA;
+    update_flags   = STATE_TGT_MUL_TA;
   }
 
   void tick( dot_t* d ) override
@@ -2584,6 +2584,14 @@ struct arcane_blast_t final : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p->talents.crackling_energy->effectN( 1 ).percent();
   }
 
+  timespan_t travel_time() const override
+  {
+    // Add a small amount of travel time so that Arcane Blast's damage can be stored
+    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
+    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
+    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
+  }
+
   double cost() const override
   {
     double c = arcane_mage_spell_t::cost();
@@ -2613,17 +2621,10 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.concentration->trigger();
+    p()->buffs.nether_precision->decrement();
 
     if ( num_targets_crit > 0 )
       p()->buffs.bursting_energy->trigger();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->buffs.nether_precision->decrement();
   }
 
   double action_multiplier() const override
@@ -2931,7 +2932,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     ticks += as<int>( std::round( ( d->remains() - tick_remains ) / tt ) );
     timespan_t new_remains = ticks * tt + tick_remains;
 
-    d->adjust_duration( new_remains - d->remains(), timespan_t::min(), 0, false );
+    d->adjust_duration( new_remains - d->remains() );
   }
 
   bool usable_moving() const override
@@ -3017,6 +3018,14 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+    // Add a small amount of travel time so that Arcane Surge's damage can be stored
+    // in a Touch of the Magi cast immediately afterwards. Because simc has a default
+    // sim_t::queue_delay of 5_ms, this needs to be consistently longer than that.
+    return std::max( arcane_mage_spell_t::travel_time(), 6_ms );
+  }
+
   double action_multiplier() const override
   {
     double am = arcane_mage_spell_t::action_multiplier();
@@ -3034,8 +3043,16 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     p()->buffs.rune_of_power->trigger();
 
     arcane_mage_spell_t::execute();
+  }
 
-    p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( s->chain_target == 0 )
+    {
+      p()->resource_gain( RESOURCE_MANA, p()->resources.max[ RESOURCE_MANA ] * energize_pct, p()->gains.arcane_surge, this );
+    }
   }
 };
 
@@ -4878,7 +4895,9 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = triggers.ignite = true;
-    callbacks = false;
+    // TODO: PF doesn't trigger normal RPPM effects, but somehow triggers the class trinket.
+    // Enable callbacks for now until we find what exactly causes this.
+    // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
@@ -6577,7 +6596,7 @@ void mage_t::create_buffs()
       if ( cur == 0 )
       {
         auto set = sets->set( MAGE_ARCANE, T30, B4 );
-        double value = 0.01 * state.spent_mana / set->effectN( 1 ).base_value();
+        double value = 0.01 * state.spent_mana / set->effectN( 1 ).average( this );
         value = std::min( value, set->effectN( 2 ).percent() );
         buffs.arcane_overload->trigger( -1, value );
       }

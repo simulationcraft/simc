@@ -604,7 +604,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   action_list_str = "travel";
   action_list_str += "/felstorm_demonic_strength";
-  action_list_str += "/felstorm";
+  if ( !owner->disable_auto_felstorm )
+    action_list_str += "/felstorm";
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   felstorm_cd = get_cooldown( "felstorm" );
@@ -649,27 +650,6 @@ struct felguard_melee_t : public warlock_pet_melee_t
     add_child( fiendish_wrath );
   }
 
-  void execute() override
-  {
-    warlock_pet_melee_t::execute();
-
-    if ( p()->o()->talents.immutable_hatred->ok() )
-    {
-      auto fg = debug_cast<felguard_pet_t*>( p() );
-      if ( !( fg->immutable_hatred.target ) )
-      {
-        fg->immutable_hatred.target = target;
-      }
-      else if ( fg->immutable_hatred.target != target )
-      {
-        fg->immutable_hatred.target = target;
-        fg->buffs.festering_hatred->expire();
-      }
-
-      fg->buffs.festering_hatred->trigger();
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     auto amount = s->result_raw;
@@ -678,6 +658,22 @@ struct felguard_melee_t : public warlock_pet_melee_t
 
     if ( p()->buffs.fiendish_wrath->check() )
       fiendish_wrath->execute_on_target( s->target, amount );
+
+    if ( p()->o()->talents.immutable_hatred->ok() )
+    {
+      auto fg = debug_cast<felguard_pet_t*>( p() );
+      if ( !( fg->immutable_hatred.target ) )
+      {
+        fg->immutable_hatred.target = s->target;
+      }
+      else if ( fg->immutable_hatred.target != s->target )
+      {
+        fg->immutable_hatred.target = s->target;
+        fg->buffs.festering_hatred->expire();
+      }
+
+      fg->buffs.festering_hatred->trigger();
+    }
   }
 };
 
@@ -695,21 +691,28 @@ struct axe_toss_t : public warlock_pet_spell_t
 
 struct legion_strike_t : public warlock_pet_melee_attack_t
 {
+  bool main_pet;
+
   legion_strike_t( warlock_pet_t* p, util::string_view options_str ) 
     : warlock_pet_melee_attack_t( p, "Legion Strike" )
   {
     parse_options( options_str );
     aoe    = -1;
     weapon = &( p->main_hand_weapon );
+    main_pet = true;
+  }
+
+  legion_strike_t( warlock_pet_t* p, util::string_view options_str, bool is_main_pet )
+    : legion_strike_t( p, options_str )
+  {
+    main_pet = is_main_pet;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
 
-    // 2023-03-19 On PTR2, Grimoire Felguard was benefitting from the Legion Strike effect as well
-    // If this is fixed, will need to disable this somehow on GFG
-    if ( p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
+    if ( main_pet && p()->o()->talents.immutable_hatred->ok() && s->n_targets == 1 )
       m *= 1.0 + p()->o()->talents.immutable_hatred->effectN( 1 ).percent();
 
     return m;
@@ -824,6 +827,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     {
       internal_cooldown->start( 5_s * p()->composite_spell_haste() );
     }
+
+    p()->melee_attack->cancel();
   }
 };
 
@@ -1215,7 +1220,7 @@ void grimoire_felguard_pet_t::init_base_stats()
 action_t* grimoire_felguard_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "legion_strike" )
-    return new legion_strike_t( this, options_str );
+    return new legion_strike_t( this, options_str, false );
   if ( name == "felstorm" )
     return new felstorm_t( this, options_str, false );
 

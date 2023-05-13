@@ -1,0 +1,111 @@
+shaman="T30_Shaman_Elemental"
+level=70
+race=tauren
+role=spell
+spec=elemental
+talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoVSSLJUSSLRDRJQiEAAAAAgSAikgiog0SSapEoEJBgA
+# https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFBFBISKJREIRBDAUAOVVFFQVCoQCIhEQDUUA
+
+head=,id=202470,bonus_id=8780/7187,gem_id=192985,ilevel=447
+neck=,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948,ilevel=447
+shoulder=,id=202468,bonus_id=7187,ilevel=450
+back=,id=204465,bonus_id=4800/1498
+chest=,id=202473,bonus_id=7187,enchant_id=6625,ilevel=447
+wrist=,id=193812,bonus_id=8780/7359/6646,gem_id=192948,ilevel=447
+hands=,id=193465,bonus_id=8836/8840/8902/8960/8802/8846,ilevel=447
+waist=,id=193463,bonus_id=8836/8840/8902/8960/7936/8802/8846,gem_id=192945,ilevel=447
+legs=,id=202469,bonus_id=7187,enchant_id=6541,ilevel=450
+feet=,id=204424,bonus_id=4800/1498
+finger1=,id=204398,bonus_id=8780/4800/1498,enchant_id=6550,gem_id=192948
+finger2=,id=195480,bonus_id=6652/8783/8784/7936/7937/4800/4786/8780/1498,enchant_id=6556,gem_id=192948,ilevel=421
+trinket1=,id=203996,bonus_id=4800/1498
+trinket2=,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,ilevel=444
+main_hand=,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643,ilevel=450
+
+save=T30_Shaman_Elemental.simc
+
+shaman="T30_Shaman_Enhancement"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLQSSKRSCSSIIJUSIAAAAAAAAAAAAgSESCJoJQSLJpgIEESaI
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
+
+head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
+neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
+shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=192961,enchant_id=6574,crafted_stats=32
+hands=scale_rein_grips,id=193465,bonus_id=9405/9376
+waist=wind_spirits_lasso,id=193463,bonus_id=9405/9376/9436,gem_id=192961
+legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
+feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
+main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
+off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
+
+save=T30_Shaman_Enhancement.simc
+
+
+shaman="T30_Shaman_Enhancement_Storm"
+level=70
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=BcQAu3fz4tp2ZikXIAdNeR+oLIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
+
+head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
+neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
+shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
+wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=192961,enchant_id=6574,crafted_stats=32
+hands=scale_rein_grips,id=193465,bonus_id=9405/9376
+waist=wind_spirits_lasso,id=193463,bonus_id=9405/9376/9436,gem_id=192961
+legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
+feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
+main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
+off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
+
+save=T30_Shaman_Enhancement_Storm.simc
+
+# # shaman="T30_Shaman_Restoration"
+# # level=70
+# # race=tauren
+# # spec=restoration
+# # role=spell
+# # position=ranged_back
+# # talents=0100200
+
+# # head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
+# # neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
+# # shoulder=plagueborne_shoulderguards,id=178764,bonus_id=6536/1540/6646
+# # back=blighted_margraves_cloak,id=178755,bonus_id=6536/1540/6646
+# # chest=forsworn_stalkers_hauberk,id=180100,bonus_id=6536/1540/6646,enchant=eternal_insight
+# # wrists=fallen_paragons_armguards,id=180114,bonus_id=6536/1540/6646,enchant=eternal_intellect,gem_id=173129
+# # hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
+# # waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
+# # legs=lichbone_legguards,id=178778,bonus_id=6536/1540/6646
+# # feet=boneshatter_treads,id=172323,bonus_id=6716/6986/6649/6650/1532
+# # finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,enchant=tenet_of_versatility,gem_id=173129
+# # finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6536/1540/6646,enchant=tenet_of_versatility,gem_id=173129
+# # trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
+# # trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
+# # main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
+# # off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
+
+# # save=T30_Shaman_Restoration.simc

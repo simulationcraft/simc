@@ -2515,23 +2515,6 @@ static bool generate_tree_nodes( player_t* player,
 static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
 {
   auto get_index = [ is_ptr ]( const trait_data_t* t ) -> short {
-    if ( !is_ptr && t->selection_index != -1 )
-    {
-      switch ( t->id_trait_node_entry )
-      {
-        // Balance Druid overrides
-        case 109873:  // starweaver
-          return 200;
-        case 109872:  // rattle the stars
-          return 100;
-        case 109859:  // fury of elune
-          return 100;
-        case 109860:  // new moon
-          return 200;
-        default:
-          break;
-      }
-    }
     return t->selection_index;
   };
 
@@ -3921,7 +3904,7 @@ void player_t::create_buffs()
       buffs.lifeblood->add_stat( convert_hybrid_stat( STAT_STR_AGI_INT ),
         worldvein_resonance.spell( 1, essence_type::MINOR )->effectN( 5 ).average( worldvein_resonance.item() ) );
 
-      buffs.seething_rage = make_buff( this, "seething_rage", find_spell( 297126 ) )
+      buffs.seething_rage_essence = make_buff( this, "seething_rage_essence", find_spell( 297126 ) )
         ->set_default_value( find_spell( 297126 )->effectN( 1 ).percent() );
 
       buffs.guardian_of_azeroth = make_buff( this, "guardian_of_azeroth", find_spell( 295855 ) )
@@ -4874,11 +4857,6 @@ double player_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double player_t::composite_player_td_multiplier( school_e /* school */, const action_t* /* a */ ) const
-{
-  return 1.0;
-}
-
 double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
 {
   double m = 1.0;
@@ -4982,8 +4960,8 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
     m *= 1.0 + buffs.incensed->check_value();
 
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
-  if ( buffs.seething_rage )
-    m *= 1.0 + buffs.seething_rage->check_value();
+  if ( buffs.seething_rage_essence )
+    m *= 1.0 + buffs.seething_rage_essence->check_value();
 
   // Critical hit damage buff from follower themed Benthic boots
   if ( buffs.fathom_hunter )
@@ -5558,7 +5536,7 @@ void player_t::combat_begin()
   add_timed_blessing_triggers( external_buffs.blessing_of_winter, buffs.blessing_of_winter );
   add_timed_blessing_triggers( external_buffs.blessing_of_spring, buffs.blessing_of_spring );
 
-  if ( buffs.windfury_totem && may_benefit_from_windfury_totem() )
+  if ( buffs.windfury_totem && sim->overrides.windfury_totem && may_benefit_from_windfury_totem() )
   {
     buffs.windfury_totem->trigger();
   }
@@ -9204,6 +9182,14 @@ struct use_item_t : public action_t
     action_t::init();
   }
 
+  void init_finished() override
+  {
+    action_t::init_finished();
+
+    if ( action )
+      action->is_precombat = is_precombat;
+  }
+
   timespan_t execute_time() const override
   {
     return action ? action->execute_time() : action_t::execute_time();
@@ -11484,6 +11470,18 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
 
       throw std::invalid_argument( fmt::format( "Unsupported shadowlands. option '{}'.", splits[ 1 ] ) );
     }
+
+    if ( splits[ 0 ] == "dragonflight" )
+    {
+      if ( splits[ 1 ] == "screaming_black_dragonscale_damage" )
+      {
+        return make_fn_expr( expression_str, [this] {
+          return sim->dragonflight_opts.screaming_black_dragonscale_damage;
+        } );
+      }
+
+      throw std::invalid_argument( fmt::format( "Unsupported dragonflight. option '{}'.", splits[ 1 ] ) );
+    }
   } // splits.size() == 2
 
 
@@ -12069,20 +12067,26 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    if ( !shadowlands_opts.soleahs_secret_technique_type.empty() )
-    {
-      profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
-    }
+    auto print_option = [ &profile_str, term ]( std::string_view n, auto option ) {
+      if ( !option.is_default() )
+      {
+        if constexpr ( std::is_same_v<decltype( option ), player_option_t<bool>> )
+          profile_str += fmt::format( "{}={}{}", n, static_cast<int>( option ), term );
+        else
+          profile_str += fmt::format( "{}={}{}", n, option, term );
+      }
+    };
 
-    if ( !dragonflight_opts.ruby_whelp_shell_training.empty() )
-    {
-      profile_str += "dragonflight.player.ruby_whelp_shell_training=" + dragonflight_opts.ruby_whelp_shell_training + term;
-    }
+    print_option( "shadowlands.soleahs_secret_technique_type_override", shadowlands_opts.soleahs_secret_technique_type );
 
-    if ( !dragonflight_opts.ruby_whelp_shell_context.empty() )
-    {
-      profile_str += "dragonflight.player.ruby_whelp_shell_context=" + dragonflight_opts.ruby_whelp_shell_context + term;
-    }
+    print_option( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat );
+    print_option( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training );
+    print_option( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context );
+    print_option( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight );
+    print_option( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies );
+    print_option( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid );
+    print_option( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state );
+    print_option( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type );
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12672,6 +12676,12 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.gyroscopic_kaleidoscope_stat", dragonflight_opts.gyroscopic_kaleidoscope_stat ) );
   add_option( opt_string( "dragonflight.player.ruby_whelp_shell_training", dragonflight_opts.ruby_whelp_shell_training ) );
   add_option( opt_string( "dragonflight.player.ruby_whelp_shell_context", dragonflight_opts.ruby_whelp_shell_context ) );
+  add_option( opt_string( "dragonflight.ominous_chromatic_essence_dragonflight", dragonflight_opts.ominous_chromatic_essence_dragonflight ) );
+  add_option( opt_string( "dragonflight.ominous_chromatic_essence_allies", dragonflight_opts.ominous_chromatic_essence_allies ) );
+  add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
+  add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
+  add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
+  add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
 
   // Obsolete options
 

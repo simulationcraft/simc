@@ -1,0 +1,60 @@
+# T30
+# Tier 30 Aberrus, the Shadowed Crucible (WIP)
+# * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
+# * Set pieces are permitted up to the item level cap (441/444/447/450). ["bonus_id=?"]
+#   * NOTE: Catalyst items are allowed to increase tier item level cap further (e.g. Mythic tier legs are 444, whereas 450 raid legs can be catalysted to a tier piece)
+# * Raid gear is permitted up to the Mythic item level cap (441/444/447/450). ["bonus_id=?"]
+#   * NOTE: Very Rare Items are permitted up to 447/450/457. ["bonus_id=?"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (447).
+#   * Gear can come from: [Halls of Infusion, Brackhide Hollow, Uldaman: Legacy of Tyr, Neltharus, Neltharion's Lair, Freehold, Underrot, Vortex Pinnacle]
+# * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
+# * Conquest PvP gear is permitted up to the item level cap (Duelist, 434). ["bonus_id=?"]
+# * Crafted gear is permitted up to the item level cap (447), with a maximum of two embellished pieces, and without profession requirements. ["bonus_id=?"]
+# * World Bosses gear is permitted.
+# * World Drop gear is permitted.
+# * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
+# * Use sockets on the slots head, neck (x3 with jewelcrafting), wrist, waist, finger1, finger2.
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+# * No Tertiary Stats.
+# * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
+# * Must use enchant name (ex: ",enchant=devotion_of_haste_3") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
+
+
+# Death Knight
+T30_Generate_Death_Knight.simc
+
+# Demon Hunter
+T30_Generate_Demon_Hunter.simc
+
+# Druid
+T30_Generate_Druid.simc
+
+# Evoker
+T30_Generate_Evoker.simc
+
+# Hunter
+T30_Generate_Hunter.simc
+
+# Mage
+T30_Generate_Mage.simc
+
+# Monk
+T30_Generate_Monk.simc
+
+# Paladin
+T30_Generate_Paladin.simc
+
+# Priest
+T30_Generate_Priest.simc
+
+# Rogue
+T30_Generate_Rogue.simc
+
+# Shaman
+T30_Generate_Shaman.simc
+
+# Warlock
+T30_Generate_Warlock.simc
+
+# Warrior
+T30_Generate_Warrior.simc

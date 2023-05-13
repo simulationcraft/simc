@@ -5,7 +5,6 @@ role=attack
 position=ranged_back
 spec=beast_mastery
 talents=B0PAAAAAAAAAAAAAAAAAAAAAA4AgWSAIEAAAAAAAAAAAaEHoIhmEJkIRCaSkWIJkIkoRSE
-target_race=dragonkin
 
 head=stormwing_harriers_skullmask,id=200390,bonus_id=4800/4786/1498,gem_id=192988
 neck=elemental_lariat,id=193001,bonus_id=8836/8840/8902/8960/8784/8782/8802/8791/8846,gem_id=192919/192919/192919,crafted_stats=49/40

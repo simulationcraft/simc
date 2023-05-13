@@ -1,5 +1,5 @@
-// Runeforge legendary bonuses, wow build 10.1.0.49092
-static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legendary_data { {
+// Runeforge legendary bonuses, wow build 10.1.5.49516
+static const std::array<runeforge_legendary_entry_t, 789> __ptr_runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, 0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, 0, "Cold Front" },
   { 6829, 64, 327364, 0x00000402, 0, "Freezing Winds" },
@@ -288,6 +288,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7100, 581, 338477, 0x00000a40, 0, "Echo of Eonar" },
   { 7100, 1467, 338477, 0x00000a40, 0, "Echo of Eonar" },
   { 7100, 1468, 338477, 0x00000a40, 0, "Echo of Eonar" },
+  { 7100, 1473, 338477, 0x00000a40, 0, "Echo of Eonar" },
   { 7101, 62, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
   { 7101, 63, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
   { 7101, 64, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
@@ -326,6 +327,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7101, 581, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
   { 7101, 1467, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
   { 7101, 1468, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
+  { 7101, 1473, 339344, 0x00000e00, 0, "Judgment of the Arbiter" },
   { 7102, 62, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
   { 7102, 63, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
   { 7102, 64, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
@@ -364,6 +366,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7102, 581, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
   { 7102, 1467, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
   { 7102, 1468, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
+  { 7102, 1473, 339340, 0x00010180, 0, "Norgannon's Sagacity" },
   { 7103, 62, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
   { 7103, 63, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
   { 7103, 64, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
@@ -402,6 +405,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7103, 581, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
   { 7103, 1467, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
   { 7103, 1468, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
+  { 7103, 1473, 339348, 0x0010002c, 0, "Sephuz's Proclamation" },
   { 7104, 62, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
   { 7104, 63, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
   { 7104, 64, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
@@ -440,6 +444,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7104, 581, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
   { 7104, 1467, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
   { 7104, 1468, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
+  { 7104, 1473, 339351, 0x00010204, 0, "Stable Phantasma Lure" },
   { 7105, 62, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
   { 7105, 63, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
   { 7105, 64, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
@@ -478,6 +483,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7105, 581, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
   { 7105, 1467, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
   { 7105, 1468, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
+  { 7105, 1473, 339058, 0x0000004e, 0, "Third Eye of the Jailer" },
   { 7106, 62, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
   { 7106, 63, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
   { 7106, 64, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
@@ -516,6 +522,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7106, 581, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
   { 7106, 1467, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
   { 7106, 1468, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
+  { 7106, 1473, 338743, 0x0010082a, 0, "Vitality Sacrifice" },
   { 7107, 102, 339942, 0x00000180, 0, "Balance of All Things" },
   { 7108, 102, 339949, 0x00100820, 0, "Timeworn Dreambinder" },
   { 7109, 103, 340053, 0x00000240, 0, "Frenzyband" },
@@ -588,6 +595,7 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 7159, 581, 340197, 0x00000580, 0, "Maw Rattle" },
   { 7159, 1467, 340197, 0x00000580, 0, "Maw Rattle" },
   { 7159, 1468, 340197, 0x00000580, 0, "Maw Rattle" },
+  { 7159, 1473, 340197, 0x00000580, 0, "Maw Rattle" },
   { 7160, 251, 341724, 0x00000e00, 0, "Rage of the Frozen Champion" },
   { 7161, 256, 341804, 0x00100024, 0, "Measured Contemplation" },
   { 7161, 257, 341804, 0x00100024, 0, "Measured Contemplation" },
@@ -780,5 +788,6 @@ static const std::array<runeforge_legendary_entry_t, 780> __ptr_runeforge_legend
   { 8130, 73, 364929, 0x00010fee, 0, "Unity" },
   { 8934, 1467, 387431, 0x00010fee, 0, "Unity" },
   { 8934, 1468, 387431, 0x00010fee, 0, "Unity" },
+  { 8934, 1473, 387431, 0x00010fee, 0, "Unity" },
 } };
 

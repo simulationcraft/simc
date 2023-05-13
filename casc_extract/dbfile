@@ -1065,6 +1065,8 @@
 5015219, DBFilesClient\ItemGroupIlvlScalingEntry.db2
 5049814, DBFilesClient\CraftingReagentRequirement.db2
 5128111, DBFilesClient\ItemCondition.db2
+5150118, DBFilesClient\ItemRecraft.db2
+5152256, DBFilesClient\ItemFixup.db2
 5155639, DBFilesClient\ItemBonusSeason.db2
 5155640, DBFilesClient\ItemBonusSeasonBonusListGroup.db2
 5155641, DBFilesClient\ItemBonusSeasonUpgradeCost.db2

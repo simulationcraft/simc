@@ -1,4 +1,4 @@
-SimulationCraft 1007-01 for World of Warcraft 10.0.7.48999 Live (hotfix 2023-04-11/48999)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4785,3 +4785,4 @@ bonus_id={ 9473 }, ilevel_adjust={ -407 }
 bonus_id={ 9474 }, ilevel_adjust={ -408 }
 bonus_id={ 9475 }, ilevel_adjust={ -409 }
 bonus_id={ 9476 }, ilevel_adjust={ -410 }
+bonus_id={ 9492 }, ilevel={ 21 @plvl 1 - 385 @plvl 70 }

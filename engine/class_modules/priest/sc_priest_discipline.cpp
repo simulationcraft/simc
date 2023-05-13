@@ -80,6 +80,11 @@ struct purge_the_wicked_t final : public priest_spell_t
     apply_affecting_aura( priest().talents.discipline.revel_in_purity );
     // 8% / 15% damage increase
     apply_affecting_aura( priest().talents.discipline.pain_and_suffering );
+
+    if ( priest().sets->has_set_bonus( PRIEST_DISCIPLINE, T30, B2 ) )
+    {
+      apply_affecting_aura( p.sets->set( PRIEST_DISCIPLINE, T30, B2 ) );
+    }
   }
 };
 
@@ -125,8 +130,8 @@ struct penance_damage_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_td_t& td = get_td( s->target );
-    td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-    td.dots.purge_the_wicked->adjust_duration( dot_extension, true );
+    td.dots.shadow_word_pain->adjust_duration( dot_extension );
+    td.dots.purge_the_wicked->adjust_duration( dot_extension );
   }
 };
 

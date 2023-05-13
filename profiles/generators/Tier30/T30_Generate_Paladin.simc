@@ -1,0 +1,84 @@
+paladin="T30_Paladin_Protection"
+level=70
+race=tauren
+region=us
+server=valdrakken
+role=tank
+spec=protection
+
+talents=BIEAS+uMNo6HaxL/ztTZBhrdcWSKJSKkCSSo1kkIhESAAACAAAAAAAASEJNBSQSKSkkAAiACABC
+
+head=heartfire_sentinels_forgehelm,gem_id=192945,id=202452,bonus_id=4800/4786/1504/8780
+neck=torc_of_passed_time,id=201759,gem_id=192985/192945/192945,bonus_id=8836/8840/8902/8960/8783/8782/8802/8790/8846/1501,crafted_stats=32/49
+shoulder=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
+chest=breastplate_of_arterial_protection,id=206197,bonus_id=4800/4786/1669,enchant=waking_stats_3
+waist=unstable_frostfire_belt,id=191623,gem_id=192945,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501
+legs=heartfire_sentinels_faulds,id=202451,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/9405/8790/9379/8960/9366/1495,crafted_stats=36/32
+wrist=bonds_of_desperate_ascension,id=204390,gem_id=192945,bonus_id=6652/7981/8095/1498/8780/4786
+hands=heartfire_sentinels_protectors,id=202453,bonus_id=7981/6652/8829/1501/8767
+finger1=onyx_annulet,id=203460,gem_id=204011/204027/204029,gem_bonus_id=9369:1472/9369:1472/9369:1472,bonus_id=1491,enchant=devotion_of_haste_3
+finger2=seal_of_diurnas_chosen,id=195480,gem_id=192945,bonus_id=6652/7981/1498/8767/8780,enchant=devotion_of_haste_3
+trinket1=neltharions_call_to_chaos,id=204201,bonus_id=6652/9330/7979/1498/8767
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=6652/9324/7979/1498/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+main_hand=forgestorm,id=193785,bonus_id=4800/4786/1669,enchant=shadowflame_wreathe_3
+off_hand=calamitys_herald,id=202558,bonus_id=6652/7981/1498/8767
+
+save=T30_Paladin_Protection.simc
+
+paladin="T30_Paladin_Retribution"
+spec=retribution
+level=70
+race=tauren
+role=attack
+position=back
+talents=BYEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAiWp0KJtSjoFJplEAAAAAAARQSCBSQkSESCpkmQkICJiSjWA
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/ruby/obsidian
+
+head=heartfire_sentinels_forgehelm,id=202452,bonus_id=4800/4786/1504/6935,gem_id=192991
+neck=ionized_choker,id=206181,bonus_id=1795/6808/4786/1669/6935/6935/6935,gem_id=192932/192932/192932
+shoulders=heartfire_sentinels_steelwings,id=202450,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=heartfire_sentinels_brigandine,id=202455,bonus_id=4800/4786/1507,enchant_id=6625
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192932
+hands=heartfire_sentinels_protectors,id=202453,bonus_id=4800/4786/1501
+waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8802/8960/1527,gem_id=192932
+legs=legplates_of_profane_sacrifice,id=159443,bonus_id=1795/6808/4786/3317,enchant_id=6490
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379/8960,crafted_stats=40/36
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/6935,gem_id=192932,enchant=devotion_of_versatility_3
+finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204029/204027,enchant=devotion_of_versatility_3
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+
+save=T30_Paladin_Retribution.simc
+
+
+# # paladin="T27_Paladin_Holy"
+# # level=70
+# # race=blood_elf
+# # spec=holy
+# # role=attack
+# # position=back
+# # talents=1212331
+
+# # head=dark_tormentors_gaze,id=186315,bonus_id=7187/1498,gem_id=187312
+# # neck=interplanar_keystone,id=186379,bonus_id=6807/1498/6935,gem_id=173129
+# # shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187314
+# # back=blighted_margraves_cloak,id=178755,bonus_id=6536/1566/6646,enchant=fortified_leech
+# # chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187313,enchant=eternal_stats
+# # wrists=airborne_abductors_vambraces,id=186316,bonus_id=7187/1498,gem_id=187318,enchant=eternal_intellect
+# # hands=guillotine_gauntlets,id=186369,bonus_id=7187/1498,gem_id=187315
+# # waist=shadowghast_waistguard,id=171418,bonus_id=6649/6650/7054/7451/1559,gem_id=173129
+# # legs=halkiass_towering_pillars,id=178818,bonus_id=6536/1566/6646
+# # feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
+# # finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1566/6536/6646,gem_id=173129,enchant=tenet_of_versatility
+# # finger2=entwined_gorger_tendril,id=178848,bonus_id=1566/6536/6646,gem_id=173129,enchant=tenet_of_haste
+# # trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
+# # trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
+# # main_hand=amarths_spellblade,id=178737,bonus_id=6536/1566/6646,enchant=celestial_guidance
+# # off_hand=moriazs_spare_targe,id=186415,bonus_id=7187/1498
+
+# # save=T27_Paladin_Holy.simc

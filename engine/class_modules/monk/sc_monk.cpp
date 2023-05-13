@@ -656,9 +656,6 @@ namespace monk
       double composite_persistent_multiplier( const action_state_t *action_state ) const override
       {
         double pm = ab::composite_persistent_multiplier( action_state );
-
-        pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
-
         return pm;
       }
 
@@ -671,12 +668,20 @@ namespace monk
       double composite_ta_multiplier( const action_state_t *s ) const override
       {
         double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 2 ) ) )
+          ta *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 2 ).percent();
+
         return ta;
       }
 
       double composite_da_multiplier( const action_state_t *s ) const override
       {
         double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+
+        if ( ab::data().affected_by( p()->passives.hit_combo->effectN( 1 ) ) )
+          da *= 1.0 + p()->buff.hit_combo->check() * p()->passives.hit_combo->effectN( 1 ).percent();
+
         return da;
       }
 
@@ -1632,6 +1637,16 @@ namespace monk
             p()->buff.elusive_brawler->trigger();
 
           p()->buff.leverage->expire();
+
+          // Brewmaster RSK also applies the WoO debuff.
+          // This is not mentioned in the tooltip and could be old code from Shadowland Beta that slipped through.
+          if ( p()->bugs && p()->buff.weapons_of_order->up() ) {
+            std::vector<player_t*>& tl = target_list();
+            const int target_count = as<int>( tl.size() );
+
+            for ( int t = 0; t < target_count; t++ )
+              get_td( tl[t] )->debuff.weapons_of_order->trigger();
+          }
         }
 
         void impact( action_state_t *s ) override
@@ -2882,6 +2897,9 @@ namespace monk
 
           if ( p()->buff.serenity->check() )
             am *= 1 + p()->talent.windwalker.serenity->effectN( 7 ).percent();
+
+          if ( p()->buff.hit_combo->check() )
+            am *= 1 + p()->passives.hit_combo->effectN( 3 ).percent();
 
           return am;
         }
@@ -4413,7 +4431,8 @@ namespace monk
           parse_options( options_str );
 
           cast_during_sck = true;
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           gcd_type = gcd_haste_type::NONE;
         }
 
@@ -4426,6 +4445,26 @@ namespace monk
           p()->buff.invoke_xuen->trigger();
 
           p()->buff.invokers_delight->trigger();
+        }
+      };
+
+      // Fury of Xuen Invoke Xuen =============================================================
+      struct fury_of_xuen_summon_t final : monk_spell_t
+      {
+        fury_of_xuen_summon_t( monk_t *p ) : monk_spell_t( "fury_of_xuen_summon", p, p->find_spell( 396168 ) )
+        {
+          cooldown->duration = 0_ms;
+          track_cd_waste     = false;
+          background         = true;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
+        }
+
+        void execute() override
+        {
+          monk_spell_t::execute();
+
+          p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
         }
       };
 
@@ -4489,7 +4528,8 @@ namespace monk
           parse_options( options_str );
 
           cast_during_sck = true;
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4506,6 +4546,29 @@ namespace monk
           p()->buff.invokers_delight->trigger();
         }
       };
+      
+      // Call to Arms Invoke Niuzao =============================================================
+      struct niuzao_call_to_arms_summon_t final : monk_spell_t
+      {
+        niuzao_call_to_arms_summon_t( monk_t *p )
+          : monk_spell_t( "niuzao_call_to_arms_summon", p, p->find_spell( 395267 ) )
+        {
+          cooldown->duration = 0_ms;
+          track_cd_waste     = false;
+          background         = true;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
+        }
+
+        void execute() override
+        {
+          monk_spell_t::execute();
+
+          p()->buff.call_to_arms_invoke_niuzao->trigger();
+
+          p()->pets.call_to_arms_niuzao.spawn( p()->passives.call_to_arms_invoke_niuzao->duration(), 1 );
+        }
+      };
 
       // ==========================================================================
       // Invoke Chi-Ji, the Red Crane
@@ -4518,7 +4581,8 @@ namespace monk
         {
           parse_options( options_str );
 
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4547,7 +4611,8 @@ namespace monk
         {
           parse_options( options_str );
 
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = true;
           // Forcing the minimum GCD to 750 milliseconds
           min_gcd = timespan_t::from_millis( 750 );
           gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4642,7 +4707,8 @@ namespace monk
         {
           parse_options( options_str );
           may_combo_strike = true;
-          harmful = false;
+          // Specifically set for 10.1 class trinket
+          harmful = p.talent.brewmaster.call_to_arms.enabled() ? true : false;
           base_dd_min = 0;
           base_dd_max = 0;
           cast_during_sck = true;
@@ -4666,7 +4732,7 @@ namespace monk
           }
 
           if ( p()->talent.brewmaster.call_to_arms->ok() )
-            p()->pets.call_to_arms_niuzao.spawn( p()->passives.call_to_arms_invoke_niuzao->duration(), 1 );
+            p()->active_actions.niuzao_call_to_arms_summon->execute();
 
           p()->buff.invoke_niuzao->trigger( p()->passives.call_to_arms_invoke_niuzao->duration() );
         }
@@ -5266,6 +5332,11 @@ namespace monk
           double am = monk_heal_t::action_multiplier();
 
           am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
+          // should be zero if not talented, but just to be safe (for first condition):
+          if ( p()->talent.general.strength_of_spirit->ok() && p()->buff.expel_harm_helper->check() && p()->bugs ) {
+            double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+            am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
+          }
 
           return am;
         }
@@ -5285,6 +5356,17 @@ namespace monk
             p()->proc.tranquil_spirit_goto->occur();
           }
         }
+
+        void impact( action_state_t *s ) override
+        {
+          monk_heal_t::impact( s );
+          if ( p()->buff.expel_harm_helper->check() ) {
+            double result = s->result_total;
+            double current_value = p()->buff.expel_harm_helper->check_value();
+            p()->sim->print_debug("adding {} to buff of {}", result, current_value);
+            p()->buff.expel_harm_helper->trigger(1, result + current_value);
+          }
+        }
       };
 
       struct gift_of_the_ox_trigger_t : public monk_heal_t
@@ -5294,6 +5376,31 @@ namespace monk
           background = true;
           target = &p;
           trigger_gcd = timespan_t::zero();
+        }
+
+        double action_multiplier() const override
+        {
+          double am = monk_heal_t::action_multiplier();
+
+          am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
+          // should be zero if not talented, but just to be safe (for first condition):
+          if ( p()->talent.general.strength_of_spirit->ok() && p()->buff.expel_harm_helper->check() && p()->bugs ) {
+            double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+            am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
+          }
+
+          return am;
+        }
+
+        void impact( action_state_t *s ) override
+        {
+          monk_heal_t::impact( s );
+          if ( p()->buff.expel_harm_helper->check() ) {
+            double result = s->result_total;
+            double current_value = p()->buff.expel_harm_helper->check_value();
+            p()->sim->print_debug("adding {} to buff of {}", result, current_value);
+            p()->buff.expel_harm_helper->trigger(1, result + current_value);
+          }
         }
       };
 
@@ -5352,11 +5459,21 @@ namespace monk
         {
           double am = monk_heal_t::action_multiplier();
 
+          if ( p()->specialization() == MONK_BREWMASTER ) {
+            if ( p()->talent.general.strength_of_spirit->ok() ) {
+              double health_percent = std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 ) / p()->resources.max[RESOURCE_HEALTH];
+              am *= 1 + ( 1 - health_percent ) * p()->talent.general.strength_of_spirit->effectN( 1 ).percent();
+            }
+            am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
+          }
+
           return am;
         }
 
         void execute() override
         {
+          p()->buff.expel_harm_helper->trigger();
+
           monk_heal_t::execute();
 
           if ( p()->specialization() == MONK_WINDWALKER )
@@ -5374,16 +5491,13 @@ namespace monk
 
         void impact( action_state_t *s ) override
         {
-
           monk_heal_t::impact( s );
 
           double result = s->result_total;
-          double health_difference = p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
-
-          result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
           if ( p()->specialization() == MONK_WINDWALKER )
           {
+            double health_difference = p()->resources.max[RESOURCE_HEALTH] - std::max( p()->resources.current[RESOURCE_HEALTH], 0.0 );
             // Have to manually set the combo strike mastery multiplier
             if ( p()->buff.combo_strikes->up() )
               result *= 1 + p()->cache.mastery_value();
@@ -5397,30 +5511,30 @@ namespace monk
               // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
               result = rng().range( min_amount, result );
             }
+
+            if ( p()->talent.general.strength_of_spirit->ok() )
+            {
+              double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
+              s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
+            }
+
+            result *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
           }
 
           if ( p()->specialization() == MONK_BREWMASTER )
           {
             if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
             {
-              double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
-              goto_heal *= p()->buff.gift_of_the_ox->check();
-              result += goto_heal;
-            }
-
-            for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
-            {
-              p()->buff.gift_of_the_ox->decrement();
+              for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
+                {
+                  p()->buff.gift_of_the_ox->decrement();
+                }
+              result += p()->buff.expel_harm_helper->check_value();
+              p()->buff.expel_harm_helper->expire();
             }
           }
 
-          if ( p()->talent.general.strength_of_spirit->ok() )
-          {
-            double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
-            s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
-          }
-
-          result *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
+          result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
           dmg->base_dd_min = result;
           dmg->base_dd_max = result;
@@ -6180,8 +6294,7 @@ namespace monk
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
       {
-        p().active_actions.gift_of_the_ox_expire->execute();
-
+        // p().active_actions.gift_of_the_ox_expire->execute();
         buff_t::expire_override( expiration_stacks, remaining_duration );
       }
     };
@@ -6254,7 +6367,7 @@ namespace monk
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
       {
         p().buff.fury_of_xuen_haste->trigger();
-        p().pets.fury_of_xuen_tiger.spawn( p().passives.fury_of_xuen_haste_buff->duration(), 1 );
+        p().active_actions.fury_of_xuen_summon->execute();
         buff_t::expire_override( expiration_stacks, remaining_duration );
       }
     };
@@ -6589,6 +6702,25 @@ namespace monk
         set_cooldown( timespan_t::zero() );
         set_duration( p.spec.spinning_crane_kick_brm->duration() );
         set_max_stack( 5 );
+      }
+    };
+
+    // ===============================================================================
+    // Expel Harm Helper
+    // ===============================================================================
+
+    struct expel_harm_helper_t : public monk_buff_t<buff_t>
+    {
+      expel_harm_helper_t( monk_t &p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
+      {
+        set_trigger_spell( p.talent.brewmaster.gift_of_the_ox );
+        set_can_cancel( true );
+        set_quiet( true );
+        set_cooldown( timespan_t::zero() );
+        set_duration( timespan_t::from_millis( 1 ) );
+        set_max_stack( 1 );
+        set_default_value( 0.0 );
+
       }
     };
   }  // namespace buffs
@@ -7183,8 +7315,10 @@ namespace monk
     talent.general.expeditious_fortification = _CT( "Expeditious Fortification" );
     // Row 7
     talent.general.profound_rebuttal = _CT( "Profound Rebuttal" );
+    talent.general.yulons_grace = _CT( "Yu'lon's Grace" );
     talent.general.diffuse_magic = _CT( "Diffuse Magic" );
     talent.general.eye_of_the_tiger = _CT( "Eye of the Tiger" );
+    talent.general.dance_of_the_wind = _CT( "Dance of the Wind" );
     talent.general.dampen_harm = _CT( "Dampen Harm" );
     talent.general.improved_touch_of_death = _CT( "Improved Touch of Death" );
     talent.general.strength_of_spirit = _CT( "Strength of Spirit" );
@@ -7470,15 +7604,14 @@ namespace monk
     passives.chi_wave_heal = find_spell( 132463 );
     passives.claw_of_the_white_tiger = find_spell( 389541 );
     passives.chi_burst_damage = find_spell( 148135 );
-    passives.faeline_stomp_damage = find_spell( 345727 );
+    passives.faeline_stomp_damage = find_spell( 388207 );
     passives.fortifying_brew = find_spell( 120954 );
-    // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
     passives.healing_elixir = find_spell( 122281 );
     passives.mystic_touch = find_spell( 8647 );
 
     // Brewmaster
     passives.breath_of_fire_dot = find_spell( 123725 );
-    passives.call_to_arms_invoke_niuzao = find_spell( 358520 );
+    passives.call_to_arms_invoke_niuzao = find_spell( 395267 );
     passives.celestial_fortune = find_spell( 216521 );
     passives.charred_passions_dmg = find_spell( 386959 );
     passives.dragonfire_brew = find_spell( 387621 );
@@ -7515,7 +7648,7 @@ namespace monk
     passives.empowered_tiger_lightning = find_spell( 335913 );
     passives.fae_exposure_dmg = find_spell( 395414 );
     passives.fae_exposure_heal = find_spell( 395413 );
-    passives.faeline_stomp_ww_damage = find_spell( 327264 );
+    passives.faeline_stomp_ww_damage = find_spell( 388201 );
     passives.fists_of_fury_tick = find_spell( 117418 );
     passives.flying_serpent_kick_damage = find_spell( 123586 );
     passives.focus_of_xuen = find_spell( 252768 );
@@ -7617,6 +7750,7 @@ namespace monk
       active_actions.exploding_keg = new actions::spells::exploding_keg_proc_t( this );
       active_actions.gift_of_the_ox_trigger = new actions::gift_of_the_ox_trigger_t( *this );
       active_actions.gift_of_the_ox_expire = new actions::gift_of_the_ox_expire_t( *this );
+      active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
       active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
     }
 
@@ -7624,6 +7758,7 @@ namespace monk
     if ( spec_tree == MONK_WINDWALKER )
     {
       active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
+      active_actions.fury_of_xuen_summon = new actions::fury_of_xuen_summon_t( this );
       active_actions.fury_of_xuen_empowered_tiger_lightning = new actions::fury_of_xuen_empowered_tiger_lightning_t( *this );
     }
 
@@ -7796,8 +7931,12 @@ namespace monk
 
     buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
+    buff.yulons_grace = make_buff<absorb_buff_t>( this, "yulons_grace", find_spell( 414143 ) );
+
   // Brewmaster
     buff.blackout_combo = make_buff( this, "blackout_combo", talent.brewmaster.blackout_combo->effectN( 5 ).trigger() );
+
+    buff.call_to_arms_invoke_niuzao = make_buff( this, "call_to_arms_invoke_niuzao", passives.call_to_arms_invoke_niuzao );
 
     buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
     buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )
@@ -7821,6 +7960,7 @@ namespace monk
       ->set_default_value_from_effect( 2 );
 
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
+    buff.expel_harm_helper = new buffs::expel_harm_helper_t( *this, "expel_harm_helper", spell_data_t::nil() );
 
     buff.graceful_exit = make_buff( this, "graceful_exit", talent.brewmaster.graceful_exit->effectN( 1 ).trigger() )
       ->set_trigger_spell( talent.brewmaster.graceful_exit )
@@ -8774,6 +8914,9 @@ namespace monk
   {
     double d = player_t::composite_dodge();
 
+    if ( is_ptr() )
+      d += talent.general.dance_of_the_wind->effectN( 1 ).percent();
+
     if ( specialization() == MONK_BREWMASTER )
     {
       d += buff.elusive_brawler->current_stack * cache.mastery_value();
@@ -8856,24 +8999,12 @@ namespace monk
     return active;
   }
 
-  // monk_t::composite_player_dd_multiplier ================================
-  double monk_t::composite_player_dd_multiplier( school_e school, const action_t *action ) const
+  // monk_t::composite_player_multiplier ==================================
+  double monk_t::composite_player_multiplier( school_e school ) const
   {
-    double multiplier = player_t::composite_player_dd_multiplier( school, action );
+    double multiplier = player_t::composite_player_multiplier( school );
 
-    if ( action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
-      multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 1 ).percent();
-
-    return multiplier;
-  }
-
-  // monk_t::composite_player_td_multiplier ================================
-  double monk_t::composite_player_td_multiplier( school_e school, const action_t *action ) const
-  {
-    double multiplier = player_t::composite_player_td_multiplier( school, action );
-
-    if ( action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
-      multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 2 ).percent();
+    multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 1 ).percent();
 
     return multiplier;
   }
@@ -8899,13 +9030,10 @@ namespace monk
     double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
     // Currently is a bug that Ferocity of Xuen is not getting applied to pets. Getting fixed in 10.1
-    if ( is_ptr() )
-    {
-      if ( guardian )
-        multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
-      else
-        multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
-    }
+    if ( guardian )
+      multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 2 ).percent();
+    else
+      multiplier *= 1 + talent.general.ferocity_of_xuen->effectN( 3 ).percent();
 
     multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
@@ -9515,7 +9643,7 @@ namespace monk
     double stagger_base = stagger_base_value();
     // TODO: somehow pull this from "enemy_t::armor_coefficient( target_level, tank_dummy_e::MYTHIC )" without crashing
     double k = dbc->armor_mitigation_constant( target_level );
-    k *= ( is_ptr() ? 1.62800002098 : 1.38399994373 );  // Mythic Raid
+    k *= 1.62800002098;  // Mythic Raid
 
     double stagger = stagger_base / ( stagger_base + k );
 
@@ -9910,7 +10038,6 @@ namespace monk
       ReportIssue( "Xuen's Bond is triggering from SEF combo strikes", "2023-02-21", true );
       ReportIssue( "Jade Ignition is reduced by SEF but not copied", "2023-02-22", true );
       ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-      ReportIssue( "Ferocity of Xuen not increasing your summoned pet damage", "2023-04-04", true );
 
       // =================================================
 

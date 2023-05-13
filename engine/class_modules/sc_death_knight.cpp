@@ -1257,6 +1257,9 @@ public:
   std::string default_potion() const override { return death_knight_apl::potion( this ); }
   std::string default_rune() const override { return death_knight_apl::rune( this ); }
   std::string default_temporary_enchant() const override { return death_knight_apl::temporary_enchant( this ); }
+  
+  // Create Profile options
+  std::string create_profile( save_e ) override;
 
   // Death Knight specific methods
   // Rune related methods
@@ -2407,7 +2410,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 // ==========================================================================
 // Gargoyle
 // ==========================================================================
-int gargoyle_strike_count;
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
@@ -2422,43 +2424,20 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
-    gargoyle_strike_t( gargoyle_pet_t* p, util::string_view options_str ) :
+    gargoyle_strike_t( gargoyle_pet_t* p ) :
       pet_spell_t( p, "gargoyle_strike", p -> dk() -> pet_spell.gargoyle_strike )
-    {
-      trigger_gcd = 1.5_s;
-      parse_options( options_str );
-    }
-
-    void execute() override
-    {
-      timespan_t cast_time = dk() -> pet_spell.gargoyle_strike -> cast_time() * dk() -> composite_melee_haste();
-      min_gcd = cast_time;
-      if( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 1_s && cast_time > 0.75_s )
-      {
-        min_gcd = 1_s;
-      }
-      else if ( dk() -> bugs && ( gargoyle_strike_count % 2 == 0 ) && cast_time <= 0.75_s )
-      {
-        min_gcd = 0.75_s;
-      }
-      pet_spell_t<gargoyle_pet_t>::execute();
-      ++gargoyle_strike_count;
+    { 
+      background = repeating =true;
     }
   };
 
   void arise() override
   {
-    gargoyle_strike_count = 0;
     death_knight_pet_t::arise();
     timespan_t duration = 2.8_s;
     buffs.stunned -> trigger( duration + rng().gauss( 200_ms, 0_ms ) );
     stun();
-  }
-
-  void reset() override
-  {
-    death_knight_pet_t::reset();
-    gargoyle_strike_count = 0;
+    reschedule_gargoyle();
   }
 
   void init_base_stats() override
@@ -2484,20 +2463,27 @@ struct gargoyle_pet_t : public death_knight_pet_t
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
   }
 
-  void init_action_list() override
+  void create_actions()
   {
-    death_knight_pet_t::init_action_list();
-
-    // Default "auto-pilot" pet APL (if everything is left on auto-cast
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    def -> add_action( "gargoyle_strike" );
+    death_knight_pet_t::create_actions();
+    gargoyle_strike = new gargoyle_strike_t( this );
   }
 
-  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  void reschedule_gargoyle()
   {
-    if ( name == "gargoyle_strike" ) return new gargoyle_strike_t( this, options_str );
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
 
-    return death_knight_pet_t::create_action( name, options_str );
+    else
+    {
+      gargoyle_strike->set_target( dk()->target );
+      gargoyle_strike->schedule_execute();
+    }
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+  {
+    reschedule_gargoyle();
   }
 
   // Function that increases the gargoyle's dark empowerment buff value based on RP spent
@@ -2610,11 +2596,32 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   template <typename T_ACTION>
   struct drw_action_t : public pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>
   {
+    struct affected_by_t
+    {
+      bool blood_plague;
+    } affected_by;
+
     drw_action_t( dancing_rune_weapon_pet_t* p, util::string_view name, const spell_data_t* s ) :
       pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>( p, name, s )
     {
       this -> background = true;
       this -> weapon = &( p -> main_hand_weapon );
+
+      this -> affected_by.blood_plague = this -> data().affected_by( p -> dk() -> spell.blood_plague -> effectN( 4 ) );
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>::composite_target_multiplier( target );
+
+      const death_knight_td_t* td = this -> dk() -> find_target_data( target );
+
+      if ( td && this->affected_by.blood_plague && td -> dot.blood_plague -> is_ticking() )
+      {
+        m *= 1.0 + this -> dk() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
+      }
+
+      return m;
     }
 
     // Override verify actor spec, the pet's abilities are blood's abilities and require blood spec in spelldata
@@ -2846,20 +2853,6 @@ private:
     ability.consumption   = new consumption_t  ( this );
   }
 
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override
-  {
-    double m = death_knight_pet_t::composite_player_target_multiplier( target, school );
-
-    auto td = dk() -> find_target_data( target );
-
-    if ( td && td -> dot.blood_plague -> is_ticking() )
-    {
-      m *= 1.0 + dk() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   void arise() override
   {
     death_knight_pet_t::arise();
@@ -3026,12 +3019,25 @@ struct death_knight_action_t : public Base
   struct affected_by_t
   {
     // Masteries
-    bool frozen_heart, dreadblade;
+    bool frozen_heart, frozen_heart_periodic;
+    bool dreadblade, dreadblade_periodic;
     // Other whitelists
     bool razorice;
     bool brittle;
     bool death_rot;
     bool tightening_grasp;
+    bool virulent_plague;
+    bool frost_fever;
+    bool blood_plague;
+    bool unholy_blight;
+    bool war;
+    bool sanguine_ground, sanguine_ground_periodic;
+    /*
+    Pre-emptively writing these in, they are likely to be changed to whitelists too
+    bool ghoulish_frenzy;
+    bool bonegrinder;
+    bool bloodshot;
+    */
     // Tier 29
     bool ghoulish_infusion;
     bool vigorous_lifeblood_4pc;
@@ -3068,7 +3074,9 @@ struct death_knight_action_t : public Base
 
     // Inits to false if the spec doesn't have that mastery
     this -> affected_by.frozen_heart = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) );
+    this -> affected_by.frozen_heart_periodic = this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) );
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
+    this -> affected_by.dreadblade_periodic = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 2 ) );
 
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
@@ -3077,6 +3085,18 @@ struct death_knight_action_t : public Base
     this -> affected_by.ghoulish_infusion = this -> data().affected_by( p -> spell.ghoulish_infusion -> effectN( 1 ) );
     this -> affected_by.vigorous_lifeblood_4pc = this -> data().affected_by( p -> spell.vigorous_lifeblood_4pc -> effectN( 1 ) );
     this -> affected_by.lingering_chill = this ->  data().affected_by( p -> spell.lingering_chill -> effectN( 1 ) );
+    this -> affected_by.virulent_plague = this -> data().affected_by( p -> spell.virulent_plague -> effectN( 3 ) );
+    this -> affected_by.frost_fever = this -> data().affected_by( p -> spell.frost_fever -> effectN( 2 ) );
+    this -> affected_by.blood_plague = this -> data().affected_by( p -> spell.blood_plague -> effectN( 4 ) );
+    this -> affected_by.unholy_blight = this -> data().affected_by( p -> spell.unholy_blight_dot -> effectN( 2 ) );
+    this -> affected_by.war = this -> data().affected_by( p -> spell.apocalypse_war_debuff -> effectN( 1 ) );
+    this -> affected_by.sanguine_ground = this -> data().affected_by( p -> spell.sanguine_ground -> effectN( 1 ) );
+    this -> affected_by.sanguine_ground_periodic = this -> data().affected_by( p -> spell.sanguine_ground -> effectN( 3 ) );
+    /*
+    this -> affected_by.ghoulish_frenzy = this -> data().affected_by( p -> spell.ghoulish_frenzy_player -> effectN() );
+    this -> affected_by.bonegrinder = this -> data().affected_by( p -> spell.bonegrinder_frost_buff -> effectN() );
+    this -> affected_by.bloodshot = this -> data().affected_by( p -> spell.blood_shield -> effectN() );
+    */
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3129,6 +3149,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
     }
 
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground && p() -> buffs.sanguine_ground -> check() )
+    {
+      m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
+    }
+
     return m;
   }
 
@@ -3136,7 +3161,7 @@ struct death_knight_action_t : public Base
   {
     double m = Base::composite_ta_multiplier( state );
 
-    if ( this -> affected_by.frozen_heart || this -> affected_by.dreadblade )
+    if ( this -> affected_by.frozen_heart_periodic || this -> affected_by.dreadblade_periodic )
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }
@@ -3149,6 +3174,11 @@ struct death_knight_action_t : public Base
     if ( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.vigorous_lifeblood_4pc && p() -> buffs.vigorous_lifeblood_4pc -> up() )
     {
       m *= 1.0 + p() -> buffs.vigorous_lifeblood_4pc -> value();
+    }
+
+    if( p() -> specialization() == DEATH_KNIGHT_BLOOD && this -> affected_by.sanguine_ground_periodic && p() -> buffs.sanguine_ground -> check() )
+    {
+      m *= 1.0 + p() -> buffs.sanguine_ground -> check_value();
     }
 
     return m;
@@ -3180,9 +3210,38 @@ struct death_knight_action_t : public Base
       m *= 1.0 + td -> debuff.death_rot -> check_stack_value();
     }
 
-    if ( td && td -> dot.blood_plague -> is_ticking() )
+    if ( td && this->affected_by.blood_plague && td -> dot.blood_plague -> is_ticking() )
     {
       m *= 1.0 + p() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
+    }
+
+    if ( td && this->affected_by.virulent_plague && td->dot.virulent_plague->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
+    {
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
+    }
+
+    if ( td && this->affected_by.frost_fever && td->dot.frost_fever->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
+    {
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
+    }
+
+    if ( td && this->affected_by.blood_plague && td->dot.blood_plague->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
+    {
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
+    }
+
+    if ( td && this->affected_by.unholy_blight && td->dot.unholy_blight->is_ticking() &&
+         p()->talent.unholy.morbidity->ok() )
+    {
+      m *= 1.0 + p()->talent.unholy.morbidity->effectN( 1 ).percent();
+    }
+
+    if ( td && this->affected_by.war && td->debuff.apocalypse_war->check() )
+    {
+      m *= 1.0 + td -> debuff.apocalypse_war -> check_stack_value();
     }
 
     return m;
@@ -3194,7 +3253,7 @@ struct death_knight_action_t : public Base
 
     const death_knight_td_t* td = get_td( target );
 
-    if ( td && affected_by.lingering_chill && td -> debuff.lingering_chill -> check() )
+    if ( td && this -> affected_by.lingering_chill && td -> debuff.lingering_chill -> check() )
     {
       m *= 1.0 + td -> debuff.lingering_chill -> check_stack_value();
     }
@@ -3395,7 +3454,7 @@ struct blood_plague_t final : public death_knight_disease_t
     double m = death_knight_disease_t::composite_ta_multiplier( state );
 
     if( p() -> specialization() == DEATH_KNIGHT_BLOOD)
-    m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
+      m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
 
     return m;
   }
@@ -4826,7 +4885,7 @@ struct dark_transformation_t final : public death_knight_spell_t
       p() -> buffs.commander_of_the_dead -> trigger();
     }
 
-    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) )
+    if ( p() -> sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T30, B2 ) && p() -> buffs.unholy_t30_2pc_stacking -> check() )
     {
       p() -> buffs.unholy_t30_2pc_mastery -> trigger( p() -> buffs.unholy_t30_2pc_stacking -> check() );
       p() -> buffs.unholy_t30_2pc_stacking -> expire();
@@ -6831,7 +6890,7 @@ struct frostwhelps_aid_t final : public death_knight_spell_t
 struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
 {
   wrath_of_the_frostwyrm_damage_t( util::string_view name, death_knight_t* p) :
-    death_knight_spell_t( "frostwyrms_fury_t30", p,  p -> spell.wrath_of_the_frostwyrm_damage )
+    death_knight_spell_t( name, p,  p -> spell.wrath_of_the_frostwyrm_damage )
   {
     aoe = -1;
     background = true;
@@ -6879,7 +6938,7 @@ struct pillar_of_frost_t final : public death_knight_spell_t
 
     if( p -> sets -> has_set_bonus ( DEATH_KNIGHT_FROST, T30, B2 ) )
     {
-      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury", p );
+      t30_frostwyrm = get_action<wrath_of_the_frostwyrm_damage_t>( "frostwyrms_fury_t30", p );
       add_child( t30_frostwyrm );
     }
 
@@ -8229,8 +8288,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     }
   }
 
-  // Procs from RP spent
-  if ( resource_type == RESOURCE_RUNIC_POWER )
+ // Procs from RP spent
+  if ( resource_type == RESOURCE_RUNIC_POWER && action )
   {
     // 2019-02-12: Runic Empowerment, Runic Corruption, Red Thirst and gargoyle's shadow empowerment
     // seem to be using the base cost of the ability rather than the last resource cost
@@ -8249,7 +8308,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
-    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost );
+    trigger_runic_corruption( procs.rp_runic_corruption, base_rp_cost, false );
 
     if ( talent.unholy.summon_gargoyle.ok() && pets.gargoyle )
     {
@@ -8309,6 +8368,26 @@ void death_knight_t::merge( player_t& other )
   _runes.rune_waste.merge( dk._runes.rune_waste );
   _runes.cumulative_waste.merge( dk._runes.cumulative_waste );
 
+}
+
+std::string death_knight_t::create_profile( save_e type )
+{
+  std::string term;
+  std::string profile_str = player_t::create_profile( type );
+  term = "\n";
+  if ( type & SAVE_PLAYER )
+  {
+    if( options.ams_absorb_percent > 0 )
+    {
+      profile_str += "deathknight.ams_absorb_percent=" + util::to_string( options.ams_absorb_percent ) + term;
+    }
+
+    if( options.amz_absorb_percent > 0 )
+    {
+      profile_str += "deathknight.amz_absorb_percent=" + util::to_string( options.amz_absorb_percent ) + term;
+    }
+  }
+  return profile_str;
 }
 
 // death_knight_t::datacollection_begin ===========================================
@@ -9720,9 +9799,8 @@ void death_knight_t::create_buffs()
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.sanguine_ground = make_buff( this, "sanguine_ground", spell.sanguine_ground )
-        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
-        ->set_schools_from_effect( 1 )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        ->set_default_value_from_effect( 1 )
+        ->set_schools_from_effect( 1 );
 
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -10377,21 +10455,6 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
 
   const death_knight_td_t* td = get_target_data( target );
 
-  // 2020-12-11: Seems to be increasing the player's damage as well as the main ghoul, but not other pets'
-  // Does not use a whitelist, affects all damage sources
-  if ( td && runeforge.rune_of_apocalypse )
-  {
-    m *= 1.0 + td -> debuff.apocalypse_war -> check_stack_value();
-  }
-
-  if ( td && talent.unholy.morbidity.ok() )
-  {
-    m *= 1.0 + ( td->dot.virulent_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->dot.frost_fever->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->dot.blood_plague->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-    m *= 1.0 + ( td->dot.unholy_blight->is_ticking() * talent.unholy.morbidity->effectN(1).percent() );
-  }
-
   return m;
 }
 
@@ -10412,11 +10475,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == DEATH_KNIGHT_BLOOD && talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
-  }
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD && buffs.sanguine_ground -> check() )
-  {
-    m *= 1.0 + buffs.sanguine_ground -> check_value();
   }
 
   return m;

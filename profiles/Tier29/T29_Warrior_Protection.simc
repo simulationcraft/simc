@@ -45,7 +45,7 @@ actions+=/ancestral_call
 actions+=/bag_of_tricks
 actions+=/potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20
 actions+=/ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1
-actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled
+actions+=/last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc
 actions+=/ravager
 actions+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions+=/spear_of_bastion
@@ -66,8 +66,6 @@ actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
 actions.generic=shield_slam
 actions.generic+=/thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down
 actions.generic+=/execute,if=buff.sudden_death.up&talent.sudden_death.enabled
-actions.generic+=/execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50
-actions.generic+=/revenge,if=buff.vanguards_determination.down&rage>=40
 actions.generic+=/execute,if=spell_targets.revenge=1&rage>=50
 actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
 actions.generic+=/revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled
@@ -96,7 +94,7 @@ off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=4800/4786/1498
 # Gear Summary
 # gear_ilvl=421.00
 # gear_strength=4913
-# gear_stamina=13046
+# gear_stamina=17019
 # gear_intellect=786
 # gear_crit_rating=3647
 # gear_haste_rating=3648

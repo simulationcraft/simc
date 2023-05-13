@@ -449,12 +449,12 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* lethal_shots;
     proc_t* calling_the_shots;
     proc_t* windrunners_guidance;
 
     proc_t* wild_call;
     proc_t* wild_instincts;
+    proc_t* dire_command; 
 
     proc_t* t30_sv_4p; 
   } procs;
@@ -515,11 +515,10 @@ public:
     spell_data_ptr_t chimaera_shot;
 
     spell_data_ptr_t streamline;
-    spell_data_ptr_t killing_blow;
+    spell_data_ptr_t killer_accuracy;
     spell_data_ptr_t hunters_knowledge;
     spell_data_ptr_t careful_aim;
 
-    spell_data_ptr_t lethal_shots;
     spell_data_ptr_t in_the_rhythm;
     spell_data_ptr_t surging_shots;
     spell_data_ptr_t deathblow;
@@ -528,15 +527,16 @@ public:
 
     spell_data_ptr_t multishot_mm;
     spell_data_ptr_t razor_fragments;
+    spell_data_ptr_t tactical_reload;
     spell_data_ptr_t dead_eye;
     spell_data_ptr_t bursting_shot;
 
     spell_data_ptr_t trick_shots;
     spell_data_ptr_t bombardment;
     spell_data_ptr_t volley;
-    spell_data_ptr_t tactical_reload;
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t serpentstalkers_trickery;
+    spell_data_ptr_t quick_load; //NYI - When you fall below 40% heath, Bursting Shot's cooldown is immediately reset. This can only occur once every 25 sec.
 
     spell_data_ptr_t light_ammo;
     spell_data_ptr_t heavy_ammo;
@@ -686,6 +686,8 @@ public:
     action_t* barbed_shot = nullptr;
     action_t* latent_poison = nullptr;
     action_t* arctic_bola = nullptr;
+    action_t* dire_command = nullptr; 
+    action_t* windrunners_guidance_background = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -837,10 +839,8 @@ public:
 
   void trigger_bloodseeker_update();
   void trigger_t30_sv_4p( action_t* action, double cost );
-  void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
   void trigger_latent_poison( const action_state_t* s );
-  void trigger_bombardment();
   void trigger_bloody_frenzy();
   void consume_trick_shots();
 };
@@ -915,7 +915,7 @@ public:
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
     ab::apply_affecting_aura( p -> talents.streamline );
-    ab::apply_affecting_aura( p -> talents.killing_blow );
+    ab::apply_affecting_aura( p -> talents.killer_accuracy );
     ab::apply_affecting_aura( p -> talents.hunters_knowledge );
     ab::apply_affecting_aura( p -> talents.surging_shots );
     ab::apply_affecting_aura( p -> talents.target_practice );
@@ -1104,14 +1104,7 @@ public:
 
     if ( affected_by.t29_sv_4pc_cost && p() -> buffs.bestial_barrage -> check() )
     { 
-      if( p() -> is_ptr() ) 
-      {
-        c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
-      }
-      else 
-      {
-        c *= 1 + p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).percent();
-      }
+      c += p() -> tier_set.t29_sv_4pc_buff -> effectN( 1 ).base_value();
     }
 
     if ( c < 0 )
@@ -2109,7 +2102,6 @@ struct kill_command_bm_mm_t: public kill_command_base_t
 {
   struct {
     double chance = 0;
-    proc_t* proc;
   } dire_command;
 
   kill_command_bm_mm_t( hunter_main_pet_base_t* p ) :
@@ -2124,8 +2116,8 @@ struct kill_command_bm_mm_t: public kill_command_base_t
 
     if ( rng().roll( dire_command.chance ) )
     {
-      o() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( o() ).first );
-      dire_command.proc -> occur();
+      o() -> actions.dire_command -> execute(); 
+      o() -> procs.dire_command -> occur();
     }
 
     p() -> buffs.lethal_command -> expire();
@@ -2440,7 +2432,7 @@ void stable_pet_t::init_spells()
 
   main_hand_attack = new actions::pet_melee_t( "melee", this );
 
-  if ( o() -> talents.beast_cleave.ok() || o() -> is_ptr() && o() -> talents.bloody_frenzy.ok() )
+  if ( o() -> talents.beast_cleave.ok() || o() -> talents.bloody_frenzy.ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
 }
 
@@ -2614,19 +2606,6 @@ void hunter_t::trigger_t30_sv_4p( action_t* action, double cost )
   
 }
 
-void hunter_t::trigger_lethal_shots()
-{
-  if ( !talents.lethal_shots.ok() )
-    return;
-
-  if ( rng().roll( talents.lethal_shots -> proc_chance() ) )
-  {
-    const auto base_value = talents.lethal_shots -> effectN( 1 ).base_value();
-    cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( base_value / 10 ) );
-    procs.lethal_shots -> occur();
-  }
-}
-
 void hunter_t::trigger_calling_the_shots( action_t* action, double cost )
 {
   if ( !talents.calling_the_shots.ok() )
@@ -2670,22 +2649,10 @@ void hunter_t::trigger_latent_poison( const action_state_t* s )
   debuff -> expire();
 }
 
-void hunter_t::trigger_bombardment()
-{
-  if ( is_ptr() || !talents.bombardment.ok() )
-    return;
-
-  if ( ++state.bombardment_counter == talents.bombardment -> effectN( 1 ).base_value() )
-  {
-    state.bombardment_counter = 0;
-    buffs.bombardment -> trigger();
-  }
-}
-
 // 24-3-23: Currently only applying Beast Cleave with the remaining Call of the Wild duration as the result of a Cobra Shot, Serpent Sting, Arcant Shot, or Multi-Shot.
 void hunter_t::trigger_bloody_frenzy()
 {
-  if ( !is_ptr() || !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() )
+  if ( !talents.bloody_frenzy.ok() || !buffs.call_of_the_wild -> check() )
     return;
 
   timespan_t duration = buffs.call_of_the_wild -> remains();
@@ -2948,7 +2915,7 @@ struct kill_shot_t : hunter_ranged_attack_t
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_millis( p() -> tier_set.t30_mm_4pc -> effectN( 2 ).base_value() ) );
     }
 
-    if ( p() -> is_ptr() && p() -> talents.bombardment.ok() )
+    if ( p() -> talents.bombardment.ok() )
       p() -> buffs.trick_shots -> trigger();
   }
 
@@ -3048,8 +3015,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> trigger_lethal_shots();
-    p() -> trigger_bombardment();
     p() -> trigger_bloody_frenzy();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
@@ -3127,26 +3092,32 @@ struct wind_arrow_t final : public hunter_ranged_attack_t
     }
 
     if ( p -> tier_set.t29_mm_2pc.ok() )
-      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
-
-    if ( p -> is_ptr() )
     {
-      lotw.trigger_threshold = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 2 ).base_value() );
-      lotw.focus_gain = p -> talents.legacy_of_the_windrunners -> effectN( 3 ).base_value();
-      lotw.aimed_recharges = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 4 ).base_value() );
+      hit_the_mark = p -> get_background_action<hit_the_mark_t>( "hit_the_mark" );
     }
+
+    lotw.trigger_threshold = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 2 ).base_value() );
+    lotw.focus_gain = p -> talents.legacy_of_the_windrunners -> effectN( 3 ).base_value();
+    lotw.aimed_recharges = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 4 ).base_value() );
   }
 
   void execute() override
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) {
+    if ( p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) 
+    {
+      
+      //12/05/2023: Windrunners Guidance can proc the class trinket, but only if Trueshot is not already running
+      if(!p() -> buffs.trueshot -> up()) 
+      {
+        p() -> actions.windrunners_guidance_background -> execute();
+      }
       p() -> buffs.trueshot -> trigger( p() -> talents.windrunners_guidance -> effectN( 2 ).time_value() );
       p() -> procs.windrunners_guidance -> occur();
     }
 
-    if ( p() -> is_ptr() && ++p() -> state.lotw_counter == lotw.trigger_threshold )
+    if ( ++p() -> state.lotw_counter == lotw.trigger_threshold )
     {
       p() -> state.lotw_counter = 0;
       p() -> cooldowns.aimed_shot -> reset( true, lotw.aimed_recharges );
@@ -3410,6 +3381,19 @@ struct arctic_bola_t final : hunter_spell_t
   {
     background = true;
     aoe = as<int>( p -> talents.arctic_bola -> effectN( 1 ).base_value() );
+  }
+};
+
+// Windrunner's Guidance =====================================================
+struct windrunners_guidance_background_t : public hunter_spell_t
+{
+  windrunners_guidance_background_t( hunter_t* p):
+    hunter_spell_t( "windrunners_guidance", p, p -> talents.windrunners_guidance )
+  {
+    background = true;
+    dual = true;
+    //Only set to harmful for the 10.1 class trinket effect
+    harmful = true;
   }
 };
 
@@ -3711,7 +3695,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> is_ptr() && p -> talents.bloody_frenzy.ok() )
+    if ( p -> talents.bloody_frenzy.ok() )
       cotw_serpent_sting = p -> get_background_action<serpent_sting_cotw_t>( "serpent_sting_cotw" );
   }
 
@@ -3785,6 +3769,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     bestial_wrath_reduction = p -> talents.barbed_wrath -> effectN( 1 ).time_value();
 
+    tick_zero = true; 
+
     p -> actions.barbed_shot = this;
   }
 
@@ -3823,12 +3809,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       pet -> stable_pet_t::buffs.frenzy -> trigger();
       pet -> buffs.thrill_of_the_hunt -> trigger();
       pet -> buffs.lethal_command -> trigger();
-    }
-
-    if ( !p() -> is_ptr() && p() -> talents.bloody_frenzy.ok() && p() -> buffs.call_of_the_wild -> up() )
-    {
-      for ( pets::call_of_the_wild_pet_t* pet : p() -> pets.cotw_stable_pet.active_pets() )
-        pet -> buffs.frenzy -> trigger();
     }
 
     auto pet = p() -> pets.main;
@@ -3901,9 +3881,6 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    p() -> trigger_lethal_shots();
-    p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -4015,7 +3992,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( p -> talents.legacy_of_the_windrunners.ok() )
     {
       legacy_of_the_windrunners.count = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value() );
-      legacy_of_the_windrunners.chance = p -> is_ptr() ? 1.0 : p -> talents.legacy_of_the_windrunners -> effectN( 2 ).percent();
+      legacy_of_the_windrunners.chance = 1.0;
       legacy_of_the_windrunners.action = p -> get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
       add_child( legacy_of_the_windrunners.action );
     }
@@ -4353,12 +4330,8 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
-    p() -> trigger_lethal_shots();
-
     if ( ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() ) || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
-
-    p() -> buffs.bombardment -> expire();
 
     if ( explosive && p() -> buffs.salvo -> check() )
     {
@@ -4427,7 +4400,7 @@ struct melee_t : public auto_attack_base_t<melee_attack_t>
   {
     auto_attack_base_t::impact( s );
 
-    if( p() -> is_ptr() && p() -> talents.lunge.ok() )
+    if( p() -> talents.lunge.ok() )
     {
       p() -> cooldowns.wildfire_bomb -> adjust( -timespan_t::from_millis( p() -> talents.lunge -> effectN( 3 ).base_value() ) );
     }
@@ -4944,19 +4917,28 @@ struct fury_of_the_eagle_t: public hunter_melee_attack_t
     }
   };
 
+  hunter_melee_attack_t* fote_tick;
   fury_of_the_eagle_t( hunter_t* p, util::string_view options_str ):
-    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle )
+    hunter_melee_attack_t( "fury_of_the_eagle", p, p -> talents.fury_of_the_eagle ),
+    fote_tick( new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) ) )
   {
     parse_options( options_str );
 
     channeled = true;
     tick_zero = true;
-    tick_action = new fury_of_the_eagle_tick_t( p, as<int>( data().effectN( 5 ).base_value() ) );
+
+    add_child( fote_tick );
   }
 
   void execute() override
   {
     hunter_melee_attack_t::execute();
+  }
+
+  void tick( dot_t* dot ) override
+  {
+    hunter_melee_attack_t::tick( dot );
+    fote_tick -> execute_on_target( dot -> target );
   }
 };
 
@@ -5342,7 +5324,6 @@ struct kill_command_t: public hunter_spell_t
     if ( p -> talents.dire_command.ok() )
     {
       dire_command.chance = p -> talents.dire_command -> effectN( 1 ).percent();
-      dire_command.proc = p -> get_proc( "Dire Command" );
     }
   }
 
@@ -5394,8 +5375,8 @@ struct kill_command_t: public hunter_spell_t
 
     if ( rng().roll( dire_command.chance ) )
     {
-      p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
-      dire_command.proc -> occur();
+      p() -> actions.dire_command -> execute();
+      p() -> procs.dire_command -> occur();
     }
 
     p() -> buffs.flamewakers_cobra_sting -> up(); // benefit tracking
@@ -5517,8 +5498,27 @@ struct dire_beast_t: public hunter_spell_t
   }
 };
 
-// Bestial Wrath ============================================================
+// Dire Command =============================================================
+struct dire_command_summon_t final : hunter_spell_t
+{
+  dire_command_summon_t( hunter_t* p ): 
+    hunter_spell_t( "dire_command_summon", p, p -> find_spell( 219199 ) )
+    {
+      cooldown -> duration = 0_ms;
+      track_cd_waste = false;
+      background = true;
+      harmful = false;
+    }
 
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> pets.dc_dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+  }
+};
+
+// Bestial Wrath ============================================================
 struct bestial_wrath_t: public hunter_spell_t
 {
   timespan_t precast_time = 0_ms;
@@ -5529,7 +5529,8 @@ struct bestial_wrath_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    harmful = false;
+    //Specifically set to true for 10.1 class trinket 
+    harmful = true;
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
@@ -5540,6 +5541,10 @@ struct bestial_wrath_t: public hunter_spell_t
       add_pet_stats( pet, { "bestial_wrath" } );
 
     hunter_spell_t::init_finished();
+
+    //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
+    if ( is_precombat )
+      harmful = false;
   }
 
   void execute() override
@@ -5722,7 +5727,17 @@ struct trueshot_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    //Only set to harmful for the 10.1 class trinket effect
+    harmful = true;
+  }
+
+  //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
+  void init_finished() override
+  {
+    hunter_spell_t::init_finished();
+
+    if ( is_precombat )
+      harmful = false;
   }
 
   void execute() override
@@ -6302,7 +6317,11 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
+  if ( splits.size() == 1 && splits[ 0 ] == "dire_pack_count" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.dire_pack_counter; });
+  }
+  else if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
   {
     return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
   }
@@ -6522,11 +6541,10 @@ void hunter_t::init_spells()
     talents.chimaera_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Chimaera Shot", HUNTER_MARKSMANSHIP );
 
     talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
-    talents.killing_blow                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Blow", HUNTER_MARKSMANSHIP );
+    talents.killer_accuracy                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Accuracy", HUNTER_MARKSMANSHIP );
     talents.hunters_knowledge                 = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Knowledge", HUNTER_MARKSMANSHIP );
     talents.careful_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Careful Aim", HUNTER_MARKSMANSHIP );
 
-    talents.lethal_shots                      = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Shots", HUNTER_MARKSMANSHIP );
     talents.in_the_rhythm                     = find_talent_spell( talent_tree::SPECIALIZATION, "In the Rhythm", HUNTER_MARKSMANSHIP );
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
@@ -6755,6 +6773,12 @@ void hunter_t::create_actions()
 
   if ( talents.arctic_bola.ok() )
     actions.arctic_bola = new attacks::arctic_bola_t( this );
+  
+  if ( talents.dire_command.ok() )
+    actions.dire_command = new spells::dire_command_summon_t( this );
+  
+  if( talents.windrunners_guidance.ok() )
+    actions.windrunners_guidance_background = new attacks::windrunners_guidance_background_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7099,17 +7123,20 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  if ( talents.lethal_shots.ok() )
-    procs.lethal_shots        = get_proc( "Lethal Shots" );
-
   if ( talents.calling_the_shots.ok() )
     procs.calling_the_shots   = get_proc( "Calling the Shots" );
 
   if ( talents.windrunners_guidance.ok() )
     procs.windrunners_guidance = get_proc( "Windrunner's Guidance" );
 
-  procs.wild_call           = get_proc( "Wild Call" );
-  procs.wild_instincts      = get_proc( "Wild Instincts");
+  if ( talents.dire_command.ok() )
+    procs.dire_command        = get_proc( "Dire Command" );
+
+  if ( talents.wild_call.ok() )
+    procs.wild_call           = get_proc( "Wild Call" );
+  
+  if( talents.wild_instincts.ok() )
+    procs.wild_instincts      = get_proc( "Wild Instincts");
 
   if ( tier_set.t30_sv_4pc.ok() )
     procs.t30_sv_4p          = get_proc( "Wildfire Bomb Reduction T304P" );

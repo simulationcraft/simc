@@ -341,9 +341,9 @@
     "fields": [
       { "data_type": "S", "field": "desc" },
       { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "expansion_season" },
       { "data_type": "i", "field": "id_expansion" },
-      { "data_type": "i", "field": "unk_1" },
       { "data_type": "i", "field": "unk_2" }
     ]
   },
@@ -600,15 +600,16 @@
   "ItemBonusSeason": {
     "fields": [
       { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "id_season" }
+      { "data_type": "i", "field": "id_season", "ref": "DisplaySeason" }
     ]
   },
   "ItemBonusSeasonBonusListGroup": {
+    "parent": "ItemBonusSeason",
     "fields": [
       { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "id_item_bonus_list_group" },
+      { "data_type": "i", "field": "id_item_bonus_list_group", "ref": "ItemBonusListGroup" },
       { "data_type": "i", "field": "unk_1" },
-      { "data_type": "i", "field": "id_item_bonus_season" }
+      { "data_type": "i", "field": "id_item_bonus_season", "ref": "ItemBonusSeason" }
     ]
   },
   "ItemBonusSeasonUpgradeCost": {
@@ -617,7 +618,7 @@
       { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "id_item", "ref": "ItemSparse" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "i", "field": "id_item_bonus_season" },
+      { "data_type": "i", "field": "id_item_bonus_season", "ref": "ItemBonusSeason" },
       { "data_type": "i", "field": "unk_3" },
       { "data_type": "i", "field": "unk_4" }
     ]
@@ -694,10 +695,10 @@
   "ItemExtendedCost": {
     "fields": [
       { "data_type": "H", "field": "required_arena_rating" },
-      { "data_type": "B", "field": "arena_bracket" },
+      { "data_type": "b", "field": "arena_bracket" },
       { "data_type": "B", "field": "flags" },
       { "data_type": "B", "field": "id_min_faction" },
-      { "data_type": "B", "field": "min_reputation" },
+      { "data_type": "i", "field": "min_reputation" },
       { "data_type": "B", "field": "required_achievement" },
       { "data_type": "i", "field": "id_item", "elements": 5, "ref": "ItemSparse" },
       { "data_type": "H", "field": "item_count", "elements": 5 },
@@ -1027,6 +1028,22 @@
       { "data_type": "i", "field": "reagent_recraft_count" }
     ]
   },
+  "MythicPlusSeason": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "i", "field": "milestone_season" },
+      { "data_type": "i", "field": "id_expansion" },
+      { "data_type": "i", "field": "heroic_lfg_dungeon_min_gear" }
+    ]
+  },
+  "MythicPlusSeasonRewardLevels": {
+    "parent": "MythicPlusSeason",
+    "fields": [
+      { "data_type": "i", "field": "difficulty_level" },
+      { "data_type": "i", "field": "weekly_reward_level" },
+      { "data_type": "i", "field": "end_of_run_reward_level" }
+    ]
+  },
   "PlayerCondition": {
     "fields": [
       { "data_type": "Q", "field": "race_mask" },
@@ -1195,6 +1212,13 @@
       { "data_type": "i", "field": "id_item" },
       { "data_type": "i", "field": "id_covenant", "ref": "Covenant" },
       { "data_type": "i", "field": "unk_10" }
+    ]
+  },
+  "SharedString": {
+    "fields": [
+      { "data_type": "S", "field": "string" },
+      { "data_type": "i", "field": "id" },
+      { "data_type": "b", "field": "flags" }
     ]
   },
   "SkillLine": {

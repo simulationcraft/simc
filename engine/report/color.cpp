@@ -243,6 +243,10 @@ rgb school_color( school_e school )
       return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_FROST ) +
              school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +
              school_color( SCHOOL_SHADOW );
+    case SCHOOL_CHROMASTRIKE:
+      return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_FROST ) +
+             school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +
+             school_color( SCHOOL_SHADOW ) + school_color( SCHOOL_PHYSICAL );
     case SCHOOL_MAGIC:
       return school_color( SCHOOL_FIRE ) + school_color( SCHOOL_FROST ) +
              school_color( SCHOOL_ARCANE ) + school_color( SCHOOL_NATURE ) +

@@ -107,6 +107,7 @@ actions.cds+=/fireblood
 actions.cds+=/ancestral_call
 # Default conditions for usable items.
 actions.cds+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up|spell_targets.blade_flurry>2)|fight_remains<=5
+actions.cds+=/use_item,name=beacon_to_the_beyond,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&!stealthed.all&debuff.between_the_eyes.up&(!talent.ghostly_strike|debuff.ghostly_strike.up|spell_targets.blade_flurry>2)|fight_remains<=5
 actions.cds+=/use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<10
 actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7
 actions.cds+=/use_items,slots=trinket1,if=debuff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
@@ -154,7 +155,7 @@ off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/48
 # Gear Summary
 # gear_ilvl=420.81
 # gear_agility=4927
-# gear_stamina=13126
+# gear_stamina=17118
 # gear_crit_rating=5092
 # gear_haste_rating=1165
 # gear_mastery_rating=1542

@@ -1,0 +1,149 @@
+druid="T30_Druid_Balance"
+source=default
+spec=balance
+level=70
+race=zandalari_troll
+zandalari_loa=paku
+role=spell
+position=back
+talents=BYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFASSSEkEgkEJ5ApAtEHIRSUS0kcgQolUSCR0AoQBA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_elemental_chaos_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:howling_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Annotated Balance APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds
+actions.precombat+=/variable,name=wrath_base_asp,value=8+2*talent.wild_surges
+actions.precombat+=/variable,name=starfire_base_asp,value=10+2*talent.wild_surges
+actions.precombat+=/variable,name=on_use_trinket,value=0
+actions.precombat+=/variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration
+actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2
+actions.precombat+=/moonkin_form
+actions.precombat+=/wrath
+actions.precombat+=/wrath
+actions.precombat+=/stellar_flare
+actions.precombat+=/starfire,if=!talent.stellar_flare
+
+# Executed every time the actor is available.
+actions=variable,name=is_aoe,value=spell_targets.starfall>1
+actions+=/variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40
+actions+=/berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15
+actions+=/potion,if=!druid.no_cds&(buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<30)
+actions+=/use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0
+actions+=/use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0
+actions+=/use_items
+actions+=/natures_vigil
+actions+=/invoke_external_buff,name=power_infusion
+actions+=/run_action_list,name=aoe,if=variable.is_aoe
+actions+=/run_action_list,name=st
+
+actions.aoe=moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+3,if=fight_style.dungeonroute
+actions.aoe+=/sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(spell_targets%2)&astral_power.deficit>variable.passive_asp+3
+actions.aoe+=/moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+3,if=!fight_style.dungeonroute
+actions.aoe+=/variable,name=cd_condition_aoe,value=!druid.no_cds&(cooldown.ca_inc.remains<5&!buff.ca_inc.up&(target.time_to_die>10|fight_remains<25+10*talent.incarnation_chosen_of_elune))
+actions.aoe+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8+spell_targets.starfire,if=astral_power.deficit>variable.passive_asp+8&spell_targets.starfire<(11-talent.umbral_intensity.rank-talent.astral_smolder.rank)&variable.cd_condition_aoe
+actions.aoe+=/starfall,if=variable.cd_condition_aoe&(talent.orbital_strike&astral_power.deficit<variable.passive_asp+8*spell_targets|buff.touch_the_cosmos.up)|astral_power.deficit<(variable.passive_asp+8+12*(buff.eclipse_lunar.remains<4|buff.eclipse_solar.remains<4))
+actions.aoe+=/celestial_alignment,if=variable.cd_condition_aoe
+actions.aoe+=/incarnation,if=variable.cd_condition_aoe
+actions.aoe+=/warrior_of_elune
+actions.aoe+=/variable,name=enter_solar,value=spell_targets.starfire<3
+actions.aoe+=/starfire,if=variable.enter_solar&(eclipse.any_next|buff.eclipse_solar.remains<action.starfire.execute_time)
+actions.aoe+=/wrath,if=!variable.enter_solar&(eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time)
+actions.aoe+=/wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.fungal_growth|!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)
+actions.aoe+=/fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2
+actions.aoe+=/full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
+actions.aoe+=/starfall,if=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)
+actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<3
+actions.aoe+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-spell_targets.starfire)>8+spell_targets.starfire,if=astral_power.deficit>variable.passive_asp+8&spell_targets.starfire<(11-talent.umbral_intensity.rank-talent.astral_smolder.rank)
+actions.aoe+=/astral_communion,if=astral_power.deficit>variable.passive_asp+50
+actions.aoe+=/convoke_the_spirits,if=astral_power<50&spell_targets.starfall<3+talent.elunes_guidance&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)
+actions.aoe+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
+actions.aoe+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
+actions.aoe+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
+actions.aoe+=/starsurge,if=buff.starweavers_weft.up&spell_targets.starfire<17
+actions.aoe+=/starfire,if=spell_targets>3&buff.eclipse_lunar.up|eclipse.in_lunar
+actions.aoe+=/wrath
+actions.aoe+=/run_action_list,name=fallthru
+
+actions.fallthru=starfall,if=variable.is_aoe
+actions.fallthru+=/starsurge
+actions.fallthru+=/sunfire,target_if=dot.moonfire.remains>remains*22%18
+actions.fallthru+=/moonfire
+
+actions.st=sunfire,target_if=refreshable&remains<2&(target.time_to_die-remains)>6
+actions.st+=/moonfire,target_if=refreshable&remains<2&(target.time_to_die-remains)>6
+actions.st+=/stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8&remains<2&(target.time_to_die-remains)>8
+actions.st+=/variable,name=cd_condition_st,value=!druid.no_cds&(cooldown.ca_inc.remains<15&!buff.ca_inc.up&(target.time_to_die>15|fight_remains<25+10*talent.incarnation_chosen_of_elune))
+actions.st+=/starfall,if=buff.primordial_arcanic_pulsar.value>=550&!buff.ca_inc.up&buff.starweavers_warp.up
+actions.st+=/starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.starweavers_weft.up
+actions.st+=/celestial_alignment,if=variable.cd_condition_st
+actions.st+=/incarnation,if=variable.cd_condition_st
+actions.st+=/warrior_of_elune
+actions.st+=/variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5
+actions.st+=/variable,name=enter_eclipse,value=eclipse.any_next|variable.solar_eclipse_st&buff.eclipse_solar.up&(buff.eclipse_solar.remains<action.starfire.cast_time)|!variable.solar_eclipse_st&buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)
+actions.st+=/starfire,if=variable.enter_eclipse&variable.solar_eclipse_st
+actions.st+=/wrath,if=variable.enter_eclipse
+actions.st+=/variable,name=convoke_condition,value=buff.ca_inc.remains>4|(cooldown.ca_inc.remains>30|variable.no_cd_talent)&(buff.eclipse_lunar.remains>4|buff.eclipse_solar.remains>4)
+actions.st+=/starsurge,if=talent.convoke_the_spirits&cooldown.convoke_the_spirits.ready&variable.convoke_condition
+actions.st+=/convoke_the_spirits,if=variable.convoke_condition
+actions.st+=/astral_communion,if=astral_power.deficit>variable.passive_asp+55
+actions.st+=/force_of_nature,if=astral_power.deficit>variable.passive_asp+20
+actions.st+=/fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2
+actions.st+=/starfall,if=buff.starweavers_warp.up
+actions.st+=/starsurge,if=talent.starlord&buff.starlord.stack<3|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max
+actions.st+=/sunfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3
+actions.st+=/moonfire,target_if=refreshable&astral_power.deficit>variable.passive_asp+3
+actions.st+=/stellar_flare,target_if=refreshable&astral_power.deficit>variable.passive_asp+8
+actions.st+=/new_moon,if=astral_power.deficit>variable.passive_asp+10
+actions.st+=/half_moon,if=astral_power.deficit>variable.passive_asp+20&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
+actions.st+=/full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)
+actions.st+=/starsurge,if=buff.starweavers_weft.up|astral_power.deficit<variable.passive_asp+(variable.wrath_base_asp*(1+0.6*talent.soul_of_the_forest*buff.eclipse_solar.up))+(variable.starfire_base_asp*(1+buff.warrior_of_elune.up*0.4)+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|talent.astral_communion&cooldown.astral_communion.remains<3|fight_remains<5
+actions.st+=/wild_mushroom,if=talent.fungal_growth&(!fight_style.dungeonroute|target.time_to_die>(full_recharge_time-7)|fight_remains<10)
+actions.st+=/starfire,if=buff.ca_inc.up&buff.warrior_of_elune.up&buff.warrior_of_elune.stack=1
+actions.st+=/wrath
+actions.st+=/run_action_list,name=fallthru
+
+head=bough_of_the_autumn_blaze,id=202515,bonus_id=1504/9413,gem_id=192961
+neck=choker_of_stolen_thunder,id=206180,bonus_id=7359/6646,ilevel=447,gem_id=192961/192961/192961
+shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=7187,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=1498
+chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=1504,enchant=waking_stats_3
+wrists=lifebound_bindings,id=193419,bonus_id=8780/8793/8797/8960,ilevel=447,gem_id=192961
+hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=7187,ilevel=447
+waist=oblivions_immortal_coil,id=204399,bonus_id=4800/1498,ilevel=450,gem_id=192961
+legs=lifebound_trousers,id=193408,bonus_id=8793,ilevel=447,enchant=frozen_spellthread_3
+feet=slimy_expulsion_boots,id=193451,bonus_id=8793,ilevel=447
+finger1=ringbound_hourglass,id=193000,bonus_id=8780/8793,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
+finger2=loop_of_pulsing_veins,id=159463,bonus_id=7359/6646/1808,ilevel=447,gem_id=192961,enchant=devotion_of_mastery_3
+trinket1=neltharions_call_to_suffering,id=204211,bonus_id=1498
+trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/1498
+main_hand=erethos_the_empty_promise,id=202565,bonus_id=4800/1498,ilevel=450,enchant=sophic_devotion_3
+
+# Gear Summary
+# gear_ilvl=449.13
+# gear_stamina=22654
+# gear_intellect=8435
+# gear_crit_rating=1604
+# gear_haste_rating=4908
+# gear_mastery_rating=5532
+# gear_versatility_rating=1331
+# gear_armor=4023
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1

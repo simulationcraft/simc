@@ -205,6 +205,7 @@ public:
     buff_t* vanguards_determination;
     buff_t* crushing_advance;
     buff_t* merciless_assault;
+    buff_t* earthen_tenacity;  // T30 Protection 4PC
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -1133,6 +1134,7 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
     ab::apply_affecting_aura( p()->talents.arms.impale );
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
+    ab::apply_affecting_aura( p()->talents.arms.improved_execute );
     ab::apply_affecting_aura( p()->talents.arms.improved_slam );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
@@ -1150,6 +1152,7 @@ public:
     ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.protection.bloodborne );
     ab::apply_affecting_aura( p()->talents.protection.defenders_aegis );
+    ab::apply_affecting_aura( p()->talents.protection.battering_ram );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -1186,8 +1189,7 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
-    if ( p()->dbc->ptr )
-      affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
     affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
@@ -2529,7 +2531,7 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
-    if ( p()->dbc->ptr && p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
     {
       rend_dot->set_target( s->target );
       rend_dot->execute();
@@ -2598,7 +2600,7 @@ struct bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed                      = 0;
 
     bladestorm_mh->weapon             = &( player->main_hand_weapon );
@@ -2755,7 +2757,7 @@ struct torment_bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed = 0;
     dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
     bladestorm_mh->weapon = &( player->main_hand_weapon );
@@ -3573,7 +3575,7 @@ struct execute_damage_t : public warrior_attack_t
   double max_rage;
   double cost_rage;
   execute_damage_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
+    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -5259,7 +5261,6 @@ struct ravager_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     hasted_ticks            = true;
-    callbacks               = false;
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
@@ -5524,15 +5525,6 @@ struct shield_charge_damage_t : public warrior_attack_t
     return am;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-
-    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
-
-    return c;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5597,15 +5589,6 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
     }
     return am;
   }
-
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-
-    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
-
-    return c;
-  }
 };
 
 struct shield_charge_t : public warrior_attack_t
@@ -5660,17 +5643,33 @@ struct shield_charge_t : public warrior_attack_t
 };
 
 // Shield Slam ==============================================================
+
+// Linked action for shield slam aoe with T30 Protection
+struct earthen_smash_t : public warrior_attack_t
+{
+  earthen_smash_t( util::string_view name, warrior_t* p )
+  : warrior_attack_t( name, p, p->find_spell( 410219 ) )
+  {
+    background = true;
+  }
+};
+
 struct shield_slam_t : public warrior_attack_t
 {
   double rage_gain;
+  action_t* earthen_smash;
   shield_slam_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "shield_slam", p, p->spell.shield_slam ),
-    rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) )
+    rage_gain( p->spell.shield_slam->effectN( 3 ).resource( RESOURCE_RAGE ) ),
+    earthen_smash( get_action<earthen_smash_t>( "earthen_smash", p ))
   {
     parse_options( options_str );
     energize_type = action_energize::NONE;
     rage_gain += p->talents.protection.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
     rage_gain += p->talents.protection.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+
+    if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
+        base_multiplier *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T30, B2 ) -> effectN( 1 ).percent();
   }
 
     void init() override
@@ -5702,6 +5701,11 @@ struct shield_slam_t : public warrior_attack_t
     if ( p() -> buff.brace_for_impact -> up() )
     {
       am *= 1.0 + p()->buff.brace_for_impact -> stack_value();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) && p() -> buff.last_stand -> up() )
+    {
+        am *= 1.0 + p() -> talents.protection.last_stand -> effectN( 3 ).percent();
     }
 
     return am;
@@ -5746,6 +5750,21 @@ struct shield_slam_t : public warrior_attack_t
       p()->buff.ignore_pain->trigger();
       p()->buff.violent_outburst->expire();
       total_rage_gain *= 1.0 + p() -> buff.violent_outburst->data().effectN( 3 ).percent();
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) ) 
+    {
+      p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
+      // Value is doubled with last stand up, so we apply the same effect twice.
+      if ( p() -> buff.last_stand -> up() )
+      {
+        p()->cooldown.last_stand->adjust( - timespan_t::from_seconds( p() -> sets -> set(WARRIOR_PROTECTION, T30, B2 ) -> effectN( 2 ).base_value() ) );
+      }
+    }
+
+    if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B4 ) && p() -> buff.earthen_tenacity -> up() )
+    {
+      earthen_smash -> execute_on_target( target );
     }
 
     p()->resource_gain( RESOURCE_RAGE, total_rage_gain, p() -> gain.shield_slam );
@@ -6938,6 +6957,7 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
     aoe                        = -1;
     reduced_aoe_targets        = 5.0;
     dual                       = true;
+    allow_class_ability_procs  = true;
     energize_type     = action_energize::NONE;
 
     rage_gain *= 1.0 + p->talents.warrior.piercing_verdict->effectN( 2 ).percent();
@@ -8755,10 +8775,15 @@ void warrior_t::apl_fury()
       default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
     }
+    else if ( item.name_str == "vial_of_animated_blood" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str + 
+                                ",if=buff.avatar.up" );
+    }
     else if ( item.name_str == "irideus_fragment" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
-                                ",if=buff.recklessness.up" );
+                                ",if=buff.avatar.up" );
     }
     else if ( item.name_str == "manic_grieftorch" )
     {
@@ -8790,10 +8815,10 @@ void warrior_t::apl_fury()
     {
       default_list->add_action( racial_action + ",if=buff.recklessness.down" );
     }
-    //else if ( racial_action == "bag_of_tricks" ) // currently better to ignore entirely due to eating a GCD
-    //{
+    else if ( racial_action == "bag_of_tricks" ) // currently better to ignore entirely due to eating a GCD
+    {
       //default_list->add_action( racial_action + ",if=buff.recklessness.down&buff.enrage.up" );
-    //}
+    }
     else if ( racial_action == "berserking" )
     {
       default_list->add_action( racial_action + ",if=buff.recklessness.up" );
@@ -8826,6 +8851,8 @@ void warrior_t::apl_fury()
   multi_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   multi_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15" );
+  multi_target->add_action( this, spec.bloodbath, "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
+  multi_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   multi_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   multi_target->add_action( "execute,if=buff.enrage.up" );
   multi_target->add_action( "odyns_fury,if=buff.enrage.up&raid_event.adds.in>15" );
@@ -8852,6 +8879,8 @@ void warrior_t::apl_fury()
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
+  single_target->add_action( this, spec.bloodbath, "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
+  single_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( this, spec.crushing_blow, "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
@@ -8908,6 +8937,11 @@ void warrior_t::apl_arms()
       default_list->add_action( "use_item,name=" + item.name_str +
                                 ",if=cooldown.avatar.remains<3" );
     }
+    else if ( item.name_str == "vial_of_animated_blood" )
+    {
+      default_list->add_action( "use_item,name=" + item.name_str + 
+                                ",if=buff.avatar.up" );
+    }
     else if ( item.name_str == "irideus_fragment" )
     {
       default_list->add_action( "use_item,name=" + item.name_str +
@@ -8934,8 +8968,9 @@ void warrior_t::apl_arms()
   {
     if ( racial_action == "arcane_torrent" )
     {
-      default_list->add_action( racial_action +
-                                ",if=cooldown.mortal_strike.remains>1.5&rage<50" );
+      // Currently not worth casting at such a priority
+      //default_list->add_action( racial_action +
+      //                          ",if=cooldown.mortal_strike.remains>1.5&rage<50" );
     }
     else if ( racial_action == "lights_judgment" )
     {
@@ -8943,7 +8978,8 @@ void warrior_t::apl_arms()
     }
     else if ( racial_action == "bag_of_tricks" )
     {
-      default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
+      // currently not worth casting
+      //default_list->add_action( racial_action + ",if=debuff.colossus_smash.down&cooldown.mortal_strike.remains" );
     }
     else if ( racial_action == "berserking" )
     {
@@ -8994,6 +9030,7 @@ void warrior_t::apl_arms()
   hac->add_action( "cleave,if=active_enemies>2|!talent.battlelord&buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
   hac->add_action( "whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)" );
   hac->add_action( "skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)" );
+  hac->add_action( "mortal_strike,if=buff.sweeping_strikes.up&buff.crushing_advance.stack=3,if=set_bonus.tier30_4pc" );
   hac->add_action( "overpower,if=buff.sweeping_strikes.up&talent.dreadnaught" );
   hac->add_action( "mortal_strike,cycle_targets=1,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2" );
   hac->add_action( "execute,cycle_targets=1,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up" );
@@ -9036,6 +9073,7 @@ void warrior_t::apl_arms()
   single_target->add_action( "cleave,if=set_bonus.tier29_2pc&!talent.crushing_force" );
   single_target->add_action( "slam,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)" );
   single_target->add_action( "bladestorm" );
+  single_target->add_action( "arcane_torrent" );
   single_target->add_action( "cleave" );
   single_target->add_action( "wrecking_throw" );
   single_target->add_action( "rend,if=remains<duration*0.3" );
@@ -9072,7 +9110,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "bag_of_tricks" );
   default_list -> add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
   default_list -> add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
-  default_list -> add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled" );
+  default_list -> add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
   default_list -> add_action( "ravager" );
   default_list -> add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
   default_list -> add_action( "spear_of_bastion" );
@@ -9093,8 +9131,6 @@ void warrior_t::apl_prot()
   generic -> add_action( "shield_slam" );
   generic -> add_action( "thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
   generic -> add_action( "execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
-  generic -> add_action( "execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50" );
-  generic -> add_action( "revenge,if=buff.vanguards_determination.down&rage>=40" );
   generic -> add_action( "execute,if=spell_targets.revenge=1&rage>=50" );
   generic -> add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic -> add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
@@ -9234,6 +9270,10 @@ struct last_stand_buff_t : public warrior_buff_t<buff_t>
                         player -> name(), health_change * 100.0,
                         old_health, player -> resources.current[ RESOURCE_HEALTH ],
                         old_max_health, player -> resources.max[ RESOURCE_HEALTH ] );
+
+    warrior_t* p = debug_cast< warrior_t* >( player );
+    if ( ! p -> sim -> event_mgr.canceled && p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B4 ) )
+      p -> buff.earthen_tenacity -> trigger();
   }
 };
 
@@ -9732,6 +9772,9 @@ void warrior_t::create_buffs()
                                 find_spell( 409983 ) : spell_data_t::not_found() )
                            ->set_default_value( find_spell( 409983 )->effectN( 2 ).percent() )
                            ->set_duration( find_spell( 409983 )->duration() );
+
+  buff.earthen_tenacity = make_buff( this, "earthen_tenacity", tier_set.t30_prot_4pc -> ok() ?
+                                find_spell( 410218 ) : spell_data_t::not_found() );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -9934,7 +9977,7 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:howling_rune_3/off_hand:howling_rune_3"
+                              ? "main_hand:hissing_rune_3/off_hand:hissing_rune_3"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
@@ -10553,9 +10596,6 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   cdm *= 1.0 + buff.elysian_might_legendary->check_value();
 
   cdm *= 1.0 + buff.elysian_might->check_value();
-
-  if ( s->action->school == SCHOOL_PHYSICAL )
-    cdm *= 1.0 + talents.protection.battering_ram->effectN( 3 ).percent();
 
   return cdm;
 }

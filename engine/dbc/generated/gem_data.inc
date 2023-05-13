@@ -1,5 +1,5 @@
-// Gem properties, wow build 10.0.7.48999
-static const std::array<gem_property_data_t, 2083> __gem_property_data { {
+// Gem properties, wow build 10.1.0.49474
+static const std::array<gem_property_data_t, 2084> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -2083,5 +2083,6 @@ static const std::array<gem_property_data_t, 2083> __gem_property_data { {
   { 4057,  6782, 0x02000000 }, // |C00FF516CDesirous Blood Stone
   { 4058,  6783, 0x02000000 },
   { 4059,  6784, 0x02000000 }, // |C00834FFFProphetic Twilight Stone
+  { 4060,  6831, 0x01000000 }, // $spell@spelldesc407949
 } };
 

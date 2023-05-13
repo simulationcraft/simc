@@ -1,0 +1,187 @@
+monk="T30_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=70
+race=void_elf
+role=tank
+position=front
+talents=BwQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAgkCtSSSgkkWjAAAAkSSkEJSQRSikkSCQLSkWaCB
+
+# Default consumables
+potion=potion_of_shocking_disclosure_3
+flask=phial_of_tepid_versatility_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/chi_burst,if=talent.chi_burst.enabled
+actions.precombat+=/chi_wave,if=talent.chi_wave.enabled
+actions.precombat+=/variable,op=set,name=fallback_detection,value=1
+
+# Executed every time the actor is available.
+actions=auto_attack
+# Move to target
+actions+=/roll,if=movement.distance>5
+actions+=/chi_torpedo,if=movement.distance>5
+actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/potion
+actions+=/summon_white_tiger_statue,if=talent.summon_white_tiger_statue.enabled
+actions+=/call_action_list,name=item_actions
+actions+=/call_action_list,name=race_actions
+actions+=/call_action_list,name=cooldowns_improved_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)<=1
+actions+=/call_action_list,name=cooldowns_improved_niuzao_cta,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)=2&(talent.weapons_of_order.enabled+talent.call_to_arms.enabled)=2
+actions+=/call_action_list,name=cooldowns_niuzao_woo,if=(talent.invoke_niuzao_the_black_ox.enabled+talent.improved_invoke_niuzao_the_black_ox.enabled)<=1
+actions+=/call_action_list,name=rotation_boc_dfb,if=talent.blackout_combo.enabled&talent.dragonfire_brew.enabled&talent.salsalabims_strength.enabled
+actions+=/call_action_list,name=rotation_dfb,if=talent.dragonfire_brew.enabled&talent.salsalabims_strength.enabled
+actions+=/call_action_list,name=rotation_chp,if=talent.charred_passions.enabled&talent.salsalabims_strength.enabled
+actions+=/call_action_list,name=rotation_fallback,if=variable.fallback_detection
+
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks.
+actions.cooldowns_improved_niuzao_cta=invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
+actions.cooldowns_improved_niuzao_cta+=/variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(10+2*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.weapons_of_order
+actions.cooldowns_improved_niuzao_cta+=/variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox
+actions.cooldowns_improved_niuzao_cta+=/variable,name=pb_in_window,op=sub,value=1,if=prev.purifying_brew&(time-action.weapons_of_order.last_used<=10+2*0.05|time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)
+actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=(time-action.purifying_brew.last_used>=10+2*0.05-time+action.weapons_of_order.last_used%variable.pb_in_window&time-action.weapons_of_order.last_used<=10+2*0.05)
+actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)
+actions.cooldowns_improved_niuzao_cta+=/purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)
+actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains
+actions.cooldowns_improved_niuzao_cta+=/weapons_of_order,if=(time-action.purifying_brew.last_used<=5)&((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|(!equipped.beacon_to_the_beyond))
+actions.cooldowns_improved_niuzao_cta+=/bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3
+actions.cooldowns_improved_niuzao_cta+=/bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10
+actions.cooldowns_improved_niuzao_cta+=/exploding_keg,if=buff.bonedust_brew.up
+actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains&buff.weapons_of_order.remains<=30-17
+actions.cooldowns_improved_niuzao_cta+=/invoke_niuzao_the_black_ox,if=buff.weapons_of_order.remains<=30-17&action.purifying_brew.last_used>action.weapons_of_order.last_used+10+2*0.05
+actions.cooldowns_improved_niuzao_cta+=/purifying_brew,if=cooldown.purifying_brew.full_recharge_time*2<=cooldown.weapons_of_order.remains-3.5&cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5
+
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks.
+actions.cooldowns_improved_niuzao_woo=invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
+actions.cooldowns_improved_niuzao_woo+=/variable,name=pb_in_window,op=set,value=floor(cooldown.purifying_brew.charges_fractional+(20+4*0.05)%cooldown.purifying_brew.duration%0.65),if=prev.invoke_niuzao_the_black_ox
+actions.cooldowns_improved_niuzao_woo+=/variable,name=pb_in_window,op=sub,value=1,if=prev.purifying_brew&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05
+actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)
+actions.cooldowns_improved_niuzao_woo+=/purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)
+actions.cooldowns_improved_niuzao_woo+=/weapons_of_order,if=(talent.weapons_of_order.enabled)&((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|(!equipped.beacon_to_the_beyond))
+actions.cooldowns_improved_niuzao_woo+=/bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3
+actions.cooldowns_improved_niuzao_woo+=/bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10
+actions.cooldowns_improved_niuzao_woo+=/exploding_keg,if=buff.bonedust_brew.up
+actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=cooldown.invoke_niuzao_the_black_ox.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.invoke_niuzao_the_black_ox.remains
+actions.cooldowns_improved_niuzao_woo+=/invoke_niuzao_the_black_ox,if=time-action.purifying_brew.last_used<=5
+actions.cooldowns_improved_niuzao_woo+=/purifying_brew,if=cooldown.purifying_brew.full_recharge_time*2<=cooldown.invoke_niuzao_the_black_ox.remains-3.5
+
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks.
+actions.cooldowns_niuzao_woo=invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20
+actions.cooldowns_niuzao_woo+=/weapons_of_order,if=(talent.weapons_of_order.enabled)&(((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|(!equipped.beacon_to_the_beyond)))
+actions.cooldowns_niuzao_woo+=/bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3
+actions.cooldowns_niuzao_woo+=/bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10
+actions.cooldowns_niuzao_woo+=/exploding_keg,if=buff.bonedust_brew.up
+actions.cooldowns_niuzao_woo+=/invoke_niuzao_the_black_ox,if=buff.weapons_of_order.remains<=16&talent.weapons_of_order.enabled
+actions.cooldowns_niuzao_woo+=/invoke_niuzao_the_black_ox,if=!talent.weapons_of_order.enabled
+actions.cooldowns_niuzao_woo+=/purifying_brew,if=stagger.amounttototalpct>=0.7&!buff.blackout_combo.up
+actions.cooldowns_niuzao_woo+=/purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up
+
+actions.item_actions=use_item,name=beacon_to_the_beyond,if=(debuff.weapons_of_order_debuff.stack>3)|(fight_remains<cooldown.weapons_of_order.remains-3)
+actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser,if=(trinket.1.cooldown.remains>10)&((!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|(debuff.weapons_of_order_debuff.up)|((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains))
+
+actions.race_actions=blood_fury
+actions.race_actions+=/berserking
+actions.race_actions+=/arcane_torrent
+actions.race_actions+=/lights_judgment,if=(talent.weapons_of_order.enabled&debuff.weapons_of_order_debuff.stack>3)|(!talent.weapons_of_order.enabled)
+actions.race_actions+=/fireblood
+actions.race_actions+=/ancestral_call
+actions.race_actions+=/bag_of_tricks
+
+actions.rotation_boc_dfb=variable,op=set,name=fallback_detection,value=0
+actions.rotation_boc_dfb+=/blackout_kick
+actions.rotation_boc_dfb+=/rising_sun_kick,if=talent.rising_sun_kick.enabled
+actions.rotation_boc_dfb+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled&buff.rushing_jade_wind.remains<1
+actions.rotation_boc_dfb+=/breath_of_fire,if=buff.blackout_combo.up
+actions.rotation_boc_dfb+=/keg_smash
+actions.rotation_boc_dfb+=/black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65&talent.black_ox_brew.enabled
+actions.rotation_boc_dfb+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.rotation_boc_dfb+=/spinning_crane_kick,if=active_enemies>1|(talent.walk_with_the_ox.enabled&talent.charred_passions.enabled)
+actions.rotation_boc_dfb+=/tiger_palm,if=active_enemies=1
+actions.rotation_boc_dfb+=/celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up
+actions.rotation_boc_dfb+=/chi_wave,if=talent.chi_wave.enabled
+actions.rotation_boc_dfb+=/chi_burst,if=talent.chi_burst.enabled
+
+actions.rotation_chp=variable,op=set,name=fallback_detection,value=0
+actions.rotation_chp+=/breath_of_fire,if=!buff.charred_passions.up
+actions.rotation_chp+=/blackout_kick
+actions.rotation_chp+=/rising_sun_kick,if=talent.rising_sun_kick.enabled
+actions.rotation_chp+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled&buff.rushing_jade_wind.remains<1
+actions.rotation_chp+=/keg_smash
+actions.rotation_chp+=/black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65&talent.black_ox_brew.enabled
+actions.rotation_chp+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.rotation_chp+=/spinning_crane_kick,if=active_enemies>1|(talent.walk_with_the_ox.enabled&talent.charred_passions.enabled)
+actions.rotation_chp+=/tiger_palm,if=active_enemies=1
+actions.rotation_chp+=/celestial_brew,if=talent.celestial_brew.enabled&!buff.blackout_combo.up
+actions.rotation_chp+=/chi_wave,if=talent.chi_wave.enabled
+actions.rotation_chp+=/chi_burst,if=talent.chi_burst.enabled
+
+actions.rotation_dfb=variable,op=set,name=fallback_detection,value=0
+actions.rotation_dfb+=/blackout_kick
+actions.rotation_dfb+=/rising_sun_kick,if=talent.rising_sun_kick.enabled
+actions.rotation_dfb+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled&buff.rushing_jade_wind.remains<1
+actions.rotation_dfb+=/breath_of_fire
+actions.rotation_dfb+=/keg_smash
+actions.rotation_dfb+=/black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.full_recharge_time*(1-cooldown.keg_smash.charges_fractional))>=65&talent.black_ox_brew.enabled
+actions.rotation_dfb+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.rotation_dfb+=/spinning_crane_kick,if=active_enemies>1|(talent.walk_with_the_ox.enabled&talent.charred_passions.enabled)
+actions.rotation_dfb+=/tiger_palm,if=active_enemies=1
+actions.rotation_dfb+=/celestial_brew,if=talent.celestial_brew.enabled
+actions.rotation_dfb+=/chi_wave,if=talent.chi_wave.enabled
+actions.rotation_dfb+=/chi_burst,if=talent.chi_burst.enabled
+
+actions.rotation_fallback=rising_sun_kick,if=talent.rising_sun_kick.enabled
+actions.rotation_fallback+=/keg_smash
+actions.rotation_fallback+=/breath_of_fire,if=talent.breath_of_fire.enabled
+actions.rotation_fallback+=/blackout_kick
+actions.rotation_fallback+=/black_ox_brew,if=energy+energy.regen*(cooldown.keg_smash.remains+execute_time)>=65&talent.black_ox_brew.enabled
+actions.rotation_fallback+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.rotation_fallback+=/spinning_crane_kick,if=active_enemies>1|(talent.walk_with_the_ox.enabled&talent.charred_passions.enabled)
+actions.rotation_fallback+=/tiger_palm,if=active_enemies=1
+actions.rotation_fallback+=/celestial_brew,if=!buff.blackout_combo.up&talent.celestial_brew.enabled
+actions.rotation_fallback+=/chi_wave,if=talent.chi_wave.enabled
+actions.rotation_fallback+=/chi_burst,if=talent.chi_burst.enabled
+
+head=cover_of_the_vermillion_forge,id=202506,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/8780/1504,gem_id=192982
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/8783/8784/8782/1537,gem_id=192932/192932/192932,crafted_stats=32/40
+shoulders=spines_of_the_vermillion_forge,id=202504,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6598
+chest=lifebound_chestpiece,id=193399,bonus_id=8840/8836/8902/1537,enchant_id=6625,crafted_stats=32/40
+wrists=lifebound_bindings,id=193419,bonus_id=8840/8836/8902/1537/1808/8797/8960,gem_id=192932,enchant_id=6580,crafted_stats=32/40
+hands=fists_of_the_vermillion_forge,id=202507,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
+waist=blackbelt_of_the_vermillion_forge,id=202503,bonus_id=4800/4786/1507/1808,gem_id=192925
+legs=pantaloons_of_the_vermillion_forge,id=202505,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,enchant_id=6490
+feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6613
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192932,enchant_id=6568
+finger2=onyx_annulet,id=203460,bonus_id=1491,gem_id=204011/204027/204029,enchant_id=6550
+trinket1=beacon_to_the_beyond,id=203963,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=6652/8811/8812/6808/4786/3317,enchant_id=6827
+off_hand=forgestorm,id=193785,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669,enchant_id=6827
+
+# Gear Summary
+# gear_ilvl=445.13
+# gear_agility=5906
+# gear_stamina=21817
+# gear_crit_rating=4564
+# gear_haste_rating=682
+# gear_mastery_rating=1819
+# gear_versatility_rating=4332
+# gear_leech_rating=325
+# gear_armor=3993
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1

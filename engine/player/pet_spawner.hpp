@@ -25,6 +25,18 @@ enum pet_replacement_strategy
   REPLACE_RANDOM,        /// Replace a random active pet
 };
 
+/// Pet spawner event types
+enum class pet_event_type : unsigned
+{
+  PRE_SPAWN = 0U, // The pet has been selected for summoning, but is still inactive
+  SPAWN,          // The pet has been summoned and is active
+  PRE_DESPAWN,    // The pet has been selected for despawning, but is still active
+  DESPAWN,        // The pet has been despawned and is inactive
+  // Normal pet arise/demise events chained through pet spawner's own arise/demise callbacks
+  ARISE,          // The pet has been summoned and is active
+  DEMISE,         // The pet has been dismissed and is inactive
+};
+
 /**
  * A wrapper object to enable dynamic pet spawns in simulationcraft. Normally, all pets must be
  * fully initialized at the beginning of the simulation run (i.e., init phase). This wrapper class
@@ -61,6 +73,7 @@ public:
   using check_arg_fn_t = std::function<bool(const T*)>;
   using check_fn_t = std::function<bool(void)>;
   using expr_fn_t = std::function<std::unique_ptr<expr_t>(util::span<const util::string_view>)>;
+  using event_fn_t = std::function<void(pet_event_type, T*)>;
 
 private:
   // Creation phase determines what components of the init process are run on the created pet
@@ -91,6 +104,9 @@ private:
   /// Creation callbacks
   std::vector<apply_fn_t> m_event_create;
 
+  /// Event-based callbacks
+  std::vector<std::pair<pet_event_type, event_fn_t>> m_event_callbacks;
+
   // Expressions
   std::unordered_map<std::string, expr_fn_t> m_expressions;
 
@@ -117,6 +133,9 @@ private:
 
   /// Select replacement pet
   T* replacement_pet();
+
+  /// Invoke event callbacks helper
+  void _invoke_callbacks( pet_event_type t, T* selected_pet );
 public:
   pet_spawner_t( util::string_view id, O* p, pet_spawn_type st = PET_SPAWN_DYNAMIC );
   pet_spawner_t( util::string_view id, O* p, unsigned max_pets,
@@ -170,6 +189,9 @@ public:
   pet_spawner_t<T, O>& set_creation_check_callback( const check_fn_t& fn );
   /// Set (add) creation callback. Creation callbacks will be invoked for every new pet
   pet_spawner_t<T, O>& set_creation_event_callback( const apply_fn_t& fn );
+  /// Set (add) event-type based callback.
+  pet_spawner_t<T, O>& set_event_callback( pet_event_type t, const event_fn_t& fn );
+  pet_spawner_t<T, O>& set_event_callback( std::initializer_list<pet_event_type> t, const event_fn_t& fn );
   /// Set default duration based on a spell
   pet_spawner_t<T, O>& set_default_duration( const spell_data_t* spell );
   /// Set default duration based on a spell

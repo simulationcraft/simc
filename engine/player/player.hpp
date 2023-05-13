@@ -506,7 +506,7 @@ struct player_t : public actor_t
     buff_t* reckless_force; // The Unbound Force minor - crit chance
     buff_t* reckless_force_counter; // The Unbound Force minor - max 20 stack counter
     stat_buff_t* lifeblood; // Worldvein Resonance - grant primary stat per shard, max 4
-    buff_t* seething_rage; // Blood of the Enemy major - 25% crit dam
+    buff_t* seething_rage_essence; // Blood of the Enemy major - 25% crit dam
     stat_buff_t* reality_shift; // Ripple in Space minor - primary stat on moving 25yds
     buff_t* guardian_of_azeroth; // Condensed Life-Force major - R3 stacking haste on pet cast
 
@@ -726,26 +726,64 @@ struct player_t : public actor_t
 
   using resource_callback_function_t = std::function<void()>;
 
+  template <typename T>
+  struct player_option_t
+  {
+    T default_value;
+    T current_value;
+
+    player_option_t( const T val = T() ) : default_value( val ), current_value( val ) {}
+
+    template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
+    player_option_t( const char* val ) : default_value( val ), current_value( val ) {}
+
+    operator T&() { return current_value; }
+    operator T&() const { return current_value; }
+
+    template <typename U = T, typename = std::enable_if_t<std::is_same_v<U, std::string>>>
+    operator std::string_view() const { return current_value; }
+
+    bool is_default() { return current_value == default_value; }
+  };
+
   struct shadowlands_opt_t
   {
     /// Type stat gained from So'leah's Secret Technique
     /// Buff type: "mastery", "haste", "crit", "versatility"
     /// Overrides sim-wide option with a player-specific one
     /// Empty value indicates use sim-wide option.
-    std::string soleahs_secret_technique_type = "";
+    player_option_t<std::string> soleahs_secret_technique_type;
   } shadowlands_opts;
 
   struct dragonflight_opt_t
   {
     /// Stat to trigger for Gyroscopic Kaleidoscope
     /// Buff type: "mastery", "haste", "crit", "versatility"
-    std::string gyroscopic_kaleidoscope_stat = "haste";
+    player_option_t<std::string> gyroscopic_kaleidoscope_stat = "haste";
     // Ruby Whelp Shell training levels
     // Overrides sim-wide option with a player-specific one
-    std::string ruby_whelp_shell_training = "";
+    player_option_t<std::string> ruby_whelp_shell_training;
     // A list of context-aware procs for Ruby Whelp Shell
     // Overrides sim-wide option with a player-specific one
-    std::string ruby_whelp_shell_context = "";
+    player_option_t<std::string> ruby_whelp_shell_context;
+    // Set the dragonflight for Glimmering Chromatic Orb
+    // Overrides sim-wide option with a player-specific one
+    player_option_t<std::string> ominous_chromatic_essence_dragonflight = "obsidian";
+    // Set the allies dragonflights for Glimmering Chromatic Orb
+    // Overrides sim-wide option with a player-specific one
+    player_option_t<std::string> ominous_chromatic_essence_allies;
+    // Set the target type for Askhandur's Damage Doubling
+    // Overrides sim-wide option with a player-specific one
+    player_option_t<bool> ashkandur_humanoid;
+    // Set the initial starting state for the igneous flowstone trinket Ebb/Flood/High/Low Tides.
+    // Any other input will have it randomly select between High and Low Tide, and this this is default.
+    // Overrides sim-wide option with a player-specific one
+    player_option_t<std::string> flowstone_starting_state = "random_active";
+    /// Type stat given by Spoils of Neltharus on pull
+    /// Buff type: "mastery", "haste", "crit", "vers", other for random
+    player_option_t<std::string> spoils_of_neltharus_initial_type = "";
+    /// Chance for igenous flowstone lave wave to hit twice
+    player_option_t<double> igneous_flowstone_double_lava_wave_chance;
   } dragonflight_opts;
 
 private:
@@ -1026,17 +1064,14 @@ public:
   virtual double composite_crit_avoidance() const;
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const
-  { return 0; }
-  virtual double composite_player_multiplier   ( school_e ) const;
-  virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = nullptr ) const { return 1; }
-  virtual double composite_player_td_multiplier( school_e,  const action_t* a = nullptr ) const;
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
+  /// Player-wide school based multipliers
+  virtual double composite_player_multiplier( school_e ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
-  virtual double composite_persistent_multiplier( school_e ) const
-  { return 1.0; }
+  virtual double composite_persistent_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double composite_player_dh_multiplier( school_e ) const { return 1; }
+  virtual double composite_player_dh_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;
