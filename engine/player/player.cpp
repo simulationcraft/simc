@@ -9138,6 +9138,15 @@ struct use_item_t : public action_t
       // Create an action
       action = e->create_action();
 
+      // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
+      // then the action is not considered a proc
+      if ( action && action->id == e->driver()->id() && e->driver()->cast_time() > 0_ms &&
+           ( action_t::has_direct_damage_effect( *e->driver() ) ||
+             action_t::has_periodic_damage_effect( *e->driver() ) ) )
+      {
+        action->not_a_proc = true;
+      }
+
       stats = player->get_stats( name_str, this );
 
       // Setup the long-duration cooldown for this item effect

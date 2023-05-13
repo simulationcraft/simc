@@ -581,12 +581,12 @@ static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
          range::contains( subtypes, effect.subtype() );
 }
 
-static bool has_direct_damage_effect( const spell_data_t& spell )
+bool action_t::has_direct_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_direct_damage_effect );
 }
 
-static bool has_periodic_damage_effect( const spell_data_t& spell )
+bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_periodic_damage_effect );
 }
