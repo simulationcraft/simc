@@ -16,7 +16,7 @@ std::string potion( const player_t* p )
 
 std::string flask_havoc( const player_t* p )
 {
-  return ( ( p->true_level >= 61 ) ? "phial_of_elemental_chaos_3" :
+  return ( ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
            ( p->true_level >= 51 ) ? "spectral_flask_of_power" :
            ( p->true_level >= 40 ) ? "greater_flask_of_the_currents" :
            ( p->true_level >= 35 ) ? "greater_draenic_agility_flask" :
