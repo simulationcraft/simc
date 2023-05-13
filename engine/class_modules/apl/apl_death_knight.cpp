@@ -27,7 +27,7 @@ std::string potion( const player_t* p )
 
 std::string flask( const player_t* p )
 {
-  std::string flask_name = ( p->true_level >= 61 ) ? "phial_of_tepid_versatility_3" : "spectral_flask_of_power";
+  std::string flask_name = ( p->true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" : "spectral_flask_of_power";
 
   // All specs use a strength flask as default
   return flask_name;
