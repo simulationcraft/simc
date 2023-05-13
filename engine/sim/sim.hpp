@@ -228,7 +228,7 @@ struct sim_t : private sc_thread_t
 
   struct auras_t
   {
-    buff_t* nil; // generic global fallback buff
+    buff_t* fallback; // generic global fallback buff
     buff_t* arcane_intellect;
     buff_t* battle_shout;
     buff_t* mark_of_the_wild;
