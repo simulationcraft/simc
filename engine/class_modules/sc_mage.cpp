@@ -6595,10 +6595,13 @@ void mage_t::create_buffs()
     {
       if ( cur == 0 )
       {
-        auto set = sets->set( MAGE_ARCANE, T30, B4 );
-        double value = 0.01 * state.spent_mana / set->effectN( 1 ).average( this );
-        value = std::min( value, set->effectN( 2 ).percent() );
-        buffs.arcane_overload->trigger( -1, value );
+        if ( !buffs.arcane_overload->check() )
+        {
+          auto set = sets->set( MAGE_ARCANE, T30, B4 );
+          double value = 0.01 * state.spent_mana / set->effectN( 1 ).average( this );
+          value = std::min( value, set->effectN( 2 ).percent() );
+          buffs.arcane_overload->trigger( -1, value );
+        }
       }
       else
       {
