@@ -611,7 +611,9 @@ void shadowflame_wreathe( special_effect_t& effect )
   auto new_driver = effect.driver()->effectN( 1 ).trigger();
   auto dot        = create_proc_action<generic_proc_t>( "shadowflame_wreathe", effect, "shadowflame_wreathe",
                                                  new_driver->effectN( 1 ).trigger() );
-  dot->base_td += effect.driver()->effectN( 1 ).average( effect.player );
+
+  dot->dot_behavior = DOT_CLIP; // ticks are lost on refresh
+  dot->base_td      += effect.driver()->effectN( 1 ).average( effect.player );
 
   effect.name_str       = new_driver->name_cstr();
   effect.spell_id       = new_driver->id();
