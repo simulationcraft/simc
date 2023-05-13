@@ -1667,8 +1667,7 @@ public:
 
   bool ready() override
   {
-    if ( ( ab::execute_time() > timespan_t::zero() || ab::channeled ) &&
-      ( p()->buff.out_of_range->check() || p()->soul_fragment_pick_up ) )
+    if ( ( ab::execute_time() > timespan_t::zero() || ab::channeled ) && p()->buff.out_of_range->check() )
     {
       return false;
     }
@@ -4702,6 +4701,15 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
+
+    // if there is more than 1 Lesser Soul Fragment available, consume all but 1 Lesser Soul Fragment
+    const int fragments = p()->get_active_soul_fragments( soul_fragment::LESSER );
+    if ( fragments > 1 )
+    {
+      event_t::cancel( p()->soul_fragment_pick_up );
+      // havoc can have max 5 soul fragments out, we want to consume at least 1 and a maximum of 4.
+      p()->consume_soul_fragments( soul_fragment::LESSER, true, std::clamp( fragments - 1, 1, 4 ) );
+    }
 
     if ( !a_cancel )
     {
