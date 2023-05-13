@@ -4767,22 +4767,17 @@ void spore_keepers_baton( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ dot, buff ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
-        switch ( s->proc_type() )
+        if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
         {
-          case PROC1_MAGIC_HEAL:
-            buff->trigger();
-            break;
-          case PROC1_MAGIC_SPELL:
-          {
-            dot->set_target( cb->target( s ) );
-            auto proc_state    = dot->get_state();
-            proc_state->target = dot->target;
-            dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
-            dot->schedule_execute( proc_state );
-            break;
-          }
-          default:
-            break;
+          buff->trigger();
+        }
+        else
+        {
+          dot->set_target( cb->target( s ) );
+          auto proc_state    = dot->get_state();
+          proc_state->target = dot->target;
+          dot->snapshot_state( proc_state, dot->amount_type( proc_state ) );
+          dot->schedule_execute( proc_state );
         }
       } );
 
