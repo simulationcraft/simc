@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-12/49474)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13567,11 +13567,12 @@ Description      : $@spelldesc405508
 Tooltip          : Fire damage increased by $w1%.
 
 Name             : Recrimination (id=409877) [Spell Family (107)] 
+Hotfixed         : Max stacks (6 -> 1)
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None
 Duration         : 30 seconds
-Stacks           : 6 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell

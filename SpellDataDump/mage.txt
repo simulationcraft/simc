@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-12/49474)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -15381,8 +15381,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1053871)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 24000 | Scaled Value: 24000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1053871)  : Apply Aura (6) | Dummy (4) | Scaling Class: -2
+                   Base Value: 24000 | Scaled Value: 24000 (coefficient=0.16) | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Coefficient (0 -> 0.16), Unknown(28) (0 -> -2)
 #2 (id=1073548)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : For every $s1 Mana spent on and during Arcane Surge, your spell damage is increased by $409022s1% for $409022d after Arcane Surge fades, stacking up to $s2 times. Mana regeneration is increased by $409022s2% for this time.
@@ -15645,13 +15646,14 @@ Effects          :
 Description      : $@spelldesc405536
 
 Name             : Arcane Overload (id=409022) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 18 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15659,7 +15661,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
 #1 (id=1073542)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)

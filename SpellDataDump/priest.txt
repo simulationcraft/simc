@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-11/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-12/49474)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -14269,9 +14269,6 @@ Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14282,8 +14279,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1027583)  : Apply Aura (6) | Dummy (4)
+#1 (id=1027583)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 226), Period (0 -> 2000)
 Description      : For every $390636t2 sec that you do not cast Holy Nova, the damage of your next Holy Nova is increased by $390636s1% and its healing is increased by $390636s3%. This effect can stack up to $390636u times.
 
 Name             : Death and Madness (id=390628) [Spell Family (6)] 
@@ -14333,7 +14331,6 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
-Triggered by     : Rhapsody (390636)
 Attributes       : ........ x....... ........ .......x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14348,8 +14345,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Nova (132157)
                    Family Flags: 49
-#2 (id=1027980)  : Apply Aura (6) | Periodic Trigger Spell (23): Rhapsody every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390636 | Target: Self (1)
+#2 (id=1027980)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (23 -> 226), Trigger Spell (390636 -> 0)
 #3 (id=1030043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Nova (281265)
