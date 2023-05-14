@@ -3708,7 +3708,7 @@ struct the_hunt_t : public demon_hunter_spell_t
 
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
 
-    p()->consume_nearby_soul_fragments(soul_fragment::LESSER);
+    p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
   }
 
   timespan_t travel_time() const override
@@ -4279,6 +4279,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     {
       demon_hunter_attack_t::impact( s );
 
+      // Relentless Onslaught cannot self-proc and is delayed by ~300ms after the normal OH impact
       if ( p()->talent.havoc.relentless_onslaught->ok() )
       {
         if ( result_is_hit( s->result ) && may_refund && !parent->from_onslaught )
@@ -4288,8 +4289,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
           {
             attack_t* const relentless_onslaught = p()->buff.metamorphosis->check() ?
               p()->active.relentless_onslaught_annihilation : p()->active.relentless_onslaught;
-            relentless_onslaught->set_target( s->target );
-            relentless_onslaught->schedule_execute();
+            make_event<delayed_execute_event_t>( *sim, p(), relentless_onslaught, target, this->delay );
             p()->cooldown.relentless_onslaught_icd->start( p()->talent.havoc.relentless_onslaught->internal_cooldown() );
           }
         }
@@ -4706,7 +4706,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
-    p()->consume_nearby_soul_fragments(soul_fragment::LESSER);
+    p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
 
     if ( !a_cancel )
     {
@@ -5267,7 +5267,7 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
     p()->buff.vengeful_retreat_move->trigger();
 
-    p()->consume_nearby_soul_fragments(soul_fragment::LESSER);
+    p()->consume_nearby_soul_fragments( soul_fragment::LESSER );
   }
 
   bool ready() override
