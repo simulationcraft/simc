@@ -1912,10 +1912,9 @@ public:
   virtual bool procs_seal_fate() const
   { return ab::energize_type != action_energize::NONE && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
-  // Generic rules for snapshotting the Nightstalker pmultiplier, default to DoTs only.
-  // If a DoT with DD component is whitelisted in the direct damage effect #1 on 130493 this can double dip.
+  // Generic rules for snapshotting the Nightstalker pmultiplier, default to false as this is a custom script.
   virtual bool snapshots_nightstalker() const
-  { return ab::dot_duration > timespan_t::zero() && ab::base_tick_time > timespan_t::zero(); }
+  { return false; }
 
   // Overridable wrapper for checking stealth requirement
   virtual bool requires_stealth() const
@@ -2142,7 +2141,12 @@ public:
   {
     double m = ab::composite_persistent_multiplier( state );
 
-    // 2023-05-01 -- Nightstalker may be intended to snapshot modifiers for 10.1, needs testing
+    // 2023-05-13 -- Nightstalker snapshots for specific DoT spells out of Stealth
+    if ( p()->talent.rogue.nightstalker->ok() && snapshots_nightstalker() &&
+         p()->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
+    {
+      m *= p()->buffs.nightstalker->periodic_mod.multiplier;
+    }
 
     return m;
   }
@@ -2276,8 +2280,10 @@ public:
       trigger_flagellation( ab::execute_state );
     }
 
-    // 2020-12-04- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
-    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) )
+    // 2020-12-04 -- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
+    // 2023-05-13 -- Fixed an issue that caused Sepsis' buff that enables use of a Stealth skill to be cancelled by Ambush when a Blindside proc was available.
+    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS )
+         && !( affected_by.blindside && p()->buffs.blindside->check() ) )
     {
       p()->buffs.sepsis->decrement();
     }
@@ -3599,6 +3605,9 @@ struct crimson_tempest_t : public rogue_attack_t
 
   bool procs_poison() const override
   { return true; }
+
+  bool snapshots_nightstalker() const override
+  { return true; }
 };
 
 // Deathmark ================================================================
@@ -4083,6 +4092,9 @@ struct garrote_t : public rogue_attack_t
 
     rogue_attack_t::update_ready( cd_duration );
   }
+
+  bool snapshots_nightstalker() const override
+  { return true; }
 };
 
 // Gouge =====================================================================
@@ -4875,6 +4887,9 @@ struct rupture_t : public rogue_attack_t
       p()->buffs.scent_of_blood->increment( desired_stacks - current_stacks );
     }
   }
+
+  bool snapshots_nightstalker() const override
+  { return true; }
 };
 
 // Secret Technique =========================================================
@@ -6026,7 +6041,7 @@ struct sepsis_t : public rogue_attack_t
   }
 
   bool snapshots_nightstalker() const override
-  { return false; }
+  { return true; }
 };
 
 // Serrated Bone Spike ======================================================
