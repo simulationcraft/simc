@@ -727,6 +727,7 @@ public:
     // TODO: Determine a more realistic value
     double fodder_to_the_flame_initiative_chance = 1;
     double darkglare_boon_cdr_high_roll_seconds = 18;
+    double soul_fragment_movement_consume_chance = 0.6;
   } options;
 
   demon_hunter_t( sim_t* sim, util::string_view name, race_e r );
@@ -815,6 +816,7 @@ public:
   void adjust_movement();
   double calculate_expected_max_health() const;
   unsigned consume_soul_fragments( soul_fragment = soul_fragment::ANY, bool heal = true, unsigned max = MAX_SOUL_FRAGMENTS );
+  unsigned consume_nearby_soul_fragments( soul_fragment = soul_fragment::ANY );
   unsigned get_active_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   unsigned get_total_soul_fragments( soul_fragment = soul_fragment::ANY ) const;
   void activate_soul_fragment( soul_fragment_t* );
@@ -3705,6 +3707,8 @@ struct the_hunt_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     p()->set_out_of_range( timespan_t::zero() ); // Cancel all other movement
+
+    p()->consume_nearby_soul_fragments(soul_fragment::LESSER);
   }
 
   timespan_t travel_time() const override
@@ -4702,14 +4706,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
-    // if there is more than 1 Lesser Soul Fragment available, consume all but 1 Lesser Soul Fragment
-    const int fragments = p()->get_active_soul_fragments( soul_fragment::LESSER );
-    if ( fragments > 1 )
-    {
-      event_t::cancel( p()->soul_fragment_pick_up );
-      // havoc can have max 5 soul fragments out, we want to consume at least 1 and a maximum of 4.
-      p()->consume_soul_fragments( soul_fragment::LESSER, true, std::clamp( fragments - 1, 1, 4 ) );
-    }
+    p()->consume_nearby_soul_fragments(soul_fragment::LESSER);
 
     if ( !a_cancel )
     {
@@ -5269,6 +5266,8 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
     p()->buff.vengeful_retreat_move->trigger();
+
+    p()->consume_nearby_soul_fragments(soul_fragment::LESSER);
   }
 
   bool ready() override
@@ -6140,6 +6139,7 @@ void demon_hunter_t::create_options()
   add_option( opt_int( "fodder_to_the_flame_kill_seconds", options.fodder_to_the_flame_kill_seconds, 0, 10 ) );
   add_option( opt_float( "fodder_to_the_flame_initiative_chance", options.fodder_to_the_flame_initiative_chance, 0, 1 ) );
   add_option( opt_float( "darkglare_boon_cdr_high_roll_seconds", options.darkglare_boon_cdr_high_roll_seconds, 6, 24 ) );
+  add_option( opt_float( "soul_fragment_movement_consume_chance", options.soul_fragment_movement_consume_chance, 0, 1 ) );
 }
 
 // demon_hunter_t::create_pet ===============================================
@@ -7639,6 +7639,29 @@ unsigned demon_hunter_t::consume_soul_fragments( soul_fragment type, bool heal, 
   }
 
   return souls_consumed;
+}
+
+// demon_hunter_t::consume_nearby_soul_fragments ======================================
+
+unsigned demon_hunter_t::consume_nearby_soul_fragments( soul_fragment type )
+{
+  int soul_fragments_to_consume = 0;
+
+  for ( auto& it : soul_fragments )
+  {
+    if ( it->is_type( type ) && it->active() && rng().roll( options.soul_fragment_movement_consume_chance ) )
+    {
+      soul_fragments_to_consume++;
+    }
+  }
+
+  if ( soul_fragments_to_consume == 0 )
+  {
+    return 0;
+  }
+
+  event_t::cancel( soul_fragment_pick_up );
+  return demon_hunter_t::consume_soul_fragments( type, true, soul_fragments_to_consume );
 }
 
 // demon_hunter_t::get_active_soul_fragments ================================
