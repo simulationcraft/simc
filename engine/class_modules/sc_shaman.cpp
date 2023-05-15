@@ -1979,13 +1979,15 @@ public:
     // Need to check this before spending the MW or autos will be lost.
     if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
     {
-      if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event )
+      if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event &&
+           !this->background )
       {
         event_t::cancel( this->p()->main_hand_attack->execute_event );
         this->p()->main_hand_attack->schedule_execute();
       }
 
-      if ( this->p()->off_hand_attack && this->p()->off_hand_attack->execute_event )
+      if ( this->p()->off_hand_attack && this->p()->off_hand_attack->execute_event &&
+           !this->background )
       {
         event_t::cancel( this->p()->off_hand_attack->execute_event );
         this->p()->off_hand_attack->schedule_execute();
