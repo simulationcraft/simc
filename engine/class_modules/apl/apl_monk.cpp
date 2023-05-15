@@ -72,7 +72,7 @@ namespace monk_apl
         break;
       case MONK_WINDWALKER:
         if ( p->true_level > 60 )
-          return "phial_of_tepid_versatility_3";
+          return "iced_phial_of_corrupting_rage";
         else if ( p->true_level > 50 )
           return "spectral_flask_of_power";
         else if ( p->true_level > 45 )
