@@ -7580,6 +7580,7 @@ struct starfall_t : public astral_power_spender_t
 
   using starfall_state_t = druid_action_state_t<starfall_data_t>;
 
+  // TODO: remove in 10.1.5
   struct lunar_shrapnel_t : public druid_residual_action_t<druid_spell_t, starfall_data_t>
   {
     lunar_shrapnel_t( druid_t* p, std::string_view n ) : base_t( n, p, p->find_spell( 393869 ) )
@@ -7609,7 +7610,7 @@ struct starfall_t : public astral_power_spender_t
 
   struct starfall_damage_t : public starfall_base_t
   {
-    lunar_shrapnel_t* shrapnel = nullptr;
+    lunar_shrapnel_t* shrapnel = nullptr;  // TODO: remove in 10.1.5
     double cosmos_mul;
 
     starfall_damage_t( druid_t* p, std::string_view n )
@@ -7618,7 +7619,7 @@ struct starfall_t : public astral_power_spender_t
     {
       background = dual = true;
 
-      if ( p->talent.lunar_shrapnel.ok() )
+      if ( !p->is_ptr() && p->talent.lunar_shrapnel.ok() )
       {
         auto first = name_str.find_first_of( '_' );
         auto last = name_str.find_last_of( '_' );
@@ -7653,7 +7654,7 @@ struct starfall_t : public astral_power_spender_t
   struct starfall_driver_t : public starfall_base_t
   {
     starfall_damage_t* damage;
-    double shrapnel_chance = 0.0;
+    double shrapnel_chance = 0.0;  // TODO: remove in 10.1.5
 
     starfall_driver_t( druid_t* p, std::string_view n )
       : starfall_base_t( n, p, p->buff.starfall->data().effectN( 3 ).trigger() )
@@ -7663,8 +7664,7 @@ struct starfall_t : public astral_power_spender_t
       auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
       damage = p->get_secondary_action_n<starfall_damage_t>( pre + "_damage" );
 
-      // TODO: early estimate, test moar
-      if ( p->talent.lunar_shrapnel.ok() )
+      if ( !p->is_ptr() && p->talent.lunar_shrapnel.ok() )
         shrapnel_chance = 0.2;
     }
 
@@ -7677,6 +7677,8 @@ struct starfall_t : public astral_power_spender_t
 
     void trigger_lunar_shrapnel( action_state_t* s )
     {
+      if ( p()->is_ptr() ) return;
+
       auto tl = starfall_base_t::target_list();
 
       tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
@@ -7732,7 +7734,7 @@ struct starfall_t : public astral_power_spender_t
     driver->stats = stats;
     driver->damage->stats = stats;
 
-    if ( p->talent.lunar_shrapnel.ok() )
+    if ( !p->is_ptr() && p->talent.lunar_shrapnel.ok() )
       add_child( driver->damage->shrapnel );
   }
 
@@ -7795,7 +7797,7 @@ struct starfire_t : public trigger_astral_smolder_t<consume_umbral_embrace_t<dru
     : base_t( "starfire", p, p->talent.starfire, opt ),
       aoe_base( data().effectN( p->specialization() == DRUID_BALANCE ? 3 : 2 ).percent() ),
       aoe_mod_flat( p->spec.eclipse_lunar->effectN( 2 ).percent() +
-                    p->talent.umbral_intensity->effectN( 1 ).percent() ),
+                    p->talent.umbral_intensity->effectN( !p->is_ptr() ? 1 : 2 ).percent() ),
       smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       sotf_mul( p->talent.soul_of_the_forest_moonkin->effectN( 2 ).percent() ),
       sotf_cap( as<unsigned>( p->talent.soul_of_the_forest_moonkin->effectN( 3 ).base_value() ) )
@@ -8221,7 +8223,8 @@ struct warrior_of_elune_t : public druid_spell_t
 
   timespan_t cooldown_duration() const override
   {
-    return 0_ms;  // cooldown handled by buff.warrior_of_elune
+    if ( !p()->is_ptr() ) return 0_ms;  // cooldown handled by buff.warrior_of_elune
+    return druid_spell_t::cooldown_duration();
   }
 
   void execute() override
@@ -8233,7 +8236,8 @@ struct warrior_of_elune_t : public druid_spell_t
 
   bool ready() override
   {
-    return p()->buff.warrior_of_elune->check() ? false : druid_spell_t::ready();
+    if ( !p()->is_ptr() ) return p()->buff.warrior_of_elune->check() ? false : druid_spell_t::ready();
+    return druid_spell_t::ready();
   }
 };
 
@@ -10171,12 +10175,15 @@ void druid_t::create_buffs()
 
   buff.warrior_of_elune = make_buff( this, "warrior_of_elune", talent.warrior_of_elune )
     ->set_default_value_from_effect( 2 )
-    ->set_cooldown( 0_ms )
-    ->set_reverse( true )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
-        cooldown.warrior_of_elune->start( cooldown.warrior_of_elune->action );
-    } );
+    ->set_reverse( true );
+  if ( !is_ptr() )
+  {
+    buff.warrior_of_elune->set_cooldown( 0_ms )
+      ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        if ( !new_ )
+          cooldown.warrior_of_elune->start( cooldown.warrior_of_elune->action );
+      } );
+  }
 
   // Feral buffs
   buff.apex_predators_craving =
@@ -10320,16 +10327,8 @@ void druid_t::create_buffs()
 
   buff.lunar_beam = make_buff( this, "lunar_beam", talent.lunar_beam )
     ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_HEALTH_PERCENT )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-      auto old_mul = 1.0 + old_ * b->default_value;
-      auto new_mul = 1.0 + new_ * b->default_value;
-      auto hp_mul = new_mul / old_mul;
-
-      resources.max[ RESOURCE_HEALTH ] *= hp_mul;
-      resources.current[ RESOURCE_HEALTH ] *= hp_mul;
-      recalculate_resource_max( RESOURCE_HEALTH );
-    } );
+    ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
   buff.overpowering_aura = make_buff( this, "overpowering_aura", find_spell( 395944 ) )
     ->set_trigger_spell( sets->set( DRUID_GUARDIAN, T29, B2 ) )
@@ -12726,7 +12725,7 @@ void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
-  if ( state != ANY_NEXT )
+  if ( !p->is_ptr() && state != ANY_NEXT )
     p->buff.natures_grace->trigger();
 
   state = IN_BOTH;
@@ -12747,7 +12746,8 @@ void eclipse_handler_t::extend_both( timespan_t d )
   p->buff.parting_skies->trigger();
   p->buff.parting_skies->trigger();
   p->buff.solstice->trigger();
-  p->buff.natures_grace->trigger();
+  if ( !p->is_ptr() )
+    p->buff.natures_grace->trigger();
 }
 
 void eclipse_handler_t::expire_both()
@@ -12882,6 +12882,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Balance
   action.apply_affecting_aura( talent.cosmic_rapidity );
   action.apply_affecting_aura( talent.elunes_guidance );
+  action.apply_affecting_aura( talent.lunar_shrapnel );
   action.apply_affecting_aura( talent.orbital_strike );
   action.apply_affecting_aura( talent.power_of_goldrinn );
   action.apply_affecting_aura( talent.radiant_moonlight );
