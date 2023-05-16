@@ -3817,7 +3817,8 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
 {
   struct anshuul_the_cosmic_wanderer_t : public generic_aoe_proc_t
   {
-    anshuul_the_cosmic_wanderer_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true)
+    anshuul_the_cosmic_wanderer_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true )
     {
       base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
     }
@@ -3827,11 +3828,12 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
       generic_aoe_proc_t::execute();
       event_t::cancel( player->readying );
     }
-    
-    void impact(action_state_t* s) override
+
+    void impact( action_state_t* s ) override
     {
       generic_aoe_proc_t::impact( s );
-      player -> schedule_ready( this -> execute_time() );
+      if ( !player->readying )
+        player->schedule_ready( this->execute_time() );
     }
   };
   auto damage = create_proc_action<anshuul_the_cosmic_wanderer_t>( "anshuul_the_cosmic_wanderer", effect );
