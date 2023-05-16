@@ -2124,7 +2124,10 @@ void raid_event_t::init( sim_t* sim )
     try
     {
       auto raid_event = create( sim, name, options );
-
+      if ( raid_event->type == "pull" && raid_event->cooldown <= timespan_t::zero() )
+      {
+        throw std::invalid_argument( "raid_event type is pull and max_time is set to 0" );
+      }
       if ( raid_event->cooldown <= timespan_t::zero() )
       {
         throw std::invalid_argument( "Cooldown not set or negative." );
