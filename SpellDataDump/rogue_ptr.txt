@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-12/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-16/49570)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1208,7 +1208,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Adrenaline Rush (13750 effect#3), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Grand Melee (193358 effect#1), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
 Family Flags     : 43
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -1241,7 +1241,6 @@ Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=2, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Affecting spells : Subtlety Rogue (137035 effect#3)
 Family Flags     : 121
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3050,7 +3049,6 @@ Duration         : Aura (infinite)
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Subtlety Rogue (137035 effect#4)
 Family Flags     : 122
 Attributes       : .......x x....... ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ....x...   ........ ........ x....... ........ 
@@ -3193,14 +3191,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
-#3 (id=191061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Nightstalker (14062), Shadowrunner (378807)
-                   Family Flags: 121
-#4 (id=191062)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Nightstalker (130493)
-                   Family Flags: 122
+#3 (id=191061)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=191062)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191063)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
                    Affected Spells (Category): Shadowstep (36554)
@@ -3211,9 +3205,9 @@ Effects          :
 #7 (id=260978)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 599 (Label) | Target: Self (1)
 #8 (id=1032426)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=1032427)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Outlaw Rogue (id=137036) [Spell Family (8), Passive, Hidden] 
 Class            : Outlaw Rogue
@@ -3917,29 +3911,22 @@ Class            : Rogue
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Internal Cooldown: 0.1 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... x.x.x.x. x....... ........   ........ ........ ........ ........   
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=283682)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=344594)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Finishing moves grant $s1 sec. of Slice and Dice per combo point spent.
-
-Increases your Leech by $s2% for the duration of Roll the Bones.
-Tooltip          : Gaining $s1 sec of Slice and Dice per combo point spent.
-Leech increased by $s2%.
+#1 (id=283682)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Blade Flurry (13877), Blade Flurry (319606)
+                   Family Flags: 43
+Description      : Blade Flurry deals $s1% additional damage to nearby enemies, including your primary target.
+Tooltip          : Blade Flurry deals $w1% additional damage to nearby enemies, including your primary target.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
 Class            : Rogue
@@ -9094,7 +9081,7 @@ Cooldown         : 30 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x....... ........ ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Adrenaline Rush (13750 effect#3), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Grand Melee (193358 effect#1), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
 Family Flags     : 30, 43
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -12111,8 +12098,6 @@ Talent Entry     : Generic [tree=class, row=3, col=7, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Affecting spells : Subtlety Rogue (137035 effect#3)
-Family Flags     : 121
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15767,14 +15752,14 @@ Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x...x... x.x..... ........   ........ ........ ........ ........   
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053900)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Target: Self (1)
@@ -16079,15 +16064,4 @@ Triggered by     : Inevitability (382512)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Only Proc From Class Abilities (415)
-Effects          :
-#1 (id=1078583)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc382512
-
-
+                 :
