@@ -4112,6 +4112,8 @@ void elementium_pocket_anvil( special_effect_t& e )
     {
       aoe         = -1;
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
+
+      interrupt_auto_attack = false;
     }
 
     void execute() override
