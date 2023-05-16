@@ -2282,8 +2282,9 @@ public:
 
     // 2020-12-04 -- Hotfix notes this is no longer consumed "while under the effects Stealth, Vanish, Subterfuge, Shadow Dance, and Shadowmeld"
     // 2023-05-13 -- Fixed an issue that caused Sepsis' buff that enables use of a Stealth skill to be cancelled by Ambush when a Blindside proc was available.
-    if ( affected_by.sepsis && p()->buffs.sepsis->check() && !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS )
-         && !( affected_by.blindside && p()->buffs.blindside->check() ) )
+    if ( affected_by.sepsis && !ab::background && p()->buffs.sepsis->check() &&
+         !p()->stealthed( STEALTH_STANCE & ~STEALTH_SEPSIS ) &&
+         !( affected_by.blindside && p()->buffs.blindside->check() ) )
     {
       p()->buffs.sepsis->decrement();
     }
