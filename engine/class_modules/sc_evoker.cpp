@@ -777,7 +777,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     static_assert( std::is_base_of_v<empowered_release_t<BASE>, T>,
                    "Empowered release spell must be dervied from empowered_release_spell_t." );
 
-    release_spell             = ab::p()->get_secondary_action<T>( n );
+    release_spell             = ab::p()->template get_secondary_action<T>( n );
     release_spell->stats      = ab::stats;
     release_spell->background = false;
   }
@@ -891,7 +891,7 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     ab::stats->iteration_total_execute_time += d->time_to_tick();
   }
 
-  virtual bool validate_release_target( dot_t* d )
+  virtual bool validate_release_target( dot_t* )
   {
     return true;
   }
@@ -1135,7 +1135,7 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
 
       for ( auto enemy : p()->sim->target_non_sleeping_list )
       {
-        if ( enemy->is_sleeping() || enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() )
+        if ( enemy->is_sleeping() || ( enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() ) )
           continue;
 
         t = enemy;
@@ -2315,7 +2315,7 @@ void evoker_t::init_finished()
       int actions           = 0;
       timespan_t time_spent = timespan_t::zero();
 
-      std::for_each( pre + 1, precombat_action_list.end(), [ this, lf, &actions, &time_spent ]( action_t* a ) {
+      std::for_each( pre + 1, precombat_action_list.end(), [ &actions, &time_spent ]( action_t* a ) {
         if ( a->gcd() > timespan_t::zero() && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
