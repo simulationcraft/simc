@@ -424,9 +424,9 @@ public:
   {
   }
 
-  timespan_t buff_duration() override
+  timespan_t buff_duration() const override
   {
-    if ( specialisation() != EVOKER_AUGMENTATION || !ab::data().affected_by( p()->spec.mastery->effectN( 2 ) ) )
+    if ( p()->specialization() != EVOKER_AUGMENTATION || !bb::data().affected_by( p()->spec.mastery->effectN( 2 ) ) )
       return bb::buff_duration();
 
     auto m = 1 + p()->cache.mastery() * p()->spec.mastery->effectN( 2 ).mastery_value();
@@ -2152,11 +2152,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   dots.fire_breath  = target->get_dot( "fire_breath_damage", evoker );
   dots.disintegrate = target->get_dot( "disintegrate", evoker );
 
-  debuffs.shattering_star = make_buff<e_buff_t>( *this, "shattering_star_debuff", evoker->talent.shattering_star )
+  debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
                                 ->set_cooldown( 0_ms )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
-  debuffs.in_firestorm = make_buff<e_buff_t>( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
+  debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
