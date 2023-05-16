@@ -435,6 +435,8 @@ public:
 };
 }  // namespace buffs
 
+// Base Classes =============================================================
+
 // Template for base evoker action code.
 template <class Base>
 struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_td_t>
@@ -609,6 +611,312 @@ public:
   }
 };
 
+// Essence base template
+template <class BASE>
+struct essence_base_t : public BASE
+{
+  timespan_t ftf_dur;
+  double hoarded_pct;
+  double titanic_mul;
+  double obsidian_shards_mul;
+
+  essence_base_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
+    : BASE( n, p, s, o ),
+      ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
+      hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
+      titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
+      obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B2 )->effectN( 1 ).percent() )
+  {}
+
+  void consume_resource() override
+  {
+    BASE::consume_resource();
+
+    if ( !BASE::base_cost() || BASE::proc )
+      return;
+
+    if ( BASE::p()->buff.essence_burst->up() )
+    {
+      if ( !BASE::rng().roll( hoarded_pct ) )
+        BASE::p()->buff.essence_burst->decrement();
+    }
+  }
+};
+
+// Empowered spell base templates
+struct empower_data_t
+{
+  empower_e empower;
+
+  friend void sc_format_to( const empower_data_t& data, fmt::format_context::iterator out )
+  {
+    fmt::format_to( out, "empower_level={}", static_cast<int>( data.empower ) );
+  }
+};
+
+template <class BASE>
+struct empowered_base_t : public BASE
+{
+protected:
+  using state_t = evoker_action_state_t<empower_data_t>;
+
+public:
+  empower_e max_empower;
+
+  empowered_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
+    : BASE( name, p, spell, options_str ),
+      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
+  {
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, BASE::target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+};
+
+template <class BASE>
+struct empowered_release_t : public empowered_base_t<BASE>
+{
+  using ab = empowered_base_t<BASE>;
+
+  timespan_t extend_tier29_4pc;
+
+  empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
+    : ab( name, p, spell )
+  {
+    ab::dual = true;
+
+    // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via
+    // spell queue. Potentally add a better way to model this?
+    const spell_data_t* gcd_spell = p->find_spell( 359115 );
+    if ( gcd_spell )
+      ab::trigger_gcd = gcd_spell->gcd();
+    ab::gcd_type = gcd_haste_type::NONE;
+
+    extend_tier29_4pc =
+        timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
+  }
+
+  empower_e empower_level( const action_state_t* s ) const
+  {
+    return ab::cast_state( s )->empower;
+  }
+
+  int empower_value( const action_state_t* s ) const
+  {
+    return static_cast<int>( ab::cast_state( s )->empower );
+  }
+
+  void execute() override
+  {
+    ab::p()->was_empowering = false;
+
+    ab::execute();
+  }
+};
+
+template <class BASE>
+struct empowered_charge_t : public empowered_base_t<BASE>
+{
+  using ab = empowered_base_t<BASE>;
+
+  action_t* release_spell;
+  stats_t* dummy_stat;  // used to hack channel tick time into execute time
+  stats_t* orig_stat;
+  int empower_to;
+  timespan_t base_empower_duration;
+  timespan_t lag;
+
+  empowered_charge_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str )
+    : ab( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
+      release_spell( nullptr ),
+      dummy_stat( p->get_stats( "dummy_stat" ) ),
+      orig_stat( ab::stats ),
+      empower_to( ab::max_empower ),
+      base_empower_duration( 0_ms ),
+      lag( 0_ms )
+  {
+    ab::channeled = true;
+
+    // TODO: convert to full empower expression support
+    ab::add_option( opt_int( "empower_to", empower_to, EMPOWER_1, EMPOWER_MAX ) );
+
+    ab::parse_options( options_str );
+
+    empower_to = std::min( static_cast<int>( ab::max_empower ), empower_to );
+
+    ab::dot_duration = ab::base_tick_time = base_empower_duration =
+        base_time_to_empower( static_cast<empower_e>( empower_to ) );
+  }
+
+  template <typename T>
+  void create_release_spell( std::string_view n )
+  {
+    static_assert( std::is_base_of_v<empowered_release_t<BASE>, T>,
+                   "Empowered release spell must be dervied from empowered_release_spell_t." );
+
+    release_spell             = ab::p()->get_secondary_action<T>( n );
+    release_spell->stats      = ab::stats;
+    release_spell->background = false;
+  }
+
+  timespan_t base_time_to_empower( empower_e emp ) const
+  {
+    // TODO: confirm these values and determine if they're set values or adjust based on a formula
+    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
+    switch ( emp )
+    {
+      case empower_e::EMPOWER_1:
+        return 1000_ms;
+      case empower_e::EMPOWER_2:
+        return 1750_ms;
+      case empower_e::EMPOWER_3:
+        return 2500_ms;
+      case empower_e::EMPOWER_4:
+        return 3250_ms;
+      default:
+        break;
+    }
+
+    return 0_ms;
+  }
+
+  timespan_t max_hold_time() const
+  {
+    // TODO: confirm if this is affected by duration mods/haste
+    return base_time_to_empower( ab::max_empower ) + 2_s;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    // we need to have the tick time match duration.
+    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
+    return composite_dot_duration( s );
+  }
+
+  timespan_t base_composite_dot_duration( const action_state_t* s ) const
+  {
+    return ab::dot_duration * s->haste * ab::get_buff_effects_value( ab::dot_duration_buffeffects );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
+    auto dur = base_composite_dot_duration( s );
+
+    // hack so we always have a non-zero duration in order to trigger last_tick()
+    if ( dur == 0_ms )
+      return 1_ms;
+
+    return dur + lag;
+  }
+
+  timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
+  {
+    auto base = base_time_to_empower( emp );
+    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
+
+    return base * mult;
+  }
+
+  empower_e empower_level( const dot_t* d ) const
+  {
+    auto emp = empower_e::EMPOWER_NONE;
+
+    if ( !d->is_ticking() )
+      return emp;
+
+    auto s       = d->state;
+    auto elapsed = tick_time( s ) - d->time_to_next_full_tick();
+
+    if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_4 ) )
+      emp = empower_e::EMPOWER_4;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_3 ) )
+      emp = empower_e::EMPOWER_3;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_2 ) )
+      emp = empower_e::EMPOWER_2;
+    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_1 ) )
+      emp = empower_e::EMPOWER_1;
+
+    return std::min( ab::max_empower, emp );
+  }
+
+  void init() override
+  {
+    ab::init();
+    assert( release_spell && "Empowered charge spell must have a release spell." );
+  }
+
+  void execute() override
+  {
+    // pre-determine lag here per every execute
+    lag = ab::rng().gauss( ab::sim->channel_lag, ab::sim->channel_lag_stddev );
+
+    ab::execute();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
+    // times to get the execute time, but this does not work for fire breath which also has a dot component. Instead we
+    // hijack the stat obj during action_t:tick() causing the channel's tick to be recorded onto a throwaway stat obj.
+    // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
+    // evoker_t::analyze().
+    ab::stats = dummy_stat;
+    ab::tick( d );
+    ab::stats = orig_stat;
+
+    ab::stats->iteration_total_execute_time += d->time_to_tick();
+  }
+
+  virtual bool validate_release_target( dot_t* d )
+  {
+    return true;
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    ab::last_tick( d );
+
+    if ( empower_level( d ) == empower_e::EMPOWER_NONE || !validate_release_target( d ) )
+    {
+      ab::p()->was_empowering = false;
+      return;
+    }
+
+    auto emp_state        = release_spell->get_state();
+    emp_state->target     = ab::target;
+    release_spell->target = ab::target;
+    release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
+
+    if ( ab::p()->buff.tip_the_scales->up() )
+    {
+      ab::p()->buff.tip_the_scales->expire();
+      ab::cast_state( emp_state )->empower = ab::max_empower;
+    }
+    else
+      ab::cast_state( emp_state )->empower = empower_level( d );
+
+    release_spell->schedule_execute( emp_state );
+
+    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
+    d->current_action = release_spell;
+    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
+    ab::p()->last_foreground_action = release_spell;
+  }
+};
+
 namespace heals
 {
 struct evoker_heal_t : public evoker_action_t<heal_t>
@@ -655,13 +963,19 @@ public:
     return tm;
   }
 };
+
+using essence_heal_t = essence_base_t<evoker_heal_t>;
+
+// Empowered Heals ==========================================================
+using empowered_charge_heal_t = empowered_charge_t<evoker_heal_t>;
+using empowered_release_heal_t = empowered_release_t<evoker_heal_t>;
+
+// Heals ====================================================================
+
 }  // namespace heals
 
 namespace spells
 {
-
-// Base Classes =============================================================
-
 struct evoker_spell_t : public evoker_action_t<spell_t>
 {
 private:
@@ -748,83 +1062,18 @@ public:
   }
 };
 
-struct empower_data_t
-{
-  empower_e empower;
+using essence_spell_t = essence_base_t<evoker_spell_t>;
 
-  friend void sc_format_to( const empower_data_t& data, fmt::format_context::iterator out )
-  {
-    fmt::format_to( out, "empower_level={}", static_cast<int>( data.empower ) );
-  }
-};
-
-struct empowered_base_t : public evoker_spell_t
-{
-protected:
-  using state_t = evoker_action_state_t<empower_data_t>;
-
-public:
-  empower_e max_empower;
-
-  empowered_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
-    : evoker_spell_t( name, p, spell, options_str ),
-      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
-  {
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  state_t* cast_state( action_state_t* s )
-  {
-    return static_cast<state_t*>( s );
-  }
-
-  const state_t* cast_state( const action_state_t* s ) const
-  {
-    return static_cast<const state_t*>( s );
-  }
-};
-
-struct empowered_release_spell_t : public empowered_base_t
+// Empowered Spells =========================================================
+struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
 {
   using base_t = empowered_release_spell_t;
 
-  timespan_t extend_tier29_4pc;
-
-  empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
-    : empowered_base_t( name, p, spell )
-  {
-    dual = true;
-
-    // TODO: Continue to check it uses this spell to trigger GCD, as of 28/10/2022 it does. It can still be bypassed via
-    // spell queue. Potentally add a better way to model this?
-    const spell_data_t* gcd_spell = p->find_spell( 359115 );
-    if ( gcd_spell )
-      trigger_gcd = gcd_spell->gcd();
-    gcd_type = gcd_haste_type::NONE;
-
-    extend_tier29_4pc =
-        timespan_t::from_seconds( p->sets->set( EVOKER_DEVASTATION, T29, B4 )->effectN( 1 ).base_value() );
-  }
-
-  empower_e empower_level( const action_state_t* s ) const
-  {
-    return cast_state( s )->empower;
-  }
-
-  int empower_value( const action_state_t* s ) const
-  {
-    return static_cast<int>( cast_state( s )->empower );
-  }
+  empowered_release_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s ) : empowered_release_t( n, p, s ) {}
 
   void execute() override
   {
-    p()->was_empowering = false;
-
-    empowered_base_t::execute();
+    empowered_release_t::execute();
 
     if ( background )
       return;
@@ -857,246 +1106,38 @@ struct empowered_release_spell_t : public empowered_base_t
   }
 };
 
-struct empowered_charge_spell_t : public empowered_base_t
+struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
 {
   using base_t = empowered_charge_spell_t;
 
-  action_t* release_spell;
-  stats_t* dummy_stat;  // used to hack channel tick time into execute time
-  stats_t* orig_stat;
-  int empower_to;
-  timespan_t base_empower_duration;
-  timespan_t lag;
+  empowered_charge_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o )
+    : empowered_charge_t( n, p, s, o )
+  {}
 
-  empowered_charge_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
-                            std::string_view options_str )
-    : empowered_base_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
-      release_spell( nullptr ),
-      dummy_stat( p->get_stats( "dummy_stat" ) ),
-      orig_stat( stats ),
-      empower_to( max_empower ),
-      base_empower_duration( 0_ms ),
-      lag( 0_ms )
+  bool validate_release_target( dot_t* d ) override
   {
-    channeled = true;
+    auto t = d->state->target;
 
-    // TODO: convert to full empower expression support
-    add_option( opt_int( "empower_to", empower_to, EMPOWER_1, EMPOWER_MAX ) );
-
-    parse_options( options_str );
-
-    empower_to = std::min( static_cast<int>( max_empower ), empower_to );
-
-    dot_duration = base_tick_time = base_empower_duration =
-        base_time_to_empower( static_cast<empower_e>( empower_to ) );
-  }
-
-  template <typename T>
-  void create_release_spell( std::string_view n )
-  {
-    static_assert( std::is_base_of_v<empowered_release_spell_t, T>,
-                   "Empowered release spell must be dervied from empowered_release_spell_t." );
-
-    release_spell             = p()->get_secondary_action<T>( n );
-    release_spell->stats      = stats;
-    release_spell->background = false;
-  }
-
-  timespan_t base_time_to_empower( empower_e emp ) const
-  {
-    // TODO: confirm these values and determine if they're set values or adjust based on a formula
-    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
-    switch ( emp )
+    if ( t->is_sleeping() )
     {
-      case empower_e::EMPOWER_1:
-        return 1000_ms;
-      case empower_e::EMPOWER_2:
-        return 1750_ms;
-      case empower_e::EMPOWER_3:
-        return 2500_ms;
-      case empower_e::EMPOWER_4:
-        return 3250_ms;
-      default:
-        break;
-    }
-
-    return 0_ms;
-  }
-
-  timespan_t max_hold_time() const
-  {
-    // TODO: confirm if this is affected by duration mods/haste
-    return base_time_to_empower( max_empower ) + 2_s;
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    // we need to have the tick time match duration.
-    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
-    return composite_dot_duration( s );
-  }
-
-  timespan_t base_composite_dot_duration( const action_state_t* s ) const
-  {
-    return dot_duration * s->haste * get_buff_effects_value( dot_duration_buffeffects );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
-    auto dur = base_composite_dot_duration( s );
-
-    // hack so we always have a non-zero duration in order to trigger last_tick()
-    if ( dur == 0_ms )
-      return 1_ms;
-
-    return dur + lag;
-  }
-
-  timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
-  {
-    auto base = base_time_to_empower( emp );
-    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
-
-    return base * mult;
-  }
-
-  empower_e empower_level( const dot_t* d ) const
-  {
-    auto emp = empower_e::EMPOWER_NONE;
-
-    if ( !d->is_ticking() )
-      return emp;
-
-    auto s       = d->state;
-    auto elapsed = tick_time( s ) - d->time_to_next_full_tick();
-
-    if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_4 ) )
-      emp = empower_e::EMPOWER_4;
-    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_3 ) )
-      emp = empower_e::EMPOWER_3;
-    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_2 ) )
-      emp = empower_e::EMPOWER_2;
-    else if ( elapsed >= composite_time_to_empower( s, empower_e::EMPOWER_1 ) )
-      emp = empower_e::EMPOWER_1;
-
-    return std::min( max_empower, emp );
-  }
-
-  void init() override
-  {
-    empowered_base_t::init();
-    assert( release_spell && "Empowered charge spell must have a release spell." );
-  }
-
-  void execute() override
-  {
-    // pre-determine lag here per every execute
-    lag = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
-
-    empowered_base_t::execute();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
-    // times to get the execute time, but this does not work for fire breath which also has a dot component. Instead we
-    // hijack the stat obj during action_t:tick() causing the channel's tick to be recorded onto a throwaway stat obj.
-    // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
-    // evoker_t::analyze().
-    stats = dummy_stat;
-    empowered_base_t::tick( d );
-    stats = orig_stat;
-
-    stats->iteration_total_execute_time += d->time_to_tick();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    empowered_base_t::last_tick( d );
-
-    if ( empower_level( d ) == empower_e::EMPOWER_NONE )
-    {
-      p()->was_empowering = false;
-      return;
-    }
-
-    auto target = d->state->target;
-
-    if ( d->state->target->is_sleeping() )
-    {
-      target = nullptr;
+      t = nullptr;
 
       for ( auto enemy : p()->sim->target_non_sleeping_list )
       {
-        if ( enemy->is_sleeping() || enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->check() )
+        if ( enemy->is_sleeping() || enemy->debuffs.invulnerable && enemy->debuffs.invulnerable->check() )
           continue;
 
-        target = enemy;
+        t = enemy;
         break;
       }
     }
 
-    if ( !target )
-    {
-      p()->was_empowering = false;
-      return;
-    }
-
-    auto emp_state        = release_spell->get_state();
-    emp_state->target     = target;
-    release_spell->target = target;
-    release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
-
-    if ( p()->buff.tip_the_scales->up() )
-    {
-      p()->buff.tip_the_scales->expire();
-      cast_state( emp_state )->empower = max_empower;
-    }
+    if ( !t )
+      return false;
     else
-      cast_state( emp_state )->empower = empower_level( d );
-
-    release_spell->schedule_execute( emp_state );
-
-    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
-    d->current_action = release_spell;
-    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
-    p()->last_foreground_action = release_spell;
+      return true;
   }
 };
-
-struct essence_spell_t : public evoker_spell_t
-{
-  timespan_t ftf_dur;
-  double hoarded_pct;
-  double titanic_mul;
-  double obsidian_shards_mul;
-
-  essence_spell_t( std::string_view n, evoker_t* p, const spell_data_t* s, std::string_view o = {} )
-    : evoker_spell_t( n, p, s, o ),
-      ftf_dur( -timespan_t::from_seconds( p->talent.feed_the_flames->effectN( 1 ).base_value() ) ),
-      hoarded_pct( p->talent.hoarded_power->effectN( 1 ).percent() ),
-      titanic_mul( p->talent.titanic_wrath->effectN( 1 ).percent() ),
-      obsidian_shards_mul( p->sets->set( EVOKER_DEVASTATION, T30, B2 )->effectN( 1 ).percent() )
-  {
-  }
-
-  void consume_resource() override
-  {
-    evoker_spell_t::consume_resource();
-
-    if ( !base_cost() || proc )
-      return;
-
-    if ( p()->buff.essence_burst->up() )
-    {
-      if ( !rng().roll( hoarded_pct ) )
-        p()->buff.essence_burst->decrement();
-    }
-  }
-};
-
-// Empowered Spells =========================================================
 
 struct fire_breath_t : public empowered_charge_spell_t
 {
@@ -1242,7 +1283,6 @@ struct eternity_surge_t : public empowered_charge_spell_t
 };
 
 // Spells ===================================================================
-
 struct azure_strike_t : public evoker_spell_t
 {
   azure_strike_t( evoker_t* p, std::string_view options_str )
@@ -2572,7 +2612,7 @@ void evoker_t::create_buffs()
 
   if ( talent.feed_the_flames.enabled() )
   {
-    buff.feed_the_flames_stacking->set_max_stack( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() )
+    buff.feed_the_flames_stacking->set_max_stack( as<int>( -talent.feed_the_flames_pyre_buff->effectN( 2 ).base_value() ) )
         ->set_expire_at_max_stack( true )
         ->set_stack_change_callback( [ this ]( buff_t* b, int old, int ) {
           if ( old == b->max_stack() )
