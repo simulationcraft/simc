@@ -9177,6 +9177,12 @@ struct use_item_t : public action_t
       }
     }
 
+    if ( action )
+    {
+      interrupt_auto_attack = action->interrupt_auto_attack;
+      reset_auto_attack = action->reset_auto_attack;
+    }
+
     if ( !buff && !action )
     {
       if ( sim->debug )
