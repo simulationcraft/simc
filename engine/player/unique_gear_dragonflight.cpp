@@ -5476,6 +5476,7 @@ void adaptive_dracothyst_armguards( special_effect_t& effect )
     auto buff = create_buff<stat_buff_t>( effect.player, "adaptive_stonescales_crit", effect.driver()->effectN( 1 ).trigger() );
     buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
     effect.custom_buff  = buff;
+    effect.name_str     = "adaptive_stonescales_crit";
     effect.proc_flags2_ = PF2_CRIT;
     new dbc_proc_callback_t( effect.player, effect );
   }
@@ -5485,6 +5486,7 @@ void adaptive_dracothyst_armguards( special_effect_t& effect )
                                           effect.driver()->effectN( 1 ).trigger() );
     buff->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
     effect.custom_buff = buff;
+    effect.name_str    = "adaptive_stonescales_dmgtaken";
     auto dbc = new dbc_proc_callback_t( effect.player, effect );
 
     // Fake damage taken events to trigger this for DPS Players
