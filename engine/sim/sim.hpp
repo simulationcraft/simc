@@ -510,7 +510,7 @@ struct sim_t : private sc_thread_t
     // Enable or Disable Seething Black Dragonscale's damage
     bool screaming_black_dragonscale_damage = false;
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
-    timespan_t adaptive_stonescales_period = 30_s;
+    timespan_t adaptive_stonescales_period = 3_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs
