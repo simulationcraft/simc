@@ -170,6 +170,7 @@ struct evoker_t : public player_t
     const spell_data_t* devastation;   // devastation class aura
     const spell_data_t* preservation;  // preservation class aura
     const spell_data_t* augmentation;  // augmentation class aura
+    const spell_data_t* mastery;       // Mastery Spell Data
 
     const spell_data_t* living_flame_damage;
     const spell_data_t* living_flame_heal;
@@ -421,6 +422,16 @@ public:
                  const item_t* item = nullptr )
     : bb( td, name, spell, item )
   {
+  }
+
+  timespan_t buff_duration() override
+  {
+    if ( specialisation() != EVOKER_AUGMENTATION || !ab::data().affected_by( p()->spec.mastery->effectN( 2 ) ) )
+      return bb::buff_duration();
+
+    auto m = 1 + p()->cache.mastery() * p()->spec.mastery->effectN( 2 ).mastery_value();
+
+    return m * bb::buff_duration();
   }
 
   evoker_t* p()
@@ -2141,11 +2152,11 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   dots.fire_breath  = target->get_dot( "fire_breath_damage", evoker );
   dots.disintegrate = target->get_dot( "disintegrate", evoker );
 
-  debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
+  debuffs.shattering_star = make_buff<e_buff_t>( *this, "shattering_star_debuff", evoker->talent.shattering_star )
                                 ->set_cooldown( 0_ms )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
-  debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
+  debuffs.in_firestorm = make_buff<e_buff_t>( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -2475,6 +2486,7 @@ void evoker_t::init_spells()
   spec.devastation         = find_specialization_spell( "Devastation Evoker" );
   spec.preservation        = find_specialization_spell( "Preservation Evoker" );
   spec.augmentation        = find_specialization_spell( "Augmentation Evoker" );
+  spec.mastery             = find_mastery_spell( specialization() );
   spec.living_flame_damage = find_spell( 361500 );
   spec.living_flame_heal   = find_spell( 361509 );
 }
@@ -2521,85 +2533,89 @@ void evoker_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
+  using e_buff_t = evoker_buff_t<buff_t>;
 
   // Baseline Abilities
-  buff.essence_burst =
-      make_buff( this, "essence_burst", find_spell( specialization() == EVOKER_DEVASTATION ? 359618 : 369299 ) )
-          ->apply_affecting_aura( talent.essence_attunement );
+  buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst",
+                                            find_spell( specialization() == EVOKER_DEVASTATION ? 359618 : 369299 ) )
+                           ->apply_affecting_aura( talent.essence_attunement );
 
   buff.essence_burst_titanic_wrath_disintegrate =
-      make_buff( this, "essence_burst_titanic_wrath_disintegrate", find_spell( 397870 ) )
+      make_buff<e_buff_t>( this, "essence_burst_titanic_wrath_disintegrate", find_spell( 397870 ) )
           ->set_quiet( true )
           ->set_trigger_spell( talent.titanic_wrath );
 
-  buff.hover = make_buff( this, "hover", find_class_spell( "Hover" ) )
+  buff.hover = make_buff<e_buff_t>( this, "hover", find_class_spell( "Hover" ) )
                    ->set_cooldown( 0_ms )
                    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
 
-  buff.tailwind = make_buff( this, "tailwind", find_spelleffect( talent.tailwind, A_PROC_TRIGGER_SPELL )->trigger() )
-                      ->set_default_value_from_effect( 1 );
+  buff.tailwind =
+      make_buff<e_buff_t>( this, "tailwind", find_spelleffect( talent.tailwind, A_PROC_TRIGGER_SPELL )->trigger() )
+          ->set_default_value_from_effect( 1 );
 
   // Class Traits
   buff.ancient_flame =
-      make_buff( this, "ancient_flame", find_spell( 375583 ) )->set_trigger_spell( talent.ancient_flame );
+      make_buff<e_buff_t>( this, "ancient_flame", find_spell( 375583 ) )->set_trigger_spell( talent.ancient_flame );
 
   buff.leaping_flames =
-      make_buff( this, "leaping_flames", find_spell( 370901 ) )->set_trigger_spell( talent.leaping_flames );
+      make_buff<e_buff_t>( this, "leaping_flames", find_spell( 370901 ) )->set_trigger_spell( talent.leaping_flames );
 
-  buff.obsidian_scales = make_buff( this, "obsidian_scales", talent.obsidian_scales )->set_cooldown( 0_ms );
+  buff.obsidian_scales = make_buff<e_buff_t>( this, "obsidian_scales", talent.obsidian_scales )->set_cooldown( 0_ms );
 
-  buff.scarlet_adaptation =
-      make_buff( this, "scarlet_adaptation", find_spell( 372470 ) )->set_trigger_spell( talent.scarlet_adaptation );
+  buff.scarlet_adaptation = make_buff<e_buff_t>( this, "scarlet_adaptation", find_spell( 372470 ) )
+                                ->set_trigger_spell( talent.scarlet_adaptation );
 
-  buff.tip_the_scales = make_buff( this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
+  buff.tip_the_scales = make_buff<e_buff_t>( this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
 
   // Devastation
-  buff.blazing_shards = make_buff( this, "blazing_shards", find_spell( 409848 ) )
+  buff.blazing_shards = make_buff<e_buff_t>( this, "blazing_shards", find_spell( 409848 ) )
                             ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
 
-  buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
+  buff.burnout = make_buff<e_buff_t>( this, "burnout", find_spell( 375802 ) )
                      ->set_trigger_spell( talent.burnout )
                      ->set_cooldown( talent.burnout->internal_cooldown() )
                      ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
-  buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
+  buff.charged_blast = make_buff<e_buff_t>( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
                            ->set_default_value_from_effect( 1 );
 
-  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
+  buff.dragonrage = make_buff<e_buff_t>( this, "dragonrage", talent.dragonrage )->set_cooldown( 0_ms );
 
-  buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_cooldown( 0_s )
-                                 ->add_invalidate( CACHE_HASTE );
+  buff.fury_of_the_aspects =
+      make_buff<e_buff_t>( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
+          ->set_default_value_from_effect( 1 )
+          ->set_cooldown( 0_s )
+          ->add_invalidate( CACHE_HASTE );
 
-  buff.imminent_destruction = make_buff( this, "imminent_destruction", find_spell( 411055 ) );
+  buff.imminent_destruction = make_buff<e_buff_t>( this, "imminent_destruction", find_spell( 411055 ) );
 
-  buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
+  buff.iridescence_blue = make_buff<e_buff_t>( this, "iridescence_blue", find_spell( 386399 ) )
                               ->set_trigger_spell( talent.iridescence )
                               ->set_default_value_from_effect( 1 );
   buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
 
-  buff.iridescence_blue_disintegrate = make_buff( this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
-                                           ->set_quiet( true )
-                                           ->set_default_value( buff.iridescence_blue->default_value )
-                                           ->set_trigger_spell( talent.iridescence );
+  buff.iridescence_blue_disintegrate =
+      make_buff<e_buff_t>( this, "iridescence_blue_disintegrate", find_spell( 399370 ) )
+          ->set_quiet( true )
+          ->set_default_value( buff.iridescence_blue->default_value )
+          ->set_trigger_spell( talent.iridescence );
 
-  buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
+  buff.iridescence_red = make_buff<e_buff_t>( this, "iridescence_red", find_spell( 386353 ) )
                              ->set_trigger_spell( talent.iridescence )
                              ->set_default_value_from_effect( 1 );
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
 
-  buff.limitless_potential = make_buff( this, "limitless_potential", find_spell( 394402 ) )
+  buff.limitless_potential = make_buff<e_buff_t>( this, "limitless_potential", find_spell( 394402 ) )
                                  ->set_trigger_spell( sets->set( EVOKER_DEVASTATION, T29, B2 ) )
                                  ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
-  buff.power_swell = make_buff( this, "power_swell", find_spell( 376850 ) )
+  buff.power_swell = make_buff<e_buff_t>( this, "power_swell", find_spell( 376850 ) )
                          ->set_trigger_spell( talent.power_swell )
                          ->set_affects_regen( true )
                          ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT );
 
-  buff.snapfire = make_buff( this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
+  buff.snapfire = make_buff<e_buff_t>( this, "snapfire", talent.snapfire->effectN( 1 ).trigger() )
                       ->set_chance( talent.snapfire->effectN( 1 ).percent() )
                       ->set_default_value_from_effect( 2 )
                       ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
@@ -2607,8 +2623,8 @@ void evoker_t::create_buffs()
                           cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
                       } );
 
-  buff.feed_the_flames_stacking = make_buff( this, "feed_the_flames", find_spell( 405874 ) );
-  buff.feed_the_flames_pyre     = make_buff( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
+  buff.feed_the_flames_stacking = make_buff<e_buff_t>( this, "feed_the_flames", find_spell( 405874 ) );
+  buff.feed_the_flames_pyre     = make_buff<e_buff_t>( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
 
   if ( talent.feed_the_flames.enabled() )
   {
