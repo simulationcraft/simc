@@ -4162,8 +4162,8 @@ void elementium_pocket_anvil( special_effect_t& e )
     }
   };
 
-  int driver_id = e.spell_id;
-  std::set<int> proc_spell_id;
+  unsigned driver_id = e.spell_id;
+  std::set<unsigned> proc_spell_id;
 
   switch ( e.player->type )
   {
@@ -4644,15 +4644,15 @@ void drogbar_stones( special_effect_t& effect )
       "drogbar_stones_damage", *drogbar_stones_damage, "drogbar_stones_damage", effect.player->find_spell( 407907 ) );
 
     drogbar_stones_damage->player->callbacks.register_callback_execute_function(
-      drogbar_stones_damage->spell_id, [buff, drogbar_stones_damage, effect] ( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-        if ( buff->check() )
-        {
-          drogbar_stones_damage->execute_action->execute();
+        drogbar_stones_damage->spell_id,
+        [ buff, drogbar_stones_damage, effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+          if ( buff->check() )
+          {
+            drogbar_stones_damage->execute_action->execute();
 
-          buff->expire();
-        }
-      }
-    );
+            buff->expire();
+          }
+        } );
 
     auto damage = new dbc_proc_callback_t( effect.player, *drogbar_stones_damage );
     damage->initialize();
@@ -5306,7 +5306,7 @@ void thriving_thorns( special_effect_t& effect )
       heal->name_str_reporting = "Heal";
     }
 
-    void execute( action_t* a, action_state_t* s ) override
+    void execute( action_t*, action_state_t* s ) override
     {
       if ( s->result_type == result_amount_type::HEAL_DIRECT || s->result_type == result_amount_type::HEAL_OVER_TIME )
         heal->execute_on_target( listener );

@@ -1,5 +1,5 @@
-// Set bonus data, wow build 10.1.5.49516
-static const std::array<item_set_bonus_t, 614> __ptr_set_bonus_data { {
+// Set bonus data, wow build 10.1.5.49595
+static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   2,   -1,  228445, { 134529, 134533,  0 } },
@@ -623,9 +623,11 @@ static const std::array<item_set_bonus_t, 614> __ptr_set_bonus_data { {
   { "Kinslayer's Burdens"                       , "tier30"             ,     19,  1541,   30,   4,  12,  581,  405509, { 202527, 202525, 202524, 202523, 202522,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   2,  13, 1467,  405518, { 202491, 202489, 202488, 202487, 202486,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   2,  13, 1468,  405520, { 202491, 202489, 202488, 202487, 202486,  0 } },
-  { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1467,  405519, { 202491, 202489, 202488, 202487, 202486,  0 } },
+  { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   2,  13, 1473,  414877, { 202491, 202489, 202488, 202487, 202486,  0 } },
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
+  { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1467,  405519, { 202491, 202489, 202488, 202487, 202486,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1468,  405522, { 202491, 202489, 202488, 202487, 202486,  0 } },
+  { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1473,  414878, { 202491, 202489, 202488, 202487, 202486,  0 } },
   { "Might of the Drogbar"                      , "might_of_the_drogbar",     20,  1539,   30,   2,   1,   -1,  407914, { 204811, 204810,  0 } },
   { "Might of the Drogbar"                      , "might_of_the_drogbar",     20,  1539,   30,   2,   2,   -1,  407914, { 204811, 204810,  0 } },
   { "Might of the Drogbar"                      , "might_of_the_drogbar",     20,  1539,   30,   2,   3,   -1,  407914, { 204811, 204810,  0 } },

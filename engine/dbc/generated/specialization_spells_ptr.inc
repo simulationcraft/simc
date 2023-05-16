@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.1.5.49516
-static const std::array<specialization_spell_entry_t, 372> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.1.5.49595
+static const std::array<specialization_spell_entry_t, 373> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -54,6 +54,7 @@ static const std::array<specialization_spell_entry_t, 372> __ptr_specialization_
   {  2,   65, 275773,  20271, "Judgment"                          , 0 },
   {  2,   65, 289941,      0, "Holy Shock"                        , 0 },
   {  2,   65, 315867,      0, "Judgment"                          , "Rank 3" },
+  {  2,   65, 415091,  53600, "Shield of the Righteous"           , 0 },
   {  2,   66,  25780,      0, "Righteous Fury"                    , 0 },
   {  2,   66,  76671,      0, "Mastery: Divine Bulwark"           , 0 },
   {  2,   66,  86102,      0, "Plate Specialization"              , 0 },

@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.1.5.49516
-static const std::array<active_class_spell_t, 275> __ptr_active_spells_data { {
+// Active class spells, wow build 10.1.5.49595
+static const std::array<active_class_spell_t, 276> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -47,6 +47,7 @@ static const std::array<active_class_spell_t, 275> __ptr_active_spells_data { {
   {  2,   65,  82326,      0, "Holy Light"                         },
   {  2,   65, 212056,      0, "Absolution"                         },
   {  2,   65, 275773,  20271, "Judgment"                           },
+  {  2,   65, 415091,  53600, "Shield of the Righteous"            },
   {  2,   66, 275779,  20271, "Judgment"                           },
   {  2,   70,  85256,      0, "Templar's Verdict"                  },
   {  2,   70, 403876,      0, "Divine Protection"                  },
@@ -277,7 +278,7 @@ static const std::array<active_class_spell_t, 275> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.1.5.49516
+// Pet active spells, wow build 10.1.5.49595
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
