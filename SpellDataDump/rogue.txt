@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-12/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-16/49570)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -2252,16 +2252,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Dreadblades (343142), Numbing Poison (359078), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (381664), Amplifying Poison (383414), Sepsis (385408), Kingsbane (385627), Sepsis (394026), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
                    Family Flags: 8, 14, 16, 20, 28, 35, 36, 68, 81, 85, 86, 95, 97, 118, 119
-Hotfixed         : Affects Spells
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Toxic Blade (245388), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Dreadblades (343142), Numbing Poison (359078), Rupture (360826), Garrote (360830), Sepsis (375936), Sepsis (385408), Serrated Bone Spike (385424), Kingsbane (385627), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327)
                    Family Flags: 8, 14, 16, 20, 28, 36, 81, 95, 97, 115, 118, 119
-Hotfixed         : Affects Spells
 #3 (id=1083878)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | PvP Coefficient: 1.00000 | Misc Value 2: 2694 (Label) | Target: Self (1)
                    Affected Spells (Label): Ambush (385794), Mutilate (385802), Mutilate (385806)
-Hotfixed         : NEW EFFECT
 Description      : Increases the damage done by your poisons $?s319473[and bleeds ][]by ${$s1}.1%.
 
 Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive] 
@@ -3190,12 +3187,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
-Hotfixed         : Base Value (-3 -> 1)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
-Hotfixed         : Base Value (-3 -> 1)
 #3 (id=191061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Hotfixed         : Sub Type (107 -> 4), Misc Value (12 -> 0), Affects Spells
@@ -7358,7 +7353,6 @@ Description      : $@spelldesc278681
 Tooltip          : Haste increased by $w1.
 
 Name             : Shadow Blades (id=279043) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -13186,20 +13180,16 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Shadow Blades (121471), Gloomblade (200758), Double Dose (273009), Shadow Blades (279043), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Flagellation (345316), Echoing Reprimand (354838), Sepsis (375936), Flagellation (384631), Sepsis (385408), Echoing Reprimand (385616), Sepsis (394026), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Flagellation (394757)
                    Family Flags: 15, 16, 28, 78, 82, 97, 109, 118, 124
-Hotfixed         : Sub Type (79 -> 108), Misc Value (126 -> 0), Affects Spells
 #2 (id=1083888)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Shadow Blades (121471), Gloomblade (200758), Double Dose (273009), Shadow Blades (279043), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Flagellation (323654), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Flagellation (345316), Echoing Reprimand (354838), Sepsis (375936), Flagellation (384631), Sepsis (385408), Echoing Reprimand (385616), Sepsis (394026), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Flagellation (394757)
                    Family Flags: 15, 16, 28, 78, 82, 97, 109, 118, 124
-Hotfixed         : NEW EFFECT
 #3 (id=1083890)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031)
-Hotfixed         : NEW EFFECT
 #4 (id=1083891)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031)
-Hotfixed         : NEW EFFECT
 Description      : Your abilities deal $s1% increased magic damage.
 
 Name             : Lethality (id=382238) [Spell Family (8), Passive] 
@@ -13225,7 +13215,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Gouge (1776), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Fan of Knives (51723), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354838), Garrote (360830), Sepsis (375936), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Serrated Bone Spike (394036)
                    Family Flags: 1, 2, 3, 8, 9, 23, 25, 26, 29, 33, 34, 50, 53, 75, 82, 85, 98, 101, 104, 109, 115, 118, 119, 127
-Hotfixed         : Affects Spells
 Description      : Critical strike chance increased by $s1%. Critical strike damage bonus of your attacks that generate combo points increased by $s2%.
 
 Name             : Cold Blood (id=382245) [Spell Family (8)] 
@@ -13306,20 +13295,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Shadow Blades (121471), Gloomblade (200758), Double Dose (273009), Shadow Blades (279043), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Flagellation (323654), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Flagellation (345316), Numbing Poison (359078), Rupture (360826), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Atrophic Poison (392388), Sepsis (394026), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 15, 16, 20, 28, 51, 78, 97, 109, 118, 120, 124, 126
-Hotfixed         : Sub Type (79 -> 108), Misc Value (32 -> 0), Affects Spells
 #3 (id=1083909)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Deadly Poison (113780), Crippling Poison (115196), Shadow Blades (121471), Gloomblade (200758), Double Dose (273009), Shadow Blades (279043), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Flagellation (323654), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Flagellation (345316), Numbing Poison (359078), Rupture (360826), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Atrophic Poison (392388), Sepsis (394026), Rupture (394031), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 15, 16, 20, 28, 51, 78, 97, 109, 118, 120, 124, 126
-Hotfixed         : NEW EFFECT
 #4 (id=1083910)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031)
-Hotfixed         : NEW EFFECT
 #5 (id=1083911)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031)
-Hotfixed         : NEW EFFECT
 Description      : Your attacks that deal Nature or Bleed damage now deal Shadow instead.
 
 Shadow damage increased by $s2%.
@@ -13554,7 +13539,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013901)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383405 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 0)
 Description      : Eviscerate and Black Powder increase your Shadow damage dealt by $s1% for $383405d.
 
 Name             : Perforated Veins (id=382518) [Spell Family (8), Passive] 
@@ -13757,20 +13741,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Blades (121471), Gloomblade (200758), Shadow Blades (279043), Flagellation (323654), Flagellation (345316), Flagellation (384631), Flagellation (394757)
                    Family Flags: 15, 78, 109, 124
-Hotfixed         : Sub Type (79 -> 108), Misc Value (32 -> 0), Affects Spells
 #2 (id=1083902)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Blades (121471), Gloomblade (200758), Shadow Blades (279043), Flagellation (323654), Flagellation (345316), Flagellation (384631), Flagellation (394757)
                    Family Flags: 15, 78, 109, 124
-Hotfixed         : NEW EFFECT
 #3 (id=1083903)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031)
-Hotfixed         : NEW EFFECT
 #4 (id=1083904)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 2696 (Label) | Target: Self (1)
                    Affected Spells (Label): Secret Technique (282449), Black Powder (319190), Eviscerate (328082), Lingering Shadow (386081), Rupture (394031)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc341549
 Tooltip          : Shadow damage dealt increased by $w1%.
 
@@ -15988,7 +15968,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Leeching Poison (108211), Deadly Poison (113780), Shuriken Toss (114014), Crippling Poison (115196), Poisoned Knife (185565), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Dreadblades (343142), Numbing Poison (359078), Sepsis (375936), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Sepsis (385408), Kingsbane (385627), Atrophic Poison (392388), Sepsis (394026), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
                    Family Flags: 14, 16, 28, 35, 45, 68, 73, 74, 75, 83, 85, 86, 97, 118, 119, 120
-Hotfixed         : Sub Type (79 -> 108), Misc Value (8 -> 0), Affects Spells
 #2 (id=1080961)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value 2: 2668 (Label) | Target: Self (1)
                    Affected Spells (Label): Poisoned Edges (409483)
@@ -15996,11 +15975,9 @@ Hotfixed         : Sub Type (79 -> 108), Misc Value (8 -> 0), Affects Spells
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Numbing Poison (5760), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Leeching Poison (108211), Deadly Poison (113780), Shuriken Toss (114014), Crippling Poison (115196), Poisoned Knife (185565), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Dreadblades (343142), Numbing Poison (359078), Sepsis (375936), Atrophic Poison (381637), Amplifying Poison (381664), Amplifying Poison (383414), Sepsis (385408), Kingsbane (385627), Atrophic Poison (392388), Sepsis (394026), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328)
                    Family Flags: 14, 16, 28, 35, 45, 68, 73, 74, 75, 83, 85, 86, 97, 118, 119, 120
-Hotfixed         : NEW EFFECT
 #4 (id=1083734)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value 2: 2694 (Label) | Target: Self (1)
                    Affected Spells (Label): Ambush (385794), Mutilate (385802), Mutilate (385806)
-Hotfixed         : NEW EFFECT
 Description      : Nature damage increased by $s1%.
 Tooltip          : Nature damage increased by $w1%.
 
@@ -16084,7 +16061,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Black Powder (319175), Black Powder (319190), Eviscerate (328082)
                    Family Flags: 17, 44
-Hotfixed         : Base Value (25 -> 40)
 Description      : Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $s1%.
 Tooltip          : Symbols of Death increases the critical strike damage of Eviscerate and Black Powder by $w1%.
 

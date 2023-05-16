@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.0.49474
+// Spell text, wow build 10.1.0.49570
 static const std::array<spelltext_data_t, 19898> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19900,15 +19900,12 @@ static const std::array<spelltext_data_t, 19898> __spelltext_data { {
   { 414380, "Contains 10 Flightstones.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49474
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
-  {  402813,  0, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds." },
-  {  403368,  0, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Assault][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d." },
-  {  408675,  1, "IT GONNA BLOW!", "IT'S GONNA BLOW!" },
+// spelltext hotfix entries, wow build 10.1.0.49570
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
   {  411661,  1, "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Attack][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d.", "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d." },
 } };
 
-// Spell description variables, wow build 10.1.0.49474
+// Spell description variables, wow build 10.1.0.49570
 static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20291,9 +20288,7 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49474
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
-  {  388023,  0, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]", "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026,  0, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]", "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+// spelldesc_vars hotfix entries, wow build 10.1.0.49570
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
