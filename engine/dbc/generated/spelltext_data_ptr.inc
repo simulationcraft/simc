@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49595
-static const std::array<spelltext_data_t, 20004> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20005> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18588,6 +18588,7 @@ static const std::array<spelltext_data_t, 20004> __ptr_spelltext_data { {
   { 392248, "@spelldesc392237", "Critical strike increased by $w1.", 0 },
   { 392255, "Immune to all attacks and harmful effects.", "Immune to all attacks and harmful effects.", 0 },
   { 392256, "Lifebloom counts for ${$s1+1} stacks of Mastery: Harmony.", 0, 0 },
+  { 392268, "$@spelldesc396187", "Your next Eruption $?s414969[or Emerald Blossom ][]costs no Essence.", 0 },
   { 392271, "@spelldesc392237", "Mastery increased by $w1.", 0 },
   { 392275, "@spelldesc392237", "Haste increased by $w1.", 0 },
   { 392288, "The healing bonus to Regrowth from Nature's Swiftness is increased by $s1%.", 0, 0 },
