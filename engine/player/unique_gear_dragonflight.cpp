@@ -3849,8 +3849,8 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
       bool was_channeling = player->channeling == this;
       auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
 
-      // Cancelled before the last tick completed, and there isn't a tick scheduled.
-      if ( d->end_event && !d->tick_event )
+      // Cancelled before the last tick completed, reset the cd
+      if ( d->end_event )
       {
         cooldown->reset( false );
         cdgrp->reset( false );
