@@ -74,6 +74,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=opener,op=set,value=1" );
   precombat->add_action( "variable,name=opener_min_mana,default=-1,op=set,if=variable.opener_min_mana=-1,value=225000-(25000*!talent.arcane_harmony)" );
   precombat->add_action( "variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.irideus_fragment|equipped.erupting_spear_fragment|equipped.spoils_of_neltharus|equipped.tome_of_unstable_power|equipped.timebreaching_talon|equipped.horn_of_valor" );
+  precombat->add_action( "variable,name=talon_dbluse,op=set,value=equipped.timebreaching_talon&equipped.irideus_fragment" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "arcane_blast,if=!talent.siphon_storm" );
@@ -88,7 +89,7 @@ void arcane( player_t* p )
   default_->add_action( "fireblood,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "ancestral_call,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=!talent.radiant_spark&prev_gcd.1.arcane_surge" );
-  default_->add_action( "use_items,if=(prev_gcd.1.arcane_surge&!set_bonus.tier30_4pc)|(prev_gcd.2.arcane_surge&debuff.touch_of_the_magi.up&set_bonus.tier30_4pc)" );
+  default_->add_action( "use_items,if=((prev_gcd.1.arcane_surge&!set_bonus.tier30_4pc)|(prev_gcd.2.arcane_surge&debuff.touch_of_the_magi.up&set_bonus.tier30_4pc))|(active_enemies>=variable.aoe_target_count&cooldown.arcane_surge.ready&prev_gcd.1.nether_tempest)" );
   default_->add_action( "use_item,name=tinker_breath_of_neltharion,if=cooldown.arcane_surge.remains&buff.rune_of_power.down&buff.arcane_surge.down&debuff.touch_of_the_magi.down" );
   default_->add_action( "use_item,name=conjured_chillglobe,if=mana.pct>65&(!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20)" );
   default_->add_action( "use_item,name=darkmoon_deck_rime,if=!variable.steroid_trinket_equipped|cooldown.arcane_surge.remains>20" );
@@ -106,7 +107,7 @@ void arcane( player_t* p )
   default_->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95&!talent.siphon_storm" );
   default_->add_action( "cancel_action,if=action.evocation.channeling&(mana.pct>fight_remains*4)&!(fight_remains>10&cooldown.arcane_surge.remains<1)" );
   default_->add_action( "arcane_barrage,if=fight_remains<2" );
-  default_->add_action( "evocation,if=buff.rune_of_power.down&buff.arcane_surge.down&debuff.touch_of_the_magi.down&((mana.pct<10&((cooldown.touch_of_the_magi.remains<10&set_bonus.tier30_4pc)|cooldown.touch_of_the_magi.remains<25))|((cooldown.touch_of_the_magi.remains<8&set_bonus.tier30_4pc)|cooldown.touch_of_the_magi.remains<20))&(mana.pct<fight_remains*4)" );
+  default_->add_action( "evocation,if=buff.rune_of_power.down&buff.arcane_surge.down&debuff.touch_of_the_magi.down&((mana.pct<10&((cooldown.touch_of_the_magi.remains<15&set_bonus.tier30_4pc)|cooldown.touch_of_the_magi.remains<25&!set_bonus.tier30_4pc))|((cooldown.touch_of_the_magi.remains<10&set_bonus.tier30_4pc)|cooldown.touch_of_the_magi.remains<20&!set_bonus.tier30_4pc))&(mana.pct<fight_remains*4)" );
   default_->add_action( "conjure_mana_gem,if=buff.rune_of_power.down&debuff.touch_of_the_magi.down&buff.arcane_surge.down&cooldown.arcane_surge.remains<fight_remains&!mana_gem_charges&buff.arcane_overload.down" );
   default_->add_action( "use_mana_gem,if=talent.cascading_power&buff.clearcasting.stack<2&buff.arcane_surge.up" );
   default_->add_action( "use_mana_gem,if=!talent.cascading_power&prev_gcd.1.arcane_surge" );
@@ -122,7 +123,7 @@ void arcane( player_t* p )
   default_->add_action( "call_action_list,name=t30_rotation,if=set_bonus.tier30_4pc" );
   default_->add_action( "call_action_list,name=rotation" );
 
-  aoe_rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
+  aoe_rotation->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&cooldown.touch_of_the_magi.remains>18" );
   aoe_rotation->add_action( "shifting_power,if=(!talent.evocation|cooldown.evocation.remains>12)&(!talent.arcane_surge|cooldown.arcane_surge.remains>12)&(!talent.touch_of_the_magi|cooldown.touch_of_the_magi.remains>12)&buff.arcane_surge.down" );
   aoe_rotation->add_action( "ice_nova,if=buff.arcane_surge.down" );
   aoe_rotation->add_action( "nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_surge.down" );
@@ -133,7 +134,7 @@ void arcane( player_t* p )
   aoe_spark_phase->add_action( "cancel_buff,name=presence_of_mind,if=prev_gcd.1.arcane_blast&cooldown.arcane_surge.remains>75" );
   aoe_spark_phase->add_action( "rune_of_power,if=cooldown.arcane_surge.remains<75&cooldown.arcane_surge.remains>30" );
   aoe_spark_phase->add_action( "radiant_spark" );
-  aoe_spark_phase->add_action( "use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*2)" );
+  aoe_spark_phase->add_action( "use_item,name=timebreaching_talon,if=cooldown.arcane_surge.remains<=(gcd.max*2)&(!variable.talon_dbluse|!buff.bloodlust.up)" );
   aoe_spark_phase->add_action( "arcane_explosion,if=buff.arcane_charge.stack>=3&prev_gcd.1.radiant_spark" );
   aoe_spark_phase->add_action( "arcane_orb,if=buff.arcane_charge.stack<3,line_cd=15" );
   aoe_spark_phase->add_action( "nether_tempest,if=talent.arcane_echo,line_cd=15" );
@@ -152,8 +153,8 @@ void arcane( player_t* p )
   aoe_touch_phase->add_action( "meteor" );
   aoe_touch_phase->add_action( "arcane_barrage,if=talent.arcane_bombardment&target.health.pct<35&debuff.touch_of_the_magi.remains<=gcd.max" );
   aoe_touch_phase->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&active_enemies>=variable.aoe_target_count&cooldown.arcane_orb.remains<=execute_time" );
-  aoe_touch_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&(talent.arcane_echo|talent.arcane_harmony),chain=1" );
-  aoe_touch_phase->add_action( "arcane_missiles,if=buff.clearcasting.stack>1&talent.conjure_mana_gem&cooldown.use_mana_gem.ready,chain=1" );
+  aoe_touch_phase->add_action( "arcane_missiles,if=buff.clearcasting.react&(talent.arcane_echo&(talent.arcane_harmony|talent.orb_barrage)),chain=1" );
+  aoe_touch_phase->add_action( "arcane_missiles,if=buff.clearcasting.stack>1&talent.conjure_mana_gem&cooldown.use_mana_gem.ready&(talent.arcane_echo&(talent.arcane_harmony|talent.orb_barrage)),chain=1" );
   aoe_touch_phase->add_action( "arcane_orb,if=buff.arcane_charge.stack<2" );
   aoe_touch_phase->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   aoe_touch_phase->add_action( "arcane_explosion" );
@@ -180,7 +181,7 @@ void arcane( player_t* p )
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.concentration.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   rotation->add_action( "arcane_blast,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.nether_precision.up" );
   rotation->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&mana.pct<60&variable.conserve_mana&(!talent.rune_of_power|cooldown.rune_of_power.remains>5)&cooldown.touch_of_the_magi.remains>10&cooldown.evocation.remains>40&fight_remains>20" );
-  rotation->add_action( "cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up" );
+  rotation->add_action( "cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up&!talent.arcane_harmony" );
   rotation->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.nether_precision.down" );
   rotation->add_action( "arcane_blast" );
   rotation->add_action( "arcane_barrage" );
@@ -220,7 +221,7 @@ void arcane( player_t* p )
   t30_burst_phase->add_action( "arcane_orb,if=prev_gcd.1.radiant_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   t30_burst_phase->add_action( "nether_tempest,if=cooldown.arcane_surge.remains<=gcd.max,line_cd=45" );
   t30_burst_phase->add_action( "arcane_surge,if=((!talent.nether_tempest&prev_gcd.2.radiant_spark)|prev_gcd.1.nether_tempest)" );
-  t30_burst_phase->add_action( "use_item,name=timebreaching_talon,if=prev_gcd.1.arcane_surge" );
+  t30_burst_phase->add_action( "use_item,name=timebreaching_talon,if=prev_gcd.1.arcane_surge&(!variable.talon_dbluse|!buff.bloodlust.up)" );
   t30_burst_phase->add_action( "rune_of_power,if=buff.rune_of_power.down&debuff.touch_of_the_magi.down&cooldown.arcane_surge.remains>22" );
   t30_burst_phase->add_action( "wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15" );
   t30_burst_phase->add_action( "arcane_barrage,if=prev_gcd.1.arcane_surge" );
