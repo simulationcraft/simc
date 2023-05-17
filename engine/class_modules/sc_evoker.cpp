@@ -8,6 +8,7 @@
 #include "action/parse_buff_effects.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 #include "sim/option.hpp"
+#include "dbc/trait_data.hpp"
 
 #include "simulationcraft.hpp"
 
@@ -158,6 +159,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> snapfire;
     propagate_const<buff_t*> feed_the_flames_stacking;
     propagate_const<buff_t*> feed_the_flames_pyre;
+    propagate_const<buff_t*> ebon_might_self_buff;
 
     // Legendary
     propagate_const<buff_t*> unbound_surge;
@@ -284,6 +286,7 @@ struct evoker_t : public player_t
     // Augmentation Traits
     player_talent_t ebon_might;
     const spell_data_t* ebon_might_self_buff;
+    const spell_data_t* sands_of_time;
     player_talent_t eruption;
     player_talent_t essence_burst;
     // Imposing Presence / Inner Radiance - Non DPS
@@ -291,7 +294,7 @@ struct evoker_t : public player_t
     // Essence Attunement - Devastation also has
     player_talent_t pupil_of_alexstrasza;
     player_talent_t echoing_strike;
-    player_talent_t upheavel;
+    player_talent_t upheaval;
     player_talent_t breath_of_eons;
     // Defy Fate - Non DPS
     // Timelessness - Non DPS
@@ -343,6 +346,7 @@ struct evoker_t : public player_t
     propagate_const<cooldown_t*> eternity_surge;
     propagate_const<cooldown_t*> fire_breath;
     propagate_const<cooldown_t*> firestorm;
+    propagate_const<cooldown_t*> upheaval;
   } cooldown;
 
   // Gains
@@ -427,6 +431,9 @@ struct evoker_t : public player_t
   double resource_regen_per_second( resource_e ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   double temporary_movement_modifier() const override;
+
+  // Augmentation Helpers
+  void extend_ebon( timespan_t );
 
   // Utility functions
   const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
@@ -609,6 +616,7 @@ public:
     parse_buff_effects( p()->buff.tip_the_scales );
 
     parse_buff_effects( p()->buff.imminent_destruction );
+    parse_buff_effects( p()->buff.ebon_might_self_buff );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -754,9 +762,10 @@ struct empowered_release_t : public empowered_base_t<BASE>
   using ab = empowered_base_t<BASE>;
 
   timespan_t extend_tier29_4pc;
+  timespan_t extend_ebon;
 
   empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
-    : ab( name, p, spell )
+    : ab( name, p, spell ), extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s )
   {
     ab::dual = true;
 
@@ -786,6 +795,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
     ab::p()->was_empowering = false;
 
     ab::execute();
+
+    ab::p()->extend_ebon( extend_ebon );
   }
 };
 
@@ -1452,7 +1463,7 @@ struct disintegrate_t : public essence_spell_t
   int num_ticks;
 
   disintegrate_t( evoker_t* p, std::string_view options_str )
-    : essence_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str ),
+    : essence_spell_t( "disintegrate", p, p->talent.eruption.ok() ? spell_data_t::nil() : p->find_class_spell( "Disintegrate" ), options_str ),
       num_ticks( as<int>( dot_duration / base_tick_time ) + 1 )
   {
     channeled = tick_zero = true;
@@ -2195,6 +2206,95 @@ struct dragonrage_t : public evoker_spell_t
   }
 };
 
+
+
+struct ebon_might_t : public evoker_spell_t
+{
+  ebon_might_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "ebon_might", p, p->talent.ebon_might, options_str )
+  {
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+    p()->buff.ebon_might_self_buff->trigger();
+  }
+};
+
+struct eruption_t : public essence_spell_t
+{
+  timespan_t extend_ebon;
+  timespan_t upheaval_cdr;
+
+  eruption_t( evoker_t* p, std::string_view options_str )
+    : essence_spell_t( "eruption", p, p->talent.eruption, options_str ),
+      extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
+      upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() )
+  {
+    split_aoe_damage = true;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = essence_spell_t::composite_da_multiplier( s );
+
+    if ( p()->talent.ricocheting_pyroclast->ok() )
+    {
+      da *= 1 + std::min( static_cast<double>( s->n_targets ),
+                          p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
+                    p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
+    }
+
+    return da;
+  }
+
+  void execute() override
+  {
+    essence_spell_t::execute();
+
+    p()->extend_ebon( extend_ebon );
+    
+    if (p()->talent.accretion->ok())
+    {
+      p()->cooldown.upheaval->adjust( upheaval_cdr );
+    }
+  }
+};
+
+struct upheaval_t : public empowered_charge_spell_t
+{
+  struct upheaval_damage_t : public empowered_release_spell_t
+  {
+    upheaval_damage_t( evoker_t* p, std::string_view name ) : base_t( name, p, p->find_spell( 396288 ) )
+    {
+    }
+
+    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage" )
+    {
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double da = empowered_release_spell_t::composite_da_multiplier( s );
+
+      if ( p()->talent.tectonic_locus->ok() && s->chain_target == 0 )
+      {
+        da *= 1 + p()->talent.tectonic_locus->effectN( 1 ).percent();
+      }
+
+      return da;
+    }
+  };
+
+  upheaval_t( evoker_t* p, std::string_view options_str ) : base_t( "upheaval", p, p->talent.upheaval, options_str )
+  {
+    create_release_spell<upheaval_damage_t>( "upheaval_damage" );
+  }
+};
+
+
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -2232,6 +2332,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
   cooldown.firestorm      = get_cooldown( "firestorm" );
+  cooldown.upheaval       = get_cooldown( "upheaval" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -2373,6 +2474,7 @@ void evoker_t::init_action_list()
       break;
     case EVOKER_AUGMENTATION:
       evoker_apl::augmentation( this );
+      break;
     default:
       evoker_apl::no_spec( this );
       break;
@@ -2568,6 +2670,7 @@ void evoker_t::init_spells()
   // Augmentation Traits
   talent.ebon_might            = ST( "Ebon Might" );
   talent.ebon_might_self_buff  = find_spell( 395296 );
+  talent.sands_of_time         = find_spell( 395153 );
   talent.eruption              = ST( "Eruption" );
   talent.essence_burst         = ST( "Essence Burst" );
   // Imposing Presence / Inner Radiance - Non DPS
@@ -2575,7 +2678,7 @@ void evoker_t::init_spells()
   // Essence Attunement - Devastation also has
   talent.pupil_of_alexstrasza  = ST( "Pupil of Alexstrasza" );
   talent.echoing_strike        = ST( "Echoing Strike" );
-  talent.upheavel              = ST( "Upheavel" );
+  talent.upheaval              = ST( "upheaval" );
   talent.breath_of_eons        = ST( "Breath of Eons" );
   // Defy Fate - Non DPS
   // Timelessness - Non DPS
@@ -2613,6 +2716,35 @@ void evoker_t::init_spells()
   talent.interwoven_threads    = ST( "Interwoven Threads" );
   talent.overlord              = ST( "Overlord" );
   talent.fate_mirror           = ST( "Fate Mirror" );
+
+
+  // Set up Essence Bursts for Preservation and Augmentation
+  if ( talent.essence_burst.ok() )
+  {
+    const trait_data_t* trait;
+    uint32_t class_idx, spec_idx;
+
+    dbc->spec_idx( EVOKER_DEVASTATION, class_idx, spec_idx );
+
+    trait = trait_data_t::find( talent_tree::SPECIALIZATION, "Ruby Essence Burst", class_idx, EVOKER_DEVASTATION,
+                                dbc->ptr );
+
+    if ( trait )
+    {
+      talent.ruby_essence_burst = player_talent_t( this, trait, trait->max_ranks );
+    }
+
+    if ( specialization() == EVOKER_AUGMENTATION )
+    {
+      trait = trait_data_t::find( talent_tree::SPECIALIZATION, "Azure Essence Burst", class_idx, EVOKER_DEVASTATION,
+                                  dbc->ptr );
+
+      if ( trait )
+      {
+        talent.azure_essence_burst = player_talent_t( this, trait, trait->max_ranks );
+      }
+    }
+  }
 
 
   // Evoker Specialization Spells
@@ -2788,6 +2920,10 @@ void evoker_t::create_buffs()
   }
 
   // Preservation
+
+  // Augmentation
+  buff.ebon_might_self_buff = make_buff<e_buff_t>( this, "ebon_might", talent.ebon_might_self_buff )
+                                   ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 }
 
 void evoker_t::create_options()
@@ -2915,6 +3051,14 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
 
+  // Augmentation
+  action.apply_affecting_aura( talent.plot_the_future );
+  action.apply_affecting_aura( talent.dream_of_spring );
+  action.apply_affecting_aura( talent.unyielding_domain );
+  action.apply_affecting_aura( talent.volcanism );
+  action.apply_affecting_aura( talent.interwoven_threads );
+
+
   // Devastaion
   action.apply_affecting_aura( talent.arcane_intensity );
   action.apply_affecting_aura( talent.dense_energy );
@@ -2971,6 +3115,13 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new tip_the_scales_t( this, options_str );
   if ( name == "verdant_embrace" )
     return new verdant_embrace_t( this, options_str );
+  if ( name == "ebon_might" )
+    return new ebon_might_t( this, options_str );
+  if ( name == "eruption" )
+    return new eruption_t( this, options_str );
+  if ( name == "upheaval" )
+    return new upheaval_t( this, options_str );
+  
 
   return player_t::create_action( name, options_str );
 }
@@ -3067,6 +3218,23 @@ stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
       return STAT_NONE;
     default:
       return stat;
+  }
+}
+
+void evoker_t::extend_ebon( timespan_t extend )
+{
+  if ( extend <= 0_s )
+    return;
+
+  if ( buff.ebon_might_self_buff->check() )
+  {
+    auto dur = buff.ebon_might_self_buff->remains();
+    if ( dur < 20_s )
+    {
+      dur = std::min( 20_s - dur, extend );
+      if ( dur > 0_s )
+        buff.ebon_might_self_buff->extend_duration( this, dur );
+    }
   }
 }
 
