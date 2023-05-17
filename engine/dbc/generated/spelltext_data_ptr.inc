@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49595
-static const std::array<spelltext_data_t, 20001> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20004> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19330,6 +19330,7 @@ static const std::array<spelltext_data_t, 20001> __ptr_spelltext_data { {
   { 403257, "$@spelldesc402932", 0, 0 },
   { 403264, "Attune to Black magic, granting you and your $403208s2 nearest allies $s1% increased maximum health.", "Maximum health increased by $w1%.", "Black" },
   { 403265, "Attune to Bronze magic, granting you and your $403208s2 nearest allies $s1% increased movement speed.", "Movement speed increased by $w1%.", "Bronze" },
+  { 403275, "$@spelldesc405061", "$pri increased by $s1. Speed increased by $s2.", 0 },
   { 403336, "$@spelldesc402935", "Absorbing the next $w1 damage taken.", 0 },
   { 403366, "Your area effect spells and abilities have a chance to grant you $s1 $pri and increase damage you receive by $s2% for $403382d.", 0, 0 },
   { 403368, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", 0, 0 },
@@ -19454,6 +19455,7 @@ static const std::array<spelltext_data_t, 20001> __ptr_spelltext_data { {
   { 404996, "Damage and healing increased by $s1% for $d.", "Damage and healing increased by $w1%. $?a31821[Healing received increased by $w2%.][]", 0 },
   { 405001, "$@spelldesc402938", "Autoattack damage increased by $w3.", 0 },
   { 405044, "Tiger Palm now has a ${$m1+5} yard range.\r\n\r\nTiger Palm also applies an effect which increases your critical strike chance by $393047m1% for $393047d on the target. This effect cannot be applied more than once every $393050d per target.", 0, 0 },
+  { 405061, "Your Empower spells activate the Order magic within, releasing a sphere of Order that seeks a powerful ally, increasing their primary stat by $403275s1 and Speed by $403275s2 for $?a356809[$s2]?a356810[$s3][$s4] sec.", 0, 0 },
   { 405064, "Throw a small Darkened Elemental Core at the target location dealing $405165s1 Shadowflame damage split between all enemies.", 0, 0 },
   { 405066, "Slowly build up stacks of titan energy. The amount of stacks gained per second can vary but when fully charged at $s3 stacks the Buzzing Orb Core will increase a random secondary stat by $s0, as well as your movement speed by $s1 for $405202d seconds.", 0, 0 },
   { 405068, "Shield an ally for $405098s2 while channeling a beam of molten flame dealing ${$405098s1*($d/($t1))}  Fire damage over $d to them. If they survive the channel, heal them for $405098s3.", "Cauterizing the wound, dealing ${$w1*($d/($t1))}  Fire damage over $d.", 0 },
@@ -19936,6 +19938,7 @@ static const std::array<spelltext_data_t, 20001> __ptr_spelltext_data { {
   { 411899, "Apply a Shadowed Belt Clasp to your waist armor, causing it to permanently gain $ec1 Stamina.", 0, 0 },
   { 411932, "$@spelldesc407876", 0, 0 },
   { 412150, "Add the Shielding affix to a Mythic Keystone.", 0, 0 },
+  { 412350, "Empower an Evoker's Ancient Memories artifact, increasing the rate at which they earn Temporal Vestigials by $s1%.", 0, 0 },
   { 412547, "Dealing damage has a chance to rouse the Shadowflame, inflicting $s2 Shadowflame damage upon your target and $s3 Shadowflame damage to yourself. Whenever this happens, you gain a stack of Roused Shadowflame.\r\n\r\nRoused Shadowflame increases this effects damage by $s4%, stacking $406887u times. Upon reaching maximum stacks, the Roused Shadowflame will subside.", 0, 0 },
   { 412574, "Create a piece of Obsidian Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 412629, "Empowers your chosen aura for $d.$?a344218[\r\n\r\n$@spellname465: Damage reduction increased to ${-$s1-$465s2}%.][]$?a344219[\r\n\r\n$@spellname32223: Mount speed bonus increased to ${$s2+$32223s4}%.][]$?a344217[\r\n\r\n$@spellname183435: Increases healing received by $s3% while its effect is active.][]$?a344220[\r\n\r\n$@spellname317920: Affected allies immune to interrupts and silences.][]", "Aura effectiveness increased.", 0 },
