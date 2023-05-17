@@ -92,7 +92,7 @@ actions.cooldowns_niuzao_woo+=/purifying_brew,if=stagger.amounttototalpct>=0.7&!
 actions.cooldowns_niuzao_woo+=/purifying_brew,if=cooldown.purifying_brew.remains_expected<5&!buff.blackout_combo.up
 
 actions.item_actions=use_item,name=beacon_to_the_beyond,if=(debuff.weapons_of_order_debuff.stack>3)|(fight_remains<cooldown.weapons_of_order.remains-3)
-actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser,if=(trinket.1.cooldown.remains>10)&((!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|(debuff.weapons_of_order_debuff.up)|((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains))
+actions.item_actions+=/use_item,name=dragonfire_bomb_dispenser,if=(trinket.1.cooldown.remains>10|!trinket.1.has_cooldown)&((!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|(debuff.weapons_of_order_debuff.up)|((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains))
 
 actions.race_actions=blood_fury
 actions.race_actions+=/berserking

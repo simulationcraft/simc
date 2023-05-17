@@ -163,7 +163,7 @@ actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_2_manual
 
 head=crown_of_obsidian_secrets,id=202488,bonus_id=8780,ilevel=447,gem_id=192982
-neck=red_sky_pendant,id=206182,ilevel=447,gem_id=192958/192958/192958
+neck=red_sky_pendant,id=206182,bonus_id=8782/8767,ilevel=447,gem_id=192958/192958/192958
 shoulders=wingspan_of_obsidian_secrets,id=202486,ilevel=450
 back=voice_of_the_silent_star,id=204465,ilevel=457
 chest=flametouched_chainmail,id=193422,bonus_id=8840/8836/8902/1537,enchant=waking_stats_3,enchant_id=6625,crafted_stats=49/32
@@ -172,20 +172,21 @@ hands=claws_of_obsidian_secrets,id=202489,ilevel=447
 waist=flametouched_chain,id=193425,bonus_id=8836/8840/8902/9405/8793/9366/9415/8780/9379/8960,ilevel=447,gem_id=192919,enchant=shadowed_belt_clasp_3,crafted_stats=49/36
 legs=chausses_of_obsidian_secrets,id=202487,ilevel=450,enchant=temporal_spellthread_3,enchant_id=6541
 feet=crechebound_soldiers_boots,id=204424,ilevel=450
-finger1=scalebane_signet,id=193768,bonus_id=8780,ilevel=447,gem_id=192919,enchant=devotion_of_critical_strike_3
+finger1=scalebane_signet,id=193768,bonus_id=8780/8767,ilevel=447,gem_id=192919,enchant=devotion_of_critical_strike_3
 finger2=onyx_impostors_birthright,id=204398,bonus_id=8780,ilevel=450,gem_id=192919,enchant=devotion_of_critical_strike_3
 trinket1=ominous_chromatic_essence,id=203729,ilevel=444
-trinket2=irideus_fragment,id=193743,bonus_id=6652/1643/8767,ilevel=447
-main_hand=erethos_the_empty_promise,id=202565,ilevel=450,enchant=wafting_devotion_3
+trinket2=spoils_of_neltharus,id=193773,bonus_id=6652/1643/8767,ilevel=447
+main_hand=naszuro_the_unbound_legacy,id=204177,bonus_id=9408/1429,enchant=wafting_devotion_3
+off_hand=echos_maddening_volume,id=204324,ilevel=450
 
 # Gear Summary
-# gear_ilvl=448.47
-# gear_stamina=22588
-# gear_intellect=8492
+# gear_ilvl=449.00
+# gear_stamina=22698
+# gear_intellect=9223
 # gear_crit_rating=4684
-# gear_haste_rating=2931
-# gear_mastery_rating=5569
-# gear_versatility_rating=187
+# gear_haste_rating=2632
+# gear_mastery_rating=5069
+# gear_versatility_rating=376
 # gear_leech_rating=200
 # gear_armor=5775
 # set_bonus=tier30_2pc=1
