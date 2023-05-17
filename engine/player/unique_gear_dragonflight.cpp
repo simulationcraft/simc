@@ -4276,7 +4276,8 @@ void elementium_pocket_anvil( special_effect_t& e )
           // Retribution Paladin
           404139, 404542, 406647, 407480  // Blessed Hammers, Crusading Strikes, Templar Slash, Templar Strikes
       } };
-      trigger_from_melees = e.player->specialization() == PALADIN_RETRIBUTION;
+      // All Paladin Specs (Even Holy) trigger it from Melee attacks, even without Seal of the Crusader
+      trigger_from_melees = true;
       break;
     case ROGUE:
       driver_id = 408534;
