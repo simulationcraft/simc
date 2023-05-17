@@ -578,8 +578,6 @@ struct player_t : public actor_t
     buff_t* anvil_strike_combat;
     buff_t* anvil_strike_no_combat;
 
-    // Season 1 Thundering M+ Affix
-    buff_t* mark_of_lightning;
   } buffs;
 
   struct debuffs_t

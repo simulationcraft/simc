@@ -4031,11 +4031,6 @@ void player_t::create_buffs()
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-
-      // 10.0 M+ Affix Thundering
-      buffs.mark_of_lightning = make_buff( this, "mark_of_lightning", find_spell( 396369 ) )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_default_value_from_effect( 3 );
     }
   }
   // .. for enemies
@@ -4793,9 +4788,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 
   m *= 1.0 + racials.command->effectN(1).percent();
 
-  if (buffs.mark_of_lightning && buffs.mark_of_lightning->check())
-    m *= 1.0 + buffs.mark_of_lightning->check_value();
-
   if (!guardian)
   {
     if (buffs.coldhearted && buffs.coldhearted->check())
@@ -4850,9 +4842,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.coldhearted && buffs.coldhearted->check() )
     m *= 1.0 + buffs.coldhearted->check_value();
-
-  if ( buffs.mark_of_lightning && buffs.mark_of_lightning->check() )
-    m *= 1.0 + buffs.mark_of_lightning->check_value();
 
   return m;
 }
