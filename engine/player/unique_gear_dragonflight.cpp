@@ -3815,29 +3815,60 @@ void screaming_black_dragonscale_use( special_effect_t& effect )
 // 402574 Damage Value
 void anshuul_the_cosmic_wanderer( special_effect_t& effect )
 {
-  struct anshuul_the_cosmic_wanderer_t : public generic_aoe_proc_t
+  struct anshuul_channel_t : public proc_spell_t
   {
-    anshuul_the_cosmic_wanderer_t( const special_effect_t& e )
-      : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true )
+    anshuul_channel_t( const special_effect_t& e )
+      : proc_spell_t( "anshuul_channel", e.player, e.driver(), e.item )
     {
-      base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
+      tick_action              = create_proc_action<generic_aoe_proc_t>( "anshuul_the_cosmic_wanderer", e,
+                                                            "anshuul_the_cosmic_wanderer", e.driver(), true );
+      tick_action->base_dd_min = tick_action->base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
+      tick_action->base_execute_time = 0_s;
+
+      channeled = hasted_ticks = true;
+      dot_duration = base_tick_time = base_execute_time;
+      base_execute_time             = 0_s;
+      interrupt_auto_attack         = false;
+      effect                        = &e;
+      // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
+      ability_lag        = sim->queue_lag;
+      ability_lag_stddev = sim->queue_lag_stddev;
+      // Child action handles travel time
+      min_travel_time = travel_speed = travel_delay = 0;
     }
 
     void execute() override
     {
-      generic_aoe_proc_t::execute();
+      proc_spell_t::execute();
       event_t::cancel( player->readying );
+      player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
     }
 
-    void impact( action_state_t* s ) override
+    void last_tick( dot_t* d ) override
     {
-      generic_aoe_proc_t::impact( s );
-      if ( !player->readying )
-        player->schedule_ready( this->execute_time() );
+      bool was_channeling = player->channeling == this;
+      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+
+      // Cancelled before the last tick completed, and there isn't a tick scheduled.
+      if ( d->end_event && !d->tick_event )
+      {
+        cooldown->reset( false );
+        cdgrp->reset( false );
+      }
+      else
+      {
+        cooldown->adjust( d->duration() );
+        cdgrp->adjust( d->duration() );
+      }
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( 0_ms );
     }
   };
-  auto damage = create_proc_action<anshuul_the_cosmic_wanderer_t>( "anshuul_the_cosmic_wanderer", effect );
 
+  auto damage           = create_proc_action<anshuul_channel_t>( "anshuul_channel", effect );
   effect.execute_action = damage;
 }
 
