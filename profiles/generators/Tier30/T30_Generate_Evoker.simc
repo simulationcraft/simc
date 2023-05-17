@@ -23,6 +23,7 @@ finger1=,id=193768,bonus_id=8780/8767,enchant=devotion_of_critical_strike_3,gem_
 finger2=,id=204398,bonus_id=8780,enchant=devotion_of_critical_strike_3,gem_id=192919,ilevel=450
 trinket1=,id=203729,ilevel=444
 trinket2=,id=193773,bonus_id=6652/1643/8767,ilevel=447
-main_hand=,id=202565,enchant=wafting_devotion_3,ilevel=450
+main_hand=,id=204177,enchant=wafting_devotion_3,bonus_id=9408/1429
+off_hand=,id=204324,ilevel=450
 
 save=T30_Evoker_Devastation.simc
