@@ -280,6 +280,55 @@ struct evoker_t : public player_t
     player_talent_t iridescence;
 
     // Preservation Traits
+
+    // Augmentation Traits
+    player_talent_t ebon_might;
+    const spell_data_t* ebon_might_self_buff;
+    player_talent_t eruption;
+    player_talent_t essence_burst;
+    // Imposing Presence / Inner Radiance - Non DPS
+    player_talent_t ricocheting_pyroclast;
+    // Essence Attunement - Devastation also has
+    player_talent_t pupil_of_alexstrasza;
+    player_talent_t echoing_strike;
+    player_talent_t upheavel;
+    player_talent_t breath_of_eons;
+    // Defy Fate - Non DPS
+    // Timelessness - Non DPS
+    // Seismic Slam - Non DPS
+    player_talent_t volcanism;
+    // Perilous Fate / Chrono Ward - Non DPS
+    // Stretch Time - Non DPS
+    // Geomancy - Non DPS
+    // Bestow Weyrnstone - Non DPS
+    player_talent_t blistering_scales;
+    // Draconic Attunements - Non DPS
+    // Spatial Paradox Non DPS - Movement DPS Gain?
+    player_talent_t unyielding_domain;
+    player_talent_t tectonic_locus;
+    player_talent_t regenerative_chitin;
+    player_talent_t molten_blood;
+    // Power Nexus - Devastation also has
+    // Aspects' Favor - Non DPS
+    player_talent_t plot_the_future;
+    player_talent_t dream_of_spring;
+    // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
+    player_talent_t reactive_hide;
+    // Hoarded Power - Devas Has
+    player_talent_t ignition_rush;
+    player_talent_t prescience;
+    // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
+    player_talent_t momentum_shift;
+    player_talent_t infernos_blessing;
+    player_talent_t time_skip;
+    player_talent_t accretion;
+    player_talent_t anachronism;
+    player_talent_t motes_of_possibility;
+    // Font of Magic - Devastation ha
+    player_talent_t tomorrow_today;
+    player_talent_t interwoven_threads;
+    player_talent_t overlord;
+    player_talent_t fate_mirror;
   } talent;
 
   // Benefits
@@ -2516,6 +2565,56 @@ void evoker_t::init_spells()
   talent.iridescence               = ST( "Iridescence" );
   // Preservation Traits
 
+  // Augmentation Traits
+  talent.ebon_might            = ST( "Ebon Might" );
+  talent.ebon_might_self_buff  = find_spell( 395296 );
+  talent.eruption              = ST( "Eruption" );
+  talent.essence_burst         = ST( "Essence Burst" );
+  // Imposing Presence / Inner Radiance - Non DPS
+  talent.ricocheting_pyroclast = ST( "Ricocheting Pyroclast" );
+  // Essence Attunement - Devastation also has
+  talent.pupil_of_alexstrasza  = ST( "Pupil of Alexstrasza" );
+  talent.echoing_strike        = ST( "Echoing Strike" );
+  talent.upheavel              = ST( "Upheavel" );
+  talent.breath_of_eons        = ST( "Breath of Eons" );
+  // Defy Fate - Non DPS
+  // Timelessness - Non DPS
+  // Seismic Slam - Non DPS
+  talent.volcanism             = ST( "Volcanism" );
+  // Perilous Fate / Chrono Ward - Non DPS
+  // Stretch Time - Non DPS
+  // Geomancy - Non DPS
+  // Bestow Weyrnstone - Non DPS
+  talent.blistering_scales     = ST( "Blistering Scales" );
+  // Draconic Attunements - Non DPS
+  // Spatial Paradox Non DPS - Movement DPS Gain?
+  talent.unyielding_domain     = ST( "Unyielding Domain" );
+  talent.tectonic_locus        = ST( "Tectonic Locus" );
+  talent.regenerative_chitin   = ST( "Regenerative Chitin" );
+  talent.molten_blood          = ST( "Molten Blood" );
+  // Power Nexus - Devastation also has
+  // Aspects' Favor - Non DPS
+  talent.plot_the_future       = ST( "Plot the Future" );
+  talent.dream_of_spring       = ST( "Dream of Spring" );
+  // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
+  talent.reactive_hide         = ST( "Reactive Hide" );
+  // Hoarded Power - Devas Has
+  talent.ignition_rush         = ST( "Ignition Rush" );
+  talent.prescience            = ST( "Prescience" );
+  // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
+  talent.momentum_shift        = ST( "Momentum Shift" );
+  talent.infernos_blessing     = ST( "Inferno's Blessing" );
+  talent.time_skip             = ST( "Time Skip" );
+  talent.accretion             = ST( "Accretion" );
+  talent.anachronism           = ST( "Anachronism" );
+  talent.motes_of_possibility  = ST( "Motes of Possibility" );
+  // Font of Magic - Devastation ha
+  talent.tomorrow_today        = ST( "Tomorrow, Today" );
+  talent.interwoven_threads    = ST( "Interwoven Threads" );
+  talent.overlord              = ST( "Overlord" );
+  talent.fate_mirror           = ST( "Fate Mirror" );
+
+
   // Evoker Specialization Spells
   spec.evoker              = find_spell( 353167 );  // TODO: confirm this is the class aura
   spec.devastation         = find_specialization_spell( "Devastation Evoker" );
@@ -2571,9 +2670,17 @@ void evoker_t::create_buffs()
   using e_buff_t = evoker_buff_t<buff_t>;
 
   // Baseline Abilities
-  buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst",
-                                            find_spell( specialization() == EVOKER_DEVASTATION ? 359618 : 369299 ) )
-                           ->apply_affecting_aura( talent.essence_attunement );
+
+  if ( specialization() == EVOKER_DEVASTATION )
+  {
+    buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 359618 ) )
+                             ->apply_affecting_aura( talent.essence_attunement );
+  }
+  else
+  {
+    buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", talent.essence_burst )
+                             ->apply_affecting_aura( talent.essence_attunement );
+  }
 
   buff.essence_burst_titanic_wrath_disintegrate =
       make_buff<e_buff_t>( this, "essence_burst_titanic_wrath_disintegrate", find_spell( 397870 ) )
