@@ -211,7 +211,7 @@ struct evoker_t : public player_t
     player_talent_t attuned_to_the_dream;
     player_talent_t sleep_walk;
     player_talent_t draconic_legacy;  // row 6
-    player_talent_t tempered_scales;
+    player_talent_t inherent_resistance;
     player_talent_t extended_flight;
     player_talent_t bountiful_bloom;
     player_talent_t blast_furnace;  // row 7
@@ -2610,7 +2610,7 @@ void evoker_t::init_spells()
   talent.tip_the_scales       = CT( "Tip the Scales" );
   talent.attuned_to_the_dream = CT( "Attuned to the Dream" );  // healing received NYI
   talent.draconic_legacy      = CT( "Draconic Legacy" );       // Row 6
-  talent.tempered_scales      = CT( "Tempered Scales" );
+  talent.inherent_resistance  = CT( "Inherent Resistance" );
   talent.extended_flight      = CT( "Extended Flight" );
   talent.bountiful_bloom      = CT( "Bountiful Bloom" );
   talent.blast_furnace        = CT( "Blast Furnace" );  // Row 7
@@ -3268,9 +3268,9 @@ void evoker_t::target_mitigation( school_e school, result_amount_type rt, action
       s->result_amount *= 1.0 + eff.percent();
   }
 
-  if ( talent.tempered_scales.ok() )
+  if ( talent.inherent_resistance.ok() )
   {
-    auto eff = talent.tempered_scales->effectN( 1 );
+    auto eff = talent.inherent_resistance->effectN( 1 );
     if ( eff.has_common_school( school ) )
       s->result_amount *= 1.0 + eff.percent();
   }
