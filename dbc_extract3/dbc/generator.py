@@ -2237,6 +2237,8 @@ class SpellDataGenerator(DataGenerator):
           ( 409848, 1 ), # 4t30 buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
+          # Augmentation
+          ( 392268, 3), # Augmentation Essence Burst
        ),
     ]
 
