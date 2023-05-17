@@ -3817,7 +3817,8 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
 {
   struct anshuul_damage_t : public generic_aoe_proc_t
   {
-    anshuul_damage_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true)
+    anshuul_damage_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "anshuul_the_cosmic_wanderer", e.driver(), true )
     {
       base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
     }
@@ -3827,12 +3828,13 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
   {
     action_t* damage;
     anshuul_channel_t( const special_effect_t& e )
-      : proc_spell_t( "anshuul_channel", e.player, e.driver(), e.item ), 
+      : proc_spell_t( "anshuul_channel", e.player, e.driver(), e.item ),
         damage( create_proc_action<anshuul_damage_t>( "anshuul_the_cosmic_wanderer", e ) )
     {
       channeled = hasted_ticks = true;
       dot_duration = base_tick_time = base_execute_time;
       base_execute_time             = 0_s;
+      aoe                           = 0;
       interrupt_auto_attack         = false;
       effect                        = &e;
       // This is actually a cast, you can queue spells out of it - Do not incur channel lag.
@@ -3852,7 +3854,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
     void last_tick( dot_t* d ) override
     {
       bool was_channeling = player->channeling == this;
-      auto cdgrp = player->get_cooldown( effect->cooldown_group_name() );
+      auto cdgrp          = player->get_cooldown( effect->cooldown_group_name() );
 
       // Cancelled before the last tick completed, reset the cd
       if ( d->end_event )
@@ -3867,7 +3869,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
       }
 
       proc_spell_t::last_tick( d );
-      damage -> execute();
+      damage->execute();
       if ( was_channeling && !player->readying )
         player->schedule_ready( 0_ms );
     }
