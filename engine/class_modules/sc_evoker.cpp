@@ -159,6 +159,9 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> feed_the_flames_stacking;
     propagate_const<buff_t*> feed_the_flames_pyre;
 
+    // Legendary
+    propagate_const<buff_t*> unbound_surge;
+
     // Preservation
   } buff;
 
@@ -905,6 +908,9 @@ struct empowered_charge_t : public empowered_base_t<BASE>
       ab::p()->was_empowering = false;
       return;
     }
+
+    if ( ab::p()->buff.unbound_surge )
+      ab::p()->buff.unbound_surge->trigger();
 
     auto emp_state        = release_spell->get_state();
     emp_state->target     = ab::target;
@@ -2260,6 +2266,35 @@ void karnalex_the_first_light( special_effect_t& effect )
     action->base_execute_time = effect.execute_action->base_execute_time;
 }
 
+// Evoker Legendary Weapon Nasz'uro, the Unbound Legacy
+void insight_of_naszuro( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "unbound_surge" } ) )
+    return;
+
+  effect.custom_buff =
+      unique_gear::create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403275 ), effect.item );
+
+  switch ( effect.player->specialization() )
+  {
+    case EVOKER_DEVASTATION:
+      effect.custom_buff->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
+      break;
+    case EVOKER_PRESERVATION:
+      effect.custom_buff->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
+      break;
+    case EVOKER_AUGMENTATION:
+      effect.custom_buff->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 4 ).base_value() ) );
+      break;
+    default:
+      break;
+  }
+
+  if ( auto e = dynamic_cast<evoker_t*>( effect.player ) )
+    e->buff.unbound_surge = effect.custom_buff;
+}
+
+
 void evoker_t::init_action_list()
 {
   // 2022-08-07: Healing is not supported
@@ -3058,6 +3093,7 @@ struct evoker_module_t : public module_t
   void static_init() const override
   {
     unique_gear::register_special_effect( 394927, karnalex_the_first_light );
+    unique_gear::register_special_effect( 405061, insight_of_naszuro, true );
   }
 
   void register_hotfixes() const override
