@@ -2671,15 +2671,22 @@ void evoker_t::create_buffs()
 
   // Baseline Abilities
 
-  if ( specialization() == EVOKER_DEVASTATION )
+  switch ( specialization() )
   {
-    buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 359618 ) )
-                             ->apply_affecting_aura( talent.essence_attunement );
-  }
-  else
-  {
-    buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", talent.essence_burst )
-                             ->apply_affecting_aura( talent.essence_attunement );
+    case EVOKER_PRESERVATION:
+      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 369299 ) )
+                               ->apply_affecting_aura( talent.essence_attunement );
+      break;
+    case EVOKER_DEVASTATION:
+      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 359618 ) )
+                               ->apply_affecting_aura( talent.essence_attunement );
+      break;
+    case EVOKER_AUGMENTATION:
+      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 392268 ) )
+                               ->apply_affecting_aura( talent.essence_attunement );
+      break;
+    default:
+      break;
   }
 
   buff.essence_burst_titanic_wrath_disintegrate =
