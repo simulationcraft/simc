@@ -11802,16 +11802,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return expr_t::create_constant( "initial_orbit_breaker_stacks", options.initial_orbit_breaker_stacks );
   }
 
-  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
-       ( util::str_compare_ci( splits[ 1 ], "kindred_spirits" ) ||
-         util::str_compare_ci( splits[ 1 ], "kindred_empowerment" ) ||
-         util::str_compare_ci( splits[ 1 ], "lone_empowerment" ) ) )
-  {
-    splits[ 1 ] = "empower_bond";
-
-    return druid_t::create_expression( util::string_join( splits, "." ) );
-  }
-
   if ( util::str_compare_ci( name_str, "combo_points" ) )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
 
