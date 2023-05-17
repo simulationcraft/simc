@@ -7695,7 +7695,7 @@ public:
       .verification_value( 30.0 );
 
     for ( auto e_id : { 179703, 191121, 191122, 191124 } )
-      hotfix::register_effect( "Mage", "2023-05-16", fmt::format( "Base value of Frost aura's effect {} is truncated.", e_id ), e_id, hotfix::HOTFIX_FLAG_LIVE )
+      hotfix::register_effect( "Mage", "2023-05-16", fmt::format( "Base value of Frost aura's effect {} is truncated.", e_id ), e_id )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
         .modifier( 9.0 )
