@@ -531,6 +531,55 @@ public:
 
 // Base Classes =============================================================
 
+struct augment_t : public spell_base_t
+{
+private:
+  using ab = spell_base_t;
+
+public:
+  augment_t( std::string_view name, player_t* player, const spell_data_t* spell = spell_data_t::nil() )
+    : ab( ACTION_OTHER, name, player, spell )
+  {
+    harmful = false;
+    if ( !target || target->is_enemy() )
+      target = player;
+  }
+
+  void activate() override
+  {
+    sim->player_no_pet_list.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+  }
+
+  int num_targets() const override
+  {
+    return sim->player_no_pet_list.size();
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const
+  {
+    target_list.clear();
+    target_list.push_back( target );
+
+    for ( const auto& t : sim->player_no_pet_list )
+    {
+      if ( t != target )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
+
+  std::unique_ptr<expr_t> create_expression( util::string_view name )
+  {
+    if ( name_str == "active_allies" )
+    {
+      return make_fn_expr( "active_allies", [ this ] { return num_targets(); } );
+    }
+
+    return spell_base_t::create_expression( name );
+  }
+};
+
 // Template for base evoker action code.
 template <class Base>
 struct evoker_action_t : public Base, public parse_buff_effects_t<evoker_td_t>
@@ -1160,6 +1209,20 @@ public:
     }
 
     return tm;
+  }
+};
+
+struct evoker_augment_t : public evoker_action_t<augment_t>
+{
+private:
+  using ab = evoker_action_t<augment_t>;
+
+public:
+  evoker_augment_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
+                    std::string_view options_str = {} )
+    : ab( name, player, spell )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -2317,26 +2380,25 @@ struct upheaval_t : public empowered_charge_spell_t
   }
 };
 
-struct prescience_t : public heals::evoker_heal_t
+struct prescience_t : public evoker_augment_t
 {
   double anachronism_chance;
 
   prescience_t( evoker_t* p, std::string_view options_str )
-    : evoker_heal_t( "prescience", p, p->talent.prescience, options_str )
+    : evoker_augment_t( "prescience", p, p->talent.prescience, options_str )
   {
     anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
-    harmful            = false;
   }
 
   void impact( action_state_t* s ) override
   {
-    evoker_heal_t::impact( s );
+    evoker_augment_t::impact( s );
 
     p()->get_ally_target_data( s->target )->buffs.prescience->trigger();
   }
   void execute() override
   {
-    evoker_heal_t::execute();
+    evoker_augment_t::execute();
 
     if ( p()->talent.anachronism.ok() && rng().roll( anachronism_chance ) )
     {
