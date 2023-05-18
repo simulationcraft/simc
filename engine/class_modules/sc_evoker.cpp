@@ -66,6 +66,19 @@ struct evoker_td_t : public actor_target_data_t
   evoker_td_t( player_t* target, evoker_t* source );
 };
 
+struct evoker_ally_td_t : public actor_pair_t, private noncopyable
+{
+  struct buffs_t
+  {
+    buff_t* blistering_scales;
+    buff_t* prescience;
+    buff_t* ebon_might;
+    buff_t* shifting_sands;
+  } buffs;
+
+  evoker_ally_td_t( player_t* target, evoker_t* source );
+};
+
 template <typename Data, typename Base = action_state_t>
 struct evoker_action_state_t : public Base, public Data
 {
@@ -320,6 +333,7 @@ struct evoker_t : public player_t
     // Hoarded Power - Devas Has
     player_talent_t ignition_rush;
     player_talent_t prescience;
+    const spell_data_t* prescience_buff;
     // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
     player_talent_t momentum_shift;
     player_talent_t infernos_blessing;
@@ -361,6 +375,7 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
+    propagate_const<proc_t*> anachronism_essence_burst;
   } proc;
 
   // RPPMs
@@ -414,6 +429,9 @@ struct evoker_t : public player_t
   target_specific_t<evoker_td_t> target_data;
   const evoker_td_t* find_target_data( const player_t* target ) const override;
   evoker_td_t* get_target_data( player_t* target ) const override;
+  target_specific_t<evoker_ally_td_t> ally_target_data;
+  const evoker_ally_td_t* find_ally_target_data( const player_t* target ) const;
+  evoker_ally_td_t* get_ally_target_data( player_t* target ) const;
 
   void apply_affecting_auras( action_t& action ) override;
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
@@ -474,6 +492,12 @@ public:
   evoker_buff_t( evoker_t* player, std::string_view name, const spell_data_t* spell = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : bb( player, name, spell, item )
+  {
+  }
+
+  evoker_buff_t( evoker_ally_td_t& td, std::string_view name, const spell_data_t* spell = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : bb( td, name, spell, item )
   {
   }
 
@@ -2293,7 +2317,34 @@ struct upheaval_t : public empowered_charge_spell_t
   }
 };
 
+struct prescience_t : public heals::evoker_heal_t
+{
+  double anachronism_chance;
 
+  prescience_t( evoker_t* p, std::string_view options_str )
+    : evoker_heal_t( "prescience", p, p->talent.prescience, options_str )
+  {
+    anachronism_chance = p->talent.anachronism->effectN( 1 ).percent();
+    harmful            = false;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_heal_t::impact( s );
+
+    p()->get_ally_target_data( s->target )->buffs.prescience->trigger();
+  }
+  void execute() override
+  {
+    evoker_heal_t::execute();
+
+    if ( p()->talent.anachronism.ok() && rng().roll( anachronism_chance ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.anachronism_essence_burst->occur();
+    }
+  }
+};
 
 }  // end namespace spells
 
@@ -2312,6 +2363,25 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
+}
+
+evoker_ally_td_t::evoker_ally_td_t( player_t* target, evoker_t* evoker )
+  : actor_pair_t( target, evoker ), buffs()
+{
+  using e_buff_t = buffs::evoker_buff_t<buff_t>;
+
+  buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
+                             ->set_default_value( evoker->cache.mastery_value() )
+                             ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+
+  buffs.ebon_might = make_buff<e_buff_t>( *this, "ebon_might", evoker->find_spell( 395152 ) )->set_cooldown( 0_ms );
+
+  buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
+                         ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
+                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                         ->set_chance( 1.0 );
+
+  buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->find_spell( 360827 ) );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -2563,8 +2633,9 @@ void evoker_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.ruby_essence_burst  = get_proc( "Ruby Essence Burst" );
-  proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
+  proc.ruby_essence_burst        = get_proc( "Ruby Essence Burst" );
+  proc.azure_essence_burst       = get_proc( "Azure Essence Burst" );
+  proc.anachronism_essence_burst = get_proc( "Anachronism" );
 }
 
 void evoker_t::init_base_stats()
@@ -2704,6 +2775,7 @@ void evoker_t::init_spells()
   // Hoarded Power - Devas Has
   talent.ignition_rush         = ST( "Ignition Rush" );
   talent.prescience            = ST( "Prescience" );
+  talent.prescience_buff       = find_spell( 410089 );
   // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
   talent.momentum_shift        = ST( "Momentum Shift" );
   talent.infernos_blessing     = ST( "Inferno's Blessing" );
@@ -3030,6 +3102,19 @@ evoker_td_t* evoker_t::get_target_data( player_t* target ) const
   return td;
 }
 
+const evoker_ally_td_t* evoker_t::find_ally_target_data( const player_t* target ) const
+{
+  return ally_target_data[ target ];
+}
+
+evoker_ally_td_t* evoker_t::get_ally_target_data( player_t* target ) const
+{
+  evoker_ally_td_t*& td = ally_target_data[ target ];
+  if ( !td )
+    td = new evoker_ally_td_t( target, const_cast<evoker_t*>( this ) );
+  return td;
+}
+
 void evoker_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -3121,7 +3206,8 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new eruption_t( this, options_str );
   if ( name == "upheaval" )
     return new upheaval_t( this, options_str );
-  
+  if ( name == "prescience" )
+    return new prescience_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3135,6 +3221,14 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
   if ( splits.size() >= 2 )
   {
+    if ( splits.size() == 3 )
+    {
+      if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
+      {
+        get_ally_target_data( this );
+      }
+    }
+
     if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "use_clipping" ) )
@@ -3368,7 +3462,7 @@ struct evoker_module_t : public module_t
     return true;
   }
 
-  void init( player_t* ) const override
+  void init( player_t* p ) const override
   {
   }
 
