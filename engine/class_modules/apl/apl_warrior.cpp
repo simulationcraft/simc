@@ -48,7 +48,8 @@ void fury( player_t* p )
   //   default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
 
   default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)" );
-  default_list->add_action( "use_item,name=irideus_fragment,if=buff.recklessness.up" );
+  default_list->add_action( "use_item,name=vial_of_animated_blood,if=buff.avatar.up" );
+  default_list->add_action( "use_item,name=irideus_fragment,if=buff.avatar.up" );
   default_list->add_action( "use_item,name=manic_grieftorch,if=buff.avatar.down" );
   default_list->add_action( "use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)" );
   default_list->add_action( "use_items");
@@ -84,6 +85,8 @@ void fury( player_t* p )
   multi_target->add_action( "execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd" );
   multi_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   multi_target->add_action( "odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15" );
+  multi_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
+  multi_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   multi_target->add_action( "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
   multi_target->add_action( "execute,if=buff.enrage.up" );
   multi_target->add_action( "odyns_fury,if=buff.enrage.up&raid_event.adds.in>15" );
@@ -110,6 +113,8 @@ void fury( player_t* p )
   single_target->add_action( "thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
   single_target->add_action( "odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)" );
   single_target->add_action( "rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)" );
+  single_target->add_action( "bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
+  single_target->add_action( "bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95" );
   single_target->add_action( "execute,if=buff.enrage.up" );
   single_target->add_action( "onslaught,if=buff.enrage.up|talent.tenderize" );
   single_target->add_action( "crushing_blow,if=talent.wrath_and_fury&buff.enrage.up" );
@@ -162,6 +167,7 @@ void arms( player_t* p )
 
 
   default_list->add_action( "use_item,name=algethar_puzzle_box,if=cooldown.avatar.remains<3" );
+  default_list->add_action( "use_item,name=vial_of_animated_blood,if=buff.avatar.up" );
   default_list->add_action( "use_item,name=irideus_fragment,if=buff.avatar.up" );
   default_list->add_action( "use_item,name=manic_grieftorch,if=!buff.avatar.up&!debuff.colossus_smash.up" );
   default_list->add_action( "use_item,name=gladiators_badge,if=gcd.remains=0&debuff.colossus_smash.remains>8|target.time_to_die<25" );
@@ -213,6 +219,7 @@ void arms( player_t* p )
   hac->add_action( "cleave,if=active_enemies>2|!talent.battlelord&buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd" );
   hac->add_action( "whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)" );
   hac->add_action( "skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)" );
+  hac->add_action( "mortal_strike,if=buff.sweeping_strikes.up&buff.crushing_advance.stack=3,if=set_bonus.tier30_4pc" );
   hac->add_action( "overpower,if=buff.sweeping_strikes.up&talent.dreadnaught" );
   hac->add_action( "mortal_strike,cycle_targets=1,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2" );
   hac->add_action( "execute,cycle_targets=1,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up" );
@@ -308,7 +315,6 @@ void protection( player_t* p )
   generic->add_action( "thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down" );
   generic->add_action( "execute,if=buff.sudden_death.up&talent.sudden_death.enabled" );
   generic->add_action( "execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50" );
-  generic->add_action( "execute,if=spell_targets.revenge=1&rage>=50" );
   generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)" );
   generic->add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
   generic->add_action( "execute,if=spell_targets.revenge=1" );
