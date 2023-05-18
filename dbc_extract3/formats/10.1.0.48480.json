@@ -261,6 +261,11 @@
       { "data_type": "f", "field": "unk_2", "formats": { "cpp": "%9.3f" } }
     ]
   },
+  "CraftingReagentRequirement": {
+    "fields": [
+      { "data_type": "i", "field": "id_reagent" }
+    ]
+  },
   "CraftingQuality": {
     "fields": [
       { "data_type": "i", "field": "tier" }
