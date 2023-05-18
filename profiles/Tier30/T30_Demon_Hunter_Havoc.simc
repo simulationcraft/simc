@@ -1,0 +1,137 @@
+demonhunter="T30_Demon_Hunter_Havoc"
+source=default
+spec=havoc
+level=70
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=BEkAAAAAAAAAAAAAAAAAAAAAAQAJkSEaJJSSkGCAAAAAAAkg0SJSSKSi0SC5AJJJRA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=iced_phial_of_corrupting_rage_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3/off_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=3min_trinket,value=trinket.1.cooldown.duration=180|trinket.2.cooldown.duration=180
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)
+actions.precombat+=/arcane_torrent
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/sigil_of_flame,if=!equipped.algethar_puzzle_box
+actions.precombat+=/immolation_aura
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/retarget_auto_attack,line_cd=1,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound<(spell_targets>?3)
+actions+=/retarget_auto_attack,line_cd=1,target_if=min:!target.is_boss,if=talent.burning_wound&talent.demon_blades&active_dot.burning_wound=(spell_targets>?3)
+# Blade Dance with First Blood, Trail of Ruin, Chaos Theory, or at 2+ targets
+actions+=/variable,name=blade_dance,value=talent.first_blood|talent.trail_of_ruin|talent.chaos_theory&buff.chaos_theory.down|spell_targets.blade_dance1>1
+actions+=/variable,name=pooling_for_blade_dance,value=variable.blade_dance&fury<(75-talent.demon_blades*20)&cooldown.blade_dance.remains<gcd.max
+actions+=/variable,name=pooling_for_eye_beam,value=talent.demonic&!talent.blind_fury&cooldown.eye_beam.remains<(gcd.max*2)&fury.deficit>20
+actions+=/variable,name=waiting_for_momentum,value=talent.momentum&!buff.momentum.up
+actions+=/variable,name=holding_meta,value=(talent.demonic&talent.essence_break)&variable.3min_trinket&fight_remains>cooldown.metamorphosis.remains+30+talent.shattered_destiny*60&cooldown.metamorphosis.remains<20&cooldown.metamorphosis.remains>action.eye_beam.execute_time+gcd.max*(talent.inner_demon+2)
+actions+=/invoke_external_buff,name=power_infusion,if=time>170&!variable.holding_meta
+actions+=/immolation_aura,if=talent.ragefire&active_enemies>=3&(cooldown.blade_dance.remains|debuff.essence_break.down)
+actions+=/throw_glaive,if=talent.soulrend&talent.furious_throws&active_enemies>=3&time<1
+actions+=/disrupt
+actions+=/fel_rush,if=buff.unbound_chaos.up&(buff.unbound_chaos.remains<gcd.max*2|target.time_to_die<gcd.max*2)
+actions+=/call_action_list,name=cooldown
+actions+=/call_action_list,name=meta_end,if=buff.metamorphosis.up&buff.metamorphosis.remains<gcd.max&active_enemies<3
+actions+=/pick_up_fragment,type=demon,if=demon_soul_fragments>0&(cooldown.eye_beam.remains<6|buff.metamorphosis.remains>5)&buff.empowered_demon_soul.remains<3|fight_remains<17
+actions+=/pick_up_fragment,mode=nearest,if=talent.demonic_appetite&fury.deficit>=35&(!cooldown.eye_beam.ready|fury<30)
+actions+=/annihilation,if=buff.inner_demon.up&cooldown.metamorphosis.remains<=gcd*3
+actions+=/vengeful_retreat,use_off_gcd=1,if=talent.initiative&talent.essence_break&time>1&(cooldown.essence_break.remains>15|cooldown.essence_break.remains<gcd.max&(!talent.demonic|buff.metamorphosis.up|cooldown.eye_beam.remains>15+(10*talent.cycle_of_hatred)))&(time<30|gcd.remains-1<0)&!talent.any_means_necessary
+actions+=/vengeful_retreat,use_off_gcd=1,if=talent.initiative&talent.essence_break&time>1&(cooldown.essence_break.remains>15|cooldown.essence_break.remains<gcd.max*2&(buff.initiative.remains<gcd.max&!variable.holding_meta&cooldown.eye_beam.remains=gcd.remains&(raid_event.adds.in>(40-talent.cycle_of_hatred*15))&fury>30|!talent.demonic|buff.metamorphosis.up|cooldown.eye_beam.remains>15+(10*talent.cycle_of_hatred)))&talent.any_means_necessary
+actions+=/vengeful_retreat,use_off_gcd=1,if=talent.initiative&!talent.essence_break&time>1&!buff.momentum.up
+actions+=/wait,sec=buff.out_of_range.remains,if=buff.out_of_range.up&buff.out_of_range.remains<gcd.max
+actions+=/fel_rush,if=talent.momentum.enabled&buff.momentum.remains<gcd.max*2&(charges_fractional>1.8|cooldown.eye_beam.remains<3)&debuff.essence_break.down
+actions+=/essence_break,if=(active_enemies>desired_targets|raid_event.adds.in>40)&!variable.waiting_for_momentum&(buff.metamorphosis.up)&(!talent.tactical_retreat|buff.tactical_retreat.up)|fight_remains<6
+actions+=/death_sweep,if=variable.blade_dance&(!talent.essence_break|cooldown.essence_break.remains>(cooldown.death_sweep.duration-4))
+actions+=/fel_barrage,if=active_enemies>desired_targets|raid_event.adds.in>30
+actions+=/glaive_tempest,if=(active_enemies>desired_targets|raid_event.adds.in>10)&(debuff.essence_break.down|active_enemies>1)
+actions+=/annihilation,if=buff.inner_demon.up&cooldown.eye_beam.remains<=gcd
+actions+=/fel_rush,if=talent.momentum.enabled&cooldown.eye_beam.remains<gcd.max*3&buff.momentum.remains<5&buff.metamorphosis.down
+actions+=/the_hunt,if=debuff.essence_break.down&(time<10|cooldown.metamorphosis.remains>10|!equipped.algethar_puzzle_box)&(raid_event.adds.in>90|active_enemies>3|time_to_die<10)&(time>8&debuff.essence_break.down|!set_bonus.tier30_2pc)
+actions+=/throw_glaive,if=talent.serrated_glaive&cooldown.eye_beam.remains<6&!debuff.serrated_glaive.up&!debuff.essence_break.up&cooldown.blade_dance.remains
+actions+=/eye_beam,if=active_enemies>desired_targets|raid_event.adds.in>(40-talent.cycle_of_hatred*15)&!debuff.essence_break.up&(cooldown.metamorphosis.remains>40-talent.cycle_of_hatred*15|!variable.holding_meta)&(buff.metamorphosis.down|buff.metamorphosis.remains>gcd.max|!talent.restless_hunter)&(buff.metamorphosis.down|cooldown.blade_dance.remains>gcd.max)|fight_remains<15
+actions+=/blade_dance,if=variable.blade_dance&(cooldown.eye_beam.remains>5|equipped.algethar_puzzle_box&cooldown.metamorphosis.remains>(cooldown.blade_dance.duration)|!talent.demonic|(raid_event.adds.in>cooldown&raid_event.adds.in<25))
+actions+=/sigil_of_flame,if=talent.any_means_necessary&debuff.essence_break.down&active_enemies>=4
+actions+=/throw_glaive,if=talent.soulrend&(active_enemies>desired_targets|raid_event.adds.in>full_recharge_time+9)&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up&(full_recharge_time<gcd.max*3|active_enemies>1)
+actions+=/immolation_aura,if=fury<70&debuff.essence_break.down&time_to_die>3
+actions+=/sigil_of_flame,if=talent.any_means_necessary&debuff.essence_break.down
+actions+=/annihilation,if=!variable.pooling_for_blade_dance
+actions+=/throw_glaive,if=talent.soulrend&(active_enemies>desired_targets|raid_event.adds.in>full_recharge_time+9)&spell_targets>=(2-talent.furious_throws)&!debuff.essence_break.up
+actions+=/immolation_aura,if=!buff.immolation_aura.up&(!talent.ragefire|active_enemies>desired_targets|raid_event.adds.in>15)
+actions+=/fel_rush,if=talent.isolated_prey&active_enemies=1&fury.deficit>=35
+actions+=/chaos_strike,if=!variable.pooling_for_blade_dance&!variable.pooling_for_eye_beam
+actions+=/sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30
+actions+=/felblade,if=fury.deficit>=40
+actions+=/fel_rush,if=!talent.momentum&talent.demon_blades&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions+=/demons_bite,target_if=min:debuff.burning_wound.remains,if=talent.burning_wound&debuff.burning_wound.remains<4&active_dot.burning_wound<(spell_targets>?3)
+actions+=/fel_rush,if=!talent.momentum&!talent.demon_blades&spell_targets>1&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))
+actions+=/sigil_of_flame,if=raid_event.adds.in>15&fury.deficit>=30
+actions+=/demons_bite
+actions+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.momentum)
+actions+=/vengeful_retreat,if=!talent.initiative&movement.distance>15
+actions+=/throw_glaive,if=(talent.demon_blades|buff.out_of_range.up)&!debuff.essence_break.up
+actions+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=fight_remains<20|charges=3|cooldown.vengeful_retreat.remains<5
+actions+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1
+
+# Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over
+actions.cooldown=metamorphosis,if=!talent.demonic&((!talent.chaotic_transformation|cooldown.eye_beam.remains>20)&active_enemies>desired_targets|raid_event.adds.in>60|fight_remains<25)
+actions.cooldown+=/metamorphosis,if=talent.demonic&(!talent.chaotic_transformation|cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25+talent.shattered_destiny*70&cooldown.eye_beam.remains&cooldown.blade_dance.remains)
+actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|buff.metamorphosis.up&cooldown.metamorphosis.ready|fight_remains<60|time>0.1&time<10
+actions.cooldown+=/use_item,name=manic_grieftorch,use_off_gcd=1,if=buff.vengeful_retreat_movement.down&((buff.initiative.remains>2&debuff.essence_break.down&cooldown.essence_break.remains>gcd.max&time>14|time_to_die<10|time<1&!equipped.algethar_puzzle_box|fight_remains%%120<5)&!prev_gcd.1.essence_break)
+actions.cooldown+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=cooldown.metamorphosis.remains<=gcd.max*5|fight_remains%%180>10&fight_remains%%180<22|fight_remains<25
+actions.cooldown+=/elysian_decree,if=(active_enemies>desired_targets|raid_event.adds.in>30)
+# Default use item logic
+actions.cooldown+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.1.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot)&(!talent.initiative|buff.initiative.up)
+actions.cooldown+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.2.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot)&(!talent.initiative|buff.initiative.up)
+actions.cooldown+=/use_item,name=stormeaters_boon,use_off_gcd=1,if=cooldown.metamorphosis.remains&(!talent.momentum|buff.momentum.remains>5)&(active_enemies>1|raid_event.adds.in>140)
+
+actions.meta_end=death_sweep
+actions.meta_end+=/annihilation
+
+head=kinslayers_hood,id=202524,bonus_id=1478/6652/7981/1498/8767/8780,gem_id=192982
+neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/1537/8782,gem_id=192919/192919/192919,crafted_stats=32/36
+shoulders=kinslayers_tainted_spaulders,id=202522,bonus_id=1481/6652/7981/1498/8767
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/7981/1498/8767
+chest=kinslayers_vest,id=202527,bonus_id=6652/7981/1498/8767,enchant_id=6625
+wrists=needlessly_complex_wristguards,id=198327,bonus_id=8836/8840/8902/1537/8780,gem_id=192919,crafted_stats=32
+hands=kinslayers_bloodstained_grips,id=202525,bonus_id=1475/6652/7981/1498/8767
+waist=oblivions_immortal_coil,id=204399,bonus_id=6652/7981/1498/8767/8780,gem_id=192919
+legs=lifebound_trousers,id=193408,bonus_id=8836/8840/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
+feet=toxic_thorn_footwraps,id=193452,bonus_id=8836/8840/8902/1537/8960
+finger1=seal_of_diurnas_chosen,id=195480,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/7981/1498/8767/8780,gem_id=192919,enchant_id=6550
+trinket1=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/7981/1498/8767
+trinket2=elementium_pocket_anvil,id=202617,bonus_id=6652/7981/1498/8767
+main_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
+off_hand=bilestained_crawg_tusks,id=159653,bonus_id=3291/6652/7981/1498/8767,enchant_id=6655
+
+# Gear Summary
+# gear_ilvl=446.38
+# gear_agility=6806
+# gear_stamina=22135
+# gear_crit_rating=6412
+# gear_haste_rating=2845
+# gear_mastery_rating=1452
+# gear_versatility_rating=1190
+# gear_armor=4003
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1

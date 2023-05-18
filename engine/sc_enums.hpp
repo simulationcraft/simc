@@ -685,6 +685,7 @@ enum school_e
   SCHOOL_ELEMENTAL,
   SCHOOL_COSMIC,
   SCHOOL_CHROMATIC,
+  SCHOOL_CHROMASTRIKE,
   SCHOOL_MAGIC,
   SCHOOL_CHAOS,
   SCHOOL_DRAIN,
@@ -714,33 +715,23 @@ const int64_t SCHOOL_ATTACK_MASK = ( ( int64_t( 1 ) << SCHOOL_PHYSICAL ) |
                                      ( int64_t( 1 ) << SCHOOL_COSMIC ) );
 // SCHOOL_CHAOS should probably be added here too.
 
-const int64_t SCHOOL_SPELL_MASK(
-    ( int64_t( 1 ) << SCHOOL_ARCANE ) | ( int64_t( 1 ) << SCHOOL_CHAOS ) |
-    ( int64_t( 1 ) << SCHOOL_FIRE ) | ( int64_t( 1 ) << SCHOOL_FROST ) |
-    ( int64_t( 1 ) << SCHOOL_FROSTFIRE ) | ( int64_t( 1 ) << SCHOOL_HOLY ) |
-    ( int64_t( 1 ) << SCHOOL_NATURE ) | ( int64_t( 1 ) << SCHOOL_SHADOW ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYFIRE ) |
-    ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYSTORM ) |
-    ( int64_t( 1 ) << SCHOOL_FIRESTORM ) |
-    ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_HOLYFROST ) |
-    ( int64_t( 1 ) << SCHOOL_FROSTSTORM ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWLIGHT ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWFLAME ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWSTORM ) |
-    ( int64_t( 1 ) << SCHOOL_SHADOWFROST ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) | ( int64_t( 1 ) << SCHOOL_DIVINE ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLFIRE ) |
-    ( int64_t( 1 ) << SCHOOL_ASTRAL ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLFROST ) |
-    ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
-    ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) |
-    ( int64_t( 1 ) << SCHOOL_COSMIC ) |
-    ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_MAGIC ) );
+const int64_t SCHOOL_SPELL_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) | ( int64_t( 1 ) << SCHOOL_CHAOS ) |
+                                 ( int64_t( 1 ) << SCHOOL_FIRE ) | ( int64_t( 1 ) << SCHOOL_FROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTFIRE ) | ( int64_t( 1 ) << SCHOOL_HOLY ) |
+                                 ( int64_t( 1 ) << SCHOOL_NATURE ) | ( int64_t( 1 ) << SCHOOL_SHADOW ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLYSTRIKE ) | ( int64_t( 1 ) << SCHOOL_FLAMESTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLYFIRE ) | ( int64_t( 1 ) << SCHOOL_STORMSTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_HOLYSTORM ) | ( int64_t( 1 ) << SCHOOL_FIRESTORM ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTSTRIKE ) | ( int64_t( 1 ) << SCHOOL_HOLYFROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_FROSTSTORM ) | ( int64_t( 1 ) << SCHOOL_SHADOWSTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_SHADOWLIGHT ) | ( int64_t( 1 ) << SCHOOL_SHADOWFLAME ) |
+                                 ( int64_t( 1 ) << SCHOOL_SHADOWSTORM ) | ( int64_t( 1 ) << SCHOOL_SHADOWFROST ) |
+                                 ( int64_t( 1 ) << SCHOOL_SPELLSTRIKE ) | ( int64_t( 1 ) << SCHOOL_DIVINE ) |
+                                 ( int64_t( 1 ) << SCHOOL_SPELLFIRE ) | ( int64_t( 1 ) << SCHOOL_ASTRAL ) |
+                                 ( int64_t( 1 ) << SCHOOL_SPELLFROST ) | ( int64_t( 1 ) << SCHOOL_SPELLSHADOW ) |
+                                 ( int64_t( 1 ) << SCHOOL_ELEMENTAL ) | ( int64_t( 1 ) << SCHOOL_COSMIC ) |
+                                 ( int64_t( 1 ) << SCHOOL_CHROMATIC ) | ( int64_t( 1 ) << SCHOOL_CHROMASTRIKE ) |
+                                 ( int64_t( 1 ) << SCHOOL_MAGIC ) );
 
 const int64_t SCHOOL_MAGIC_MASK( ( int64_t( 1 ) << SCHOOL_ARCANE ) |
                                  ( int64_t( 1 ) << SCHOOL_FIRE ) |
@@ -857,6 +848,7 @@ enum set_bonus_type_e
   T29_WOVEN_CHRONOCLOTH,
   T29_RAGING_TEMPESTS,
   T30,
+  T30_MIGHT_OF_THE_DROGBAR,
   SET_BONUS_MAX
 };
 
@@ -1288,28 +1280,27 @@ enum role_e
 enum save_e : unsigned
 {
   // Specifies the type of profile data to be saved
-  SAVE_GEAR = 0x1,
+  SAVE_GEAR    = 0x1,
   SAVE_TALENTS = 0x2,
   SAVE_ACTIONS = 0x4,
-  SAVE_PLAYER = 0x8,
-  SAVE_ALL = SAVE_GEAR | SAVE_TALENTS | SAVE_ACTIONS | SAVE_PLAYER,
+  SAVE_PLAYER  = 0x8,
+  SAVE_ALL     = SAVE_GEAR | SAVE_TALENTS | SAVE_ACTIONS | SAVE_PLAYER,
 };
 
 enum power_e
 {
-  POWER_HEALTH      = -2,
-  POWER_MANA        = 0,
-  POWER_RAGE        = 1,
-  POWER_FOCUS       = 2,
-  POWER_ENERGY      = 3,
-  POWER_COMBO_POINT = 4,
-  POWER_RUNE        = 5,
-  POWER_RUNIC_POWER = 6,
-  POWER_SOUL_SHARDS = 7,
-  POWER_ASTRAL_POWER = 8,
-  POWER_HOLY_POWER = 9,
+  POWER_HEALTH        = -2,
+  POWER_MANA          = 0,
+  POWER_RAGE          = 1,
+  POWER_FOCUS         = 2,
+  POWER_ENERGY        = 3,
+  POWER_COMBO_POINT   = 4,
+  POWER_RUNE          = 5,
+  POWER_RUNIC_POWER   = 6,
+  POWER_SOUL_SHARDS   = 7,
+  POWER_ASTRAL_POWER  = 8,
+  POWER_HOLY_POWER    = 9,
   // Not yet used (MoP Monk deprecated resource #1)
-  // Not yet used
   POWER_MAELSTROM     = 11,
   POWER_CHI           = 12,
   POWER_INSANITY      = 13,
@@ -1321,8 +1312,8 @@ enum power_e
   POWER_ESSENSE       = 19,
   // Helpers
   POWER_MAX,
-  POWER_NONE   = 0xFFFFFFFF,  // None.
-  POWER_OFFSET = 2,
+  POWER_NONE          = 0xFFFFFFFF,  // None.
+  POWER_OFFSET        = 2,
 };
 
 // New stuff
@@ -1333,14 +1324,19 @@ enum snapshot_state_e
   STATE_AP             = 0x000004,
   STATE_SP             = 0x000008,
 
-  STATE_MUL_DA         = 0x000010,
-  STATE_MUL_TA         = 0x000020,
+  STATE_MUL_SPELL_DA   = 0x000010,  // Add Percent Modifier (108): Spell Direct Amount (0) list-based multiplier
+  STATE_MUL_SPELL_TA   = 0x000020,  // Add Percent Modifier (108): Spell Periodic Amount (22) list-based multiplier
   STATE_VERSATILITY    = 0x000040,
   STATE_MUL_PERSISTENT = 0x000080,  // Persistent modifier for the few abilities that snapshot
 
   STATE_TGT_CRIT       = 0x000100,
   STATE_TGT_MUL_DA     = 0x000200,
   STATE_TGT_MUL_TA     = 0x000400,
+
+  STATE_MUL_PLAYER_DAM = 0x000800,  // Modify Damage Done% (79) school-based player-wide multiplier
+
+  STATE_MUL_DA         = STATE_MUL_SPELL_DA | STATE_MUL_PLAYER_DAM,
+  STATE_MUL_TA         = STATE_MUL_SPELL_TA | STATE_MUL_PLAYER_DAM,
 
   // User-defined state flags
   STATE_USER_1         = 0x001000,
@@ -1366,16 +1362,15 @@ enum snapshot_state_e
    * No multiplier helper, use in action_t::init() (after parent init) by issuing snapshot_flags &= STATE_NO_MULTIPLIER
    * (and/or update_flags &= STATE_NO_MULTIPLIER if a dot). This disables all multipliers, including versatility, and
    * any/all persistent multipliers the action would use. */
-  STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
-                           STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
+  STATE_NO_MULTIPLIER  = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
+                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
 
   /// Target-specific state variables, excluding the pet damage multiplier
-  STATE_TARGET_NO_PET =
-      ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA | STATE_TGT_MITG_TA |
-        STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
+  STATE_TARGET_NO_PET  = ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA |
+                           STATE_TGT_MITG_TA | STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
 
   /// Target-specific state variables
-  STATE_TARGET = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET
+  STATE_TARGET         = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET
 };
 
 enum ready_e

@@ -1,0 +1,187 @@
+druid="T30_Druid_Feral"
+source=default
+spec=feral
+level=70
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=BcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAICkoIJJJl0OgkSiEJJAAAAAAAARQAhkkkIJRKJgEAAAAAAIBAIA
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_tepid_versatility_3
+food=thousandbone_tongueslicer
+augmentation=draconic
+temporary_enchant=main_hand:buzzing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat+=/cat_form,if=!buff.cat_form.up
+actions.precombat+=/heart_of_the_wild
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/prowl,if=!buff.prowl.up
+
+# Executed every time the actor is available.
+actions=prowl,if=buff.bs_inc.down&!buff.prowl.up
+actions+=/cat_form,if=!buff.cat_form.up
+# <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> does not line up very well with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk nor <a href='https://www.wowhead.com/spell=102543/incarnation-avatar-of-ashamane'>Incarnation</a> and <a href='https://www.wowhead.com/spell=323764/convoke-the-spirits?spellModifier=768'>Convoke</a> doesn't benefit much from haste.
+actions+=/invoke_external_buff,name=power_infusion
+actions+=/call_action_list,name=variables
+actions+=/tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.up|energy.deficit>65)
+actions+=/tigers_fury,if=talent.convoke_the_spirits.enabled&(!variable.lastConvoke|(variable.lastConvoke&!buff.tigers_fury.up))
+actions+=/rake,target_if=1.4*persistent_multiplier>dot.rake.pmultiplier,if=buff.prowl.up|buff.shadowmeld.up
+actions+=/auto_attack,if=!buff.prowl.up&!buff.shadowmeld.up
+actions+=/natures_vigil
+actions+=/adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5,if=!(variable.need_bt&active_bt_triggers=2)
+actions+=/call_action_list,name=cooldown
+actions+=/feral_frenzy,target_if=max:target.time_to_die,if=combo_points<2|combo_points<3&buff.bs_inc.up
+actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)
+actions+=/call_action_list,name=berserk,if=buff.bs_inc.up
+actions+=/wait,sec=combo_points=5,if=combo_points=4&buff.predator_revealed.react&energy.deficit>40&spell_targets.swipe_cat=1
+# its acceptable to proc bt when at 4cps in single target for a small gain (0.1-0.2% with t30 4p)
+actions+=/call_action_list,name=finisher,if=combo_points>=4&!(combo_points=4&buff.bloodtalons.stack<=1&active_bt_triggers=2&spell_targets.swipe_cat=1)
+actions+=/call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up&combo_points<5
+actions+=/run_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled
+actions+=/call_action_list,name=builder,if=combo_points<5&!buff.bs_inc.up
+
+# avoid capping brs charges, and in the event of adds, offload charges within reason
+actions.aoe_builder=brutal_slash,target_if=min:target.time_to_die,if=cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5
+actions.aoe_builder+=/thrash_cat,target_if=refreshable,if=buff.clearcasting.react|(spell_targets.thrash_cat>10|(spell_targets.thrash_cat>5&!talent.double_clawed_rake.enabled))&!talent.thrashing_claws
+actions.aoe_builder+=/shadowmeld,target_if=max:druid.rake.ticks_gained_on_refresh,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up
+# this line checks if theres an upgradeable rake
+actions.aoe_builder+=/shadowmeld,target_if=druid.rake.ticks_gained_on_refresh,if=action.rake.ready&!buff.sudden_ambush.up&dot.rake.pmultiplier<1.4&!buff.prowl.up&!buff.apex_predators_craving.up
+# not a perfect solution, but it checks lowest dot for pandemic/stealth snapshot first
+actions.aoe_builder+=/rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier
+# and if lowest dot is fine, it checks the remaining dots and targets a mob without stealth snapshot (not necessarily 2nd lowest)
+actions.aoe_builder+=/rake,target_if=buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier|refreshable
+actions.aoe_builder+=/thrash_cat,target_if=refreshable
+actions.aoe_builder+=/brutal_slash
+actions.aoe_builder+=/moonfire_cat,target_if=refreshable,if=spell_targets.swipe_cat<5
+actions.aoe_builder+=/swipe_cat
+actions.aoe_builder+=/moonfire_cat,target_if=refreshable
+# if we have brs and nothing better to cast, check if thrash DD beats shred (or if SA is up)
+actions.aoe_builder+=/shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&!buff.sudden_ambush.up
+actions.aoe_builder+=/thrash_cat
+
+actions.berserk=ferocious_bite,target_if=max:target.time_to_die,if=combo_points=5&dot.rip.remains>8&variable.zerk_biteweave&spell_targets.swipe_cat>1
+# proc bt if 0/1 stack if 5/6 combo points
+actions.berserk+=/call_action_list,name=finisher,if=combo_points=5&!(buff.overflowing_power.stack<=1&active_bt_triggers=2&buff.bloodtalons.stack<=1)
+# its currently a gain to just contiuously try to proc bt in aoe
+actions.berserk+=/call_action_list,name=bloodtalons,if=spell_targets.swipe_cat>1
+# go into stealth to buff rake snapshot-- feral frenzy line is to eliminate an edge case involving ff being casted instead due to higher prio
+actions.berserk+=/prowl,if=!(buff.bt_rake.up&active_bt_triggers=2)&(action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up)
+actions.berserk+=/shadowmeld,if=!(buff.bt_rake.up&active_bt_triggers=2)&action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up
+actions.berserk+=/rake,if=!(buff.bt_rake.up&active_bt_triggers=2)&(refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&!dot.rake.refreshable))
+# in single target, you just proc bt when an opportunity arises
+actions.berserk+=/shred,if=active_bt_triggers=2&buff.bt_shred.down
+actions.berserk+=/brutal_slash,if=active_bt_triggers=2&buff.bt_brutal_slash.down
+actions.berserk+=/moonfire_cat,if=active_bt_triggers=2&buff.bt_moonfire.down
+actions.berserk+=/thrash_cat,if=active_bt_triggers=2&buff.bt_thrash.down&!talent.thrashing_claws&variable.need_bt&(refreshable|talent.brutal_slash.enabled)
+actions.berserk+=/moonfire_cat,if=refreshable
+# don't overcap brs charges, but keep it available for bt
+actions.berserk+=/brutal_slash,if=cooldown.brutal_slash.charges>1
+actions.berserk+=/shred
+
+actions.bloodtalons=brutal_slash,target_if=min:target.time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|target.time_to_die<5)&(buff.bt_brutal_slash.down&(buff.bs_inc.up|variable.need_bt))
+actions.bloodtalons+=/prowl,if=action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.shadowmeld.up&buff.bt_rake.down&!buff.prowl.up&!buff.apex_predators_craving.up
+actions.bloodtalons+=/shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&buff.bt_rake.down&cooldown.feral_frenzy.remains<44&!buff.apex_predators_craving.up
+actions.bloodtalons+=/rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(refreshable|buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier)&buff.bt_rake.down
+actions.bloodtalons+=/rake,target_if=buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&buff.bt_rake.down
+actions.bloodtalons+=/shred,if=buff.bt_shred.down&buff.clearcasting.react&spell_targets.swipe_cat=1
+actions.bloodtalons+=/thrash_cat,target_if=refreshable,if=buff.bt_thrash.down&buff.clearcasting.react&spell_targets.swipe_cat=1&!talent.thrashing_claws.enabled
+actions.bloodtalons+=/brutal_slash,if=buff.bt_brutal_slash.down
+actions.bloodtalons+=/moonfire_cat,if=refreshable&buff.bt_moonfire.down&spell_targets.swipe_cat=1
+actions.bloodtalons+=/thrash_cat,target_if=refreshable,if=buff.bt_thrash.down&!talent.thrashing_claws.enabled
+actions.bloodtalons+=/shred,if=buff.bt_shred.down&spell_targets.swipe_cat=1&!talent.wild_slashes.enabled
+actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down&talent.wild_slashes.enabled
+actions.bloodtalons+=/moonfire_cat,target_if=max:ticks_gained_on_refresh,if=buff.bt_moonfire.down&spell_targets.swipe_cat<5
+actions.bloodtalons+=/swipe_cat,if=buff.bt_swipe.down
+actions.bloodtalons+=/moonfire_cat,target_if=max:ticks_gained_on_refresh,if=buff.bt_moonfire.down
+# If we have BrS and nothing better to cast, check if shred beats thrash DD (or if SA is up)
+actions.bloodtalons+=/shred,target_if=max:target.time_to_die,if=action.shred.damage>action.thrash_cat.damage&buff.bt_shred.down&!buff.sudden_ambush.up
+actions.bloodtalons+=/thrash_cat,if=buff.bt_thrash.down
+
+actions.builder=run_action_list,name=clearcasting,if=buff.clearcasting.react
+actions.builder+=/brutal_slash,if=cooldown.brutal_slash.full_recharge_time<4
+# stop pooling if we can use a clearcasting proc
+actions.builder+=/pool_resource,if=!action.rake.ready&(dot.rake.refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6))&!buff.clearcasting.react
+actions.builder+=/shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up
+actions.builder+=/rake,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6)
+# repeating here is necessary, otherwise moonfire will occassionally be casted instead
+actions.builder+=/run_action_list,name=clearcasting,if=buff.clearcasting.react
+actions.builder+=/moonfire_cat,target_if=refreshable
+actions.builder+=/thrash_cat,target_if=refreshable&!talent.thrashing_claws.enabled
+actions.builder+=/brutal_slash
+actions.builder+=/swipe_cat,if=spell_targets.swipe_cat>1|talent.wild_slashes.enabled
+actions.builder+=/shred
+
+actions.clearcasting=thrash_cat,if=refreshable&!talent.thrashing_claws.enabled
+actions.clearcasting+=/swipe_cat,if=spell_targets.swipe_cat>1
+actions.clearcasting+=/brutal_slash,if=spell_targets.brutal_slash>2
+actions.clearcasting+=/shred
+
+actions.cooldown=use_item,name=algethar_puzzle_box,if=fight_remains<35|(!variable.align_3minutes)
+actions.cooldown+=/use_item,name=algethar_puzzle_box,if=variable.align_3minutes&(cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13)))
+# next two lines check if the current pull is long enough to justify cd usage. If its the last pull, itll always use cds.
+actions.cooldown+=/incarnation,target_if=max:target.time_to_die,if=(target.time_to_die<fight_remains&target.time_to_die>25)|target.time_to_die=fight_remains
+actions.cooldown+=/berserk,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>18)|target.time_to_die=fight_remains)&((!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastConvoke)|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<10))
+actions.cooldown+=/berserking,if=!variable.align_3minutes|buff.bs_inc.up
+actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<cooldown.bs_inc.remains&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
+# checks to make sure you can actually fit convoke into the pull.
+actions.cooldown+=/convoke_the_spirits,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>5)|target.time_to_die=fight_remains)&(fight_remains<5|(dot.rip.remains>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up)))
+actions.cooldown+=/use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40
+actions.cooldown+=/use_items
+
+actions.finisher=primal_wrath,if=((dot.primal_wrath.refreshable&!talent.circle_of_life_and_death.enabled)|dot.primal_wrath.remains<6|talent.tear_open_wounds.enabled)&spell_targets.primal_wrath>1&talent.primal_wrath.enabled
+actions.finisher+=/rip,target_if=refreshable
+actions.finisher+=/pool_resource,for_next=1,if=!action.tigers_fury.ready&buff.apex_predators_craving.down
+actions.finisher+=/ferocious_bite,max_energy=1,target_if=max:target.time_to_die,if=buff.apex_predators_craving.down&(!buff.bs_inc.up|(buff.bs_inc.up&!talent.soul_of_the_forest.enabled))
+actions.finisher+=/ferocious_bite,target_if=max:target.time_to_die,if=(buff.bs_inc.up&talent.soul_of_the_forest.enabled)|buff.apex_predators_craving.up
+
+actions.variables=variable,name=need_bt,value=talent.bloodtalons.enabled&buff.bloodtalons.stack<2
+actions.variables+=/variable,name=align_3minutes,value=spell_targets.swipe_cat=1&!fight_style.dungeonslice
+actions.variables+=/variable,name=lastConvoke,value=fight_remains>cooldown.convoke_the_spirits.remains+3&((talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+60))|(!talent.ashamanes_guidance.enabled&fight_remains<(cooldown.convoke_the_spirits.remains+120)))
+actions.variables+=/variable,name=lastZerk,value=fight_remains>(30+(cooldown.bs_inc.remains%1.6))&((talent.berserk_heart_of_the_lion.enabled&fight_remains<(90+(cooldown.bs_inc.remains%1.6)))|(!talent.berserk_heart_of_the_lion.enabled&fight_remains<(180+cooldown.bs_inc.remains)))
+actions.variables+=/variable,name=zerk_biteweave,op=reset
+
+head=bough_of_the_autumn_blaze,id=202515,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504/1808,gem_id=192988
+neck=bromachs_disentombed_locket,id=193809,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192961/192961/192961
+shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/6808/4786/1504,ilevel=450
+back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6592
+chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
+wrists=cuffs_of_the_savage_serpent,id=204394,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961,enchant_id=6574
+hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
+waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961
+legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
+feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6607
+finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,gem_id=192961,enchant_id=6562
+finger2=onyx_impostors_birthright,id=204398,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961,enchant_id=6562
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+trinket2=dragonfire_bomb_dispenser,id=202610,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498
+main_hand=djaruun_pillar_of_the_elder_flame,id=202569,bonus_id=8159/6652/8783/8784/9414/9415/4800/4786/1498,enchant_id=6643
+
+# Gear Summary
+# gear_ilvl=448.47
+# gear_agility=6842
+# gear_stamina=22591
+# gear_crit_rating=4450
+# gear_haste_rating=2646
+# gear_mastery_rating=4585
+# gear_versatility_rating=1015
+# gear_speed_rating=250
+# gear_avoidance_rating=325
+# gear_armor=4003
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1

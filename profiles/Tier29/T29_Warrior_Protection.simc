@@ -66,7 +66,6 @@ actions.aoe+=/revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled
 actions.generic=shield_slam
 actions.generic+=/thunder_clap,if=dot.rend.remains<=1&buff.violent_outburst.down
 actions.generic+=/execute,if=buff.sudden_death.up&talent.sudden_death.enabled
-actions.generic+=/execute,if=spell_targets.revenge=1&(talent.massacre.enabled|talent.juggernaut.enabled)&rage>=50
 actions.generic+=/execute,if=spell_targets.revenge=1&rage>=50
 actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&!buff.violent_outburst.up)
 actions.generic+=/revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled
@@ -95,7 +94,7 @@ off_hand=broodsworn_legionnaires_pavise,id=195520,bonus_id=4800/4786/1498
 # Gear Summary
 # gear_ilvl=421.00
 # gear_strength=4913
-# gear_stamina=13046
+# gear_stamina=17019
 # gear_intellect=786
 # gear_crit_rating=3647
 # gear_haste_rating=3648

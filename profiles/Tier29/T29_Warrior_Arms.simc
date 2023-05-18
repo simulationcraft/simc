@@ -38,11 +38,9 @@ actions+=/pummel,if=target.debuff.casting.react
 actions+=/use_item,name=manic_grieftorch,if=!buff.avatar.up&!debuff.colossus_smash.up
 actions+=/blood_fury,if=debuff.colossus_smash.up
 actions+=/berserking,if=debuff.colossus_smash.remains>6
-actions+=/arcane_torrent,if=cooldown.mortal_strike.remains>1.5&rage<50
 actions+=/lights_judgment,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
 actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
-actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
 actions+=/run_action_list,name=hac,if=raid_event.adds.exists|active_enemies>2
 actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
 actions+=/run_action_list,name=single_target,if=!raid_event.adds.exists
@@ -78,6 +76,7 @@ actions.hac+=/bladestorm,if=active_enemies>1&(buff.test_of_might.up|!talent.test
 actions.hac+=/cleave,if=active_enemies>2|!talent.battlelord&buff.merciless_bonegrinder.up&cooldown.mortal_strike.remains>gcd
 actions.hac+=/whirlwind,if=active_enemies>2|talent.storm_of_swords&(buff.merciless_bonegrinder.up|buff.hurricane.up)
 actions.hac+=/skullsplitter,if=rage<40|talent.tide_of_blood&dot.rend.remains&(buff.sweeping_strikes.up&active_enemies>=2|debuff.colossus_smash.up|buff.test_of_might.up)
+actions.hac+=/mortal_strike,if=buff.sweeping_strikes.up&buff.crushing_advance.stack=3,if=set_bonus.tier30_4pc
 actions.hac+=/overpower,if=buff.sweeping_strikes.up&talent.dreadnaught
 actions.hac+=/mortal_strike,cycle_targets=1,if=debuff.executioners_precision.stack=2|dot.deep_wounds.remains<=gcd|talent.dreadnaught&talent.battlelord&active_enemies<=2
 actions.hac+=/execute,cycle_targets=1,if=buff.sudden_death.react|active_enemies<=2&(target.health.pct<20|talent.massacre&target.health.pct<35)|buff.sweeping_strikes.up
@@ -119,6 +118,7 @@ actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up
 actions.single_target+=/cleave,if=set_bonus.tier29_2pc&!talent.crushing_force
 actions.single_target+=/slam,if=rage>30&(!talent.fervor_of_battle|talent.fervor_of_battle&active_enemies=1)
 actions.single_target+=/bladestorm
+actions.single_target+=/arcane_torrent
 actions.single_target+=/cleave
 actions.single_target+=/wrecking_throw
 actions.single_target+=/rend,if=remains<duration*0.3
@@ -142,7 +142,7 @@ main_hand=incarnate_skysplitter,id=195528,bonus_id=4800/4786/1498,enchant_id=664
 # Gear Summary
 # gear_ilvl=420.80
 # gear_strength=5408
-# gear_stamina=13050
+# gear_stamina=17015
 # gear_crit_rating=2773
 # gear_haste_rating=5179
 # gear_mastery_rating=1324

@@ -1,0 +1,145 @@
+warrior="T30_Fury_Warrior"
+source=default
+spec=fury
+level=70
+race=human
+role=attack
+position=back
+professions=blacksmithing=100/engineering=65
+talents=BgEAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAChIoEARQICEFIhIQkEJJpFRSSQCJJJRKBIJkEAAAAEE
+dragonflight.ominous_chromatic_essence_dragonflight=ruby
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/emerald/obsidian
+
+# Default consumables
+potion=elemental_potion_of_ultimate_power_3
+flask=phial_of_tepid_versatility_3
+food=fated_fortune_cookie
+augmentation=draconic
+temporary_enchant=main_hand:hissing_rune_3/off_hand:hissing_rune_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/berserker_stance,toggle=on
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/avatar,if=!talent.titans_torment
+actions.precombat+=/recklessness,if=!talent.reckless_abandon
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge,if=time<=0.5|movement.distance>5
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
+actions+=/potion
+actions+=/pummel,if=target.debuff.casting.react
+actions+=/use_item,name=screaming_black_dragonscale
+actions+=/ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
+actions+=/blood_fury
+actions+=/berserking,if=buff.recklessness.up
+actions+=/lights_judgment,if=buff.recklessness.down
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)
+actions+=/recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)
+actions+=/recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12
+actions+=/spear_of_bastion,if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20|active_enemies>1)&raid_event.adds.in>15
+actions+=/call_action_list,name=multi_target,if=raid_event.adds.exists|active_enemies>2
+actions+=/call_action_list,name=single_target,if=!raid_event.adds.exists
+
+actions.multi_target=recklessness,if=raid_event.adds.in>15|active_enemies>1|target.time_to_die<12
+actions.multi_target+=/odyns_fury,if=active_enemies>1&talent.titanic_rage&(!buff.meat_cleaver.up|buff.avatar.up|buff.recklessness.up)
+actions.multi_target+=/whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up
+actions.multi_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
+actions.multi_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
+actions.multi_target+=/odyns_fury,if=active_enemies>1&buff.enrage.up&raid_event.adds.in>15
+actions.multi_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.multi_target+=/bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.multi_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
+actions.multi_target+=/execute,if=buff.enrage.up
+actions.multi_target+=/odyns_fury,if=buff.enrage.up&raid_event.adds.in>15
+actions.multi_target+=/rampage,if=buff.recklessness.up|buff.enrage.remains<gcd|(rage>110&talent.overwhelming_rage)|(rage>80&!talent.overwhelming_rage)
+actions.multi_target+=/execute
+actions.multi_target+=/bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury
+actions.multi_target+=/bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)
+actions.multi_target+=/onslaught,if=!talent.annihilator&buff.enrage.up|talent.tenderize
+actions.multi_target+=/raging_blow,if=charges>1&talent.wrath_and_fury
+actions.multi_target+=/crushing_blow,if=charges>1&talent.wrath_and_fury
+actions.multi_target+=/bloodbath,if=buff.enrage.down|!talent.wrath_and_fury
+actions.multi_target+=/crushing_blow,if=buff.enrage.up&talent.reckless_abandon
+actions.multi_target+=/bloodthirst,if=!talent.wrath_and_fury
+actions.multi_target+=/raging_blow,if=charges>=1
+actions.multi_target+=/rampage
+actions.multi_target+=/slam,if=talent.annihilator
+actions.multi_target+=/bloodbath
+actions.multi_target+=/raging_blow
+actions.multi_target+=/crushing_blow
+actions.multi_target+=/whirlwind
+
+actions.single_target=whirlwind,if=spell_targets.whirlwind>1&talent.improved_whirlwind&!buff.meat_cleaver.up|raid_event.adds.in<2&talent.improved_whirlwind&!buff.meat_cleaver.up
+actions.single_target+=/execute,if=buff.ashen_juggernaut.up&buff.ashen_juggernaut.remains<gcd
+actions.single_target+=/thunderous_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
+actions.single_target+=/odyns_fury,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)&(talent.dancing_blades&buff.dancing_blades.remains<5|!talent.dancing_blades)
+actions.single_target+=/rampage,if=talent.anger_management&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
+actions.single_target+=/bloodbath,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.single_target+=/bloodthirst,if=set_bonus.tier30_4pc&action.bloodthirst.crit_pct_current>=95
+actions.single_target+=/execute,if=buff.enrage.up
+actions.single_target+=/onslaught,if=buff.enrage.up|talent.tenderize
+actions.single_target+=/crushing_blow,if=talent.wrath_and_fury&buff.enrage.up
+actions.single_target+=/rampage,if=talent.reckless_abandon&(buff.recklessness.up|buff.enrage.remains<gcd|rage.pct>85)
+actions.single_target+=/rampage,if=talent.anger_management
+actions.single_target+=/execute
+actions.single_target+=/bloodbath,if=buff.enrage.up&talent.reckless_abandon&!talent.wrath_and_fury
+actions.single_target+=/bloodthirst,if=buff.enrage.down|(talent.annihilator&!buff.recklessness.up)
+actions.single_target+=/raging_blow,if=charges>1&talent.wrath_and_fury
+actions.single_target+=/crushing_blow,if=charges>1&talent.wrath_and_fury
+actions.single_target+=/bloodbath,if=buff.enrage.down|!talent.wrath_and_fury
+actions.single_target+=/crushing_blow,if=buff.enrage.up&talent.reckless_abandon
+actions.single_target+=/bloodthirst,if=!talent.wrath_and_fury
+actions.single_target+=/raging_blow,if=charges>1
+actions.single_target+=/rampage
+actions.single_target+=/slam,if=talent.annihilator
+actions.single_target+=/bloodbath
+actions.single_target+=/raging_blow
+actions.single_target+=/crushing_blow
+actions.single_target+=/bloodthirst
+actions.single_target+=/whirlwind
+actions.single_target+=/wrecking_throw
+actions.single_target+=/storm_bolt
+
+head=thraexhelm_of_the_onyx_crucible,id=202443,bonus_id=4800/4786/1504/6935,gem_id=192988
+neck=torc_of_passed_time,id=201759,bonus_id=8840/8836/8902/1537,gem_id=192961/192961/192961,crafted_stats=36/49
+shoulders=pauldrons_of_the_onyx_crucible,id=202441,bonus_id=4800/4786/1507
+back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
+chest=battlechest_of_the_onyx_crucible,id=202446,bonus_id=4800/4786/1501,enchant_id=6625
+wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192961
+hands=handguards_of_the_onyx_crucible,id=202444,bonus_id=4800/4786/1501
+waist=primal_molten_greatbelt,id=190501,bonus_id=8840/8836/8902/1537,gem_id=192961,crafted_stats=36/49
+legs=primal_molten_legplates,id=190499,bonus_id=8840/8836/8902/1537/9379,enchant_id=6496,crafted_stats=36/49
+feet=primal_molten_sabatons,id=190496,bonus_id=8840/8836/8902/1537/9379,crafted_stats=36/49
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192961,enchant_id=6562,crafted_stats=36/49
+finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537,gem_id=192961,enchant_id=6562,crafted_stats=36/49
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
+trinket2=screaming_black_dragonscale,id=202612,bonus_id=4800/4786/1498
+main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant_id=6827
+off_hand=obsidian_seared_claymore,id=190514,bonus_id=8840/8836/8902/8783/8784/1537,enchant_id=6655,crafted_stats=36/49
+
+# Gear Summary
+# gear_ilvl=448.38
+# gear_strength=7492
+# gear_stamina=24873
+# gear_crit_rating=1531
+# gear_haste_rating=5650
+# gear_mastery_rating=5942
+# gear_versatility_rating=793
+# gear_armor=8558
+# gear_bonus_armor=141
+# set_bonus=tier30_2pc=1
+# set_bonus=tier30_4pc=1

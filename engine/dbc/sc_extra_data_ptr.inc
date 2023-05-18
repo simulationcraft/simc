@@ -144,7 +144,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warrior TODO: Verify 1-20 Stamina
+  { // Warrior
     // Agi = 0.69 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -152,23 +152,23 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {     20,     14,     48,     15,      0 },
     {     22,     15,     52,     16,      0 },
     {     23,     17,     56,     18,      0 },
-    {     26,     18,     60,     19,      0 }, // 5
-    {     27,     19,     62,     20,      0 },
-    {     29,     20,     66,     22,      0 },
+    {     26,     18,     59,     19,      0 }, // 5
+    {     27,     19,     63,     20,      0 },
+    {     29,     20,     67,     22,      0 },
     {     31,     21,     70,     23,      0 },
     {     32,     22,     74,     24,      0 },
-    {     34,     24,     76,     26,      0 }, // 10
+    {     34,     24,     77,     26,      0 }, // 10
     {     37,     26,     80,     27,      0 },
     {     40,     28,     84,     29,      0 },
-    {     43,     30,     86,     30,      0 },
+    {     43,     30,     87,     30,      0 },
     {     46,     32,     90,     31,      0 },
-    {     48,     33,     92,     33,      0 }, // 15
+    {     48,     33,     93,     33,      0 }, // 15
     {     50,     35,     96,     34,      0 },
-    {     52,     36,     98,     35,      0 },
-    {     54,     37,    102,     37,      0 },
-    {     56,     39,    103,     38,      0 },
+    {     52,     36,     99,     35,      0 },
+    {     54,     37,    101,     37,      0 },
+    {     56,     39,    104,     38,      0 },
     {     58,     40,    107,     39,      0 }, // 20
-    {     60,     42,    112,     41,      0 },
+    {     60,     42,    111,     41,      0 },
     {     63,     43,    116,     43,      0 },
     {     65,     45,    121,     45,      0 },
     {     68,     47,    126,     46,      0 },
@@ -269,7 +269,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Paladin TODO: Verify 1-20 Stamina, 61-69 values
+  { // Paladin TODO: Verify 1-21 Stamina, 65-69 values
     // Agi = 0.35 of Primary
     //    Str     Agi     Sta     Int     Spi
     {     18,      6,     36,     20,      0 },
@@ -334,7 +334,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {    450,    157,    828,    450,      0 }, // 60
     {    670,    235,   1235,    670,      0 },
     {    764,    267,   1407,    764,      0 },
-    {    870,    304,   1603,    870,      0 },
+    {    870,    305,   1603,    870,      0 },
     {    992,    347,   1826,    992,      0 },
     {   1130,    395,   2081,   1130,      0 }, // 65
     {   1287,    450,   2370,   1287,      0 },
@@ -393,7 +393,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Hunter TODO: Verify 1-20 Stamina, 61-69 values
+  { // Hunter TODO: Verify 1-21 Stamina, 61-69 values
     // Str = 0.61 of Primary
     // Int = 0.82 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -518,7 +518,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Rogue TODO: Verify 1-20 Stamina
+  { // Rogue TODO: Verify 1-21 Stamina
     // Str = 0.83 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -643,7 +643,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Priest TODO: Verify 1-20 Stamina
+  { // Priest TODO: Verify 1-21 Stamina
     // Str = 0.58 of Primary
     // Agi = 0.83 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -768,7 +768,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Death Knight TODO: Verify 8-20 Stamina 61-69 values
+  { // Death Knight TODO: Verify 8-21 Stamina 61-69 values
     // Agi = 0.83 of Primary
     // Int = 0.54 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -893,7 +893,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Shaman TODO: Verify 1-20 Stamina
+  { // Shaman TODO: Verify 1-21 Stamina
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     30,     20,      0 },
@@ -1017,7 +1017,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Mage TODO: Verify 1-20 Stamina 61-69 Str values
+  { // Mage TODO: Verify 1-21 Stamina 61-69 Str values
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1142,7 +1142,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Warlock TODO: Verify 1-20 Stamina, 61-69 values
+  { // Warlock TODO: Verify 1-21 Stamina, 61-69 values
     // Str = 0.38 of Primary
     // Agi = 0.77 of Primary
     //    Str     Agi     Sta     Int     Spi
@@ -1391,7 +1391,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Druid TODO: Verify 1-20 Stamina
+  { // Druid TODO: Verify 1-21 Stamina
     // Str = 0.43 of Primary
     //    Str     Agi     Sta     Int     Spi
     {      8,     18,     37,     20,      0 },
@@ -1515,7 +1515,7 @@ static constexpr stat_data_t __ptr_gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Demon Hunter TODO: Verify 8-20 Stamina
+  { // Demon Hunter TODO: Verify 8-21 Stamina
     // Str = 0.83 of Primary
     // Int = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi

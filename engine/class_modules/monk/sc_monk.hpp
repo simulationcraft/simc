@@ -299,6 +299,7 @@ public:
     propagate_const<buff_t*> rushing_jade_wind;
     propagate_const<buff_t*> spinning_crane_kick;
     propagate_const<buff_t*> windwalking_driver;
+    propagate_const<absorb_buff_t*> yulons_grace;
 
     // Brewmaster
     propagate_const<buff_t*> bladed_armor;
@@ -488,8 +489,10 @@ public:
       player_talent_t expeditious_fortification;
       // Row 7
       player_talent_t profound_rebuttal;
+      player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
       player_talent_t eye_of_the_tiger;
+      player_talent_t dance_of_the_wind;
       player_talent_t dampen_harm;
       player_talent_t improved_touch_of_death;
       player_talent_t strength_of_spirit;
@@ -1002,8 +1005,7 @@ public:
   double composite_damage_versatility() const override;
   double composite_crit_avoidance() const override;
   double temporary_movement_modifier() const override;
-  double composite_player_dd_multiplier( school_e, const action_t* action ) const override;
-  double composite_player_td_multiplier( school_e, const action_t* action ) const override;
+  double composite_player_multiplier( school_e ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const override;
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;

@@ -604,7 +604,8 @@ felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
 {
   action_list_str = "travel";
   action_list_str += "/felstorm_demonic_strength";
-  action_list_str += "/felstorm";
+  if ( !owner->disable_auto_felstorm )
+    action_list_str += "/felstorm";
   action_list_str += "/legion_strike,if=energy>=" + util::to_string( max_energy_threshold );
 
   felstorm_cd = get_cooldown( "felstorm" );
@@ -649,27 +650,6 @@ struct felguard_melee_t : public warlock_pet_melee_t
     add_child( fiendish_wrath );
   }
 
-  void execute() override
-  {
-    warlock_pet_melee_t::execute();
-
-    if ( p()->o()->talents.immutable_hatred->ok() )
-    {
-      auto fg = debug_cast<felguard_pet_t*>( p() );
-      if ( !( fg->immutable_hatred.target ) )
-      {
-        fg->immutable_hatred.target = target;
-      }
-      else if ( fg->immutable_hatred.target != target )
-      {
-        fg->immutable_hatred.target = target;
-        fg->buffs.festering_hatred->expire();
-      }
-
-      fg->buffs.festering_hatred->trigger();
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     auto amount = s->result_raw;
@@ -678,6 +658,22 @@ struct felguard_melee_t : public warlock_pet_melee_t
 
     if ( p()->buffs.fiendish_wrath->check() )
       fiendish_wrath->execute_on_target( s->target, amount );
+
+    if ( p()->o()->talents.immutable_hatred->ok() )
+    {
+      auto fg = debug_cast<felguard_pet_t*>( p() );
+      if ( !( fg->immutable_hatred.target ) )
+      {
+        fg->immutable_hatred.target = s->target;
+      }
+      else if ( fg->immutable_hatred.target != s->target )
+      {
+        fg->immutable_hatred.target = s->target;
+        fg->buffs.festering_hatred->expire();
+      }
+
+      fg->buffs.festering_hatred->trigger();
+    }
   }
 };
 
@@ -831,6 +827,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     {
       internal_cooldown->start( 5_s * p()->composite_spell_haste() );
     }
+
+    p()->melee_attack->cancel();
   }
 };
 

@@ -31,14 +31,32 @@ struct expiation_t final : public priest_spell_t
       consume_time( timespan_t::from_seconds( data().effectN( 2 ).base_value() ) )
   {
     background = dual = true;
-    may_crit          = false;
-    tick_may_crit     = false;
+    may_crit          = true;
+    tick_may_crit     = true;
     // Spell data has this listed as physical, but in-game it's shadow
     school = SCHOOL_SHADOW;
 
     // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
     // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
     snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.discipline.schism.enabled() )
+    {
+      const priest_td_t* td = priest().find_target_data( s->target );
+      if ( td && td->buffs.schism->check() )
+      {
+        auto adjust_percent = priest().talents.discipline.schism->effectN( 2 ).percent();
+        d *= 1.0 + adjust_percent;
+        sim->print_debug( "schism modifies expiation damage by {} (new total: {})", adjust_percent, d );
+      }
+    }
+
+    return d;
   }
 
   void impact( action_state_t* s ) override
@@ -121,21 +139,10 @@ public:
       priest().buffs.gathering_shadows->trigger();
     }
 
-    if ( priest().is_ptr() && priest().buffs.shadowy_insight->check() )
-      priest().buffs.shadowy_insight->decrement();
-  }
-
-  void reset() override
-  {
-    // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
-    // buffs up. Do this before calling reset as that will also reset the cooldown.
-    if ( priest().specialization() == PRIEST_SHADOW && !priest().is_ptr() )
+    if ( priest().buffs.shadowy_insight->check() )
     {
-      cooldown->charges =
-          data().charges() + as<int>( priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value() );
+      priest().buffs.shadowy_insight->decrement();
     }
-
-    priest_spell_t::reset();
   }
 
   bool insidious_ire_active() const
@@ -198,21 +205,12 @@ public:
         td.buffs.apathy->trigger();
       }
 
-      if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
-      {
-        priest().generate_insanity(
-            priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
-            priest().gains.insanity_whispers_of_the_damned, s->action );
-      }
-
       if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) && priest().buffs.shadowy_insight->check() )
       {
         priest().generate_insanity(
             priest().sets->set( PRIEST_SHADOW, T30, B2 )->effectN( 2 ).resource( RESOURCE_INSANITY ),
             priest().gains.insanity_t30_2pc, s->action );
       }
-
-      priest().buffs.coalescing_shadows->expire();
 
       if ( child_expiation )
       {
@@ -241,29 +239,8 @@ public:
   void update_ready( timespan_t cd_duration ) override
   {
     priest().buffs.voidform->up();  // Benefit tracking
-    // Decrementing a stack of shadowy insight will consume a max charge. Consuming a max charge loses you a current
-    // charge. Therefore update_ready needs to not be called in that case.
-    if ( priest().buffs.shadowy_insight->up() && !priest().is_ptr() )
-    {
-      // Mind Melt is only double consumed with Shadowy Insight if it only has one stack
-      if ( priest().buffs.mind_melt->check() == 1 )
-      {
-        priest().procs.mind_melt_waste->occur();
-      }
-      // Mind Melt at 2 stacks gets consumed over Shadowy Insight
-      if ( priest().buffs.mind_melt->check() == 2 )
-      {
-        priest_spell_t::update_ready( cd_duration );
-      }
-      else
-      {
-        priest().buffs.shadowy_insight->decrement();
-      }
-    }
-    else
-    {
-      priest_spell_t::update_ready( cd_duration );
-    }
+
+    priest_spell_t::update_ready( cd_duration );
   }
 };
 // ==========================================================================
@@ -758,11 +735,13 @@ struct mindgames_t final : public priest_spell_t
 {
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
+  propagate_const<action_t*> child_searing_light;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.talents.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
-      child_mindgames_damage_reversal( nullptr )
+      child_mindgames_damage_reversal( nullptr ),
+      child_searing_light( priest().background_actions.searing_light )
   {
     parse_options( options_str );
 
@@ -783,6 +762,18 @@ struct mindgames_t final : public priest_spell_t
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+    if ( child_searing_light && priest().buffs.divine_image->check() )
+    {
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_searing_light->execute();
+      }
     }
   }
 
@@ -1009,8 +1000,7 @@ struct shadow_word_death_t final : public priest_spell_t
   shadow_word_death_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
       execute_percent( data().effectN( 2 ).base_value() ),
-      execute_modifier( data().effectN( 3 ).percent() +
-                        ( priest().is_ptr() ? priest().specs.shadow_priest->effectN( 25 ).percent() : 0 ) ),
+      execute_modifier( data().effectN( 3 ).percent() + priest().specs.shadow_priest->effectN( 25 ).percent() ),
       shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) ),
       child_expiation( nullptr ),
       child_searing_light( priest().background_actions.searing_light )
@@ -1025,15 +1015,12 @@ struct shadow_word_death_t final : public priest_spell_t
       child_expiation->background = true;
     }
 
-    if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+    if ( priest().specialization() == PRIEST_SHADOW )
     {
       energize_type     = action_energize::ON_CAST;
       energize_resource = RESOURCE_INSANITY;
       energize_amount   = priest().specs.shadow_priest->effectN( 23 ).resource( RESOURCE_INSANITY );
     }
-
-    // 13%/25% damage increase
-    apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -1062,8 +1049,7 @@ struct shadow_word_death_t final : public priest_spell_t
       // Cooldown is reset only if you have't already gotten a reset
       if ( !priest().buffs.death_and_madness_reset->check() )
       {
-        if ( target->health_percentage() <= execute_percent &&
-             ( !priest().buffs.deathspeaker->check() || !priest().is_ptr() ) )
+        if ( target->health_percentage() <= execute_percent && !priest().buffs.deathspeaker->check() )
         {
           priest().buffs.death_and_madness_reset->trigger();
           cooldown->reset( false );
@@ -1081,7 +1067,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     // Reset max charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up. Do this before calling reset as that will also reset the cooldown.
-    if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+    if ( priest().specialization() == PRIEST_SHADOW )
     {
       cooldown->charges = data().charges();
     }
@@ -1100,8 +1086,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      priest().trigger_pain_of_death( s );
-
       double save_health_percentage = s->target->health_percentage();
 
       // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
@@ -1117,7 +1101,7 @@ struct shadow_word_death_t final : public priest_spell_t
         td.buffs.death_and_madness_debuff->trigger();
       }
 
-      if ( priest().specialization() == PRIEST_SHADOW && priest().is_ptr() )
+      if ( priest().specialization() == PRIEST_SHADOW )
       {
         if ( result_is_hit( s->result ) )
         {
@@ -1152,10 +1136,15 @@ struct shadow_word_death_t final : public priest_spell_t
 // ==========================================================================
 struct holy_nova_t final : public priest_spell_t
 {
-  holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
+  action_t* child_light_eruption;
+  holy_nova_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "holy_nova", p, p.talents.holy_nova ),
+      child_light_eruption( priest().background_actions.light_eruption )
   {
     parse_options( options_str );
-    aoe = -1;
+    aoe                 = -1;
+    full_amount_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
+    reduced_aoe_targets = priest().talents.holy_nova->effectN( 3 ).base_value();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1177,6 +1166,13 @@ struct holy_nova_t final : public priest_spell_t
     if ( priest().talents.rhapsody )
     {
       priest().buffs.rhapsody_timer->trigger();
+    }
+    if ( child_light_eruption && priest().buffs.divine_image->check() )
+    {
+      for ( int i = 1; i <= priest().buffs.divine_image->stack(); i++ )
+      {
+        child_light_eruption->execute();
+      }
     }
   }
 
@@ -1200,7 +1196,7 @@ struct psychic_scream_t final : public priest_spell_t
     : priest_spell_t( "psychic_scream", p, p.specs.psychic_scream )
   {
     parse_options( options_str );
-    aoe      = 5;
+    aoe      = -1;
     may_miss = may_crit   = false;
     ignore_false_positive = true;
 
@@ -1509,18 +1505,9 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
     // Fake-detect target demise by checking if buff was expired early
     if ( remaining_duration > timespan_t::zero() )
     {
-      sim->print_debug( "{} death_and_madness insanity gain buff triggered", priest() );
-
-      if ( priest().is_ptr() )
-      {
-        priest().generate_insanity(
-            priest().talents.death_and_madness_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
-            priest().gains.insanity_death_and_madness, nullptr );
-      }
-      else
-      {
-        priest().buffs.death_and_madness_buff->trigger();
-      }
+      priest().generate_insanity(
+          priest().talents.death_and_madness_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
+          priest().gains.insanity_death_and_madness, nullptr );
     }
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -1563,7 +1550,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
   dots.mind_flay          = target->get_dot( "mind_flay", &p );
   dots.mind_flay_insanity = target->get_dot( "mind_flay_insanity", &p );
-  dots.mind_sear          = target->get_dot( "mind_sear", &p );
   dots.void_torrent       = target->get_dot( "void_torrent", &p );
   dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
   dots.holy_fire          = target->get_dot( "holy_fire", &p );
@@ -1682,7 +1668,6 @@ void priest_t::create_gains()
 {
   gains.insanity_auspicious_spirits      = get_gain( "Auspicious Spirits" );
   gains.insanity_death_and_madness       = get_gain( "Death and Madness" );
-  gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
   gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
@@ -1690,10 +1675,7 @@ void priest_t::create_gains()
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
-  gains.hallucinations_vampiric_embrace  = get_gain( "Insanity Gained from Vampiric Embrace with Hallucinations" );
-  gains.insanity_dark_void               = get_gain( "Dark Void" );
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
-  gains.insanity_whispers_of_the_damned  = get_gain( "Whispers of the Damned" );
   gains.insanity_t30_2pc                 = get_gain( "Insanity Gained from T30 2PC" );
 }
 
@@ -1705,36 +1687,29 @@ void priest_t::create_procs()
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
   procs.expiation_lost_no_dot           = get_proc( "Missed chance for expiation to consume a DoT" );
   // Shadow - Talents
-  procs.shadowy_apparition_vb                  = get_proc( "Shadowy Apparition from Void Bolt" );
-  procs.shadowy_apparition_swp                 = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
-  procs.shadowy_apparition_dp                  = get_proc( "Shadowy Apparition from Devouring Plague" );
-  procs.shadowy_apparition_mb                  = get_proc( "Shadowy Apparition from Mind Blast" );
-  procs.shadowy_apparition_ms                  = get_proc( "Shadowy Apparition from Mind Sear Tick" );
-  procs.mind_devourer                          = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.void_tendril                           = get_proc( "Void Tendril proc from Idol of C'Thun" );
-  procs.void_lasher                            = get_proc( "Void Lasher proc from Idol of C'Thun" );
-  procs.shadowy_insight                        = get_proc( "Shadowy Insight procs" );
-  procs.shadowy_insight_overflow               = get_proc( "Shadowy Insight procs lost to overflow" );
-  procs.shadowy_insight_missed                 = get_proc( "Shadowy Insight procs not consumed" );
-  procs.thing_from_beyond                      = get_proc( "Thing from Beyond procs" );
-  procs.coalescing_shadows_mind_sear           = get_proc( "Coalescing Shadows from Mind Sear" );
-  procs.coalescing_shadows_mind_flay           = get_proc( "Coalescing Shadows from Mind Fay" );
-  procs.coalescing_shadows_shadow_word_pain    = get_proc( "Coalescing Shadows from Shadow Word: Pain" );
-  procs.coalescing_shadows_shadowy_apparitions = get_proc( "Coalescing Shadows from Shadowy Apparition" );
-  procs.deathspeaker                           = get_proc( "Shadow Word: Death resets from Deathspeaker" );
-  procs.surge_of_darkness_vt                   = get_proc( "Surge of Darkness from Vampiric Touch" );
-  procs.surge_of_darkness_dp                   = get_proc( "Surge of Darkness from Devouring Plague" );
-  procs.mind_melt_waste                        = get_proc( "Mind Blast that consumed Mind Melt and Shadowy Insight" );
-  procs.idol_of_nzoth_swp                      = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
-  procs.idol_of_nzoth_vt                       = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
+  procs.shadowy_apparition_vb          = get_proc( "Shadowy Apparition from Void Bolt" );
+  procs.shadowy_apparition_swp         = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
+  procs.shadowy_apparition_dp          = get_proc( "Shadowy Apparition from Devouring Plague" );
+  procs.shadowy_apparition_mb          = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.mind_devourer                  = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.void_tendril                   = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                    = get_proc( "Void Lasher proc from Idol of C'Thun" );
+  procs.shadowy_insight                = get_proc( "Shadowy Insight procs" );
+  procs.shadowy_insight_overflow       = get_proc( "Shadowy Insight procs lost to overflow" );
+  procs.shadowy_insight_missed         = get_proc( "Shadowy Insight procs not consumed" );
+  procs.thing_from_beyond              = get_proc( "Thing from Beyond procs" );
+  procs.deathspeaker                   = get_proc( "Shadow Word: Death resets from Deathspeaker" );
+  procs.idol_of_nzoth_swp              = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
+  procs.idol_of_nzoth_vt               = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
   procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
   procs.idol_of_yshaarj_extra_duration = get_proc( "Idol of Y'Shaarj Devoured Violence procs" );
   procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
   procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
   procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
   procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
-  procs.divine_favor_chastise          = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
-  procs.divine_image                   = get_proc( "Divine Image from Holy Words" );
+  // Holy
+  procs.divine_favor_chastise = get_proc( "Smite procs Holy Fire via Divine Favor: Chastise" );
+  procs.divine_image          = get_proc( "Divine Image from Holy Words" );
 }
 
 /** Construct priest benefits */
@@ -1868,14 +1843,6 @@ double priest_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  if ( talents.shadow.ancient_madness.enabled() && !is_ptr() )
-  {
-    if ( buffs.ancient_madness->check() )
-    {
-      sim->print_debug( "Ancient Madness - adjusting crit increase to {}", buffs.ancient_madness->check_stack_value() );
-      sc += buffs.ancient_madness->check_stack_value();
-    }
-  }
   return sc;
 }
 
@@ -2086,6 +2053,28 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
+  if ( specialization() == PRIEST_SHADOW && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 )
+  {
+    if ( talents.shadow.shadow_crash.enabled() )
+    {
+      // Two Crash + 1 Halo / 2 Dstar
+      if ( talents.halo.enabled() || talents.divine_star.enabled() )
+        resources.initial_opt[ RESOURCE_INSANITY ] = 24;
+      else
+        // Two Crash
+        resources.initial_opt[ RESOURCE_INSANITY ] = 12;
+    }
+    else
+    {
+      if ( talents.divine_star.enabled() )
+        // Three Divine Stars
+        resources.initial_opt[ RESOURCE_INSANITY ] = 18;
+      if ( talents.halo.enabled() )
+        // Halo
+        resources.initial_opt[ RESOURCE_INSANITY ] = 12;
+    }
+  }
+
   base_t::init_resources( force );
 }
 
@@ -2290,7 +2279,6 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.discipline_priest );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
   action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.mental_decay );
@@ -2464,12 +2452,9 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.mindgames_healing_reversal", options.mindgames_healing_reversal ) );
   add_option( opt_bool( "priest.mindgames_damage_reversal", options.mindgames_damage_reversal ) );
   add_option( opt_bool( "priest.self_power_infusion", options.self_power_infusion ) );
-  add_option( opt_bool( "priest.screams_bug", options.priest_screams_bug ) );
-  add_option( opt_bool( "priest.gathering_shadows_bug", options.gathering_shadows_bug ) );
-  add_option( opt_bool( "priest.t30_multiple_bender", options.t30_multiple_bender ) );
-  add_option( opt_bool( "priest.t30_yshaarj", options.t30_yshaarj ) );
   // Default is 2, minimum of 1 bounce per second, maximum of 1 bounce per 12 seconds (prayer of mending's cooldown)
   add_option( opt_float( "priest.prayer_of_mending_bounce_rate", options.prayer_of_mending_bounce_rate, 1, 12 ) );
+  add_option( opt_bool( "priest.void_lasher_retarget", options.void_lasher_retarget ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -2523,36 +2508,15 @@ void priest_t::spawn_idol_of_cthun( action_state_t* s )
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;
 
-  if ( is_ptr() )
+  if ( s->action->target_list().size() > 2 )
   {
-    if ( s->action->target_list().size() > 2 )
-    {
-      procs.void_lasher->occur();
-      auto spawned_pets = pets.void_lasher.spawn();
-    }
-    else
-    {
-      procs.void_tendril->occur();
-      auto spawned_pets = pets.void_tendril.spawn();
-    }
+    procs.void_lasher->occur();
+    auto spawned_pets = pets.void_lasher.spawn();
   }
   else
   {
-    auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
-    auto mind_flay_id          = specs.mind_flay->id();
-    auto mind_flay_insanity_id = 391403U;
-    auto action_id             = s->action->id;
-
-    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
-    {
-      procs.void_tendril->occur();
-      auto spawned_pets = pets.void_tendril.spawn();
-    }
-    else if ( action_id == mind_sear_id )
-    {
-      procs.void_lasher->occur();
-      auto spawned_pets = pets.void_lasher.spawn();
-    }
+    procs.void_tendril->occur();
+    auto spawned_pets = pets.void_tendril.spawn();
   }
 }
 
@@ -2624,7 +2588,7 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
   }

@@ -1065,6 +1065,17 @@
 5015219, DBFilesClient\ItemGroupIlvlScalingEntry.db2
 5049814, DBFilesClient\CraftingReagentRequirement.db2
 5128111, DBFilesClient\ItemCondition.db2
+5150118, DBFilesClient\ItemRecraft.db2
+5152111, DBFilesClient\CollectableSourceEncounter.db2
+5152112, DBFilesClient\CollectableSourceInfo.db2
+5152256, DBFilesClient\ItemFixup.db2
+5152908, DBFilesClient\CollectableSourceEncounterSparse.db2
 5155639, DBFilesClient\ItemBonusSeason.db2
 5155640, DBFilesClient\ItemBonusSeasonBonusListGroup.db2
 5155641, DBFilesClient\ItemBonusSeasonUpgradeCost.db2
+5156218, DBFilesClient\AltMinimap.db2
+5156219, DBFilesClient\AltMinimapFiledata.db2
+5156220, DBFilesClient\AltMinimapWMO.db2
+5159897, DBFilesClient\CollectableSourceVendorSparse.db2
+5163410, DBFilesClient\CollectableSourceVendor.db2
+5202058, DBFilesClient\QuestLabel.db2

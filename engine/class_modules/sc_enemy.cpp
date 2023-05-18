@@ -1959,16 +1959,16 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * ( is_ptr() ? 1.25300002098 : 1.09000003338 );  // M0/M+
+      return k * 1.25300002098;  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * ( is_ptr() ? 1.28199994564 : 1.19200003147 );  // Normal Raid
+      return k * 1.28199994564;  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * ( is_ptr() ? 1.49800002575 : 1.28199994564 );  // Heroic Raid
+      return k * 1.49800002575;  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * ( is_ptr() ? 1.62800002098 : 1.38399994373 );  // Mythic Raid
+      return k * 1.62800002098;  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE

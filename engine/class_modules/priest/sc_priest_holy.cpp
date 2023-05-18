@@ -111,13 +111,26 @@ struct divine_word_t final : public priest_spell_t
 };
 
 // holy word cast -> Divine Image [Talent] (392988) -> Divine Image [Buff] (405963) -> Divine Image [Summon] (392990) ->
-// Searing Light (196811)
+// Searing Light (196811) procs from Holy Fire, Chastise, Shadow Word: Pain, Shadow Word: Death, and Smite
 struct searing_light_t final : public priest_spell_t
 {
   searing_light_t( priest_t& p ) : priest_spell_t( "searing_light", p, p.talents.holy.divine_image_searing_light )
   {
     background = true;
     may_miss   = false;
+  }
+};
+
+// holy word cast -> Divine Image [Talent] (392988) -> Divine Image [Buff] (405963) -> Divine Image [Summon] (392990) ->
+// Light Eruption (196811) procs from Holy Nova casts
+struct light_eruption_t final : public priest_spell_t
+{
+  light_eruption_t( priest_t& p ) : priest_spell_t( "light_eruption", p, p.talents.holy.divine_image_light_eruption )
+  {
+    background = true;
+    may_miss   = false;
+    aoe        = -1;
+    radius     = 8;  // Base in spell data is incorrect (100yd)
   }
 };
 
@@ -411,13 +424,14 @@ void priest_t::init_spells_holy()
   talents.holy.light_of_the_naaru       = ST( "Light of the Naaru" );
   talents.holy.answered_prayers         = ST( "Answered Prayers" );
   // Row 10
-  talents.holy.divine_word                = ST( "Divine Word" );
-  talents.holy.divine_favor_chastise      = find_spell( 372761 );
-  talents.holy.divine_image               = ST( "Divine Image" );
-  talents.holy.divine_image_buff          = find_spell( 405963 );
-  talents.holy.divine_image_summon        = find_spell( 392990 );
-  talents.holy.divine_image_searing_light = find_spell( 196811 );
-  talents.holy.miracle_worker             = ST( "Miracle Worker" );
+  talents.holy.divine_word                 = ST( "Divine Word" );
+  talents.holy.divine_favor_chastise       = find_spell( 372761 );
+  talents.holy.divine_image                = ST( "Divine Image" );
+  talents.holy.divine_image_buff           = find_spell( 405963 );
+  talents.holy.divine_image_summon         = find_spell( 392990 );
+  talents.holy.divine_image_searing_light  = find_spell( 196811 );
+  talents.holy.divine_image_light_eruption = find_spell( 196812 );
+  talents.holy.miracle_worker              = ST( "Miracle Worker" );
 
   // General Spells
   specs.holy_fire = find_specialization_spell( "Holy Fire" );
@@ -459,6 +473,10 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   {
     return new searing_light_t( *this );
   }
+  if ( name == "light_eruption" )
+  {
+    return new light_eruption_t( *this );
+  }
 
   return nullptr;
 }
@@ -471,7 +489,8 @@ void priest_t::init_background_actions_holy()
   }
   if ( talents.holy.divine_image.enabled() )
   {
-    background_actions.searing_light = new actions::spells::searing_light_t( *this );
+    background_actions.searing_light  = new actions::spells::searing_light_t( *this );
+    background_actions.light_eruption = new actions::spells::light_eruption_t( *this );
   }
 }
 

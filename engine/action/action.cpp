@@ -581,12 +581,12 @@ static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
          range::contains( subtypes, effect.subtype() );
 }
 
-static bool has_direct_damage_effect( const spell_data_t& spell )
+bool action_t::has_direct_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_direct_damage_effect );
 }
 
-static bool has_periodic_damage_effect( const spell_data_t& spell )
+bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_periodic_damage_effect );
 }
@@ -2536,7 +2536,7 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
+  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > 0_ms )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
@@ -2554,7 +2554,7 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY );
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
@@ -4000,11 +4000,14 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_VERSATILITY )
     state->versatility = composite_versatility( state );
 
-  if ( flags & STATE_MUL_DA )
+  if ( flags & STATE_MUL_SPELL_DA )
     state->da_multiplier = composite_da_multiplier( state );
 
-  if ( flags & STATE_MUL_TA )
+  if ( flags & STATE_MUL_SPELL_TA )
     state->ta_multiplier = composite_ta_multiplier( state );
+
+  if ( flags & STATE_MUL_PLAYER_DAM )
+    state->player_multiplier = composite_player_multiplier( state );
 
   if ( flags & STATE_MUL_PERSISTENT )
     state->persistent_multiplier = composite_persistent_multiplier( state );
@@ -4517,40 +4520,29 @@ double action_t::composite_total_corruption() const
   return player->composite_total_corruption();
 }
 
-double action_t::composite_da_multiplier(const action_state_t*) const
+double action_t::composite_player_multiplier( const action_state_t* ) const
 {
-  double base_multiplier = action_multiplier();
-  double direct_multiplier = action_da_multiplier();
   double player_school_multiplier = 0.0;
   double tmp;
 
-  for (auto base_school : base_schools)
+  for ( auto base_school : base_schools )
   {
-    tmp = player->cache.player_multiplier(base_school);
-    if (tmp > player_school_multiplier) player_school_multiplier = tmp;
+    tmp = player->cache.player_multiplier( base_school );
+    if ( tmp > player_school_multiplier )
+      player_school_multiplier = tmp;
   }
 
-  return base_multiplier * direct_multiplier * player_school_multiplier *
-    player->composite_player_dd_multiplier(get_school(), this);
+  return player_school_multiplier;
 }
 
-/// Normal ticking modifiers that are updated every tick
-
-double action_t::composite_ta_multiplier(const action_state_t*) const
+double action_t::composite_da_multiplier( const action_state_t* ) const
 {
-  double base_multiplier = action_multiplier();
-  double tick_multiplier = action_ta_multiplier();
-  double player_school_multiplier = 0.0;
-  double tmp;
+  return action_multiplier() * action_da_multiplier();
+}
 
-  for (auto base_school : base_schools)
-  {
-    tmp = player->cache.player_multiplier(base_school);
-    if (tmp > player_school_multiplier) player_school_multiplier = tmp;
-  }
-
-  return base_multiplier * tick_multiplier * player_school_multiplier *
-    player->composite_player_td_multiplier(get_school(), this);
+double action_t::composite_ta_multiplier( const action_state_t* ) const
+{
+  return action_multiplier() * action_ta_multiplier();
 }
 
 /// Persistent modifiers that are snapshot at the start of the spell cast
@@ -5021,11 +5013,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     const auto& spell_text = player->dbc->spell_text( spell.id() );
     if ( spell_text.rank() )
       desc_str = fmt::format( " (desc={})", spell_text.rank() );
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
-                        spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
-    }
+
+    sim->print_debug( "{} {} is affected by effect {} ({}{} (id={}) - effect #{})", *player, *this, effect.id(),
+                      spell.name_cstr(), desc_str, spell.id(), effect.spell_effect_num() + 1 );
   }
 
   // Applies "Spell Effect N" auras if they directly affect damage auras
@@ -5306,7 +5296,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_MOD_MAX_CHARGES:
-        if ( cooldown->action == this )
+        if ( cooldown->action == this && data().charge_cooldown() > 0_ms )
         {
           cooldown->charges += as<int>( effect.base_value() );
           sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
@@ -5336,8 +5326,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_MOD_RECHARGE_MULTIPLIER:
-        base_recharge_multiplier *= 1 + effect.percent();
-        sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        if ( data().charge_cooldown() > 0_ms )
+        {
+          base_recharge_multiplier *= 1 + effect.percent();
+          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
+        }
         break;
 
       default:

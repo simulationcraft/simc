@@ -2731,6 +2731,11 @@ static buff_t* find_potion_buff( util::span<buff_t* const> buffs, player_t* sour
     }
   }
 
+  if ( source )
+  {
+    return source->sim->auras.fallback;
+  }
+
   return nullptr;
 }
 

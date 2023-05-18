@@ -73,6 +73,7 @@ actions.cds+=/variable,name=deathmark_condition,value=!stealthed.rogue&dot.ruptu
 actions.cds+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=(!talent.exsanguinate|cooldown.exsanguinate.remains>15|exsanguinated.rupture|exsanguinated.garrote)&dot.rupture.ticking&cooldown.deathmark.remains<2|fight_remains<=22
 actions.cds+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
 actions.cds+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
+actions.cds+=/invoke_external_buff,name=power_infusion,if=variable.deathmark_condition
 actions.cds+=/deathmark,if=variable.deathmark_condition
 actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough. Attempt to sync with Deathmark and also Echoing Reprimand if using Resounding Clarity.
@@ -181,7 +182,7 @@ off_hand=ornamental_drakonid_claw,id=195521,bonus_id=6652/8783/8784/7936/7937/48
 # Gear Summary
 # gear_ilvl=421.75
 # gear_agility=5442
-# gear_stamina=13273
+# gear_stamina=17306
 # gear_crit_rating=5029
 # gear_haste_rating=2619
 # gear_mastery_rating=2268

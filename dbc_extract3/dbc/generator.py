@@ -480,6 +480,10 @@ class SpecializationEnumGenerator(DataGenerator):
 
             enum_ids[spec_data.class_id][spec_data.index] = { 'id': spec_id, 'name': spec_name }
 
+        # manually add augmentation evoker to live specialization enums
+        if self._options.build.patch_level() < dbc.WowVersion( 10, 1, 5, 49516 ).patch_level():
+            enum_ids[13][2] = { 'id': 1473, 'name': 'EVOKER_AUGMENTATION' }
+
         return enum_ids
 
     def generate(self, enum_ids = None):
@@ -1405,19 +1409,19 @@ class SpellDataGenerator(DataGenerator):
          408259, # Neltharion's Call to Dominance Shaman
          408260, # Neltharion's Call to Dominance Monk
          408262, # Neltharion's Call to Dominance Hunter
-         408815, 408832, 408835, 408836, # Djaruun
          401303, 401306, 408513, 408533, 408534, 408535, 408536, 408537, 408538, 408539, 408540, 408584, 408578, 410264, 401324, # Elemntium Pocket Anvil
-         408821, 403545, # Djaruun, Pillar of the Elder Flame
+         408815, 408832, 408835, 408836, 408821, 403545, # Djaruun, Pillar of the Elder Flame
          408667, 408671, 408675, 408770, 408682, 408694, # Dragonfire Bomb Dispenser
-         406244, 378758, 407090, # Spore Colony Shoulderguards
+         406244, 378758, 407090, 407092, # Spore Colony Shoulderguards
          407949, 408015, # Tinker: Shadowflame Rockets
          406753, 406764, 406770, # Shadowflame Wreathe
          401513, 405620, 401516, 405613, 402221, 405615, 401521, 405608, 401518, 405612, 401519, 405611, # Glimmering Chromatic orb
          406251, 406254, 406887, # Shadowflame-Tempered Armor Patch
          407087, # Ever-Decaying Spores
          400959, # Zaquali Chaos Grapnel
-         402813, 402894, 402896, 402897, 402898, 402903, 407961, # Igneous Tidestone
+         402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
+         407914, 407913, 407939,  # Might of the Drogbar set
         ),
 
         # Warrior:
@@ -1606,6 +1610,8 @@ class SpellDataGenerator(DataGenerator):
             ( 393727, 0 ), ( 393728, 0 ), ( 394879, 0 ), ( 394888, 0 ), # T29 Outlaw Set Bonus Spells
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
             ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
+            ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
+            ( 413890, 0 ),          # Nightstalker background spell
         ),
 
         # Priest:
@@ -1788,6 +1794,7 @@ class SpellDataGenerator(DataGenerator):
           ( 222251, 0 ),                                # Improved Stormbringer damage
           ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
           ( 390287, 0 ),                                # Improved Stormbringer damage spell
+          ( 289439, 0 ),                                # Frost Shock Maelstrom generator
         ),
 
         # Mage:
@@ -1952,6 +1959,7 @@ class SpellDataGenerator(DataGenerator):
           ( 389684, 0 ), # Close to Heart Leech Buff
           ( 389685, 0 ), # Generous Pour Avoidance Buff
           ( 392883, 0 ), # Vivacious Vivification buff
+          ( 414143, 0 ), # Yu'lon's Grace buff
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
@@ -2229,6 +2237,8 @@ class SpellDataGenerator(DataGenerator):
           ( 409848, 1 ), # 4t30 buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
+          # Augmentation
+          ( 392268, 3 ), # Augmentation Essence Burst
        ),
     ]
 
@@ -2261,19 +2271,19 @@ class SpellDataGenerator(DataGenerator):
     # Note, these are reset for MoP
     _spec_skill_categories = [
         (),
-        (   71,   72,  73,   0 ), # Warrior
-        (   65,   66,  70,   0 ), # Paladin
-        (  254,  255, 256,   0 ), # Hunter
-        (  259,  260, 261,   0 ), # Rogue
-        (  256,  257, 258,   0 ), # Priest
-        (  250,  251, 252,   0 ), # Death Knight
-        (  262,  263, 264,   0 ), # Shaman
-        (   62,   63,  64,   0 ), # Mage
-        (  265,  266, 267,   0 ), # Warlock
-        (  268,  270, 269,   0 ), # Monk
-        (  102,  103, 104, 105 ), # Druid
-        (  577,  581,   0,   0 ), # Demon Hunter
-        ( 1467, 1468,   0,   0 ), # Evoker
+        (   71,   72,   73,   0 ), # Warrior
+        (   65,   66,   70,   0 ), # Paladin
+        (  254,  255,  256,   0 ), # Hunter
+        (  259,  260,  261,   0 ), # Rogue
+        (  256,  257,  258,   0 ), # Priest
+        (  250,  251,  252,   0 ), # Death Knight
+        (  262,  263,  264,   0 ), # Shaman
+        (   62,   63,   64,   0 ), # Mage
+        (  265,  266,  267,   0 ), # Warlock
+        (  268,  270,  269,   0 ), # Monk
+        (  102,  103,  104, 105 ), # Druid
+        (  577,  581,    0,   0 ), # Demon Hunter
+        ( 1467, 1468, 1473,   0 ), # Evoker
     ]
 
     _race_categories = [
@@ -2411,6 +2421,7 @@ class SpellDataGenerator(DataGenerator):
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
         ( 507, 'misc_value_1' ),
+        ( 537, 'misc_value_1' ),
     ]
 
     _spell_blacklist = [
@@ -3706,7 +3717,12 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier30',
             'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
             'tier'   : 30
-        }
+        },
+        {
+            'name'   : 'might_of_the_drogbar',
+            'bonuses': [ 1539 ],
+            'tier'   : 30
+        },
     ]
 
     @staticmethod

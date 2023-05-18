@@ -6,10 +6,12 @@ race=troll
 role=attack
 position=back
 talents=BcQAAAAAAAAAAAAAAAAAAAAAAIJJHAkcARSSSQSiECAAAAAAAAAAAAoEhkQCKCk0SSaICQikCC
+dragonflight.ominous_chromatic_essence_dragonflight=azure
+dragonflight.ominous_chromatic_essence_allies=ruby/bronze/emerald/obsidian
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_elemental_chaos_3
+flask=phial_of_tepid_versatility_3
 food=fated_fortune_cookie
 augmentation=draconic
 temporary_enchant=disabled
@@ -48,7 +50,7 @@ actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.as
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/invoke_external_buff,name=power_infusion,if=(talent.ascendance.enabled&talent.thorims_invocation.enabled&buff.ascendance.up)|(!talent.thorims_invocation.enabled&talent.feral_spirit.enabled&buff.feral_spirit.up)|(!talent.thorims_invocation.enabled&!talent.feral_spirit.enabled)|fight_remains<=20
 actions+=/feral_spirit
-actions+=/ascendance,if=(ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1)
+actions+=/ascendance,if=dot.flame_shock.ticking&((ti_lightning_bolt&active_enemies=1&raid_event.adds.in>=90)|(ti_chain_lightning&active_enemies>1))
 actions+=/doom_winds,if=raid_event.adds.in>=90|active_enemies>1
 # If_only_one_enemy,_priority_follows_the_'single'_action_list.
 actions+=/call_action_list,name=single,if=active_enemies=1
@@ -56,14 +58,16 @@ actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
-actions.aoe=lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=(5+5*talent.overflowing_maelstrom.enabled)&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)
-actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=10&(!talent.crashing_storms.enabled|active_enemies<=3)
-actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
+actions.aoe=crash_lightning,if=talent.crashing_storms.enabled&((talent.unruly_winds.enabled&active_enemies>=10)|active_enemies>=15)
+actions.aoe+=/lightning_bolt,if=(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)&buff.primordial_wave.up&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)
+actions.aoe+=/lava_lash,if=talent.molten_assault.enabled&(talent.primordial_wave.enabled|talent.fire_nova.enabled)&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
-actions.aoe+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up
+actions.aoe+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!talent.crashing_storms.enabled|active_enemies<=3)
+actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1
+actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack
+actions.aoe+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)
 actions.aoe+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
 actions.aoe+=/fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
-actions.aoe+=/windstrike,if=talent.thorims_invocation.enabled&ti_chain_lightning&buff.maelstrom_weapon.stack>1
 actions.aoe+=/ice_strike,if=talent.hailstorm.enabled
 actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
 actions.aoe+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up
@@ -87,71 +91,72 @@ actions.aoe+=/flame_shock,if=!ticking
 actions.aoe+=/frost_shock,if=!talent.hailstorm.enabled
 
 # Single target action priority list
-actions.single=windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1
-actions.single+=/lava_lash,if=buff.hot_hand.up|buff.ashen_catalyst.stack=8|(buff.ashen_catalyst.stack>=5&buff.maelstrom_of_elements.up&buff.maelstrom_weapon.stack<=6)
+actions.single=primordial_wave,if=!dot.flame_shock.ticking&talent.lashing_flames.enabled&(raid_event.adds.in>42|raid_event.adds.in<6)
+actions.single+=/flame_shock,if=!ticking&talent.lashing_flames.enabled
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&talent.elemental_spirits.enabled&feral_spirit.active>=4
+actions.single+=/sundering,if=set_bonus.tier30_2pc&raid_event.adds.in>=40
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.down&buff.ascendance.up&ti_chain_lightning&(buff.ascendance.remains>(cooldown.strike.remains+gcd))
+actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=1&(talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)|(talent.elemental_assault.enabled&talent.stormflurry.enabled)|ti_lightning_bolt)
+actions.single+=/stormstrike,if=buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up)|((talent.elemental_assault.enabled&talent.stormflurry.enabled)&buff.maelstrom_weapon.stack<buff.maelstrom_weapon.max_stack)
+actions.single+=/lava_lash,if=buff.hot_hand.up
 actions.single+=/windfury_totem,if=!buff.windfury_totem.up
-actions.single+=/stormstrike,if=buff.doom_winds.up
-actions.single+=/crash_lightning,if=buff.doom_winds.up
-actions.single+=/ice_strike,if=buff.doom_winds.up
-actions.single+=/sundering,if=buff.doom_winds.up|set_bonus.tier30_2pc
-actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
-actions.single+=/flame_shock,if=!ticking
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
 actions.single+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&buff.crackling_thunder.up
-actions.single+=/elemental_blast,if=talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)&buff.maelstrom_weapon.stack>=8
-actions.single+=/ice_strike,if=talent.hailstorm.enabled
-actions.single+=/stormstrike,if=set_bonus.tier29_2pc&buff.maelstrom_of_elements.down&buff.maelstrom_weapon.stack<=5
-actions.single+=/frost_shock,if=buff.hailstorm.up
+actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&(buff.feral_spirit.up|!talent.elemental_spirits.enabled)
+actions.single+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5
+actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
+actions.single+=/ice_strike,if=buff.doom_winds.up
+actions.single+=/sundering,if=buff.doom_winds.up&raid_event.adds.in>=40
+actions.single+=/crash_lightning,if=buff.doom_winds.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)
+actions.single+=/primordial_wave,if=raid_event.adds.in>42|raid_event.adds.in<6
+actions.single+=/flame_shock,if=!ticking
 actions.single+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.refreshable
-actions.single+=/windstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
-actions.single+=/stormstrike,if=talent.deeply_rooted_elements.enabled|buff.earthen_weapon.up|buff.legacy_of_the_frost_witch.up
-actions.single+=/elemental_blast,if=(talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack=10)|(!talent.elemental_spirits.enabled&buff.maelstrom_weapon.stack>=5)
-actions.single+=/lava_burst,if=buff.maelstrom_weapon.stack>=5
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down
+actions.single+=/ice_strike
+actions.single+=/frost_shock,if=buff.hailstorm.up
+actions.single+=/lava_lash
 actions.single+=/windstrike
 actions.single+=/stormstrike
-actions.single+=/windfury_totem,if=buff.windfury_totem.remains<10
-actions.single+=/ice_strike
-actions.single+=/lava_lash
-actions.single+=/elemental_blast,if=talent.elemental_spirits.enabled&(charges=max_charges|buff.feral_spirit.up)&buff.maelstrom_weapon.stack>=5
-actions.single+=/bag_of_tricks
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/sundering,if=raid_event.adds.in>=40
-actions.single+=/fire_nova,if=talent.swirling_maelstrom.enabled&active_dot.flame_shock
+actions.single+=/bag_of_tricks
+actions.single+=/fire_nova,if=talent.swirling_maelstrom.enabled&active_dot.flame_shock&buff.maelstrom_weapon.stack<buff.maelstrom_weapon.max_stack
+actions.single+=/lightning_bolt,if=talent.hailstorm.enabled&buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/frost_shock
 actions.single+=/crash_lightning
 actions.single+=/fire_nova,if=active_dot.flame_shock
 actions.single+=/earth_elemental
 actions.single+=/flame_shock
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192985
-neck=elemental_lariat,id=193001,bonus_id=6652/7936/7979/1569/8767/8782,gem_id=192948/192948/192948,crafted_stats=49/36
+head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
+neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=201409/192948,enchant_id=6574,crafted_stats=32
-hands=flametouched_handguards,id=193427,bonus_id=9376/9405/8793,crafted_stats=49/36
-waist=flametouched_chain,id=193425,bonus_id=9376/9405/8793/9436,gem_id=192948,crafted_stats=49/36
+wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=192961,enchant_id=6574,crafted_stats=32
+hands=scale_rein_grips,id=193465,bonus_id=9405/9376
+waist=wind_spirits_lasso,id=193463,bonus_id=9405/9376/9436,gem_id=192961
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
-feet=venomsteeped_stompers,id=193460,bonus_id=8836/8840/8902/9405/9376,enchant_id=6607
-finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
-finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192948,enchant=devotion_of_haste_3,crafted_stats=49/36
-trinket1=igneous_flowstone,id=203996,bonus_id=4800/4786/1498
+feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
+finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+finger2=ringbound_hourglass,id=193000,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
+trinket1=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
-main_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
-off_hand=claws_of_the_blazing_behemoth,id=202560,bonus_id=4800/4786/1498,enchant=sophic_devotion_3
+main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophic_devotion_3,crafted_stats=49/36
+off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophic_devotion_3,crafted_stats=49/36
 
 # Gear Summary
 # gear_ilvl=448.63
-# gear_agility=6228
-# gear_stamina=22406
-# gear_crit_rating=1262
-# gear_haste_rating=5249
-# gear_mastery_rating=6049
-# gear_versatility_rating=438
+# gear_agility=6225
+# gear_stamina=22474
+# gear_crit_rating=1401
+# gear_haste_rating=5522
+# gear_mastery_rating=5201
+# gear_versatility_rating=911
 # gear_speed_rating=250
 # gear_avoidance_rating=200
-# gear_armor=5762
+# gear_armor=5775
+# set_bonus=horizon_striders_garments_2pc=1
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1

@@ -1,6 +1,3 @@
-# TODO: Remove this once it goes live
-ptr=1
-
 optimal_raid=1
 default_actions=1
 
@@ -10,45 +7,44 @@ T30_Death_Knight_Frost_2h.simc
 # T30_Death_Knight_Frost_DW.simc
 T30_Death_Knight_Unholy.simc
 
-# T30_Demon_Hunter_Havoc.simc
-# T30_Demon_Hunter_Vengeance.simc
+T30_Demon_Hunter_Havoc.simc
+T30_Demon_Hunter_Vengeance.simc
 
-# T30_Druid_Balance.simc
-# T30_Druid_Feral.simc
-# T30_Druid_Feral_SI.simc
-# T30_Druid_Guardian.simc
+T30_Druid_Balance.simc
+T30_Druid_Feral.simc
+T30_Druid_Guardian.simc
 
-# T30_Evoker_Devastation.simc
+T30_Evoker_Devastation.simc
 
-# T30_Hunter_Beast_Mastery.simc
-# T30_Hunter_Marksmanship.simc
-# T30_Hunter_Survival.simc
+T30_Hunter_Beast_Mastery.simc
+T30_Hunter_Marksmanship.simc
+T30_Hunter_Survival.simc
 
-# T30_Mage_Fire.simc
-# T30_Mage_Frost.simc
-# T30_Mage_Arcane.simc
+T30_Mage_Fire.simc
+T30_Mage_Frost.simc
+T30_Mage_Arcane.simc
 
-# T30_Monk_Brewmaster.simc
-# T30_Monk_Windwalker.simc
-# T30_Monk_Windwalker_SEF.simc
+T30_Monk_Brewmaster.simc
+T30_Monk_Windwalker.simc
+T30_Monk_Windwalker_SEF.simc
 
-# T30_Paladin_Protection.simc
-# T30_Paladin_Retribution.simc
+T30_Paladin_Protection.simc
+T30_Paladin_Retribution.simc
 
 T30_Priest_Shadow.simc
 
-# T30_Rogue_Assassination.simc
-# T30_Rogue_Outlaw.simc
-# T30_Rogue_Subtlety.simc
+T30_Rogue_Assassination.simc
+T30_Rogue_Outlaw.simc
+T30_Rogue_Subtlety.simc
 
-# T30_Shaman_Elemental.simc
+T30_Shaman_Elemental.simc
 T30_Shaman_Enhancement.simc
 T30_Shaman_Enhancement_Storm.simc
 
-# T30_Warlock_Affliction.simc
-# T30_Warlock_Demonology.simc
-# T30_Warlock_Destruction.simc
+T30_Warlock_Affliction.simc
+T30_Warlock_Demonology.simc
+T30_Warlock_Destruction.simc
 
-# T30_Warrior_Arms.simc
-# T30_Warrior_Fury.simc
-# T30_Warrior_Protection.simc
+T30_Warrior_Arms.simc
+T30_Warrior_Fury.simc
+T30_Warrior_Protection.simc

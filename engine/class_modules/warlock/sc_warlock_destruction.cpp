@@ -132,6 +132,11 @@ struct internal_combustion_t : public destruction_spell_t
     dot->current_action->calculate_tick_amount( state, 1.0 );
 
     double tick_base_damage = state->result_raw;
+
+    // 2023-04-29 Internal Combustion does not benefit from the Roaring Blaze multiplier only
+    if ( td->debuffs_conflagrate->up() )
+      tick_base_damage /= 1.0 + td->debuffs_conflagrate->check_value();
+
     timespan_t remaining = std::min( dot->remains(), timespan_t::from_seconds( p()->talents.internal_combustion->effectN( 1 ).base_value() ) );
     timespan_t dot_tick_time = dot->current_action->tick_time( state );
     double ticks_left = remaining / dot_tick_time;
@@ -1000,9 +1005,10 @@ struct channel_demonfire_tick_t : public destruction_spell_t
     if ( !( p->min_version_check( VERSION_10_1_0 ) ) )
       base_multiplier *= 1.0 + p->talents.ruin->effectN( 1 ).percent();
     base_aoe_multiplier = p->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+    travel_speed = p->talents.channel_demonfire_travel->missile_speed();
   }
 
-  // TOCHECK: As of 2023-04-03, PTR is not canceling/resetting the Umbrafire buff when starting CDF. Presumably this will change before Live
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
@@ -1413,11 +1419,19 @@ struct channel_demonfire_tier_t : public destruction_spell_t
 
     aoe = -1;
     base_aoe_multiplier = p->tier.channel_demonfire->effectN( 2 ).sp_coeff() / p->tier.channel_demonfire->effectN( 1 ).sp_coeff();
+
+    travel_speed = p->talents.channel_demonfire_travel->missile_speed();
   }
 
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
+
+    // Raging Demonfire will adjust the time remaining on all targets hit by an AoE pulse
+    if ( p()->talents.raging_demonfire->ok() && td( s->target )->dots_immolate->is_ticking() )
+    {
+      td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
 
     if ( s->chain_target == 0 && p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T30, B4 ) )
       p()->buffs.umbrafire_embers->trigger();
@@ -1569,6 +1583,7 @@ void warlock_t::init_spells_destruction()
 
   talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
   talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
+  talents.channel_demonfire_travel = find_spell( 196449 );
 
   talents.pandemonium = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemonium" ); // Should be ID 387509
 

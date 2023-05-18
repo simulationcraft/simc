@@ -1131,6 +1131,7 @@ public:
     ab::apply_affecting_aura( p()->talents.arms.blunt_instruments ); // damage only
     ab::apply_affecting_aura( p()->talents.arms.impale );
     ab::apply_affecting_aura( p()->talents.arms.improved_overpower );
+    ab::apply_affecting_aura( p()->talents.arms.improved_execute );
     ab::apply_affecting_aura( p()->talents.arms.improved_slam );
     ab::apply_affecting_aura( p()->talents.arms.reaping_swings );
     ab::apply_affecting_aura( p()->talents.arms.sharpened_blades );
@@ -1148,6 +1149,7 @@ public:
     ab::apply_affecting_aura( p()->talents.protection.storm_of_steel );
     ab::apply_affecting_aura( p()->talents.protection.bloodborne );
     ab::apply_affecting_aura( p()->talents.protection.defenders_aegis );
+    ab::apply_affecting_aura( p()->talents.protection.battering_ram );
     ab::apply_affecting_aura( p()->talents.warrior.barbaric_training );
     ab::apply_affecting_aura( p()->talents.warrior.concussive_blows );
     ab::apply_affecting_aura( p()->talents.warrior.cruel_strikes );
@@ -1184,8 +1186,7 @@ public:
     affected_by.recklessness             = ab::data().affected_by( p()->spell.recklessness_buff->effectN( 1 ) );
     affected_by.t29_arms_4pc             = ab::data().affected_by( p()->find_spell( 394173 )->effectN( 1 ) );
     affected_by.t29_prot_2pc             = ab::data().affected_by( p()->find_spell( 394056 )->effectN( 1 ) );
-    if ( p()->dbc->ptr )
-      affected_by.t30_arms_2pc           = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
+    affected_by.t30_arms_2pc             = ab::data().affected_by( p()->find_spell( 262115 )->effectN( 5 ) );
     affected_by.t30_arms_4pc             = ab::data().affected_by( p()->find_spell( 410138 )->effectN( 1 ) );
     affected_by.t30_fury_4pc             = ab::data().affected_by( p()->find_spell( 409983 )->effectN( 2 ) );
 
@@ -2527,7 +2528,7 @@ struct mortal_strike_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
-    if ( p()->dbc->ptr && p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
     {
       rend_dot->set_target( s->target );
       rend_dot->execute();
@@ -2596,7 +2597,7 @@ struct bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed                      = 0;
 
     bladestorm_mh->weapon             = &( player->main_hand_weapon );
@@ -2753,7 +2754,7 @@ struct torment_bladestorm_t : public warrior_attack_t
     parse_options( options_str );
     channeled = false;
     tick_zero = true;
-    callbacks = interrupt_auto_attack = false;
+    interrupt_auto_attack = false;
     travel_speed = 0;
     dot_duration = p->talents.warrior.blademasters_torment->effectN( 2 ).time_value();
     bladestorm_mh->weapon = &( player->main_hand_weapon );
@@ -3571,7 +3572,7 @@ struct execute_damage_t : public warrior_attack_t
   double max_rage;
   double cost_rage;
   execute_damage_t( warrior_t* p, util::string_view options_str )
-    : warrior_attack_t( "execute", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
+    : warrior_attack_t( "execute_damage", p, p->spell.execute->effectN( 1 ).trigger() ), max_rage( 40 )
   {
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
@@ -5257,7 +5258,6 @@ struct ravager_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     hasted_ticks            = true;
-    callbacks               = false;
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
@@ -5522,15 +5522,6 @@ struct shield_charge_damage_t : public warrior_attack_t
     return am;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-
-    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
-
-    return c;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -5594,15 +5585,6 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
       am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
     }
     return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = warrior_attack_t::composite_crit_chance();
-
-    c += p()->talents.protection.battering_ram->effectN( 2 ).percent();
-
-    return c;
   }
 };
 
@@ -6972,6 +6954,7 @@ struct spear_of_bastion_attack_t : public warrior_attack_t
     aoe                        = -1;
     reduced_aoe_targets        = 5.0;
     dual                       = true;
+    allow_class_ability_procs  = true;
     energize_type     = action_energize::NONE;
 
     rage_gain *= 1.0 + p->talents.warrior.piercing_verdict->effectN( 2 ).percent();
@@ -9561,7 +9544,7 @@ std::string warrior_t::default_rune() const
 std::string warrior_t::default_temporary_enchant() const
 {
   std::string fury_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:howling_rune_3/off_hand:howling_rune_3"
+                              ? "main_hand:hissing_rune_3/off_hand:hissing_rune_3"
                               : "disabled";
 
   std::string arms_temporary_enchant = ( true_level >= 60 )
@@ -10180,9 +10163,6 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
   cdm *= 1.0 + buff.elysian_might_legendary->check_value();
 
   cdm *= 1.0 + buff.elysian_might->check_value();
-
-  if ( s->action->school == SCHOOL_PHYSICAL )
-    cdm *= 1.0 + talents.protection.battering_ram->effectN( 3 ).percent();
 
   return cdm;
 }

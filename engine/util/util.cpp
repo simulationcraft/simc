@@ -28,50 +28,51 @@ struct spec_map_t
 
 const spec_map_t spec_map[] =
 {
-  { WARRIOR_ARMS,         "Arms Warrior"         },
-  { WARRIOR_FURY,         "Fury Warrior"         },
-  { WARRIOR_PROTECTION,   "Protection Warrior"   },
-  { PALADIN_HOLY,         "Holy Paladin"         },
-  { PALADIN_PROTECTION,   "Protection Paladin"   },
-  { PALADIN_RETRIBUTION,  "Retribution Paladin"  },
-  { HUNTER_BEAST_MASTERY, "Beast Mastery Hunter" },
-  { HUNTER_BEAST_MASTERY, "Beast-Mastery Hunter" }, // Alternate
-  { HUNTER_MARKSMANSHIP,  "Marksmanship Hunter"  },
-  { HUNTER_SURVIVAL,      "Survival Hunter"      },
-  { ROGUE_ASSASSINATION,  "Assassination Rogue"  },
-  { ROGUE_OUTLAW,         "Outlaw Rogue"         },
-  { ROGUE_SUBTLETY,       "Subtlety Rogue"       },
-  { PRIEST_DISCIPLINE,    "Discipline Priest"    },
-  { PRIEST_HOLY,          "Holy Priest"          },
-  { PRIEST_SHADOW,        "Shadow Priest"        },
-  { DEATH_KNIGHT_BLOOD,   "Blood Death Knight"   }, // Default
-  { DEATH_KNIGHT_BLOOD,   "Blood DeathKnight"    }, // Alternate (battle.net match)
-  { DEATH_KNIGHT_FROST,   "Frost Death Knight"   }, // Default
-  { DEATH_KNIGHT_FROST,   "Frost DeathKnight"    }, // Alternate (battle.net match)
-  { DEATH_KNIGHT_UNHOLY,  "Unholy Death Knight"  }, // Default
-  { DEATH_KNIGHT_UNHOLY,  "Unholy DeathKnight"   }, // Alternate (battle.net match)
-  { SHAMAN_ELEMENTAL,     "Elemental Shaman"     },
-  { SHAMAN_ENHANCEMENT,   "Enhancement Shaman"   },
-  { SHAMAN_RESTORATION,   "Restoration Shaman"   },
-  { MAGE_ARCANE,          "Arcane Mage"          },
-  { MAGE_FIRE,            "Fire Mage"            },
-  { MAGE_FROST,           "Frost Mage"           },
-  { WARLOCK_AFFLICTION,   "Affliction Warlock"   },
-  { WARLOCK_DEMONOLOGY,   "Demonology Warlock"   },
-  { WARLOCK_DESTRUCTION,  "Destruction Warlock"  },
-  { MONK_BREWMASTER,      "Brewmaster Monk"      },
-  { MONK_MISTWEAVER,      "Mistweaver Monk"      },
-  { MONK_WINDWALKER,      "Windwalker Monk"      },
-  { DRUID_BALANCE,        "Balance Druid"        },
-  { DRUID_FERAL,          "Feral Druid"          },
-  { DRUID_GUARDIAN,       "Guardian Druid"       },
-  { DRUID_RESTORATION,    "Restoration Druid"    },
-  { DEMON_HUNTER_HAVOC,   "Havoc Demon Hunter"   },
-  { DEMON_HUNTER_HAVOC,   "Havoc DemonHunter"    },
+  { WARRIOR_ARMS,           "Arms Warrior"           },
+  { WARRIOR_FURY,           "Fury Warrior"           },
+  { WARRIOR_PROTECTION,     "Protection Warrior"     },
+  { PALADIN_HOLY,           "Holy Paladin"           },
+  { PALADIN_PROTECTION,     "Protection Paladin"     },
+  { PALADIN_RETRIBUTION,    "Retribution Paladin"    },
+  { HUNTER_BEAST_MASTERY,   "Beast Mastery Hunter"   },
+  { HUNTER_BEAST_MASTERY,   "Beast-Mastery Hunter"   }, // Alternate
+  { HUNTER_MARKSMANSHIP,    "Marksmanship Hunter"    },
+  { HUNTER_SURVIVAL,        "Survival Hunter"        },
+  { ROGUE_ASSASSINATION,    "Assassination Rogue"    },
+  { ROGUE_OUTLAW,           "Outlaw Rogue"           },
+  { ROGUE_SUBTLETY,         "Subtlety Rogue"         },
+  { PRIEST_DISCIPLINE,      "Discipline Priest"      },
+  { PRIEST_HOLY,            "Holy Priest"            },
+  { PRIEST_SHADOW,          "Shadow Priest"          },
+  { DEATH_KNIGHT_BLOOD,     "Blood Death Knight"     }, // Default
+  { DEATH_KNIGHT_BLOOD,     "Blood DeathKnight"      }, // Alternate (battle.net match)
+  { DEATH_KNIGHT_FROST,     "Frost Death Knight"     }, // Default
+  { DEATH_KNIGHT_FROST,     "Frost DeathKnight"      }, // Alternate (battle.net match)
+  { DEATH_KNIGHT_UNHOLY,    "Unholy Death Knight"    }, // Default
+  { DEATH_KNIGHT_UNHOLY,    "Unholy DeathKnight"     }, // Alternate (battle.net match)
+  { SHAMAN_ELEMENTAL,       "Elemental Shaman"       },
+  { SHAMAN_ENHANCEMENT,     "Enhancement Shaman"     },
+  { SHAMAN_RESTORATION,     "Restoration Shaman"     },
+  { MAGE_ARCANE,            "Arcane Mage"            },
+  { MAGE_FIRE,              "Fire Mage"              },
+  { MAGE_FROST,             "Frost Mage"             },
+  { WARLOCK_AFFLICTION,     "Affliction Warlock"     },
+  { WARLOCK_DEMONOLOGY,     "Demonology Warlock"     },
+  { WARLOCK_DESTRUCTION,    "Destruction Warlock"    },
+  { MONK_BREWMASTER,        "Brewmaster Monk"        },
+  { MONK_MISTWEAVER,        "Mistweaver Monk"        },
+  { MONK_WINDWALKER,        "Windwalker Monk"        },
+  { DRUID_BALANCE,          "Balance Druid"          },
+  { DRUID_FERAL,            "Feral Druid"            },
+  { DRUID_GUARDIAN,         "Guardian Druid"         },
+  { DRUID_RESTORATION,      "Restoration Druid"      },
+  { DEMON_HUNTER_HAVOC,     "Havoc Demon Hunter"     },
+  { DEMON_HUNTER_HAVOC,     "Havoc DemonHunter"      },
   { DEMON_HUNTER_VENGEANCE, "Vengeance Demon Hunter" },
   { DEMON_HUNTER_VENGEANCE, "Vengeance DemonHunter"  },
-  { EVOKER_DEVASTATION,   "Devastation Evoker" },
-  { EVOKER_PRESERVATION,   "Preservation Evoker" },
+  { EVOKER_DEVASTATION,     "Devastation Evoker"     },
+  { EVOKER_PRESERVATION,    "Preservation Evoker"    },
+  { EVOKER_AUGMENTATION,    "Augmentation Evoker"    },
 };
 
 struct html_named_character_t
@@ -1036,6 +1037,7 @@ const char* util::school_type_string( school_e school )
     case SCHOOL_ELEMENTAL:        return "elemental";
     case SCHOOL_COSMIC:           return "cosmic";
     case SCHOOL_CHROMATIC:        return "chromatic";
+    case SCHOOL_CHROMASTRIKE:     return "chromastrike";
     case SCHOOL_MAGIC:            return "magic";
     case SCHOOL_DRAIN:            return "drain";
     case SCHOOL_NONE:             return "none";
@@ -1711,84 +1713,46 @@ const char* util::spec_string_no_class( const player_t& p )
   // Player spec
   switch ( p.specialization() )
   {
-    case DEATH_KNIGHT_BLOOD:
-    return "Blood";
-    case DEATH_KNIGHT_FROST:
-    return "Frost";
-    case DEATH_KNIGHT_UNHOLY:
-    return "Unholy";
-    case DEMON_HUNTER_HAVOC:
-    return "Havoc";
-    case DEMON_HUNTER_VENGEANCE:
-    return "Vengeance";
-    case DRUID_BALANCE:
-    return "Balance";
-    case DRUID_FERAL:
-    return "Feral";
-    case DRUID_GUARDIAN:
-    return "Guardian";
-    case DRUID_RESTORATION:
-    return "Restoration";
-    case EVOKER_DEVASTATION:
-    return "Devastation";
-    case EVOKER_PRESERVATION:
-    return "Preservation";
-    case HUNTER_BEAST_MASTERY:
-    return "BeastMastery";
-    case HUNTER_MARKSMANSHIP:
-    return "Marksmanship";
-    case HUNTER_SURVIVAL:
-    return "Survival";
-    case MAGE_ARCANE:
-    return "Arcane";
-    case MAGE_FIRE:
-    return "Fire";
-    case MAGE_FROST:
-    return "Frost";
-    case MONK_BREWMASTER:
-    return "Brewmaster";
-    case MONK_MISTWEAVER:
-    return "Mistweaver";
-    case MONK_WINDWALKER:
-    return "Windwalker";
-    case PALADIN_HOLY:
-    return "Holy";
-    case PALADIN_PROTECTION:
-    return "Protection";
-    case PALADIN_RETRIBUTION:
-    return "Retribution";
-    case PRIEST_DISCIPLINE:
-    return "Discipline";
-    case PRIEST_HOLY:
-    return "Holy";
-    case PRIEST_SHADOW:
-    return "Shadow";
-    case ROGUE_ASSASSINATION:
-    return "Assassination";
-    case ROGUE_OUTLAW:
-    return "Outlaw";
-    case ROGUE_SUBTLETY:
-    return "Subtlety";
-    case SHAMAN_ELEMENTAL:
-    return "Elemental";
-    case SHAMAN_ENHANCEMENT:
-    return "Enhancement";
-    case SHAMAN_RESTORATION:
-    return "Restoration";
-    case WARLOCK_AFFLICTION:
-    return "Affliction";
-    case WARLOCK_DEMONOLOGY:
-    return "Demonology";
-    case WARLOCK_DESTRUCTION:
-    return "Destruction";
-    case WARRIOR_ARMS:
-    return "Arms";
-    case WARRIOR_FURY:
-    return "Fury";
-    case WARRIOR_PROTECTION:
-    return "Protection";
-    default:
-    return "";
+    case DEATH_KNIGHT_BLOOD:     return "Blood";
+    case DEATH_KNIGHT_FROST:     return "Frost";
+    case DEATH_KNIGHT_UNHOLY:    return "Unholy";
+    case DEMON_HUNTER_HAVOC:     return "Havoc";
+    case DEMON_HUNTER_VENGEANCE: return "Vengeance";
+    case DRUID_BALANCE:          return "Balance";
+    case DRUID_FERAL:            return "Feral";
+    case DRUID_GUARDIAN:         return "Guardian";
+    case DRUID_RESTORATION:      return "Restoration";
+    case EVOKER_DEVASTATION:     return "Devastation";
+    case EVOKER_PRESERVATION:    return "Preservation";
+    case EVOKER_AUGMENTATION:    return "Augmentation";
+    case HUNTER_BEAST_MASTERY:   return "BeastMastery";
+    case HUNTER_MARKSMANSHIP:    return "Marksmanship";
+    case HUNTER_SURVIVAL:        return "Survival";
+    case MAGE_ARCANE:            return "Arcane";
+    case MAGE_FIRE:              return "Fire";
+    case MAGE_FROST:             return "Frost";
+    case MONK_BREWMASTER:        return "Brewmaster";
+    case MONK_MISTWEAVER:        return "Mistweaver";
+    case MONK_WINDWALKER:        return "Windwalker";
+    case PALADIN_HOLY:           return "Holy";
+    case PALADIN_PROTECTION:     return "Protection";
+    case PALADIN_RETRIBUTION:    return "Retribution";
+    case PRIEST_DISCIPLINE:      return "Discipline";
+    case PRIEST_HOLY:            return "Holy";
+    case PRIEST_SHADOW:          return "Shadow";
+    case ROGUE_ASSASSINATION:    return "Assassination";
+    case ROGUE_OUTLAW:           return "Outlaw";
+    case ROGUE_SUBTLETY:         return "Subtlety";
+    case SHAMAN_ELEMENTAL:       return "Elemental";
+    case SHAMAN_ENHANCEMENT:     return "Enhancement";
+    case SHAMAN_RESTORATION:     return "Restoration";
+    case WARLOCK_AFFLICTION:     return "Affliction";
+    case WARLOCK_DEMONOLOGY:     return "Demonology";
+    case WARLOCK_DESTRUCTION:    return "Destruction";
+    case WARRIOR_ARMS:           return "Arms";
+    case WARRIOR_FURY:           return "Fury";
+    case WARRIOR_PROTECTION:     return "Protection";
+    default:                     return "";
   }
 }
 

@@ -397,6 +397,7 @@ public:
     player_talent_t explosive_potential; // Reduces base Conflagrate cooldown by 2 seconds
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
+    const spell_data_t* channel_demonfire_travel; // Only holds travel speed
     player_talent_t pandemonium; // Additional trigger chance for Mayhem or debuff duration for Havoc (talent)
     player_talent_t cry_havoc; // Chaos Bolts on Havoc'd target proc AoE
     const spell_data_t* cry_havoc_proc; // AoE damage (includes target hit)
@@ -661,6 +662,7 @@ public:
 
   int initial_soul_shards;
   std::string default_pet;
+  bool disable_auto_felstorm; // For Demonology main pet
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_10_0_7_data;
   const spell_data_t* version_10_1_0_data;

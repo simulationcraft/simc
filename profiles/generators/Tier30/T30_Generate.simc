@@ -1,6 +1,3 @@
-# TODO: Remove this once it goes live
-ptr=1
-
 # T30
 # Tier 30 Aberrus, the Shadowed Crucible (WIP)
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
@@ -30,34 +27,34 @@ T30_Generate_Death_Knight.simc
 T30_Generate_Demon_Hunter.simc
 
 # Druid
-# T30_Generate_Druid.simc
+T30_Generate_Druid.simc
 
 # Evoker
-# T30_Generate_Evoker.simc
+T30_Generate_Evoker.simc
 
 # Hunter
-# T30_Generate_Hunter.simc
+T30_Generate_Hunter.simc
 
 # Mage
-# T30_Generate_Mage.simc
+T30_Generate_Mage.simc
 
 # Monk
-# T30_Generate_Monk.simc
+T30_Generate_Monk.simc
 
 # Paladin
-# T30_Generate_Paladin.simc
+T30_Generate_Paladin.simc
 
 # Priest
 T30_Generate_Priest.simc
 
 # Rogue
-# T30_Generate_Rogue.simc
+T30_Generate_Rogue.simc
 
 # Shaman
-# T30_Generate_Shaman.simc
+T30_Generate_Shaman.simc
 
 # Warlock
-# T30_Generate_Warlock.simc
+T30_Generate_Warlock.simc
 
 # Warrior
-# T30_Generate_Warrior.simc
+T30_Generate_Warrior.simc

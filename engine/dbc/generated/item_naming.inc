@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.7.48999
-static const std::array<item_name_description_t, 736> __item_name_description_data { {
+// Item name descriptions, wow build 10.1.0.49570
+static const std::array<item_name_description_t, 744> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -735,6 +735,14 @@ static const std::array<item_name_description_t, 736> __item_name_description_da
   { 14003, "Zskera Vaults"                               },
   { 14004, "Primordial Stone"                            },
   { 14005, "Artisan Curios"                              },
+  { 14008, "Dragonflight Season 2"                       },
   { 14009, "The Forbidden Reach"                         },
+  { 14011, "Ingenuity Crafted"                           },
+  { 14012, "Shadowflame Crafted"                         },
+  { 14014, "Azure"                                       },
+  { 14015, "Purple"                                      },
+  { 14016, "World Quests and World Drops"                },
+  { 14017, "Suffusion Camps and PvP"                     },
+  { 14018, "Treasures and Unique Creatures"              },
 } };
 

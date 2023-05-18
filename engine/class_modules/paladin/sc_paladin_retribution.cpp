@@ -994,7 +994,7 @@ struct adjudication_blessed_hammer_tick_t : public paladin_spell_t
   {
     aoe = -1;
     background = dual = direct_tick = true;
-    callbacks = false;
+    callbacks = true;
     radius = 9.0;
     may_crit = true;
   }
