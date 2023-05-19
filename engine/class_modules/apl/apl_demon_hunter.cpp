@@ -184,6 +184,8 @@ void vengeance( player_t* p )
   default_->add_action( "fiery_brand,if=!talent.fiery_demise.enabled&!dot.fiery_brand.ticking" );
   default_->add_action( "bulk_extraction" );
   default_->add_action( "potion" );
+  default_->add_action( "use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=fight_remains<20|charges=3" );
+  default_->add_action( "use_item,name=elementium_pocket_anvil,use_off_gcd=1" );
   default_->add_action( "use_item,slot=trinket1" );
   default_->add_action( "use_item,slot=trinket2" );
   default_->add_action( "variable,name=the_hunt_on_cooldown,value=talent.the_hunt&cooldown.the_hunt.remains|!talent.the_hunt" );
