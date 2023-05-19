@@ -63,11 +63,6 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* in_firestorm;
   } debuffs;
 
-  evoker_td_t( player_t* target, evoker_t* source );
-};
-
-struct evoker_ally_td_t : public actor_pair_t, private noncopyable
-{
   struct buffs_t
   {
     buff_t* blistering_scales;
@@ -76,7 +71,7 @@ struct evoker_ally_td_t : public actor_pair_t, private noncopyable
     buff_t* shifting_sands;
   } buffs;
 
-  evoker_ally_td_t( player_t* target, evoker_t* source );
+  evoker_td_t( player_t* target, evoker_t* source );
 };
 
 template <typename Data, typename Base = action_state_t>
@@ -429,9 +424,6 @@ struct evoker_t : public player_t
   target_specific_t<evoker_td_t> target_data;
   const evoker_td_t* find_target_data( const player_t* target ) const override;
   evoker_td_t* get_target_data( player_t* target ) const override;
-  target_specific_t<evoker_ally_td_t> ally_target_data;
-  const evoker_ally_td_t* find_ally_target_data( const player_t* target ) const;
-  evoker_ally_td_t* get_ally_target_data( player_t* target ) const;
 
   void apply_affecting_auras( action_t& action ) override;
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
@@ -492,12 +484,6 @@ public:
   evoker_buff_t( evoker_t* player, std::string_view name, const spell_data_t* spell = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : bb( player, name, spell, item )
-  {
-  }
-
-  evoker_buff_t( evoker_ally_td_t& td, std::string_view name, const spell_data_t* spell = spell_data_t::nil(),
-                 const item_t* item = nullptr )
-    : bb( td, name, spell, item )
   {
   }
 
@@ -2399,7 +2385,7 @@ struct prescience_t : public evoker_augment_t
   {
     evoker_augment_t::impact( s );
 
-    p()->get_ally_target_data( s->target )->buffs.prescience->trigger();
+    p()->get_target_data( s->target )->buffs.prescience->trigger();
   }
   void execute() override
   {
@@ -2420,7 +2406,7 @@ struct prescience_t : public evoker_augment_t
 // ==========================================================================
 
 evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
-  : actor_target_data_t( target, evoker ), dots(), debuffs()
+  : actor_target_data_t( target, evoker ), dots(), debuffs(), buffs()
 {
   dots.fire_breath  = target->get_dot( "fire_breath_damage", evoker );
   dots.disintegrate = target->get_dot( "disintegrate", evoker );
@@ -2430,11 +2416,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
-}
 
-evoker_ally_td_t::evoker_ally_td_t( player_t* target, evoker_t* evoker )
-  : actor_pair_t( target, evoker ), buffs()
-{
   using e_buff_t = buffs::evoker_buff_t<buff_t>;
 
   buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
@@ -3169,19 +3151,6 @@ evoker_td_t* evoker_t::get_target_data( player_t* target ) const
   return td;
 }
 
-const evoker_ally_td_t* evoker_t::find_ally_target_data( const player_t* target ) const
-{
-  return ally_target_data[ target ];
-}
-
-evoker_ally_td_t* evoker_t::get_ally_target_data( player_t* target ) const
-{
-  evoker_ally_td_t*& td = ally_target_data[ target ];
-  if ( !td )
-    td = new evoker_ally_td_t( target, const_cast<evoker_t*>( this ) );
-  return td;
-}
-
 void evoker_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -3288,14 +3257,6 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
 
   if ( splits.size() >= 2 )
   {
-    if ( splits.size() == 3 )
-    {
-      if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
-      {
-        get_ally_target_data( this );
-      }
-    }
-
     if ( util::str_compare_ci( splits[ 0 ], "evoker" ) )
     {
       if ( util::str_compare_ci( splits[ 1 ], "use_clipping" ) )
