@@ -578,6 +578,11 @@ public:
 
     return spell_base_t::create_expression( name );
   }
+
+  player_t* get_expression_target() override
+  {
+    return target;
+  }
 };
 
 // Template for base evoker action code.
