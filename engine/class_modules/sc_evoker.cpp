@@ -692,7 +692,7 @@ public:
     parse_buff_effects( p()->buff.tip_the_scales );
 
     parse_buff_effects( p()->buff.imminent_destruction );
-    parse_buff_effects( p()->buff.ebon_might_self_buff );
+    parse_buff_effects( p()->buff.ebon_might_self_buff, p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
