@@ -67,7 +67,7 @@ struct evoker_td_t : public actor_target_data_t
   {
     buff_t* blistering_scales;
     buff_t* prescience;
-    buff_t* ebon_might;
+    stat_buff_t* ebon_might;
     buff_t* shifting_sands;
   } buffs;
 
@@ -113,6 +113,8 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
 
   timespan_t precombat_travel = 0_s;
+
+  vector_with_callback<player_t*> allies_with_ebon;
 
   // Options
   struct options_t
@@ -2343,17 +2345,81 @@ struct dragonrage_t : public evoker_spell_t
   }
 };
 
-struct ebon_might_t : public evoker_spell_t
+struct ebon_might_t : public evoker_augment_t
 {
+  double ebon_value = 0.0;
+
   ebon_might_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "ebon_might", p, p->talent.ebon_might, options_str )
+    : evoker_augment_t( "ebon_might", p, p->talent.ebon_might, options_str )
   {
+    // Add a target so you always hit yourself.
+    aoe += 1;
+    ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
+                 p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
+  }
+
+  double ebon_int() {
+    return p()->cache.intellect() * ebon_value;
+  }
+
+  static double ebon_int( evoker_t* p )
+  {
+    return p->cache.intellect() * ( p->talent.ebon_might->effectN( 1 ).percent() +
+                                    p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
   }
 
   void execute() override
   {
-    evoker_spell_t::execute();
+    evoker_augment_t::execute();
     p()->buff.ebon_might_self_buff->trigger();
+    for ( auto ally : p()->allies_with_ebon )
+    {
+      auto ebon               = p()->get_target_data( ally )->buffs.ebon_might;
+      ebon->stats[ 0 ].amount = ebon_int();
+      ebon->trigger();
+      sim->print_debug( "{} sets the stat on ebon to {}, buff value {} for player {} and triggers it, new duration {}",
+                        *player, ebon_int(), ebon->stats[ 0 ].current_value, *ally, ebon->remains() );
+      // Manually Invalidate the Cache due to manipulating the buff stats.
+      ally->invalidate_cache( CACHE_INTELLECT );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_augment_t::impact( s );
+
+    if ( s->target != player )
+    {
+      auto ebon               = p()->get_target_data( s->target )->buffs.ebon_might;
+      ebon->stats[ 0 ].amount = ebon_int();
+      ebon->trigger();
+    }
+  }
+
+  int n_targets() const override
+  {
+    return aoe - as<int>( p()->allies_with_ebon.size() );
+  }
+
+  void activate() override
+  {
+    evoker_augment_t::activate();
+    p()->allies_with_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const
+  {
+    target_list.clear();
+    // Player must always be the first target.
+    target_list.push_back( player );
+
+    for ( const auto& t : sim->player_no_pet_list )
+    {
+      if ( t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
   }
 };
 
@@ -2606,7 +2672,15 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                ->set_default_value( evoker->cache.mastery_value() )
                                ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
-    buffs.ebon_might = make_buff<e_buff_t>( *this, "ebon_might", evoker->find_spell( 395152 ) )->set_cooldown( 0_ms );
+    buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might", evoker->find_spell( 395152 ) )
+                           ->set_stat_from_effect( 2, 0 );
+
+    buffs.ebon_might->set_cooldown( 0_ms )->set_stack_change_callback( [ target, evoker ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        evoker->allies_with_ebon.push_back( target );
+      else
+        evoker->allies_with_ebon.find_and_erase( target );
+    } );
 
     buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
                            ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
@@ -2671,7 +2745,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     gain(),
     proc(),
     rppm(),
-    uptime()
+    uptime(),
+    allies_with_ebon()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
@@ -3594,6 +3669,26 @@ void evoker_t::extend_ebon( timespan_t extend )
       dur = std::min( 20_s - dur, extend );
       if ( dur > 0_s )
         buff.ebon_might_self_buff->extend_duration( this, dur );
+    }
+  }
+
+  for ( auto ally : allies_with_ebon )
+  {
+    auto ebon = get_target_data( ally )->buffs.ebon_might;
+    auto dur  = ebon->remains();
+    if ( dur < 20_s )
+    {
+      dur = std::min( 20_s - dur, extend );
+      if ( dur > 0_s )
+      {
+        if ( ebon->stats[ 0 ].amount != spells::ebon_might_t::ebon_int( this ) )
+        {
+          ebon->stats[ 0 ].amount = spells::ebon_might_t::ebon_int( this );
+          ally->invalidate_cache( CACHE_INTELLECT );
+        
+        }
+        ebon->extend_duration( this, dur );
+      }
     }
   }
 }
