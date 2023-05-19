@@ -173,6 +173,9 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> unbound_surge;
 
     // Preservation
+
+    // Augmentation
+    propagate_const<buff_t*> reactive_hide;
   } buff;
 
   // Specialization Spell Data
@@ -304,6 +307,7 @@ struct evoker_t : public player_t
     player_talent_t echoing_strike;
     player_talent_t upheaval;
     player_talent_t breath_of_eons;
+    const spell_data_t* breath_of_eons_damage;
     // Defy Fate - Non DPS
     // Timelessness - Non DPS
     // Seismic Slam - Non DPS
@@ -313,6 +317,7 @@ struct evoker_t : public player_t
     // Geomancy - Non DPS
     // Bestow Weyrnstone - Non DPS
     player_talent_t blistering_scales;
+    const spell_data_t* blistering_scales_damage;
     // Draconic Attunements - Non DPS
     // Spatial Paradox Non DPS - Movement DPS Gain?
     player_talent_t unyielding_domain;
@@ -332,6 +337,7 @@ struct evoker_t : public player_t
     // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
     player_talent_t momentum_shift;
     player_talent_t infernos_blessing;
+    const spell_data_t* infernos_blessing_damage;
     player_talent_t time_skip;
     player_talent_t accretion;
     player_talent_t anachronism;
@@ -341,6 +347,7 @@ struct evoker_t : public player_t
     player_talent_t interwoven_threads;
     player_talent_t overlord;
     player_talent_t fate_mirror;
+    const spell_data_t* fate_mirror_damage;
   } talent;
 
   // Benefits
@@ -389,6 +396,7 @@ struct evoker_t : public player_t
   void init_action_list() override;
   void init_finished() override;
   void init_base_stats() override;
+  void init_background_actions() override;
   // void init_resources( bool ) override;
   void init_benefits() override;
   resource_e primary_resource() const override
@@ -453,6 +461,7 @@ struct evoker_t : public player_t
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
 
   std::vector<action_t*> secondary_action_list;
+  std::vector<stats_t*> fate_mirror_stats;
 
   template <typename T, typename... Ts>
   T* get_secondary_action( std::string_view n, Ts&&... args )
@@ -2399,6 +2408,88 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
+struct fate_mirror_damage_t : public evoker_spell_t
+{
+  fate_mirror_damage_t( evoker_t* e ) : evoker_spell_t( "fate_mirror", e, e->talent.fate_mirror_damage )
+  {
+    may_dodge = may_parry = may_block = may_crit = callbacks = false;
+    background                                               = true;
+    base_dd_multiplier = e->talent.fate_mirror->effectN( 1 ).percent();
+  }
+
+  double composite_da_multiplier(const action_state_t*) const override
+  {
+    return base_dd_multiplier;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_MUL_DA;
+  }
+
+};
+
+struct breath_of_eons_damage_t : public evoker_spell_t
+{
+  breath_of_eons_damage_t( evoker_t* p ) : evoker_spell_t( "breath_of_eons_damage", p, p->talent.breath_of_eons_damage )
+  {
+    may_dodge = may_parry = may_block = callbacks = false;
+    background                                    = true;
+
+    base_crit += 1.0;
+    crit_multiplier = crit_bonus = 0.0;
+  }
+
+  void init() override
+  {
+    evoker_spell_t::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+};
+
+
+struct infernos_blessing_damage_t : public evoker_spell_t
+{
+  infernos_blessing_damage_t( evoker_t* p ) : evoker_spell_t( "infernos_blessing_damage", p, p->talent.infernos_blessing_damage )
+  {
+    may_dodge = may_parry = may_block = callbacks = false;
+    background                                    = true;
+  }
+};
+
+
+struct blistering_scales_damage_t : public evoker_spell_t
+{
+  blistering_scales_damage_t( evoker_t* p )
+    : evoker_spell_t( "blistering_scales_damage", p, p->talent.infernos_blessing_damage )
+  {
+    may_dodge = may_parry = may_block = callbacks = false;
+    background                                    = true;
+    spell_power_mod.direct                        = 0.3;  // Hardcoded for some reason, 19/05/2023
+  }
+
+  void init() override
+  {
+    evoker_spell_t::init();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double da = evoker_spell_t::composite_da_multiplier( s );
+    da *= 1 + p()->buff.reactive_hide->check_stack_value();
+    return da;
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    p()->buff.reactive_hide->trigger();
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -2429,6 +2520,48 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                          ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
                          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                          ->set_chance( 1.0 );
+
+  if ( evoker->talent.fate_mirror.ok() )
+  {
+    action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+    auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
+
+    fate_mirror->stats->add_child( stats );
+    evoker->fate_mirror_stats.push_back( stats );
+    stats->datacollection_begin();
+
+    auto fate_mirror_effect      = new special_effect_t( target );
+    fate_mirror_effect->name_str = "fate_mirror";
+    fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
+    fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+    target->special_effects.push_back( fate_mirror_effect );
+
+    auto fate_mirror_cb = new dbc_proc_callback_t( target, *fate_mirror_effect );
+    fate_mirror_cb->deactivate();
+    fate_mirror_cb->initialize();
+
+    target->callbacks.register_callback_execute_function(
+        fate_mirror_cb->effect.driver()->id(),
+        [ fate_mirror, target, stats ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+          double da = s->result_amount;
+          if ( da > 0 )
+          {
+            make_event( target->sim, [ t = s->target, fate_mirror, da, stats ] {
+              auto _stats        = fate_mirror->stats;
+              fate_mirror->stats = stats;
+              fate_mirror->execute_on_target( t, da );
+              fate_mirror->stats = _stats;
+            } );
+          }
+        } );
+
+    buffs.prescience->set_stack_change_callback( [ fate_mirror_cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        fate_mirror_cb->activate();
+      else
+        fate_mirror_cb->deactivate();
+    } );
+  }
 
   buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->find_spell( 360827 ) );
 }
@@ -2704,6 +2837,13 @@ void evoker_t::init_base_stats()
   resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1.0 + talent.innate_magic->effectN( 1 ).percent() );
 }
 
+void evoker_t::init_background_actions()
+{
+  player_t::init_background_actions();
+
+  get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+}
+
 void evoker_t::init_spells()
 {
   player_t::init_spells();
@@ -2788,11 +2928,11 @@ void evoker_t::init_spells()
   // Preservation Traits
 
   // Augmentation Traits
-  talent.ebon_might            = ST( "Ebon Might" );
-  talent.ebon_might_self_buff  = find_spell( 395296 );
-  talent.sands_of_time         = find_spell( 395153 );
-  talent.eruption              = ST( "Eruption" );
-  talent.essence_burst         = ST( "Essence Burst" );
+  talent.ebon_might           = ST( "Ebon Might" );
+  talent.ebon_might_self_buff = find_spell( 395296 );
+  talent.sands_of_time        = find_spell( 395153 );
+  talent.eruption             = ST( "Eruption" );
+  talent.essence_burst        = ST( "Essence Burst" );
   // Imposing Presence / Inner Radiance - Non DPS
   talent.ricocheting_pyroclast = ST( "Ricocheting Pyroclast" );
   // Essence Attunement - Devastation also has
@@ -2800,43 +2940,47 @@ void evoker_t::init_spells()
   talent.echoing_strike        = ST( "Echoing Strike" );
   talent.upheaval              = ST( "upheaval" );
   talent.breath_of_eons        = ST( "Breath of Eons" );
+  talent.breath_of_eons_damage = find_spell( 409632 );
   // Defy Fate - Non DPS
   // Timelessness - Non DPS
   // Seismic Slam - Non DPS
-  talent.volcanism             = ST( "Volcanism" );
+  talent.volcanism = ST( "Volcanism" );
   // Perilous Fate / Chrono Ward - Non DPS
   // Stretch Time - Non DPS
   // Geomancy - Non DPS
   // Bestow Weyrnstone - Non DPS
-  talent.blistering_scales     = ST( "Blistering Scales" );
+  talent.blistering_scales        = ST( "Blistering Scales" );
+  talent.blistering_scales_damage = find_spell( 360828 );
   // Draconic Attunements - Non DPS
   // Spatial Paradox Non DPS - Movement DPS Gain?
-  talent.unyielding_domain     = ST( "Unyielding Domain" );
-  talent.tectonic_locus        = ST( "Tectonic Locus" );
-  talent.regenerative_chitin   = ST( "Regenerative Chitin" );
-  talent.molten_blood          = ST( "Molten Blood" );
+  talent.unyielding_domain   = ST( "Unyielding Domain" );
+  talent.tectonic_locus      = ST( "Tectonic Locus" );
+  talent.regenerative_chitin = ST( "Regenerative Chitin" );
+  talent.molten_blood        = ST( "Molten Blood" );
   // Power Nexus - Devastation also has
   // Aspects' Favor - Non DPS
-  talent.plot_the_future       = ST( "Plot the Future" );
-  talent.dream_of_spring       = ST( "Dream of Spring" );
+  talent.plot_the_future = ST( "Plot the Future" );
+  talent.dream_of_spring = ST( "Dream of Spring" );
   // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
-  talent.reactive_hide         = ST( "Reactive Hide" );
+  talent.reactive_hide = ST( "Reactive Hide" );
   // Hoarded Power - Devas Has
-  talent.ignition_rush         = ST( "Ignition Rush" );
-  talent.prescience            = ST( "Prescience" );
-  talent.prescience_buff       = find_spell( 410089 );
+  talent.ignition_rush   = ST( "Ignition Rush" );
+  talent.prescience      = ST( "Prescience" );
+  talent.prescience_buff = find_spell( 410089 );
   // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
-  talent.momentum_shift        = ST( "Momentum Shift" );
-  talent.infernos_blessing     = ST( "Inferno's Blessing" );
-  talent.time_skip             = ST( "Time Skip" );
-  talent.accretion             = ST( "Accretion" );
-  talent.anachronism           = ST( "Anachronism" );
-  talent.motes_of_possibility  = ST( "Motes of Possibility" );
+  talent.momentum_shift           = ST( "Momentum Shift" );
+  talent.infernos_blessing        = ST( "Inferno's Blessing" );
+  talent.infernos_blessing_damage = find_spell( 410625 );
+  talent.time_skip                = ST( "Time Skip" );
+  talent.accretion                = ST( "Accretion" );
+  talent.anachronism              = ST( "Anachronism" );
+  talent.motes_of_possibility     = ST( "Motes of Possibility" );
   // Font of Magic - Devastation ha
-  talent.tomorrow_today        = ST( "Tomorrow, Today" );
-  talent.interwoven_threads    = ST( "Interwoven Threads" );
-  talent.overlord              = ST( "Overlord" );
-  talent.fate_mirror           = ST( "Fate Mirror" );
+  talent.tomorrow_today     = ST( "Tomorrow, Today" );
+  talent.interwoven_threads = ST( "Interwoven Threads" );
+  talent.overlord           = ST( "Overlord" );
+  talent.fate_mirror        = ST( "Fate Mirror" );
+  talent.fate_mirror_damage = find_spell( 404908 );
 
 
   // Set up Essence Bursts for Preservation and Augmentation
@@ -3025,6 +3169,9 @@ void evoker_t::create_buffs()
                           cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
                       } );
 
+  buff.reactive_hide =
+      make_buff<e_buff_t>( this, "reactive_hide", talent.reactive_hide )->set_default_value_from_effect( 1, 0.01 );
+
   buff.feed_the_flames_stacking = make_buff<e_buff_t>( this, "feed_the_flames", find_spell( 405874 ) );
   buff.feed_the_flames_pyre     = make_buff<e_buff_t>( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
 
@@ -3074,6 +3221,8 @@ void evoker_t::analyze( sim_t& sim )
 
   player_t::analyze( sim );
 }
+
+
 
 void evoker_t::moving()
 {
