@@ -344,6 +344,13 @@ void pet_t::assess_damage( school_e       school,
   return base_t::assess_damage( school, type, s );
 }
 
+void pet_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+{
+  player_t::trigger_callbacks( type, type2, action, state );
+
+  action_callback_t::trigger( owner->callbacks.pet_procs[ type ][ type2 ], action, state );
+}
+
 void pet_t::init_finished()
 {
   player_t::init_finished();

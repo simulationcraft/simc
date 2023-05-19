@@ -3511,7 +3511,7 @@ void player_t::init_assessors()
     proc_types pt   = state->proc_type();
     proc_types2 pt2 = state->impact_proc_type2();
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], state->action, state );
+      trigger_callbacks( pt, pt2, state->action, state );
 
     return assessor::CONTINUE;
   } );
@@ -7705,7 +7705,7 @@ void player_t::do_damage( action_state_t* incoming_state )
     // On damage/heal in. Proc flags are arranged as such that the "incoming"
     // version of the primary proc flag is always follows the outgoing version.
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt + 1 ][ pt2 ], incoming_state->action, incoming_state );
+      trigger_callbacks( static_cast<proc_types>( pt + 1 ), pt2, incoming_state->action, incoming_state );
   }
 
   // Check if target is dying
@@ -7849,6 +7849,11 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
 
   // store iteration heal taken
   iteration_heal_taken += s->result_amount;
+}
+
+void player_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+{
+  action_callback_t::trigger( callbacks.procs[ type ][ type2 ], action, state );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )

@@ -35,6 +35,7 @@ struct effect_callbacks_t
   using proc_array_t = std::array<proc_on_array_t, PROC1_TYPE_MAX>;
 
   proc_array_t procs;
+  proc_array_t pet_procs;  // callbacks that can proc from pets
 
   effect_callbacks_t( sim_t* sim ) : sim( sim ) {}
 
@@ -81,5 +82,6 @@ private:
   /// A vector of (driver-id, callback-execute-function) tuples
   std::vector<callback_execute_entry_t> execute_fn;
 
+  void add_callback( proc_types type, proc_types2 type2, action_callback_t* cb );
   void add_proc_callback( proc_types type, uint64_t flags, action_callback_t* cb );
 };
