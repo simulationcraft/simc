@@ -856,7 +856,6 @@ struct empowered_release_t : public empowered_base_t<BASE>
       : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets()
     {
       background = true;
-      aoe        = 2;
     }
 
     void impact( action_state_t* s ) override
