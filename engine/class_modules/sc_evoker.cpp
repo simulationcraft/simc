@@ -461,7 +461,6 @@ struct evoker_t : public player_t
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
 
   std::vector<action_t*> secondary_action_list;
-  std::vector<stats_t*> fate_mirror_stats;
 
   template <typename T, typename... Ts>
   T* get_secondary_action( std::string_view n, Ts&&... args )
@@ -2527,8 +2526,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
 
     fate_mirror->stats->add_child( stats );
-    evoker->fate_mirror_stats.push_back( stats );
-    stats->datacollection_begin();
 
     auto fate_mirror_effect      = new special_effect_t( target );
     fate_mirror_effect->name_str = "fate_mirror";
