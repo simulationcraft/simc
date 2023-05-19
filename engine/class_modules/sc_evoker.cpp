@@ -2607,13 +2607,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   {
     using e_buff_t = buffs::evoker_buff_t<buff_t>;
 
-    auto sands = evoker->get_secondary_action<spells::shifting_sands_t>( "shifting_sands" );
-
     buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
                                ->set_default_value( evoker->cache.mastery_value() )
-                               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-                               ->set_stack_change_callback(
-                                   [ sands ]( buff_t*, int, int new_ ) { sands->target_cache.is_valid = false; } );
+                               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
     buffs.ebon_might = make_buff<e_buff_t>( *this, "ebon_might", evoker->find_spell( 395152 ) )->set_cooldown( 0_ms );
 
