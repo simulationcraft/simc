@@ -19,10 +19,6 @@ namespace
 // ==========================================================================
 
 // Forward declarations
-namespace spells
-{
-struct shifting_sands_t;
-}
 struct evoker_t;
 
 enum empower_e
@@ -791,6 +787,20 @@ struct essence_base_t : public BASE
   }
 };
 
+struct evoker_augment_t : public evoker_action_t<augment_t>
+{
+private:
+  using ab = evoker_action_t<augment_t>;
+
+public:
+  evoker_augment_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
+                    std::string_view options_str = {} )
+    : ab( name, player, spell )
+  {
+    parse_options( options_str );
+  }
+};
+
 // Empowered spell base templates
 struct empower_data_t
 {
@@ -836,6 +846,42 @@ public:
 template <class BASE>
 struct empowered_release_t : public empowered_base_t<BASE>
 {
+  struct shifting_sands_t : public evoker_augment_t
+  {
+    mutable std::vector<player_t*> secondary_targets;
+
+    shifting_sands_t( evoker_t* p )
+      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets()
+    {
+      background = true;
+      aoe        = 2;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      evoker_augment_t::impact( s );
+
+      p()->get_target_data( s->target )->buffs.shifting_sands->current_value = p()->cache.mastery_value();
+      p()->get_target_data( s->target )->buffs.shifting_sands->trigger();
+    }
+
+    // TODO: Revisit Targeting
+    std::vector<player_t*>& target_list() const override
+    {
+      auto& tl = evoker_augment_t::target_list();
+
+      if ( is_aoe() )
+      {
+        if ( as<int>( tl.size() ) > n_targets() )
+        {
+          rng().shuffle( tl.begin(), tl.end() );
+        }
+      }
+
+      return tl;
+    }
+  };
+
   using ab = empowered_base_t<BASE>;
 
   timespan_t extend_tier29_4pc;
@@ -846,7 +892,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
     : ab( name, p, spell ),
       extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s ),
       sands( p->specialization() == EVOKER_AUGMENTATION
-                 ? p->get_secondary_action<spells::shifting_sands_t>( "shifting_sands" )
+                 ? p->get_secondary_action<shifting_sands_t>( "shifting_sands" )
                  : nullptr )
   {
     ab::dual = true;
@@ -1221,20 +1267,6 @@ public:
     }
 
     return tm;
-  }
-};
-
-struct evoker_augment_t : public evoker_action_t<augment_t>
-{
-private:
-  using ab = evoker_action_t<augment_t>;
-
-public:
-  evoker_augment_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
-                    std::string_view options_str = {} )
-    : ab( name, player, spell )
-  {
-    parse_options( options_str );
   }
 };
 
@@ -2508,43 +2540,6 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
-struct shifting_sands_t : public evoker_augment_t
-{
-  mutable std::vector<player_t*> secondary_targets;
-
-  shifting_sands_t( evoker_t* p )
-    : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets()
-  {
-    background = true;
-    aoe        = 2;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    evoker_augment_t::impact( s );
-
-    p()->get_target_data( s->target )->buffs.shifting_sands->current_value = p()->cache.mastery_value();
-    p()->get_target_data( s->target )->buffs.shifting_sands->trigger();
-  }
-
-  // TODO: Revisit Targeting
-  std::vector<player_t*>& target_list() const override
-  {
-    auto& tl = evoker_augment_t::target_list();
-
-    if ( is_aoe() )
-    {
-      if ( as<int>( tl.size() ) > n_targets() )
-      {
-        rng().shuffle( tl.begin(), tl.end() );
-      }
-    }
-
-    return tl;
-  }
-};
-
-
 struct infernos_blessing_damage_t : public evoker_spell_t
 {
   infernos_blessing_damage_t( evoker_t* p )
@@ -2940,7 +2935,6 @@ void evoker_t::init_background_actions()
   player_t::init_background_actions();
 
   get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-  get_secondary_action<spells::shifting_sands_t>( "shifting_sands" );
 }
 
 void evoker_t::init_spells()
