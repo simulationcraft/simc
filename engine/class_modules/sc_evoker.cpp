@@ -19,6 +19,10 @@ namespace
 // ==========================================================================
 
 // Forward declarations
+namespace spells
+{
+struct shifting_sands_t;
+}
 struct evoker_t;
 
 enum empower_e
@@ -836,10 +840,14 @@ struct empowered_release_t : public empowered_base_t<BASE>
 
   timespan_t extend_tier29_4pc;
   timespan_t extend_ebon;
+  action_t* sands;
 
   empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : ab( name, p, spell ),
-      extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s )
+      extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s ),
+      sands( p->specialization() == EVOKER_AUGMENTATION
+                 ? p->get_secondary_action<spells::shifting_sands_t>( "shifting_sands" )
+                 : nullptr )
   {
     ab::dual = true;
 
@@ -871,6 +879,9 @@ struct empowered_release_t : public empowered_base_t<BASE>
     ab::execute();
 
     ab::p()->extend_ebon( extend_ebon );
+
+    if ( sands )
+      sands->execute();
   }
 };
 
@@ -2497,6 +2508,43 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
+struct shifting_sands_t : public evoker_augment_t
+{
+  mutable std::vector<player_t*> secondary_targets;
+
+  shifting_sands_t( evoker_t* p )
+    : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets()
+  {
+    background = true;
+    aoe        = 2;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_augment_t::impact( s );
+
+    p()->get_target_data( s->target )->buffs.shifting_sands->current_value = p()->cache.mastery_value();
+    p()->get_target_data( s->target )->buffs.shifting_sands->trigger();
+  }
+
+  // TODO: Revisit Targeting
+  std::vector<player_t*>& target_list() const override
+  {
+    auto& tl = evoker_augment_t::target_list();
+
+    if ( is_aoe() )
+    {
+      if ( as<int>( tl.size() ) > n_targets() )
+      {
+        rng().shuffle( tl.begin(), tl.end() );
+      }
+    }
+
+    return tl;
+  }
+};
+
+
 struct infernos_blessing_damage_t : public evoker_spell_t
 {
   infernos_blessing_damage_t( evoker_t* p )
@@ -2554,62 +2602,69 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
-
-  using e_buff_t = buffs::evoker_buff_t<buff_t>;
-
-  buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
-                             ->set_default_value( evoker->cache.mastery_value() )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
-
-  buffs.ebon_might = make_buff<e_buff_t>( *this, "ebon_might", evoker->find_spell( 395152 ) )->set_cooldown( 0_ms );
-
-  buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
-                         ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
-                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                         ->set_chance( 1.0 );
-
-  if ( evoker->talent.fate_mirror.ok() && !target->is_enemy() && !target->is_pet() )
+    
+  if ( evoker->specialization() == EVOKER_AUGMENTATION )
   {
-    action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-    auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
-    stats->school         = fate_mirror->get_school();
+    using e_buff_t = buffs::evoker_buff_t<buff_t>;
 
-    fate_mirror->stats->add_child( stats );
+    auto sands = evoker->get_secondary_action<spells::shifting_sands_t>( "shifting_sands" );
 
-    auto fate_mirror_effect      = new special_effect_t( target );
-    fate_mirror_effect->name_str = "fate_mirror";
-    fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
-    fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
-    target->special_effects.push_back( fate_mirror_effect );
+    buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
+                               ->set_default_value( evoker->cache.mastery_value() )
+                               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+                               ->set_stack_change_callback(
+                                   [ sands ]( buff_t*, int, int new_ ) { sands->target_cache.is_valid = false; } );
 
-    auto fate_mirror_cb = new dbc_proc_callback_t( target, *fate_mirror_effect );
-    fate_mirror_cb->deactivate();
-    fate_mirror_cb->initialize();
+    buffs.ebon_might = make_buff<e_buff_t>( *this, "ebon_might", evoker->find_spell( 395152 ) )->set_cooldown( 0_ms );
 
-    target->callbacks.register_callback_execute_function(
-        fate_mirror_cb->effect.driver()->id(),
-        [ fate_mirror, target, stats ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-          double da = s->result_amount;
-          if ( da > 0 )
-          {
-            make_event( target->sim, [ t = s->target, fate_mirror, da, stats ] {
-              auto _stats        = fate_mirror->stats;
-              fate_mirror->stats = stats;
-              fate_mirror->execute_on_target( t, da );
-              fate_mirror->stats = _stats;
-            } );
-          }
-        } );
+    buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
+                           ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                           ->set_chance( 1.0 );
 
-    buffs.prescience->set_stack_change_callback( [ fate_mirror_cb ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        fate_mirror_cb->activate();
-      else
-        fate_mirror_cb->deactivate();
-    } );
+    if ( evoker->talent.fate_mirror.ok() && !target->is_enemy() && !target->is_pet() )
+    {
+      action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+      auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
+      stats->school         = fate_mirror->get_school();
+
+      fate_mirror->stats->add_child( stats );
+
+      auto fate_mirror_effect      = new special_effect_t( target );
+      fate_mirror_effect->name_str = "fate_mirror";
+      fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
+      fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
+      target->special_effects.push_back( fate_mirror_effect );
+
+      auto fate_mirror_cb = new dbc_proc_callback_t( target, *fate_mirror_effect );
+      fate_mirror_cb->deactivate();
+      fate_mirror_cb->initialize();
+
+      target->callbacks.register_callback_execute_function(
+          fate_mirror_cb->effect.driver()->id(),
+          [ fate_mirror, target, stats ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+            double da = s->result_amount;
+            if ( da > 0 )
+            {
+              make_event( target->sim, [ t = s->target, fate_mirror, da, stats ] {
+                auto _stats        = fate_mirror->stats;
+                fate_mirror->stats = stats;
+                fate_mirror->execute_on_target( t, da );
+                fate_mirror->stats = _stats;
+              } );
+            }
+          } );
+
+      buffs.prescience->set_stack_change_callback( [ fate_mirror_cb ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          fate_mirror_cb->activate();
+        else
+          fate_mirror_cb->deactivate();
+      } );
+    }
+
+    buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->find_spell( 360827 ) );
   }
-
-  buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->find_spell( 360827 ) );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -2889,6 +2944,7 @@ void evoker_t::init_background_actions()
   player_t::init_background_actions();
 
   get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+  get_secondary_action<spells::shifting_sands_t>( "shifting_sands" );
 }
 
 void evoker_t::init_spells()
