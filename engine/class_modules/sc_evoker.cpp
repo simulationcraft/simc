@@ -2567,6 +2567,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   {
     action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
     auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
+    stats->school         = fate_mirror->get_school();
 
     fate_mirror->stats->add_child( stats );
 
