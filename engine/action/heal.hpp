@@ -50,5 +50,6 @@ public:
   double composite_ta_multiplier( const action_state_t* s ) const override;
   double composite_player_critical_multiplier( const action_state_t* /* s */ ) const override;
   double composite_versatility( const action_state_t* state ) const override;
+  player_t* get_expression_target() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
 };

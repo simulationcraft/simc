@@ -389,6 +389,11 @@ size_t heal_t::available_targets( std::vector<player_t*>& target_list ) const
   return target_list.size();
 }
 
+player_t* heal_t::get_expression_target()
+{
+  return target;
+}
+
 std::unique_ptr<expr_t> heal_t::create_expression( util::string_view name )
 {
   if ( name_str == "active_allies" )
