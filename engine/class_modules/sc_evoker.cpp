@@ -2407,18 +2407,61 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
+// Empowered spell base templates
+struct stats_data_t
+{
+  stats_t* stats;
+};
+
 struct fate_mirror_damage_t : public evoker_spell_t
 {
+protected:
+  using state_t = evoker_action_state_t<stats_data_t>;
+
+public:
   fate_mirror_damage_t( evoker_t* e ) : evoker_spell_t( "fate_mirror", e, e->talent.fate_mirror_damage )
   {
     may_dodge = may_parry = may_block = may_crit = callbacks = false;
     background                                               = true;
-    base_dd_multiplier = e->talent.fate_mirror->effectN( 1 ).percent();
+    base_dd_multiplier                                       = e->talent.fate_mirror->effectN( 1 ).percent();
   }
 
-  double composite_da_multiplier(const action_state_t*) const override
+  double composite_da_multiplier( const action_state_t* ) const override
   {
     return base_dd_multiplier;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    evoker_spell_t::snapshot_state( s, rt );
+    cast_state( s )->stats = stats;
+  }
+
+
+  void record_data( action_state_t* data ) override
+  {
+    if ( !cast_state( data )->stats )
+      return;
+
+    cast_state( data )->stats->add_result(
+        data->result_amount, data->result_total, report_amount_type( data ), data->result,
+        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
+        data->target );
   }
 
   void init() override
