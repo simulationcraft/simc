@@ -2239,6 +2239,10 @@ class SpellDataGenerator(DataGenerator):
           ( 369299, 2 ), # Preservation Essence Burst
           # Augmentation
           ( 392268, 3 ), # Augmentation Essence Burst
+          ( 404908, 3 ), # Fate Mirror Damage
+          ( 409632, 3 ), # Breath of Eons Damage
+          ( 360828, 3 ), # Blistering Scales
+          ( 410625, 3 ), # Inferno's Blessing
        ),
     ]
 

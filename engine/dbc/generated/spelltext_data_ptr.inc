@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49595
-static const std::array<spelltext_data_t, 20005> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20009> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15526,6 +15526,7 @@ static const std::array<spelltext_data_t, 20005> __ptr_spelltext_data { {
   { 360823, "Cleanses harmful effects from the target, removing all Magic and Poison effects.", 0, "Green" },
   { 360826, "$@spelldesc360194", "Bleeding for $w1 damage every $t1 sec.", 0 },
   { 360827, "Protect an ally with $n explosive dragonscales, increasing their Armor by $<perc>% of your own.\r\n\r\nMelee attacks against the target cause 1 scale to explode, dealing $<dmg> Volcanic damage to enemies near them. This damage can only occur every few sec.\r\n\r\nBlistering Scales can only be placed on one target at a time. Casts on your enemy's target if they have one.", "$?$w1>0[Armor increased by $w1.][Armor increased by $w2%.] Melee attacks against you have a chance to cause an explosion of Volcanic damage.", "Black" },
+  { 360828, "$@spelldesc360827", 0, 0 },
   { 360829, "$@spelldesc323999", 0, 0 },
   { 360830, "$@spelldesc360194", "Suffering $w1 damage every $t1 seconds.", 0 },
   { 360880, "Craft a Mark of the Regal Dredbat.", 0, 0 },
@@ -19450,6 +19451,7 @@ static const std::array<spelltext_data_t, 20005> __ptr_spelltext_data { {
   { 404883, "Dealing damage has a chance to infect the target with a plague that spreads to nearby enemies, dealing ${$s1*$405220d} Nature damage over $405220d.", 0, 0 },
   { 404884, "Spells and abilities have a chance to cast a random Primordial Stone effect.", 0, 0 },
   { 404885, "Dealing damage has a chance to drain life, dealing $s1 Shadow damage and healing you for that amount.", 0, 0 },
+  { 404908, "$@spelldesc412774", 0, "Bronze" },
   { 404911, "$@spelldesc402957", 0, 0 },
   { 404941, "$@spelldesc402936", 0, 0 },
   { 404977, "Surge forward in time, causing your spells to cool down $s1% faster for $d.", "Surging forward in time, causing spells to cool down $s1% faster.", "Bronze" },
@@ -19842,6 +19844,7 @@ static const std::array<spelltext_data_t, 20005> __ptr_spelltext_data { {
   { 409605, "$@spelldesc405562", "$@spelldesc405562", 0 },
   { 409606, "Increases Agility by $s1%. ", "Increases Agility by $w1%.", 0 },
   { 409611, "Attune yourself to the energies of the targeted Aberrus, the Shadowed Crucible raid boss, increasing your Versatility by $384195s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
+  { 409632, "$@spelldesc403631", 0, 0 },
   { 409645, "$@spelldesc405508", "Fire damage increased by $w1%.", 0 },
   { 409652, "$@spelldesc405576", "Increases Fire damage you deal by $s1%. Gaining a stack does not refresh the duration.", 0 },
   { 409654, "Imbue your weapon with the energy of a Salamanther, increasing Mastery by $ec1 for 2 hours. \r\n\r\nFauna Runes cannot be applied to Ranged weapons.", 0, 0 },
@@ -19900,6 +19903,7 @@ static const std::array<spelltext_data_t, 20005> __ptr_spelltext_data { {
   { 410530, "Successfully applying a loss of control effect to an enemy, interrupting an enemy, or dispelling any target increases your primary stat by $410531s1 for $410531d. May occur once every $410532d.", 0, 0 },
   { 410531, "$@spelldesc410530", "Primary stat increased by $w1.", 0 },
   { 410532, "$@spelldesc410530", 0, 0 },
+  { 410625, "Ends the existence of all players.", "Ending the existence of all players.", 0 },
   { 410638, "$@spelldesc405553", "Your next Power Word: Radiance is instant and costs $s1% less mana.", 0 },
   { 410643, "When cast, Blistering Scales grants the target a shield that absorbs up to $<shield> damage for $410651d based on their missing health. Lower health targets gain a larger shield.", 0, 0 },
   { 410651, "$@spelldesc410643", "Absorbing $w1 damage.", 0 },
