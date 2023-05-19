@@ -2520,7 +2520,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                          ->set_chance( 1.0 );
 
-  if ( evoker->talent.fate_mirror.ok() )
+  if ( evoker->talent.fate_mirror.ok() && !target->is_enemy() && !target->is_pet() )
   {
     action_t* fate_mirror = evoker->get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
     auto stats            = evoker->get_stats( "fate_mirror_" + target->name_str, fate_mirror );
