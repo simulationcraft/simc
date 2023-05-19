@@ -27,6 +27,7 @@ SRC += \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_rogue.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)mage.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)warlock.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_warrior.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk.cpp \
     class_modules$(PATHSEP)monk$(PATHSEP)sc_monk_pets.cpp \
     class_modules$(PATHSEP)paladin$(PATHSEP)sc_paladin.cpp \

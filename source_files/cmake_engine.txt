@@ -25,6 +25,7 @@ class_modules/apl/apl_priest.hpp
 class_modules/apl/apl_rogue.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
+class_modules/apl/apl_warrior.hpp
 class_modules/class_module.hpp
 class_modules/monk/sc_monk.hpp
 class_modules/paladin/sc_paladin.hpp
@@ -214,6 +215,7 @@ class_modules/apl/apl_priest.cpp
 class_modules/apl/apl_rogue.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
+class_modules/apl/apl_warrior.cpp
 class_modules/monk/sc_monk.cpp
 class_modules/monk/sc_monk_pets.cpp
 class_modules/paladin/sc_paladin.cpp
