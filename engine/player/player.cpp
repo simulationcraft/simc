@@ -5397,10 +5397,10 @@ void player_t::sequence_add( const action_t* a, const player_t* target, timespan
   {
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
-      if ( in_combat )
-        collected_data.action_sequence.emplace_back( a, target, ts, this );
-      else
+      if ( a->is_precombat )
         collected_data.action_sequence_precombat.emplace_back( a, target, ts, this );
+      else
+        collected_data.action_sequence.emplace_back( a, target, ts, this );
     }
     else
     {
