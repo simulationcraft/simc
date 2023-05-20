@@ -650,6 +650,11 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
     restock_driver->proc_flags2_ = PF2_CRIT;
 
     new dbc_proc_callback_t( effect.player, *restock_driver );
+
+    effect.player->register_on_combat_state_callback( [ skilled_restock ]( player_t*, bool c ) {
+      if ( !c )
+        skilled_restock->expire();
+    } );
   }
 
   // AoE Explosion
@@ -3596,17 +3601,6 @@ void desperate_invokers_codex( special_effect_t& effect )
       make_event( *sim, [ this ]() { item_cd->adjust( -timespan_t::from_seconds( buff->check_stack_value() ) ); } );
       spell_cd->adjust( -timespan_t::from_seconds( buff->check_stack_value() ) );
     }
-
-    void activate() override
-    {
-      generic_proc_t::activate();
-
-      // Stacking Buff is removed when dropping combat in dungeon-style fight types
-      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-        if ( sim->target_non_sleeping_list.empty() )
-          buff->expire();
-      } );
-    }
   };
 
   effect.execute_action = create_proc_action<desperate_invocation_t>( "Desperate Invocation", effect, hatred );
@@ -3616,6 +3610,11 @@ void desperate_invokers_codex( special_effect_t& effect )
       effect.player->get_cooldown( effect.cooldown_name() )->adjust( -timespan_t::from_seconds( b->check_value() ) );
       effect.player->get_cooldown( effect.name() )->adjust( -timespan_t::from_seconds( b->check_value() ) );
     }
+  } );
+
+  effect.player->register_on_combat_state_callback( [ hatred ]( player_t*, bool c ) {
+    if ( !c )
+      hatred->expire();
   } );
 }
 
@@ -4155,18 +4154,22 @@ void neltharions_call_to_dominance( special_effect_t& effect )
 // Warrior - Shield Slam, Mortal Strike, Raging Blow, Annihilator
 void elementium_pocket_anvil( special_effect_t& e )
 {
-  e.player->buffs.anvil_strike_combat =
+  auto anvil_strike_combat =
       create_buff<buff_t>( e.player, "anvil_strike_combat", e.player->find_spell( 408578 ) )
           ->set_cooldown( 0_ms )
           ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
-  e.player->buffs.anvil_strike_no_combat =
+  auto anvil_strike_no_combat =
       create_buff<buff_t>( e.player, "anvil_strike_no_combat", e.player->find_spell( 408533 ) )
           ->set_default_value( e.player->find_spell( 401303 )->effectN( 3 ).percent() );
 
   struct elementium_pocket_anvil_use_t : public generic_proc_t
   {
-    elementium_pocket_anvil_use_t( const special_effect_t& e ) : generic_proc_t( e, "anvil_strike", e.driver() )
+    buff_t* combat_buff;
+    buff_t* no_combat_buff;
+
+    elementium_pocket_anvil_use_t( const special_effect_t& e, buff_t* combat, buff_t* no_combat )
+      : generic_proc_t( e, "anvil_strike", e.driver() ), combat_buff( combat ), no_combat_buff( no_combat )
     {
       aoe         = -1;
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 2 ).average( e.item );
@@ -4177,44 +4180,35 @@ void elementium_pocket_anvil( special_effect_t& e )
     void execute() override
     {
       generic_proc_t::execute();
-      if ( sim->target_non_sleeping_list.size() > 0 )
-      {
-        player->buffs.anvil_strike_combat->trigger();
-      }
-      if ( sim->target_non_sleeping_list.size() == 0 )
-      {
-        player->buffs.anvil_strike_no_combat->trigger();
-      }
+
+      if ( player->in_combat )
+        combat_buff->trigger();
+      else
+        no_combat_buff->trigger();
     }
   };
 
   struct elementium_pocket_anvil_equip_t : public generic_proc_t
   {
-    action_t* use;
+    buff_t* combat_buff;
+    buff_t* no_combat_buff;
 
-    elementium_pocket_anvil_equip_t( const special_effect_t& e )
+    elementium_pocket_anvil_equip_t( const special_effect_t& e, buff_t* combat, buff_t* no_combat )
       : generic_proc_t( e, "echoed_flare", e.player->find_spell( 401324 ) ),
-        use( create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e ) )
+        combat_buff( combat ),
+        no_combat_buff( no_combat )
     {
       // 27-4-2023, Probably a bug? Damage value on tooltip multiplied by 0.6x. Tooltip matches in game test result.
       // Retest later to ensure this is still the behavior experienced.
       base_dd_min = base_dd_max = e.player->find_spell( 401303 )->effectN( 1 ).average( e.item ) * 0.6;
-      add_child( use );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = generic_proc_t::composite_da_multiplier( state );
 
-      if ( player->buffs.anvil_strike_combat->check() )
-      {
-        m *= 1.0 + player->buffs.anvil_strike_combat->check_stack_value();
-      }
-
-      if ( player->buffs.anvil_strike_no_combat->check() )
-      {
-        m *= 1.0 + player->buffs.anvil_strike_no_combat->check_stack_value();
-      }
+      m *= 1.0 + combat_buff->check_stack_value();
+      m *= 1.0 + no_combat_buff->check_stack_value();
 
       return m;
     }
@@ -4310,25 +4304,9 @@ void elementium_pocket_anvil( special_effect_t& e )
 
   auto equip            = new special_effect_t( e.player );
   equip->spell_id       = driver_id;
-  equip->execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e );
+  equip->execute_action = create_proc_action<elementium_pocket_anvil_equip_t>( "echoed_flare", e, anvil_strike_combat,
+                                                                               anvil_strike_no_combat );
   equip->type           = SPECIAL_EFFECT_EQUIP;
-  equip->activation_cb  = [ p = e.player ]() {
-    p->sim->target_non_sleeping_list.register_callback( [ p ]( player_t* ) {
-      auto enemies = p->sim->target_non_sleeping_list.size();
-      auto combat = p->buffs.anvil_strike_combat->check();
-      auto no_combat = p->buffs.anvil_strike_no_combat->check();
-      if ( enemies && no_combat )
-      {
-        p->buffs.anvil_strike_combat->trigger( no_combat );
-        p->buffs.anvil_strike_no_combat->expire();
-      }
-      else if ( !enemies && combat )
-      {
-        p->buffs.anvil_strike_no_combat->trigger( combat );
-        p->buffs.anvil_strike_combat->expire();
-      }
-    } );
-  };
   e.player->special_effects.push_back( equip );
 
   equip->player->callbacks.register_callback_trigger_function(
@@ -4339,7 +4317,28 @@ void elementium_pocket_anvil( special_effect_t& e )
 
   new dbc_proc_callback_t( e.player, *equip );
 
-  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e );
+  e.execute_action = create_proc_action<elementium_pocket_anvil_use_t>( "anvil_strike", e, anvil_strike_combat,
+                                                                        anvil_strike_no_combat );
+  equip->execute_action->add_child( e.execute_action );
+
+  e.player->register_on_combat_state_callback( [ anvil_strike_combat, anvil_strike_no_combat ]( player_t*, bool c ) {
+    if ( c )
+    {
+      if ( auto stack = anvil_strike_no_combat->check() )
+      {
+        anvil_strike_combat->trigger( stack );
+        anvil_strike_no_combat->expire();
+      }
+    }
+    else
+    {
+      if ( auto stack = anvil_strike_combat->check() )
+      {
+        anvil_strike_no_combat->trigger( stack );
+        anvil_strike_combat->expire();
+      }
+    }
+  } );
 }
 
 // Ominous Chromatic Essence
@@ -5719,16 +5718,6 @@ void roiling_shadowflame( special_effect_t& e )
       }
     }
 
-    void activate() override
-    {
-      generic_proc_t::activate();
-
-      // Stacking buff is removed when dropping combat in dungeon-style fight types
-      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-        if ( sim->target_non_sleeping_list.empty() )
-          buff->expire();
-      } );
-    }
   };
 
   auto new_driver_id = 412547;  // Rppm data moved out of the main driver into this spell
@@ -5742,6 +5731,11 @@ void roiling_shadowflame( special_effect_t& e )
   e.execute_action = damage;
 
   new dbc_proc_callback_t( e.player, e );
+
+  e.player->register_on_combat_state_callback( [ stack_buff ]( player_t*, bool c ) {
+    if ( !c )
+      stack_buff->expire();
+  } );
 }
 
 // Stacking debuff: 407087

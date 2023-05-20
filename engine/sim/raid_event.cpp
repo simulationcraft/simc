@@ -346,6 +346,13 @@ struct adds_event_t final : public raid_event_t
     {
       adds[ i ]->dismiss();
     }
+
+    // trigger leave combat state callbacks if no adds are remaining
+    if ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_SLICE && !sim->target_non_sleeping_list.size() )
+    {
+      for ( auto p : affected_players )
+        p->leave_combat();
+    }
   }
 };
 
@@ -591,6 +598,13 @@ struct pull_event_t final : raid_event_t
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     event_t::cancel( redistribute_event );
+
+    // trigger leave combat state callbacks if no adds are remaining
+    if ( !sim->target_non_sleeping_list.size() )
+    {
+      for ( auto p : affected_players )
+        p->leave_combat();
+    }
 
     // find the next pull and spawn it
     if ( auto next = next_pull() )
