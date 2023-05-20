@@ -5713,16 +5713,6 @@ void roiling_shadowflame( special_effect_t& e )
       }
     }
 
-    void activate() override
-    {
-      generic_proc_t::activate();
-
-      // Stacking buff is removed when dropping combat in dungeon-style fight types
-      sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-        if ( sim->target_non_sleeping_list.empty() )
-          buff->expire();
-      } );
-    }
   };
 
   auto new_driver_id = 412547;  // Rppm data moved out of the main driver into this spell
@@ -5736,6 +5726,11 @@ void roiling_shadowflame( special_effect_t& e )
   e.execute_action = damage;
 
   new dbc_proc_callback_t( e.player, e );
+
+  e.player->register_on_combat_state_callback( [ stack_buff ]( player_t*, bool c ) {
+    if ( !c )
+      stack_buff->expire();
+  } );
 }
 
 // Stacking debuff: 407087
