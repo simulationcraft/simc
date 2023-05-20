@@ -348,7 +348,9 @@ void pet_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* act
 {
   player_t::trigger_callbacks( type, type2, action, state );
 
-  action_callback_t::trigger( owner->callbacks.pet_procs[ type ][ type2 ], action, state );
+  // currently only allows permanent pets, not guardians
+  if ( this->type == PLAYER_PET )
+    action_callback_t::trigger( owner->callbacks.pet_procs[ type ][ type2 ], action, state );
 }
 
 void pet_t::init_finished()
