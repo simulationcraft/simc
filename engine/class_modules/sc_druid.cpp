@@ -7272,26 +7272,14 @@ struct prowl_t : public druid_spell_t
     p()->buff.prowl->trigger();
 
     druid_spell_t::execute();
+
+    p()->leave_combat();
   }
 
   bool ready() override
   {
-    if ( p()->buff.prowl->check() )
+    if ( p()->buff.prowl->check() || ( p()->in_combat && !p()->buff.incarnation_cat_prowl->check() ) )
       return false;
-
-    if ( p()->in_combat )
-    {
-      if ( p()->buff.incarnation_cat_prowl->check() )
-        return druid_spell_t::ready();
-
-      if ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
-        return druid_spell_t::ready();
-
-      if ( p()->sim->target_non_sleeping_list.empty() )
-        return druid_spell_t::ready();
-
-      return false;
-    }
 
     return druid_spell_t::ready();
   }
@@ -9170,7 +9158,7 @@ public:
 
   void execute() override
   {
-    if ( sim().target_non_sleeping_list.empty() )
+    if ( !p_->in_combat )
     {
       auto cur = p_->resources.current[ RESOURCE_ASTRAL_POWER ];
       if ( cur > nb_cap )
@@ -9229,11 +9217,11 @@ void druid_t::activate()
     } );
   }
 
-  if ( sim->ignore_invulnerable_targets )
+  if ( spec.astral_power->ok() )
   {
     // Create repeating resource_loss event once OOC for 20s
-    sim->target_non_sleeping_list.register_callback( [ this ]( player_t* ) {
-      if ( sim->target_non_sleeping_list.empty() )
+    register_on_combat_state_callback( [ this ]( player_t*, bool c ) {
+      if ( !c )
       {
         astral_power_decay = make_event( *sim, 20_s, [ this ]() {
           astral_power_decay = nullptr;
@@ -10097,7 +10085,7 @@ void druid_t::create_buffs()
     ->set_default_value( nb_eff->resource( RESOURCE_ASTRAL_POWER ) / nb_eff->period().total_seconds() )
     ->set_tick_callback( [ nb_eff, this ]( buff_t*, int, timespan_t ) {
       auto tick_gain = nb_eff->resource( RESOURCE_ASTRAL_POWER );
-      if ( sim->target_non_sleeping_list.empty() )
+      if ( !in_combat )
       {
         if ( resources.current[ RESOURCE_ASTRAL_POWER ] <
              resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent() )
