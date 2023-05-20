@@ -558,7 +558,8 @@ namespace monk_apl
         { "beacon_to_the_beyond", ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.serenity.up&!pet.xuen_the_white_tiger.active&(debuff.fae_exposure_damage.remains>2|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains>2|!talent.faeline_harmony)|fight_remains<10" },
         { "djaruun_pillar_of_the_elder_flame", ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
         { "dragonfire_bomb_dispenser", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|fight_remains<10" },
-
+        { "irideus_fragment", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.serenity.up|fight_remains<25" },
+        
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.serenity.up" },
         { "ITEM_DMG_BUFF", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)" },
@@ -575,7 +576,8 @@ namespace monk_apl
         { "beacon_to_the_beyond", ",use_off_gcd=1,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_the_white_tiger.active&(debuff.fae_exposure_damage.remains>2|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&(debuff.fae_exposure_damage.remains>2|!talent.faeline_harmony)|fight_remains<10" },
         { "djaruun_pillar_of_the_elder_flame", ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
         { "dragonfire_bomb_dispenser", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|fight_remains<10" },
-
+        { "irideus_fragment", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.storm_earth_and_fire.up|fight_remains<25" },
+        
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.storm_earth_and_fire.up" },
         { "ITEM_DMG_BUFF", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)" },
