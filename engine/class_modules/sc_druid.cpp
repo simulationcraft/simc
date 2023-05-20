@@ -1599,6 +1599,7 @@ struct bt_dummy_buff_t : public druid_buff_t
     set_duration( timespan_t::from_seconds( p->talent.bloodtalons->effectN( 1 ).base_value() ) );
     set_quiet( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_activated( false );
   }
 
   bool trigger( int s, double v, double c, timespan_t d ) override
