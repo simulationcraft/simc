@@ -6,20 +6,20 @@ role=tank
 position=front
 talents=BoPAAAAAAAAAAAAAAAAAAAAAAACJIIJRiIRQiIJCJJJRAAAAAAJSSOARSTiIBAAISSSCAAAA
 
-head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192932
-neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192985/192932/192932
+head=lingering_phantoms_dreadhorns,id=202461,bonus_id=4800/4786/1504/6935,gem_id=192982
+neck=tuskarr_bone_necklace,id=193666,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192932/192932/192932
 shoulder=lingering_phantoms_shoulderplates,id=202459,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
 chest=lingering_phantoms_plackart,id=202464,bonus_id=4800/4786/1501,enchant=waking_stats_3
 wrists=bonds_of_desperate_ascension,id=204390,bonus_id=4800/4786/1498/6935,gem_id=192952
-hands=lingering_phantoms_gauntlets,id=202462,bonus_id=4800/4786/1501
+hands=sharktoothknuckled_grips,id=155890,bonus_id=6652/8811/8812/6808/4786/3317
 waist=unstable_frostfire_belt,id=191623,bonus_id=8836/8840/8902/8960/8780/8802/8846/1501,gem_id=192932
-legs=legplates_of_profane_sacrifice,id=159443,bonus_id=3317/6808/4786,enchant=fierce_armor_kit_3
-feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/1537/9379/6935,enchant=plainsrunners_breeze_3,crafted_stats=36/40
+legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fierce_armor_kit_3
+feet=primal_molten_sabatons,id=190496,bonus_id=8836/8840/8902/1537/9379,enchant=plainsrunners_breeze_3,crafted_stats=36/40
 finger1=seal_of_diurnas_chosen,id=195480,bonus_id=4800/4786/1498/1808/6935,enchant=devotion_of_versatility_3,gem_id=192932
 finger2=onyx_annulet,id=203460,bonus_id=1491,enchant=devotion_of_versatility_3,gem_id=204011/204029/204027
 trinket1=beacon_to_the_beyond,id=203963,bonus_id=4800/4786/1498
-trinket2=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
+trinket2=mark_of_dargrul,id=137357,bonus_id=6652/8811/8812/6808/4786/3326
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
 save=T30_Death_Knight_Blood.simc
