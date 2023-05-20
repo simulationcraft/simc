@@ -1685,13 +1685,8 @@ void action_t::execute()
   num_targets_hit              = 0;
   interrupt_immediate_occurred = false;
 
-  if ( harmful )
-  {
-    if ( !player->in_combat && sim->debug )
-      sim->print_debug( "{} enters combat.", *player );
-
-    player->in_combat = true;
-  }
+  if ( harmful && !player->in_combat )
+    player->enter_combat();
 
   // Handle tick_action initial state snapshotting, primarily for handling STATE_MUL_PERSISTENT
   if ( tick_action )

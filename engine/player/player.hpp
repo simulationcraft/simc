@@ -294,6 +294,7 @@ struct player_t : public actor_t
   std::vector<std::pair<player_t*, std::function<void( player_t* )>>> callbacks_on_demise;
   std::vector<std::pair<player_t*, std::function<void( void )>>> callbacks_on_arise;
   std::vector<std::function<void( player_t* )>> callbacks_on_kill;
+  std::vector<std::function<void( player_t*, bool )>> callbacks_on_combat_state;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -1147,9 +1148,12 @@ public:
   virtual void schedule_cwc_ready( timespan_t delta_time = timespan_t::min() );
   virtual void arise();
   virtual void demise();
+  virtual void enter_combat();
+  virtual void leave_combat();
   virtual timespan_t available() const;
   virtual action_t* select_action( const action_priority_list_t&, execute_type type = execute_type::FOREGROUND, const action_t* context = nullptr );
   virtual action_t* execute_action();
+
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* source = nullptr,
@@ -1346,6 +1350,7 @@ public:
   void register_on_demise_callback( player_t* source, std::function<void( player_t* )> fn );
   void register_on_arise_callback( player_t* source, std::function<void( void )> fn );
   void register_on_kill_callback( std::function<void( player_t* )> fn );
+  void register_on_combat_state_callback( std::function<void( player_t*, bool )> fn );
 
   void update_off_gcd_ready();
   void update_cast_while_casting_ready();

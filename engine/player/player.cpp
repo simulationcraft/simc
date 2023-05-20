@@ -5468,7 +5468,7 @@ void player_t::combat_begin()
   first_cast = false;
 
   if ( !precombat_action_list.empty() )
-    in_combat = true;
+    enter_combat();
 
   // re-initialize collected_data.health_changes.previous_*_level
   // necessary because food/flask are counted as resource gains, and thus provide phantom
@@ -6474,6 +6474,8 @@ void player_t::demise()
   if ( current.sleeping )
     return;
 
+  leave_combat();
+
   current.sleeping = true;
 
   if ( sim->log )
@@ -6549,6 +6551,35 @@ void player_t::demise()
     sim->active_allies--;
     sim->player_non_sleeping_list.find_and_erase_unordered( this );
   }
+}
+
+// Player enters/leaves "combat". Primarily relevant for DungeonSlice/DungeonRoute sims where "combat" is defined as
+// sim_t::target_non_sleeping_list.size() > 0
+// Use index-based lookup since enter/leaving combat may insert new combat state callbacks to the vector
+void player_t::enter_combat()
+{
+  if ( in_combat )
+    return;
+
+  in_combat = true;
+
+  sim->print_debug( "{} enters combat.", *this );
+
+  for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
+    callbacks_on_combat_state[ i ]( this, in_combat );
+}
+
+void player_t::leave_combat()
+{
+  if ( !in_combat )
+    return;
+
+  in_combat = false;
+
+  sim->print_debug( "{} leaves combat.", *this );
+
+  for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
+    callbacks_on_combat_state[ i ]( this, in_combat );
 }
 
 /**
@@ -14378,6 +14409,11 @@ void player_t::register_on_arise_callback( player_t* source, std::function<void(
 void player_t::register_on_kill_callback( std::function<void( player_t* )> fn )
 {
   callbacks_on_kill.emplace_back( std::move( fn ) );
+}
+
+void player_t::register_on_combat_state_callback( std::function<void( player_t*, bool )> fn )
+{
+  callbacks_on_combat_state.emplace_back( std::move( fn ) );
 }
 
 spawner::base_actor_spawner_t* player_t::find_spawner( util::string_view id ) const
