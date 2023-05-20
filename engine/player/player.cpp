@@ -6563,7 +6563,7 @@ void player_t::enter_combat()
 
   in_combat = true;
 
-  sim->print_debug( "{} enters combat.", *this );
+  sim->print_log( "{} enters combat.", *this );
 
   for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
     callbacks_on_combat_state[ i ]( this, in_combat );
@@ -6576,7 +6576,7 @@ void player_t::leave_combat()
 
   in_combat = false;
 
-  sim->print_debug( "{} leaves combat.", *this );
+  sim->print_log( "{} leaves combat.", *this );
 
   for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
     callbacks_on_combat_state[ i ]( this, in_combat );
