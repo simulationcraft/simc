@@ -690,7 +690,7 @@ public:
 
     parse_buff_effects( p()->buff.ancient_flame );
     parse_buff_effects( p()->buff.burnout );
-    parse_buff_effects( p()->buff.essence_burst );
+    parse_buff_effects( p()->buff.essence_burst, p()->talent.ignition_rush );
     parse_buff_effects( p()->buff.snapfire );
     parse_buff_effects( p()->buff.tip_the_scales );
 
