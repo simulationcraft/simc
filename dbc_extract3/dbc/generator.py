@@ -480,6 +480,10 @@ class SpecializationEnumGenerator(DataGenerator):
 
             enum_ids[spec_data.class_id][spec_data.index] = { 'id': spec_id, 'name': spec_name }
 
+        # manually add augmentation evoker to live specialization enums
+        if self._options.build.patch_level() < dbc.WowVersion( 10, 1, 5, 49516 ).patch_level():
+            enum_ids[13][2] = { 'id': 1473, 'name': 'EVOKER_AUGMENTATION' }
+
         return enum_ids
 
     def generate(self, enum_ids = None):
@@ -1415,8 +1419,9 @@ class SpellDataGenerator(DataGenerator):
          406251, 406254, 406887, # Shadowflame-Tempered Armor Patch
          407087, # Ever-Decaying Spores
          400959, # Zaquali Chaos Grapnel
-         402813, 402894, 402896, 402897, 402898, 402903, 407961, # Igneous Tidestone
+         402813, 402894, 402896, 402897, 402898, 402903, 407961, 407982, # Igneous Tidestone
          401428, 401422, # Vessel of Searing Shadow
+         407914, 407913, 407939,  # Might of the Drogbar set
         ),
 
         # Warrior:
@@ -1606,6 +1611,7 @@ class SpellDataGenerator(DataGenerator):
             ( 393729, 0 ), ( 393730, 0 ), # T29 Subtlety Set Bonus Spells
             ( 409604, 0 ), ( 409605, 0 ), # T30 Outlaw Set Bonus Spells
             ( 409483, 0 ),          # T30 Assassination Set Bonus Spells
+            ( 413890, 0 ),          # Nightstalker background spell
         ),
 
         # Priest:
@@ -1953,6 +1959,7 @@ class SpellDataGenerator(DataGenerator):
           ( 389684, 0 ), # Close to Heart Leech Buff
           ( 389685, 0 ), # Generous Pour Avoidance Buff
           ( 392883, 0 ), # Vivacious Vivification buff
+          ( 414143, 0 ), # Yu'lon's Grace buff
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
@@ -2230,6 +2237,12 @@ class SpellDataGenerator(DataGenerator):
           ( 409848, 1 ), # 4t30 buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
+          # Augmentation
+          ( 392268, 3 ), # Augmentation Essence Burst
+          ( 404908, 3 ), # Fate Mirror Damage
+          ( 409632, 3 ), # Breath of Eons Damage
+          ( 360828, 3 ), # Blistering Scales
+          ( 410625, 3 ), # Inferno's Blessing
        ),
     ]
 
@@ -2262,19 +2275,19 @@ class SpellDataGenerator(DataGenerator):
     # Note, these are reset for MoP
     _spec_skill_categories = [
         (),
-        (   71,   72,  73,   0 ), # Warrior
-        (   65,   66,  70,   0 ), # Paladin
-        (  254,  255, 256,   0 ), # Hunter
-        (  259,  260, 261,   0 ), # Rogue
-        (  256,  257, 258,   0 ), # Priest
-        (  250,  251, 252,   0 ), # Death Knight
-        (  262,  263, 264,   0 ), # Shaman
-        (   62,   63,  64,   0 ), # Mage
-        (  265,  266, 267,   0 ), # Warlock
-        (  268,  270, 269,   0 ), # Monk
-        (  102,  103, 104, 105 ), # Druid
-        (  577,  581,   0,   0 ), # Demon Hunter
-        ( 1467, 1468,   0,   0 ), # Evoker
+        (   71,   72,   73,   0 ), # Warrior
+        (   65,   66,   70,   0 ), # Paladin
+        (  254,  255,  256,   0 ), # Hunter
+        (  259,  260,  261,   0 ), # Rogue
+        (  256,  257,  258,   0 ), # Priest
+        (  250,  251,  252,   0 ), # Death Knight
+        (  262,  263,  264,   0 ), # Shaman
+        (   62,   63,   64,   0 ), # Mage
+        (  265,  266,  267,   0 ), # Warlock
+        (  268,  270,  269,   0 ), # Monk
+        (  102,  103,  104, 105 ), # Druid
+        (  577,  581,    0,   0 ), # Demon Hunter
+        ( 1467, 1468, 1473,   0 ), # Evoker
     ]
 
     _race_categories = [
@@ -2412,6 +2425,7 @@ class SpellDataGenerator(DataGenerator):
         ( 218, 'misc_value_2' ),
         ( 219, 'misc_value_2' ),
         ( 507, 'misc_value_1' ),
+        ( 537, 'misc_value_1' ),
     ]
 
     _spell_blacklist = [
@@ -3707,7 +3721,12 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'tier30',
             'bonuses': [ 1540, 1541, 1542, 1543, 1544, 1545, 1546, 1547, 1548, 1549, 1550, 1551, 1552 ],
             'tier'   : 30
-        }
+        },
+        {
+            'name'   : 'might_of_the_drogbar',
+            'bonuses': [ 1539 ],
+            'tier'   : 30
+        },
     ]
 
     @staticmethod

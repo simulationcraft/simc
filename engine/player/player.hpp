@@ -578,8 +578,6 @@ struct player_t : public actor_t
     buff_t* anvil_strike_combat;
     buff_t* anvil_strike_no_combat;
 
-    // Season 1 Thundering M+ Affix
-    buff_t* mark_of_lightning;
   } buffs;
 
   struct debuffs_t
@@ -782,6 +780,8 @@ struct player_t : public actor_t
     /// Type stat given by Spoils of Neltharus on pull
     /// Buff type: "mastery", "haste", "crit", "vers", other for random
     player_option_t<std::string> spoils_of_neltharus_initial_type = "";
+    /// Chance for igenous flowstone lave wave to hit twice
+    player_option_t<double> igneous_flowstone_double_lava_wave_chance;
   } dragonflight_opts;
 
 private:
@@ -1182,6 +1182,7 @@ public:
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
+  virtual void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 

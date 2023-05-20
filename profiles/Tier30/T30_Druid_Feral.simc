@@ -36,7 +36,7 @@ actions.precombat+=/prowl,if=!buff.prowl.up
 # Executed every time the actor is available.
 actions=prowl,if=buff.bs_inc.down&!buff.prowl.up
 actions+=/cat_form,if=!buff.cat_form.up
-# berserk and power infusion cds dont line up very well, so we are better off just sending on cooldown
+# <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> does not line up very well with <a href='https://www.wowhead.com/spell=106951/berserk'>Berserk nor <a href='https://www.wowhead.com/spell=102543/incarnation-avatar-of-ashamane'>Incarnation</a> and <a href='https://www.wowhead.com/spell=323764/convoke-the-spirits?spellModifier=768'>Convoke</a> doesn't benefit much from haste.
 actions+=/invoke_external_buff,name=power_infusion
 actions+=/call_action_list,name=variables
 actions+=/tigers_fury,if=!talent.convoke_the_spirits.enabled&(!buff.tigers_fury.up|energy.deficit>65)
@@ -49,9 +49,9 @@ actions+=/call_action_list,name=cooldown
 actions+=/feral_frenzy,target_if=max:target.time_to_die,if=combo_points<2|combo_points<3&buff.bs_inc.up
 actions+=/ferocious_bite,target_if=max:target.time_to_die,if=buff.apex_predators_craving.up&(spell_targets.swipe_cat=1|!talent.primal_wrath.enabled|!buff.sabertooth.up)&!(variable.need_bt&active_bt_triggers=2)
 actions+=/call_action_list,name=berserk,if=buff.bs_inc.up
-actions+=/call_action_list,name=finisher,if=combo_points>=4&spell_targets.swipe_cat>1
-actions+=/wait,sec=combo_points=5,if=combo_points=4&buff.predator_revealed.react&energy.deficit>40
-actions+=/call_action_list,name=finisher,if=combo_points>=4
+actions+=/wait,sec=combo_points=5,if=combo_points=4&buff.predator_revealed.react&energy.deficit>40&spell_targets.swipe_cat=1
+# its acceptable to proc bt when at 4cps in single target for a small gain (0.1-0.2% with t30 4p)
+actions+=/call_action_list,name=finisher,if=combo_points>=4&!(combo_points=4&buff.bloodtalons.stack<=1&active_bt_triggers=2&spell_targets.swipe_cat=1)
 actions+=/call_action_list,name=bloodtalons,if=variable.need_bt&!buff.bs_inc.up&combo_points<5
 actions+=/run_action_list,name=aoe_builder,if=spell_targets.swipe_cat>1&talent.primal_wrath.enabled
 actions+=/call_action_list,name=builder,if=combo_points<5&!buff.bs_inc.up
@@ -117,7 +117,6 @@ actions.builder=run_action_list,name=clearcasting,if=buff.clearcasting.react
 actions.builder+=/brutal_slash,if=cooldown.brutal_slash.full_recharge_time<4
 # stop pooling if we can use a clearcasting proc
 actions.builder+=/pool_resource,if=!action.rake.ready&(dot.rake.refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6))&!buff.clearcasting.react
-# this isn't perfect, as it only checks the target with lowest remaining dot. Feel free to improve
 actions.builder+=/shadowmeld,if=action.rake.ready&!buff.sudden_ambush.up&(dot.rake.refreshable|dot.rake.pmultiplier<1.4)&!buff.prowl.up&!buff.apex_predators_craving.up
 actions.builder+=/rake,if=refreshable|(buff.sudden_ambush.up&persistent_multiplier>dot.rake.pmultiplier&dot.rake.remains>6)
 # repeating here is necessary, otherwise moonfire will occassionally be casted instead
@@ -135,12 +134,13 @@ actions.clearcasting+=/shred
 
 actions.cooldown=use_item,name=algethar_puzzle_box,if=fight_remains<35|(!variable.align_3minutes)
 actions.cooldown+=/use_item,name=algethar_puzzle_box,if=variable.align_3minutes&(cooldown.bs_inc.remains<3&(!variable.lastZerk|!variable.lastConvoke|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<13)))
-actions.cooldown+=/incarnation
-actions.cooldown+=/berserk,if=(!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastConvoke)
-actions.cooldown+=/berserk,if=(variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
+# next two lines check if the current pull is long enough to justify cd usage. If its the last pull, itll always use cds.
+actions.cooldown+=/incarnation,target_if=max:target.time_to_die,if=(target.time_to_die<fight_remains&target.time_to_die>25)|target.time_to_die=fight_remains
+actions.cooldown+=/berserk,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>18)|target.time_to_die=fight_remains)&((!variable.lastZerk)|(fight_remains<23)|(variable.lastZerk&!variable.lastConvoke)|(variable.lastConvoke&cooldown.convoke_the_spirits.remains<10))
 actions.cooldown+=/berserking,if=!variable.align_3minutes|buff.bs_inc.up
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|(fight_remains<cooldown.bs_inc.remains&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
-actions.cooldown+=/convoke_the_spirits,if=fight_remains<5|(dot.rip.remains>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up))
+# checks to make sure you can actually fit convoke into the pull.
+actions.cooldown+=/convoke_the_spirits,target_if=max:target.time_to_die,if=((target.time_to_die<fight_remains&target.time_to_die>5)|target.time_to_die=fight_remains)&(fight_remains<5|(dot.rip.remains>5&buff.tigers_fury.up&(combo_points<2|(buff.bs_inc.up&combo_points=2))&(!variable.lastConvoke|!variable.lastZerk|buff.bs_inc.up)))
 actions.cooldown+=/use_item,name=manic_grieftorch,target_if=max:target.time_to_die,if=energy.deficit>40
 actions.cooldown+=/use_items
 
@@ -163,7 +163,7 @@ back=voice_of_the_silent_star,id=204465,bonus_id=6652/8783/8784/9414/9415/4800/4
 chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=9321/7979/6652/9231/1466/8767,ilevel=447,enchant_id=6625
 wrists=cuffs_of_the_savage_serpent,id=204394,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961,enchant_id=6574
 hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=6652/8783/8784/9231/9230/9229/9228/9227/9414/9415/4800/4786/1501
-waist=oblivions_mortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961
+waist=oblivions_immortal_coil,id=204399,bonus_id=6652/8783/8784/9414/9415/4800/4786/8780/1498,gem_id=192961
 legs=lifebound_trousers,id=193408,bonus_id=8840/8836/8902/1537/8797/8960,enchant_id=6490,crafted_stats=32/49
 feet=slimy_expulsion_boots,id=193451,bonus_id=8960/8840/8836/8902/1537,enchant_id=6607
 finger1=scalebane_signet,id=193768,bonus_id=6652/8783/8784/7936/7937/6808/4786/1669/1808,gem_id=192961,enchant_id=6562

@@ -1066,6 +1066,9 @@ public:
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
+  static bool has_direct_damage_effect( const spell_data_t& );
+  static bool has_periodic_damage_effect( const spell_data_t& );
+
   friend void sc_format_to( const action_t&, fmt::format_context::iterator );
 };
 

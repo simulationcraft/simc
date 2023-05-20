@@ -2662,7 +2662,7 @@ void sim_t::init()
     }
   }
 
-  auras.nil = make_buff( this, "nil" );
+  auras.fallback = make_buff( this, "fallback" );
 
   auras.arcane_intellect = make_buff( this, "arcane_intellect", dbc::find_spell( this, 1459 ) )
                                ->set_default_value( dbc::find_spell( this, 1459 )->effectN( 1 ).percent() )

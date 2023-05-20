@@ -299,6 +299,7 @@ public:
     propagate_const<buff_t*> rushing_jade_wind;
     propagate_const<buff_t*> spinning_crane_kick;
     propagate_const<buff_t*> windwalking_driver;
+    propagate_const<absorb_buff_t*> yulons_grace;
 
     // Brewmaster
     propagate_const<buff_t*> bladed_armor;
@@ -488,8 +489,10 @@ public:
       player_talent_t expeditious_fortification;
       // Row 7
       player_talent_t profound_rebuttal;
+      player_talent_t yulons_grace;
       player_talent_t diffuse_magic;
       player_talent_t eye_of_the_tiger;
+      player_talent_t dance_of_the_wind;
       player_talent_t dampen_harm;
       player_talent_t improved_touch_of_death;
       player_talent_t strength_of_spirit;

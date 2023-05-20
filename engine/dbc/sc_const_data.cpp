@@ -87,7 +87,7 @@ struct class_passives_entry_t
     specialization_e spec;
     unsigned         spell_id;
   };
-static constexpr std::array<class_passives_entry_t, 50> _class_passives { {
+static constexpr std::array<class_passives_entry_t, 51> _class_passives { {
   { DEATH_KNIGHT, SPEC_NONE,              137005 },
   { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
   { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
@@ -102,6 +102,7 @@ static constexpr std::array<class_passives_entry_t, 50> _class_passives { {
   { DRUID,        DRUID_GUARDIAN,         137010 },
   { EVOKER,       EVOKER_DEVASTATION,     356809 },
   { EVOKER,       EVOKER_PRESERVATION,    356810 },
+  { EVOKER,       EVOKER_AUGMENTATION,    396186 },
   { HUNTER,       SPEC_NONE,              137014 },
   { HUNTER,       HUNTER_SURVIVAL,        137017 },
   { HUNTER,       HUNTER_MARKSMANSHIP,    137016 },
@@ -481,6 +482,8 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
         return EVOKER_DEVASTATION;
       else if ( str_compare_ci( spec_str, "preservation" ) )
         return EVOKER_PRESERVATION;
+      else if ( str_compare_ci( spec_str, "augmentation" ) )
+        return EVOKER_AUGMENTATION;
       break;
     }
     case HUNTER:
@@ -654,48 +657,49 @@ const char* dbc::specialization_string( specialization_e spec )
 {
   switch ( spec )
   {
-    case WARRIOR_ARMS: return "arms";
-    case WARRIOR_FURY: return "fury";
-    case WARRIOR_PROTECTION: return "protection";
-    case PALADIN_HOLY: return "holy";
-    case PALADIN_PROTECTION: return "protection";
-    case PALADIN_RETRIBUTION: return "retribution";
-    case HUNTER_BEAST_MASTERY: return "beast_mastery";
-    case HUNTER_MARKSMANSHIP: return "marksmanship";
-    case HUNTER_SURVIVAL: return "survival";
-    case ROGUE_ASSASSINATION: return "assassination";
-    case ROGUE_OUTLAW: return "outlaw";
-    case ROGUE_SUBTLETY: return "subtlety";
-    case PRIEST_DISCIPLINE: return "discipline";
-    case PRIEST_HOLY: return "holy";
-    case PRIEST_SHADOW: return "shadow";
-    case DEATH_KNIGHT_BLOOD: return "blood";
-    case DEATH_KNIGHT_FROST: return "frost";
-    case DEATH_KNIGHT_UNHOLY: return "unholy";
-    case SHAMAN_ELEMENTAL: return "elemental";
-    case SHAMAN_ENHANCEMENT: return "enhancement";
-    case SHAMAN_RESTORATION: return "restoration";
-    case MAGE_ARCANE: return "arcane";
-    case MAGE_FIRE: return "fire";
-    case MAGE_FROST: return "frost";
-    case WARLOCK_AFFLICTION: return "affliction";
-    case WARLOCK_DEMONOLOGY: return "demonology";
-    case WARLOCK_DESTRUCTION: return "destruction";
-    case MONK_BREWMASTER: return "brewmaster";
-    case MONK_MISTWEAVER: return "mistweaver";
-    case MONK_WINDWALKER: return "windwalker";
-    case DRUID_BALANCE: return "balance";
-    case DRUID_FERAL: return "feral";
-    case DRUID_GUARDIAN: return "guardian";
-    case DRUID_RESTORATION: return "restoration";
-    case DEMON_HUNTER_HAVOC: return "havoc";
+    case WARRIOR_ARMS:           return "arms";
+    case WARRIOR_FURY:           return "fury";
+    case WARRIOR_PROTECTION:     return "protection";
+    case PALADIN_HOLY:           return "holy";
+    case PALADIN_PROTECTION:     return "protection";
+    case PALADIN_RETRIBUTION:    return "retribution";
+    case HUNTER_BEAST_MASTERY:   return "beast_mastery";
+    case HUNTER_MARKSMANSHIP:    return "marksmanship";
+    case HUNTER_SURVIVAL:        return "survival";
+    case ROGUE_ASSASSINATION:    return "assassination";
+    case ROGUE_OUTLAW:           return "outlaw";
+    case ROGUE_SUBTLETY:         return "subtlety";
+    case PRIEST_DISCIPLINE:      return "discipline";
+    case PRIEST_HOLY:            return "holy";
+    case PRIEST_SHADOW:          return "shadow";
+    case DEATH_KNIGHT_BLOOD:     return "blood";
+    case DEATH_KNIGHT_FROST:     return "frost";
+    case DEATH_KNIGHT_UNHOLY:    return "unholy";
+    case SHAMAN_ELEMENTAL:       return "elemental";
+    case SHAMAN_ENHANCEMENT:     return "enhancement";
+    case SHAMAN_RESTORATION:     return "restoration";
+    case MAGE_ARCANE:            return "arcane";
+    case MAGE_FIRE:              return "fire";
+    case MAGE_FROST:             return "frost";
+    case WARLOCK_AFFLICTION:     return "affliction";
+    case WARLOCK_DEMONOLOGY:     return "demonology";
+    case WARLOCK_DESTRUCTION:    return "destruction";
+    case MONK_BREWMASTER:        return "brewmaster";
+    case MONK_MISTWEAVER:        return "mistweaver";
+    case MONK_WINDWALKER:        return "windwalker";
+    case DRUID_BALANCE:          return "balance";
+    case DRUID_FERAL:            return "feral";
+    case DRUID_GUARDIAN:         return "guardian";
+    case DRUID_RESTORATION:      return "restoration";
+    case DEMON_HUNTER_HAVOC:     return "havoc";
     case DEMON_HUNTER_VENGEANCE: return "vengeance";
-    case EVOKER_DEVASTATION: return "devastation";
-    case EVOKER_PRESERVATION: return "preservation";
-    case PET_FEROCITY: return "ferocity";
-    case PET_TENACITY: return "tenacity";
-    case PET_CUNNING: return "cunning";
-    default: return "unknown";
+    case EVOKER_DEVASTATION:     return "devastation";
+    case EVOKER_PRESERVATION:    return "preservation";
+    case EVOKER_AUGMENTATION:    return "augmentation";
+    case PET_FEROCITY:           return "ferocity";
+    case PET_TENACITY:           return "tenacity";
+    case PET_CUNNING:            return "cunning";
+    default:                     return "unknown";
   }
 }
 

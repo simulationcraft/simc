@@ -3511,7 +3511,7 @@ void player_t::init_assessors()
     proc_types pt   = state->proc_type();
     proc_types2 pt2 = state->impact_proc_type2();
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], state->action, state );
+      trigger_callbacks( pt, pt2, state->action, state );
 
     return assessor::CONTINUE;
   } );
@@ -4031,11 +4031,6 @@ void player_t::create_buffs()
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
-
-      // 10.0 M+ Affix Thundering
-      buffs.mark_of_lightning = make_buff( this, "mark_of_lightning", find_spell( 396369 ) )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_default_value_from_effect( 3 );
     }
   }
   // .. for enemies
@@ -4793,9 +4788,6 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
 
   m *= 1.0 + racials.command->effectN(1).percent();
 
-  if (buffs.mark_of_lightning && buffs.mark_of_lightning->check())
-    m *= 1.0 + buffs.mark_of_lightning->check_value();
-
   if (!guardian)
   {
     if (buffs.coldhearted && buffs.coldhearted->check())
@@ -4850,9 +4842,6 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.coldhearted && buffs.coldhearted->check() )
     m *= 1.0 + buffs.coldhearted->check_value();
-
-  if ( buffs.mark_of_lightning && buffs.mark_of_lightning->check() )
-    m *= 1.0 + buffs.mark_of_lightning->check_value();
 
   return m;
 }
@@ -7716,7 +7705,7 @@ void player_t::do_damage( action_state_t* incoming_state )
     // On damage/heal in. Proc flags are arranged as such that the "incoming"
     // version of the primary proc flag is always follows the outgoing version.
     if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      action_callback_t::trigger( callbacks.procs[ pt + 1 ][ pt2 ], incoming_state->action, incoming_state );
+      trigger_callbacks( static_cast<proc_types>( pt + 1 ), pt2, incoming_state->action, incoming_state );
   }
 
   // Check if target is dying
@@ -7860,6 +7849,11 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
 
   // store iteration heal taken
   iteration_heal_taken += s->result_amount;
+}
+
+void player_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+{
+  action_callback_t::trigger( callbacks.procs[ type ][ type2 ], action, state );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
@@ -9138,6 +9132,15 @@ struct use_item_t : public action_t
       // Create an action
       action = e->create_action();
 
+      // if the action is the same as the driver, has a direct/periodic damage effect, and the driver has a cast time,
+      // then the action is not considered a proc
+      if ( action && action->id == e->driver()->id() && e->driver()->cast_time() > 0_ms &&
+           ( action_t::has_direct_damage_effect( *e->driver() ) ||
+             action_t::has_periodic_damage_effect( *e->driver() ) ) )
+      {
+        action->not_a_proc = true;
+      }
+
       stats = player->get_stats( name_str, this );
 
       // Setup the long-duration cooldown for this item effect
@@ -9166,6 +9169,12 @@ struct use_item_t : public action_t
         cooldown_group = player->item_cooldown.get();
         cooldown_group_duration = player->default_item_group_cooldown;
       }
+    }
+
+    if ( action )
+    {
+      interrupt_auto_attack = action->interrupt_auto_attack;
+      reset_auto_attack = action->reset_auto_attack;
     }
 
     if ( !buff && !action )
@@ -12681,6 +12690,7 @@ void player_t::create_options()
   add_option( opt_bool( "dragonflight.ashkandur_humanoid", dragonflight_opts.ashkandur_humanoid ) );
   add_option( opt_string( "dragonflight.flowstone_starting_state", dragonflight_opts.flowstone_starting_state ) );
   add_option( opt_string( "dragonflight.spoils_of_neltharus_initial_type", dragonflight_opts.spoils_of_neltharus_initial_type ) );
+  add_option( opt_float( "dragonflight.igneous_flowstone_double_lava_wave_chance", dragonflight_opts.igneous_flowstone_double_lava_wave_chance ) );
 
   // Obsolete options
 

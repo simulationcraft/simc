@@ -388,7 +388,7 @@ std::string decoration_domain( const sim_t& sim )
 #if SC_BETA == 0
   if ( maybe_ptr( sim.dbc->ptr ) )
   {
-    return "ptr";
+    return "ptr-2";
   }
   else
   {

@@ -7600,13 +7600,37 @@ struct unholy_assault_t final : public death_knight_melee_attack_t
 struct antimagic_shell_buff_t final : public buff_t
 {
   double remaining_absorb;
+  double damage;
 
   antimagic_shell_buff_t( death_knight_t* p ) :
     buff_t( p, "antimagic_shell", p -> talent.antimagic_shell ),
-    remaining_absorb( 0.0 )
+    remaining_absorb( 0.0 ), damage( 0 )
   {
     cooldown -> duration = 0_ms;
 
+    if( p -> options.ams_absorb_percent > 0 )
+    {
+      set_period( 1_s );
+      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+      set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
+      {
+        if ( p -> specialization() == DEATH_KNIGHT_UNHOLY || p -> specialization() == DEATH_KNIGHT_FROST )
+        {
+          double opt = p -> options.ams_absorb_percent;
+          double ticks = buff_duration() / tick_time();
+          double pct = opt / ticks;
+          damage = ( p->resources.max[ RESOURCE_HEALTH ] * ( p -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p -> talent.antimagic_barrier -> effectN( 3 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) ) * pct;
+          double absorbed = std::min( damage,
+                                  debug_cast< antimagic_shell_buff_t* >( p -> buffs.antimagic_shell ) -> calc_absorb() );
+
+          // AMS generates 0.833~ runic power per percentage max health absorbed.
+          double rp_generated = absorbed / p->resources.max[RESOURCE_HEALTH] * 83.333;
+
+          p -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p -> gains.antimagic_shell );
+        }
+      } );
+    }
+    
 
     // Assuming AMB's 30% increase is applied after Runic Barrier
     base_buff_duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
@@ -7663,7 +7687,7 @@ struct antimagic_shell_t final : public death_knight_spell_t
 
   antimagic_shell_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "antimagic_shell", p, p -> talent.antimagic_shell ),
-    min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
+    min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( p -> options.ams_absorb_percent )
   {
     cooldown -> duration += p -> talent.antimagic_barrier -> effectN( 1 ).time_value();
     harmful = may_crit = may_miss = false;
@@ -7704,12 +7728,6 @@ struct antimagic_shell_t final : public death_knight_spell_t
 
   void execute() override
   {
-    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY || p() -> specialization() == DEATH_KNIGHT_FROST )
-    {
-      double opt = p() -> options.ams_absorb_percent;
-      damage = ( p()->resources.max[ RESOURCE_HEALTH ] * ( p() -> talent.antimagic_shell -> effectN( 2 ).percent() ) * ( 1.0 + p() -> talent.antimagic_barrier -> effectN( 3 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) ) * opt;
-    }
-
     if ( damage > 0 )
     {
      timespan_t new_cd = timespan_t::from_seconds( std::max( min_interval, rng().gauss( interval, interval_stddev ) ) );
@@ -7719,19 +7737,7 @@ struct antimagic_shell_t final : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    // If using the fake soaking, immediately grant the RP in one go
-    if ( damage > 0 )
-    {
-      double absorbed = std::min( damage,
-                                  debug_cast< antimagic_shell_buff_t* >( p() -> buffs.antimagic_shell ) -> calc_absorb() );
-
-      // AMS generates 0.833~ runic power per percentage max health absorbed.
-      double rp_generated = absorbed / p()->resources.max[RESOURCE_HEALTH] * 83.333;
-
-      p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p() -> gains.antimagic_shell, this );
-    }
-    else
-      p() -> buffs.antimagic_shell -> trigger();
+    p() -> buffs.antimagic_shell -> trigger();
   }
 };
 
@@ -7740,12 +7746,39 @@ struct antimagic_shell_t final : public death_knight_spell_t
 struct antimagic_zone_buff_t final : public buff_t
 {
   double remaining_absorb;
+  double damage;
 
   antimagic_zone_buff_t( death_knight_t* p ) :
     buff_t( p, "antimagic_zone", p -> talent.antimagic_zone ),
-    remaining_absorb( 0.0 )
+    remaining_absorb( 0.0 ), damage( 0 )
   {
     cooldown -> duration = 0_ms;
+
+    if( p -> options.amz_absorb_percent > 0 )
+    {
+      set_period( 1_s );
+      set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+      set_tick_callback( [ this, p ] ( buff_t*, int, timespan_t )
+      {
+        if ( p -> talent.assimilation -> ok() && ( p -> specialization() == DEATH_KNIGHT_UNHOLY || p -> specialization() == DEATH_KNIGHT_FROST ) )
+        {
+          double opt = p -> options.amz_absorb_percent;
+          double ticks = buff_duration() / tick_time();
+          double pct = opt / ticks;
+          double pct_of_max_hp = 1.5;
+          damage = p->resources.max[ RESOURCE_HEALTH ] * pct_of_max_hp * ( 1.0 + p -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p -> cache.heal_versatility() ) * pct;
+          double absorbed = std::min( damage,
+                                  debug_cast< antimagic_zone_buff_t* >( p -> buffs.antimagic_zone ) -> calc_absorb() );
+
+          // AMZ Generates 1% RP per 1% of the shield absorbed if Assimilation is talented.
+          double absorb_pct = p -> resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1 + p -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1 + p -> cache.heal_versatility() );
+          // Assimilation can generate no more than 100 runic power 
+          double rp_generated = std::min( p -> talent.assimilation -> effectN( 2 ).base_value() * 100, absorbed / absorb_pct * 100);
+
+          p -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p -> gains.antimagic_zone );
+        }
+      } );
+    }
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -7800,7 +7833,7 @@ struct antimagic_zone_t final : public death_knight_spell_t
 
   antimagic_zone_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "antimagic_zone", p, p -> talent.antimagic_zone ),
-    min_interval( 120 ), interval( 120 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
+    min_interval( 120 ), interval( 120 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( p -> options.amz_absorb_percent )
   {
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
@@ -7837,13 +7870,6 @@ struct antimagic_zone_t final : public death_knight_spell_t
 
   void execute() override
   {
-    if ( p() -> talent.assimilation -> ok() && ( p() -> specialization() == DEATH_KNIGHT_UNHOLY || p() -> specialization() == DEATH_KNIGHT_FROST ) )
-    {
-      double opt = p() -> options.amz_absorb_percent;
-      // AMZ Absorbs a maximum of 1.5x player hp. This value is stored in a variable in the spell, not accessiable to the code. Hard coding for now.
-      damage = p()->resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1.0 + p() -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1.0 + p() -> cache.heal_versatility() ) * opt;
-    }
-
     if ( damage > 0 )
     {
      timespan_t new_cd = timespan_t::from_seconds( std::max( min_interval, rng().gauss( interval, interval_stddev ) ) );
@@ -7853,24 +7879,7 @@ struct antimagic_zone_t final : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    // If using the fake soaking, immediately grant the RP in one go
-    if ( damage > 0 )
-    {
-      double absorbed = std::min( damage,
-                                  debug_cast< antimagic_zone_buff_t* >( p() -> buffs.antimagic_zone ) -> calc_absorb() );
-
-      // AMZ Generates 1% RP per 1% of the shield absorbed if Assimilation is talented.
-      if ( p() -> talent.assimilation -> ok() )
-      {
-        double absorb_pct = p() -> resources.max[ RESOURCE_HEALTH ] * 1.5 * ( 1 + p() -> talent.assimilation -> effectN( 1 ).percent() ) * ( 1 + p() -> cache.heal_versatility() );
-        // Assimilation can generate no more than 100 runic power 
-        double rp_generated = std::min( p() -> talent.assimilation -> effectN( 2 ).base_value() * 100, absorbed / absorb_pct * 100);
-
-        p() -> resource_gain( RESOURCE_RUNIC_POWER, util::round( rp_generated ), p() -> gains.antimagic_zone, this );
-      }
-    }
-    else
-      p() -> buffs.antimagic_zone -> trigger();
+    p() -> buffs.antimagic_zone -> trigger();
   }
 };
 

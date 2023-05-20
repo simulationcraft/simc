@@ -581,12 +581,12 @@ static bool is_periodic_damage_effect( const spelleffect_data_t& effect )
          range::contains( subtypes, effect.subtype() );
 }
 
-static bool has_direct_damage_effect( const spell_data_t& spell )
+bool action_t::has_direct_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_direct_damage_effect );
 }
 
-static bool has_periodic_damage_effect( const spell_data_t& spell )
+bool action_t::has_periodic_damage_effect( const spell_data_t& spell )
 {
   return range::any_of( spell.effects(), is_periodic_damage_effect );
 }
@@ -1797,22 +1797,15 @@ void action_t::execute()
     {
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On an execute result"
       if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On interrupt cast result"
       if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-      {
-        if ( execute_state->target->debuffs.casting->check() )
-          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
     }
 
     // Special handling for "Cast Successful" procs
@@ -1823,22 +1816,15 @@ void action_t::execute()
 
       // "On spell cast", only performed for foreground actions
       if ( ( pt2 = execute_state->cast_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On an execute result"
       if ( ( pt2 = execute_state->execute_proc_type2() ) != PROC2_INVALID )
-      {
-        action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
 
       // "On interrupt cast result"
       if ( ( pt2 = execute_state->interrupt_proc_type2() ) != PROC2_INVALID )
-      {
-        if ( execute_state->target->debuffs.casting->check() )
-          action_callback_t::trigger( player->callbacks.procs[ pt ][ pt2 ], this, execute_state );
-      }
+        player->trigger_callbacks( pt, pt2, this, execute_state );
     }
   }
 

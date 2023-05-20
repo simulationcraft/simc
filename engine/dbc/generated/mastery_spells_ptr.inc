@@ -1,5 +1,5 @@
-// Mastery abilities, wow build 10.1.0.49444
-static const std::array<mastery_spell_entry_t, 38> __ptr_mastery_spell_data { {
+// Mastery abilities, wow build 10.1.5.49595
+static const std::array<mastery_spell_entry_t, 39> __ptr_mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
   {   64,  76613 }, // Mastery: Icicles (Frost Mage)
@@ -38,5 +38,6 @@ static const std::array<mastery_spell_entry_t, 38> __ptr_mastery_spell_data { {
   {  581, 203747 }, // Mastery: Fel Blood (Vengeance Demon Hunter)
   { 1467, 362980 }, // Mastery: Giantkiller (Devastation Evoker)
   { 1468, 363510 }, // Mastery: Life-Binder (Preservation Evoker)
+  { 1473, 406380 }, // Mastery: Timewalker (Augmentation Evoker)
 } };
 

@@ -228,7 +228,7 @@ struct sim_t : private sc_thread_t
 
   struct auras_t
   {
-    buff_t* nil; // generic global fallback buff
+    buff_t* fallback; // generic global fallback buff
     buff_t* arcane_intellect;
     buff_t* battle_shout;
     buff_t* mark_of_the_wild;
@@ -492,7 +492,7 @@ struct sim_t : private sc_thread_t
     // Chance for nearby enemies to move out of range for Allied Wristguards of Companionship
     double allied_wristguards_ally_leave_chance = 0.05;
     // Corrupting Rages Average Uptime
-    double corrupting_rage_uptime = 0.5;
+    double corrupting_rage_uptime = 0.80;
     // Hood of Surging Time proc chance when the period is set
     double hood_of_surging_time_chance = 0.0;
     // Hood of Surging Time proc period
@@ -510,7 +510,7 @@ struct sim_t : private sc_thread_t
     // Enable or Disable Seething Black Dragonscale's damage
     bool screaming_black_dragonscale_damage = false;
     // Period in which to try to trigger adapative Stonescales. Based on spell data, does not trigger on periodic damage.
-    timespan_t adaptive_stonescales_period = 30_s;
+    timespan_t adaptive_stonescales_period = 3_s;
   } dragonflight_opts;
 
   // Auras and De-Buffs

@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.0.49474
-static const std::array<spelltext_data_t, 19897> __spelltext_data { {
+// Spell text, wow build 10.1.0.49570
+static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19329,9 +19329,10 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 403232, "$@spelldesc402931", "Lava coats your armor, splashing against melee attackers to deal $402931w1 Fire damage.", 0 },
   { 403253, "$@spelldesc402931", 0, 0 },
   { 403257, "$@spelldesc402932", 0, 0 },
+  { 403275, "$@spelldesc405061", "$pri increased by $s1. Speed increased by $s2.", 0 },
   { 403336, "$@spelldesc402935", "Absorbing the next $w1 damage taken.", 0 },
   { 403366, "Your area effect spells and abilities have a chance to grant you $s1 $pri and increase damage you receive by $s2% for $403382d.", 0, 0 },
-  { 403368, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Assault][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", 0, 0 },
+  { 403368, "Casting spells and abilities has a chance to grant you a stack of Domineering Arrogance up to $411661u.\r\n\r\n$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[Using your major cooldown][] grants you $s1 $pri per stack and reduces your movement speed by $s2% for $403380d.", 0, 0 },
   { 403376, "$@spelldesc402938", "Absorbing the next $w1 damage taken.", 0 },
   { 403380, "$@spelldesc403368", "$pri increased by $w1 and slowed by $408485w1%.", 0 },
   { 403381, "$@spelldesc402939", "Healing $w1 every second.", 0 },
@@ -19448,6 +19449,7 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 404996, "Damage and healing increased by $s1% for $d.", "Damage and healing increased by $w1%. $?a31821[Healing received increased by $w2%.][]", 0 },
   { 405001, "$@spelldesc402938", "Autoattack damage increased by $w3.", 0 },
   { 405044, "Tiger Palm now has a ${$m1+5} yard range.\r\n\r\nTiger Palm also applies an effect which increases your critical strike chance by $393047m1% for $393047d on the target. This effect cannot be applied more than once every $393050d per target.", 0, 0 },
+  { 405061, "Your Empower spells activate the Order magic within, releasing a sphere of Order that seeks a powerful ally, increasing their primary stat by $403275s1 and Speed by $403275s2 for $?a356809[$s2]?a356810[$s3][$s4] sec.", 0, 0 },
   { 405064, "Throw a small Darkened Elemental Core at the target location dealing $405165s1 Shadowflame damage split between all enemies.", 0, 0 },
   { 405066, "Slowly build up stacks of titan energy. The amount of stacks gained per second can vary but when fully charged at $s3 stacks the Buzzing Orb Core will increase a random secondary stat by $s0, as well as your movement speed by $s1 for $405202d seconds.", 0, 0 },
   { 405068, "Shield an ally for $405098s2 while channeling a beam of molten flame dealing ${$405098s1*($d/($t1))}  Fire damage over $d to them. If they survive the channel, heal them for $405098s3.", "Cauterizing the wound, dealing ${$w1*($d/($t1))}  Fire damage over $d.", 0 },
@@ -19686,10 +19688,11 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 407903, "Taking damage has a chance to cause your next melee attack to deal an additional $407907s1 Physical damage.", 0, 0 },
   { 407904, "$@spelldesc407903", "Your next melee attack will deal an additional $407907s1 Physical damage.", 0 },
   { 407907, "$@spelldesc407903", 0, 0 },
-  { 407912, "$@spelldesc110744", 0, 0 },
-  { 407915, "$@spelldesc122121", 0, 0 },
+  { 407913, "$@spelldesc407914", "$pri increased by $w1.", 0 },
+  { 407914, "Your melee attacks have a chance to imbue you with drogbar might, increasing your $pri for $407913d. You may also shout about this uncontrollably.", 0, 0 },
   { 407949, "Hop onto a plank of wood with a haphazard shadowflame rocket attachment. Absolutely nothing could go wrong, but if it did, deal $408015s1 Shadowflame damage split between you and enemies caught in the theoretical blast.", "WeeeeeeeAAAAAHHH!!!", 0 },
   { 407961, "$@spelldesc402813", 0, 0 },
+  { 407982, "$@spelldesc402813", 0, 0 },
   { 407986, "$@spelldesc115310", 0, 0 },
   { 407991, "$@spelldesc322118", 0, 0 },
   { 407992, "$@spelldesc114158", 0, 0 },
@@ -19880,13 +19883,14 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 411471, 0, "Increases Versatility by $411471w1 while fighting Kazzara, the Hellforged.", 0 },
   { 411547, "$@spelldesc1680", 0, 0 },
   { 411634, "Add a socket to a Dragonflight Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
-  { 411661, "$@spelldesc403368", "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Attack][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d.", 0 },
+  { 411661, "$@spelldesc403368", "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d.", 0 },
   { 411703, "A wave of force dealing $s2 Physical damage to enemies in front of you.", 0, 0 },
   { 411784, "$@spelldesc382512", 0, 0 },
   { 411897, "Apply a Shadowed Belt Clasp to your waist armor, causing it to permanently gain $ec1 Stamina.", 0, 0 },
   { 411898, "Apply a Shadowed Belt Clasp to your waist armor, causing it to permanently gain $ec1 Stamina.", 0, 0 },
   { 411899, "Apply a Shadowed Belt Clasp to your waist armor, causing it to permanently gain $ec1 Stamina.", 0, 0 },
   { 412150, "Add the Shielding affix to a Mythic Keystone.", 0, 0 },
+  { 412350, "Empower an Evoker's Ancient Memories artifact, increasing the rate at which they earn Temporal Vestigials by $s1%.", 0, 0 },
   { 412547, "Dealing damage has a chance to rouse the Shadowflame, inflicting $s2 Shadowflame damage upon your target and $s3 Shadowflame damage to yourself. Whenever this happens, you gain a stack of Roused Shadowflame.\r\n\r\nRoused Shadowflame increases this effects damage by $s4%, stacking $406887u times. Upon reaching maximum stacks, the Roused Shadowflame will subside.", 0, 0 },
   { 412574, "Create a piece of Obsidian Gladiator's equipment at Unranked rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 412629, "Empowers your chosen aura for $d.$?a344218[\r\n\r\n$@spellname465: Damage reduction increased to ${-$s1-$465s2}%.][]$?a344219[\r\n\r\n$@spellname32223: Mount speed bonus increased to ${$s2+$32223s4}%.][]$?a344217[\r\n\r\n$@spellname183435: Increases healing received by $s3% while its effect is active.][]$?a344220[\r\n\r\n$@spellname317920: Affected allies immune to interrupts and silences.][]", "Aura effectiveness increased.", 0 },
@@ -19897,15 +19901,16 @@ static const std::array<spelltext_data_t, 19897> __spelltext_data { {
   { 413423, "$@spelldesc413419", 0, 0 },
   { 413426, "$@spelldesc91144", "Haste increased by $s1.", 0 },
   { 414380, "Contains 10 Flightstones.", 0, 0 },
+  { 415446, "Your healing spells and abilities have a chance to fire a Healing Dart toward an ally target. The first ally hit will be healed for $s1.", 0, 0 },
+  { 415571, "$@spelldesc355313", "Absorbing $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49474
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
-  {  402813,  0, "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies.", "Go with the flow, steadily rising towards High Tide or falling towards Low Tide every $402894u seconds.\r\n\r\nAt Low Tide, your next harmful spell or ranged ability grants you $s2 Critical Strike for $402897d. \r\n\r\nAt High Tide, your next harmful spell or ranged ability launches a lava wave to crash upon your target dealing $s1 Volcanic damage split between all nearby enemies. This damage is reduced if the lava wave travels less than $s5 yds." },
-  {  408675,  1, "IT GONNA BLOW!", "IT'S GONNA BLOW!" },
+// spelltext hotfix entries, wow build 10.1.0.49570
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  411661,  1, "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Attack][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d.", "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d." },
 } };
 
-// Spell description variables, wow build 10.1.0.49474
+// Spell description variables, wow build 10.1.0.49570
 static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20268,8 +20273,8 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {  387624, "$reduc=${$AP*$387625s2/100}" },
   {  387625, "$reduc=${$AP*$387625s2/100}" },
   {  388011, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
-  {  388023, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
-  {  388026, "$pvp=$?a134735[${2.5}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
+  {  388023, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$s1*$<pvp>}]" },
+  {  388026, "$pvp=$?a134735[${2.2}][${1}]}\r\n$healing=[${$388023s1*$<pvp>}]" },
   {  388917, "$health=$?s322960[${15}][${15}]\r\n$damage=$?c1[${20}][${20}]" },
   {  389359, "$health=${5}\r\n$cdr=${10}" },
   {  389880, "$duration= ${$s1/1000}.1" },
@@ -20288,7 +20293,7 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49474
+// spelldesc_vars hotfix entries, wow build 10.1.0.49570
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

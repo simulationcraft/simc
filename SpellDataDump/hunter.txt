@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49474 Live (hotfix 2023-05-09/49474)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-17/49570)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2449,9 +2449,7 @@ Tooltip          : Webbed.
 
 Name             : Beast Cleave (id=115939) [Spell Family (9), Passive] 
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=2, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(35, 75)]
-                 : Effect#1 [op=set, values=(35, 75)]
-                 : Effect#2 [op=set, values=(3000, 6000)]
+                 : Effect#1 [op=set, values=(40, 80)]
                  : Effect#2 [op=set, values=(3000, 6000)]
 Class            : Hunter
 School           : Physical
@@ -14461,7 +14459,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (60 -> 80)
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
@@ -16985,7 +16984,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1053862)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Base Value (1000 -> 2000)
 Description      : Cobra Shot, Kill Command, and Multi-Shot reduce the cooldown of Bestial Wrath by ${$m1/1000}.1 sec.
 
 Name             : Hunter Marksmanship 10.1 Class Set 2pc (id=405526) [Spell Family (9), Passive, Hidden] 

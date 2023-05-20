@@ -4895,7 +4895,9 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
     background = triggers.ignite = true;
-    callbacks = false;
+    // TODO: PF doesn't trigger normal RPPM effects, but somehow triggers the class trinket.
+    // Enable callbacks for now until we find what exactly causes this.
+    // callbacks = false;
     triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
@@ -6593,10 +6595,13 @@ void mage_t::create_buffs()
     {
       if ( cur == 0 )
       {
-        auto set = sets->set( MAGE_ARCANE, T30, B4 );
-        double value = 0.01 * state.spent_mana / set->effectN( 1 ).base_value();
-        value = std::min( value, set->effectN( 2 ).percent() );
-        buffs.arcane_overload->trigger( -1, value );
+        if ( !buffs.arcane_overload->check() )
+        {
+          auto set = sets->set( MAGE_ARCANE, T30, B4 );
+          double value = 0.01 * state.spent_mana / set->effectN( 1 ).average( this );
+          value = std::min( value, set->effectN( 2 ).percent() );
+          buffs.arcane_overload->trigger( -1, value );
+        }
       }
       else
       {
@@ -7688,6 +7693,13 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 20.0 )
       .verification_value( 30.0 );
+
+    for ( auto e_id : { 179703, 191121, 191122, 191124 } )
+      hotfix::register_effect( "Mage", "2023-05-16", fmt::format( "Base value of Frost aura's effect {} is truncated.", e_id ), e_id )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 9.0 )
+        .verification_value( 9.2 );
   }
 
   bool valid() const override { return true; }
