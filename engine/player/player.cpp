@@ -8385,6 +8385,8 @@ struct shadowmeld_t : public racial_spell_t
 
     // Shadowmeld stops autoattacks
     player->cancel_auto_attacks();
+
+    player->leave_combat();
   }
 };
 
