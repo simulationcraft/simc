@@ -81,7 +81,6 @@ public:
 
     // Vengeance
     buff_t* frailty;
-    buff_t* charred_flesh;
 
     // Set Bonuses
     buff_t* t29_vengeance_4pc;
@@ -231,6 +230,7 @@ public:
     buff_t* soul_furnace_damage_amp;
     buff_t* soul_furnace_stack;
     buff_t* soul_fragments;
+    buff_t* charred_flesh;
 
     // Set Bonuses
     damage_buff_t* t29_havoc_4pc;
@@ -523,7 +523,7 @@ public:
     const spell_data_t* demonic_wards_3;
     const spell_data_t* fiery_brand_debuff;
     const spell_data_t* frailty_debuff;
-    const spell_data_t* charred_flesh_debuff;
+    const spell_data_t* charred_flesh_buff;
     const spell_data_t* riposte;
     const spell_data_t* soul_cleave_2;
     const spell_data_t* thick_skin;
@@ -2673,7 +2673,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     if ( p()->talent.vengeance.charred_flesh->ok() )
     {
-      td( s->target )->debuffs.charred_flesh->trigger();
+      p()->buff.charred_flesh->trigger();
     }
 
     // Trigger the initial DoT action and set the primary flag for use with Burning Alive
@@ -2994,20 +2994,19 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
       if ( result_is_hit( s->result ) )
       {
-        // FIXME: placeholder proc chance, lack of info on real proc chance.
         if ( initial && p()->talent.vengeance.fallout->ok() && rng().roll( 0.60 ) )
         {
           p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_fallout->occur();
         }
 
-        if ( p()->talent.vengeance.charred_flesh->ok() )
+        if ( p()->talent.vengeance.charred_flesh->ok() && p()->buff.charred_flesh->up() )
         {
           demon_hunter_td_t* target_data = td( s->target );
-          if ( target_data->dots.fiery_brand->is_ticking() && target_data->debuffs.charred_flesh->up() )
+          if ( target_data->dots.fiery_brand->is_ticking() )
           {
             target_data->dots.fiery_brand->adjust_duration(
-                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value(), p()->spec.fiery_brand_debuff->duration() );
+                p()->talent.vengeance.charred_flesh->effectN( 1 ).time_value() );
           }
         }
 
@@ -5631,7 +5630,6 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                           ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                           ->set_period( 0_ms )
                           ->apply_affecting_aura( p.talent.vengeance.soulcrush );
-    debuffs.charred_flesh = make_buff( *this, "charred_flesh", p.spec.charred_flesh_debuff );
     debuffs.t29_vengeance_4pc =
         make_buff( *this, "decrepit_souls",
                    p.set_bonuses.t29_vengeance_4pc->ok() ? p.find_spell( 394958 ) : spell_data_t::not_found() )
@@ -5895,6 +5893,8 @@ void demon_hunter_t::create_buffs()
 
   buff.soul_fragments = make_buff( this, "soul_fragments", spec.soul_fragments_buff )
     ->set_max_stack( 10 );
+
+  buff.charred_flesh = make_buff( this, "charred_flesh", spec.charred_flesh_buff )->set_quiet( true );
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.vengeance.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -6642,7 +6642,7 @@ void demon_hunter_t::init_spells()
 
   spec.fiery_brand_debuff   = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
   spec.frailty_debuff       = talent.vengeance.frailty->ok() ? find_spell( 247456 ) : spell_data_t::not_found();
-  spec.charred_flesh_debuff = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
+  spec.charred_flesh_buff   = talent.vengeance.charred_flesh->ok() ? find_spell( 336640 ) : spell_data_t::not_found();
   spec.painbringer_buff     = talent.vengeance.painbringer->ok() ? find_spell( 212988 ) : spell_data_t::not_found();
   spec.soul_furnace_damage_amp = talent.vengeance.soul_furnace->ok() ? find_spell( 391172 ) : spell_data_t::not_found();
   spec.soul_furnace_stack      = talent.vengeance.soul_furnace->ok() ? find_spell( 391166 ) : spell_data_t::not_found();
