@@ -61,6 +61,7 @@ struct evoker_td_t : public actor_target_data_t
   {
     buff_t* shattering_star;
     buff_t* in_firestorm;
+    buff_t* temporal_wound;
   } debuffs;
 
   struct buffs_t
@@ -69,6 +70,8 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* prescience;
     stat_buff_t* ebon_might;
     buff_t* shifting_sands;
+
+    buff_t* stored_eon_damage;
   } buffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -310,6 +313,7 @@ struct evoker_t : public player_t
     player_talent_t upheaval;
     player_talent_t breath_of_eons;
     const spell_data_t* breath_of_eons_damage;
+    const spell_data_t* temporal_wound;
     // Defy Fate - Non DPS
     // Timelessness - Non DPS
     // Seismic Slam - Non DPS
@@ -365,6 +369,7 @@ struct evoker_t : public player_t
     propagate_const<cooldown_t*> fire_breath;
     propagate_const<cooldown_t*> firestorm;
     propagate_const<cooldown_t*> upheaval;
+    propagate_const<cooldown_t*> breath_of_eons;
   } cooldown;
 
   // Gains
@@ -548,7 +553,7 @@ public:
 
   int num_targets() const override
   {
-    return sim->player_no_pet_list.size();
+    return as<int>( sim->player_no_pet_list.size() );
   }
 
   size_t available_targets( std::vector<player_t*>& target_list ) const
@@ -1351,6 +1356,130 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
   }
 };
 
+
+struct ebon_might_t : public evoker_augment_t
+{
+  double ebon_value    = 0.0;
+  timespan_t ebon_time = timespan_t::min();
+
+  ebon_might_t( evoker_t* p, std::string_view options_str )
+    : evoker_augment_t( "ebon_might", p, p->talent.ebon_might, options_str )
+  {
+    // Add a target so you always hit yourself.
+    aoe += 1;
+    ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
+                 p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
+  }
+
+  ebon_might_t( evoker_t* p, timespan_t ebon ) : evoker_augment_t( "ebon_might", p, p->talent.ebon_might )
+  {
+    // Add a target so you always hit yourself.
+    aoe += 1;
+    ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
+                 p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
+
+    ebon_time = ebon;
+  }
+
+  double ebon_int()
+  {
+    return p()->cache.intellect() * ebon_value;
+  }
+
+  static double ebon_int( evoker_t* p )
+  {
+    return p->cache.intellect() * ( p->talent.ebon_might->effectN( 1 ).percent() +
+                                    p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
+  }
+
+  static void adjust_int( stat_buff_t* b )
+  {
+    for ( auto& buff_stat : b->stats )
+    {
+      if ( buff_stat.check_func && !buff_stat.check_func( *b ) )
+        continue;
+
+      double delta = buff_stat.stack_amount( b->current_stack ) - buff_stat.current_value;
+      if ( delta > 0 )
+      {
+        b->player->stat_gain( buff_stat.stat, delta, b->stat_gain, nullptr, b->buff_duration() > timespan_t::zero() );
+      }
+      else if ( delta < 0 )
+      {
+        b->player->stat_loss( buff_stat.stat, std::fabs( delta ), b->stat_gain, nullptr,
+                           b->buff_duration() > timespan_t::zero() );
+      }
+
+      buff_stat.current_value += delta;
+    }
+  }
+
+  void execute() override
+  {
+    evoker_augment_t::execute();
+
+    if ( ebon_time <= timespan_t::zero() )
+      p()->buff.ebon_might_self_buff->trigger();
+    else
+      p()->buff.ebon_might_self_buff->extend_duration_or_trigger( ebon_time );
+
+    for ( auto ally : p()->allies_with_ebon )
+    {
+      auto ebon               = p()->get_target_data( ally )->buffs.ebon_might;
+      ebon->stats[ 0 ].amount = ebon_int();
+      adjust_int( ebon );
+
+      if ( ebon_time <= timespan_t::zero() )
+        ebon->trigger();
+      else
+        ebon->extend_duration_or_trigger( ebon_time );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_augment_t::impact( s );
+
+    if ( s->target != player )
+    {
+      auto ebon               = p()->get_target_data( s->target )->buffs.ebon_might;
+      ebon->stats[ 0 ].amount = ebon_int();
+      adjust_int( ebon );
+
+      if ( ebon_time <= timespan_t::zero() )
+        ebon->trigger();
+      else
+        ebon->extend_duration_or_trigger( ebon_time );
+    }
+  }
+
+  int n_targets() const override
+  {
+    return aoe - as<int>( p()->allies_with_ebon.size() );
+  }
+
+  void activate() override
+  {
+    evoker_augment_t::activate();
+    p()->allies_with_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const
+  {
+    target_list.clear();
+    // Player must always be the first target.
+    target_list.push_back( player );
+
+    for ( const auto& t : sim->player_no_pet_list )
+    {
+      if ( t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
+        target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
+};
+
 struct fire_breath_t : public empowered_charge_spell_t
 {
   struct fire_breath_damage_t : public empowered_release_spell_t
@@ -1527,6 +1656,7 @@ struct azure_strike_t : public evoker_spell_t
 
 struct deep_breath_t : public evoker_spell_t
 {
+
   struct deep_breath_dot_t : public evoker_spell_t
   {
     deep_breath_dot_t( evoker_t* p ) : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
@@ -1556,15 +1686,23 @@ struct deep_breath_t : public evoker_spell_t
   };
 
   action_t* damage;
+  action_t* ebon;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "deep_breath", p, p->find_class_spell( "Deep Breath" ), options_str )
+    : evoker_spell_t( "deep_breath", p,
+                      p->talent.breath_of_eons.ok() ? spell_data_t::not_found() : p->find_class_spell( "Deep Breath" ),
+                      options_str ),
+      damage( nullptr ),
+      ebon( nullptr )
   {
     damage        = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
     damage->stats = stats;
 
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
+
+    if ( p->specialization() == EVOKER_AUGMENTATION )
+      ebon = p->get_secondary_action<ebon_might_t>( "ebon_might", p->talent.sands_of_time->effectN( 3 ).time_value() );
   }
 
   timespan_t execute_time() const override
@@ -1574,11 +1712,21 @@ struct deep_breath_t : public evoker_spell_t
     return 3_s;
   }
 
+  void impact( action_state_t* s) override
+  {
+    evoker_spell_t::impact( s );
+
+    if ( s->chain_target == 0 )
+      damage->execute_on_target( s->target );
+
+  }
+
   void execute() override
   {
     evoker_spell_t::execute();
 
-    damage->execute_on_target( target );
+    if ( ebon )
+      ebon->execute();
 
     if ( is_precombat )
     {
@@ -1599,7 +1747,7 @@ struct disintegrate_t : public essence_spell_t
 
   disintegrate_t( evoker_t* p, std::string_view options_str )
     : essence_spell_t( "disintegrate", p,
-                       p->talent.eruption.ok() ? spell_data_t::nil() : p->find_class_spell( "Disintegrate" ),
+                       p->talent.eruption.ok() ? spell_data_t::not_found() : p->find_class_spell( "Disintegrate" ),
                        options_str ),
       num_ticks( as<int>( dot_duration / base_tick_time ) + 1 )
   {
@@ -2344,84 +2492,6 @@ struct dragonrage_t : public evoker_spell_t
   }
 };
 
-struct ebon_might_t : public evoker_augment_t
-{
-  double ebon_value = 0.0;
-
-  ebon_might_t( evoker_t* p, std::string_view options_str )
-    : evoker_augment_t( "ebon_might", p, p->talent.ebon_might, options_str )
-  {
-    // Add a target so you always hit yourself.
-    aoe += 1;
-    ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
-                 p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
-  }
-
-  double ebon_int() {
-    return p()->cache.intellect() * ebon_value;
-  }
-
-  static double ebon_int( evoker_t* p )
-  {
-    return p->cache.intellect() * ( p->talent.ebon_might->effectN( 1 ).percent() +
-                                    p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
-  }
-
-  void execute() override
-  {
-    evoker_augment_t::execute();
-    p()->buff.ebon_might_self_buff->trigger();
-    for ( auto ally : p()->allies_with_ebon )
-    {
-      auto ebon               = p()->get_target_data( ally )->buffs.ebon_might;
-      ebon->stats[ 0 ].amount = ebon_int();
-      ebon->trigger();
-      sim->print_debug( "{} sets the stat on ebon to {}, buff value {} for player {} and triggers it, new duration {}",
-                        *player, ebon_int(), ebon->stats[ 0 ].current_value, *ally, ebon->remains() );
-      // Manually Invalidate the Cache due to manipulating the buff stats.
-      ally->invalidate_cache( CACHE_INTELLECT );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    evoker_augment_t::impact( s );
-
-    if ( s->target != player )
-    {
-      auto ebon               = p()->get_target_data( s->target )->buffs.ebon_might;
-      ebon->stats[ 0 ].amount = ebon_int();
-      ebon->trigger();
-    }
-  }
-
-  int n_targets() const override
-  {
-    return aoe - as<int>( p()->allies_with_ebon.size() );
-  }
-
-  void activate() override
-  {
-    evoker_augment_t::activate();
-    p()->allies_with_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
-  }
-
-  size_t available_targets( std::vector<player_t*>& target_list ) const
-  {
-    target_list.clear();
-    // Player must always be the first target.
-    target_list.push_back( player );
-
-    for ( const auto& t : sim->player_no_pet_list )
-    {
-      if ( t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
-        target_list.push_back( t );
-    }
-
-    return target_list.size();
-  }
-};
-
 struct eruption_t : public essence_spell_t
 {
   timespan_t extend_ebon;
@@ -2458,6 +2528,12 @@ struct eruption_t : public essence_spell_t
     if ( p()->talent.accretion->ok() )
     {
       p()->cooldown.upheaval->adjust( upheaval_cdr );
+    }
+
+    if ( p()->talent.motes_of_possibility->ok() && rng().roll( p() ->talent.motes_of_possibility->proc_chance() ) )
+    {
+      p()->cooldown.breath_of_eons->adjust(
+          -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
     }
   }
 };
@@ -2507,9 +2583,9 @@ protected:
 public:
   fate_mirror_damage_t( evoker_t* e ) : evoker_spell_t( "fate_mirror", e, e->talent.fate_mirror_damage )
   {
-    may_dodge = may_parry = may_block = may_crit = callbacks = false;
-    background                                               = true;
-    base_dd_multiplier                                       = e->talent.fate_mirror->effectN( 1 ).percent();
+    may_dodge = may_parry = may_block = may_crit = false;
+    background                                   = true;
+    base_dd_multiplier                           = e->talent.fate_mirror->effectN( 1 ).percent();
   }
 
   double composite_da_multiplier( const action_state_t* ) const override
@@ -2552,26 +2628,77 @@ public:
   void init() override
   {
     spell_t::init();
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_MUL_DA;
+    snapshot_flags &= STATE_NO_MULTIPLIER & ~STATE_TARGET;
+    snapshot_flags |= STATE_MUL_SPELL_DA;
   }
 };
 
-struct breath_of_eons_damage_t : public evoker_spell_t
+struct breath_of_eons_damage_t : public spell_t
 {
-  breath_of_eons_damage_t( evoker_t* p ) : evoker_spell_t( "breath_of_eons_damage", p, p->talent.breath_of_eons_damage )
-  {
-    may_dodge = may_parry = may_block = callbacks = false;
-    background                                    = true;
+protected:
+  using state_t = evoker_action_state_t<stats_data_t>;
 
+public:
+  breath_of_eons_damage_t( player_t* p, evoker_t* e ) : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage )
+  {
+    may_dodge = may_parry = may_block = false;
+    background                        = true;
     base_crit += 1.0;
-    crit_multiplier = crit_bonus = 0.0;
+    crit_bonus = 0.0;
+    base_dd_multiplier           = e->talent.temporal_wound->effectN( 1 ).percent();
+
+    if ( p != e )
+    {
+      auto& vec = p->stats_list;
+
+      vec.erase( std::remove( vec.begin(), vec.end(), stats ), vec.end() );
+      delete stats;
+      stats = e->get_stats( name_str, this );
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* ) const override
+  {
+    return base_dd_multiplier;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    spell_t::snapshot_state( s, rt );
+    cast_state( s )->stats = stats;
+  }
+
+  void record_data( action_state_t* data ) override
+  {
+    if ( !cast_state( data )->stats )
+      return;
+
+    cast_state( data )->stats->add_result(
+        data->result_amount, data->result_total, report_amount_type( data ), data->result,
+        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
+        data->target );
   }
 
   void init() override
   {
-    evoker_spell_t::init();
+    spell_t::init();
     snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_MUL_SPELL_DA | STATE_CRIT;
   }
 };
 
@@ -2645,6 +2772,61 @@ struct blistering_scales_damage_t : public evoker_spell_t
   }
 };
 
+struct breath_of_eons_t : public evoker_spell_t
+{
+  action_t* ebon;
+
+  breath_of_eons_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ),
+     /* damage( nullptr ),*/
+      ebon( nullptr )
+  {
+
+    travel_delay = 0.9;   // guesstimate, TODO: confirm
+    travel_speed = 19.5;  // guesstimate, TODO: confirm
+
+    aoe = -1;
+
+    if ( p->specialization() == EVOKER_AUGMENTATION )
+      ebon = p->get_secondary_action<ebon_might_t>( "ebon_might", p->talent.sands_of_time->effectN( 3 ).time_value() );
+
+    add_child( p->get_secondary_action<breath_of_eons_damage_t>( "breath_of_eons_damage", p ) );
+  }
+
+  timespan_t execute_time() const override
+  {
+    // TODO: Work out a better solution for this.
+    // return damage->travel_time();
+    return 3_s;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+
+    p()->get_target_data( s->target )->debuffs.temporal_wound->trigger();
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    if ( ebon )
+      ebon->execute();
+
+    if ( is_precombat )
+    {
+      start_gcd();
+      player->last_foreground_action = this;
+      auto delay                     = std::max(
+          0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
+      player->gcd_ready = delay;
+      stats->iteration_total_execute_time += delay;
+    }
+  }
+};
+
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -2667,6 +2849,92 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   {
     using e_buff_t = buffs::evoker_buff_t<buff_t>;
 
+
+    if ( evoker->talent.breath_of_eons.ok() )
+    {
+      if ( target->is_enemy() )
+      {
+        auto temporal_wound_effect      = new special_effect_t( target );
+        temporal_wound_effect->name_str = "temporal_wound";
+        temporal_wound_effect->type     = SPECIAL_EFFECT_EQUIP;
+        temporal_wound_effect->spell_id = evoker->talent.temporal_wound->id();
+        target->special_effects.push_back( temporal_wound_effect );
+
+        auto temporal_wound_cb = new dbc_proc_callback_t( target, *temporal_wound_effect );
+        // Fate mirror can proc from pets
+        temporal_wound_cb->allow_pet_procs = true;
+        temporal_wound_cb->deactivate();
+        temporal_wound_cb->initialize();
+
+        target->callbacks.register_callback_execute_function(
+            temporal_wound_cb->effect.driver()->id(),
+            [ target, evoker ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+              double da = s->result_amount;
+              if ( da > 0 )
+              {
+                auto p = s->action->player->get_owner_or_self();
+                auto buff = evoker->get_target_data( p )->buffs.stored_eon_damage;
+
+                if ( buff->up() )
+                {
+                  buff->current_value += da;
+                }
+                else {
+                  buff->trigger( evoker->get_target_data( s->target )->debuffs.temporal_wound->remains() );
+                  buff->current_value = da;
+                }
+              }
+            } );
+
+        debuffs.temporal_wound = make_buff<e_buff_t>( *this, "temporal_wound", evoker->talent.temporal_wound )
+                                     ->set_stack_change_callback( [ temporal_wound_cb ]( buff_t*, int, int new_ ) {
+                                       if ( new_ )
+                                         temporal_wound_cb->activate();
+                                       else
+                                         temporal_wound_cb->deactivate();
+                                     } );
+      }
+      else {
+        if ( !target->is_pet() )
+        {
+          action_t* eon_damage = evoker->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", evoker );
+          auto stats           = evoker->get_stats( "eon_damage_" + target->name_str, eon_damage );
+          stats->school        = eon_damage->get_school();
+
+          eon_damage->stats->add_child( stats );
+
+         
+          struct buff_stored_eon_damage_t : public buff_t
+          {
+            action_t* eon_damage;
+            stats_t* stats;
+
+            buff_stored_eon_damage_t( actor_pair_t q, util::string_view name, action_t* eon_damage, stats_t* stats )
+              : buff_t( q, name ), eon_damage( eon_damage ), stats( stats )
+            {
+            }
+
+            void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+            {
+              make_event( sim, [ this, da = current_value ] {
+                auto _stats       = eon_damage->stats;
+                eon_damage->stats = stats;
+                sim->print_debug( "{} eon helper expiry, size {}, damage execution inc", *player, da );
+                eon_damage->execute_on_target( player->target, da );
+                eon_damage->stats = _stats;
+              } );
+
+              buff_t::expire_override( expiration_stacks, remaining_duration );
+            }
+          };
+
+          buffs.stored_eon_damage = make_buff<buff_stored_eon_damage_t>( *this, "stored_eon_damage", eon_damage, stats )
+                                        ->set_duration( 0_ms )
+                                        ->set_quiet( true );
+        }
+      }
+    }
+    
     buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
                                ->set_default_value( evoker->cache.mastery_value() )
                                ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
@@ -2676,9 +2944,13 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
     buffs.ebon_might->set_cooldown( 0_ms )->set_stack_change_callback( [ target, evoker ]( buff_t*, int, int new_ ) {
       if ( new_ )
+      {
         evoker->allies_with_ebon.push_back( target );
+      }
       else
+      {
         evoker->allies_with_ebon.find_and_erase( target );
+      }
     } );
 
     buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
@@ -2753,6 +3025,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
   cooldown.firestorm      = get_cooldown( "firestorm" );
   cooldown.upheaval       = get_cooldown( "upheaval" );
+  cooldown.breath_of_eons = get_cooldown( "breath_of_eons" );
 
   resource_regeneration             = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ]       = true;
@@ -3011,6 +3284,7 @@ void evoker_t::init_background_actions()
   player_t::init_background_actions();
 
   get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
+  get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", this );
 }
 
 void evoker_t::init_spells()
@@ -3110,6 +3384,7 @@ void evoker_t::init_spells()
   talent.upheaval              = ST( "upheaval" );
   talent.breath_of_eons        = ST( "Breath of Eons" );
   talent.breath_of_eons_damage = find_spell( 409632 );
+  talent.temporal_wound        = find_spell( 409560 );
   // Defy Fate - Non DPS
   // Timelessness - Non DPS
   // Seismic Slam - Non DPS
@@ -3558,6 +3833,8 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new upheaval_t( this, options_str );
   if ( name == "prescience" )
     return new prescience_t( this, options_str );
+  if ( name == "breath_of_eons" )
+    return new breath_of_eons_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -3685,8 +3962,7 @@ void evoker_t::extend_ebon( timespan_t extend )
         if ( ebon->stats[ 0 ].amount != spells::ebon_might_t::ebon_int( this ) )
         {
           ebon->stats[ 0 ].amount = spells::ebon_might_t::ebon_int( this );
-          ally->invalidate_cache( CACHE_INTELLECT );
-        
+          spells::ebon_might_t::adjust_int( ebon );
         }
         ebon->extend_duration( this, dur );
       }
