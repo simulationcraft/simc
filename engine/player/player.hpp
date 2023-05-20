@@ -1182,6 +1182,7 @@ public:
   virtual void assess_damage_imminent( school_e, result_amount_type, action_state_t* );
   virtual void do_damage( action_state_t* );
   virtual void assess_heal( school_e, result_amount_type, action_state_t* );
+  virtual void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
 

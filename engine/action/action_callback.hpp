@@ -20,6 +20,7 @@ struct action_callback_t : private noncopyable
   bool active;
   bool allow_self_procs;
   bool allow_procs;
+  bool allow_pet_procs;
 
   action_callback_t(player_t* l, bool ap = false, bool asp = false);
   virtual ~action_callback_t() = default;

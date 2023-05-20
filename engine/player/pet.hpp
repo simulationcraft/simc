@@ -50,6 +50,7 @@ public:
   void init_finished() override;
   void reset() override;
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
+  void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* ) override;
 
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );

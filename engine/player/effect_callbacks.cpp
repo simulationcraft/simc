@@ -22,6 +22,14 @@ void add_callback( std::vector<action_callback_t*>& callbacks, action_callback_t
 
 }  // namespace
 
+void effect_callbacks_t::add_callback( proc_types type, proc_types2 type2, action_callback_t* cb )
+{
+  ::add_callback( procs[ type ][ type2 ], cb );
+
+  if ( cb->allow_pet_procs )
+    ::add_callback( pet_procs[ type ][ type2 ], cb );
+}
+
 void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, action_callback_t* cb )
 {
   std::string s;
@@ -41,25 +49,24 @@ void effect_callbacks_t::add_proc_callback( proc_types type, uint64_t flags, act
          ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || type == PROC1_PERIODIC_HEAL ||
            type == PROC1_PERIODIC_HEAL_TAKEN || type == PROC1_NONE_HEAL || type == PROC1_MAGIC_HEAL ) )
     {
-      add_callback( procs[ type ][ PROC2_HIT ], cb );
+      add_callback( type, PROC2_HIT, cb );
       if ( cb->listener->sim->debug )
         s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( PROC2_HIT ) ).append( " " );
 
-      add_callback( procs[ type ][ PROC2_CRIT ], cb );
+      add_callback( type, PROC2_CRIT, cb );
       if ( cb->listener->sim->debug )
         s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( PROC2_CRIT ) ).append( " " );
     }
     // Do normal registration based on the existence of the flag
     else
     {
-      add_callback( procs[ type ][ pt ], cb );
+      add_callback( type, pt, cb );
       if ( cb->listener->sim->debug )
         s.append( util::proc_type_string( type ) ).append( util::proc_type2_string( pt ) ).append( " " );
     }
   }
 
-  if ( sim->debug )
-    sim->out_debug.print( "{}", s );
+  sim->print_debug( "{}{}", s, cb->allow_pet_procs ? "(+pet) " : "" );
 }
 
 effect_callbacks_t::~effect_callbacks_t()
