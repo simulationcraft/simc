@@ -24,7 +24,7 @@ main_hand=,id=202565,bonus_id=6652/8783/8784/9414/9415/4800/4786/1498,enchant_id
 
 save=T30_Shaman_Elemental.simc
 
-shaman="T30_Shaman_Enhancement"
+shaman="T30_Shaman_Enhancement_Ele"
 level=70
 race=troll
 spec=enhancement
@@ -51,10 +51,10 @@ trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
 main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 
-save=T30_Shaman_Enhancement.simc
+save=T30_Shaman_Enhancement_Ele.simc
 
 
-shaman="T30_Shaman_Enhancement_Storm"
+shaman="T30_Shaman_Enhancement"
 level=70
 race=troll
 spec=enhancement
@@ -81,7 +81,7 @@ trinket2=neltharions_call_to_dominance,id=204202,bonus_id=4800/4786/1498
 main_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,crafted_stats=49/36,enchant=sophic_devotion_3
 
-save=T30_Shaman_Enhancement_Storm.simc
+save=T30_Shaman_Enhancement.simc
 
 # # shaman="T30_Shaman_Restoration"
 # # level=70
