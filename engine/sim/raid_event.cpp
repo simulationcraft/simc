@@ -281,7 +281,6 @@ struct adds_event_t final : public raid_event_t
     double x_offset      = 0;
     double y_offset      = 0;
     bool offset_computed = false;
-    auto existing        = sim->target_non_sleeping_list.size();
 
     // Keep track of each add duration so after summons (and dismissals) are done, we can adjust the saved_duration of
     // the add event to match the add with the longest lifetime.
@@ -335,13 +334,6 @@ struct adds_event_t final : public raid_event_t
     }
 
     regenerate_cache();
-
-    // trigger enter combat state callbacks if no adds were existing
-    if ( sim->fight_style == fight_style_e::FIGHT_STYLE_DUNGEON_SLICE && !existing )
-    {
-      for ( auto p : affected_players )
-        p->enter_combat();
-    }
   }
 
   void _finish() override
@@ -700,7 +692,6 @@ struct pull_event_t final : raid_event_t
     
     spawned = true;
     spawn_time = sim->current_time();
-    auto existing = sim->target_non_sleeping_list.size();
 
     if ( bloodlust )
     {
@@ -753,13 +744,6 @@ struct pull_event_t final : raid_event_t
                     pull, adds.size(), total_health, delay.total_seconds() );
 
     regenerate_cache();
-
-    // trigger enter combat state callbacks if no adds were existing
-    if ( !existing )
-    {
-      for ( auto p : affected_players )
-        p->enter_combat();
-    }
   }
 
   void reset() override
