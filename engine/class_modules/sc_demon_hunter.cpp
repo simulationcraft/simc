@@ -2594,9 +2594,13 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
     {
-      // Fiery Brand is capped to the base duration, regardless of the extension mechanics
-      return std::min( demon_hunter_spell_t::calculate_dot_refresh_duration( dot, triggered_duration ),
-                       p()->spec.fiery_brand_debuff->duration() );
+      // Fiery Brand can be extended beyond the 10s duration, but any hardcast Fiery Brand always overwrites existing
+      // DoT to 10s.
+      if ( triggered_duration == p()->spec.fiery_brand_debuff->duration() )
+      {
+        return triggered_duration;
+      }
+      return demon_hunter_spell_t::calculate_dot_refresh_duration( dot, triggered_duration );
     }
 
     action_state_t* new_state() override
