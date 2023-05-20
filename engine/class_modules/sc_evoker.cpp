@@ -2701,6 +2701,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       target->special_effects.push_back( fate_mirror_effect );
 
       auto fate_mirror_cb = new dbc_proc_callback_t( target, *fate_mirror_effect );
+      // Fate mirror can proc from pets
+      fate_mirror_cb->allow_pet_procs = true;
       fate_mirror_cb->deactivate();
       fate_mirror_cb->initialize();
 
