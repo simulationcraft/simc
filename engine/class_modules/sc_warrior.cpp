@@ -7102,7 +7102,17 @@ struct avatar_t : public warrior_spell_t
     }
     else
     {
-      p()->buff.avatar->extend_duration_or_trigger();
+      if ( ! p()->bugs )
+        p()->buff.avatar->extend_duration_or_trigger();
+      else  // avatar always triggers to 20s duration when it's hard cast
+      {
+        auto extended_duration = p()->buff.avatar->buff_duration();
+        if ( p()->buff.avatar->remains() + extended_duration > 20_s )
+        {
+          extended_duration = 20_s - p()->buff.avatar->remains();
+        }
+        p()->buff.avatar->extend_duration_or_trigger( extended_duration );
+      }
 
       if ( p()->legendary.signet_of_tormented_kings.ok() && p()->specialization() == WARRIOR_FURY )
       {
