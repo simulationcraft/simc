@@ -79,7 +79,7 @@ legs=lingering_phantoms_schynbalds,id=202460,bonus_id=4800/4786/1504,enchant=fie
 feet=spittleresistant_sollerets,id=204396,bonus_id=4800/4786/1498
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192922,enchant=devotion_of_mastery_3,crafted_stats=32/36
 finger2=ringbound_hourglass,id=193000,bonus_id=8840/8836/8902/8783/8784/8780/1537/6935,gem_id=192922,enchant=devotion_of_mastery_3,crafted_stats=49/36
-trinket1=screaming_black_dragonscale,id=202612,bonus_id=4800/4786/1498
+trinket1=neltharions_call_to_suffering,id=204211,bonus_id=4800/4786/1498
 trinket2=ominous_chromatic_essence,id=203729,bonus_id=4800/4786/1498
 main_hand=ashkandur_fall_of_the_brotherhood,id=202606,bonus_id=4800/4786/1498,enchant=rune_of_the_fallen_crusader
 
