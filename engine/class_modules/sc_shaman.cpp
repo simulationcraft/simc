@@ -8244,7 +8244,7 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh )
         player->off_hand_attack->base_execute_time = timespan_t::zero();
         player->off_hand_attack->schedule_execute();
         player->off_hand_attack->base_execute_time = player->off_hand_attack->weapon->swing_time;
-        if ( player->off_hand_attack->execute_action )
+        if ( player->off_hand_attack->execute_event )
         {
           player->off_hand_attack->execute_event->reschedule( time_to_hit );
         }
