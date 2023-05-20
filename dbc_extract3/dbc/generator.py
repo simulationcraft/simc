@@ -2242,7 +2242,7 @@ class SpellDataGenerator(DataGenerator):
           ( 404908, 3 ), # Fate Mirror Damage
           ( 409632, 3 ), # Breath of Eons Damage
           ( 360828, 3 ), # Blistering Scales
-          ( 410625, 3 ), # Inferno's Blessing
+          ( 410265, 3 ), # Inferno's Blessing
        ),
     ]
 
