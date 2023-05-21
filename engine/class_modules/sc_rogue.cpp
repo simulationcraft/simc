@@ -6668,6 +6668,10 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     base_t::execute( stacks, value, duration );
     rogue->cancel_auto_attacks();
 
+    // Vanish drops combat if in combat with non-bosses, relevant for some trinket effects
+    if ( !rogue->in_boss_encounter )
+      rogue->leave_combat();
+
     // Confirmed on early beta that Invigorating Shadowdust triggers from Vanish buff (via old Sepsis), not just Vanish casts
     if ( rogue->talent.subtlety.invigorating_shadowdust ||
          ( rogue->options.prepull_shadowdust && rogue->sim->current_time() == 0_s ) )
