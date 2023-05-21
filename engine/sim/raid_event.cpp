@@ -338,7 +338,9 @@ struct adds_event_t final : public raid_event_t
     if ( enemy_type == ENEMY_ADD_BOSS )
     {
       for ( auto p : affected_players )
-        p->in_boss_encounter = false;
+      {
+        p->in_boss_encounter++;
+      }
     }
   }
 
@@ -356,7 +358,10 @@ struct adds_event_t final : public raid_event_t
     if ( enemy_type == ENEMY_ADD_BOSS )
     {
       for ( auto p : affected_players )
-        p->in_boss_encounter = false;
+      {
+        assert( p->in_boss_encounter );
+        p->in_boss_encounter--;
+      }
     }
 
     // trigger leave combat state callbacks if no adds are remaining
@@ -616,11 +621,13 @@ struct pull_event_t final : raid_event_t
 
     event_t::cancel( redistribute_event );
 
-    // NOTE: this assumes you cannot have overlapping boss pulls.
     if ( has_boss )
     {
       for ( auto p : affected_players )
-        p->in_boss_encounter = false;
+      {
+        assert( p->in_boss_encounter );
+        p->in_boss_encounter--;
+      }
     }
 
     // trigger leave combat state callbacks if no adds are remaining
@@ -772,7 +779,9 @@ struct pull_event_t final : raid_event_t
     if ( has_boss )
     {
       for ( auto p : affected_players )
-        p->in_boss_encounter = true;
+      {
+        p->in_boss_encounter++;
+      }
     }
   }
 

@@ -276,7 +276,8 @@ struct player_t : public actor_t
   std::vector<std::pair<const cooldown_t*, const cooldown_t*>> cast_while_casting_cd;
   timespan_t off_gcd_ready;
   timespan_t cast_while_casting_ready;
-  bool in_combat, in_boss_encounter;
+  bool in_combat;
+  unsigned in_boss_encounter;
   bool action_queued;
   bool first_cast;
   action_t* last_foreground_action;
