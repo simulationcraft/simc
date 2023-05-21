@@ -401,6 +401,7 @@ public:
     action_t* furious_regeneration;
     action_t* galactic_guardian;
     action_t* maul_tooth_and_claw;
+    action_t* raze_tooth_and_claw;
     action_t* moonless_night;
     action_t* natures_guardian;
     action_t* rage_of_the_sleeper_reflect;
@@ -4928,7 +4929,7 @@ struct raze_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
   {
     if ( !is_free() && p()->buff.tooth_and_claw->up() )
     {
-      p()->active.maul_tooth_and_claw->execute_on_target( target );
+      p()->active.raze_tooth_and_claw->execute_on_target( target );
       return;
     }
 
@@ -10572,19 +10573,25 @@ void druid_t::create_actions()
   if ( talent.moonless_night.ok() )
     active.moonless_night = get_secondary_action<moonless_night_t>( "moonless_night" );
 
-  if ( talent.tooth_and_claw.ok() && ( talent.maul.ok() || talent.raze.ok() ) )
+  if ( talent.tooth_and_claw.ok() )
   {
-    bear_attack_t* tnc;
+    if ( talent.maul.ok() )
+    {
+      auto tnc = get_secondary_action_n<maul_t>( "maul_tooth_and_claw", "" );
+      tnc->s_data_reporting = talent.tooth_and_claw;
+      tnc->name_str_reporting = "tooth_and_claw";
+      tnc->set_free_cast( free_spell_e::TOOTH );
+      active.maul_tooth_and_claw = tnc;
+    }
 
     if ( talent.raze.ok() )
-      tnc = get_secondary_action_n<raze_t>( "raze_tooth_and_claw", "" );
-    else
-      tnc = get_secondary_action_n<maul_t>( "maul_tooth_and_claw", "" );
-
-    tnc->s_data_reporting = talent.tooth_and_claw;
-    tnc->name_str_reporting = "tooth_and_claw";
-    tnc->set_free_cast( free_spell_e::TOOTH );
-    active.maul_tooth_and_claw = tnc;
+    {
+      auto tnc = get_secondary_action_n<raze_t>( "raze_tooth_and_claw", "" );
+      tnc->s_data_reporting = talent.tooth_and_claw;
+      tnc->name_str_reporting = "tooth_and_claw";
+      tnc->set_free_cast( free_spell_e::TOOTH );
+      active.raze_tooth_and_claw = tnc;
+    }
   }
 
   if ( mastery.natures_guardian->ok() )
@@ -10639,7 +10646,8 @@ void druid_t::create_actions()
 
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.galactic_guardian, "moonfire" );
-  find_parent( active.maul_tooth_and_claw, talent.raze.ok() ? "raze" : "maul" );
+  find_parent( active.maul_tooth_and_claw, "maul" );
+  find_parent( active.raze_tooth_and_claw, "raze" );
   find_parent( active.orbit_breaker, "full_moon" );
   /* TODO: implement 4pc bug if not fixed in 0day patch
   find_parent( active.starsurge_cosmos, "starsurge" );
