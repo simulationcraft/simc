@@ -10283,8 +10283,9 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.elunes_favored )
     ->set_quiet( true )
     ->set_freeze_stacks( true )
-    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      active.elunes_favored_heal->execute();
+    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
+      if ( b->check_value() )
+        active.elunes_favored_heal->execute();
     } );
 
   buff.furious_regeneration = make_buff( this, "furious_regeneration", spec.furious_regeneration )
