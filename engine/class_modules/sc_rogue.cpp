@@ -5053,9 +5053,13 @@ struct shadow_dance_t : public rogue_spell_t
 
     if ( p()->set_bonuses.t30_subtlety_2pc->ok() )
     {
-      // 2023-05-01 -- This currently acts like a normal cast, including The Rotten and resetting the duration
+      // 2023-05-01 -- This currently acts like a normal cast, including The Rotten and generating Energy
+      // 2023-05-17 -- Updated to no longer decrease the duration of an existing buff, but still pandemics otherwise
       timespan_t symbols_duration = timespan_t::from_seconds( p()->set_bonuses.t30_subtlety_2pc->effectN( 1 ).base_value() );
-      p()->buffs.symbols_of_death->trigger( symbols_duration );
+      if ( p()->buffs.symbols_of_death->remains_gt( p()->buffs.symbols_of_death->refresh_duration( symbols_duration ) ) )
+      {
+        p()->buffs.symbols_of_death->trigger( symbols_duration );
+      }
       p()->buffs.the_rotten->trigger();
       p()->resource_gain( RESOURCE_ENERGY, p()->spec.symbols_of_death->effectN( 5 ).resource(),
                           p()->gains.symbols_of_death_t30 );
