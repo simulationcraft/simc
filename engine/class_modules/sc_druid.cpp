@@ -1974,12 +1974,6 @@ public:
     if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
       return;
 
-    if ( p()->buff.elunes_favored->check() && p()->get_form() == BEAR_FORM &&
-         dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) )
-    {
-      p()->buff.elunes_favored->current_value += s->result_amount;
-    }
-
     if ( p()->specialization() != DRUID_RESTORATION )
     {
       if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
@@ -9839,6 +9833,18 @@ void druid_t::init_base_stats()
 void druid_t::init_assessors()
 {
   player_t::init_assessors();
+
+  if ( talent.elunes_favored.ok() )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [ this ]( result_amount_type, action_state_t* s ) {
+      if ( get_form() == BEAR_FORM && dbc::has_common_school( s->action->get_school(), SCHOOL_ASTRAL ) )
+      {
+        buff.elunes_favored->current_value += s->result_amount;
+      }
+
+      return assessor::CONTINUE;
+    } );
+  }
 }
 
 void druid_t::init_finished()
@@ -10283,6 +10289,7 @@ void druid_t::create_buffs()
     ->set_trigger_spell( talent.elunes_favored )
     ->set_quiet( true )
     ->set_freeze_stacks( true )
+    ->set_default_value( 0 )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       if ( b->check_value() )
         active.elunes_favored_heal->execute();
