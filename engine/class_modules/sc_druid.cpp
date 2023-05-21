@@ -11409,7 +11409,10 @@ void druid_t::combat_begin()
         break;
     }
 
-    if ( options.raid_combat )
+    if ( !options.raid_combat )
+      in_boss_encounter = 0;
+
+    if ( in_boss_encounter )
     {
       double cap =
           std::max( resources.base[ RESOURCE_ASTRAL_POWER ] * talent.natures_balance->effectN( 2 ).percent(), 20.0 );
