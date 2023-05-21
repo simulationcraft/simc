@@ -7273,6 +7273,11 @@ struct prowl_t : public druid_spell_t
     p()->buff.prowl->trigger();
 
     druid_spell_t::execute();
+
+    p()->cancel_auto_attacks();
+
+    if ( !p()->in_boss_encounter )
+      p()->leave_combat();
   }
 
   bool ready() override
