@@ -1356,9 +1356,17 @@ struct empowered_charge_spell_t : public empowered_charge_t<evoker_spell_t>
   }
 };
 
+struct sands_of_time_state_t
+{
+  bool sands_crit;
+};
 
 struct ebon_might_t : public evoker_augment_t
 {
+protected:
+  using state_t = evoker_action_state_t<sands_of_time_state_t>;
+
+public:
   double ebon_value    = 0.0;
   timespan_t ebon_time = timespan_t::min();
 
@@ -1378,7 +1386,32 @@ struct ebon_might_t : public evoker_augment_t
     ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
 
+    cooldown->base_duration = 0_s;
+
     ebon_time = ebon;
+  }
+
+  
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    evoker_augment_t::snapshot_state( s, rt );
+    cast_state( s )->sands_crit = rng().roll( p()->cache.spell_crit_chance() );
   }
 
   double ebon_int()
@@ -1414,7 +1447,7 @@ struct ebon_might_t : public evoker_augment_t
     }
   }
 
-  void ebon_on_target( player_t* t )
+  void ebon_on_target( player_t* t, bool crit )
   {
     if ( t->is_enemy() )
     {
@@ -1440,7 +1473,7 @@ struct ebon_might_t : public evoker_augment_t
     else
     {
       auto time = ebon_time;
-      if ( rng().roll( p()->cache.spell_crit_chance() ) )
+      if ( crit )
         time *= 1 + p()->talent.sands_of_time->effectN( 4 ).percent();
       buff->extend_duration( p(), time );
     }
@@ -1455,7 +1488,15 @@ struct ebon_might_t : public evoker_augment_t
   {
     evoker_augment_t::impact( s );
 
-    ebon_on_target( s->target );
+    if ( s->chain_target == 0 )
+    {
+      for ( auto t : p()->allies_with_ebon )
+      {
+        ebon_on_target( t, cast_state( s )->sands_crit );
+      }
+    }
+
+    ebon_on_target( s->target, cast_state( s )->sands_crit );
   }
 
   int n_targets() const override
@@ -2947,7 +2988,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might", evoker->find_spell( 395152 ) )
                            ->set_stat_from_effect( 2, 0 );
 
-    buffs.ebon_might->set_cooldown( 0_ms )->set_stack_change_callback( [ target, evoker ]( buff_t*, int, int new_ ) {
+    buffs.ebon_might->set_cooldown( 0_ms )
+        ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+        ->set_stack_change_callback( [ target, evoker ]( buff_t*, int, int new_ ) {
       if ( new_ )
       {
         evoker->allies_with_ebon.push_back( target );
@@ -2957,6 +3000,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         evoker->allies_with_ebon.find_and_erase( target );
       }
     } );
+
+    buffs.ebon_might->buff_period = timespan_t::zero();
 
     buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
                            ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
@@ -3638,8 +3683,9 @@ void evoker_t::create_buffs()
   // Preservation
 
   // Augmentation
-  buff.ebon_might_self_buff = make_buff<e_buff_t>( this, "ebon_might", talent.ebon_might_self_buff )
+  buff.ebon_might_self_buff = make_buff<e_buff_t>( this, "ebon_might_self", talent.ebon_might_self_buff )
                                   ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.ebon_might_self_buff->buff_period = timespan_t::zero();
 }
 
 void evoker_t::create_options()
