@@ -11165,6 +11165,9 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
 
+  if ( expression_str == "in_boss_encounter" )
+    return make_ref_expr( "in_boss_encounter", in_boss_encounter );
+
   if ( expression_str == "ptr" )
     return expr_t::create_constant( "ptr", dbc->ptr );
 
