@@ -1642,7 +1642,8 @@ public:
 
     if ( energize_delta > 0 )
     {
-      ea += static_cast<int>( p()->rng().range( 0, 1 + energize_delta ) - ( energize_delta / 2.0 ) );
+      // Round the entire post-delta value as some effects (Demon Blades) with deltas have fractional values
+      ea = static_cast<int>( ea + p()->rng().range( 0, 1 + energize_delta ) - ( energize_delta / 2.0 ) );
     }
 
     return ea;
