@@ -2791,7 +2791,7 @@ struct infernos_blessing_damage_t : public evoker_spell_t
 struct blistering_scales_damage_t : public evoker_spell_t
 {
   blistering_scales_damage_t( evoker_t* p )
-    : evoker_spell_t( "blistering_scales_damage", p, p->talent.infernos_blessing_damage )
+    : evoker_spell_t( "blistering_scales_damage", p, p->talent.blistering_scales_damage )
   {
     may_dodge = may_parry = may_block = callbacks = false;
     background                                    = true;
@@ -3464,7 +3464,7 @@ void evoker_t::init_spells()
   // Prolong Life - Non DPS. Scarlet Exists. Todo: Implement Healing
   talent.momentum_shift           = ST( "Momentum Shift" );
   talent.infernos_blessing        = ST( "Inferno's Blessing" );
-  talent.infernos_blessing_damage = find_spell( 410625 );
+  talent.infernos_blessing_damage = find_spell( 410265 );
   talent.time_skip                = ST( "Time Skip" );
   talent.accretion                = ST( "Accretion" );
   talent.anachronism              = ST( "Anachronism" );
