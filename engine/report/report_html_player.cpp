@@ -3492,6 +3492,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    "<li><span class=\"label\">trigger_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
                    "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n"
                    "<li><span class=\"label\">duration_min/max:</span>%.1fs&#160;/&#160;%.1fs</li>\n"
+                   "<li><span class=\"label\">uptime_min/max:</span>%.2f%%&#160;/&#160;%.2f%%</li>\n"
                    "</ul>\n",
                    b.start_intervals.min(),
                    b.start_intervals.max(),
@@ -3499,7 +3500,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    b.trigger_intervals.max(),
                    b.trigger_pct.mean(),
                    b.duration_lengths.min(),
-                   b.duration_lengths.max() );
+                   b.duration_lengths.max(),
+                   b.uptime_pct.min(),
+                   b.uptime_pct.max() );
       }
 
       if ( break_second )  // if stack rows will overflow past first column
