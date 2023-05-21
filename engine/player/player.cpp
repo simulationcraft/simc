@@ -1123,6 +1123,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     off_gcd_ready( timespan_t::min() ),
     cast_while_casting_ready( timespan_t::min() ),
     in_combat( false ),
+    in_boss_encounter( true ),
     action_queued( false ),
     first_cast( true ),
     last_foreground_action( nullptr ),
@@ -6000,6 +6001,11 @@ void player_t::reset()
   off_gcd         = nullptr;
   cast_while_casting_poll_event = nullptr;
   in_combat       = false;
+
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE || sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
+    in_boss_encounter = false;
+  else
+    in_boss_encounter = true;
 
   current_execute_type = execute_type::FOREGROUND;
 

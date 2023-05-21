@@ -334,6 +334,12 @@ struct adds_event_t final : public raid_event_t
     }
 
     regenerate_cache();
+
+    if ( enemy_type == ENEMY_ADD_BOSS )
+    {
+      for ( auto p : affected_players )
+        p->in_boss_encounter = false;
+    }
   }
 
   void _finish() override
@@ -345,6 +351,12 @@ struct adds_event_t final : public raid_event_t
     for ( size_t i = 0; i < adds_to_remove; i++ )
     {
       adds[ i ]->dismiss();
+    }
+
+    if ( enemy_type == ENEMY_ADD_BOSS )
+    {
+      for ( auto p : affected_players )
+        p->in_boss_encounter = false;
     }
 
     // trigger leave combat state callbacks if no adds are remaining
@@ -478,6 +490,7 @@ struct pull_event_t final : raid_event_t
   bool shared_health;
   bool spawned;
   bool demised;
+  bool has_boss;
   event_t* spawn_event;
   event_t* redistribute_event;
 
@@ -501,6 +514,7 @@ struct pull_event_t final : raid_event_t
       bloodlust( false ),
       shared_health( false ),
       spawned( false ),
+      has_boss( false ),
       spawn_event( nullptr ),
       redistribute_event( nullptr )
   {
@@ -559,7 +573,10 @@ struct pull_event_t final : raid_event_t
             spawn_parameter spawn;
 
             if ( util::starts_with( splits[ 0 ], "BOSS_" ) )
+            {
               spawn.boss = true;
+              has_boss   = true;
+            }
 
             spawn.name   = splits[ 0 ];
             spawn.health = util::to_double( splits[ 1 ] );
@@ -598,6 +615,13 @@ struct pull_event_t final : raid_event_t
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     event_t::cancel( redistribute_event );
+
+    // NOTE: this assumes you cannot have overlapping boss pulls.
+    if ( has_boss )
+    {
+      for ( auto p : affected_players )
+        p->in_boss_encounter = false;
+    }
 
     // trigger leave combat state callbacks if no adds are remaining
     if ( !sim->target_non_sleeping_list.size() )
@@ -744,6 +768,12 @@ struct pull_event_t final : raid_event_t
                     pull, adds.size(), total_health, delay.total_seconds() );
 
     regenerate_cache();
+
+    if ( has_boss )
+    {
+      for ( auto p : affected_players )
+        p->in_boss_encounter = true;
+    }
   }
 
   void reset() override
