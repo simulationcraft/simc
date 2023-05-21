@@ -7273,8 +7273,6 @@ struct prowl_t : public druid_spell_t
     p()->buff.prowl->trigger();
 
     druid_spell_t::execute();
-
-    p()->leave_combat();
   }
 
   bool ready() override
