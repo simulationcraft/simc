@@ -1414,43 +1414,48 @@ struct ebon_might_t : public evoker_augment_t
     }
   }
 
+  void ebon_on_target( player_t* t )
+  {
+    if ( t->is_enemy() )
+    {
+      sim->error( "{} Attempted to cast Ebon Might on {}, an enemy.", *p(), *t );
+      return;
+    }
+
+    buff_t* buff;
+
+    if ( t == p() )
+      buff = p()->buff.ebon_might_self_buff;
+    else
+    {
+      buff                                                = p()->get_target_data( t )->buffs.ebon_might;
+      debug_cast<stat_buff_t*>( buff )->stats[ 0 ].amount = ebon_int();
+      adjust_int( debug_cast<stat_buff_t*>( buff ) );
+    }
+
+    if ( ebon_time <= timespan_t::zero() || !buff->check() )
+    {
+      buff->trigger( ebon_time );
+    }
+    else
+    {
+      auto time = ebon_time;
+      if ( rng().roll( p()->cache.spell_crit_chance() ) )
+        time *= 1 + p()->talent.sands_of_time->effectN( 4 ).percent();
+      buff->extend_duration( p(), time );
+    }
+  }
+
   void execute() override
   {
     evoker_augment_t::execute();
-
-    if ( ebon_time <= timespan_t::zero() )
-      p()->buff.ebon_might_self_buff->trigger();
-    else
-      p()->buff.ebon_might_self_buff->extend_duration_or_trigger( ebon_time );
-
-    for ( auto ally : p()->allies_with_ebon )
-    {
-      auto ebon               = p()->get_target_data( ally )->buffs.ebon_might;
-      ebon->stats[ 0 ].amount = ebon_int();
-      adjust_int( ebon );
-
-      if ( ebon_time <= timespan_t::zero() )
-        ebon->trigger();
-      else
-        ebon->extend_duration_or_trigger( ebon_time );
-    }
   }
 
   void impact( action_state_t* s ) override
   {
     evoker_augment_t::impact( s );
 
-    if ( s->target != player )
-    {
-      auto ebon               = p()->get_target_data( s->target )->buffs.ebon_might;
-      ebon->stats[ 0 ].amount = ebon_int();
-      adjust_int( ebon );
-
-      if ( ebon_time <= timespan_t::zero() )
-        ebon->trigger();
-      else
-        ebon->extend_duration_or_trigger( ebon_time );
-    }
+    ebon_on_target( s->target );
   }
 
   int n_targets() const override
@@ -3938,6 +3943,9 @@ void evoker_t::extend_ebon( timespan_t extend )
 {
   if ( extend <= 0_s )
     return;
+
+  if ( rng().roll( cache.spell_crit_chance() ) )
+    extend *= 1 + talent.sands_of_time->effectN( 4 ).percent();
 
   if ( buff.ebon_might_self_buff->check() )
   {
