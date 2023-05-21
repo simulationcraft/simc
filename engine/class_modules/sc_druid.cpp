@@ -4792,7 +4792,7 @@ struct maul_t : public trigger_indomitable_guardian_t<trigger_ursocs_fury_t<trig
 
   bool ready() override
   {
-    return p()->talent.raze.ok() ? false : base_t::ready();
+    return ( !p()->is_ptr() && p()->talent.raze.ok() ) ? false : base_t::ready();
   }
 
   void impact( action_state_t* s ) override
