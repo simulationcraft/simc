@@ -7361,9 +7361,10 @@ double demon_hunter_t::resource_gain( resource_e resource_type, double amount, g
   return player_t::resource_gain( resource_type, amount, source, action );
 }
 
-double demon_hunter_t::resource_gain( resource_e resource_type, double amount, double delta, gain_t* source, action_t* action )
+double demon_hunter_t::resource_gain( resource_e resource_type, double amount, double delta_coeff, gain_t* source, action_t* action )
 {
-  double modified_amount = amount + static_cast<int>( rng().range( 0, 1 + delta ) - ( delta / 2.0 ) );
+  double modified_amount = static_cast<int>( amount +
+    rng().range( 0, 1 + ( amount * delta_coeff ) ) - ( ( amount * delta_coeff ) / 2.0 ) );
   return resource_gain( resource_type, modified_amount, source, action );
 }
 
