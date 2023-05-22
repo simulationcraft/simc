@@ -3821,6 +3821,7 @@ void anshuul_the_cosmic_wanderer( special_effect_t& effect )
     {
       base_dd_min = base_dd_max = e.trigger()->effectN( 1 ).average( e.item );
       base_execute_time = 0_ms; // Overriding execute time, this is handled by the main action. 
+      not_a_proc = true; // Due to cast time on the primary ability
     }
   };
 
