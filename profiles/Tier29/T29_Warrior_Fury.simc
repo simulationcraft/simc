@@ -25,10 +25,10 @@ temporary_enchant=main_hand:hissing_rune_3/off_hand:hissing_rune_3
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/berserker_stance,toggle=on
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/berserker_stance,toggle=on
 actions.precombat+=/avatar,if=!talent.titans_torment
 actions.precombat+=/recklessness,if=!talent.reckless_abandon
 
@@ -38,14 +38,19 @@ actions+=/charge,if=time<=0.5|movement.distance>5
 actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
+actions+=/use_item,name=algethar_puzzle_box,if=cooldown.recklessness.remains<3|(talent.anger_management&cooldown.avatar.remains<3)
+actions+=/use_item,name=vial_of_animated_blood,if=buff.avatar.up
+actions+=/use_item,name=irideus_fragment,if=buff.avatar.up
 actions+=/use_item,name=manic_grieftorch,if=buff.avatar.down
+actions+=/use_item,name=gladiators_badge,if=cooldown.recklessness.remains>10&(buff.recklessness.up|target.time_to_die<11|target.time_to_die>65)
+actions+=/use_items
 actions+=/ravager,if=cooldown.recklessness.remains<3|buff.recklessness.up
-actions+=/blood_fury
-actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down
+actions+=/berserking,if=buff.recklessness.up
+actions+=/blood_fury
 actions+=/fireblood
 actions+=/ancestral_call
-actions+=/avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|!talent.titans_torment&(buff.recklessness.up|target.time_to_die<20)
+actions+=/avatar,if=talent.titans_torment&buff.enrage.up&raid_event.adds.in>15|talent.berserkers_torment&buff.enrage.up&!buff.avatar.up&raid_event.adds.in>15|!talent.titans_torment&!talent.berserkers_torment&(buff.recklessness.up|target.time_to_die<20)
 actions+=/recklessness,if=!raid_event.adds.exists&(talent.annihilator&cooldown.avatar.remains<1|cooldown.avatar.remains>40|!talent.avatar|target.time_to_die<12)
 actions+=/recklessness,if=!raid_event.adds.exists&!talent.annihilator|target.time_to_die<12
 actions+=/spear_of_bastion,if=buff.enrage.up&(buff.recklessness.up|buff.avatar.up|target.time_to_die<20|active_enemies>1)&raid_event.adds.in>15
