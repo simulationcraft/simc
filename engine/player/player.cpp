@@ -7733,16 +7733,25 @@ void player_t::do_damage( action_state_t* incoming_state )
   // TODO: How to express action causing/not causing incoming callbacks?
   if ( incoming_state->action && incoming_state->action->callbacks )
   {
-    proc_types pt   = incoming_state->proc_type();
-    proc_types2 pt2 = incoming_state->execute_proc_type2();
-    // For incoming landed abilities, get the impact type for the proc.
-    // if ( pt2 == PROC2_LANDED )
-    //  pt2 = s -> impact_proc_type2();
+    proc_types pt = incoming_state->proc_type();
+    if ( pt != PROC1_INVALID )
+    {
+      // On damage/heal in. Proc flags are arranged as such that the "incoming"
+      // version of the primary proc flag is always follows the outgoing version.
+      proc_types pt_taken = static_cast<proc_types>( pt + 1 );
 
-    // On damage/heal in. Proc flags are arranged as such that the "incoming"
-    // version of the primary proc flag is always follows the outgoing version.
-    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
-      trigger_callbacks( static_cast<proc_types>( pt + 1 ), pt2, incoming_state->action, incoming_state );
+      // Because most procs in simc default to using PROC2_LANDED for most proc types,
+      // trigger the execute_proc_type2() here to ensure that those procs will work.
+      proc_types2 execute_pt2 = incoming_state->execute_proc_type2();
+      if ( execute_pt2 != PROC2_INVALID )
+        trigger_callbacks( pt_taken, execute_pt2, incoming_state->action, incoming_state );
+
+      // Additionally, trigger the impact_proc_type2() so that periodic effects and
+      // procs not using execute proc types will also work.
+      proc_types2 impact_pt2 = incoming_state->impact_proc_type2();
+      if ( impact_pt2 != PROC2_INVALID )
+        trigger_callbacks( pt_taken, impact_pt2, incoming_state->action, incoming_state );
+    }
   }
 
   // Check if target is dying
