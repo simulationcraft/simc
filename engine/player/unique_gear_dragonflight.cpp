@@ -5129,7 +5129,7 @@ void djaruun_pillar_of_the_elder_flame ( special_effect_t& effect )
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) { buff->trigger(); } );
 
-  effect.execute_action = create_proc_action<djaruun_of_the_elder_flame_t>( "djaruun_pillar_of_the_elder_flame", effect, siphon_damage );
+  effect.execute_action = create_proc_action<djaruun_of_the_elder_flame_t>( "elder_flame", effect, siphon_damage );
 }
 
 // Armor
