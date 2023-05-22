@@ -600,7 +600,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
   os.printf( "<td class=\"right\"%s>%.1f</td>\n", rowspan.c_str(), s.num_executes.pretty_mean() );
 
   // Execute interval
-  os.printf( "<td class=\"right\"%s>%.2fsec</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
+  os.printf( "<td class=\"right\"%s>%.2fs</td>\n", rowspan.c_str(), s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
@@ -2448,7 +2448,7 @@ void print_html_sample_sequence_table_entry( report::sc_html_stream& os,
     os.printf( "<td class=\"left\">Waiting</td>\n"
                "<td class=\"left\">&#160;</td>\n"
                "<td class=\"left\">&#160;</td>\n"
-               "<td class=\"left\">%.3f sec</td>\n",
+               "<td class=\"left\">%.3fs</td>\n",
                data.wait_time.total_seconds() );
   }
 
@@ -3358,9 +3358,9 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   if ( !constant_buffs )
     os.printf( "<td class=\"right\">%.1f</td>\n"
                "<td class=\"right\">%.1f</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
-               "<td class=\"right\">%.1fsec</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
+               "<td class=\"right\">%.1fs</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.2f%%</td>\n"
                "<td class=\"right\">%.1f&#160;(%.1f)</td>\n"
