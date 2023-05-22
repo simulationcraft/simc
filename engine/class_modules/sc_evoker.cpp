@@ -70,8 +70,6 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* prescience;
     stat_buff_t* ebon_might;
     buff_t* shifting_sands;
-
-    buff_t* stored_eon_damage;
   } buffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -2875,6 +2873,49 @@ struct breath_of_eons_t : public evoker_spell_t
 
 }  // end namespace spells
 
+// Namespace buffs post spells
+namespace buffs
+{
+struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
+{
+  action_t* eon_damage;
+  std::map<size_t, double> eon_stored;
+
+  temporal_wound_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
+    : evoker_buff_t<buff_t>( td, name, s )
+  {
+    eon_damage = p()->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", p() );
+  }
+
+  size_t player_id( player_t* p )
+  {
+    return p->actor_index;
+  }
+
+  player_t* player_from_id( size_t i )
+  {
+    return sim->actor_list[ i ];
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    auto stats = eon_damage->stats;
+    for ( auto& [ pid, damage ] : eon_stored )
+    {
+      auto pp           = player_from_id( pid );
+      eon_damage->stats = p()->get_stats( "eon_damage_" + pp->name_str, eon_damage );
+      sim->print_debug( "{} eon helper expiry, size {}, damage execution inc, executing on {}", *source, damage, *player );
+      eon_damage->execute_on_target( player, damage );
+    }
+    eon_damage->stats = stats;
+    eon_stored.clear();
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+} // end namespace buffs post spells
+
+
 // ==========================================================================
 // Evoker Character Definitions
 // ==========================================================================
@@ -2918,65 +2959,35 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
               double da = s->result_amount;
               if ( da > 0 )
               {
-                auto p = s->action->player->get_owner_or_self();
-                auto buff = evoker->get_target_data( p )->buffs.stored_eon_damage;
+                buffs::temporal_wound_buff_t* buff =
+                    debug_cast<buffs::temporal_wound_buff_t*>( evoker->get_target_data( s->target )->debuffs.temporal_wound );
 
-                if ( buff->up() )
+                if ( buff && buff->up() )
                 {
-                  buff->current_value += da;
-                }
-                else {
-                  buff->trigger( evoker->get_target_data( s->target )->debuffs.temporal_wound->remains() );
-                  buff->current_value = da;
+                  buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] += da;
                 }
               }
             } );
 
-        debuffs.temporal_wound = make_buff<e_buff_t>( *this, "temporal_wound", evoker->talent.temporal_wound )
-                                     ->set_stack_change_callback( [ temporal_wound_cb ]( buff_t*, int, int new_ ) {
-                                       if ( new_ )
-                                         temporal_wound_cb->activate();
-                                       else
-                                         temporal_wound_cb->deactivate();
-                                     } );
+        debuffs.temporal_wound =
+            make_buff<buffs::temporal_wound_buff_t>( *this, "temporal_wound", evoker->talent.temporal_wound )
+                ->set_stack_change_callback( [ temporal_wound_cb ]( buff_t*, int, int new_ ) {
+                  if ( new_ )
+                    temporal_wound_cb->activate();
+                  else
+                    temporal_wound_cb->deactivate();
+                } );
+
+        debuffs.temporal_wound->buff_period = timespan_t::zero();
       }
       else {
         if ( !target->is_pet() )
         {
-          action_t* eon_damage = evoker->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", evoker );
-          auto stats           = evoker->get_stats( "eon_damage_" + target->name_str, eon_damage );
-          stats->school        = eon_damage->get_school();
-
+          action_t* eon_damage =
+              evoker->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", evoker );
+          auto stats    = evoker->get_stats( "eon_damage_" + target->name_str, eon_damage );
+          stats->school = eon_damage->get_school();
           eon_damage->stats->add_child( stats );
-
-         
-          struct buff_stored_eon_damage_t : public buff_t
-          {
-            action_t* eon_damage;
-            stats_t* stats;
-
-            buff_stored_eon_damage_t( actor_pair_t q, util::string_view name, action_t* eon_damage, stats_t* stats )
-              : buff_t( q, name ), eon_damage( eon_damage ), stats( stats )
-            {
-            }
-
-            void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-            {
-              make_event( sim, [ this, da = current_value ] {
-                auto _stats       = eon_damage->stats;
-                eon_damage->stats = stats;
-                sim->print_debug( "{} eon helper expiry, size {}, damage execution inc", *player, da );
-                eon_damage->execute_on_target( player->target, da );
-                eon_damage->stats = _stats;
-              } );
-
-              buff_t::expire_override( expiration_stacks, remaining_duration );
-            }
-          };
-
-          buffs.stored_eon_damage = make_buff<buff_stored_eon_damage_t>( *this, "stored_eon_damage", eon_damage, stats )
-                                        ->set_duration( 0_ms )
-                                        ->set_quiet( true );
         }
       }
     }
