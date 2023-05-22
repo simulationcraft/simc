@@ -324,7 +324,7 @@ public:
     buff_t* arcane_overload;
     buff_t* bursting_energy;
 
-    buff_t* volatile_flame;
+    buff_t* calefaction;
     buff_t* flames_fury;
 
     buff_t* touch_of_ice;
@@ -1329,7 +1329,7 @@ struct mage_spell_t : public spell_t
     target_trigger_type_e hot_streak = TT_NONE;
     target_trigger_type_e kindling = TT_NONE;
 
-    target_trigger_type_e volatile_flame = TT_NONE;
+    target_trigger_type_e calefaction = TT_NONE;
   } triggers;
 
 public:
@@ -1582,8 +1582,8 @@ public:
     if ( p()->talents.fevered_incantation.ok() && s->result_type == result_amount_type::DMG_DIRECT )
       p()->trigger_merged_buff( p()->buffs.fevered_incantation, s->result == RESULT_CRIT );
 
-    if ( tt_applicable( s, triggers.volatile_flame ) )
-      trigger_volatile_flame( s->target );
+    if ( tt_applicable( s, triggers.calefaction ) )
+      trigger_calefaction( s->target );
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -1656,16 +1656,16 @@ public:
     }
   }
 
-  void trigger_volatile_flame( player_t* target )
+  void trigger_calefaction( player_t* target )
   {
     auto td = p()->find_target_data( target );
     if ( !td || !td->debuffs.charring_embers->check() )
       return;
 
-    p()->buffs.volatile_flame->trigger();
-    if ( p()->buffs.volatile_flame->at_max_stacks() )
+    p()->buffs.calefaction->trigger();
+    if ( p()->buffs.calefaction->at_max_stacks() )
     {
-      p()->buffs.volatile_flame->expire();
+      p()->buffs.calefaction->expire();
       // Trigger the buff outside of impact processing so that Phoenix Flames
       // doesn't benefit from the buff it just triggered.
       // TODO: refreshing Flame's Fury buff doesn't add stacks, only refreshes duration
@@ -3558,7 +3558,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
-    triggers.volatile_flame = TT_MAIN_TARGET;
+    triggers.calefaction = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
@@ -3888,7 +3888,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = true;
     triggers.chill = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
-    triggers.volatile_flame = TT_MAIN_TARGET;
+    triggers.calefaction = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
@@ -4006,8 +4006,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     }
 
     // TODO: As of 2023-03-19, Frostbolt currently triggers Volatile Flame twice.
-    if ( p()->bugs && tt_applicable( s, triggers.volatile_flame ) )
-      trigger_volatile_flame( s->target );
+    if ( p()->bugs && tt_applicable( s, triggers.calefaction ) )
+      trigger_calefaction( s->target );
   }
 
   void handle_procs()
@@ -4543,7 +4543,7 @@ struct fire_blast_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.calefaction = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = triggers.icy_propulsion = triggers.overflowing_energy = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
@@ -4898,7 +4898,7 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     // TODO: PF doesn't trigger normal RPPM effects, but somehow triggers the class trinket.
     // Enable callbacks for now until we find what exactly causes this.
     // callbacks = false;
-    triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.calefaction = TT_MAIN_TARGET;
     base_multiplier *= 1.0 + p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 1 ).percent();
     base_crit += p->talents.alexstraszas_fury->effectN( 3 ).percent();
     base_crit += p->sets->set( MAGE_FIRE, T29, B4 )->effectN( 3 ).percent();
@@ -4981,7 +4981,7 @@ struct pyroblast_t final : public hot_streak_spell_t
     hot_streak_spell_t( n, p, p->talents.pyroblast )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.kindling = triggers.volatile_flame = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.calefaction = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     base_execute_time *= 1.0 + p->talents.tempered_flames->effectN( 1 ).percent();
     base_crit += p->talents.tempered_flames->effectN( 2 ).percent();
@@ -5115,7 +5115,7 @@ struct scorch_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->talents.scorch )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.volatile_flame = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.calefaction = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
     // There is a tiny delay between Scorch dealing damage and Hot Streak
     // state being updated. Here we model it as a tiny travel time.
@@ -6561,7 +6561,7 @@ void mage_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_chance( sets->has_set_bonus( MAGE_ARCANE, T29, B4 ) );
 
-  buffs.volatile_flame = make_buff( this, "volatile_flame", find_spell( 408673 ) )
+  buffs.calefaction    = make_buff( this, "calefaction", find_spell( 408673 ) )
                            ->set_chance( sets->has_set_bonus( MAGE_FIRE, T30, B4 ) );
   buffs.flames_fury    = make_buff( this, "flames_fury", find_spell( 409964 ) )
                            ->set_default_value_from_effect( 1 );
