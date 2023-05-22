@@ -45,7 +45,7 @@ st->add_action( "starsurge,if=talent.convoke_the_spirits&cooldown.convoke_the_sp
 st->add_action( "convoke_the_spirits,if=variable.convoke_condition" );
 st->add_action( "astral_communion,if=astral_power.deficit>variable.passive_asp+55" );
 st->add_action( "force_of_nature,if=astral_power.deficit>variable.passive_asp+20" );
-st->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2" );
+st->add_action( "fury_of_elune,if=target.time_to_die>2&(buff.ca_inc.remains>3|cooldown.ca_inc.remains>30&buff.primordial_arcanic_pulsar.value<=280|buff.primordial_arcanic_pulsar.value>=560&astral_power>50)|fight_remains<10" );
 st->add_action( "starfall,if=buff.starweavers_warp.up" );
 st->add_action( "variable,name=starsurge_condition1,value=talent.starlord&buff.starlord.stack<3|talent.rattle_the_stars&buff.rattled_stars.up&buff.rattled_stars.remains<gcd.max" );
 st->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starsurge_condition1" );
@@ -79,7 +79,7 @@ aoe->add_action( "variable,name=enter_solar,value=spell_targets.starfire<3" );
 aoe->add_action( "starfire,if=variable.enter_solar&(eclipse.any_next|buff.eclipse_solar.remains<action.starfire.execute_time)" );
 aoe->add_action( "wrath,if=!variable.enter_solar&(eclipse.any_next|buff.eclipse_lunar.remains<action.wrath.execute_time)" );
 aoe->add_action( "wild_mushroom,if=astral_power.deficit>variable.passive_asp+20&(!talent.fungal_growth|!talent.waning_twilight|dot.fungal_growth.remains<2&target.time_to_die>7&!prev_gcd.1.wild_mushroom)" );
-aoe->add_action( "fury_of_elune,if=astral_power.deficit>variable.passive_asp+8&target.time_to_die>2" );
+aoe->add_action( "fury_of_elune,if=target.time_to_die>2&(buff.ca_inc.remains>3|cooldown.ca_inc.remains>30&buff.primordial_arcanic_pulsar.value<=280|buff.primordial_arcanic_pulsar.value>=560&astral_power>50)|fight_remains<10" );
 aoe->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+40&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)" );
 aoe->add_action( "variable,name=starfall_condition2,value=target.time_to_die>4&(buff.starweavers_warp.up|talent.starlord&buff.starlord.stack<3)" );
 aoe->add_action( "cancel_buff,name=starlord,if=buff.starlord.remains<2&variable.starfall_condition2" );
