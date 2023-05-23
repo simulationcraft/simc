@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-17/49570)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -369,7 +369,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=611)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 6.65000 | PvP Coefficient: 1.25000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.15 -> 1.25)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 Description      : Perform a miracle, healing an ally for $s1.$?s63733[
@@ -400,7 +399,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=612)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.80250 | PvP Coefficient: 1.57000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.43 -> 1.57)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -1248,7 +1246,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.32750 | PvP Coefficient: 1.10000 | Radius: 10 yards | Target: AOE friendly (31)
-Hotfixed         : PvP Coefficient (1 -> 1.1)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
 #3 (id=709475)   : Dummy (3)
@@ -3479,7 +3476,6 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
-Hotfixed         : Base Value (-14.5 -> -5)
 #15 (id=1040387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
@@ -3488,12 +3484,10 @@ Hotfixed         : Base Value (-14.5 -> -5)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (-6 -> -15)
 #17 (id=1074585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (1 -> 11)
 #18 (id=1079592)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585)
@@ -3506,7 +3500,6 @@ Hotfixed         : Base Value (1 -> 11)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
-Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -14287,7 +14280,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1027583)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (4 -> 226), Period (0 -> 2000)
 Description      : For every $390636t2 sec that you do not cast Holy Nova, the damage of your next Holy Nova is increased by $390636s1% and its healing is increased by $390636s3%. This effect can stack up to $390636u times.
 
 Name             : Death and Madness (id=390628) [Spell Family (6)] 
@@ -14353,7 +14345,6 @@ Effects          :
                    Family Flags: 49
 #2 (id=1027980)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (23 -> 226), Trigger Spell (390636 -> 0)
 #3 (id=1030043)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Holy Nova (281265)

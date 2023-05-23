@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-17/49570)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -154,7 +154,7 @@ Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=3, max_ra
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
-Resource         : 11% Base Mana (0) (id=95)[Hotfixed: Percent Cost (12 -> 11)]
+Resource         : 11% Base Mana (0) (id=95)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4375,7 +4375,6 @@ Effects          :
 Tooltip          : Heals $114919s2 and damages $114919s1 every $114919t1 seconds.
 
 Name             : Light's Hammer (id=114919) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin, Druid
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
@@ -7018,7 +7017,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Moonfire (164812), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254)
                    Family Flags: 77, 92
-Hotfixed         : NEW EFFECT
 Description      : Unleashes the rage of Ursoc for $d, preventing $s3% of all damage you take, increasing your damage done by $s5%, granting you $s3% leech, and reflecting $219432s1 Nature damage back at your attackers.
 Tooltip          : Prevents $s3% of all damage you take, increases damage done by $s5%, grants $s3% leech, and reflects $219432s1 Nature damage back at your attackers.
 
@@ -19666,12 +19664,10 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 0.50000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
-Hotfixed         : Base Value (-50 -> -100)
 #2 (id=1034020)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starsurge (197626)
                    Family Flags: 89
-Hotfixed         : Base Value (20 -> 25)
 Description      : $@spelldesc393633
 Tooltip          : Starsurge and Starfall cost ${-$s1/10}less Astral Power and deal $s2% increased damage.
 
