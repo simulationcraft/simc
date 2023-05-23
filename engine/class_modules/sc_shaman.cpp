@@ -535,7 +535,6 @@ public:
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
-    proc_t* munched_lotf;
     proc_t* reset_swing_mw;
   } proc;
 
@@ -9564,22 +9563,7 @@ void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* state,
   {
     lotfw_counter -= threshold;
     buff.legacy_of_the_frost_witch->trigger();
-    if ( state->action->harmful )
-    {
-      auto s = shaman_spell_t::cast_state( state );
-      if ( bugs && s->exec_type == execute_type::THORIMS_INVOCATION )
-      {
-        proc.munched_lotf->occur();
-      }
-      else
-      {
-        cooldown.strike->reset( false );
-      }
-    }
-    else
-    {
-      cooldown.strike->reset( false );
-    }
+    cooldown.strike->reset( false );
   }
 }
 
@@ -10372,8 +10356,6 @@ void shaman_t::init_procs()
   {
     proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
   }
-
-  proc.munched_lotf = get_proc( "Legacy of the Frost Witch: Bugged Trigger" );
 }
 
 // shaman_t::init_uptimes ====================================================
