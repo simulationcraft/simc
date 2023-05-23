@@ -1619,7 +1619,7 @@ namespace monk
         {
           double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
-          m *= 1 + p()->talent.windwalker.rising_star->effectN( 2 ).percent();
+          m *= 1 + p()->talent.windwalker.rising_star->effectN( p()->bugs ? 1 : 2 ).percent();
 
           return m;
         }
