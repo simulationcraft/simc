@@ -25,10 +25,10 @@ temporary_enchant=main_hand:howling_rune_3
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/battle_stance,toggle=on
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=algethar_puzzle_box
+actions.precombat+=/battle_stance,toggle=on
 
 # Executed every time the actor is available.
 actions=auto_attack
