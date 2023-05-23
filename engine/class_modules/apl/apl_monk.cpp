@@ -315,10 +315,7 @@ namespace monk_apl
     cooldowns_niuzao_woo->add_action( "invoke_external_buff,name=power_infusion,if=buff.weapons_of_order.remains<=20",
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_niuzao_woo->add_action( "weapons_of_order,if="
-                                      "(talent.weapons_of_order.enabled)&("
-                                      // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                      // "(!equipped.beacon_to_the_beyond))"
-                                      ")");
+                                      "(talent.weapons_of_order.enabled)");
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
@@ -334,10 +331,7 @@ namespace monk_apl
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
     cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if="
-                                               "(talent.weapons_of_order.enabled)&("
-                                               // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                               // "(!equipped.beacon_to_the_beyond))");
-                                               ")");
+                                               "(talent.weapons_of_order.enabled)");
     cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_improved_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
@@ -355,10 +349,7 @@ namespace monk_apl
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains" );
     cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if="
-                                               "(time-action.purifying_brew.last_used<=5)&("
-                                               // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                               // "(!equipped.beacon_to_the_beyond))");
-                                               ")");
+                                               "(time-action.purifying_brew.last_used<=5)");
     cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_improved_niuzao_cta->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
