@@ -1,10 +1,10 @@
 warlock="T30_Warlock_Affliction"
 level=70
 spec=affliction
-race=mechagnome
+race=human
 role=spell
 position=ranged_back
-talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQLAAAAAAASEtQkkIJSaJRAAJ
 
 head=grimhorns_of_the_sinister_savant,id=202533,bonus_id=8780,ilevel=447,gem_id=192985
 neck=magmoraxs_fourth_collar,id=204397,bonus_id=8782,ilevel=447,gem_id=192958/192958/192958
