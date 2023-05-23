@@ -9023,9 +9023,6 @@ namespace monk
     if ( td && td->debuff.fae_exposure->check() )
       multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
 
-    // if ( td && td->debuff.weapons_of_order->check() )
-    //   multiplier *= 1 + td->debuff.weapons_of_order->check_stack_value();
-
     return multiplier;
   }
 
