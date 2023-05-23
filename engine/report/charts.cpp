@@ -102,7 +102,7 @@ enum metric_e
   METRIC_DTPS,
   METRIC_TMI,
   METRIC_APM,
-  METRIC_VARIANCE,
+  METRIC_STDDEV,
   METRIC_MAX
 };
 
@@ -136,7 +136,7 @@ double apm_player_mean( const player_t* p )
   return 0;
 }
 
-double variance( const player_t* p )
+double stddev( const player_t* p )
 {
   return p->collected_data.dps.mean() > 0
     ? ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() * 100 )
@@ -202,14 +202,14 @@ metric_e populate_player_list( std::string_view type, const sim_t& sim,
     source_list = &sim.players_by_apm;
     m           = METRIC_APM;
   }
-  else if ( util::str_compare_ci( type, "variance" ) )
+  else if ( util::str_compare_ci( type, "stddev" ) )
   {
-    // Variance implies there is DPS output in the simulator
+    // Standard deviation implies there is DPS output in the simulator
     if ( sim.raid_dps.mean() > 0 )
     {
-      name        = "DPS Variance Percentage";
+      name        = "DPS Standard Deviation Percentage";
       source_list = &sim.players_by_variance;
-      m           = METRIC_VARIANCE;
+      m           = METRIC_STDDEV;
     }
   }
 
@@ -261,7 +261,7 @@ std::vector<double> get_data_summary( const player_collected_data_t& container,
       break;
     // APM is gonna have a mean only
     case METRIC_APM:
-    case METRIC_VARIANCE:
+    case METRIC_STDDEV:
     default:
       return data;
   }
@@ -313,7 +313,7 @@ double get_data_value( const player_collected_data_t& container,
       }
       return 0;
     }
-    case METRIC_VARIANCE:
+    case METRIC_STDDEV:
     {
       if ( val != VALUE_MEAN )
       {
@@ -398,8 +398,8 @@ struct player_list_comparator_t
       // APM has no full data collection, so sort always based on mean
       case METRIC_APM:
         return apm_player_mean( p1 ) > apm_player_mean( p2 );
-      case METRIC_VARIANCE:
-        return variance( p1 ) > variance( p2 );
+      case METRIC_STDDEV:
+        return stddev( p1 ) > stddev( p2 );
       default:
         return true;
     }
@@ -1089,11 +1089,9 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
   // Add a map of colors so we save some space in data
   add_color_data( bc, player_list );
 
-  // Figure out what decimal precision we show in the charts. Only variance uses
-  // a single digit at
-  // the moment
+  // Figure out what decimal precision we show in the charts. Only standard deviation uses a single digit at the moment
   size_t precision = 0;
-  if ( chart_metric == METRIC_VARIANCE )
+  if ( chart_metric == METRIC_STDDEV )
   {
     precision = 1;
   }
