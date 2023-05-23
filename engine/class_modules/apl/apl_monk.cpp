@@ -337,7 +337,7 @@ namespace monk_apl
                                                "(talent.weapons_of_order.enabled)&("
                                                // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
                                                // "(!equipped.beacon_to_the_beyond))");
-                                               ")";
+                                               ")");
     cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_improved_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
@@ -358,7 +358,7 @@ namespace monk_apl
                                                "(time-action.purifying_brew.last_used<=5)&("
                                                // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
                                                // "(!equipped.beacon_to_the_beyond))");
-                                               ")";
+                                               ")");
     cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_improved_niuzao_cta->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
