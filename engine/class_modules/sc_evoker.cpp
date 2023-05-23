@@ -1377,7 +1377,7 @@ public:
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
   }
 
-  ebon_might_t( evoker_t* p, timespan_t ebon ) : evoker_augment_t( "ebon_might", p, p->talent.ebon_might )
+  ebon_might_t( evoker_t* p, timespan_t ebon, std::string_view name ) : evoker_augment_t( name, p, p->talent.ebon_might )
   {
     // Add a target so you always hit yourself.
     aoe += 1;
@@ -1746,7 +1746,8 @@ struct deep_breath_t : public evoker_spell_t
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
     if ( p->specialization() == EVOKER_AUGMENTATION )
-      ebon = p->get_secondary_action<ebon_might_t>( "ebon_might", p->talent.sands_of_time->effectN( 3 ).time_value() );
+      ebon = p->get_secondary_action<ebon_might_t>( "ebon_might_deep_breath",
+                                                    p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
   }
 
   timespan_t execute_time() const override
@@ -2832,7 +2833,8 @@ struct breath_of_eons_t : public evoker_spell_t
     aoe = -1;
 
     if ( p->specialization() == EVOKER_AUGMENTATION )
-      ebon = p->get_secondary_action<ebon_might_t>( "ebon_might", p->talent.sands_of_time->effectN( 3 ).time_value() );
+      ebon = p->get_secondary_action<ebon_might_t>(
+          "ebon_might_eons", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_eons" );
 
     add_child( p->get_secondary_action<breath_of_eons_damage_t>( "breath_of_eons_damage", p ) );
   }
