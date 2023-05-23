@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 10.1.5.49595
-static const std::array<specialization_spell_entry_t, 373> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 10.1.5.49719
+static const std::array<specialization_spell_entry_t, 375> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -202,8 +202,10 @@ static const std::array<specialization_spell_entry_t, 373> __ptr_specialization_
   {  8,   62, 190427,      0, "Arcane Charge"                     , 0 },
   {  8,   62, 190740,      0, "Mastery: Savant"                   , 0 },
   {  8,   63,    133,      0, "Fireball"                          , 0 },
+  {  8,   63,   2120,      0, "Flamestrike"                       , 0 },
   {  8,   63,  12846,      0, "Mastery: Ignite"                   , 0 },
   {  8,   63,  44448,      0, "Pyroblast Clearcasting Driver"     , 0 },
+  {  8,   63,  86949,      0, "Cauterize"                         , 0 },
   {  8,   63, 137019,      0, "Fire Mage"                         , 0 },
   {  8,   63, 162699,      0, "Stat Negation Aura - Intellect DPS", 0 },
   {  8,   63, 195283,      0, "Hot Streak"                        , 0 },
