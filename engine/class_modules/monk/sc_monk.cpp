@@ -662,6 +662,11 @@ namespace monk
       double composite_target_multiplier( player_t *t ) const override
       {
         double tm = ab::composite_target_multiplier( t ) * get_debuff_effects_value( get_td( t ) );
+        auto td = find_td( t );
+
+        if ( td && td->debuff.weapons_of_order->check() )
+          tm *= 1 + td->debuff.weapons_of_order->check_stack_value();
+
         return tm;
       }
 
@@ -737,7 +742,7 @@ namespace monk
           s->target->debuffs.mystic_touch->trigger();
         }
       }
-   
+
     };
 
     struct monk_spell_t : public monk_action_t<spell_t>
@@ -1542,7 +1547,7 @@ namespace monk
       // T30 Shadowflame Nova =====================================================
       struct shadowflame_nova_t : public monk_melee_attack_t
       {
-        shadowflame_nova_t( monk_t *p ) : 
+        shadowflame_nova_t( monk_t *p ) :
             monk_melee_attack_t( "shadowflame_nova", p, p->passives.shadowflame_nova )
         {
           background = true;
@@ -1561,7 +1566,7 @@ namespace monk
             multiplier *= 1 + td->debuff.shadowflame_vulnerability->check_value();
 
           return multiplier;
-        }        
+        }
       };
 
       // Rising Sun Kick Damage Trigger ===========================================
@@ -4546,7 +4551,7 @@ namespace monk
           p()->buff.invokers_delight->trigger();
         }
       };
-      
+
       // Call to Arms Invoke Niuzao =============================================================
       struct niuzao_call_to_arms_summon_t final : monk_spell_t
       {
@@ -8277,7 +8282,7 @@ namespace monk
       if ( proc_action_override == nullptr )
       {
         // If we didn't define a custom action in initialization then
-        // search action list for the first trigger we have a valid action for 
+        // search action list for the first trigger we have a valid action for
         for ( auto e : effect_driver->effects() )
         {
           for ( auto t : action_list )
@@ -9018,8 +9023,8 @@ namespace monk
     if ( td && td->debuff.fae_exposure->check() )
       multiplier *= 1 + passives.fae_exposure_dmg->effectN( 1 ).percent();
 
-    if ( td && td->debuff.weapons_of_order->check() )
-      multiplier *= 1 + td->debuff.weapons_of_order->check_stack_value();
+    // if ( td && td->debuff.weapons_of_order->check() )
+    //   multiplier *= 1 + td->debuff.weapons_of_order->check_stack_value();
 
     return multiplier;
   }
