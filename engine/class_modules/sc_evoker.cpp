@@ -2944,12 +2944,36 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
   struct temporal_wound_cb_t : public dbc_proc_callback_t
   {
     evoker_t* source;
+    std::unique_ptr<dbc_proc_callback_t::trigger_fn_t> trig;
+
     temporal_wound_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
       : dbc_proc_callback_t( p, e ), source( source )
     {
       allow_pet_procs = true;
       deactivate();
       initialize();
+
+      trigger_type = trigger_fn_type::CONDITION;
+
+      const trigger_fn_t lambda = [ this ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+        if ( s->result_amount <= 0 )
+          return false;
+
+        if ( this->p() == s->action->player )
+        {
+          if ( this->p()->buff.ebon_might_self_buff->check() )
+            return true;
+          return false;
+        }
+
+        if ( this->p()->get_target_data( s->action->player )->buffs.ebon_might->check() )
+          return true;
+        return false;
+      };
+
+      trig = std::make_unique<dbc_proc_callback_t::trigger_fn_t>( lambda );
+      
+      trigger_fn = trig.get();
     }
 
     evoker_t* p()
