@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-17/49570)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4368,7 +4368,7 @@ Class            : Druid
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Duration         : 30 seconds
+Duration         : 15 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ......x. x.x..x.. ........   ........ ........ ........ ........   
@@ -4621,7 +4621,7 @@ Effects          :
                    Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254)
                    Family Flags: 11
 Description      : $@spelldesc135288
-Tooltip          : Your next $?S400254[Raze][Maul] deals $s1% more damage, costs $s3%~ less rage, and reduces the target's damage to you by $135601s1%~ for $135601d.
+Tooltip          : Your next cast of Maul or Raze deals $s1% more damage, costs $s3%~ less rage, and reduces the target's damage to you by $135601s1%~ for $135601d.
 
 Name             : Tooth and Claw (id=135288) [Spell Family (7), Passive] 
 Talent Entry     : Guardian [tree=spec, row=6, col=3, max_rank=1, req_points=8]
@@ -4646,9 +4646,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 135286 | Target: Self (1)
 #2 (id=870290)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 135286 | Target: Self (1)
-Description      : Autoattacks have a $s1% chance to empower your next $?S400254[Raze][Maul], stacking up to $135286u times.
+Description      : Autoattacks have a $s1% chance to empower your next cast of Maul or Raze, stacking up to $135286u times.
 
-Empowered $?S400254[Raze][Maul] deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d.
+An empowered cast of Maul or Raze deals $135286s1% increased damage, costs $135286s3% less rage, and reduces the target's damage to you by $135601s2% for $135601d.
 
 Name             : Tooth and Claw (id=135601) [Spell Family (7)] 
 Class            : Druid
@@ -6183,7 +6183,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Killer Instinct (108299 effects: #1, #2), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Rage of the Sleeper (200851 effect#5), Stellar Drift (202461 effect#1), Rend and Tear (204053 effects: #1, #2, #3), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effects: #3, #4), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Untamed Savagery (372943 effects: #3, #4), Wild Slashes (390864 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Overpowering Aura (395944 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3), Furious Regeneration (408504 effects: #2, #3)
+Affecting spells : Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Killer Instinct (108299 effects: #1, #2), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Rage of the Sleeper (200851 effect#5), Stellar Drift (202461 effect#1), Rend and Tear (204053 effects: #1, #2, #3), Elize's Everlasting Encasement (208342 effect#1), Luffa Wrappings (208681 effects: #3, #4), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Sharpened Claws (279943 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325733 effect#2), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Luffa-Infused Embrace (339060 effects: #1, #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Untamed Savagery (372943 effects: #3, #4), Wild Slashes (390864 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391889 effect#2), Circle of Life and Death (391969 effects: #1, #3), Flashing Claws (393427 effect#2), Overpowering Aura (395944 effects: #1, #3), Circle of Life and Death (400320 effects: #1, #3), Furious Regeneration (408504 effects: #2, #3)
 Family Flags     : 40, 77
 Attributes       : ....x... ........ .....x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ..x..... ......x. 
@@ -7716,7 +7716,7 @@ Effects          :
 #2 (id=1084210)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 21 | Scaled Value: 21 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons a beam of lunar light at your location, increasing your mastery by ${$s2*$mas}%, dealing ${$414613s1*8} Arcane damage and healing you for ${$204069s1*8} over $m1 sec.
-Tooltip          : Mastery increased by $w2%.
+Tooltip          : Mastery increased by ${$w2*$mas}%.
 
 Name             : Lunar Beam (id=204069) [Spell Family (7)] 
 Class            : Druid
@@ -15605,7 +15605,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=992751)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Mangle increases the damage of your next $?S400254[Raze][Maul], and $?S400254[Raze][Maul] increases the damage of your next Mangle by $s1%. Stacks up to $372015u.
+Description      : Mangle increases the damage of your next cast of Maul or Raze, and casting Maul or Raze increases the damage of your next Mangle by $s1%. Stacks up to $372015u.
 
 Name             : Vicious Cycle (id=372015) [Spell Family (7)] 
 Class            : Druid
@@ -15632,7 +15632,7 @@ Effects          :
                    Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254)
                    Family Flags: 11
 Description      : $@spelldesc371999
-Tooltip          : Your next $?S400254[Raze][Maul] deals $w1% increased damage.
+Tooltip          : Your next cast of Maul or Raze deals $w1% increased damage.
 
 Name             : Vicious Cycle (id=372019) [Spell Family (7)] 
 Class            : Druid
@@ -15814,7 +15814,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 7 | Trigger Spell: 6807 | Target: Self (1)
                    Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254)
                    Family Flags: 11
-Description      : $?S400254[Raze][Maul] has an additional $s1% chance to critically strike.
+Description      : Maul and Raze have an additional $s1% chance to critically strike.
 
 Name             : Untamed Savagery (id=372943) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Guardian [tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=1]
@@ -18301,7 +18301,7 @@ Description      : $@spelldesc393381
 Name             : Flashing Claws (id=393427) [Spell Family (7), Passive] 
 Talent Entry     : Guardian [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
-                 : Effect#2 [op=set, values=(-15, -30)]
+                 : Effect#2 [op=set, values=(1, 2)]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18309,15 +18309,21 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+                 : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1032370)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Thrash has a $s1% chance to trigger an additional Thrash.
+#2 (id=1085174)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Affected Spells: Thrash (192090)
+                   Family Flags: 40
+Description      : Thrash has a $s1% chance to trigger an additional Thrash.
+
+Thrash stacks $s2 additional $ltime:times;.
 
 Name             : Ursoc's Endurance (id=393611) [Spell Family (7), Passive] 
 Talent Entry     : Guardian [tree=spec, row=4, col=4, max_rank=1, req_points=0]
@@ -19944,7 +19950,7 @@ Effects          :
 Description      : $@spelldesc400222
 
 Name             : Raze (id=400254) [Spell Family (7)] 
-Talent Entry     : Guardian [tree=spec, row=10, col=2, max_rank=1, req_points=20, replace="Maul" (id=6807)]
+Talent Entry     : Guardian [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
