@@ -1016,6 +1016,7 @@ class SpellDataGenerator(DataGenerator):
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
          60235,                     # Darkmoon Card: Greatness proc
+         96977, 96978, 96979,       # Restabilizing Matrix buffs
          71556, 71558, 71559, 71560,# Deathbringer's Will procs
          71484, 71485, 71492,
          45428, 45429, 45430,       # Shattered Sun Pendant procs
