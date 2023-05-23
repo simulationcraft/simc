@@ -179,47 +179,17 @@ namespace monk_apl
       // trinket_name_slot_name -> trailing fragment
       // slot_names util/util.cpp @ slot_type_string: head, neck, shoulders, shirt, chest, waist, legs, feet, wrists, hands, finger1, finger2, trinket1, trinket2, back, main_hand, off_hand, tabard
 
-      // most will be identical regardless of slot
-      // specific trinkets that deprioritize in favor of opposing trinket need to be slot-aware to not clobber, esp if deprioritized trinket is high frequency
-
-      // these defaults currently just send on cd. could be improved closer to the old 10.0 conditions, but there would possibly be issues with non-trinket on-use items that get looked up from this map
-      // - fix: split on use items out of this map?
-
       // 10.0
       // { "manic_grieftorch", ",use_off_gcd=1,if=debuff.weapons_of_order_debuff.stacks>3|fight_remains<5" },
       // { "windscarred_whetstone", ",if=debuff.weapons_of_order_debuff.stacks>3|fight_remains<25" },
 
-      // 10.1
-      { "beacon_to_the_beyond_trinket1", ",if="
-        "(debuff.weapons_of_order_debuff.stack>3)|"                                                                                                                         // 1. if woo debuff is at 4 stacks
-        "(fight_remains<cooldown.weapons_of_order.remains-3)" },                                                                                                            // 2. if the fight will over before next woo + 3 seconds
-      { "beacon_to_the_beyond_trinket2", ",if="
-        "(debuff.weapons_of_order_debuff.stack>3)|"                                                                                                                         // 1. if woo debuff is at 4 stacks
-        "(fight_remains<cooldown.weapons_of_order.remains-3)" },                                                                                                            // 2. if the fight will over before next woo + 3 seconds
-      // TODO: replace 4 with fight remains is less than charges that exist + charges that will naturally recover by then + charges expected to recover via crits + something to prevent clobbering second on-use trinket
-      { "dragonfire_bomb_dispenser_trinket1", ",if=(trinket.2.cooldown.remains>10|!trinket.2.has_cooldown)&("                                                       // 1. If DFBD will not clobber Trinket 2 and
-        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|"                                   // 2. if going to cap charges soon and not in woo
-        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|"     // 3. if going to gain a new charge via crit effect soon and not in woo
-        "(debuff.weapons_of_order_debuff.up)|"                                                                                                                      // 4. if woo is up and it won't put other trinket on bad shared cd
-        "((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.2.ready_cooldown<fight_remains)*20<fight_remains)"                                  // 5. If you can't spend all current charges of Dragonfire Bomb Dispenser + other on-use trinket if it will be available before end of fight, start spending immediately.
-        ")" },
-      { "dragonfire_bomb_dispenser_trinket2", ",if=(trinket.1.cooldown.remains>10|!trinket.1.has_cooldown)&("                                                       // 1. If DFBD will not clobber Trinket 1 and
-        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&cooldown.dragonfire_bomb_dispenser.charges_fractional>2.8)|"                                   // 2. if going to cap charges soon and not in woo
-        "(!cooldown.weapons_of_order.ready&!buff.weapons_of_order.up&buff.skilled_restock.stack>55&cooldown.dragonfire_bomb_dispenser.charges_fractional>1.9)|"     // 3. if going to gain a new charge via crit effect soon and not in woo
-        "(debuff.weapons_of_order_debuff.up)|"                                                                                                                      // 4. if woo is up and it won't put other trinket on bad shared cd
-        "((cooldown.dragonfire_bomb_dispenser.charges_fractional+1)*10+(trinket.1.ready_cooldown<fight_remains)*20<fight_remains)"                                  // 5. If you can't spend all current charges of Dragonfire Bomb Dispenser + other on-use trinket if it will be available before end of fight, start spending immediately.
-        ")" },
-      { "djaruun_pillar_of_the_elder_flame_main_hand", ",if=debuff.weapons_of_order_debuff.stack>3" },
-
       // Defaults by slot:
-      { "trinket1", ",if=debuff.weapons_of_order_debuff.stack>3" },
-      { "trinket2", ",if=debuff.weapons_of_order_debuff.up" },
+      { "trinket1", "" },
+      { "trinket2", "" },
+      { "main_hand", "" },
     };
     const static std::unordered_map<std::string, std::string> racials {
       // name_str -> tail
-      { "lights_judgment", ",if="
-          "(talent.weapons_of_order.enabled&debuff.weapons_of_order_debuff.stack>3)|"
-          "(!talent.weapons_of_order.enabled)"},
       // Default:
       { "DEFAULT", "" },
     };
@@ -346,8 +316,8 @@ namespace monk_apl
       "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> when <a href='https://www.wowhead.com/spell=387184/weapons-of-order'>Weapons of Order</a> reaches 4 stacks." );
     cooldowns_niuzao_woo->add_action( "weapons_of_order,if="
                                       "(talent.weapons_of_order.enabled)&("
-                                      "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                      "(!equipped.beacon_to_the_beyond))"
+                                      // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
+                                      // "(!equipped.beacon_to_the_beyond))"
                                       ")");
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
@@ -364,9 +334,10 @@ namespace monk_apl
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,if=(time-action.purifying_brew.last_used>=20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used%variable.pb_in_window&time-action.invoke_niuzao_the_black_ox.last_used<=20+4*0.05)" );
     cooldowns_improved_niuzao_woo->add_action( "purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
     cooldowns_improved_niuzao_woo->add_action( "weapons_of_order,if="
-                                               "(talent.weapons_of_order.enabled)&"
-                                               "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                               "(!equipped.beacon_to_the_beyond))");
+                                               "(talent.weapons_of_order.enabled)&("
+                                               // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
+                                               // "(!equipped.beacon_to_the_beyond))");
+                                               ")";
     cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_improved_niuzao_woo->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_improved_niuzao_woo->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
@@ -384,9 +355,10 @@ namespace monk_apl
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,use_off_gcd=1,if=(variable.pb_in_window=0&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used<1&20+4*0.05-time+action.invoke_niuzao_the_black_ox.last_used>0)" );
     cooldowns_improved_niuzao_cta->add_action( "purifying_brew,if=cooldown.weapons_of_order.remains<=3.5&time-action.purifying_brew.last_used>=3.5+cooldown.weapons_of_order.remains" );
     cooldowns_improved_niuzao_cta->add_action( "weapons_of_order,if="
-                                               "(time-action.purifying_brew.last_used<=5)&"
-                                               "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
-                                               "(!equipped.beacon_to_the_beyond))");
+                                               "(time-action.purifying_brew.last_used<=5)&("
+                                               // "((equipped.beacon_to_the_beyond&trinket.beacon_to_the_beyond.cooldown.remains<30)|"
+                                               // "(!equipped.beacon_to_the_beyond))");
+                                               ")";
     cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&debuff.weapons_of_order_debuff.stack>3" );
     cooldowns_improved_niuzao_cta->add_action( "bonedust_brew,if=!buff.bonedust_brew.up&!buff.weapons_of_order.up&cooldown.weapons_of_order.remains>10" );
     cooldowns_improved_niuzao_cta->add_action( "exploding_keg,if=buff.bonedust_brew.up" );
@@ -559,7 +531,7 @@ namespace monk_apl
         { "djaruun_pillar_of_the_elder_flame", ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
         { "dragonfire_bomb_dispenser", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|fight_remains<10" },
         { "irideus_fragment", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.serenity.up|fight_remains<25" },
-        
+
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.serenity.up" },
         { "ITEM_DMG_BUFF", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&cooldown.serenity.remains&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)" },
@@ -577,7 +549,7 @@ namespace monk_apl
         { "djaruun_pillar_of_the_elder_flame", ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
         { "dragonfire_bomb_dispenser", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>10&(debuff.fae_exposure_damage.remains|!talent.faeline_harmony)|fight_remains<10" },
         { "irideus_fragment", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.storm_earth_and_fire.up|fight_remains<25" },
-        
+
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.storm_earth_and_fire.up" },
         { "ITEM_DMG_BUFF", ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30&(debuff.fae_exposure_damage.remains>5|!talent.faeline_harmony)" },
