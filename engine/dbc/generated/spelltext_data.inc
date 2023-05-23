@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49679
-static const std::array<spelltext_data_t, 19903> __spelltext_data { {
+static const std::array<spelltext_data_t, 19906> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2946,6 +2946,8 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   {  96967, "Your healing spells have a chance to instantly heal the most injured nearby party member for $96966s1.", 0, 0 },
   {  96976, "Your melee and ranged attacks have a chance to grant $96977s1 critical strike, haste, or mastery for 30 sec, whichever is currently highest.", 0, 0 },
   {  96977, "Haste increased by $s1 for $d.", "Haste increased by $w1.", 0 },
+  {  96978, "Critical Strike increased by $s1 for $d.", "Critical Strike increased by $w1.", 0 },
+  {  96979, "Mastery increased by $s1 for $d.", "Mastery increased by $w1.", 0 },
   {  96980, "Grants $s1 critical strike for $d.", "Grants $s1 critical strike.", 0 },
   {  96981, "Grants $96980s1 critical strike for $96980d each time you deal a melee critical strike, stacking up to $96980u times.", 0, 0 },
   {  96988, "Absorbs 20% of incoming damage, up to $s1.  After the effect ends, you take 8% of the damage absorbed every $96993t sec for $96993d.  Lasts $d.", "Absorbs 20% of incoming damage, up to $s1, 40% converted into periodic damage over $96993d.", 0 },
@@ -19865,6 +19867,7 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 410790, "$@spelldesc279302", "Movement speed slowed by $s2%.", 0 },
   { 410871, "$@spelldesc405558\r\n", "The damage of conjured Shadowy Apparitions is increased by $s1%.", 0 },
   { 410879, "$@spelldesc405502", "Taking ${$w1/2}% additional critical strike damage from $@auracaster.", 0 },
+  { 410944, "Some of the ancient blue dragon's wisdom, passed down to you in a form he surely found amusing. Hold a yes-or-no question in your heart and call upon it.", 0, 0 },
   { 411013, "Add the Entangling affix to a Mythic Keystone.", 0, 0 },
   { 411014, "Add the Afflicted affix to a Mythic Keystone.", 0, 0 },
   { 411015, "Add the Incorporeal affix to a Mythic Keystone.", 0, 0 },
