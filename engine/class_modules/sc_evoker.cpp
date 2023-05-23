@@ -2905,6 +2905,48 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
   std::map<size_t, double> eon_stored;
   dbc_proc_callback_t* cb;
 
+  struct temporal_wound_cb_t : public dbc_proc_callback_t
+  {
+    evoker_t* source;
+    temporal_wound_cb_t( player_t* p, const special_effect_t& e, evoker_t* source )
+      : dbc_proc_callback_t( p, e ), source( source )
+    {
+      allow_pet_procs = true;
+      deactivate();
+      initialize();
+    }
+
+    evoker_t* p()
+    {
+      return source;
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( s->target->is_sleeping() )
+        return;
+
+      double da = s->result_amount;
+      p()->sim->print_debug( "{} triggers {}s temporal wound on {} with {} dealing {}",
+                             *s->action->player->get_owner_or_self(), *p(), *s->target, *a, da );
+      if ( da > 0 )
+      {
+        buffs::temporal_wound_buff_t* buff =
+            debug_cast<buffs::temporal_wound_buff_t*>( p()->get_target_data( s->target )->debuffs.temporal_wound );
+
+        if ( buff && buff->up() )
+        {
+          buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] += da;
+          p()->sim->print_debug(
+              "{} triggers {}s temporal wound on {} with {} dealing {} increasing stored damage to {} from {}",
+              *s->action->player->get_owner_or_self(), *p(), *s->target, *a, da,
+              buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ],
+              buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] - da );
+        }
+      }
+    }
+  };
+
   temporal_wound_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s )
     : evoker_buff_t<buff_t>( td, name, s )
   {
@@ -2912,38 +2954,12 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     eon_damage  = p()->get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", p() );
 
     auto temporal_wound_effect      = new special_effect_t( p() );
-    temporal_wound_effect->name_str = "temporal_wound";
+    temporal_wound_effect->name_str = "temporal_wound_" + p()->name_str;
     temporal_wound_effect->type     = SPECIAL_EFFECT_EQUIP;
     temporal_wound_effect->spell_id = p()->talent.temporal_wound->id();
     player->special_effects.push_back( temporal_wound_effect );
 
-    cb = new dbc_proc_callback_t( player, *temporal_wound_effect );
-    // Fate mirror can proc from pets
-    cb->allow_pet_procs = true;
-    cb->deactivate();
-    cb->initialize();
-
-    player->callbacks.register_callback_execute_function(
-        cb->effect.driver()->id(), [ this ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
-          double da = s->result_amount;
-          p()->sim->print_debug( "{} triggers {}s temporal wound on {} with {} dealing {}",
-                                 *s->action->player->get_owner_or_self(), *p(), *s->target, *a, da );
-          if ( da > 0 )
-          {
-            buffs::temporal_wound_buff_t* buff =
-                debug_cast<buffs::temporal_wound_buff_t*>( p()->get_target_data( s->target )->debuffs.temporal_wound );
-
-            if ( buff && buff->up() )
-            {
-              buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] += da;
-              p()->sim->print_debug(
-                  "{} triggers {}s temporal wound on {} with {} dealing {} increasing stored damage to {} from {}",
-                  *s->action->player->get_owner_or_self(), *p(), *s->target, *a, da,
-                  buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ],
-                  buff->eon_stored[ buff->player_id( s->action->player->get_owner_or_self() ) ] - da );
-            }
-          }
-        } );
+    cb = new temporal_wound_cb_t( player, *temporal_wound_effect, p() );
   }
 
   size_t player_id( player_t* p )
