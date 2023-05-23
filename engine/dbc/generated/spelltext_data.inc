@@ -1,4 +1,4 @@
-// Spell text, wow build 10.1.0.49570
+// Spell text, wow build 10.1.0.49679
 static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -19316,7 +19316,7 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 403010, "Crusader Strike and Judgment hit an additional $s4 targets but deal $s3% reduced damage to secondary targets.", 0, 0 },
   { 403012, "$@spelldesc396918  If you spend at least 10 seconds eating you will become well fed and gain $396092s1 $pri for $382145d.", 0, 0 },
   { 403026, "Your damage over time effects deal $s1% more damage.", 0, 0 },
-  { 403042, "Increases the range of your $?s53595[Hammer of the Righteous][Crusader Strike], Rebuke and auto-attacks by $s2 yds. Using $?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] heals you for $403044s1% of your maximum health.", 0, 0 },
+  { 403042, "Increases the range of your $?s53595[Hammer of the Righteous and ]?s204019[][Crusader Strike, ]Rebuke $?!c2[and auto-attacks ][]by $s2 yds. Using $?s53595[Hammer of the Righteous]?s204019[Blessed Hammer][Crusader Strike] heals you for $403044s1% of your maximum health.", 0, 0 },
   { 403044, "$@spelldesc403042", 0, 0 },
   { 403071, "$@spelldesc401678", "Speed increased by $w1.", 0 },
   { 403081, "@spelldesc$383314", 0, 0 },
@@ -19905,12 +19905,11 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 415571, "$@spelldesc355313", "Absorbing $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49570
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
-  {  411661,  1, "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Stampede or Coordinated Attack][]$?a137016[Casting Stampede][]$?a137015[Summoning your Dire Beast or casting Stampede][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d.", "$?a137040[Summoning your Fire or Storm Elemental][]$?a137041[Summoning your Feral Spirit][]$?a137039[Summoning your Healing Tide, Mana Tide, or Spirit Link Totem][]$?a137022[Invoking your Celestial][]$?a137046[Summoning your Infernal][]$?a137044[Summoning your Demonic Tyrant][]$?a137043[Summoning your Darkglare][]$?a137017[Casting Coordinated Assault][]$?a137016[Casting Trueshot][]$?a137015[Casting Bestial Wrath][]$?a137047|a137034|a137030|a137026|a137018|a353167|a137009|a212611|a137005[This trinket's effect is class restricted to Warlock, Hunter, Monk, and Shaman.][] grants you $403368w1 $pri per stack and reduces your movement speed by $403368w2% for $403380d." },
+// spelltext hotfix entries, wow build 10.1.0.49679
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.0.49570
+// Spell description variables, wow build 10.1.0.49679
 static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -20293,7 +20292,7 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49570
+// spelldesc_vars hotfix entries, wow build 10.1.0.49679
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
