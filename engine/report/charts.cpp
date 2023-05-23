@@ -139,7 +139,7 @@ double apm_player_mean( const player_t* p )
 double variance( const player_t* p )
 {
   return p->collected_data.dps.mean() > 0
-    ? ( p->collected_data.dps.mean_variance / p->collected_data.dps.pretty_mean() * 100 )
+    ? ( p->collected_data.dps.std_dev / p->collected_data.dps.pretty_mean() * 100 )
     : 0;
 }
 
@@ -322,7 +322,7 @@ double get_data_value( const player_collected_data_t& container,
 
       if ( container.dps.mean() > 0 )
       {
-        return ( container.dps.mean_variance / container.dps.pretty_mean() * 100 );
+        return ( container.dps.std_dev / container.dps.pretty_mean() * 100 );
       }
 
       return 0;
