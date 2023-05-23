@@ -2966,7 +2966,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
           return false;
         }
 
-        if ( this->p()->get_target_data( s->action->player )->buffs.ebon_might->check() )
+        if ( this->p()->get_target_data( s->action->player->get_owner_or_self() )->buffs.ebon_might->check() )
           return true;
         return false;
       };
