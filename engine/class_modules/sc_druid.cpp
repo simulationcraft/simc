@@ -12902,6 +12902,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( sets->set( DRUID_FERAL, T29, B2 ) );
 
   // Guardian
+  action.apply_affecting_aura( talent.flashing_claws );
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
   action.apply_affecting_aura( talent.reinvigoration );
