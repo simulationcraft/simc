@@ -2899,6 +2899,42 @@ struct breath_of_eons_t : public evoker_spell_t
 // Namespace buffs post spells
 namespace buffs
 {
+
+struct fate_mirror_cb_t : public dbc_proc_callback_t
+{
+  evoker_t* source;
+  action_t* fate_mirror;
+  stats_t* stats;
+
+  fate_mirror_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* fate_mirror, stats_t* stats )
+    : dbc_proc_callback_t( p, e ), source( source ), fate_mirror( fate_mirror ), stats( stats )
+  {
+    allow_pet_procs = true;
+    deactivate();
+    initialize();
+  }
+
+  evoker_t* p()
+  {
+    return source;
+  }
+
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    if ( s->target->is_sleeping() )
+      return;
+
+    double da = s->result_amount;
+    if ( da > 0 )
+    {
+      auto _stats        = fate_mirror->stats;
+      fate_mirror->stats = stats;
+      fate_mirror->execute_on_target( s->target, da );
+      fate_mirror->stats = _stats;
+    }
+  }
+};
+
 struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 {
   action_t* eon_damage;
@@ -3090,31 +3126,12 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       fate_mirror->stats->add_child( stats );
 
       auto fate_mirror_effect      = new special_effect_t( target );
-      fate_mirror_effect->name_str = "fate_mirror";
+      fate_mirror_effect->name_str = "fate_mirror_" + evoker->name_str;
       fate_mirror_effect->type     = SPECIAL_EFFECT_EQUIP;
       fate_mirror_effect->spell_id = evoker->talent.prescience_buff->id();
       target->special_effects.push_back( fate_mirror_effect );
 
-      auto fate_mirror_cb = new dbc_proc_callback_t( target, *fate_mirror_effect );
-      // Fate mirror can proc from pets
-      fate_mirror_cb->allow_pet_procs = true;
-      fate_mirror_cb->deactivate();
-      fate_mirror_cb->initialize();
-
-      target->callbacks.register_callback_execute_function(
-          fate_mirror_cb->effect.driver()->id(),
-          [ fate_mirror, target, stats ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
-            double da = s->result_amount;
-            if ( da > 0 )
-            {
-              make_event( target->sim, [ t = s->target, fate_mirror, da, stats ] {
-                auto _stats        = fate_mirror->stats;
-                fate_mirror->stats = stats;
-                fate_mirror->execute_on_target( t, da );
-                fate_mirror->stats = _stats;
-              } );
-            }
-          } );
+      auto fate_mirror_cb = new buffs::fate_mirror_cb_t( target, *fate_mirror_effect, evoker, fate_mirror, stats );
 
       buffs.prescience->set_stack_change_callback( [ fate_mirror_cb ]( buff_t*, int, int new_ ) {
         if ( new_ )
