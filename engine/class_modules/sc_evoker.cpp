@@ -116,6 +116,7 @@ struct evoker_t : public player_t
   timespan_t precombat_travel = 0_s;
 
   vector_with_callback<player_t*> allies_with_ebon;
+  std::vector<buff_t*> allied_ebons_on_me;
 
   // Options
   struct options_t
@@ -1389,8 +1390,6 @@ public:
     ebon_time = ebon;
   }
 
-  
-
   action_state_t* new_state() override
   {
     return new state_t( this, target );
@@ -1414,13 +1413,35 @@ public:
 
   double ebon_int()
   {
-    return p()->cache.intellect() * ebon_value;
+    if ( p()->allied_ebons_on_me.empty() )
+      return p()->cache.intellect() * ebon_value;
+
+    double ignore_int = 0;
+
+    for ( auto b : p()->allied_ebons_on_me )
+    {
+      ignore_int += debug_cast<stat_buff_t*>( b )->stats[ 0 ].amount;
+    }
+
+    return ( p()->cache.intellect() - ignore_int ) * ebon_value;
   }
 
   static double ebon_int( evoker_t* p )
   {
-    return p->cache.intellect() * ( p->talent.ebon_might->effectN( 1 ).percent() +
-                                    p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
+    auto ebon_value = ( p->talent.ebon_might->effectN( 1 ).percent() +
+                        p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
+
+    if ( p->allied_ebons_on_me.empty() )
+      return p->cache.intellect() * ebon_value;
+
+    double ignore_int = 0;
+
+    for ( auto b : p->allied_ebons_on_me )
+    {
+      ignore_int += debug_cast<stat_buff_t*>( b )->stats[ 0 ].amount;
+    }
+
+    return ( p->cache.intellect() - ignore_int ) * ebon_value;
   }
 
   static void adjust_int( stat_buff_t* b )
@@ -2692,14 +2713,14 @@ public:
     crit_bonus = 0.0;
     base_dd_multiplier           = e->talent.temporal_wound->effectN( 1 ).percent();
 
-    if ( p != e )
+    /* if ( p != e )
     {
       auto& vec = p->stats_list;
 
       vec.erase( std::remove( vec.begin(), vec.end(), stats ), vec.end() );
       delete stats;
       stats = e->get_stats( name_str, this );
-    }
+    }*/
   }
 
   double composite_da_multiplier( const action_state_t* ) const override
@@ -3017,14 +3038,23 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
     buffs.ebon_might->set_cooldown( 0_ms )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-        ->set_stack_change_callback( [ target, evoker ]( buff_t*, int, int new_ ) {
+        ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
       if ( new_ )
       {
         evoker->allies_with_ebon.push_back( target );
+        if ( auto e = dynamic_cast<evoker_t*>( target ) )
+        {
+          e->allied_ebons_on_me.push_back( b );
+        }
       }
       else
       {
         evoker->allies_with_ebon.find_and_erase( target );
+        if ( auto e = dynamic_cast<evoker_t*>( target ) )
+        {
+          auto vec = e->allied_ebons_on_me;
+          vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
+        }
       }
     } );
 
@@ -3096,7 +3126,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     proc(),
     rppm(),
     uptime(),
-    allies_with_ebon()
+    allies_with_ebon(),
+    allied_ebons_on_me()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
@@ -4040,9 +4071,10 @@ void evoker_t::extend_ebon( timespan_t extend )
       dur = std::min( 20_s - dur, extend );
       if ( dur > 0_s )
       {
-        if ( ebon->stats[ 0 ].amount != spells::ebon_might_t::ebon_int( this ) )
+        auto ebon_int = spells::ebon_might_t::ebon_int( this );
+        if ( ebon->stats[ 0 ].amount != ebon_int )
         {
-          ebon->stats[ 0 ].amount = spells::ebon_might_t::ebon_int( this );
+          ebon->stats[ 0 ].amount = ebon_int;
           spells::ebon_might_t::adjust_int( ebon );
         }
         ebon->extend_duration( this, dur );
