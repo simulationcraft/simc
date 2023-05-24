@@ -111,10 +111,10 @@ void protection( player_t* p )
   
   cooldowns->add_action( "avengers_shield,if=time=0&set_bonus.tier29_2pc", "Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped." );
   cooldowns->add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up" );
-  cooldowns->add_action( "avenging_wrath,if=raid_event.adds.in>=10|spell_targets.shield_of_the_righteous>=3" );
+  cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );
-  cooldowns->add_action( "divine_toll,if=spell_targets.shield_of_the_righteous>=3|raid_event.adds.in>=10|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
+  cooldowns->add_action( "divine_toll,if=spell_targets.shield_of_the_righteous>=3|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
   cooldowns->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&(raid_event.adds.in>=10|spell_targets.shield_of_the_righteous>=3)" );
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
 
