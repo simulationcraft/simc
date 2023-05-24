@@ -3295,7 +3295,7 @@ void item::sorrowsong( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ effect ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         return s->target->health_percentage() <= effect.driver()->effectN( 1 ).base_value();
       } );
 }
