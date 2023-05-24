@@ -1997,19 +1997,6 @@ public:
         this->p()->main_hand_attack->schedule_execute();
         this->p()->proc.reset_swing_mw->occur();
       }
-
-      if ( this->p()->off_hand_attack && this->p()->off_hand_attack->execute_event &&
-           ( this->p()->bugs || !this->background ) )
-      {
-        if ( this->sim->debug )
-        {
-          this->sim->out_debug.print( "{} resetting {} due to MW spell cast of {}",
-                                     this->p()->name(), this->p()->off_hand_attack->name(),
-                                     this->name() );
-        }
-        event_t::cancel( this->p()->off_hand_attack->execute_event );
-        this->p()->off_hand_attack->schedule_execute();
-      }
     }
 
     // for benefit tracking purpose
@@ -9547,7 +9534,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* state,
+void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* /* state */,
                                                   unsigned consumed_stacks )
 {
   if ( !talent.legacy_of_the_frost_witch.ok() )
