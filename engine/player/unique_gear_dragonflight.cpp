@@ -50,6 +50,30 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
           crit->expire();
       } );
 
+    struct overwhelming_rage_self_t : public generic_proc_t
+    {
+      double hp_pct;
+
+      overwhelming_rage_self_t( const special_effect_t& e )
+        : generic_proc_t( e, "overwhelming_rage", e.player->find_spell( 374037 ) ),
+          hp_pct( spell_data_t::find_spelleffect( data(), E_APPLY_AURA, A_PERIODIC_DAMAGE_PERCENT ).percent() )
+      {
+        stats->type = stats_e::STATS_NEUTRAL;
+        target = e.player;
+      }
+
+      // logs show this can trigger helpful periodic proc flags
+      result_amount_type amount_type( const action_state_t*, bool ) const override
+      {
+        return result_amount_type::HEAL_OVER_TIME;
+      }
+
+      double base_ta( const action_state_t* s ) const override
+      {
+        return s->target->max_health() * hp_pct;
+      }
+    };
+
     auto debuff = make_buff( effect.player, "overwhelming_rage", effect.player->find_spell( 374037 ) )
       ->set_stack_change_callback( [ buff, crit ]( buff_t*, int, int new_ ) {
         if ( !new_ && buff->check() )

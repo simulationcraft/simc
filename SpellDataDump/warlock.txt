@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49741 Live (hotfix 2023-05-24/49741)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -14644,7 +14644,6 @@ Effects          :
 Description      : Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by $s1%.
 
 Name             : Dread Calling (id=387392) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowstrike
 Spell Type       : None
@@ -15288,7 +15287,6 @@ Effects          :
 Description      : While your Felguard is active, your Wild Imps and Dreadstalkers deal $s1% additional damage.
 
 Name             : Infernal Command (id=387552) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None

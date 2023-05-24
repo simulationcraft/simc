@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49741 Live (hotfix 2023-05-24/49741)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue

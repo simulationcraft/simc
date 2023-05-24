@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49741 Live (hotfix 2023-05-24/49741)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -10431,7 +10431,6 @@ Effects          :
 Description      : Touch of Death reduces delayed Stagger damage by $s1% of damage dealt.
 
 Name             : Exploding Keg (id=325153) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Talent Entry     : Brewmaster [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Monk
 School           : Fire
@@ -16183,7 +16182,6 @@ Effects          :
 Description      : Tiger Palm damage increased by $s1%.
 
 Name             : Exploding Keg (id=388867) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Fire
 Spell Type       : Magic
@@ -17477,7 +17475,6 @@ Effects          :
 Description      : Fists of Fury now instead enhances your next $s1 Rising Sun Kicks or Spinning Crane Kicks and enhanced kicks increase the damage of your next Fists of Fury by $394949s1%, stacking up to 3 times.
 
 Name             : Chi Surge (id=393786) [Spell Family (53)] 
-Hotfixed         : Affecting Spells
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
