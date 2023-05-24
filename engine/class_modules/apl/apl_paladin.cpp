@@ -114,8 +114,8 @@ void protection( player_t* p )
   cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );
-  cooldowns->add_action( "divine_toll,if=spell_targets.shield_of_the_righteous>=3|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
-  cooldowns->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&(raid_event.adds.in>=10|spell_targets.shield_of_the_righteous>=3)" );
+  cooldowns->add_action( "divine_toll,if=spell_targets.shield_of_the_righteous>=3" );
+  cooldowns->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&spell_targets.shield_of_the_righteous>=3" );
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
 
   trinkets->add_action( "use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
@@ -127,6 +127,7 @@ void protection( player_t* p )
   standard->add_action( "avengers_shield,if=buff.moment_of_glory.up|(set_bonus.tier29_2pc&(!buff.ally_of_the_light.up|buff.ally_of_the_light.remains<gcd))", "Use Avenger's Shield as First Priority when 2pc buff is missing." );
   standard->add_action( "hammer_of_wrath,if=buff.avenging_wrath.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
+  standard->add_action( "divine_toll,if=(time>20&(!raid_event.adds.exists|raid_event.adds.in>10))|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
   standard->add_action( "avengers_shield" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
