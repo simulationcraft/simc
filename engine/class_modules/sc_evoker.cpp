@@ -172,6 +172,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> feed_the_flames_stacking;
     propagate_const<buff_t*> feed_the_flames_pyre;
     propagate_const<buff_t*> ebon_might_self_buff;
+    propagate_const<buff_t*> momentum_shift;
 
     // Legendary
     propagate_const<buff_t*> unbound_surge;
@@ -787,6 +788,10 @@ struct essence_base_t : public BASE
 
     if ( BASE::p()->buff.essence_burst->up() )
     {
+      if ( BASE::p()->talent.momentum_shift.ok() )
+      {
+        BASE::p()->buff.momentum_shift->trigger();
+      }
       if ( !BASE::rng().roll( hoarded_pct ) )
         BASE::p()->buff.essence_burst->decrement();
     }
@@ -3681,15 +3686,14 @@ void evoker_t::create_buffs()
       buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 369299 ) )
                                ->apply_affecting_aura( talent.essence_attunement );
       break;
-    case EVOKER_DEVASTATION:
-      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 359618 ) )
-                               ->apply_affecting_aura( talent.essence_attunement );
-      break;
     case EVOKER_AUGMENTATION:
       buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 392268 ) )
                                ->apply_affecting_aura( talent.essence_attunement );
       break;
+    case EVOKER_DEVASTATION:
     default:
+      buff.essence_burst = make_buff<e_buff_t>( this, "essence_burst", find_spell( 359618 ) )
+                               ->apply_affecting_aura( talent.essence_attunement );
       break;
   }
 
@@ -3801,6 +3805,10 @@ void evoker_t::create_buffs()
   buff.ebon_might_self_buff = make_buff<e_buff_t>( this, "ebon_might_self", talent.ebon_might_self_buff )
                                   ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buff.ebon_might_self_buff->buff_period = timespan_t::zero();
+
+  buff.momentum_shift = make_buff<e_buff_t>( this, "momentum_shift", find_spell( 408005 ) )
+                            ->set_default_value_from_effect( 1 )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT );
 }
 
 void evoker_t::create_options()
