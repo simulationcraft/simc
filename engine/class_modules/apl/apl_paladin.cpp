@@ -87,7 +87,6 @@ void protection( player_t* p )
   action_priority_list_t* default_  = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
-  action_priority_list_t* aoe_cooldowns = p->get_action_priority_list( "aoe_cooldowns" );
   action_priority_list_t* trinkets  = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* standard  = p->get_action_priority_list( "standard" );
 
