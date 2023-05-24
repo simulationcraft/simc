@@ -318,7 +318,8 @@ void frost( player_t* p )
   single_target->add_action( "remorseless_winter,if=variable.rw_buffs|variable.adds_remain", "Single Target Rotation" );
   single_target->add_action( "frost_strike,if=buff.killing_machine.stack<2&runic_power.deficit<20&!variable.2h_check" );
   single_target->add_action( "frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority" );
-  single_target->add_action( "obliterate,if=buff.killing_machine.react" );
+  single_target->add_action( "obliterate,if=set_bonus.tier30_4pc&(talent.fatal_fixation&buff.killing_machine.stack>1&buff.killing_machine.react)|(!talent.fatal_fixation&buff.killing_machine.react)" );
+  single_target->add_action( "obliterate,if=!set_bonus.tier30_4pc&buff.killing_machine.react" );
   single_target->add_action( "howling_blast,if=buff.rime.react&talent.icebreaker.rank=2" );
   single_target->add_action( "horn_of_winter,if=rune<4&runic_power.deficit>25&talent.obliteration&talent.breath_of_sindragosa" );
   single_target->add_action( "frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25|debuff.razorice.stack=5&talent.shattering_blade)" );

@@ -2053,25 +2053,29 @@ void priest_t::init_base_stats()
 
 void priest_t::init_resources( bool force )
 {
+  // TODO: Use spelldata to make this less brittle when they tweak Insanity
   if ( specialization() == PRIEST_SHADOW && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 )
   {
     if ( talents.shadow.shadow_crash.enabled() )
     {
-      // Two Crash + 1 Halo / 2 Dstar
-      if ( talents.halo.enabled() || talents.divine_star.enabled() )
+      // Two Shadow Crash + Two Divine Star
+      if ( talents.divine_star.enabled() )
         resources.initial_opt[ RESOURCE_INSANITY ] = 24;
+      // Two Shadow Crash + One Halo
+      else if ( talents.halo.enabled() )
+        resources.initial_opt[ RESOURCE_INSANITY ] = 22;
       else
-        // Two Crash
+        // Two Shadow Crash
         resources.initial_opt[ RESOURCE_INSANITY ] = 12;
     }
     else
     {
+      // Three Divine Stars
       if ( talents.divine_star.enabled() )
-        // Three Divine Stars
         resources.initial_opt[ RESOURCE_INSANITY ] = 18;
+      // One Halo
       if ( talents.halo.enabled() )
-        // Halo
-        resources.initial_opt[ RESOURCE_INSANITY ] = 12;
+        resources.initial_opt[ RESOURCE_INSANITY ] = 10;
     }
   }
 

@@ -535,7 +535,7 @@ public:
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
-    proc_t* munched_lotf;
+    proc_t* reset_swing_mw;
   } proc;
 
   // Class Specializations
@@ -1945,6 +1945,11 @@ public:
 
   void compute_mw_multiplier()
   {
+    if ( !this->p()->talent.maelstrom_weapon.ok() || !affected_by_maelstrom_weapon )
+    {
+      return;
+    }
+
     mw_multiplier = 0.0;
     mw_affected_stacks = maelstrom_weapon_stacks();
     mw_consumed_stacks = consume_maelstrom_weapon() ? mw_affected_stacks : 0;
@@ -1977,18 +1982,31 @@ public:
 
     // Main hand swing timer resets if the MW-affected spell is not instant cast
     // Need to check this before spending the MW or autos will be lost.
-    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
+    if ( affected_by_maelstrom_weapon && mw_consumed_stacks < 5 )
     {
       if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event &&
            ( this->p()->bugs || !this->background ) )
       {
+        if ( this->sim->debug )
+        {
+          this->sim->out_debug.print( "{} resetting {} due to MW spell cast of {}",
+                                     this->p()->name(), this->p()->main_hand_attack->name(),
+                                     this->name() );
+        }
         event_t::cancel( this->p()->main_hand_attack->execute_event );
         this->p()->main_hand_attack->schedule_execute();
+        this->p()->proc.reset_swing_mw->occur();
       }
 
       if ( this->p()->off_hand_attack && this->p()->off_hand_attack->execute_event &&
            ( this->p()->bugs || !this->background ) )
       {
+        if ( this->sim->debug )
+        {
+          this->sim->out_debug.print( "{} resetting {} due to MW spell cast of {}",
+                                     this->p()->name(), this->p()->off_hand_attack->name(),
+                                     this->name() );
+        }
         event_t::cancel( this->p()->off_hand_attack->execute_event );
         this->p()->off_hand_attack->schedule_execute();
       }
@@ -8195,6 +8213,12 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh )
       event_t::cancel( player->main_hand_attack->execute_event );
     }
 
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} ascendance swing timer for main-hand, executing={}, time_to_hit={}",
+                            player->name(), executing, time_to_hit );
+    }
+
     player->main_hand_attack = mh;
     if ( executing )
     {
@@ -8230,6 +8254,12 @@ void ascendance_buff_t::ascendance( attack_t* mh, attack_t* oh )
         }
 #endif
         event_t::cancel( player->off_hand_attack->execute_event );
+      }
+
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} ascendance swing timer for off-hand, executing={}, time_to_hit={}",
+                              player->name(), executing, time_to_hit );
       }
 
       player->off_hand_attack = oh;
@@ -9533,22 +9563,7 @@ void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* state,
   {
     lotfw_counter -= threshold;
     buff.legacy_of_the_frost_witch->trigger();
-    if ( state->action->harmful )
-    {
-      auto s = shaman_spell_t::cast_state( state );
-      if ( bugs && s->exec_type == execute_type::THORIMS_INVOCATION )
-      {
-        proc.munched_lotf->occur();
-      }
-      else
-      {
-        cooldown.strike->reset( false );
-      }
-    }
-    else
-    {
-      cooldown.strike->reset( false );
-    }
+    cooldown.strike->reset( false );
   }
 }
 
@@ -10335,12 +10350,12 @@ void shaman_t::init_procs()
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
 
+  proc.reset_swing_mw            = get_proc( "Maelstrom Weapon Swing Reset" );
+
   for ( size_t i = 0; i < proc.t29_2pc_ele.size(); i++ )
   {
     proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
   }
-
-  proc.munched_lotf = get_proc( "Legacy of the Frost Witch: Bugged Trigger" );
 }
 
 // shaman_t::init_uptimes ====================================================

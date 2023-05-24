@@ -71,6 +71,7 @@ namespace item
   void deathbringers_will( special_effect_t& );
   void cunning_of_the_cruel( special_effect_t& );
   void felmouth_frenzy( special_effect_t& );
+  void matrix_restabilizer( special_effect_t& );
 
   /* Mists of Pandaria 5.2 */
   void rune_of_reorigination( special_effect_t& );
@@ -116,7 +117,8 @@ namespace item
 
   /* Timewalking Trinkets */
   void necromantic_focus( special_effect_t& );
-}
+  void sorrowsong( special_effect_t& );
+  }
 
 namespace gem
 {
@@ -2420,6 +2422,44 @@ void item::felmouth_frenzy( special_effect_t& effect )
   cb -> initialize();
 }
 
+// Matrix Restabilizer
+// 96976 Driver
+// 96977 Haste buff
+// 96978 Critical Strike buff
+// 96979 Mastery buff
+void item::matrix_restabilizer( special_effect_t& effect )
+{
+  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
+  (*buffs)[STAT_HASTE_RATING] = create_buff<stat_buff_t>( effect.player, "matrix_restabilized_haste_rating",
+                                                              effect.player->find_spell( 96977 ), effect.item );
+  (*buffs)[STAT_CRIT_RATING] = create_buff<stat_buff_t>( effect.player, "matrix_restabilized_crit_rating",
+                                                              effect.player->find_spell( 96978 ), effect.item );
+  (*buffs)[STAT_MASTERY_RATING] = create_buff<stat_buff_t>( effect.player, "matrix_restabilized_mastery_rating",
+                                                              effect.player->find_spell( 96979 ), effect.item );
+
+  struct matrix_restabilizer_cb_t : public dbc_proc_callback_t
+  {
+    std::shared_ptr<std::map<stat_e, buff_t*>> buffs;
+
+    matrix_restabilizer_cb_t( const special_effect_t& effect, std::shared_ptr<std::map<stat_e, buff_t*>> b )
+      : dbc_proc_callback_t( effect.item, effect ), buffs( std::move( b ) )
+    {
+    }
+
+    void execute(action_t*, action_state_t*) override
+    {
+      static constexpr std::array<stat_e, 3> ratings = { STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                         STAT_CRIT_RATING };
+
+      stat_e max_stat = util::highest_stat( effect.player, ratings );
+
+      (*buffs)[max_stat]->trigger();
+    }
+  };
+
+  new matrix_restabilizer_cb_t( effect, buffs );
+}
+
 struct fel_burn_t : public buff_t
 {
   fel_burn_t( const actor_pair_t& p, const special_effect_t& source_effect ) :
@@ -3249,6 +3289,17 @@ void item::necromantic_focus( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void item::sorrowsong( special_effect_t& effect )
+{
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ effect ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
+        return s->target->health_percentage() <= effect.driver()->effectN( 1 ).base_value();
+      } );
+}
+
 struct touch_of_the_grave_t : public spell_t
 {
   touch_of_the_grave_t( player_t* p, const spell_data_t* spell ) :
@@ -3967,7 +4018,7 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 
     return result;
   }
-  
+
   bool is_constant() override
   {
     return exprs.empty();
@@ -4099,7 +4150,7 @@ struct item_ready_expr_t : public item_effect_base_expr_t
 
     return 1;
   }
-    
+
   bool is_constant() override
   {
     return effects.empty();
@@ -4689,6 +4740,7 @@ void unique_gear::register_special_effects()
   register_special_effect( 71892,  item::heartpierce                    );
   register_special_effect( 71880,  item::heartpierce                    );
   register_special_effect( 72413,  "10%"                                ); /* ICC Melee Ring */
+  register_special_effect( 96976,  item::matrix_restabilizer            ); /* Matrix Restabilizer */
   register_special_effect( 107824, "1Tick_108016Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
   register_special_effect( 109862, "1Tick_109860Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
   register_special_effect( 109865, "1Tick_109863Trigger_20Dur"          ); /* Kiril, Fury of Beasts */
@@ -4784,6 +4836,7 @@ void unique_gear::register_special_effects()
 
   /* Timewalking */
   register_special_effect( 96963, item::necromantic_focus               ); // Firelands Timewalking Trinket
+  register_special_effect( 91003, item::sorrowsong                      ); // Lost City of Tol'vir Timewalking Trinket
 
   /**
    * Enchants

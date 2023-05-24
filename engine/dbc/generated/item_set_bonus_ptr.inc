@@ -1,5 +1,5 @@
-// Set bonus data, wow build 10.1.5.49595
-static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
+// Set bonus data, wow build 10.1.5.49719
+static const std::array<item_set_bonus_t, 618> __ptr_set_bonus_data { {
   // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   1,   -1,  228445, { 134529, 134533,  0 } },
   { "March of the Legion"                       , "march_of_the_legion",      0,  1293,   19,   2,   2,   -1,  228445, { 134529, 134533,  0 } },
@@ -328,17 +328,19 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Skybound Avenger's Flightwear"             , "tier29"             ,     13,  1527,   29,   4,  12,  581,  393631, { 200342, 200344, 200345, 200346, 200347,  0 } },
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   2,  13, 1467,  393642, { 200378, 200380, 200381, 200382, 200383,  0 } },
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   2,  13, 1468,  393644, { 200378, 200380, 200381, 200382, 200383,  0 } },
+  { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   2,  13, 1473,  415222, { 200378, 200380, 200381, 200382, 200383,  0 } },
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   4,  13, 1467,  393643, { 200378, 200380, 200381, 200382, 200383,  0 } },
   { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   4,  13, 1468,  393645, { 200378, 200380, 200381, 200382, 200383,  0 } },
+  { "Scales of the Awakened"                    , "tier29"             ,     13,  1530,   29,   4,  13, 1473,  415221, { 200378, 200380, 200381, 200382, 200383,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   1,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   2,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   3,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   4,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   5,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   6,   -1,  393982, { 193454, 193458, 193457,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   7,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   8,   -1,  393982, { 193454, 193458, 193457,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,   9,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,  10,   -1,  393982, { 193454, 193458, 193457,  0 } },
   { "Playful Spirit's Fur"                      , "playful_spirits_fur",     14,  1509,   29,   2,  11,   -1,  393982, { 193454, 193458, 193457,  0 } },
@@ -362,9 +364,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   3,   -1,  393987, { 193536, 193525, 193520,  0 } },
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   4,   -1,  393987, { 193536, 193525, 193520,  0 } },
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   5,   -1,  393987, { 193536, 193525, 193520,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   6,   -1,  393987, { 193536, 193525, 193520,  0 } },
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   7,   -1,  393987, { 193536, 193525, 193520,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   8,   -1,  393987, { 193536, 193525, 193520,  0 } },
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,   9,   -1,  393987, { 193536, 193525, 193520,  0 } },
   { "Azureweave Vestments"                      , "azureweave_vestments",     16,  1516,   29,   2,  10,   -1,  393987, { 193536, 193525, 193520,  0 } },
@@ -388,9 +390,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   2,   1,   -1,  389987, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   2,   1,   -1,  389987, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   2,   1,   -1,  389987, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   4,   1,   -1,  389498, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   4,   1,   -1,  389498, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   4,   1,   -1,  389498, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,   1,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,   1,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
@@ -414,9 +416,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   2,   3,   -1,  389987, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   2,   3,   -1,  389987, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   4,   3,   -1,  389498, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   4,   3,   -1,  389498, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   4,   3,   -1,  389498, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,   3,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,   3,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   6,   3,   -1,  391117, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
@@ -440,9 +442,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   2,   5,   -1,  389987, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   4,   5,   -1,  389498, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   4,   5,   -1,  389498, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   4,   5,   -1,  389498, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,   5,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,   5,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   6,   5,   -1,  391117, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   6,   5,   -1,  391117, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
@@ -466,9 +468,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   4,   7,   -1,  389498, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   4,   7,   -1,  389498, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   4,   7,   -1,  389498, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,   7,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,   7,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   6,   7,   -1,  391117, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   6,   7,   -1,  391117, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   6,   7,   -1,  391117, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
@@ -492,9 +494,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   4,   9,   -1,  389498, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   4,   9,   -1,  389498, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,   9,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,   9,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   6,   9,   -1,  391117, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   6,   9,   -1,  391117, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   6,   9,   -1,  391117, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   2,  10,   -1,  389987, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
@@ -518,9 +520,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   4,  11,   -1,  389498, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,  11,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,  11,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   6,  11,   -1,  391117, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   6,  11,   -1,  391117, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   6,  11,   -1,  391117, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   2,  12,   -1,  389987, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   2,  12,   -1,  389987, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
@@ -544,9 +546,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   4,  13,   -1,  389498, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
   { "Drape of Raging Tempests"                  , "raging_tempests"    ,     18,  1521,   29,   6,  13,   -1,  391117, { 199417, 199418, 199419, 199420, 199421, 199424, 199422, 199423,  0 } },
   { "Shroud of Raging Tempests"                 , "raging_tempests"    ,     18,  1523,   29,   6,  13,   -1,  391117, { 199431, 199425, 199426, 199427, 199428, 199432, 199429, 199430,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Scales of Raging Tempests"                 , "raging_tempests"    ,     18,  1524,   29,   6,  13,   -1,  391117, { 199441, 199442, 199443, 199444, 199445, 199446, 199447, 199448,  0 } },
   { "Armor of Raging Tempests"                  , "raging_tempests"    ,     18,  1525,   29,   6,  13,   -1,  391117, { 199434, 199435, 199436, 199433, 199437, 199438, 199439, 199440,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Irons of the Onyx Crucible"                , "tier30"             ,     19,  1552,   30,   2,   1,   71,  405577, { 202446, 202444, 202443, 202442, 202441,  0 } },
   { "Irons of the Onyx Crucible"                , "tier30"             ,     19,  1552,   30,   2,   1,   72,  405579, { 202446, 202444, 202443, 202442, 202441,  0 } },
   { "Irons of the Onyx Crucible"                , "tier30"             ,     19,  1552,   30,   2,   1,   73,  405581, { 202446, 202444, 202443, 202442, 202441,  0 } },
@@ -570,9 +572,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Lurking Specter's Shadeweave"              , "tier30"             ,     19,  1549,   30,   2,   4,  261,  405563, { 202500, 202498, 202497, 202496, 202495,  0 } },
   { "Lurking Specter's Shadeweave"              , "tier30"             ,     19,  1549,   30,   4,   4,  259,  405560, { 202500, 202498, 202497, 202496, 202495,  0 } },
   { "Lurking Specter's Shadeweave"              , "tier30"             ,     19,  1549,   30,   4,   4,  260,  405562, { 202500, 202498, 202497, 202496, 202495,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Lurking Specter's Shadeweave"              , "tier30"             ,     19,  1549,   30,   4,   4,  261,  405564, { 202500, 202498, 202497, 202496, 202495,  0 } },
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   2,   5,  256,  405551, { 202543, 202542, 202541, 202545, 202540,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   2,   5,  257,  405554, { 202543, 202542, 202541, 202545, 202540,  0 } },
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   2,   5,  258,  405557, { 202543, 202542, 202541, 202545, 202540,  0 } },
   { "The Furnace Seraph's Verdict"              , "tier30"             ,     19,  1548,   30,   4,   5,  256,  405553, { 202543, 202542, 202541, 202545, 202540,  0 } },
@@ -596,9 +598,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Underlight Conjurer's Brilliance"          , "tier30"             ,     19,  1545,   30,   4,   8,   62,  405533, { 202554, 202552, 202551, 202550, 202549,  0 } },
   { "Underlight Conjurer's Brilliance"          , "tier30"             ,     19,  1545,   30,   4,   8,   63,  405535, { 202554, 202552, 202551, 202550, 202549,  0 } },
   { "Underlight Conjurer's Brilliance"          , "tier30"             ,     19,  1545,   30,   4,   8,   64,  405538, { 202554, 202552, 202551, 202550, 202549,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   2,   9,  265,  405571, { 202534, 202533, 202532, 202536, 202531,  0 } },
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   2,   9,  266,  405573, { 202534, 202533, 202532, 202536, 202531,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   2,   9,  267,  405575, { 202534, 202533, 202532, 202536, 202531,  0 } },
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   4,   9,  265,  405572, { 202534, 202533, 202532, 202536, 202531,  0 } },
   { "Sinister Savant's Cursethreads"            , "tier30"             ,     19,  1551,   30,   4,   9,  266,  405574, { 202534, 202533, 202532, 202536, 202531,  0 } },
@@ -622,9 +624,9 @@ static const std::array<item_set_bonus_t, 616> __ptr_set_bonus_data { {
   { "Kinslayer's Burdens"                       , "tier30"             ,     19,  1541,   30,   4,  12,  577,  405507, { 202527, 202525, 202524, 202523, 202522,  0 } },
   { "Kinslayer's Burdens"                       , "tier30"             ,     19,  1541,   30,   4,  12,  581,  405509, { 202527, 202525, 202524, 202523, 202522,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   2,  13, 1467,  405518, { 202491, 202489, 202488, 202487, 202486,  0 } },
+  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   2,  13, 1468,  405520, { 202491, 202489, 202488, 202487, 202486,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   2,  13, 1473,  414877, { 202491, 202489, 202488, 202487, 202486,  0 } },
-  // SetBonusName                               , OptName              , EnumID, SetID, Tier, Bns, Cls, Spec, SpellID, ItemIDs
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1467,  405519, { 202491, 202489, 202488, 202487, 202486,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1468,  405522, { 202491, 202489, 202488, 202487, 202486,  0 } },
   { "Legacy of Obsidian Secrets"                , "tier30"             ,     19,  1543,   30,   4,  13, 1473,  414878, { 202491, 202489, 202488, 202487, 202486,  0 } },

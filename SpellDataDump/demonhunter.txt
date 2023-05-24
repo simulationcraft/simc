@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-17/49570)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1198,7 +1198,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.76323 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.693843 -> 0.763227)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1348,7 +1347,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.99219 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.901995 -> 0.992194)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -2454,7 +2452,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=305259)   : Apply Aura (6) | Dummy (4)
                    Base Value: 95 | Scaled Value: 95 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-Hotfixed         : Base Value (75 -> 95)
 Description      : Blade Dance deals $<firstbloodDmg> Chaos damage to the first target struck.
 Variables        : $mastery=$?s185164[${((100+$185164m1)/100)}][${1.00}]
 $baseDmg=${3*$199552sw2+$200685sw2} 
@@ -4039,7 +4036,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.48573 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.44157 -> 0.485727)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -4196,7 +4192,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63138 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.573985 -> 0.631383)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -12038,7 +12033,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026750)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.88500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (1.45 -> 1.885)
 Description      : $@spelldesc389693
 
 Name             : Inner Demon (id=390139) [Spell Family (107)] 
@@ -12740,7 +12734,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1028854)  : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.42055 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.3564 -> 0.420552)
 Description      : $@spelldesc188499
 
 Name             : Erratic Felheart (id=391397) [Spell Family (107), Passive] 
@@ -13551,7 +13544,6 @@ Description      : $@spelldesc405508
 Tooltip          : Fire damage increased by $w1%.
 
 Name             : Recrimination (id=409877) [Spell Family (107)] 
-Hotfixed         : Max stacks (6 -> 1)
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : None

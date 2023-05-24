@@ -775,6 +775,10 @@ struct spell_data_t
   static util::span<const spell_data_t> data( bool ptr = false );
   static util::span<const hotfix::client_hotfix_entry_t> hotfixes( const spell_data_t&, bool ptr );
 
+  static const spelleffect_data_t& find_spelleffect( const spell_data_t& spell, effect_type_t type,
+                                                     effect_subtype_t subtype = A_MAX,
+                                                     property_type_t property = P_MAX );
+
   static void link( bool ptr );
 private:
   static util::span<spell_data_t> _data( bool ptr );

@@ -1,5 +1,5 @@
-// Item effects, wow build 10.1.5.49595
-static const std::array<item_effect_t, 8429> __ptr_item_effect_data { {
+// Item effects, wow build 10.1.5.49719
+static const std::array<item_effect_t, 8517> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -332,7 +332,7 @@ static const std::array<item_effect_t, 8429> __ptr_item_effect_data { {
   { 170150, 384341,      0,   0,   1,    0,      -1,      -1 }, // Critical Failure Prevention Unit
   { 170185, 384489,      0,   0,   1,    0,      -1,      -1 }, // Spring-Loaded Capacitor Casing
   { 170399, 385336,      0,   0,   1,    0,      -1,      -1 }, // Room for Dessert
-  { 170400, 385347,      0,   0,   1,    0,      -1,      -1 }, // Magazine of Healing Darts
+  { 170400, 415446,      0,   0,   1,    0,      -1,      -1 }, // Magazine of Healing Darts
   { 170917, 387335,      0,   0,   1,    0,      -1,      -1 }, // Blue Silken Lining
   { 170959, 387431,      0,   0,   1,    0,      -1,      -1 }, // Unity
   { 171010, 396442,      0,   0,   1,    0,      -1,      -1 }, // Bronzed Grip Wrappings
@@ -8415,23 +8415,111 @@ static const std::array<item_effect_t, 8429> __ptr_item_effect_data { {
   { 178182, 336135, 205782,   0,   1,    0,      -1,      -1 }, // Adaptation
   { 178520, 413710, 206475,   0,   0,    0,      -1,      -1 }, // Paracausal Fragment of Seschenal
   { 178521, 413711, 206475,   1,   1,    0,      -1,      -1 }, // Paracausal Fragment of Seschenal
+  { 178928, 415646, 206475,   2,   5,    0,      -1,      -1 }, // As it was Foreseen
   { 178523, 265174, 206478,   0,   1,    0,      -1,      -1 }, // Darrowspike
   { 178524,  43588, 206508,   0,   1,    0,      -1,      -1 }, // Disarm Duration Reduction
   { 178525,  27037, 206509,   0,   1,    0,      -1,      -1 }, // Stealth +8
   { 178526,  29150, 206512,   0,   1,    0,      -1,      -1 }, // Electric Discharge
   { 178527,  29162, 206513,   0,   1,    0,      -1,      -1 }, // Stygian Grasp
+  { 178900, 415646, 206764,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178903, 415646, 206765,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178889, 415646, 206766,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178888, 415646, 206767,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178882, 415646, 206768,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178879, 415646, 206769,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178878, 415646, 206770,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178881, 415646, 206776,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178915, 415646, 206777,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178913, 415646, 206778,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178893, 415646, 206779,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178914, 415646, 206780,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178901, 415646, 206781,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178912, 415646, 206782,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178896, 415646, 206783,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178941, 415646, 206784,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178907, 415646, 206785,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178909, 415646, 206786,   0,   7,    0,      -1,      -1 }, // As it was Foreseen
+  { 178908, 415646, 206788,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178904, 415646, 206789,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178899, 415646, 206790,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178905, 415646, 206791,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178894, 415646, 206792,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178880, 415646, 206793,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178890, 415646, 206794,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178887, 415646, 206795,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178883, 415646, 206796,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178898, 415646, 206797,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178902, 415646, 206798,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178897, 415646, 206801,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178906, 415646, 206802,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178884, 415646, 206803,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178885, 415646, 206804,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178891, 415646, 206807,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178911, 415646, 206808,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178868, 415646, 206814,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178853, 415646, 206816,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178910, 415646, 206821,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178864, 415646, 206825,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178852, 415646, 206826,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178849, 415646, 206834,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178866, 415646, 206835,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178860, 415646, 206839,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178865, 415646, 206845,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178856, 415646, 206846,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178850, 415646, 206853,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178863, 415646, 206854,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178859, 415646, 206858,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178867, 415646, 206864,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178854, 415646, 206865,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178851, 415646, 206873,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178869, 415646, 206874,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178861, 415646, 206878,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178858, 415646, 206879,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178862, 415646, 206883,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178855, 415646, 206884,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
   { 178712, 173720, 206931,   0,   1,    0,      -1,      -1 }, // Illusion: Crusader
   { 178722, 414856, 206956,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Sulfuras
+  { 178930, 415646, 206956,   1,   5,    0,      -1,      -1 }, // As it was Foreseen
   { 178725, 414872, 206958,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Val'anyr
+  { 178929, 415646, 206958,   1,   5,    0,      -1,      -1 }, // As it was Foreseen
   { 178728, 414928, 206964,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Doomhammer
   { 178729, 414936, 206964,   1,   0,    0,      -1,      -1 }, // Warstrikes
+  { 178932, 415646, 206964,   2,   5,    0,      -1,      -1 }, // As it was Foreseen
   { 178738, 414968, 206972,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Azzinoth
-  { 178750, 415006, 206983,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Frostmourn
-  { 178754, 415130, 206983,   1,   0,    0,      -1,      -1 }, // Paracausal Fragment of Frostmourn
+  { 178933, 415646, 206972,   1,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178750, 415006, 206983,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Frostmourne
+  { 178754, 415130, 206983,   1,   0,    0,      -1,      -1 }, // Incarnate Death
+  { 178762, 415245, 206983,   2,   5,    0,      -1,      -1 }, // Incarnate Death
+  { 178931, 415646, 206983,   3,   5,    0,      -1,      -1 }, // As it was Foreseen
   { 178760, 415163, 206997,   0,   1,    0,      -1,      -1 }, // Gilded Sunglasses Periodic
+  { 178764, 415284, 207005,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Thunderfin, Humid Blade of the Tideseeker
+  { 178927, 415646, 207005,   1,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178886, 415646, 207014,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178892, 415646, 207015,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178775, 414928, 207024,   0,   1,    0,      -1,      -1 }, // Paracausal Fragment of Doomhammer
+  { 178776, 414936, 207024,   1,   0,    0,      -1,      -1 }, // Warstrikes
+  { 178926, 415646, 207024,   2,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178801, 416125, 207088,   0,   0,    0,      -1,      -1 }, // Glyph of the Shath'Yar
+  { 178916, 416229, 207101,   1,   0,    0,      -1,      -1 }, // Lord Banehollow's Soulstone
+  { 178942, 415646, 207102,   0,   5,    0,      -1,      -1 }, // As it was Foreseen
+  { 178950, 416330, 207111,   1,   0,    0,      -1,      -1 }, // Grimoire of the Hellfire Fel Imp
+  { 178951, 416336, 207112,   1,   0,    0,      -1,      -1 }, // Grimoire of the Void-Touched Fel Imp
+  { 178953, 416339, 207113,   1,   0,    0,      -1,      -1 }, // Grimoire of the Trickster Fel Imp
+  { 178954, 416344, 207114,   1,   0,    0,      -1,      -1 }, // Grimoire of the Fiendish Imp
+  { 178955, 416352, 207178,   1,   0,    0,      -1,      -1 }, // Grimoire of the Darkfire Imp
+  { 178956, 416360, 207294,   1,   0,    0,      -1,      -1 }, // Grimoire of the Felfrost Imp
+  { 178957, 416364, 207295,   1,   0,    0,      -1,      -1 }, // Grimoire of the Dreadfire Imp
+  { 178958, 416366, 207296,   1,   0,    0,      -1,      -1 }, // Grimoire of the Netherbound Imp
+  { 178959, 416368, 207297,   1,   0,    0,      -1,      -1 }, // Grimoire of the Felblaze Imp
+  { 179217, 362332, 207528,   0,   1,    0,      -1,      -1 }, // pscar test trinket
+  { 179218, 362332, 207552,   0,   0,    0,      -1,      -1 }, // pscar test trinket
+  { 179220, 265238, 207561,   0,   1,    0,      -1,      -1 }, // Ichor Spitter
+  { 179221, 362332, 207566,   0,   1,    0,      -1,      -1 }, // pscar test trinket
+  { 179244, 362332, 207579,   0,   1,    0,      -1,      -1 }, // pscar test trinket
+  { 179245, 362332, 207581,   0,   1,    0,      -1,      -1 }, // pscar test trinket
 } };
 
-static const std::array<uint16_t, 8429> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 8517> __ptr_item_effect_id_index { {
     415,   416,   417,   418,   419,   420,   421,   424,
     425,   426,   427,   428,   429,   430,   431,   432,
     433,   434,   435,   436,   439,   440,   441,   442,
@@ -9483,8 +9571,19 @@ static const std::array<uint16_t, 8429> __ptr_item_effect_id_index { {
    8395,  8249,  8250,  8248,  8246,  8247,  8396,  8397,
    8394,  8398,  8399,  8400,  8401,  8359,   339,   340,
    8402,  8403,  8404,  8405,  8406,  8407,  8408,  8409,
-   8410,  8411,  8412,   341,   739,  8413,  8414,  8415,
-   8416,  8417,  8418,  8419,  8420,  8421,  8422,  8423,
-   8424,  8425,  8426,  8427,  8428,
+   8410,  8411,  8412,   341,   739,  8413,  8414,  8416,
+   8417,  8418,  8419,  8420,  8477,  8478,  8480,  8482,
+   8483,  8485,  8487,  8488,  8491,  8489,  8492,  8496,
+   8497,  8499,  8461,  8466,  8471,  8460,  8457,  8470,
+   8476,  8465,  8474,  8468,  8463,  8473,  8475,  8467,
+   8459,  8464,  8462,  8469,  8456,  8472,  8427,  8426,
+   8444,  8428,  8425,  8447,  8452,  8453,  8494,  8446,
+   8424,  8423,  8445,  8454,  8495,  8431,  8443,  8435,
+   8450,  8448,  8441,  8421,  8433,  8449,  8422,  8440,
+   8442,  8451,  8437,  8439,  8438,  8458,  8455,  8434,
+   8430,  8432,  8429,  8500,  8498,  8493,  8415,  8481,
+   8479,  8490,  8484,  8486,  8436,  8501,  8502,  8503,
+   8504,  8505,  8506,  8507,  8508,  8509,  8510,  8511,
+   8512,  8513,  8514,  8515,  8516,
 } };
 

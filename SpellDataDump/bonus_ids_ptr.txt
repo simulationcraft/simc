@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-16/49570)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4506,7 +4506,7 @@ bonus_id={ 8864 }, effects={ Critical Failure Prevention Unit (id=384341, index=
 bonus_id={ 8865 }, effects={ Spring-Loaded Capacitor Casing (id=384489, index=0, type=equip) }
 bonus_id={ 8903 }, base_ilevel={ 1 }
 bonus_id={ 8912 }, effects={ Room for Dessert (id=385336, index=0, type=equip) }
-bonus_id={ 8913 }, effects={ Magazine of Healing Darts (id=385347, index=0, type=equip) }
+bonus_id={ 8913 }, effects={ Magazine of Healing Darts (id=415446, index=0, type=equip) }
 bonus_id={ 8932 }, effects={ Blue Silken Lining (id=387335, index=0, type=equip) }
 bonus_id={ 8933 }
 bonus_id={ 8934 }, quality={ legendary }, effects={ Unity (id=387431, index=0, type=equip) }
@@ -4718,6 +4718,7 @@ bonus_id={ 9356 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9357 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9358 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9359 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
+bonus_id={ 9360 }, effects={ Unknown Effect (id=173912) }
 bonus_id={ 9362 }, quality={ epic }, ilevel={ 47 @plvl 1 - 220 @plvl 70 }
 bonus_id={ 9363 }, quality={ epic }, ilevel={ 21 @plvl 1 - 194 @plvl 70 }
 bonus_id={ 9365 }, base_ilevel={ 382 }, desc={ Ingenuity Crafted }

@@ -650,11 +650,6 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
     restock_driver->proc_flags2_ = PF2_CRIT;
 
     new dbc_proc_callback_t( effect.player, *restock_driver );
-
-    effect.player->register_on_combat_state_callback( [ skilled_restock ]( player_t*, bool c ) {
-      if ( !c )
-        skilled_restock->expire();
-    } );
   }
 
   // AoE Explosion
@@ -5219,7 +5214,7 @@ void coated_in_slime( special_effect_t& effect )
 {
   auto mul = toxified_mul( effect.player );
 
-  effect.player->passive.add_stat( util::translate_rating_mod( effect.driver()->effectN( 1 ).misc_value1() ),
+  effect.player->passive.add_stat( util::translate_rating_mod( effect.driver()->effectN( 2 ).misc_value1() ),
                                    effect.driver()->effectN( 2 ).average( effect.item ) * mul );
 
   effect.trigger_spell_id = effect.driver()->effectN( 3 ).trigger_spell_id();
