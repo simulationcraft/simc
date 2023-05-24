@@ -117,7 +117,8 @@ namespace item
 
   /* Timewalking Trinkets */
   void necromantic_focus( special_effect_t& );
-}
+  void sorrowsong( special_effect_t& );
+  }
 
 namespace gem
 {
@@ -3288,6 +3289,17 @@ void item::necromantic_focus( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void item::sorrowsong( special_effect_t& effect )
+{
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ effect ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* s ) {
+        return s->target->health_percentage() <= effect.driver()->effectN( 1 ).base_value();
+      } );
+}
+
 struct touch_of_the_grave_t : public spell_t
 {
   touch_of_the_grave_t( player_t* p, const spell_data_t* spell ) :
@@ -4824,6 +4836,7 @@ void unique_gear::register_special_effects()
 
   /* Timewalking */
   register_special_effect( 96963, item::necromantic_focus               ); // Firelands Timewalking Trinket
+  register_special_effect( 91003, item::sorrowsong                      ); // Lost City of Tol'vir Timewalking Trinket
 
   /**
    * Enchants
