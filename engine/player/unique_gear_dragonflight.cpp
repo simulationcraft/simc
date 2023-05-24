@@ -53,11 +53,14 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
     struct overwhelming_rage_self_t : public generic_proc_t
     {
       double hp_pct;
+      buff_t* crit;
 
-      overwhelming_rage_self_t( const special_effect_t& e )
+      overwhelming_rage_self_t( const special_effect_t& e, buff_t* b )
         : generic_proc_t( e, "overwhelming_rage", e.player->find_spell( 374037 ) ),
-          hp_pct( spell_data_t::find_spelleffect( data(), E_APPLY_AURA, A_PERIODIC_DAMAGE_PERCENT ).percent() )
+          hp_pct( spell_data_t::find_spelleffect( data(), E_APPLY_AURA, A_PERIODIC_DAMAGE_PERCENT ).percent() ),
+          crit( b )
       {
+        not_a_proc = true;
         stats->type = stats_e::STATS_NEUTRAL;
         target = e.player;
       }
@@ -72,26 +75,31 @@ void iced_phial_of_corrupting_rage( special_effect_t& effect )
       {
         return s->target->max_health() * hp_pct;
       }
+
+      void last_tick( dot_t* d ) override
+      {
+        generic_proc_t::last_tick( d );
+
+        crit->trigger();
+      }
     };
 
-    auto debuff = make_buff( effect.player, "overwhelming_rage", effect.player->find_spell( 374037 ) )
-      ->set_stack_change_callback( [ buff, crit ]( buff_t*, int, int new_ ) {
-        if ( !new_ && buff->check() )
-          crit->trigger();
-      } );
+    auto debuff = create_proc_action<overwhelming_rage_self_t>( "overwhelming_rage", effect, crit );
 
     crit->set_stack_change_callback( [ buff, debuff ]( buff_t*, int, int new_ ) {
       if ( !new_ && buff->check() )
-        debuff->trigger();
+        debuff->execute();
     } );
 
     if ( effect.player->sim->dragonflight_opts.corrupting_rage_uptime < 1 )
     {
+      double debuff_uptime = 1 - effect.player->sim->dragonflight_opts.corrupting_rage_uptime;
+      double disable_chance =
+          debuff_uptime / ( debuff->dot_duration - debuff->dot_duration * debuff_uptime ).total_seconds();
+
       crit->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-      effect.player->register_combat_begin( [ crit, debuff ]( player_t* ) {
-        make_repeating_event( crit->player->sim, 1_s, [ crit, debuff ]() {
-          double debuff_uptime = 1 - crit->player->sim->dragonflight_opts.corrupting_rage_uptime;
-          double disable_chance = debuff_uptime / ( debuff->buff_duration() - debuff->buff_duration() * debuff_uptime ).total_seconds();
+      effect.player->register_combat_begin( [ crit, disable_chance ]( player_t* ) {
+        make_repeating_event( crit->player->sim, 1_s, [ crit, disable_chance ]() {
           if ( crit->rng().roll( disable_chance ) )
             crit->expire();
         } );
