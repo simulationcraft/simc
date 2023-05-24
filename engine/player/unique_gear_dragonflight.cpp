@@ -3964,9 +3964,29 @@ void neltharions_call_to_suffering( special_effect_t& effect )
       return;
   }
 
+  struct call_to_suffering_self_t : public generic_proc_t
+  {
+    call_to_suffering_self_t( const special_effect_t& e )
+      : generic_proc_t( e, "call_to_suffering", e.player->find_spell( 408469 ) )
+    {
+      base_td = e.driver()->effectN( 2 ).average( e.item );
+      not_a_proc = true;
+      stats->type = stats_e::STATS_NEUTRAL;
+      target = e.player;
+    }
+
+    // logs show this can trigger helpful periodic proc flags
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    {
+      return result_amount_type::HEAL_OVER_TIME;
+    }
+  };
+
   // Buff scaling is on the main trinket driver.
   effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403386 ) )
                            ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+  effect.execute_action = create_proc_action<call_to_suffering_self_t>( "call_to_suffering", effect );
 
   // After setting up the buff set the driver to the Class Specific Driver that holds RPPM Data
   effect.spell_id = driver_id;
