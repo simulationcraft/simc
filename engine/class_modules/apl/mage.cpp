@@ -226,7 +226,7 @@ void arcane( player_t* p )
   t30_burst_phase->add_action( "wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15" );
   t30_burst_phase->add_action( "arcane_barrage,if=prev_gcd.1.arcane_surge" );
   t30_burst_phase->add_action( "meteor,if=debuff.radiant_spark_vulnerability.stack=3" );
-  t30_burst_phase->add_action( "arcane_blast,if=debuff.radiant_spark_vulnerability.up" );
+  t30_burst_phase->add_action( "arcane_blast,if=(debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4)|(cast_time<gcd&debuff.radiant_spark_vulnerability.stack=4)" );
   t30_burst_phase->add_action( "presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max" );
   t30_burst_phase->add_action( "arcane_blast,if=buff.presence_of_mind.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
   t30_burst_phase->add_action( "cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up" );
@@ -239,7 +239,7 @@ void arcane( player_t* p )
   t30_mini->add_action( "meteor,if=debuff.radiant_spark_vulnerability.stack=0" );
   t30_mini->add_action( "arcane_barrage,if=prev_gcd.1.meteor|(prev_gcd.1.nether_tempest&(prev_gcd.2.radiant_spark|prev_gcd.3.radiant_spark))" );
   t30_mini->add_action( "touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.2|gcd.remains<=0.2)" );
-  t30_mini->add_action( "arcane_blast,if=(debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4)|buff.nether_precision.up" );
+  t30_mini->add_action( "arcane_blast,if=((debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4)|(cast_time<gcd&debuff.radiant_spark_vulnerability.stack=4))|buff.nether_precision.up" );
   t30_mini->add_action( "presence_of_mind,if=(debuff.touch_of_the_magi.remains<=gcd.max|buff.rune_of_power.remains<=gcd.max)" );
   t30_mini->add_action( "cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up" );
   t30_mini->add_action( "arcane_missiles,if=buff.clearcasting.react&(debuff.touch_of_the_magi.remains>execute_time|!talent.presence_of_mind),chain=1" );
