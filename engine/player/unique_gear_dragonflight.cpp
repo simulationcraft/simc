@@ -650,11 +650,6 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
     restock_driver->proc_flags2_ = PF2_CRIT;
 
     new dbc_proc_callback_t( effect.player, *restock_driver );
-
-    effect.player->register_on_combat_state_callback( [ skilled_restock ]( player_t*, bool c ) {
-      if ( !c )
-        skilled_restock->expire();
-    } );
   }
 
   // AoE Explosion
