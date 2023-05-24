@@ -5219,7 +5219,7 @@ void coated_in_slime( special_effect_t& effect )
 {
   auto mul = toxified_mul( effect.player );
 
-  effect.player->passive.add_stat( util::translate_rating_mod( effect.driver()->effectN( 1 ).misc_value1() ),
+  effect.player->passive.add_stat( util::translate_rating_mod( effect.driver()->effectN( 2 ).misc_value1() ),
                                    effect.driver()->effectN( 2 ).average( effect.item ) * mul );
 
   effect.trigger_spell_id = effect.driver()->effectN( 3 ).trigger_spell_id();
