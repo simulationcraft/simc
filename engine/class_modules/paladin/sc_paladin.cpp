@@ -272,10 +272,6 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
     }
-    if ( p()->talents.hallowed_ground->ok() )
-    {
-      m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
-    }
     return m;
   }
 
@@ -2229,7 +2225,6 @@ void paladin_t::create_buffs()
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
   //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
-  buffs.seal_of_clarity = make_buff( this, "seal_of_clarity", spells.seal_of_clarity_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
   buffs.blessing_of_protection = make_buff( this, "blessing_of_protection", find_spell( 1022 ) );
@@ -2506,7 +2501,6 @@ void paladin_t::init_spells()
   talents.judgment_of_light               = find_talent_spell( talent_tree::CLASS, "Judgment of Light" );
   //Avenging Wrath spell
   talents.avenging_wrath                  = find_talent_spell( talent_tree::CLASS, "Avenging Wrath" );
-  talents.seal_of_the_templar             = find_talent_spell( talent_tree::CLASS, "Seal of the Templar" );
   talents.turn_evil                       = find_talent_spell( talent_tree::CLASS, "Turn Evil" );
   talents.rebuke                          = find_talent_spell( talent_tree::CLASS, "Rebuke" );
   talents.seal_of_mercy                   = find_talent_spell( talent_tree::CLASS, "Seal of Mercy" );
@@ -2521,10 +2515,8 @@ void paladin_t::init_spells()
   talents.holy_avenger                    = find_talent_spell( talent_tree::CLASS, "Holy Avenger" );
   talents.divine_purpose                  = find_talent_spell( talent_tree::CLASS, "Divine Purpose" );
   talents.obduracy                        = find_talent_spell( talent_tree::CLASS, "Obduracy" );
-  talents.seal_of_clarity                 = find_talent_spell( talent_tree::CLASS, "Seal of Clarity" );
   talents.touch_of_light                  = find_talent_spell( talent_tree::CLASS, "Touch of Light" );
   talents.incandescence                   = find_talent_spell( talent_tree::CLASS, "Incandescence" );
-  talents.hallowed_ground                 = find_talent_spell( talent_tree::CLASS, "Hallowed Ground" );
   talents.of_dusk_and_dawn                = find_talent_spell( talent_tree::CLASS, "Of Dusk and Dawn" );
   talents.unbreakable_spirit              = find_talent_spell( talent_tree::CLASS, "Unbreakable Spirit" );
   talents.seal_of_might                   = find_talent_spell( talent_tree::CLASS, "Seal of Might" );
@@ -2558,7 +2550,6 @@ void paladin_t::init_spells()
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( specialization() == PALADIN_RETRIBUTION ? 408458 : 223819 );
-  spells.seal_of_clarity_buff   = find_spell( 384810 );
 
   // Dragonflight Tier Sets
   tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
