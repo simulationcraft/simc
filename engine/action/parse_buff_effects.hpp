@@ -523,7 +523,7 @@ public:
   // return a copy of the effect with modified value
   spelleffect_data_t modified_effect( size_t idx )
   {
-    spelleffect_data_t temp = action_->effectN( idx );
+    spelleffect_data_t temp = action_->data().effectN( idx );
 
     for ( auto [ i, v ] : effect_flat_modifiers )
       if ( i == idx  )
