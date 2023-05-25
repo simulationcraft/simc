@@ -77,8 +77,8 @@ struct parse_buff_effects_t
 
 private:
   action_t* action_;
-  std::vector<std::tuple<size_t, double>> effect_flat_modifiers;
-  std::vector<std::tuple<size_t, double>> effect_pct_modifiers;
+  std::vector<std::pair<size_t, double>> effect_flat_modifiers;
+  std::vector<std::pair<size_t, double>> effect_pct_modifiers;
 
 public:
   // auto parsed dynamic effects
@@ -468,6 +468,7 @@ public:
     {
       const auto& eff = s_data->effectN( i );
       auto subtype = eff.subtype();
+      size_t target_idx = 0;
 
       if ( eff.type() != E_APPLY_AURA )
         continue;
@@ -483,16 +484,6 @@ public:
           continue;
       }
 
-      if ( !action_->data().affected_by_all( eff ) )
-        continue;
-
-      double val = eff.base_value();
-      bool m;  // dummy throwaway
-      size_t target_idx = 0;
-
-      if ( i <= 5 )
-        parse_spell_effects_mods( val, m, s_data, i, mods... );
-
       switch ( eff.property_type() )
       {
         case P_EFFECT_1: target_idx = 1; break;
@@ -500,45 +491,48 @@ public:
         case P_EFFECT_3: target_idx = 3; break;
         case P_EFFECT_4: target_idx = 4; break;
         case P_EFFECT_5: target_idx = 5; break;
-        default: break;
+        default:
+          continue;
       }
 
-      if ( target_idx )
+      if ( !action_->data().affected_by_all( eff ) )
+        continue;
+
+      double val = eff.base_value();
+      bool m;  // dummy throwaway
+
+      if ( i <= 5 )
+        parse_spell_effects_mods( val, m, s_data, i, mods... );
+
+      switch ( subtype )
       {
-        switch ( subtype )
-        {
-          case A_ADD_FLAT_MODIFIER:
-          case A_ADD_FLAT_LABEL_MODIFIER:
-            effect_flat_modifiers.emplace_back( target_idx, val );
-            break;
-          case A_ADD_PCT_MODIFIER:
-          case A_ADD_PCT_LABEL_MODIFIER:
-            effect_pct_modifiers.emplace_back( target_idx, val );
-            break;
-          default:
-            break;
-        }
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          effect_flat_modifiers.emplace_back( target_idx, val );
+          break;
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+          effect_pct_modifiers.emplace_back( target_idx, val * 0.01 );
+          break;
+        default:
+          break;
       }
     }
   }
 
-  double modified_effect_value( size_t idx )
+  // return a copy of the effect with modified value
+  spelleffect_data_t modified_effect( size_t idx )
   {
-    auto base = action_->data().effectN( idx ).base_value();
+    spelleffect_data_t temp = action_->effectN( idx );
 
-    for ( const auto& mod : effect_flat_modifiers )
-      if ( std::get<size_t>( mod ) == idx )
-        base += std::get<double>( mod );
+    for ( auto [ i, v ] : effect_flat_modifiers )
+      if ( i == idx  )
+        temp._base_value += v;
 
-    for ( const auto& mod : effect_pct_modifiers )
-      if ( std::get<size_t>( mod ) == idx )
-        base *= 1.0 + std::get<double>( mod );
+    for ( auto [ i, v ] : effect_pct_modifiers )
+      if ( i == idx  )
+        temp._base_value *= 1.0 + v;
 
-    return base;
-  }
-
-  double modified_effect_percent( size_t idx )
-  {
-    return modified_effect_value( idx ) * 0.01;
+    return temp;
   }
 };
