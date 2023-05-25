@@ -285,7 +285,7 @@ public:
   unsigned max_active_flame_shock;
 
   /// Maelstrom Weapon blocklist, allowlist; (spell_id, { override_state, proc tracking object })
-  std::vector<std::pair<mw_proc_state, proc_t*>> mw_proc_state_list;
+  std::vector<mw_proc_state> mw_proc_state_list;
 
   /// Maelstrom generator/spender tracking
   std::vector<std::pair<simple_sample_data_t, simple_sample_data_t>> mw_source_list;
@@ -846,12 +846,11 @@ public:
   timespan_t last_t30_proc;
   bool t30_proc_possible;
 
-  std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t* action, mw_proc_state state )
+  mw_proc_state set_mw_proc_state( action_t* action, mw_proc_state state )
   {
     if ( as<unsigned>( action->internal_id ) >= mw_proc_state_list.size() )
     {
-      mw_proc_state_list.resize( action->internal_id + 1U,
-                                 { mw_proc_state::DEFAULT, nullptr } );
+      mw_proc_state_list.resize( action->internal_id + 1U, mw_proc_state::DEFAULT );
     }
 
     // Use explicit mw_proc_state::DEFAULT set as initialization in shaman_t::action_init_finished
@@ -860,21 +859,12 @@ public:
       return mw_proc_state_list[ action->internal_id ];
     }
 
-    mw_proc_state_list[ action->internal_id ].first = state;
-    if ( state == mw_proc_state::ENABLED &&
-         !mw_proc_state_list[ action->internal_id ].second )
-    {
-      mw_proc_state_list[ action->internal_id ].second = get_proc(
-          fmt::format( "Maelstrom Weapon: {}",
-                      action->data().id()
-                      ? action->data().name_cstr()
-                      : action->name_str ) );
-    }
+    mw_proc_state_list[ action->internal_id ] = state;
 
     return mw_proc_state_list[ action->internal_id ];
   }
 
-  std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t& action, mw_proc_state state )
+  mw_proc_state set_mw_proc_state( action_t& action, mw_proc_state state )
   { return set_mw_proc_state( &( action ), state ); }
 
   mw_proc_state get_mw_proc_state( action_t* action ) const
@@ -882,22 +872,11 @@ public:
     assert( as<unsigned>( action->internal_id ) < mw_proc_state_list.size() &&
             "No Maelstrom Weapon proc-state found" );
 
-    return mw_proc_state_list[ action->internal_id ].first;
+    return mw_proc_state_list[ action->internal_id ];
   }
 
   mw_proc_state get_mw_proc_state( action_t& action ) const
   { return get_mw_proc_state( &( action ) ); }
-
-  proc_t* get_mw_proc_state_counter( action_t* action ) const
-  {
-    assert( as<unsigned>( action->internal_id ) < mw_proc_state_list.size() &&
-            "No Maelstrom Weapon proc-state found" );
-
-    return mw_proc_state_list[ action->internal_id ].second;
-  }
-
-  proc_t* get_mw_proc_state_counter( action_t& action ) const
-  { return get_mw_proc_state_counter( &( action ) ); }
 
   // trackers, big code blocks that shall not be doublicated
   void track_magma_chamber();
@@ -8839,11 +8818,6 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
     {
       shaman->generate_maelstrom_weapon( state );
       //shaman->buff.maelstrom_weapon->increment();
-      auto proc = shaman->get_mw_proc_state_counter( state->action );
-      if ( proc != nullptr )
-      {
-        proc->occur();
-      }
     }
   }
 };
