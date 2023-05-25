@@ -1559,13 +1559,13 @@ public:
 
 struct fire_breath_t : public empowered_charge_spell_t
 {
-  struct infernos_blessing_damage_t : public evoker_spell_t
+  struct infernos_blessing_t : public evoker_spell_t
   {
   protected:
     using state_t = evoker_action_state_t<stats_data_t>;
 
   public:
-    infernos_blessing_damage_t( evoker_t* p )
+    infernos_blessing_t( evoker_t* p )
       : evoker_spell_t( "infernos_blessing", p, p->talent.infernos_blessing_damage )
     {
       may_dodge = may_parry = may_block = false;
@@ -1712,8 +1712,11 @@ struct fire_breath_t : public empowered_charge_spell_t
   {
     create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
 
-    auto infernos_blessing = p->get_secondary_action<infernos_blessing_damage_t>( "infernos_blessing" );
-    add_child( infernos_blessing );
+    if ( p->talent.infernos_blessing.ok() )
+    {
+      auto infernos_blessing = p->get_secondary_action<infernos_blessing_t>( "infernos_blessing" );
+      add_child( infernos_blessing );
+    }
   }
 };
 
@@ -3265,10 +3268,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     if ( evoker->talent.infernos_blessing.ok() )
     {
       action_t* infernos_blessing =
-          evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_damage_t>( "infernos_blessing" );
+          evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_t>( "infernos_blessing" );
 
-      if ( !infernos_blessing->initialized )
-        infernos_blessing->init();
       auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
       stats->school = infernos_blessing->get_school();
 
