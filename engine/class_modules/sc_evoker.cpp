@@ -68,6 +68,7 @@ struct evoker_td_t : public actor_target_data_t
   {
     buff_t* blistering_scales;
     buff_t* prescience;
+    buff_t* infernos_blessing;
     stat_buff_t* ebon_might;
     buff_t* shifting_sands;
   } buffs;
@@ -344,6 +345,7 @@ struct evoker_t : public player_t
     player_talent_t momentum_shift;
     player_talent_t infernos_blessing;
     const spell_data_t* infernos_blessing_damage;
+    const spell_data_t* infernos_blessing_buff;
     player_talent_t time_skip;
     player_talent_t accretion;
     player_talent_t anachronism;
@@ -531,6 +533,11 @@ public:
 }  // namespace buffs
 
 // Base Classes =============================================================
+
+struct stats_data_t
+{
+  stats_t* stats;
+};
 
 struct augment_t : public spell_base_t
 {
@@ -1552,6 +1559,53 @@ public:
 
 struct fire_breath_t : public empowered_charge_spell_t
 {
+  struct infernos_blessing_damage_t : public evoker_spell_t
+  {
+  protected:
+    using state_t = evoker_action_state_t<stats_data_t>;
+
+  public:
+    infernos_blessing_damage_t( evoker_t* p )
+      : evoker_spell_t( "infernos_blessing", p, p->talent.infernos_blessing_damage )
+    {
+      may_dodge = may_parry = may_block = false;
+      background                        = true;
+      spell_power_mod.direct            = 0.88;  // Hardcoded for some reason, 24/05/2023
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    state_t* cast_state( action_state_t* s )
+    {
+      return static_cast<state_t*>( s );
+    }
+
+    const state_t* cast_state( const action_state_t* s ) const
+    {
+      return static_cast<const state_t*>( s );
+    }
+
+    void snapshot_state( action_state_t* s, result_amount_type rt ) override
+    {
+      evoker_spell_t::snapshot_state( s, rt );
+      cast_state( s )->stats = stats;
+    }
+
+    void record_data( action_state_t* data ) override
+    {
+      if ( !cast_state( data )->stats )
+        return;
+
+      cast_state( data )->stats->add_result(
+          data->result_amount, data->result_total, report_amount_type( data ), data->result,
+          ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
+          data->target );
+    }
+  };
+
   struct fire_breath_damage_t : public empowered_release_spell_t
   {
     timespan_t dot_dur_per_emp;
@@ -1595,6 +1649,19 @@ struct fire_breath_t : public empowered_charge_spell_t
       base_t::execute();
 
       p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
+
+      if ( p()->talent.infernos_blessing.ok() )
+      {
+        if ( p()->buff.ebon_might_self_buff->check() )
+        {
+          p()->get_target_data( p() )->buffs.infernos_blessing->trigger();
+
+          for ( auto a : p()->allies_with_ebon )
+          {
+            p()->get_target_data( a )->buffs.infernos_blessing->trigger();
+          }
+        }
+      }
     }
 
     timespan_t tick_time( const action_state_t* state ) const override
@@ -1644,6 +1711,9 @@ struct fire_breath_t : public empowered_charge_spell_t
     : base_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
   {
     create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
+
+    auto infernos_blessing = p->get_secondary_action<infernos_blessing_damage_t>( "infernos_blessing" );
+    add_child( infernos_blessing );
   }
 };
 
@@ -2640,12 +2710,6 @@ struct upheaval_t : public empowered_charge_spell_t
   }
 };
 
-// Empowered spell base templates
-struct stats_data_t
-{
-  stats_t* stats;
-};
-
 struct fate_mirror_damage_t : public evoker_spell_t
 {
 protected:
@@ -2803,22 +2867,12 @@ struct prescience_t : public evoker_augment_t
   }
 };
 
-struct infernos_blessing_damage_t : public evoker_spell_t
-{
-  infernos_blessing_damage_t( evoker_t* p )
-    : evoker_spell_t( "infernos_blessing_damage", p, p->talent.infernos_blessing_damage )
-  {
-    may_dodge = may_parry = may_block = callbacks = false;
-    background                                    = true;
-  }
-};
-
 struct blistering_scales_damage_t : public evoker_spell_t
 {
   blistering_scales_damage_t( evoker_t* p )
     : evoker_spell_t( "blistering_scales_damage", p, p->talent.blistering_scales_damage )
   {
-    may_dodge = may_parry = may_block = callbacks = false;
+    may_dodge = may_parry = may_block = false;
     background                                    = true;
     spell_power_mod.direct                        = 0.3;  // Hardcoded for some reason, 19/05/2023
   }
@@ -2939,6 +2993,40 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     }
   }
 };
+
+
+struct infernos_blessing_cb_t : public dbc_proc_callback_t
+{
+  evoker_t* source;
+  action_t* infernos_blessing;
+  stats_t* stats;
+
+  infernos_blessing_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* infernos_blessing,
+                          stats_t* stats )
+    : dbc_proc_callback_t( p, e ), source( source ), infernos_blessing( infernos_blessing ), stats( stats )
+  {
+    allow_pet_procs = true;
+    deactivate();
+    initialize();
+  }
+
+  evoker_t* p()
+  {
+    return source;
+  }
+
+  void execute( action_t* a, action_state_t* s ) override
+  {
+    if ( s->target->is_sleeping() )
+      return;
+
+    auto _stats              = infernos_blessing->stats;
+    infernos_blessing->stats = stats;
+    infernos_blessing->execute_on_target( s->target );
+    infernos_blessing->stats = _stats;
+  }
+};
+
 
 struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 {
@@ -3171,6 +3259,37 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     }
 
     buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->find_spell( 360827 ) );
+
+    buffs.infernos_blessing = make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
+
+    if ( evoker->talent.infernos_blessing.ok() )
+    {
+      action_t* infernos_blessing =
+          evoker->get_secondary_action<spells::fire_breath_t::infernos_blessing_damage_t>( "infernos_blessing" );
+
+      if ( !infernos_blessing->initialized )
+        infernos_blessing->init();
+      auto stats    = evoker->get_stats( "infernos_blessing_" + target->name_str, infernos_blessing );
+      stats->school = infernos_blessing->get_school();
+
+      infernos_blessing->stats->add_child( stats );
+
+      auto infernos_blessing_effect      = new special_effect_t( target );
+      infernos_blessing_effect->name_str = "infernos_blessing_" + target->name_str;
+      infernos_blessing_effect->type     = SPECIAL_EFFECT_EQUIP;
+      infernos_blessing_effect->spell_id = evoker->talent.infernos_blessing_buff->id();
+      target->special_effects.push_back( infernos_blessing_effect );
+
+      auto infernos_blessing_cb =
+          new buffs::infernos_blessing_cb_t( target, *infernos_blessing_effect, evoker, infernos_blessing, stats );
+
+      buffs.infernos_blessing->set_stack_change_callback( [ infernos_blessing_cb ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          infernos_blessing_cb->activate();
+        else
+          infernos_blessing_cb->deactivate();
+      } );
+    }
   }
 }
 
@@ -3452,9 +3571,6 @@ void evoker_t::init_base_stats()
 void evoker_t::init_background_actions()
 {
   player_t::init_background_actions();
-
-  get_secondary_action<spells::fate_mirror_damage_t>( "fate_mirror" );
-  get_secondary_action<spells::breath_of_eons_damage_t>( "breath_of_eons_damage", this );
 }
 
 void evoker_t::init_spells()
@@ -3585,6 +3701,7 @@ void evoker_t::init_spells()
   talent.momentum_shift           = ST( "Momentum Shift" );
   talent.infernos_blessing        = ST( "Inferno's Blessing" );
   talent.infernos_blessing_damage = find_spell( 410265 );
+  talent.infernos_blessing_buff   = find_spell( 410263 );
   talent.time_skip                = ST( "Time Skip" );
   talent.accretion                = ST( "Accretion" );
   talent.anachronism              = ST( "Anachronism" );
