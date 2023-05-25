@@ -1835,7 +1835,7 @@ public:
     if ( !p()->talent.havoc.initiative->ok() )
       return;
 
-    if ( td( s->target )->debuffs.initiative_tracker->check() )
+    if ( !s->target->is_enemy() || td( s->target )->debuffs.initiative_tracker->check() )
       return;
 
     p()->buff.initiative->trigger();
