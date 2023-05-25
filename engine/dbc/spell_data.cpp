@@ -525,12 +525,12 @@ const spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
 }
 
 const spelleffect_data_t& spell_data_t::find_spelleffect( const spell_data_t& spell, effect_type_t type,
-                                                          effect_subtype_t subtype, property_type_t property )
+                                                          effect_subtype_t subtype, int misc )
 {
   for ( const auto& e : spell.effects() )
   {
     if ( e.type() == type && ( subtype == A_MAX || e.subtype() == subtype ) &&
-         ( property == P_MAX || e.property_type() == property ) )
+         ( misc == std::numeric_limits<int>::min() || e.misc_value1() == misc ) )
     {
       return e;
     }

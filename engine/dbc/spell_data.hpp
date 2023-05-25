@@ -777,7 +777,7 @@ struct spell_data_t
 
   static const spelleffect_data_t& find_spelleffect( const spell_data_t& spell, effect_type_t type,
                                                      effect_subtype_t subtype = A_MAX,
-                                                     property_type_t property = P_MAX );
+                                                     int misc = std::numeric_limits<int>::min() );
 
   static void link( bool ptr );
 private:
