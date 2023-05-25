@@ -84,11 +84,11 @@ void retribution( player_t* p )
 //protection_apl_start
 void protection( player_t* p )
 {
-  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* default_  = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
-  action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t* standard = p->get_action_priority_list( "standard" );
+  action_priority_list_t* trinkets  = p->get_action_priority_list( "trinkets" );
+  action_priority_list_t* standard  = p->get_action_priority_list( "standard" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
@@ -107,11 +107,14 @@ void protection( player_t* p )
   default_->add_action( "call_action_list,name=cooldowns" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
-
+  
   cooldowns->add_action( "avengers_shield,if=time=0&set_bonus.tier29_2pc", "Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped." );
+  cooldowns->add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up" );
   cooldowns->add_action( "avenging_wrath" );
   cooldowns->add_action( "potion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))" );
+  cooldowns->add_action( "divine_toll,if=spell_targets.shield_of_the_righteous>=3" );
+  cooldowns->add_action( "eye_of_tyr,if=talent.inmost_light.enabled&spell_targets.shield_of_the_righteous>=3" );
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up" );
 
   trinkets->add_action( "use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains" );
@@ -122,19 +125,18 @@ void protection( player_t* p )
   standard->add_action( "shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)" );
   standard->add_action( "avengers_shield,if=buff.moment_of_glory.up|(set_bonus.tier29_2pc&(!buff.ally_of_the_light.up|buff.ally_of_the_light.remains<gcd))", "Use Avenger's Shield as First Priority when 2pc buff is missing." );
   standard->add_action( "hammer_of_wrath,if=buff.avenging_wrath.up" );
-  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled" );
-  standard->add_action( "divine_toll,if=time>20|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
+  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=talent.crusaders_judgment.enabled&(charges=2|cooldown.judgment.remains<4)|!talent.crusaders_judgment.enabled" );
+  standard->add_action( "divine_toll,if=(time>20&(!raid_event.adds.exists|raid_event.adds.in>10))|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))" );
   standard->add_action( "avengers_shield" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
   standard->add_action( "consecration,if=!consecration.up" );
-  standard->add_action( "eye_of_tyr" );
+  standard->add_action( "eye_of_tyr,if=!talent.inmost_light.enabled|raid_event.adds.in>=45" );
   standard->add_action( "blessed_hammer" );
   standard->add_action( "hammer_of_the_righteous" );
   standard->add_action( "crusader_strike" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
   standard->add_action( "arcane_torrent,if=holy_power<5" );
-  standard->add_action( "lights_judgment" );
   standard->add_action( "consecration" );
 }
 //protection_apl_end
