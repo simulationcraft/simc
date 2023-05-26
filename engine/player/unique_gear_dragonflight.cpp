@@ -666,8 +666,8 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   auto restock_driver = find_special_effect( effect.player, 408667 );
   if ( restock_driver )
   {
-    auto skilled_restock =
-        make_buff( effect.player, "skilled_restock", effect.player->find_spell( 408770 ), effect.item )  // 408770
+    auto restock_buff =
+        make_buff( effect.player, "flash_of_inspiration", effect.player->find_spell( 408770 ), effect.item )  // 408770
             ->set_quiet( true )
             ->set_stack_change_callback( [ & ]( buff_t* buff, int, int ) {
               if ( buff->at_max_stacks() )
@@ -678,7 +678,7 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
               }
             } );
 
-    restock_driver->custom_buff = skilled_restock;
+    restock_driver->custom_buff = restock_buff;
     restock_driver->proc_flags2_ = PF2_CRIT;
 
     new dbc_proc_callback_t( effect.player, *restock_driver );
