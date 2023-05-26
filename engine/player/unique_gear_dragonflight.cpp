@@ -666,17 +666,16 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
   auto restock_driver = find_special_effect( effect.player, 408667 );
   if ( restock_driver )
   {
-    auto restock_buff =
-        make_buff( effect.player, "flash_of_inspiration", effect.player->find_spell( 408770 ), effect.item )  // 408770
-            ->set_quiet( true )
-            ->set_stack_change_callback( [ & ]( buff_t* buff, int, int ) {
-              if ( buff->at_max_stacks() )
-              {
-                // At 60 stacks gain a charge
-                effect.execute_action->cooldown->reset( true );
-                buff->expire();
-              }
-            } );
+    auto restock_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 408770 ) )
+      ->set_quiet( true )
+      ->set_stack_change_callback( [ & ]( buff_t* buff, int, int ) {
+        if ( buff->at_max_stacks() )
+        {
+          // At 60 stacks gain a charge
+          effect.execute_action->cooldown->reset( true );
+          buff->expire();
+        }
+      } );
 
     restock_driver->custom_buff = restock_buff;
     restock_driver->proc_flags2_ = PF2_CRIT;
@@ -684,43 +683,32 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, *restock_driver );
   }
 
-  // AoE Explosion
-  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408667 );
-  explode->name_str_reporting = "AOE";
-  explode->base_dd_min = explode->base_dd_max =
-      effect.player->find_spell( 408694 )->effectN( 2 ).average( effect.item );
+  auto coeff_data = effect.player->find_spell( 408667 );
 
-  effect.player->register_on_kill_callback( [ effect, explode ]( player_t* t ) {
-    if ( effect.player->sim->event_mgr.canceled )
+  // AoE Explosion
+  auto explode = create_proc_action<generic_aoe_proc_t>( "dragonfire_bomb_aoe", effect, "dragonfire_bomb_aoe", 408694 );
+  explode->name_str_reporting = "AOE";
+  explode->base_dd_min = explode->base_dd_max = coeff_data->effectN( 2 ).average( effect.item );
+  effect.player->register_on_kill_callback( [ p = effect.player, explode ]( player_t* t ) {
+    if ( p->sim->event_mgr.canceled )
       return;
 
-    auto td = effect.player->find_target_data( t );
+    auto td = p->find_target_data( t );
     if ( td && td->debuff.dragonfire_bomb->check() )
       explode->execute_on_target( t );
   } );
 
   // ST Damage
-  struct dragonfire_bomb_st_t : public proc_spell_t
-  {
-    dragonfire_bomb_st_t( const special_effect_t& e )
-      : proc_spell_t( "dragonfire_bomb_st", e.player, e.player->find_spell( 408682 ), e.item )
-    {
-      background = true;
-      base_dd_min = base_dd_max = e.player->find_spell( 408667 )->effectN( 1 ).average( e.item );
-      name_str_reporting = "ST";
-    }
-  };
-
-  create_proc_action<dragonfire_bomb_st_t>( "dragonfire_bomb_st", effect );
+  auto st = create_proc_action<generic_proc_t>( "dragonfire_bomb_st", effect, "dragonfire_bomb_st", 408682 );
+  st->name_str_reporting = "ST";
+  st->base_dd_min = st->base_dd_max = coeff_data->effectN( 1 ).average( effect.item );
 
   // DoT Driver
   struct dragonfire_bomb_missile_t : public proc_spell_t
   {
     dragonfire_bomb_missile_t( const special_effect_t& e )
       : proc_spell_t( "dragonfire_bomb_dispenser", e.player, e.player->find_spell( e.spell_id ), e.item )
-    {
-      background = true;
-    }
+    {}
 
     void impact( action_state_t* s ) override
     {
@@ -730,7 +718,7 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
 
       if ( td )
       {
-        if ( td->debuff.dragonfire_bomb->up() )
+        if ( td->debuff.dragonfire_bomb->check() )
           td->debuff.dragonfire_bomb->expire();
 
         td->debuff.dragonfire_bomb->trigger();
@@ -758,11 +746,11 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
 
     struct dragonfire_bomb_debuff_t : buff_t
     {
-      player_t* target;
       action_t* bomb;
 
-      dragonfire_bomb_debuff_t( actor_target_data_t& td, util::string_view n, const spell_data_t* s )
-        : buff_t( td, n, s ), target( td.target ), bomb( td.source->find_action( "dragonfire_bomb_st" ) )
+      dragonfire_bomb_debuff_t( actor_target_data_t& td )
+        : buff_t( td, "dragonfire_bomb", td.source->find_spell( 408675 ) ),
+          bomb( td.source->find_action( "dragonfire_bomb_st" ) )
       {}
 
       void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -770,12 +758,11 @@ struct dragonfire_bomb_dispenser_initializer_t : public item_targetdata_initiali
         buff_t::expire_override( expiration_stacks, remaining_duration );
 
         if ( bomb )
-          bomb->execute_on_target( target );
+          bomb->execute_on_target( player );
       }
     };
 
-    td->debuff.dragonfire_bomb =
-        new dragonfire_bomb_debuff_t( *td, "dragonfire_bomb", td->source->find_spell( 408675 ) );  // IT GONNA BLOW!
+    td->debuff.dragonfire_bomb = make_buff<dragonfire_bomb_debuff_t>( *td );  // IT GONNA BLOW!
     td->debuff.dragonfire_bomb->reset();
   }
 };
