@@ -990,7 +990,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_SHIELD_BLOCKVALUE_PCT = 150,
     A_TRACK_STEALTHED = 151, // Track Stealthed
     A_MOD_DETECTED_RANGE = 152, // Mod Detected Range
-    A_SPLIT_DAMAGE_FLAT = 153, // Split Damage Flat
+    A_MOD_AUTO_ATTACK_RANGE = 153,
     A_MOD_STEALTH_LEVEL = 154, // Stealth Level Modifier
     A_MOD_WATER_BREATHING = 155, // Mod Water Breathing
     A_MOD_REPUTATION_GAIN = 156, // Mod Reputation Gain
