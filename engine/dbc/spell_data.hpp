@@ -779,6 +779,10 @@ struct spell_data_t
                                                      effect_subtype_t subtype = A_MAX,
                                                      int misc = std::numeric_limits<int>::min() );
 
+  static const spelleffect_data_t& find_spelleffect( const spell_data_t& spell, const spell_data_t& affected,
+                                                     effect_type_t type, effect_subtype_t subtype = A_MAX,
+                                                     int misc = std::numeric_limits<int>::min() );
+
   static void link( bool ptr );
 private:
   static util::span<spell_data_t> _data( bool ptr );
