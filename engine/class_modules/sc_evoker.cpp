@@ -563,7 +563,7 @@ public:
     return as<int>( sim->player_no_pet_list.size() );
   }
 
-  size_t available_targets( std::vector<player_t*>& target_list ) const
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
   {
     target_list.clear();
     target_list.push_back( target );
@@ -577,7 +577,7 @@ public:
     return target_list.size();
   }
 
-  std::unique_ptr<expr_t> create_expression( util::string_view name )
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     if ( name_str == "active_allies" )
     {
@@ -1541,7 +1541,7 @@ public:
     p()->allies_with_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
   }
 
-  size_t available_targets( std::vector<player_t*>& target_list ) const
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
   {
     target_list.clear();
     // Player must always be the first target.
@@ -2981,7 +2981,7 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
     return source;
   }
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -3018,7 +3018,7 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     return source;
   }
 
-  void execute( action_t* a, action_state_t* s ) override
+  void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
       return;
@@ -3051,7 +3051,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 
       trigger_type = trigger_fn_type::CONDITION;
 
-      const trigger_fn_t lambda = [ this ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+      const trigger_fn_t lambda = [ this ]( const dbc_proc_callback_t*, action_t*, action_state_t* s ) {
         if ( s->result_amount <= 0 )
           return false;
 
@@ -3128,7 +3128,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     return sim->actor_list[ i ];
   }
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration )
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     if ( !evoker_buff_t::trigger( stacks, value, chance, duration ) )
       return false;
@@ -4396,7 +4396,7 @@ struct evoker_module_t : public module_t
     return true;
   }
 
-  void init( player_t* p ) const override
+  void init( player_t* /* p */ ) const override
   {
   }
 

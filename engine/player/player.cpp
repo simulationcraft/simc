@@ -2515,7 +2515,7 @@ static bool generate_tree_nodes( player_t* player,
 // ***THIS WILL NEED TO BE CONFIRMED AND UPDATED EVERY NEW BUILD***
 static bool sort_node_entries( const trait_data_t* a, const trait_data_t* b, bool is_ptr )
 {
-  auto get_index = [ is_ptr ]( const trait_data_t* t ) -> short {
+  auto get_index = [ /* is_ptr */ ]( const trait_data_t* t ) -> short {
     return t->selection_index;
   };
 

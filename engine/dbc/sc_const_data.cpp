@@ -800,7 +800,7 @@ struct spec_index_map_t {
       {
         specialization_e spec = __class_spec_id[ i ][ index ];
         if ( spec != SPEC_NONE )
-          data_[ spec ] = index;
+          data_[ spec ] = static_cast<int8_t>( index );
       }
     }
   }
