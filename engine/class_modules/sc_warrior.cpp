@@ -5648,6 +5648,7 @@ struct earthen_smash_t : public warrior_attack_t
   : warrior_attack_t( name, p, p->find_spell( 410219 ) )
   {
     background = true;
+    aoe = -1;
   }
 };
 
