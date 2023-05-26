@@ -362,7 +362,7 @@ struct call_dreadstalkers_t : public demonology_spell_t
       t *= 1.0 + p()->talents.demonic_calling_buff->effectN( 2 ).percent();
     }
 
-    return demonology_spell_t::execute_time();
+    return t;
   }
 
   void execute() override
