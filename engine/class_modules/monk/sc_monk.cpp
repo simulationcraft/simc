@@ -3791,8 +3791,7 @@ namespace monk
 
         void execute() override
         {
-          if ( p()->buff.blackout_combo->up() )
-            blackout_combo = true;
+          blackout_combo = p()->buff.blackout_combo->up();
 
           monk_spell_t::execute();
         }
@@ -3850,8 +3849,7 @@ namespace monk
 
         void execute() override
         {
-          if ( p()->buff.blackout_combo->up() )
-            blackout_combo = true;
+          blackout_combo = p()->buff.blackout_combo->up();
 
           monk_spell_t::execute();
 
