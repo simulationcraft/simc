@@ -187,7 +187,7 @@ actions.t30_burst_phase+=/rune_of_power,if=buff.rune_of_power.down&debuff.touch_
 actions.t30_burst_phase+=/wait,sec=0.05,if=prev_gcd.1.arcane_surge,line_cd=15
 actions.t30_burst_phase+=/arcane_barrage,if=prev_gcd.1.arcane_surge
 actions.t30_burst_phase+=/meteor,if=debuff.radiant_spark_vulnerability.stack=3
-actions.t30_burst_phase+=/arcane_blast,if=debuff.radiant_spark_vulnerability.up
+actions.t30_burst_phase+=/arcane_blast,if=(debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4)|(cast_time<gcd&debuff.radiant_spark_vulnerability.stack=4)
 actions.t30_burst_phase+=/presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max
 actions.t30_burst_phase+=/arcane_blast,if=buff.presence_of_mind.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 actions.t30_burst_phase+=/cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up
@@ -200,7 +200,7 @@ actions.t30_mini+=/nether_tempest,if=prev_gcd.1.radiant_spark|prev_gcd.1.shiftin
 actions.t30_mini+=/meteor,if=debuff.radiant_spark_vulnerability.stack=0
 actions.t30_mini+=/arcane_barrage,if=prev_gcd.1.meteor|(prev_gcd.1.nether_tempest&(prev_gcd.2.radiant_spark|prev_gcd.3.radiant_spark))
 actions.t30_mini+=/touch_of_the_magi,use_off_gcd=1,if=prev_gcd.1.arcane_barrage&(action.arcane_barrage.in_flight_remains<=0.2|gcd.remains<=0.2)
-actions.t30_mini+=/arcane_blast,if=(debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4)|buff.nether_precision.up
+actions.t30_mini+=/arcane_blast,if=((debuff.radiant_spark_vulnerability.stack>0&debuff.radiant_spark_vulnerability.stack<4)|(cast_time<gcd&debuff.radiant_spark_vulnerability.stack=4))|buff.nether_precision.up
 actions.t30_mini+=/presence_of_mind,if=(debuff.touch_of_the_magi.remains<=gcd.max|buff.rune_of_power.remains<=gcd.max)
 actions.t30_mini+=/cancel_action,if=action.arcane_missiles.channeling&gcd.remains=0&mana.pct>30&buff.nether_precision.up
 actions.t30_mini+=/arcane_missiles,if=buff.clearcasting.react&(debuff.touch_of_the_magi.remains>execute_time|!talent.presence_of_mind),chain=1
