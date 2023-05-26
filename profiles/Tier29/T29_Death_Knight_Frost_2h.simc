@@ -168,7 +168,8 @@ actions.racials+=/bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&
 actions.single_target=remorseless_winter,if=variable.rw_buffs|variable.adds_remain
 actions.single_target+=/frost_strike,if=buff.killing_machine.stack<2&runic_power.deficit<20&!variable.2h_check
 actions.single_target+=/frostscythe,if=buff.killing_machine.react&variable.frostscythe_priority
-actions.single_target+=/obliterate,if=buff.killing_machine.react
+actions.single_target+=/obliterate,if=set_bonus.tier30_4pc&(talent.fatal_fixation&buff.killing_machine.stack>1&buff.killing_machine.react)|(!talent.fatal_fixation&buff.killing_machine.react)
+actions.single_target+=/obliterate,if=!set_bonus.tier30_4pc&buff.killing_machine.react
 actions.single_target+=/howling_blast,if=buff.rime.react&talent.icebreaker.rank=2
 actions.single_target+=/horn_of_winter,if=rune<4&runic_power.deficit>25&talent.obliteration&talent.breath_of_sindragosa
 actions.single_target+=/frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|runic_power.deficit<25|debuff.razorice.stack=5&talent.shattering_blade)
