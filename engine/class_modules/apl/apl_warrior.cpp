@@ -4,28 +4,22 @@
 
 namespace warrior_apl
 {
-
-void default_precombat( player_t* p )
-{
-  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat->add_action( "use_item,name=algethar_puzzle_box" );
-}
-
+//fury_apl_start
 void fury( player_t* p )
 {
   std::vector<std::string> racial_actions = p->get_racial_actions();
-
-  default_precombat( p );
 
   action_priority_list_t* default_list = p->get_action_priority_list( "default" );
   // action_priority_list_t* movement      = get_action_priority_list( "movement" );
   action_priority_list_t* multi_target  = p->get_action_priority_list( "multi_target" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
   action_priority_list_t* precombat     = p->get_action_priority_list( "precombat" );
+
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
 
   precombat->add_action( "berserker_stance,toggle=on" );
   precombat->add_action( "avatar,if=!talent.titans_torment" );
@@ -138,12 +132,12 @@ void fury( player_t* p )
   single_target->add_action( "wrecking_throw" );
   single_target->add_action( "storm_bolt" );
 }
+//fury_apl_end
 
+//arms_apl_start
 void arms( player_t* p )
 {
   std::vector<std::string> racial_actions = p->get_racial_actions();
-
-  default_precombat( p );
 
   action_priority_list_t* default_list = p->get_action_priority_list( "default" );
   action_priority_list_t* hac          = p->get_action_priority_list( "hac" );
@@ -152,6 +146,11 @@ void arms( player_t* p )
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
   action_priority_list_t* precombat     = p->get_action_priority_list( "precombat" );
 
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "use_item,name=algethar_puzzle_box" );
   precombat->add_action( "battle_stance,toggle=on" );
 
   default_list->add_action( "charge,if=time<=0.5|movement.distance>5" );
@@ -266,47 +265,52 @@ void arms( player_t* p )
   single_target->add_action( "wrecking_throw" );
   single_target->add_action( "rend,if=remains<duration*0.3" );
 }
+//arms_apl_end
 
+//protection_apl_start
 void protection( player_t* p )
 {
-  default_precombat( p );
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
+  action_priority_list_t* generic = p->get_action_priority_list( "generic" );
 
-  action_priority_list_t* default_list = p->get_action_priority_list( "default" );
-  action_priority_list_t* aoe          = p->get_action_priority_list( "aoe" );
-  action_priority_list_t* generic      = p->get_action_priority_list( "generic" );
-  action_priority_list_t* precombat    = p->get_action_priority_list( "precombat" );
-
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats" );
   precombat->add_action( "battle_stance,toggle=on" );
 
-  default_list->add_action( "auto_attack" );
-  default_list->add_action( "charge,if=time=0" );
-  default_list->add_action( "use_items" );
-  default_list->add_action( "avatar" );
-  default_list->add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
-  default_list->add_action( "blood_fury" );
-  default_list->add_action( "berserking" );
-  default_list->add_action( "arcane_torrent" );
-  default_list->add_action( "lights_judgment" );
-  default_list->add_action( "fireblood" );
-  default_list->add_action( "ancestral_call" );
-  default_list->add_action( "bag_of_tricks" );
-  default_list->add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
-  default_list->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
-  default_list->add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
-  default_list->add_action( "ravager" );
-  default_list->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
-  default_list->add_action( "spear_of_bastion" );
-  default_list->add_action( "thunderous_roar" );
-  default_list->add_action( "shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled" );
-  default_list->add_action( "shield_charge" );
-  default_list->add_action( "shield_block,if=buff.shield_block.duration<=18&talent.enduring_defenses.enabled|buff.shield_block.duration<=12" );
-  default_list->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
-  default_list->add_action( "call_action_list,name=generic" );
+  default_->add_action( "auto_attack" );
+  default_->add_action( "charge,if=time=0" );
+  default_->add_action( "use_items" );
+  default_->add_action( "avatar" );
+  default_->add_action( "shield_wall,if=talent.immovable_object.enabled&buff.avatar.down" );
+  default_->add_action( "blood_fury" );
+  default_->add_action( "berserking" );
+  default_->add_action( "arcane_torrent" );
+  default_->add_action( "lights_judgment" );
+  default_->add_action( "fireblood" );
+  default_->add_action( "ancestral_call" );
+  default_->add_action( "bag_of_tricks" );
+  default_->add_action( "potion,if=buff.avatar.up|buff.avatar.up&target.health.pct<=20" );
+  default_->add_action( "ignore_pain,if=target.health.pct>=20&(rage.deficit<=15&cooldown.shield_slam.ready|rage.deficit<=40&cooldown.shield_charge.ready&talent.champions_bulwark.enabled|rage.deficit<=20&cooldown.shield_charge.ready|rage.deficit<=30&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage.deficit<=20&cooldown.avatar.ready|rage.deficit<=45&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=30&cooldown.avatar.ready&buff.last_stand.up&talent.unnerving_focus.enabled|rage.deficit<=20|rage.deficit<=40&cooldown.shield_slam.ready&buff.violent_outburst.up&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=55&cooldown.shield_slam.ready&buff.violent_outburst.up&buff.last_stand.up&talent.unnerving_focus.enabled&talent.heavy_repercussions.enabled&talent.impenetrable_wall.enabled|rage.deficit<=17&cooldown.shield_slam.ready&talent.heavy_repercussions.enabled|rage.deficit<=18&cooldown.shield_slam.ready&talent.impenetrable_wall.enabled),use_off_gcd=1" );
+  default_->add_action( "last_stand,if=(target.health.pct>=90&talent.unnerving_focus.enabled|target.health.pct<=20&talent.unnerving_focus.enabled)|talent.bolster.enabled|set_bonus.tier30_2pc|set_bonus.tier30_4pc" );
+  default_->add_action( "ravager" );
+  default_->add_action( "demoralizing_shout,if=talent.booming_voice.enabled" );
+  default_->add_action( "spear_of_bastion" );
+  default_->add_action( "thunderous_roar" );
+  default_->add_action( "shockwave,if=talent.sonic_boom.enabled&buff.avatar.up&talent.unstoppable_force.enabled&!talent.rumbling_earth.enabled" );
+  default_->add_action( "shield_charge" );
+  default_->add_action( "shield_block,if=buff.shield_block.duration<=18&talent.enduring_defenses.enabled|buff.shield_block.duration<=12" );
+  default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
+  default_->add_action( "call_action_list,name=generic" );
 
   aoe->add_action( "thunder_clap,if=dot.rend.remains<=1" );
+  aoe->add_action( "shield_slam,if=(set_bonus.tier30_2pc|set_bonus.tier30_4pc)&spell_targets.thunder_clap<=7|buff.earthen_tenacity.up" );
   aoe->add_action( "thunder_clap,if=buff.violent_outburst.up&spell_targets.thunderclap>5&buff.avatar.up&talent.unstoppable_force.enabled" );
   aoe->add_action( "revenge,if=rage>=70&talent.seismic_reverberation.enabled&spell_targets.revenge>=3" );
-  aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=4" );
+  aoe->add_action( "shield_slam,if=rage<=60|buff.violent_outburst.up&spell_targets.thunderclap<=7" );
   aoe->add_action( "thunder_clap" );
   aoe->add_action( "revenge,if=rage>=30|rage>=40&talent.barbaric_training.enabled" );
 
@@ -318,8 +322,8 @@ void protection( player_t* p )
   generic->add_action( "revenge,if=(rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20)|(rage>=60&target.health.pct>35|buff.revenge.up&target.health.pct<=35&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>35)&talent.massacre.enabled" );
   generic->add_action( "execute,if=spell_targets.revenge=1" );
   generic->add_action( "revenge" );
-  generic->add_action(
-      "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)" );
+  generic->add_action( "thunder_clap,if=(spell_targets.thunder_clap>=1|cooldown.shield_slam.remains&buff.violent_outburst.up)" );
   generic->add_action( "devastate" );
 }
+//protection_apl_end
 }  // namespace warrior_apl
