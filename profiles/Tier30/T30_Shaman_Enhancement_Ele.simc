@@ -134,13 +134,13 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordia
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=spangenhelm_of_the_cinderwolf,id=205815,bonus_id=4800/4786/1504/6935,gem_id=192988
-neck=choker_of_stolen_thunder,id=206180,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,ilevel=447,gem_id=192961/192961/192961
+neck=elemental_lariat,id=193001,bonus_id=9405/9376/8793,gem_id=192961/192961/192961
 shoulders=thunderpads_of_the_cinderwolf,id=202468,bonus_id=4800/4786/1507
 back=voice_of_the_silent_star,id=204465,bonus_id=4800/4786/1498
-chest=adornments_of_the_cinderwolf,id=202473,bonus_id=4800/4786/1498,enchant=waking_stats_3
-wrists=complicated_cuffs,id=198332,bonus_id=8836/8840/8902/9376/9405/8950/9436,gem_id=192961,enchant_id=6574,crafted_stats=32
-hands=scale_rein_grips,id=193465,bonus_id=9405/9376
-waist=wind_spirits_lasso,id=193463,bonus_id=9405/9376/9436,gem_id=192961
+chest=flametouched_chainmail,id=193422,bonus_id=9405/9376/8793,enchant=waking_stats_3
+wrists=adaptive_dracothyst_armguards,id=204704,bonus_id=9405/9376/9436,gem_id=192961,enchant_id=6574
+hands=knuckles_of_the_cinderwolf,id=202471,bonus_id=4800/4786/1498
+waist=faulds_of_the_cinderwolf,id=202467,bonus_id=4800/4786/1504/523,gem_id=192961
 legs=braies_of_the_cinderwolf,id=202469,bonus_id=4800/4786/1507,enchant=fierce_armor_kit_3
 feet=crechebound_soldiers_boots,id=204424,bonus_id=4800/4786/1498,enchant_id=6607
 finger1=signet_of_titanic_insight,id=192999,bonus_id=8836/8902/8780/9405/9376/8793,gem_id=192961,enchant=devotion_of_mastery_3,crafted_stats=49/36
@@ -154,13 +154,12 @@ off_hand=primal_molten_mace,id=190509,bonus_id=8840/8836/8902/1537,enchant=sophi
 # gear_ilvl=448.63
 # gear_agility=6225
 # gear_stamina=22474
-# gear_crit_rating=1401
-# gear_haste_rating=5522
-# gear_mastery_rating=5201
-# gear_versatility_rating=911
+# gear_crit_rating=1024
+# gear_haste_rating=6066
+# gear_mastery_rating=5166
+# gear_versatility_rating=795
 # gear_speed_rating=250
 # gear_avoidance_rating=200
 # gear_armor=5775
-# set_bonus=horizon_striders_garments_2pc=1
 # set_bonus=tier30_2pc=1
 # set_bonus=tier30_4pc=1
