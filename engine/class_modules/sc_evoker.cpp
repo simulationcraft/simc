@@ -1227,6 +1227,8 @@ struct emerald_blossom_t : public essence_heal_t
   };
 
   action_t *heal, *panacea, *virtual_heal;
+  
+  timespan_t extend_ebon;
 
   emerald_blossom_t( evoker_t* p, std::string_view options_str )
     : essence_heal_t( "emerald_blossom", p, p->spec.emerald_blossom, options_str )
@@ -1237,6 +1239,8 @@ struct emerald_blossom_t : public essence_heal_t
     panacea      = p->get_secondary_action<panacea_t>( "panacea" );
 
     min_travel_time = data().duration().total_seconds();
+
+    extend_ebon = timespan_t::from_seconds( p->talent.dream_of_spring->effectN( 2 ).base_value() );
 
     add_child( heal );
     add_child( panacea );
@@ -1261,7 +1265,10 @@ struct emerald_blossom_t : public essence_heal_t
 
   void execute() override
   {
-    evoker_heal_t::execute();
+    essence_heal_t::execute();
+
+    if ( extend_ebon > timespan_t::zero() )
+      p()->extend_ebon( extend_ebon );
 
     if ( p()->talent.ancient_flame->ok() )
       p()->buff.ancient_flame->trigger();
