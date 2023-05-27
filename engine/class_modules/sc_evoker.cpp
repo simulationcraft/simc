@@ -196,6 +196,10 @@ struct evoker_t : public player_t
 
     const spell_data_t* living_flame_damage;
     const spell_data_t* living_flame_heal;
+
+    const spell_data_t* emerald_blossom;
+    const spell_data_t* emerald_blossom_heal;
+    const spell_data_t* emerald_blossom_spec;
     // Devastation
 
     // Preservation
@@ -233,6 +237,7 @@ struct evoker_t : public player_t
     player_talent_t bountiful_bloom;
     player_talent_t blast_furnace;  // row 7
     player_talent_t panacea;
+    const spell_data_t* panacea_spell;
     player_talent_t exuberance;
     player_talent_t source_of_magic;
     player_talent_t ancient_flame;
@@ -908,9 +913,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
   empowered_release_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : ab( name, p, spell ),
       extend_ebon( p->talent.ebon_might.ok() ? p->talent.sands_of_time->effectN( 2 ).time_value() : 0_s ),
-      sands( p->specialization() == EVOKER_AUGMENTATION
-                 ? p->get_secondary_action<shifting_sands_t>( "shifting_sands" )
-                 : nullptr )
+      sands( p->specialization() == EVOKER_AUGMENTATION ? p->get_secondary_action<shifting_sands_t>( "shifting_sands" )
+                                                        : nullptr )
   {
     ab::dual = true;
 
@@ -1171,10 +1175,9 @@ public:
       auto& stored = p()->buff.scarlet_adaptation->current_value;
       // TODO: raw_amount for used for testing
       // stored += s->result_amount * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
-      stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
+      stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent() * ( 1 - p()->option.scarlet_overheal );
       // TODO: confirm if this always matches living flame SP coeff
-      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap *
-                                     ( 1 - p()->option.scarlet_overheal ) );
+      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
     }
   }
 
@@ -1196,6 +1199,104 @@ using empowered_charge_heal_t  = empowered_charge_t<evoker_heal_t>;
 using empowered_release_heal_t = empowered_release_t<evoker_heal_t>;
 
 // Heals ====================================================================
+
+struct emerald_blossom_t : public essence_heal_t
+{
+  struct emerald_blossom_heal_t : public evoker_heal_t
+  {
+    emerald_blossom_heal_t( evoker_t* p, bool do_aoe = true ) : evoker_heal_t( do_aoe ? "emerald_blossom_heal" : "emerald_blossom_virtual_heal", p, p->spec.emerald_blossom_heal )
+    {
+      harmful = false;
+      dual    = true;
+      if ( do_aoe )
+        aoe = data().effectN( 2 ).base_value() + p->talent.bountiful_bloom->effectN( 1 ).base_value();
+    }
+  };
+
+  struct panacea_t : public evoker_heal_t
+  {
+    panacea_t( evoker_t* p ) : evoker_heal_t( "panacea", p, p->talent.panacea_spell )
+    {
+      harmful = false;
+      dual    = true;
+      target  = p;
+    }
+  };
+
+
+  action_t *heal, *panacea, *virtual_heal;
+
+  emerald_blossom_t( evoker_t* p, std::string_view options_str )
+    : essence_heal_t( "emerald_blossom", p, p->spec.emerald_blossom, options_str )
+  {
+    harmful = false;
+    heal    = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
+    virtual_heal    = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_virtual_heal", false);
+    panacea = p->get_secondary_action<panacea_t>( "panacea" );
+
+    min_travel_time = data().duration().total_seconds();
+
+    add_child( heal );
+    add_child( panacea );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    essence_heal_t::impact( s );
+
+    heal->execute_on_target( s->target );
+
+    auto tl_size = heal->target_list().size();
+    if ( heal->aoe > tl_size )
+    {
+      tl_size = heal->aoe - tl_size;
+      for ( size_t i = 0; i < tl_size; i++ )
+      {
+        virtual_heal->execute_on_target( s->target );
+      }
+    }
+  }
+
+  void execute() override
+  {
+    evoker_heal_t::execute();
+
+    if ( p()->talent.ancient_flame->ok() )
+      p()->buff.ancient_flame->trigger();
+
+    if ( p()->talent.panacea.ok() )
+      panacea->execute_on_target( p() );
+  }
+};
+
+struct verdant_embrace_t : public evoker_heal_t
+{
+  struct verdant_embrace_heal_t : public evoker_heal_t
+  {
+    verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
+    {
+      harmful = false;
+      dual    = true;
+    }
+  };
+
+  verdant_embrace_t( evoker_t* p, std::string_view options_str )
+    : evoker_heal_t( "verdant_embrace", p, p->talent.verdant_embrace, options_str )
+  {
+    harmful       = false;
+    impact_action = p->get_secondary_action<verdant_embrace_heal_t>( "verdant_embrace_heal" );
+
+    add_child( impact_action );
+  }
+
+  void execute() override
+  {
+    evoker_heal_t::execute();
+
+    if ( p()->talent.ancient_flame->ok() )
+      p()->buff.ancient_flame->trigger();
+  }
+};
 
 }  // namespace heals
 
@@ -1390,7 +1491,8 @@ public:
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
   }
 
-  ebon_might_t( evoker_t* p, timespan_t ebon, std::string_view name ) : evoker_augment_t( name, p, p->talent.ebon_might )
+  ebon_might_t( evoker_t* p, timespan_t ebon, std::string_view name )
+    : evoker_augment_t( name, p, p->talent.ebon_might )
   {
     // Add a target so you always hit yourself.
     aoe += 1;
@@ -1471,7 +1573,7 @@ public:
       else if ( delta < 0 )
       {
         b->player->stat_loss( buff_stat.stat, std::fabs( delta ), b->stat_gain, nullptr,
-                           b->buff_duration() > timespan_t::zero() );
+                              b->buff_duration() > timespan_t::zero() );
       }
 
       buff_stat.current_value += delta;
@@ -1565,8 +1667,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     using state_t = evoker_action_state_t<stats_data_t>;
 
   public:
-    infernos_blessing_t( evoker_t* p )
-      : evoker_spell_t( "infernos_blessing", p, p->talent.infernos_blessing_damage )
+    infernos_blessing_t( evoker_t* p ) : evoker_spell_t( "infernos_blessing", p, p->talent.infernos_blessing_damage )
     {
       may_dodge = may_parry = may_block = false;
       background                        = true;
@@ -1799,7 +1900,6 @@ struct azure_strike_t : public evoker_spell_t
 
 struct deep_breath_t : public evoker_spell_t
 {
-
   struct deep_breath_dot_t : public evoker_spell_t
   {
     deep_breath_dot_t( evoker_t* p ) : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
@@ -1845,8 +1945,8 @@ struct deep_breath_t : public evoker_spell_t
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
     if ( p->specialization() == EVOKER_AUGMENTATION )
-      ebon = p->get_secondary_action<ebon_might_t>( "ebon_might_deep_breath",
-                                                    p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
+      ebon = p->get_secondary_action<ebon_might_t>(
+          "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
   }
 
   timespan_t execute_time() const override
@@ -1856,13 +1956,12 @@ struct deep_breath_t : public evoker_spell_t
     return 3_s;
   }
 
-  void impact( action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
     evoker_spell_t::impact( s );
 
     if ( s->chain_target == 0 )
       damage->execute_on_target( s->target );
-
   }
 
   void execute() override
@@ -2239,9 +2338,9 @@ struct living_flame_t : public evoker_spell_t
     if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
     {
       p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
-      heal->execute_on_target( p() );
       for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
       {
+        heal->execute_on_target( p() );
         if ( rng().roll( p()->option.heal_eb_chance ) )
           total_hits += 1;
       }
@@ -2270,35 +2369,6 @@ struct living_flame_t : public evoker_spell_t
       debug_cast<living_flame_damage_t*>( damage )->prepull_timespent = timespan_t::zero();
       debug_cast<living_flame_heal_t*>( heal )->prepull_timespent     = timespan_t::zero();
     }
-  }
-};
-
-struct verdant_embrace_t : public heals::evoker_heal_t
-{
-  struct verdant_embrace_heal_t : public heals::evoker_heal_t
-  {
-    verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
-    {
-      harmful = false;
-      dual    = true;
-    }
-  };
-
-  verdant_embrace_t( evoker_t* p, std::string_view options_str )
-    : evoker_heal_t( "verdant_embrace", p, p->talent.verdant_embrace, options_str )
-  {
-    harmful       = false;
-    impact_action = p->get_secondary_action<verdant_embrace_heal_t>( "verdant_embrace_heal" );
-
-    add_child( impact_action );
-  }
-
-  void execute() override
-  {
-    evoker_heal_t::execute();
-
-    if ( p()->talent.ancient_flame->ok() )
-      p()->buff.ancient_flame->trigger();
   }
 };
 
@@ -2674,7 +2744,7 @@ struct eruption_t : public essence_spell_t
       p()->cooldown.upheaval->adjust( upheaval_cdr );
     }
 
-    if ( p()->talent.motes_of_possibility->ok() && rng().roll( p() ->talent.motes_of_possibility->proc_chance() ) )
+    if ( p()->talent.motes_of_possibility->ok() && rng().roll( p()->talent.motes_of_possibility->proc_chance() ) )
     {
       p()->cooldown.breath_of_eons->adjust(
           -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
@@ -2777,13 +2847,14 @@ protected:
   using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
-  breath_of_eons_damage_t( player_t* p, evoker_t* e ) : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage )
+  breath_of_eons_damage_t( player_t* p, evoker_t* e )
+    : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
     base_crit += 1.0;
-    crit_bonus = 0.0;
-    base_dd_multiplier           = e->talent.temporal_wound->effectN( 1 ).percent();
+    crit_bonus         = 0.0;
+    base_dd_multiplier = e->talent.temporal_wound->effectN( 1 ).percent();
 
     /* if ( p != e )
     {
@@ -2876,8 +2947,8 @@ struct blistering_scales_damage_t : public evoker_spell_t
     : evoker_spell_t( "blistering_scales_damage", p, p->talent.blistering_scales_damage )
   {
     may_dodge = may_parry = may_block = false;
-    background                                    = true;
-    spell_power_mod.direct                        = 0.3;  // Hardcoded for some reason, 19/05/2023
+    background                        = true;
+    spell_power_mod.direct            = 0.3;  // Hardcoded for some reason, 19/05/2023
   }
 
   void init() override
@@ -2906,10 +2977,9 @@ struct breath_of_eons_t : public evoker_spell_t
 
   breath_of_eons_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ),
-     /* damage( nullptr ),*/
+      /* damage( nullptr ),*/
       ebon( nullptr )
   {
-
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
@@ -2955,7 +3025,6 @@ struct breath_of_eons_t : public evoker_spell_t
   }
 };
 
-
 }  // end namespace spells
 
 // Namespace buffs post spells
@@ -2997,7 +3066,6 @@ struct fate_mirror_cb_t : public dbc_proc_callback_t
   }
 };
 
-
 struct infernos_blessing_cb_t : public dbc_proc_callback_t
 {
   evoker_t* source;
@@ -3029,7 +3097,6 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     infernos_blessing->stats = _stats;
   }
 };
-
 
 struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
 {
@@ -3068,7 +3135,7 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
       };
 
       trig = std::make_unique<dbc_proc_callback_t::trigger_fn_t>( lambda );
-      
+
       trigger_fn = trig.get();
     }
 
@@ -3151,15 +3218,15 @@ struct temporal_wound_buff_t : public evoker_buff_t<buff_t>
     {
       auto pp           = player_from_id( pid );
       eon_damage->stats = p()->get_stats( "eon_damage_" + pp->name_str, eon_damage );
-      sim->print_debug( "{} eon helper expiry, player {}s, size {}, damage execution inc, executing on {}", *source, *pp, damage, *player );
+      sim->print_debug( "{} eon helper expiry, player {}s, size {}, damage execution inc, executing on {}", *source,
+                        *pp, damage, *player );
       eon_damage->execute_on_target( player, damage );
     }
     eon_damage->stats = stats;
     eon_stored.clear();
   }
 };
-} // end namespace buffs post spells
-
+}  // namespace buffs
 
 // ==========================================================================
 // Evoker Character Definitions
@@ -3176,11 +3243,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                 ->apply_affecting_aura( evoker->talent.focusing_iris );
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
-    
+
   if ( evoker->specialization() == EVOKER_AUGMENTATION )
   {
     using e_buff_t = buffs::evoker_buff_t<buff_t>;
-
 
     if ( evoker->talent.breath_of_eons.ok() )
     {
@@ -3189,7 +3255,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         debuffs.temporal_wound =
             make_buff<buffs::temporal_wound_buff_t>( *this, "temporal_wound", evoker->talent.temporal_wound );
       }
-      else {
+      else
+      {
         if ( !target->is_pet() )
         {
           action_t* eon_damage =
@@ -3200,7 +3267,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         }
       }
     }
-    
+
     buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
                                ->set_default_value( evoker->cache.mastery_value() )
                                ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
@@ -3211,24 +3278,24 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     buffs.ebon_might->set_cooldown( 0_ms )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
-      if ( new_ )
-      {
-        evoker->allies_with_ebon.push_back( target );
-        if ( auto e = dynamic_cast<evoker_t*>( target ) )
-        {
-          e->allied_ebons_on_me.push_back( b );
-        }
-      }
-      else
-      {
-        evoker->allies_with_ebon.find_and_erase( target );
-        if ( auto e = dynamic_cast<evoker_t*>( target ) )
-        {
-          auto vec = e->allied_ebons_on_me;
-          vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
-        }
-      }
-    } );
+          if ( new_ )
+          {
+            evoker->allies_with_ebon.push_back( target );
+            if ( auto e = dynamic_cast<evoker_t*>( target ) )
+            {
+              e->allied_ebons_on_me.push_back( b );
+            }
+          }
+          else
+          {
+            evoker->allies_with_ebon.find_and_erase( target );
+            if ( auto e = dynamic_cast<evoker_t*>( target ) )
+            {
+              auto vec = e->allied_ebons_on_me;
+              vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
+            }
+          }
+        } );
 
     buffs.ebon_might->buff_period = timespan_t::zero();
 
@@ -3605,6 +3672,7 @@ void evoker_t::init_spells()
   talent.bountiful_bloom      = CT( "Bountiful Bloom" );
   talent.blast_furnace        = CT( "Blast Furnace" );  // Row 7
   talent.panacea              = CT( "Panacea" );
+  talent.panacea_spell        = find_spell( 387763 );
   talent.exuberance           = CT( "Exuberance" );
   talent.ancient_flame        = CT( "Ancient Flame" );
   talent.protracted_talons    = CT( "Protracted Talons" );  // Row 8
@@ -3743,13 +3811,16 @@ void evoker_t::init_spells()
   }
 
   // Evoker Specialization Spells
-  spec.evoker              = find_spell( 353167 );  // TODO: confirm this is the class aura
-  spec.devastation         = find_specialization_spell( "Devastation Evoker" );
-  spec.preservation        = find_specialization_spell( "Preservation Evoker" );
-  spec.augmentation        = find_specialization_spell( "Augmentation Evoker" );
-  spec.mastery             = find_mastery_spell( specialization() );
-  spec.living_flame_damage = find_spell( 361500 );
-  spec.living_flame_heal   = find_spell( 361509 );
+  spec.evoker               = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.devastation          = find_specialization_spell( "Devastation Evoker" );
+  spec.preservation         = find_specialization_spell( "Preservation Evoker" );
+  spec.augmentation         = find_specialization_spell( "Augmentation Evoker" );
+  spec.mastery              = find_mastery_spell( specialization() );
+  spec.living_flame_damage  = find_spell( 361500 );
+  spec.living_flame_heal    = find_spell( 361509 );
+  spec.emerald_blossom      = find_spell( 355913 );
+  spec.emerald_blossom_heal = find_spell( 355916 );
+  spec.emerald_blossom_spec = find_specialization_spell( 365261, specialization() );
 }
 
 void evoker_t::init_special_effects()
@@ -4043,6 +4114,9 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.preservation );
   action.apply_affecting_aura( spec.augmentation );
 
+  // Class Baselines
+  action.apply_affecting_aura( spec.emerald_blossom_spec );
+
   // Class Traits
   action.apply_affecting_aura( talent.aerial_mastery );
   action.apply_affecting_aura( talent.attuned_to_the_dream );
@@ -4116,7 +4190,9 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "tip_the_scales" )
     return new tip_the_scales_t( this, options_str );
   if ( name == "verdant_embrace" )
-    return new verdant_embrace_t( this, options_str );
+    return new heals::verdant_embrace_t( this, options_str );
+  if ( name == "emerald_blossom" )
+    return new heals::emerald_blossom_t( this, options_str );
   if ( name == "ebon_might" )
     return new ebon_might_t( this, options_str );
   if ( name == "eruption" )
