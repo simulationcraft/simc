@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49741 Live (hotfix 2023-05-24/49741)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49801 Live (hotfix 2023-05-27/49801)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -13513,41 +13513,32 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Crusader Strike (35395), Hammer of the Righteous (53595), Blade of Justice (184575), Judgment (197277), Blessed Hammer (204019), Blessed Hammer (204301), Judgment (214222), Bestow Faith (223306), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Divine Toll (304971), Execution Sentence (343527), Bestow Faith (343618), Final Reckoning (343721), Divine Toll (375576), Expurgation (383344), Radiant Decree (383469), Divine Resonance (386731), Execution Sentence (387113), Divine Resonance (387896), Truth's Wake (403695), Blessed Hammers (404139), Blessed Hammers (404140), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Templar Strike (407480)
                    Family Flags: 21, 23, 31, 33, 39, 47, 50, 68, 70, 92, 97, 117, 126
-Hotfixed         : Affects Spells
 #4 (id=1034388)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1570 | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
-Hotfixed         : Sub Type (148 -> 454), Base Value (10 -> -10)
 #5 (id=1034395)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1663 | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
-Hotfixed         : Sub Type (148 -> 454), Base Value (10 -> -10)
 #6 (id=1034408)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1659 | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
-Hotfixed         : Sub Type (148 -> 454), Base Value (10 -> -10)
 #7 (id=1034409)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
-Hotfixed         : Sub Type (148 -> 454), Base Value (10 -> -10)
 #8 (id=1034728)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
-Hotfixed         : Sub Type (148 -> 454), Base Value (10 -> -10)
 #9 (id=1072265)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Execution Sentence (343527), Final Reckoning (343721), Execution Sentence (387113)
                    Family Flags: 31
-Hotfixed         : Sub Type (108 -> 286), Base Value (-10 -> 10), Misc Value (11 -> 0), Affects Spells
 #10 (id=1088523)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919)
                    Family Flags: 67, 90
-Hotfixed         : NEW EFFECT
 #11 (id=1088524)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 2128 | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
-Hotfixed         : NEW EFFECT
 Description      : Damage taken reduced by $s1%$?s385129&c2[, armor increased by $s2%, and Holy Power generating abilities cool down $s3% faster]?s385129[ and your Holy Power generating abilities also grant an absorb shield for $s9% of damage or healing dealt.][] For $d.
 Tooltip          : Damage taken reduced by $w1%$?s385129[, armor increased by $w2%, and Holy Power generating abilities cool down $w3% faster.][.]
 
