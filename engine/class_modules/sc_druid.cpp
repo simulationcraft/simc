@@ -1766,7 +1766,7 @@ struct fury_of_elune_buff_t : public druid_buff_t
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
-    auto eff = find_effect( this, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+    const auto& eff = find_effect( this, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
     auto ap = eff.resource( RESOURCE_ASTRAL_POWER );
     set_default_value( ap / eff.period().total_seconds() );
 
@@ -12618,32 +12618,32 @@ void eclipse_handler_t::init()
   bool fm = nm || p->talent.convoke_the_spirits.ok();
 
   data.arrays.reserve( res + foe + nm + hm + fm );
-  data.wrath = &data.arrays.emplace_back( data_array() );
-  data.starfire = &data.arrays.emplace_back( data_array() );
-  data.starsurge = &data.arrays.emplace_back( data_array() );
-  data.starfall = &data.arrays.emplace_back( data_array() );
+  data.wrath = &data.arrays.emplace_back();
+  data.starfire = &data.arrays.emplace_back();
+  data.starsurge = &data.arrays.emplace_back();
+  data.starfall = &data.arrays.emplace_back();
   if ( foe )
-    data.fury_of_elune = &data.arrays.emplace_back( data_array() );
+    data.fury_of_elune = &data.arrays.emplace_back();
   if ( nm )
-    data.new_moon = &data.arrays.emplace_back( data_array() );
+    data.new_moon = &data.arrays.emplace_back();
   if ( hm )
-    data.half_moon = &data.arrays.emplace_back( data_array() );
+    data.half_moon = &data.arrays.emplace_back();
   if ( fm )
-    data.full_moon = &data.arrays.emplace_back( data_array() );
+    data.full_moon = &data.arrays.emplace_back();
 
   iter.arrays.reserve( res + foe + nm + hm + fm );
-  iter.wrath = &iter.arrays.emplace_back( iter_array() );
-  iter.starfire = &iter.arrays.emplace_back( iter_array() );
-  iter.starsurge = &iter.arrays.emplace_back( iter_array() );
-  iter.starfall = &iter.arrays.emplace_back( iter_array() );
+  iter.wrath = &iter.arrays.emplace_back();
+  iter.starfire = &iter.arrays.emplace_back();
+  iter.starsurge = &iter.arrays.emplace_back();
+  iter.starfall = &iter.arrays.emplace_back();
   if ( foe )
-    iter.fury_of_elune = &iter.arrays.emplace_back( iter_array() );
+    iter.fury_of_elune = &iter.arrays.emplace_back();
   if ( nm )
-    iter.new_moon = &iter.arrays.emplace_back( iter_array() );
+    iter.new_moon = &iter.arrays.emplace_back();
   if ( hm )
-    iter.half_moon = &iter.arrays.emplace_back( iter_array() );
+    iter.half_moon = &iter.arrays.emplace_back();
   if ( fm )
-    iter.full_moon = &iter.arrays.emplace_back( iter_array() );
+    iter.full_moon = &iter.arrays.emplace_back();
 }
 
 void eclipse_handler_t::cast_wrath()
