@@ -1175,7 +1175,8 @@ public:
       auto& stored = p()->buff.scarlet_adaptation->current_value;
       // TODO: raw_amount for used for testing
       // stored += s->result_amount * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
-      stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent() * ( 1 - p()->option.scarlet_overheal );
+      stored +=
+          s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent() * ( 1 - p()->option.scarlet_overheal );
       // TODO: confirm if this always matches living flame SP coeff
       stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
     }
@@ -1204,7 +1205,9 @@ struct emerald_blossom_t : public essence_heal_t
 {
   struct emerald_blossom_heal_t : public evoker_heal_t
   {
-    emerald_blossom_heal_t( evoker_t* p, bool do_aoe = true ) : evoker_heal_t( do_aoe ? "emerald_blossom_heal" : "emerald_blossom_virtual_heal", p, p->spec.emerald_blossom_heal )
+    emerald_blossom_heal_t( evoker_t* p, bool do_aoe = true )
+      : evoker_heal_t( do_aoe ? "emerald_blossom_heal" : "emerald_blossom_virtual_heal", p,
+                       p->spec.emerald_blossom_heal )
     {
       harmful = false;
       dual    = true;
@@ -1223,16 +1226,15 @@ struct emerald_blossom_t : public essence_heal_t
     }
   };
 
-
   action_t *heal, *panacea, *virtual_heal;
 
   emerald_blossom_t( evoker_t* p, std::string_view options_str )
     : essence_heal_t( "emerald_blossom", p, p->spec.emerald_blossom, options_str )
   {
-    harmful = false;
-    heal    = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
-    virtual_heal    = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_virtual_heal", false);
-    panacea = p->get_secondary_action<panacea_t>( "panacea" );
+    harmful      = false;
+    heal         = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
+    virtual_heal = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_virtual_heal", false );
+    panacea      = p->get_secondary_action<panacea_t>( "panacea" );
 
     min_travel_time = data().duration().total_seconds();
 
