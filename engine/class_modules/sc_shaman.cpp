@@ -10014,7 +10014,6 @@ void shaman_t::create_buffs()
         if ( next_proc <= sim->current_time() && !t30_proc_possible )
         {
           t30_proc_possible = true;
-          last_t30_proc = sim->current_time();
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
@@ -10023,10 +10022,11 @@ void shaman_t::create_buffs()
             sk_during_cast = true;
           }
           buff.stormkeeper->trigger( 1 );
+          last_t30_proc = sim->current_time();
           t30_proc_possible = false;
         }
-          } )
-          ->set_tick_zero(true);
+      } )
+      ->set_tick_zero(true);
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
