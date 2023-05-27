@@ -6770,14 +6770,17 @@ struct slice_and_dice_t : public buff_t
     recuperator_t( util::string_view name, rogue_t* p ) :
       rogue_heal_t( name, p, p->spell.slice_and_dice )
     {
-      // Treat this as direct to avoid duration issues
-      direct_tick = true;
+      // This is treated as direct triggered by the tick callback on SnD to avoid duration/refresh desync
+      direct_tick = not_a_proc = true;
       may_crit = false;
       dot_duration = timespan_t::zero();
       base_pct_heal = p->talent.rogue.recuperator->effectN( 1 ).percent();
-      base_dd_min = base_dd_max = 1; // HAX: Make it always heal at least one even without talent, to allow procing herbs.
+      base_dd_min = base_dd_max = 1; // HAX: Make it always heal as this procs things in-game even with 0 value
       base_costs.fill( 0 );
     }
+
+    result_amount_type amount_type( const action_state_t*, bool ) const override
+    { return result_amount_type::HEAL_OVER_TIME; }
   };
 
   rogue_t* rogue;
