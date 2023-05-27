@@ -4794,6 +4794,14 @@ void stirring_twilight_ember( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Heatbound Medallion
+// 407512 Driver/Damage
+void heatbound_medallion(special_effect_t& e)
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "heatbound_release", e, "heatbound_release", e.driver(), true );
+  e.execute_action = damage;
+}
+
 // Weapons
 void bronzed_grip_wrappings( special_effect_t& effect )
 {
@@ -6966,6 +6974,7 @@ void register_special_effects()
   register_special_effect( 407903, items::drogbar_stones );
   register_special_effect( 408607, items::underlight_globe );
   register_special_effect( 408641, items::stirring_twilight_ember );
+  register_special_effect( 407512, items::heatbound_medallion );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
