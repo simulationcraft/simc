@@ -887,17 +887,27 @@ struct empowered_release_t : public empowered_base_t<BASE>
       p()->get_target_data( s->target )->buffs.shifting_sands->trigger();
     }
 
-    // TODO: Revisit Targeting
+     size_t available_targets( std::vector<player_t*>& target_list ) const override
+    {
+      target_list.clear();
+
+      for ( const auto& t : sim->player_no_pet_list )
+      {
+        if ( t != player && t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+          target_list.push_back( t );
+      }
+
+      return target_list.size();
+    }
+
+    // TODO: Revisit Targeting, handle cases when this restricted target list doesn't work
     std::vector<player_t*>& target_list() const override
     {
       auto& tl = evoker_augment_t::target_list();
 
-      if ( is_aoe() )
+      if ( as<int>( tl.size() ) > n_targets() )
       {
-        if ( as<int>( tl.size() ) > n_targets() )
-        {
-          rng().shuffle( tl.begin(), tl.end() );
-        }
+        rng().shuffle( tl.begin(), tl.end() );
       }
 
       return tl;
