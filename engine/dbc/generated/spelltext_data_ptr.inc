@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49719
-static const std::array<spelltext_data_t, 20040> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20043> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2947,6 +2947,8 @@ static const std::array<spelltext_data_t, 20040> __ptr_spelltext_data { {
   {  96967, "Your healing spells have a chance to instantly heal the most injured nearby party member for $96966s1.", 0, 0 },
   {  96976, "Your melee and ranged attacks have a chance to grant $96977s1 critical strike, haste, or mastery for 30 sec, whichever is currently highest.", 0, 0 },
   {  96977, "Haste increased by $s1 for $d.", "Haste increased by $w1.", 0 },
+  {  96978, "Critical Strike increased by $s1 for $d.", "Critical Strike increased by $w1.", 0 },
+  {  96979, "Mastery increased by $s1 for $d.", "Mastery increased by $w1.", 0 },
   {  96980, "Grants $s1 critical strike for $d.", "Grants $s1 critical strike.", 0 },
   {  96981, "Grants $96980s1 critical strike for $96980d each time you deal a melee critical strike, stacking up to $96980u times.", 0, 0 },
   {  96988, "Absorbs 20% of incoming damage, up to $s1.  After the effect ends, you take 8% of the damage absorbed every $96993t sec for $96993d.  Lasts $d.", "Absorbs 20% of incoming damage, up to $s1, 40% converted into periodic damage over $96993d.", 0 },
@@ -19952,6 +19954,7 @@ static const std::array<spelltext_data_t, 20040> __ptr_spelltext_data { {
   { 413423, "$@spelldesc413419", 0, 0 },
   { 413426, "$@spelldesc91144", "Haste increased by $s1.", 0 },
   { 413710, "Manifest a Sapling of Life at the target location that periodically restores $413711s1 health to nearby allies. As the Sapling gives, its life slowly fades. Healing the Sapling of Life extends its duration.", 0, 0 },
+  { 413786, "$@spelldesc412774", 0, "Bronze" },
   { 413984, "$@spelldesc406380", "Versatility increased by ${$W1}.1%. Cast by $@auracaster.", 0 },
   { 414065, "Holy Shock has a $s1% chance to refund a charge when cast, increasing by ${$s2/1000}.1% for each Glimmer of Light you have active.", 0, 0 },
   { 414073, "Holy Shock now has ${$s1+1} charges.", 0, 0 },
