@@ -8878,11 +8878,20 @@ void shaman_t::analyze( sim_t& sim )
 
     // Re-use MW spend containers to report iteration average over stacks consumed
     range::for_each( mw_spend_list, [ iterations ]( auto& container_wrapper ) {
-      range::for_each( container_wrapper, [ iterations ]( auto& container ) {
+      range::for_each( container_wrapper, [ idx = 0, iterations ]( auto& container ) mutable {
         auto sum = container.sum();
+        auto count = container.count();
 
         container.reset();
-        container.add( sum / as<double>( iterations ) );
+        // 0-stack MW casts are just the count divided by iterations, not the sum
+        if ( idx++ == 0 )
+        {
+          container.add( count / as<double>( iterations ) );
+        }
+        else
+        {
+          container.add( sum / as<double>( iterations ) );
+        }
       } );
     } );
   }
@@ -9660,7 +9669,7 @@ void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* act
 
 void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks )
 {
-  if ( !talent.maelstrom_weapon.ok() || stacks <= 0 )
+  if ( !talent.maelstrom_weapon.ok() )
   {
     return;
   }
@@ -9672,31 +9681,34 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
 
   mw_spend_list[ state->action->internal_id ][ stacks ].add( stacks );
 
-  buff.maelstrom_weapon->decrement( stacks );
-
-  if ( talent.hailstorm.ok() )
+  if ( stacks > 0 )
   {
-    buff.hailstorm->trigger( stacks );
-  }
+    buff.maelstrom_weapon->decrement( stacks );
 
-  trigger_legacy_of_the_frost_witch( state, stacks );
-
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
-       rng().roll( spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
-  {
-    if ( sim->debug )
+    if ( talent.hailstorm.ok() )
     {
-      sim->out_debug.print( "{} Enhancement T28 2PC", name() );
+      buff.hailstorm->trigger( stacks );
     }
 
-    summon_feral_spirits( timespan_t::from_seconds(
-      spell.t28_2pc_enh->effectN( 2 ).base_value() ), 1, true );
-  }
+    trigger_legacy_of_the_frost_witch( state, stacks );
 
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
-  {
-    //4pc refreshes duration and adds stacks
-    buff.t29_4pc_enh->trigger( stacks );
+    if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+         rng().roll( spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} Enhancement T28 2PC", name() );
+      }
+
+      summon_feral_spirits( timespan_t::from_seconds(
+        spell.t28_2pc_enh->effectN( 2 ).base_value() ), 1, true );
+    }
+
+    if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
+    {
+      //4pc refreshes duration and adds stacks
+      buff.t29_4pc_enh->trigger( stacks );
+    }
   }
 }
 
@@ -11367,7 +11379,7 @@ public:
     {
       const auto& ref = p.mw_spend_list[ i ];
 
-      auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum );
+      auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum ) - ref[ 0 ].sum();
       if ( action_sum == 0.0 )
       {
         continue;
