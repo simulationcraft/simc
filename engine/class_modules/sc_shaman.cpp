@@ -289,7 +289,7 @@ public:
 
   /// Maelstrom generator/spender tracking
   std::vector<std::pair<simple_sample_data_t, simple_sample_data_t>> mw_source_list;
-  std::vector<simple_sample_data_t> mw_spend_list;
+  std::vector<std::array<simple_sample_data_t, 11>> mw_spend_list;
 
   /// Deeply Rooted Elements tracking
   extended_sample_data_t dre_samples;
@@ -8892,11 +8892,13 @@ void shaman_t::analyze( sim_t& sim )
     } );
 
     // Re-use MW spend containers to report iteration average over stacks consumed
-    range::for_each( mw_spend_list, [ iterations ]( auto& container ) {
-      auto sum = container.sum();
+    range::for_each( mw_spend_list, [ iterations ]( auto& container_wrapper ) {
+      range::for_each( container_wrapper, [ iterations ]( auto& container ) {
+        auto sum = container.sum();
 
-      container.reset();
-      container.add( sum / as<double>( iterations ) );
+        container.reset();
+        container.add( sum / as<double>( iterations ) );
+      } );
     } );
   }
 
@@ -9683,7 +9685,7 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     mw_spend_list.resize( state->action->internal_id + 1 );
   }
 
-  mw_spend_list[ state->action->internal_id ].add( stacks );
+  mw_spend_list[ state->action->internal_id ][ stacks ].add( stacks );
 
   buff.maelstrom_weapon->decrement( stacks );
 
@@ -11294,7 +11296,10 @@ void shaman_t::merge( player_t& other )
 
   for ( auto i = 0U; i < s.mw_spend_list.size(); ++i )
   {
-    mw_spend_list[ i ].merge( s.mw_spend_list[ i ] );
+    for ( auto j = 0U; j < s.mw_spend_list[ i ].size(); ++j )
+    {
+      mw_spend_list[ i ][ j ].merge( s.mw_spend_list[ i ][ j ] );
+    }
   }
 
   if ( talent.deeply_rooted_elements.ok() )
@@ -11371,12 +11376,99 @@ public:
   shaman_report_t( shaman_t& player ) : p( player )
   { }
 
+  void mw_consumer_stack_header( report::sc_html_stream& os )
+  {
+    auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
+      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+
+    os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
+       << "<thead>\n"
+       << "<tr>\n";
+    os << fmt::format( "<th colspan=\"{}\"><strong>Casts per Maelstrom Weapon Stack Consumed</strong></th>\n", columns + 1 )
+       << "</tr>\n"
+       << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n";
+    for ( auto col = 0U; col < columns; ++col )
+    {
+       os << fmt::format( "<th>{}</th>\n", col );
+    }
+    os << "</tr>\n"
+       << "</thead>\n";
+  }
+
+  void mw_consumer_stack_contents( report::sc_html_stream& os )
+  {
+    auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
+      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+
+    int row = 0;
+    std::vector<double> row_totals( columns, 0.0 );
+
+    for ( auto i = 0; i < as<int>( p.mw_spend_list.size() ); ++i )
+    {
+      const auto& ref = p.mw_spend_list[ i ];
+
+      auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum );
+      if ( action_sum == 0.0 )
+      {
+        continue;
+      }
+
+      auto action = range::find_if( p.action_list, [ i ]( const action_t* action ) {
+        return action->internal_id == i;
+      } );
+
+      os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
+      os << fmt::format( "<td class=\"left\">{}</td>", report_decorators::decorated_action( **action ) );
+
+      for ( auto col = 0; col < as<int>( ref.size() ); ++col )
+      {
+        auto casts = ref[ col ].sum() / ( col > 1 ? as<double>( col ) : 1.0 );
+
+        if ( ref[ col ].sum() == 0.0 )
+        {
+          os << "<td class=\"left\" style=\"min-width: 5ch;\">&nbsp;</td>\n";
+        }
+        else
+        {
+          os << fmt::format( "<td class=\"left\" style=\"min-width: 5ch;\">{:.2f}</td>\n", casts );
+        }
+
+        row_totals[ col ] += casts;
+      }
+
+      os << "</tr>\n";
+    }
+
+    os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" )
+       << "<td class=\"left\"><strong>Total</strong>\n";
+
+    auto total_sum = range::accumulate( row_totals, 0.0 );
+    range::for_each( row_totals, [ &os, total_sum ]( auto row_sum ) {
+      if ( row_sum == 0.0 )
+      {
+        os << "<td class=\"left\" style=\"min-width: 5ch;\">&nbsp;</td>\n";
+      }
+      else
+      {
+        os << fmt::format( "<td class=\"left\" style=\"min-width: 5ch;\"><strong>{:.2f}</strong><br/>({:.2f}%)</td>\n",
+          row_sum, 100 * row_sum / total_sum );
+      }
+    } );
+
+    os << "</tr>\n";
+  }
+
+  void mw_consumer_stack_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
   void mw_consumer_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
        << "<thead>\n"
        << "<tr>\n"
-       << "<th colspan=\"5\"><strong>Maelstrom Weapon Consumers</strong></th>\n"
+       << "<th colspan=\"3\"><strong>Maelstrom Weapon Consumers</strong></th>\n"
        << "</tr>\n"
        << "<tr>\n"
        << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
@@ -11392,27 +11484,28 @@ public:
       double total = 0.0;
 
       range::for_each( p.mw_spend_list,  [ &total ]( const auto& entry ) {
-        total += entry.sum();
+        total = range::accumulate( entry, total, &simple_sample_data_t::sum );
       } );
 
       for ( auto i = 0; i < as<int>( p.mw_spend_list.size() ); ++i )
       {
         const auto& ref = p.mw_spend_list[ i ];
 
-        if ( ref.sum() == 0.0 )
-        {
-          continue;
-        }
-
         auto action = range::find_if( p.action_list, [ i ]( const action_t* action ) {
           return action->internal_id == i;
         } );
 
+        auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum );
+
+        if ( action_sum == 0.0 )
+        {
+          continue;
+        }
+
         os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
         os << fmt::format( "<td class=\"left\">{}</td>", report_decorators::decorated_action( **action ) );
-        os << fmt::format( "<td class=\"left\">{:.1f}</td>", ref.sum() );
-        os << fmt::format( "<td class=\"left\">{:.2f}%</td>",
-                          100.0 * ref.sum() / total );
+        os << fmt::format( "<td class=\"left\">{:.1f}</td>", action_sum );
+        os << fmt::format( "<td class=\"left\">{:.2f}%</td>", 100.0 * action_sum / total );
         os << "</tr>\n";
       }
 
@@ -11434,7 +11527,8 @@ public:
     {
       const auto& entry = p.mw_spend_list[ i ];
 
-      if ( entry.sum() == 0.0 )
+      auto sum = range::accumulate( entry, 0.0, &simple_sample_data_t::sum );
+      if ( sum == 0.0 )
       {
         continue;
       }
@@ -11443,7 +11537,7 @@ public:
         return action->internal_id == as<int>( i );
       } );
 
-      processed_data.emplace_back( *action_it, entry.sum() );
+      processed_data.emplace_back( *action_it, sum );
     }
 
     range::sort( processed_data, []( const auto& left, const auto& right ) {
@@ -11676,14 +11770,17 @@ public:
 
       mw_consumer_header( os );
       mw_consumer_contents( os );
-      mw_consumer_piechart_contents( os );
       mw_consumer_footer( os );
 
-      os << "\t\t\t\t\t</div>\n";
+      mw_consumer_stack_header( os );
+      mw_consumer_stack_contents( os );
+      mw_consumer_stack_footer( os );
 
       os << "<div class=\"clear\"></div>\n";
 
-      os << "\t\t\t\t\t</div>\n";
+      mw_consumer_piechart_contents( os );
+
+      os << "<div class=\"clear\"></div>\n";
     }
 
     if ( p.talent.deeply_rooted_elements.ok() )
