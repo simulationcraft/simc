@@ -4860,7 +4860,11 @@ struct chain_lightning_t : public chained_base_t
         std::ceil( mw_consumed_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
 
       p()->generate_maelstrom_weapon( execute_state, refunded );
-      p()->buff.t30_4pc_enh_cl->decrement();
+      // In-game, 0 stack Chain Lightning casts don't consume T30 4PC buff
+      if ( !p()->bugs || refunded > 0 )
+      {
+        p()->buff.t30_4pc_enh_cl->decrement();
+      }
     }
 
     p()->buff.t29_2pc_ele->trigger();
