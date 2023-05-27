@@ -2952,11 +2952,16 @@ struct prescience_t : public evoker_augment_t
 
 struct blistering_scales_damage_t : public evoker_spell_t
 {
+protected:
+  using state_t = evoker_action_state_t<stats_data_t>;
+
+public:
   blistering_scales_damage_t( evoker_t* p )
     : evoker_spell_t( "blistering_scales_damage", p, p->talent.blistering_scales_damage )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
+    aoe                               = -1;
     spell_power_mod.direct            = 0.3;  // Hardcoded for some reason, 19/05/2023
   }
 
@@ -2972,11 +2977,61 @@ struct blistering_scales_damage_t : public evoker_spell_t
     return da;
   }
 
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    spell_t::snapshot_state( s, rt );
+    cast_state( s )->stats = stats;
+  }
+
+  void record_data( action_state_t* data ) override
+  {
+    if ( !cast_state( data )->stats )
+      return;
+
+    cast_state( data )->stats->add_result(
+        data->result_amount, data->result_total, report_amount_type( data ), data->result,
+        ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
+        data->target );
+  }
+
   void execute() override
   {
     evoker_spell_t::execute();
 
     p()->buff.reactive_hide->trigger();
+  }
+};
+
+
+struct blistering_scales_t : public evoker_augment_t
+{
+
+  blistering_scales_t( evoker_t* p, std::string_view options_str )
+    : evoker_augment_t( "blistering_scales", p, p->talent.blistering_scales, options_str )
+  {
+    add_child( p->get_secondary_action<blistering_scales_damage_t>( "blistering_scales" ) );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_augment_t::impact( s );
+
+    p()->get_target_data( s->target )->buffs.blistering_scales->trigger();
   }
 };
 
@@ -3089,6 +3144,33 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     deactivate();
     initialize();
   }
+  
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( s->target->is_sleeping() )
+      return;
+
+    auto _stats              = infernos_blessing->stats;
+    infernos_blessing->stats = stats;
+    infernos_blessing->execute_on_target( s->target );
+    infernos_blessing->stats = _stats;
+  }
+};
+
+struct blistering_scales_cb_t : public dbc_proc_callback_t
+{
+  evoker_t* source;
+  action_t* blistering_scales;
+  stats_t* stats;
+
+  blistering_scales_cb_t( player_t* p, const special_effect_t& e, evoker_t* source, action_t* blistering_scales,
+                          stats_t* stats )
+    : dbc_proc_callback_t( p, e ), source( source ), blistering_scales( blistering_scales ), stats( stats )
+  {
+    allow_pet_procs = true;
+    deactivate();
+    initialize();
+  }
 
   evoker_t* p()
   {
@@ -3100,10 +3182,16 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     if ( s->target->is_sleeping() )
       return;
 
-    auto _stats              = infernos_blessing->stats;
-    infernos_blessing->stats = stats;
-    infernos_blessing->execute_on_target( s->target );
-    infernos_blessing->stats = _stats;
+    p()->get_target_data( s->target )
+        ->buffs.blistering_scales->decrement();
+
+    p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
+                           *s->action->player, *s->target );
+
+    auto _stats              = blistering_scales->stats;
+    blistering_scales->stats = stats;
+    blistering_scales->execute_on_target( s->action->player );
+    blistering_scales->stats = _stats;
   }
 };
 
@@ -3337,7 +3425,38 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       } );
     }
 
-    buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->find_spell( 360827 ) );
+    if (evoker->talent.blistering_scales)
+    {
+      action_t* blistering_scales =
+          evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
+      auto stats    = evoker->get_stats( "blistering_scales_" + target->name_str, blistering_scales );
+      stats->school = blistering_scales->get_school();
+
+      blistering_scales->stats->add_child( stats );
+
+      auto blistering_scales_effect      = new special_effect_t( target );
+      blistering_scales_effect->name_str = "blistering_scales_" + evoker->name_str;
+      blistering_scales_effect->type     = SPECIAL_EFFECT_EQUIP;
+      blistering_scales_effect->spell_id = evoker->talent.blistering_scales->id();
+      blistering_scales_effect->cooldown_ = 2_s; // Tested 27 / 05 / 2023
+      target->special_effects.push_back( blistering_scales_effect );
+
+      auto blistering_scales_cb =
+          new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
+
+
+      buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
+                                    ->apply_affecting_aura( evoker->talent.regenerative_chitin )
+                                    ->set_cooldown( 0_s )
+                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                                    ->set_stack_change_callback( [ blistering_scales_cb ]( buff_t*, int, int new_ ) {
+                                      if ( new_ )
+                                        blistering_scales_cb->activate();
+                                      else if ( !new_ )
+                                        blistering_scales_cb->deactivate();
+                                    } );
+    }
+
 
     buffs.infernos_blessing = make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
 
@@ -4213,6 +4332,8 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new prescience_t( this, options_str );
   if ( name == "breath_of_eons" )
     return new breath_of_eons_t( this, options_str );
+  if ( name == "blistering_scales" )
+    return new blistering_scales_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
