@@ -525,13 +525,6 @@ public:
 
     // Enhancement
     proc_t* hot_hand;
-    proc_t* maelstrom_weapon_fs;
-    proc_t* maelstrom_weapon_ea;
-    proc_t* maelstrom_weapon_sm;
-    proc_t* maelstrom_weapon_pw;
-    proc_t* maelstrom_weapon_sa;
-    proc_t* maelstrom_weapon_sa_rf;
-    proc_t* maelstrom_weapon_4pc_enh;
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
@@ -3939,8 +3932,6 @@ struct stormstrike_base_t : public shaman_attack_t
       make_event( sim, 0_s, [ this ]() {
         p()->generate_maelstrom_weapon( execute_state,
           p()->talent.elemental_assault->effectN( 2 ).base_value() );
-          //p()->buff.maelstrom_weapon->trigger( p()->talent.elemental_assault->effectN( 2 ).base_value() );
-        p()->proc.maelstrom_weapon_ea->occur();
       } );
     }
 
@@ -4869,11 +4860,6 @@ struct chain_lightning_t : public chained_base_t
         std::ceil( mw_consumed_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
 
       p()->generate_maelstrom_weapon( execute_state, refunded );
-      //p()->buff.maelstrom_weapon->trigger( refunded );
-      for ( auto i = 0; i < refunded; ++i )
-      {
-        p()->proc.maelstrom_weapon_4pc_enh->occur();
-      }
       p()->buff.t30_4pc_enh_cl->decrement();
     }
 
@@ -8131,11 +8117,6 @@ struct primordial_wave_t : public shaman_spell_t
     {
       p()->generate_maelstrom_weapon( execute_state,
                                     p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
-      //p()->buff.maelstrom_weapon->trigger( p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
-      for ( auto i = 0; i < p()->talent.primal_maelstrom->effectN( 1 ).base_value(); ++i )
-      {
-        p()->proc.maelstrom_weapon_pw->occur();
-      }
     }
 
     if ( p()->talent.primordial_surge.ok() )
@@ -9966,12 +9947,7 @@ void shaman_t::trigger_swirling_maelstrom( const action_state_t* state )
     return;
   }
 
-  //buff.maelstrom_weapon->trigger( talent.swirling_maelstrom->effectN( 1 ).base_value() );
   generate_maelstrom_weapon( state, talent.swirling_maelstrom->effectN( 1 ).base_value() );
-  for ( auto i = 0; i < talent.swirling_maelstrom->effectN( 1 ).base_value(); ++i )
-  {
-    proc.maelstrom_weapon_sm->occur();
-  }
 }
 
 void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks )
@@ -9987,12 +9963,6 @@ void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, 
   }
 
   generate_maelstrom_weapon( state, mw_stacks );
-  //buff.maelstrom_weapon->trigger( mw_stacks );
-
-  for ( auto i = 0; i < mw_stacks; ++i )
-  {
-    proc.maelstrom_weapon_sa_rf->occur();
-  }
 }
 
 // shaman_t::init_buffs =====================================================
@@ -10143,8 +10113,6 @@ void shaman_t::create_buffs()
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                       generate_maelstrom_weapon( action.feral_spirits,
                                                                b->data().effectN( 1 ).base_value() );
-                                      //buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
-                                      proc.maelstrom_weapon_fs->occur();
                                     } );
 
   buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
@@ -10215,11 +10183,6 @@ void shaman_t::create_buffs()
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       generate_maelstrom_weapon( action.ascendance, b->value() );
-      //buff.maelstrom_weapon->trigger( b->value() );
-      for ( int i = 0; i < b->check_value(); ++i )
-      {
-        proc.maelstrom_weapon_sa->occur();
-      }
     } );
   buff.doom_winds = make_buff( this, "doom_winds", talent.doom_winds );
   buff.ice_strike = make_buff( this, "ice_strike", talent.ice_strike->effectN( 3 ).trigger() )
@@ -10302,13 +10265,6 @@ void shaman_t::init_procs()
   proc.elemental_blast_mastery = get_proc( "Elemental Blast: Mastery" );
 
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
-  proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
-  proc.maelstrom_weapon_ea    = get_proc( "Maelstrom Weapon: Elemental Assault" );
-  proc.maelstrom_weapon_sm    = get_proc( "Maelstrom Weapon: Swirling Maelstrom" );
-  proc.maelstrom_weapon_pw    = get_proc( "Maelstrom Weapon: Primordial Wave" );
-  proc.maelstrom_weapon_sa    = get_proc( "Maelstrom Weapon: Static Accumulation" );
-  proc.maelstrom_weapon_sa_rf = get_proc( "Maelstrom Weapon: Static Accumulation Refund" );
-  proc.maelstrom_weapon_4pc_enh = get_proc( "Maelstrom Weapon: Enhancement Tier30 4PC" );
   proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
