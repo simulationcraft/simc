@@ -1364,7 +1364,7 @@ public:
     {
       if ( p()->talent.everburning_flame.ok() )
       {
-        auto ext = timespan_t::from_seconds( as<int>( p()->talent.event_horizon->effectN( 1 ).base_value() ) );
+        auto ext = timespan_t::from_seconds( as<int>( p()->talent.everburning_flame->effectN( 1 ).base_value() ) );
 
         for ( auto t : sim->target_non_sleeping_list )
           td( t )->dots.fire_breath->adjust_duration( ext );
@@ -4335,6 +4335,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.spellweavers_dominance );
   action.apply_affecting_aura( talent.eye_of_infinity );
   action.apply_affecting_aura( talent.font_of_magic );
+  action.apply_affecting_aura( talent.event_horizon );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
 
