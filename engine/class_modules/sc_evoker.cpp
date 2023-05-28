@@ -116,8 +116,10 @@ struct evoker_t : public player_t
 
   timespan_t precombat_travel = 0_s;
 
-  vector_with_callback<player_t*> allies_with_ebon;
+  vector_with_callback<player_t*> allies_with_my_ebon;
+  std::vector<evoker_t*> allied_augmentations;
   std::vector<buff_t*> allied_ebons_on_me;
+  std::vector<std::function<void()>> allied_ebon_callbacks;
 
   // Options
   struct options_t
@@ -1501,9 +1503,10 @@ protected:
 public:
   double ebon_value    = 0.0;
   timespan_t ebon_time = timespan_t::min();
+  mutable std::vector<player_t*> helper_list;
 
   ebon_might_t( evoker_t* p, std::string_view options_str )
-    : evoker_augment_t( "ebon_might", p, p->talent.ebon_might, options_str )
+    : evoker_augment_t( "ebon_might", p, p->talent.ebon_might, options_str ), helper_list()
   {
     // Add a target so you always hit yourself.
     aoe += 1;
@@ -1643,7 +1646,7 @@ public:
 
     if ( s->chain_target == 0 )
     {
-      for ( auto t : p()->allies_with_ebon )
+      for ( auto t : p()->allies_with_my_ebon )
       {
         ebon_on_target( t, cast_state( s )->sands_crit );
       }
@@ -1654,13 +1657,18 @@ public:
 
   int n_targets() const override
   {
-    return aoe - as<int>( p()->allies_with_ebon.size() );
+    return aoe - as<int>( p()->allies_with_my_ebon.size() );
   }
 
   void activate() override
   {
     evoker_augment_t::activate();
-    p()->allies_with_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+    p()->allies_with_my_ebon.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
+
+    for ( auto e : p()->allied_augmentations )
+    {
+      e->allied_ebon_callbacks.push_back( [ this ]() { target_cache.is_valid = false; } );
+    }
   }
 
   size_t available_targets( std::vector<player_t*>& target_list ) const override
@@ -1669,10 +1677,33 @@ public:
     // Player must always be the first target.
     target_list.push_back( player );
 
+    // Clear helper vector used to process in a single pass.
+    helper_list.clear();
+
     for ( const auto& t : sim->player_no_pet_list )
     {
       if ( t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
+      {
+        if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                           [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
+        {
+          target_list.push_back( t );
+        }
+        else
+        {
+          helper_list.push_back( t );
+        }
+      }
+    }
+
+    if ( target_list.size() < n_targets() )
+    {
+      for ( auto& t : helper_list )
+      {
         target_list.push_back( t );
+        if ( target_list.size() >= n_targets() )
+          break;
+      }
     }
 
     return target_list.size();
@@ -1777,7 +1808,7 @@ struct fire_breath_t : public empowered_charge_spell_t
         {
           p()->get_target_data( p() )->buffs.infernos_blessing->trigger();
 
-          for ( auto a : p()->allies_with_ebon )
+          for ( auto a : p()->allies_with_my_ebon )
           {
             p()->get_target_data( a )->buffs.infernos_blessing->trigger();
           }
@@ -3389,7 +3420,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
           if ( new_ )
           {
-            evoker->allies_with_ebon.push_back( target );
+            evoker->allies_with_my_ebon.push_back( target );
             if ( auto e = dynamic_cast<evoker_t*>( target ) )
             {
               e->allied_ebons_on_me.push_back( b );
@@ -3397,12 +3428,16 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
           }
           else
           {
-            evoker->allies_with_ebon.find_and_erase( target );
+            evoker->allies_with_my_ebon.find_and_erase( target );
             if ( auto e = dynamic_cast<evoker_t*>( target ) )
             {
               auto vec = e->allied_ebons_on_me;
               vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
             }
+          }
+          for ( auto c : evoker->allied_ebon_callbacks )
+          {
+            c();
           }
         } );
 
@@ -3515,8 +3550,9 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     proc(),
     rppm(),
     uptime(),
-    allies_with_ebon(),
-    allied_ebons_on_me()
+    allies_with_my_ebon(),
+    allied_ebons_on_me(),
+    allied_augmentations()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
@@ -3676,6 +3712,14 @@ void evoker_t::init_action_list()
 
 void evoker_t::init_finished()
 {
+  for ( auto p : sim->player_no_pet_list )
+  {
+    if ( p != this && p->specialization() == EVOKER_AUGMENTATION )
+    {
+      allied_augmentations.push_back( static_cast<evoker_t*>( p ) );
+    }
+  }
+
   player_t::init_finished();
 
   /*PRECOMBAT SHENANIGANS
@@ -4041,8 +4085,9 @@ void evoker_t::create_buffs()
           ->set_default_value_from_effect( 1 );
 
   // Class Traits
-  buff.ancient_flame =
-      make_buff<e_buff_t>( this, "ancient_flame", find_spell( 375583 ) )->set_trigger_spell( talent.ancient_flame );
+  buff.ancient_flame = make_buff<e_buff_t>( this, "ancient_flame", find_spell( 375583 ) )
+                           ->set_trigger_spell( talent.ancient_flame )
+                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.leaping_flames =
       make_buff<e_buff_t>( this, "leaping_flames", find_spell( 370901 ) )->set_trigger_spell( talent.leaping_flames );
@@ -4050,7 +4095,8 @@ void evoker_t::create_buffs()
   buff.obsidian_scales = make_buff<e_buff_t>( this, "obsidian_scales", talent.obsidian_scales )->set_cooldown( 0_ms );
 
   buff.scarlet_adaptation = make_buff<e_buff_t>( this, "scarlet_adaptation", find_spell( 372470 ) )
-                                ->set_trigger_spell( talent.scarlet_adaptation );
+                                ->set_trigger_spell( talent.scarlet_adaptation )
+                                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buff.tip_the_scales = make_buff<e_buff_t>( this, "tip_the_scales", talent.tip_the_scales )->set_cooldown( 0_ms );
 
@@ -4465,7 +4511,7 @@ void evoker_t::extend_ebon( timespan_t extend )
     }
   }
 
-  for ( auto ally : allies_with_ebon )
+  for ( auto ally : allies_with_my_ebon )
   {
     auto ebon = get_target_data( ally )->buffs.ebon_might;
     auto dur  = ebon->remains();
