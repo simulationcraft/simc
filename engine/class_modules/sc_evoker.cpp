@@ -342,6 +342,7 @@ struct evoker_t : public player_t
     player_talent_t dream_of_spring;
     // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
     player_talent_t reactive_hide;
+    const spell_data_t* reactive_hide_buff;
     // Hoarded Power - Devas Has
     player_talent_t ignition_rush;
     player_talent_t prescience;
@@ -3899,7 +3900,8 @@ void evoker_t::init_spells()
   talent.plot_the_future = ST( "Plot the Future" );
   talent.dream_of_spring = ST( "Dream of Spring" );
   // Symbiotic Bloom - Non DPS but Scarlet exists. Todo: implement healing
-  talent.reactive_hide = ST( "Reactive Hide" );
+  talent.reactive_hide      = ST( "Reactive Hide" );
+  talent.reactive_hide_buff = find_spell( 410256 );
   // Hoarded Power - Devas Has
   talent.ignition_rush   = ST( "Ignition Rush" );
   talent.prescience      = ST( "Prescience" );
@@ -4108,7 +4110,7 @@ void evoker_t::create_buffs()
                       } );
 
   buff.reactive_hide =
-      make_buff<e_buff_t>( this, "reactive_hide", talent.reactive_hide )->set_default_value_from_effect( 1, 0.01 );
+      make_buff<e_buff_t>( this, "reactive_hide", talent.reactive_hide_buff )->set_default_value_from_effect( 1, 0.01 );
 
   buff.feed_the_flames_stacking = make_buff<e_buff_t>( this, "feed_the_flames", find_spell( 405874 ) );
   buff.feed_the_flames_pyre     = make_buff<e_buff_t>( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
