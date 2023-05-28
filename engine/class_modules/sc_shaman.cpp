@@ -11392,7 +11392,7 @@ public:
       os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
       os << fmt::format( "<td class=\"left\">{}</td>", report_decorators::decorated_action( **action ) );
 
-      for ( auto col = 0; col < as<int>( ref.size() ); ++col )
+      for ( auto col = 0; col < as<int>( columns ); ++col )
       {
         auto casts = ref[ col ].sum() / ( col > 1 ? as<double>( col ) : 1.0 );
 
