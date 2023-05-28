@@ -6,8 +6,8 @@ action_priority_list_t* fallthru = get_action_priority_list( "fallthru" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration|trinket.1.is.spoils_of_neltharus" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration)*2|trinket.2.is.spoils_of_neltharus" );
 precombat->add_action( "moonkin_form" );
 precombat->add_action( "wrath" );
 precombat->add_action( "wrath" );
