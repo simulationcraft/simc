@@ -11456,7 +11456,7 @@ public:
       double total = 0.0;
 
       range::for_each( p.mw_spend_list,  [ &total ]( const auto& entry ) {
-        total = range::accumulate( entry, total, &simple_sample_data_t::sum );
+        total = range::accumulate( entry, total, &simple_sample_data_t::sum ) - entry[ 0 ].sum();
       } );
 
       for ( auto i = 0; i < as<int>( p.mw_spend_list.size() ); ++i )
@@ -11467,7 +11467,7 @@ public:
           return action->internal_id == i;
         } );
 
-        auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum );
+        auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum ) - ref[ 0 ].sum();
 
         if ( action_sum == 0.0 )
         {
@@ -11499,7 +11499,7 @@ public:
     {
       const auto& entry = p.mw_spend_list[ i ];
 
-      auto sum = range::accumulate( entry, 0.0, &simple_sample_data_t::sum );
+      auto sum = range::accumulate( entry, 0.0, &simple_sample_data_t::sum ) - entry[ 0 ].sum();
       if ( sum == 0.0 )
       {
         continue;
