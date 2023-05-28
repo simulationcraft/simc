@@ -2352,7 +2352,8 @@ struct living_flame_t : public evoker_spell_t
 
     int total_hits = damage->num_targets_hit;
 
-    p()->buff.ancient_flame->expire();
+    if ( !p()->buff.burnout->up() )
+        p()->buff.ancient_flame->expire();
     p()->buff.scarlet_adaptation->expire();
 
     if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
