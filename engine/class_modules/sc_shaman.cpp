@@ -11752,7 +11752,11 @@ public:
 
       mw_consumer_piechart_contents( os );
 
+      os << "\t\t\t\t\t</div>\n";
+
       os << "<div class=\"clear\"></div>\n";
+
+      os << "\t\t\t\t\t</div>\n";
     }
 
     if ( p.talent.deeply_rooted_elements.ok() )
