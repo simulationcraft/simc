@@ -2206,8 +2206,11 @@ class SpellDataGenerator(DataGenerator):
           ( 390195, 1 ), # Chaos Theory talent buff
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
-          ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
-          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
+          ( 393628, 1 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 1 ), # T30 4pc Seething Potential damage buff
+          ( 228532, 1 ), # Consume Lesser Soul heal
+          ( 328953, 1 ), # Consume Demon Soul heal
+          ( 328951, 1 ), # New Shattered Souls area trigger
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
