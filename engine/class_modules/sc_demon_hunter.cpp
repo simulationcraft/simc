@@ -1038,11 +1038,7 @@ struct soul_fragment_t
 
     timespan_t travel_time() const
     {
-      double velocity = frag->dh->spec.consume_soul_greater->missile_speed();
-      if ( velocity == 0 || frag->consume_on_activation )
-        return timespan_t::zero();
-      double distance = frag->get_distance( frag->dh );
-      return timespan_t::from_seconds( distance / velocity );
+      return frag->get_travel_time( true );
     }
 
     void execute() override
@@ -1085,6 +1081,15 @@ struct soul_fragment_t
   double get_distance( demon_hunter_t* p ) const
   {
     return p->get_position_distance( x, y );
+  }
+
+  timespan_t get_travel_time( bool activation = false ) const
+  {
+    double velocity = dh->spec.consume_soul_greater->missile_speed();
+    if ( activation && consume_on_activation || velocity == 0 )
+      return timespan_t::zero();
+    double distance = get_distance( dh );
+    return timespan_t::from_seconds( distance / velocity );
   }
 
   bool active() const
@@ -1159,14 +1164,13 @@ struct soul_fragment_t
       action_t* consume_action = is_type( soul_fragment::ANY_GREATER ) ?
         dh->active.consume_soul_greater : dh->active.consume_soul_lesser;
 
-      if ( instant )
+      timespan_t delay = get_travel_time();
+      if ( instant || delay == 0_s )
       {
         consume_action->execute();
       }
       else
       {
-        double velocity = dh->spec.consume_soul_greater->missile_speed();
-        timespan_t delay = timespan_t::from_seconds( get_distance( dh ) / velocity );
         make_event<delayed_execute_event_t>( *dh->sim, dh, consume_action, dh, delay );
       }
     }
@@ -3216,7 +3220,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       // Evaluate if_expr to make sure the actor still wants to consume.
       if ( frag && frag->active() && ( !expr || expr->eval() ) && dh->active.consume_soul_greater )
       {
-        frag->consume( true, true );
+        frag->consume( true );
       }
 
       dh->soul_fragment_pick_up = nullptr;
@@ -7775,11 +7779,8 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, bool c
     }
   }
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s creates %u %ss. active=%u total=%u", name(), n, get_soul_fragment_str( type ),
-                           get_active_soul_fragments( type ), get_total_soul_fragments( type ) );
-  }
+  sim->print_log( "{} creates {} {}. active={} total={}", *this, n, get_soul_fragment_str( type ),
+                  get_active_soul_fragments( type ), get_total_soul_fragments( type ) );
 }
 
 void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player_t* target, bool consume_on_activation )
@@ -7986,6 +7987,11 @@ public:
 
   void register_hotfixes() const override
   {
+    hotfix::register_spell( "Demon Hunter", "2023-05-28", "Manually set Consume Soul Fragment (Greater) travel speed.", 178963 )
+      .field( "prj_speed" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 25.0 )
+      .verification_value( 0.0 );
   }
 
   void combat_begin( sim_t* ) const override
