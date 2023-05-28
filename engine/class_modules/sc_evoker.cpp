@@ -118,7 +118,7 @@ struct evoker_t : public player_t
 
   vector_with_callback<player_t*> allies_with_my_ebon;
   std::vector<evoker_t*> allied_augmentations;
-  std::vector<buff_t*> allied_ebons_on_me;
+  mutable std::vector<buff_t*> allied_ebons_on_me;
   std::vector<std::function<void()>> allied_ebon_callbacks;
 
   // Options
@@ -1563,7 +1563,7 @@ public:
     return ( p()->cache.intellect() - ignore_int ) * ebon_value;
   }
 
-  static double ebon_int( evoker_t* p )
+  static double ebon_int( evoker_t* p)
   {
     auto ebon_value = ( p->talent.ebon_might->effectN( 1 ).percent() +
                         p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
@@ -4237,6 +4237,12 @@ void evoker_t::schedule_ready( timespan_t delta_time, bool waiting )
 void evoker_t::reset()
 {
   player_t::reset();
+
+  allied_ebons_on_me.clear();
+  for ( auto b : allies_with_my_ebon )
+  {
+    allies_with_my_ebon.find_and_erase_unordered( b );
+  }
 
   was_empowering = false;
 }
