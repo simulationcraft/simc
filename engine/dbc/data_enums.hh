@@ -90,26 +90,20 @@ enum proc_types
   PROC1_PERIODIC,
   PROC1_PERIODIC_TAKEN,
   PROC1_ANY_DAMAGE_TAKEN,
-  PROC1_PERIODIC_HELPFUL, // TODO: Replace with PROC1_PERIODIC_HEAL and remove special handling for that?
+  PROC1_HELPFUL_PERIODIC,
   PROC1_MAINHAND_ATTACK,
   PROC1_OFFHAND_ATTACK,
   // Relevant blizzard flags end here
 
-  // We need to separate heal ticks and damage ticks for our
-  // system, so define a separate cooldown for them. Registering
-  // cooldowns will automatically infer the correct type from
-  // given proc flags.
-  PROC1_PERIODIC_HEAL,
-  PROC1_PERIODIC_HEAL_TAKEN,
-
-  // This is a Blizzard type, but define is separately here for now.
+  // These are Blizzard types, but special handling is required
+  PROC1_HELPFUL_PERIODIC_TAKEN,  // enum is 24, but bit is 31
   PROC1_CAST_SUCCESSFUL,
 
   PROC1_TYPE_MAX,
 
   // Helper types to loop around stuff
   PROC1_TYPE_MIN = 0,
-  PROC1_TYPE_BLIZZARD_MAX = PROC1_PERIODIC_HEAL,
+  PROC1_TYPE_BLIZZARD_MAX = PROC1_HELPFUL_PERIODIC_TAKEN,
   PROC1_INVALID = -1
 };
 
@@ -150,55 +144,53 @@ enum item_raid_type
 // Mangos data types for various DBC-related enumerations
 enum proc_flag : uint64_t
 {
-  PF_KILLED               = uint64_t( 1 ) << PROC1_KILLED,
-  PF_KILLING_BLOW         = uint64_t( 1 ) << PROC1_KILLING_BLOW,
-  PF_MELEE                = uint64_t( 1 ) << PROC1_MELEE,
-  PF_MELEE_TAKEN          = uint64_t( 1 ) << PROC1_MELEE_TAKEN,
-  PF_MELEE_ABILITY        = uint64_t( 1 ) << PROC1_MELEE_ABILITY,
-  PF_MELEE_ABILITY_TAKEN  = uint64_t( 1 ) << PROC1_MELEE_ABILITY_TAKEN,
-  PF_RANGED               = uint64_t( 1 ) << PROC1_RANGED,
-  PF_RANGED_TAKEN         = uint64_t( 1 ) << PROC1_RANGED_TAKEN,
-  PF_RANGED_ABILITY       = uint64_t( 1 ) << PROC1_RANGED_ABILITY,
-  PF_RANGED_ABILITY_TAKEN = uint64_t( 1 ) << PROC1_RANGED_ABILITY_TAKEN,
-  PF_NONE_HEAL            = uint64_t( 1 ) << PROC1_NONE_HEAL,
-  PF_NONE_HEAL_TAKEN      = uint64_t( 1 ) << PROC1_NONE_HEAL_TAKEN,
-  PF_NONE_SPELL           = uint64_t( 1 ) << PROC1_NONE_SPELL,
-  PF_NONE_SPELL_TAKEN     = uint64_t( 1 ) << PROC1_NONE_SPELL_TAKEN,
-  PF_MAGIC_HEAL           = uint64_t( 1 ) << PROC1_MAGIC_HEAL,
-  PF_MAGIC_HEAL_TAKEN     = uint64_t( 1 ) << PROC1_MAGIC_HEAL_TAKEN,
-  PF_MAGIC_SPELL          = uint64_t( 1 ) << PROC1_MAGIC_SPELL, // Any "negative" spell
-  PF_MAGIC_SPELL_TAKEN    = uint64_t( 1 ) << PROC1_MAGIC_SPELL_TAKEN,
-  PF_PERIODIC             = uint64_t( 1 ) << PROC1_PERIODIC, // Any periodic ability landed
-  PF_PERIODIC_TAKEN       = uint64_t( 1 ) << PROC1_PERIODIC_TAKEN,
+  PF_KILLED                 = uint64_t( 1 ) << PROC1_KILLED,
+  PF_KILLING_BLOW           = uint64_t( 1 ) << PROC1_KILLING_BLOW,
+  PF_MELEE                  = uint64_t( 1 ) << PROC1_MELEE,
+  PF_MELEE_TAKEN            = uint64_t( 1 ) << PROC1_MELEE_TAKEN,
+  PF_MELEE_ABILITY          = uint64_t( 1 ) << PROC1_MELEE_ABILITY,
+  PF_MELEE_ABILITY_TAKEN    = uint64_t( 1 ) << PROC1_MELEE_ABILITY_TAKEN,
+  PF_RANGED                 = uint64_t( 1 ) << PROC1_RANGED,
+  PF_RANGED_TAKEN           = uint64_t( 1 ) << PROC1_RANGED_TAKEN,
+  PF_RANGED_ABILITY         = uint64_t( 1 ) << PROC1_RANGED_ABILITY,
+  PF_RANGED_ABILITY_TAKEN   = uint64_t( 1 ) << PROC1_RANGED_ABILITY_TAKEN,
+  PF_NONE_HEAL              = uint64_t( 1 ) << PROC1_NONE_HEAL,
+  PF_NONE_HEAL_TAKEN        = uint64_t( 1 ) << PROC1_NONE_HEAL_TAKEN,
+  PF_NONE_SPELL             = uint64_t( 1 ) << PROC1_NONE_SPELL,
+  PF_NONE_SPELL_TAKEN       = uint64_t( 1 ) << PROC1_NONE_SPELL_TAKEN,
+  PF_MAGIC_HEAL             = uint64_t( 1 ) << PROC1_MAGIC_HEAL,
+  PF_MAGIC_HEAL_TAKEN       = uint64_t( 1 ) << PROC1_MAGIC_HEAL_TAKEN,
+  PF_MAGIC_SPELL            = uint64_t( 1 ) << PROC1_MAGIC_SPELL, // Any "negative" spell
+  PF_MAGIC_SPELL_TAKEN      = uint64_t( 1 ) << PROC1_MAGIC_SPELL_TAKEN,
+  PF_PERIODIC               = uint64_t( 1 ) << PROC1_PERIODIC,
+  PF_PERIODIC_TAKEN         = uint64_t( 1 ) << PROC1_PERIODIC_TAKEN,
+  PF_ANY_DAMAGE_TAKEN       = uint64_t( 1 ) << PROC1_ANY_DAMAGE_TAKEN,
+  PF_HELPFUL_PERIODIC       = uint64_t( 1 ) << PROC1_HELPFUL_PERIODIC,
+  PF_MAINHAND               = uint64_t( 1 ) << PROC1_MAINHAND_ATTACK,
+  PF_OFFHAND                = uint64_t( 1 ) << PROC1_OFFHAND_ATTACK,
 
-  PF_ANY_DAMAGE_TAKEN     = uint64_t( 1 ) << PROC1_ANY_DAMAGE_TAKEN,
-
-  // Unused ones for us
-  PF_HELPFUL_PERIODIC         = 0x00200000, // TODO: Map this to PROC1_PERIODIC_HEAL?
-  PF_MAINHAND                 = 0x00400000,
-  PF_OFFHAND                  = 0x00800000,
-  PF_DEATH                    = 0x01000000,
-  PF_JUMP                     = 0x02000000,
-  PF_CLONE_SPELL              = 0x04000000,
-  PF_ENTER_COMBAT             = 0x08000000,
-  PF_ENCOUNTER_START          = 0x10000000,
-  PF_CAST_ENDED               = 0x20000000,
-  PF_LOOTED                   = 0x40000000,
-  PF_HELPFUL_PERIODIC_TAKEN   = 0x80000000, // TODO: Map this to PROC1_PERIODIC_HEAL_TAKEN?
-  PF_TARGET_DIES              = 0x100000000,
-  PF_KNOCKBACK                = 0x200000000,
-  PF_CAST_SUCCESSFUL          = 0x400000000, // TODO: This is relatively commonly used and should be supported.
+  PF_DEATH                  = 0x01000000,  // unused
+  PF_JUMP                   = 0x02000000,  // unused
+  PF_CLONE_SPELL            = 0x04000000,  // unused
+  PF_ENTER_COMBAT           = 0x08000000,  // unused
+  PF_ENCOUNTER_START        = 0x10000000,  // unused
+  PF_CAST_ENDED             = 0x20000000,  // unused
+  PF_LOOTED                 = 0x40000000,  // unused
+  PF_HELPFUL_PERIODIC_TAKEN = 0x80000000,
+  PF_TARGET_DIES            = 0x100000000, // unused
+  PF_KNOCKBACK              = 0x200000000, // unused
+  PF_CAST_SUCCESSFUL        = 0x400000000, // TODO: This is relatively commonly used and should be supported.
 
   // Helper types
-  PF_ALL_DAMAGE               = PF_MELEE | PF_MELEE_ABILITY |
-                                PF_RANGED | PF_RANGED_ABILITY |
-                                PF_NONE_SPELL | PF_MAGIC_SPELL,
-  PF_ALL_HEAL                 = PF_NONE_HEAL | PF_MAGIC_HEAL,
+  PF_ALL_DAMAGE             = PF_MELEE | PF_MELEE_ABILITY |
+                              PF_RANGED | PF_RANGED_ABILITY |
+                              PF_NONE_SPELL | PF_MAGIC_SPELL,
+  PF_ALL_HEAL               = PF_NONE_HEAL | PF_MAGIC_HEAL,
 
-  PF_DAMAGE_TAKEN         = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
-                            PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
-                            PF_NONE_SPELL_TAKEN | PF_MAGIC_SPELL_TAKEN,
-  PF_ALL_HEAL_TAKEN       = PF_NONE_HEAL_TAKEN | PF_MAGIC_HEAL_TAKEN,
+  PF_DAMAGE_TAKEN           = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
+                              PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
+                              PF_NONE_SPELL_TAKEN | PF_MAGIC_SPELL_TAKEN,
+  PF_ALL_HEAL_TAKEN         = PF_NONE_HEAL_TAKEN | PF_MAGIC_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger

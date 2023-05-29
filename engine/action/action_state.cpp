@@ -329,13 +329,13 @@ std::string action_state_t::flags_to_str( unsigned flags )
 proc_types action_state_t::proc_type() const
 {
   if ( result_type == result_amount_type::HEAL_DIRECT && action->direct_tick )
-    return PROC1_PERIODIC_HEAL;
+    return PROC1_HELPFUL_PERIODIC;
   else if ( result_type == result_amount_type::DMG_DIRECT || result_type == result_amount_type::HEAL_DIRECT )
     return action->proc_type();
   else if ( result_type == result_amount_type::DMG_OVER_TIME )
     return PROC1_PERIODIC;
   else if ( result_type == result_amount_type::HEAL_OVER_TIME )
-    return PROC1_PERIODIC_HEAL;
+    return PROC1_HELPFUL_PERIODIC;
 
   return PROC1_INVALID;
 }

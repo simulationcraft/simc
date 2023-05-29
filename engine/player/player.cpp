@@ -7737,8 +7737,11 @@ void player_t::do_damage( action_state_t* incoming_state )
     if ( pt != PROC1_INVALID )
     {
       // On damage/heal in. Proc flags are arranged as such that the "incoming"
-      // version of the primary proc flag is always follows the outgoing version.
+      // version of the primary proc flag is always follows the outgoing version...
       proc_types pt_taken = static_cast<proc_types>( pt + 1 );
+      // ...except for PROC1_HELPFUL_PERIODIC_TAKEN
+      if ( pt == PROC1_HELPFUL_PERIODIC )
+        pt_taken = PROC1_HELPFUL_PERIODIC_TAKEN;
 
       // Because most procs in simc default to using PROC2_LANDED for most proc types,
       // trigger the execute_proc_type2() here to ensure that those procs will work.

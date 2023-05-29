@@ -1383,31 +1383,31 @@ const char* util::proc_type_string( proc_types type )
 {
   switch ( type )
   {
-    case PROC1_KILLED:               return "Killed";
-    case PROC1_KILLING_BLOW:         return "KillingBlow";
-    case PROC1_MELEE:                return "MeleeSwing";
-    case PROC1_MELEE_TAKEN:          return "MeleeSwingTaken";
-    case PROC1_MELEE_ABILITY:        return "MeleeAbility";
-    case PROC1_MELEE_ABILITY_TAKEN:  return "MeleeAbilityTaken";
-    case PROC1_RANGED:               return "RangedShot";
-    case PROC1_RANGED_TAKEN:         return "RangedShotTaken";
-    case PROC1_RANGED_ABILITY:       return "RangedAbility";
-    case PROC1_RANGED_ABILITY_TAKEN: return "RangedAbilityTaken";
-    case PROC1_NONE_HEAL:            return "GenericHeal";
-    case PROC1_NONE_HEAL_TAKEN:      return "GenericHealTaken";
-    case PROC1_NONE_SPELL:           return "GenericHarmfulSpell";
-    case PROC1_NONE_SPELL_TAKEN:     return "GenericHarmfulSpellTaken";
-    case PROC1_MAGIC_HEAL:           return "MagicHeal";
-    case PROC1_MAGIC_HEAL_TAKEN:     return "MagicHealTaken";
-    case PROC1_MAGIC_SPELL:          return "MagicHarmfulSpell";
-    case PROC1_MAGIC_SPELL_TAKEN:    return "MagicHarmfulSpellTaken";
-    case PROC1_PERIODIC:             return "HarmfulTick";
-    case PROC1_PERIODIC_TAKEN:       return "HarmfulTickTaken";
-    case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
-    case PROC1_PERIODIC_HEAL:        return "TickHeal";
-    case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
-    case PROC1_CAST_SUCCESSFUL:      return "CastSuccessful";
-    default:                         return "Unknown";
+    case PROC1_KILLED:                 return "Killed";
+    case PROC1_KILLING_BLOW:           return "KillingBlow";
+    case PROC1_MELEE:                  return "MeleeSwing";
+    case PROC1_MELEE_TAKEN:            return "MeleeSwingTaken";
+    case PROC1_MELEE_ABILITY:          return "MeleeAbility";
+    case PROC1_MELEE_ABILITY_TAKEN:    return "MeleeAbilityTaken";
+    case PROC1_RANGED:                 return "RangedShot";
+    case PROC1_RANGED_TAKEN:           return "RangedShotTaken";
+    case PROC1_RANGED_ABILITY:         return "RangedAbility";
+    case PROC1_RANGED_ABILITY_TAKEN:   return "RangedAbilityTaken";
+    case PROC1_NONE_HEAL:              return "GenericHeal";
+    case PROC1_NONE_HEAL_TAKEN:        return "GenericHealTaken";
+    case PROC1_NONE_SPELL:             return "GenericHarmfulSpell";
+    case PROC1_NONE_SPELL_TAKEN:       return "GenericHarmfulSpellTaken";
+    case PROC1_MAGIC_HEAL:             return "MagicHeal";
+    case PROC1_MAGIC_HEAL_TAKEN:       return "MagicHealTaken";
+    case PROC1_MAGIC_SPELL:            return "MagicHarmfulSpell";
+    case PROC1_MAGIC_SPELL_TAKEN:      return "MagicHarmfulSpellTaken";
+    case PROC1_PERIODIC:               return "HarmfulTick";
+    case PROC1_PERIODIC_TAKEN:         return "HarmfulTickTaken";
+    case PROC1_ANY_DAMAGE_TAKEN:       return "AnyDamageTaken";
+    case PROC1_HELPFUL_PERIODIC:       return "HelpfulTick";
+    case PROC1_HELPFUL_PERIODIC_TAKEN: return "HelpfulTickTaken";
+    case PROC1_CAST_SUCCESSFUL:        return "CastSuccessful";
+    default:                           return "Unknown";
   }
 }
 
