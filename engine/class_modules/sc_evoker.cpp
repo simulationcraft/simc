@@ -3056,7 +3056,8 @@ public:
   {
     evoker_spell_t::execute();
 
-    p()->buff.reactive_hide->trigger();
+    if ( p()->talent.reactive_hide.ok() )
+      p()->buff.reactive_hide->trigger();
   }
 };
 
