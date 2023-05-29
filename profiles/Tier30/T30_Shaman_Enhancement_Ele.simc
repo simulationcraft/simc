@@ -75,7 +75,7 @@ actions.aoe+=/fire_nova,if=active_dot.flame_shock=6|(active_dot.flame_shock>=4&a
 actions.aoe+=/ice_strike,if=talent.hailstorm.enabled
 actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
 actions.aoe+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up
-actions.aoe+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
+actions.aoe+=/lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)
 actions.aoe+=/sundering
 actions.aoe+=/flame_shock,if=talent.molten_assault.enabled&!ticking
 actions.aoe+=/flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
