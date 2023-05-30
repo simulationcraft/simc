@@ -61,7 +61,10 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     expiration( nullptr ),
     duration( timespan_t::zero() ),
     npc_id(),
-    owner_coeff()
+    owner_coeff(),
+    owner_composite_melee_haste(),
+    owner_composite_spell_haste()
+
 {
   default_target = owner -> default_target;
   target = owner -> target;

@@ -1148,6 +1148,46 @@ public:
   // Runes
   runes_t _runes;
 
+
+  struct stat_event_t : public player_event_t
+  {
+    stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) {
+
+    }
+
+    void execute() override
+    {
+      for ( auto pet : (p()->active_pets) ) 
+      {
+        sim().print_log( "{} stat invalidate event", pet->name() );
+        sim().print_log( "{} stat invalidate event old ap {} ", pet->name(), pet->composite_melee_attack_power() );
+        double ap = 0;
+          // Use owner's default attack power type for the inheritance
+          ap += pet->owner->composite_melee_attack_power_by_type( pet->owner->default_ap_type() ) *
+            pet->owner->composite_attack_power_multiplier() *
+            pet->owner_coeff.ap_from_ap;
+
+          pet->current.stats.attack_power = ap;
+        sim().print_log( "{} stat invalidate event new ap {} ", pet->name(), pet->composite_melee_attack_power() );
+
+
+
+        double sp = 0;
+
+        if ( pet->owner_coeff.sp_from_ap > 0.0 )
+          sp += pet->owner->cache.attack_power() * pet->owner->composite_attack_power_multiplier() * pet->owner_coeff.sp_from_ap;
+        pet->current.stats.spell_power = sp;
+
+        //pet->current.stats.haste_rating = pet->owner->current.stats.haste_rating;
+        //pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
+        //pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
+      }
+      
+
+      make_event<stat_event_t>( sim(), this->player(), timespan_t::from_seconds( 5 ) );
+    }
+  };
+
   death_knight_t( sim_t* sim, util::string_view name, race_e r ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_dnd( nullptr ),
@@ -1191,6 +1231,7 @@ public:
     cooldown.frostwyrms_fury          = get_cooldown( "frostwyrms_fury_driver" );
 
     resource_regeneration = regen_type::DYNAMIC;
+
   }
 
   // Character Definition overrides
@@ -1782,23 +1823,22 @@ struct death_knight_pet_t : public pet_t
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
 
+
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
     affected_by_commander_of_the_dead( false )
+
   {
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
     }
+
   }
 
   death_knight_t* dk() const
   { return debug_cast<death_knight_t*>( owner ); }
-
-   // DK pets do not inherit player attack speed modifiers
-  double composite_melee_speed() const override
-  { return owner -> cache.attack_haste(); }
 
   virtual attack_t* create_auto_attack()
   { return nullptr; }
@@ -1822,6 +1862,36 @@ struct death_knight_pet_t : public pet_t
       m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
     }
     return m;
+  }
+
+  double pet_crit() const override
+  {
+    return std::max( player_t::composite_melee_crit_chance(), player_t::composite_spell_crit_chance() );
+  }
+
+  //double composite_melee_speed() const override
+  //{
+  //  return owner_composite_melee_haste;
+  //}
+
+  //double composite_melee_haste() const override
+  //{
+  //  return owner_composite_melee_haste;
+  //}
+
+  //double composite_spell_haste() const override
+  //{
+  // return owner_composite_spell_haste;
+  //}
+
+  //double composite_spell_speed() const override
+  //{
+  //  return owner_composite_spell_haste;
+  //}
+
+  double composite_melee_attack_power() const override
+  {
+    return player_t::composite_melee_attack_power();
   }
 
   // Standard Death Knight pet actions
@@ -1861,6 +1931,7 @@ struct death_knight_pet_t : public pet_t
 
     pet_t::init_action_list();
   }
+
 };
 
 // ==========================================================================
@@ -10118,6 +10189,7 @@ void death_knight_t::init_finished()
                   "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
                   "Use death_knight.runeforge.name instead.", name() );
   }
+
 }
 
 // death_knight_t::activate =================================================
@@ -10125,12 +10197,16 @@ void death_knight_t::init_finished()
 void death_knight_t::activate()
 {
   player_t::activate();
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( 10 ) );
+
 
   range::for_each( sim->actor_list, [ this ]( player_t* target ) {
     if ( !target->is_enemy() )
     {
       return;
     }
+
+
 
     // On target death triggers
     if ( talent.soul_reaper.ok() )
@@ -10162,6 +10238,7 @@ void death_knight_t::reset()
   active_dnd = nullptr;
   km_proc_attempts = 0;
   bone_shield_charges_consumed = 0;
+
 }
 
 // death_knight_t::assess_heal ==============================================
