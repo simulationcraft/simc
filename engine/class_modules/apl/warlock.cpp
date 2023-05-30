@@ -12,7 +12,7 @@ namespace warlock_apl{
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 70 ) return "phial_of_tepid_versatility_3";
+    if ( p->true_level >= 70 ) return "iced_phial_of_corrupting_rage_3";
     return ( p->true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
   }
 
@@ -276,7 +276,6 @@ void destruction( player_t* p )
   default_->add_action( "channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))>cast_time&(debuff.conflagrate.remains>execute_time|!talent.roaring_blaze)" );
   default_->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)" );
   default_->add_action( "immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.infernal_combustion&action.chaos_bolt.usable)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8" );
-  default_->add_action( "havoc,if=talent.cry_havoc&((buff.ritual_of_ruin.up&pet.infernal.active&talent.burn_to_ashes)|((buff.ritual_of_ruin.up|pet.infernal.active)&!talent.burn_to_ashes))" );
   default_->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&set_bonus.tier30_4pc" );
   default_->add_action( "chaos_bolt,if=pet.infernal.active|pet.blasphemy.active|soul_shard>=4" );
   default_->add_action( "summon_infernal" );
@@ -303,9 +302,9 @@ void destruction( player_t* p )
   aoe->add_action( "rain_of_fire,if=soul_shard>=(4.5-0.1*active_dot.immolate)&time>5" );
   aoe->add_action( "chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire" );
   aoe->add_action( "cataclysm,if=raid_event.adds.in>15" );
-  aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire" );
   aoe->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal|(talent.inferno&active_enemies>4))&target.time_to_die>8" );
-  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains)&active_dot.immolate<=4&target.time_to_die>18" );
+  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.immolate<=4&target.time_to_die>18" );
+  aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time&talent.raging_demonfire" );
   aoe->add_action( "summon_soulkeeper,if=buff.tormented_soul.stack=10|buff.tormented_soul.stack>3&fight_remains<10" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal" );
@@ -326,7 +325,7 @@ void destruction( player_t* p )
   cleave->add_action( "conflagrate,if=(talent.roaring_blaze.enabled&debuff.conflagrate.remains<1.5)|charges=max_charges" );
   cleave->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|time_to_die<cooldown.dimensional_rift.duration)" );
   cleave->add_action( "cataclysm,if=raid_event.adds.in>15" );
-  cleave->add_action( "channel_demonfire,if=talent.raging_demonfire" );
+  cleave->add_action( "channel_demonfire,if=talent.raging_demonfire&active_dot.immolate=2" );
   cleave->add_action( "soul_fire,if=soul_shard<=3.5&(debuff.conflagrate.remains>cast_time+travel_time|!talent.roaring_blaze&buff.backdraft.up)&!variable.pool_soul_shards" );
   cleave->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=(dot.immolate.refreshable&(dot.immolate.remains<cooldown.havoc.remains|!dot.immolate.ticking))&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains+(!talent.mayhem*action.soul_fire.cast_time)>dot.immolate.remains)&target.time_to_die>15" );
   cleave->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal)&target.time_to_die>8" );
@@ -351,13 +350,14 @@ void destruction( player_t* p )
 
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<2.5" );
-  havoc->add_action( "channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2&active_enemies>2" );
+  havoc->add_action( "channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2" );
   havoc->add_action( "immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=(((dot.immolate.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5" );
   havoc->add_action( "chaos_bolt,if=((talent.cry_havoc&!talent.inferno)|!talent.rain_of_fire)&cast_time<havoc_remains" );
   havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&(active_enemies<=3-talent.inferno+(talent.madness_of_the_azjaqir&!talent.inferno))" );
   havoc->add_action( "rain_of_fire,if=active_enemies>=3&talent.inferno" );
   havoc->add_action( "rain_of_fire,if=(active_enemies>=4-talent.inferno+talent.madness_of_the_azjaqir)" );
   havoc->add_action( "rain_of_fire,if=active_enemies>2&(talent.avatar_of_destruction|(talent.rain_of_chaos&buff.rain_of_chaos.up))&talent.inferno.enabled" );
+  havoc->add_action( "channel_demonfire,if=soul_shard<4.5" );
   havoc->add_action( "conflagrate,if=!talent.backdraft" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 
