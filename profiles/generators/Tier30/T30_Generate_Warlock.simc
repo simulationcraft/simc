@@ -56,7 +56,7 @@ spec=destruction
 race=mechagnome
 role=spell
 position=ranged_back
-talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAatmkAAAAAAAAAAAAIIpkEJ
+talents=BsQAAAAAAAAAAAAAAAAAAAAAAggkEJJQaKEpdgkESJwBSUSSkAalmkAAAAAAAAAAAAIIpkEJ
 
 head=grimhorns_of_the_sinister_savant,id=202533,bonus_id=8780,ilevel=447,gem_id=192988
 neck=torc_of_passed_time,id=201759,bonus_id=8836/8840/8902/9477/8782/9405/8793/9366,ilevel=447,gem_id=192961/192961/192961,crafted_stats=36/32
