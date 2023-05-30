@@ -997,6 +997,8 @@ struct empowered_charge_t : public empowered_base_t<BASE>
 
     ab::dot_duration = ab::base_tick_time = base_empower_duration =
         base_time_to_empower( static_cast<empower_e>( empower_to ) );
+
+    ab::apply_affecting_aura( p->talent.font_of_magic );
   }
 
   template <typename T>
@@ -4341,7 +4343,6 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
   action.apply_affecting_aura( talent.eye_of_infinity );
-  action.apply_affecting_aura( talent.font_of_magic );
   action.apply_affecting_aura( talent.event_horizon );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
