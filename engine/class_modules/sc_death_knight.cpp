@@ -10253,7 +10253,6 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( 0 ), false );
   make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_seconds( rng().range(0, 3) ), true);
 
   bone_shield_charges_consumed = 0;
