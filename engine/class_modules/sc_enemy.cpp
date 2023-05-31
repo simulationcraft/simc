@@ -1407,19 +1407,23 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  std::array<int, numTankDummies> aa_damage               = { 0, 102100, 133380, 174241, 240324, 401733 };  // Base auto attack damage
-  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 204200, 266759, 348483, 480649, 642444 };  // Base melee nuke damage (currently set to Raszageth's Electrified Jaws)
-  std::array<int, numTankDummies> background_spell_damage = { 0, 4084, 5335, 6970, 9613, 16069 };  // Base background dot damage (currently set to 0.04x auto damage)
+  // Calculated by computing (M / <difficulty>) pre-mitigation (U) melee swings for all difficulties from Kazzara - Aberrus.
+  // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
+  // values were a bit lower, so this one was also lowered.
+  std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 3.6, 2.8, 2.1, 1.5, 1};
+  int aa_damage_base                                         = 830000;
+  int dummy_strike_base                                      = aa_damage_base * 1.5;
+  int background_spell_base                                  = aa_damage_base * 0.04;
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
-  als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) +
-         ",attack_speed=1.5,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) +
+  als += "/auto_attack,damage=" + util::to_string( floor( aa_damage_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
+         ",range=" + util::to_string( aa_damage_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) +
+         ",attack_speed=2,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string( floor( dummy_strike_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
+         ",range=" + util::to_string( floor( dummy_strike_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) ) +
          ",attack_speed=2,cooldown=30,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) +
+  als += "/spell_dot,damage=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
+         ",range=" + util::to_string( floor( background_spell_base / tank_dummy_index_scalar[ tank_dummy_index ] * 0.02 ) ) +
          ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=30,bleed=1";
   // pause periodically to mimic a tank swap
   als += "/pause_action,duration=30,cooldown=30,if=time>=30";
