@@ -31,6 +31,7 @@ struct pet_t : public player_t
   double owner_composite_melee_crit;
   double owner_composite_spell_crit;
   double owner_composite_vers;
+  double owner_composite_mastery;
 
 
   struct owner_coefficients_t

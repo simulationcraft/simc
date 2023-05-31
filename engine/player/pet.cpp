@@ -66,7 +66,8 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     owner_composite_spell_haste( 0.0 ),
     owner_composite_vers( 0.0 ),
     owner_composite_melee_crit( 0.0 ),
-    owner_composite_spell_crit( 0.0 )
+    owner_composite_spell_crit( 0.0 ),
+    owner_composite_mastery( 0.0 )
 
 {
   default_target = owner -> default_target;

@@ -1141,8 +1141,6 @@ public:
     bool split_obliterate_schools = true;
     double ams_absorb_percent = 0;
     double amz_absorb_percent = 0;
-    bool t30_2pc = false;
-    bool t30_4pc = false;
   } options;
 
   // Runes
@@ -1169,6 +1167,7 @@ public:
         pet->owner_composite_melee_crit = pet->owner->composite_melee_crit_chance();
         pet->owner_composite_spell_crit = pet->owner->composite_spell_crit_chance();
         pet->owner_composite_vers = pet->owner->composite_damage_versatility();
+        pet->owner_composite_mastery = pet->owner->composite_mastery_value();
         pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
         pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
         sim().print_log( "{} stat invalidate event new haste {} (owner: {})", pet->name(), pet->owner_composite_melee_haste, pet->owner->cache.attack_haste() );
@@ -1846,6 +1845,11 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
+    if ( dk() -> mastery.dreadblade -> ok() )
+    {
+      m *= 1.0 + owner_composite_mastery;
+    }
+
     if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
     {
       m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
@@ -1868,6 +1872,7 @@ struct death_knight_pet_t : public pet_t
     owner_composite_vers = owner->composite_damage_versatility();
     owner_composite_melee_haste = owner->composite_melee_haste();
     owner_composite_spell_haste = owner->composite_spell_haste();
+    owner_composite_mastery = owner->composite_mastery_value();
   }
 
   double pet_crit() const override
@@ -10581,11 +10586,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
-
-  if ( mastery.dreadblade -> ok() )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
   
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
@@ -10594,7 +10594,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   if ( talent.unholy.unholy_aura.ok() )
   {
     if ( guardian )
-      m*= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
+      m *= 1.0 + talent.unholy.unholy_aura->effectN( 4 ).percent();
     else // Pets
       m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
