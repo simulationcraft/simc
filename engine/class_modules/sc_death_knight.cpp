@@ -1178,9 +1178,9 @@ public:
           sp += pet->owner->cache.attack_power() * pet->owner->composite_attack_power_multiplier() * pet->owner_coeff.sp_from_ap;
         pet->current.stats.spell_power = sp;
 
-        //pet->current.stats.haste_rating = pet->owner->current.stats.haste_rating;
-        //pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
-        //pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
+        pet->current.stats.haste_rating = pet->owner->current.stats.haste_rating;
+        pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
+        pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
       }
       
 
@@ -1835,6 +1835,26 @@ struct death_knight_pet_t : public pet_t
       main_hand_weapon.type = WEAPON_BEAST;
     }
 
+    double ap = 0;
+    // Use owner's default attack power type for the inheritance
+    ap += owner->composite_melee_attack_power_by_type( owner->default_ap_type() ) *
+      owner->composite_attack_power_multiplier() *
+      owner_coeff.ap_from_ap;
+
+    current.stats.attack_power = ap;
+
+
+
+    double sp = 0;
+
+    if ( owner_coeff.sp_from_ap > 0.0 )
+      sp += owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+    current.stats.spell_power = sp;
+
+    current.stats.haste_rating = owner->current.stats.haste_rating;
+    owner_composite_melee_haste = owner->composite_melee_haste();
+    owner_composite_spell_haste = owner->composite_spell_haste();
+
   }
 
   death_knight_t* dk() const
@@ -1869,25 +1889,25 @@ struct death_knight_pet_t : public pet_t
     return std::max( player_t::composite_melee_crit_chance(), player_t::composite_spell_crit_chance() );
   }
 
-  //double composite_melee_speed() const override
-  //{
-  //  return owner_composite_melee_haste;
-  //}
+  double composite_melee_speed() const override
+  {
+    return owner_composite_melee_haste;
+  }
 
-  //double composite_melee_haste() const override
-  //{
-  //  return owner_composite_melee_haste;
-  //}
+  double composite_melee_haste() const override
+  {
+    return owner_composite_melee_haste;
+  }
 
-  //double composite_spell_haste() const override
-  //{
-  // return owner_composite_spell_haste;
-  //}
+  double composite_spell_haste() const override
+  {
+   return owner_composite_spell_haste;
+  }
 
-  //double composite_spell_speed() const override
-  //{
-  //  return owner_composite_spell_haste;
-  //}
+  double composite_spell_speed() const override
+  {
+    return owner_composite_spell_haste;
+  }
 
   double composite_melee_attack_power() const override
   {
@@ -10197,8 +10217,6 @@ void death_knight_t::init_finished()
 void death_knight_t::activate()
 {
   player_t::activate();
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( 10 ) );
-
 
   range::for_each( sim->actor_list, [ this ]( player_t* target ) {
     if ( !target->is_enemy() )
@@ -10226,6 +10244,7 @@ void death_knight_t::activate()
       target -> register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
     }
   } );
+
 }
 
 // death_knight_t::reset ====================================================
@@ -10237,6 +10256,8 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( 0 ) );
+
   bone_shield_charges_consumed = 0;
 
 }
