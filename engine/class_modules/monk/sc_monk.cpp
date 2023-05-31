@@ -1644,8 +1644,7 @@ namespace monk
           p()->buff.leverage->expire();
 
           // Brewmaster RSK also applies the WoO debuff.
-          // This is not mentioned in the tooltip and could be old code from Shadowland Beta that slipped through.
-          if ( p()->bugs && p()->buff.weapons_of_order->up() ) {
+          if ( p()->buff.weapons_of_order->up() ) {
             std::vector<player_t*>& tl = target_list();
             const int target_count = as<int>( tl.size() );
 
