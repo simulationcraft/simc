@@ -1148,7 +1148,6 @@ public:
   // Runes
   runes_t _runes;
 
-
   struct stat_event_t : public player_event_t
   {
     bool requeue;
@@ -1171,9 +1170,9 @@ public:
           pet->current.stats.attack_power = ap;
         sim().print_log( "{} stat invalidate event new ap {} ", pet->name(), pet->composite_melee_attack_power() );
 
-        pet->current.stats.haste_rating = pet->owner->current.stats.haste_rating;
-        pet->current.stats.crit_rating = pet->owner->current.stats.crit_rating;
-        pet->current.stats.versatility_rating = pet->owner->current.stats.versatility_rating;
+        pet->owner_composite_melee_crit = pet->owner->composite_melee_crit_chance();
+        pet->owner_composite_spell_crit = pet->owner->composite_spell_crit_chance();
+        pet->owner_composite_vers = pet->owner->composite_damage_versatility();
         pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
         pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
         sim().print_log( "{} stat invalidate event new haste {} (owner: {})", pet->name(), pet->owner_composite_melee_haste, pet->owner->cache.attack_haste() );
@@ -1831,22 +1830,6 @@ struct death_knight_pet_t : public pet_t
     {
       main_hand_weapon.type = WEAPON_BEAST;
     }
-
-    double ap = 0;
-    // Use owner's default attack power type for the inheritance
-    ap += owner->composite_melee_attack_power_by_type( owner->default_ap_type() ) *
-      owner->composite_attack_power_multiplier() *
-      owner_coeff.ap_from_ap;
-
-    current.stats.attack_power = ap;
-
-    current.stats.haste_rating = owner->current.stats.haste_rating;
-
-    owner_composite_melee_haste = owner->composite_melee_haste();
-    owner_composite_spell_haste = owner->composite_spell_haste();
-    current.stats.haste_rating = owner->current.stats.haste_rating;
-    current.stats.crit_rating = owner->current.stats.crit_rating;
-    current.stats.versatility_rating = owner->current.stats.versatility_rating;    
   }
 
   death_knight_t* dk() const
@@ -1876,9 +1859,26 @@ struct death_knight_pet_t : public pet_t
     return m;
   }
 
+  void arise() override
+  {
+    pet_t::arise();
+    double ap = 0;
+    // Use owner's default attack power type for the inheritance
+    ap += owner->composite_melee_attack_power_by_type( owner->default_ap_type() ) *
+       owner->composite_attack_power_multiplier() *
+       owner_coeff.ap_from_ap;
+
+    current.stats.attack_power = ap;
+    owner_composite_melee_crit = owner->composite_melee_crit_chance();
+    owner_composite_spell_crit = owner->composite_spell_crit_chance();
+    owner_composite_vers = owner->composite_damage_versatility();
+    owner_composite_melee_haste = owner->composite_melee_haste();
+    owner_composite_spell_haste = owner->composite_spell_haste();
+  }
+
   double pet_crit() const override
   {
-    return std::max( player_t::composite_melee_crit_chance(), player_t::composite_spell_crit_chance() );
+    return std::max( owner_composite_melee_crit, owner_composite_spell_crit );
   }
 
   double composite_melee_speed() const override
@@ -1903,7 +1903,7 @@ struct death_knight_pet_t : public pet_t
 
   double composite_damage_versatility() const override
   {
-    return player_t::composite_damage_versatility();
+    return owner_composite_vers;
   }
 
   double composite_melee_attack_power() const override
