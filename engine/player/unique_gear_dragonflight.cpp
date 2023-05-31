@@ -3766,6 +3766,22 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
   }
 };
 
+// Fractured Crystalspine Quill
+// 408625 Driver / Absorb Buff
+// 408903 Damage
+void fractured_crystalspine_quill( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "fractured_crystalspine_quill", effect, "fractured_crystalspine_quill", 408903 );
+  damage->split_aoe_damage = true;
+  damage->aoe = -1;
+
+  auto absorb_buff = create_buff<absorb_buff_t>( effect.player, effect.driver() )
+                         ->set_default_value_from_effect( 2 );
+
+  effect.execute_action = damage;
+  effect.custom_buff    = absorb_buff;
+}
+
 /**Winterpelt Totem
  * id=398292 main cast
  * id=398293 Winterpelt's Blessing buff (proc driver)
@@ -6975,6 +6991,7 @@ void register_special_effects()
   register_special_effect( 408607, items::underlight_globe );
   register_special_effect( 408641, items::stirring_twilight_ember );
   register_special_effect( 407512, items::heatbound_medallion );
+  register_special_effect( 408625, items::fractured_crystalspine_quill );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
