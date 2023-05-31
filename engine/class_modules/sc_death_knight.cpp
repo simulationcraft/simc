@@ -1176,6 +1176,7 @@ public:
         pet->current.stats.versatility_rating = pet->owner->current.stats.versatility_rating;
         pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
         pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
+        sim().print_log( "{} stat invalidate event new haste {} (owner: {})", pet->name(), pet->owner_composite_melee_haste, pet->owner->cache.attack_haste() );
       }
       
 
@@ -1843,7 +1844,9 @@ struct death_knight_pet_t : public pet_t
 
     owner_composite_melee_haste = owner->composite_melee_haste();
     owner_composite_spell_haste = owner->composite_spell_haste();
-
+    current.stats.haste_rating = owner->current.stats.haste_rating;
+    current.stats.crit_rating = owner->current.stats.crit_rating;
+    current.stats.versatility_rating = owner->current.stats.versatility_rating;    
   }
 
   death_knight_t* dk() const
