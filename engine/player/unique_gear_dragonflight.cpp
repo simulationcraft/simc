@@ -3772,9 +3772,7 @@ struct iceblood_deathsnare_initializer_t : public item_targetdata_initializer_t
 void fractured_crystalspine_quill( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "fractured_crystalspine_quill", effect, "fractured_crystalspine_quill", effect.trigger(), true );
-
-  auto absorb_buff = create_buff<absorb_buff_t>( effect.player, effect.driver(), effect.item )
-                         ->set_default_value_from_effect( 1 );
+  auto absorb_buff = create_buff<absorb_buff_t>( effect.player, effect.driver(), effect.item );
 
   effect.execute_action = damage;
   effect.custom_buff    = absorb_buff;
