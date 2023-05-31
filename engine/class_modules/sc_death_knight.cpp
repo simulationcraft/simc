@@ -1151,7 +1151,8 @@ public:
 
   struct stat_event_t : public player_event_t
   {
-    stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) {
+    bool requeue;
+    stat_event_t( player_t* p, timespan_t interval, bool repeat ) : player_event_t( *p, interval ), requeue( repeat ) {
 
     }
 
@@ -1170,21 +1171,16 @@ public:
           pet->current.stats.attack_power = ap;
         sim().print_log( "{} stat invalidate event new ap {} ", pet->name(), pet->composite_melee_attack_power() );
 
-
-
-        double sp = 0;
-
-        if ( pet->owner_coeff.sp_from_ap > 0.0 )
-          sp += pet->owner->cache.attack_power() * pet->owner->composite_attack_power_multiplier() * pet->owner_coeff.sp_from_ap;
-        pet->current.stats.spell_power = sp;
-
         pet->current.stats.haste_rating = pet->owner->current.stats.haste_rating;
+        pet->current.stats.crit_rating = pet->owner->current.stats.crit_rating;
+        pet->current.stats.versatility_rating = pet->owner->current.stats.versatility_rating;
         pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
         pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
       }
       
 
-      make_event<stat_event_t>( sim(), this->player(), timespan_t::from_seconds( 5 ) );
+      if (requeue) 
+        make_event<stat_event_t>( sim(), this->player(), rng().gauss(timespan_t::from_millis( 5000 ), timespan_t::from_millis(500)), true );
     }
   };
 
@@ -1843,15 +1839,8 @@ struct death_knight_pet_t : public pet_t
 
     current.stats.attack_power = ap;
 
-
-
-    double sp = 0;
-
-    if ( owner_coeff.sp_from_ap > 0.0 )
-      sp += owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
-    current.stats.spell_power = sp;
-
     current.stats.haste_rating = owner->current.stats.haste_rating;
+
     owner_composite_melee_haste = owner->composite_melee_haste();
     owner_composite_spell_haste = owner->composite_spell_haste();
 
@@ -1907,6 +1896,11 @@ struct death_knight_pet_t : public pet_t
   double composite_spell_speed() const override
   {
     return owner_composite_spell_haste;
+  }
+
+  double composite_damage_versatility() const override
+  {
+    return player_t::composite_damage_versatility();
   }
 
   double composite_melee_attack_power() const override
@@ -10256,7 +10250,8 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( 0 ) );
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( 0 ), false );
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_seconds( rng().range(0, 3) ), true);
 
   bone_shield_charges_consumed = 0;
 
