@@ -5538,7 +5538,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
     // Testing shows a linear 1.25% damage increase for every 1% missing health, up to 100% damage increase
     if ( p() -> runeforge.rune_of_sanguination )
     {
-      auto buff_amount = (1.0 - target -> resources.pct( RESOURCE_HEALTH ) ) * 1.25;
+      auto buff_amount = (1.0 - target -> health_percentage() ) * 1.25;
       buff_amount = std::min( buff_amount, 1.0 );  // Max 100% bonus damage
       m *= 1.0 + buff_amount;
     }
