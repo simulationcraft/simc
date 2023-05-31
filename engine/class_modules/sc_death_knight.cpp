@@ -1150,11 +1150,7 @@ public:
 
   struct stat_event_t : public player_event_t
   {
-    bool requeue;
-    stat_event_t( player_t* p, timespan_t interval, bool repeat ) : player_event_t( *p, interval ), requeue( repeat ) {
-
-    }
-
+    stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) { }
     void execute() override
     {
       for ( auto pet : (p()->active_pets) ) 
@@ -1176,11 +1172,9 @@ public:
         pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
         pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
         sim().print_log( "{} stat invalidate event new haste {} (owner: {})", pet->name(), pet->owner_composite_melee_haste, pet->owner->cache.attack_haste() );
-      }
-      
+      }     
 
-      if (requeue) 
-        make_event<stat_event_t>( sim(), this->player(), rng().gauss(timespan_t::from_millis( 5000 ), timespan_t::from_millis(500)), true );
+      make_event<stat_event_t>( sim(), this->player(), rng().gauss(timespan_t::from_millis( 5000 ), timespan_t::from_millis(500)) );
     }
   };
 
@@ -10253,7 +10247,7 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_seconds( rng().range(0, 3) ), true);
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range(500, 3000) ));
 
   bone_shield_charges_consumed = 0;
 
