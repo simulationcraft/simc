@@ -10247,7 +10247,6 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range(500, 3000) ));
 
   bone_shield_charges_consumed = 0;
 
@@ -10841,6 +10840,7 @@ void death_knight_t::arise()
     buffs.stoneskin_gargoyle -> trigger();
   start_inexorable_assault();
   start_cold_heart();
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 500, 3000 ) ) );
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
