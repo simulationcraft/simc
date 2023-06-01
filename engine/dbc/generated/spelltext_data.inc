@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.0.49801
-static const std::array<spelltext_data_t, 19906> __spelltext_data { {
+static const std::array<spelltext_data_t, 19909> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -8008,6 +8008,7 @@ static const std::array<spelltext_data_t, 19906> __spelltext_data { {
   { 228491, "Increases the damage your pets deal by $s1%.", "Increases the damage your pets deal by $s1%.", 0 },
   { 228492, "Increases your haste by $s1%.", "Increases your haste by $s1%.", 0 },
   { 228493, "Increases your health regeneration by $s1%.", "Increases your health regeneration by $s1%.", 0 },
+  { 228532, "$@spelldesc178940", 0, 0 },
   { 228539, "Toss the mark back into the water in Margoss' Retreat.", 0, 0 },
   { 228545, 0, 0, "Shapeshift" },
   { 228562, "$@spelldesc51533", 0, 0 },
@@ -13566,6 +13567,8 @@ static const std::array<spelltext_data_t, 19906> __spelltext_data { {
   { 328928, "$@spelldesc328923", 0, "Night Fae" },
   { 328930, "$@spelldesc328923", 0, "Night Fae" },
   { 328933, "$@spelldesc328923", "Fae Transfusion will heal up to $328930s2 nearby allies for $w1.", "Night Fae" },
+  { 328951, "$@spelldesc178940", 0, 0 },
+  { 328953, "$@spelldesc178940", 0, 0 },
   { 329012, "Extracts an enemy's vitality dealing $s1 Shadow damage and granting you $329014s1 health every $329014t sec for $329014d. Only usable outdoors in the Shadowlands.", 0, 0 },
   { 329014, "$@spelldesc329012", "Healing for $w1 every $t sec. Only usable outdoors in the Shadowlands.", 0 },
   { 329023, "Throw a ball of webbing at a target rooting them for $d. Only usable outdoors in the Shadowlands. ", "Rooted.", 0 },
