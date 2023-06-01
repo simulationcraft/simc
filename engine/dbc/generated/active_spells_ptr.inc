@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.1.5.49719
-static const std::array<active_class_spell_t, 277> __ptr_active_spells_data { {
+// Active class spells, wow build 10.1.5.49824
+static const std::array<active_class_spell_t, 279> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -179,6 +179,8 @@ static const std::array<active_class_spell_t, 277> __ptr_active_spells_data { {
   {  8,   62,  44425,      0, "Arcane Barrage"                     },
   {  8,   63,    133,      0, "Fireball"                           },
   {  8,   63,   2120,      0, "Flamestrike"                        },
+  {  8,   64, 190356,      0, "Blizzard"                           },
+  {  8,   64, 235219,      0, "Cold Snap"                          },
   {  9,    0,    126,      0, "Eye of Kilrogg"                     },
   {  9,    0,    172,      0, "Corruption"                         },
   {  9,    0,    686,      0, "Shadow Bolt"                        },
@@ -279,7 +281,7 @@ static const std::array<active_class_spell_t, 277> __ptr_active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.1.5.49719
+// Pet active spells, wow build 10.1.5.49824
 static const std::array<active_pet_spell_t, 133> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 70, wow build 10.1.5.49719
+// Hit points per stamina for level 1 - 70, wow build 10.1.5.49824
 static constexpr double _ptr__hp_per_sta[70] = {
     4,	4,	4,	4,	4,	//    5
     4,	4,	4,	4,	4,	//   10
@@ -16,7 +16,7 @@ static constexpr double _ptr__hp_per_sta[70] = {
     20,	20,	20,	20,	20,	//   70
 };
 
-// Spell scaling multipliers for levels 1 - 70, wow build 10.1.5.49719
+// Spell scaling multipliers for levels 1 - 70, wow build 10.1.5.49824
 static constexpr double _ptr__spell_scaling[][70] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -376,7 +376,7 @@ static constexpr double _ptr__spell_scaling[][70] = {
   },
 };
 
-// Base mana points for levels 1 - 70, wow build 10.1.5.49719
+// Base mana points for levels 1 - 70, wow build 10.1.5.49824
 static constexpr double _ptr__base_mp[][70] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -413,20 +413,20 @@ static constexpr double _ptr__base_mp[][70] = {
   },
   // Paladin
   {
-    52,	54,	57,	60,	62,	//    5
-    66,	69,	72,	76,	80,	//   10
-    86,	93,	101,	110,	119,	//   15
-    129,	140,	152,	165,	178,	//   20
-    193,	210,	227,	246,	267,	//   25
-    289,	314,	340,	369,	400,	//   30
-    433,	469,	509,	551,	598,	//   35
-    648,	702,	761,	825,	894,	//   40
-    969,	1050,	1138,	1234,	1337,	//   45
-    1449,	1571,	1702,	1845,	2000,	//   50
-    2349,	2759,	3241,	3807,	4472,	//   55
-    5253,	6170,	7247,	8513,	10000,	//   60
-    11746,	13797,	16206,	19036,	22360,	//   65
-    26265,	30851,	36238,	42566,	50000,	//   70
+    260,	270,	285,	300,	310,	//    5
+    330,	345,	360,	380,	400,	//   10
+    430,	465,	505,	550,	595,	//   15
+    645,	700,	760,	825,	890,	//   20
+    965,	1050,	1135,	1230,	1335,	//   25
+    1445,	1570,	1700,	1845,	2000,	//   30
+    2165,	2345,	2545,	2755,	2990,	//   35
+    3240,	3510,	3805,	4125,	4470,	//   40
+    4845,	5250,	5690,	6170,	6685,	//   45
+    7245,	7855,	8510,	9225,	10000,	//   50
+    11745,	13795,	16205,	19035,	22360,	//   55
+    26265,	30850,	36235,	42565,	50000,	//   60
+    58730,	68985,	81030,	95180,	111800,	//   65
+    131325,	154255,	181190,	212830,	250000,	//   70
   },
   // Hunter
   {
@@ -498,20 +498,20 @@ static constexpr double _ptr__base_mp[][70] = {
   },
   // Shaman
   {
-    52,	54,	57,	60,	62,	//    5
-    66,	69,	72,	76,	80,	//   10
-    86,	93,	101,	110,	119,	//   15
-    129,	140,	152,	165,	178,	//   20
-    193,	210,	227,	246,	267,	//   25
-    289,	314,	340,	369,	400,	//   30
-    433,	469,	509,	551,	598,	//   35
-    648,	702,	761,	825,	894,	//   40
-    969,	1050,	1138,	1234,	1337,	//   45
-    1449,	1571,	1702,	1845,	2000,	//   50
-    2349,	2759,	3241,	3807,	4472,	//   55
-    5253,	6170,	7247,	8513,	10000,	//   60
-    11746,	13797,	16206,	19036,	22360,	//   65
-    26265,	30851,	36238,	42566,	50000,	//   70
+    260,	270,	285,	300,	310,	//    5
+    330,	345,	360,	380,	400,	//   10
+    430,	465,	505,	550,	595,	//   15
+    645,	700,	760,	825,	890,	//   20
+    965,	1050,	1135,	1230,	1335,	//   25
+    1445,	1570,	1700,	1845,	2000,	//   30
+    2165,	2345,	2545,	2755,	2990,	//   35
+    3240,	3510,	3805,	4125,	4470,	//   40
+    4845,	5250,	5690,	6170,	6685,	//   45
+    7245,	7855,	8510,	9225,	10000,	//   50
+    11745,	13795,	16205,	19035,	22360,	//   55
+    26265,	30850,	36235,	42565,	50000,	//   60
+    58730,	68985,	81030,	95180,	111800,	//   65
+    131325,	154255,	181190,	212830,	250000,	//   70
   },
   // Mage
   {
@@ -566,20 +566,20 @@ static constexpr double _ptr__base_mp[][70] = {
   },
   // Druid
   {
-    52,	54,	57,	60,	62,	//    5
-    66,	69,	72,	76,	80,	//   10
-    86,	93,	101,	110,	119,	//   15
-    129,	140,	152,	165,	178,	//   20
-    193,	210,	227,	246,	267,	//   25
-    289,	314,	340,	369,	400,	//   30
-    433,	469,	509,	551,	598,	//   35
-    648,	702,	761,	825,	894,	//   40
-    969,	1050,	1138,	1234,	1337,	//   45
-    1449,	1571,	1702,	1845,	2000,	//   50
-    2349,	2759,	3241,	3807,	4472,	//   55
-    5253,	6170,	7247,	8513,	10000,	//   60
-    11746,	13797,	16206,	19036,	22360,	//   65
-    26265,	30851,	36238,	42566,	50000,	//   70
+    260,	270,	285,	300,	310,	//    5
+    330,	345,	360,	380,	400,	//   10
+    430,	465,	505,	550,	595,	//   15
+    645,	700,	760,	825,	890,	//   20
+    965,	1050,	1135,	1230,	1335,	//   25
+    1445,	1570,	1700,	1845,	2000,	//   30
+    2165,	2345,	2545,	2755,	2990,	//   35
+    3240,	3510,	3805,	4125,	4470,	//   40
+    4845,	5250,	5690,	6170,	6685,	//   45
+    7245,	7855,	8510,	9225,	10000,	//   50
+    11745,	13795,	16205,	19035,	22360,	//   55
+    26265,	30850,	36235,	42565,	50000,	//   60
+    58730,	68985,	81030,	95180,	111800,	//   65
+    131325,	154255,	181190,	212830,	250000,	//   70
   },
   // Demon Hunter
   {
@@ -617,7 +617,7 @@ static constexpr double _ptr__base_mp[][70] = {
   },
 };
 
-// Combat rating values for level 1 - 70, wow build 10.1.5.49719
+// Combat rating values for level 1 - 70, wow build 10.1.5.49824
 static constexpr double _ptr__combat_ratings[][70] = {
   // Dodge
   {
@@ -1029,7 +1029,7 @@ static constexpr double _ptr__combat_ratings[][70] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 10.1.5.49719
+// Combat rating multipliers for item level 1 - 1300, wow build 10.1.5.49824
 static constexpr double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2085,7 +2085,7 @@ static constexpr double _ptr__combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 10.1.5.49719
+// Item level translation for item level 1 - 1300, wow build 10.1.5.49824
 static constexpr double _ptr__item_level_squish[1300] = {
     1,	1,	2,	2,	2,	//    5
     3,	3,	4,	4,	5,	//   10
@@ -2349,7 +2349,7 @@ static constexpr double _ptr__item_level_squish[1300] = {
     951,	952,	953,	954,	955,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 10.1.5.49719
+// Item socket costs for item levels 1 - 1300, wow build 10.1.5.49824
 static constexpr double _ptr__item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2553,7 +2553,7 @@ static constexpr double _ptr__item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 10.1.5.49719
+// Stamina multipliers for item level 1 - 1300, wow build 10.1.5.49824
 static constexpr double _ptr__stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -3609,7 +3609,7 @@ static constexpr double _ptr__stamina_mult_by_ilvl[][1300] = {
   },
 };
 
-// Azerite level to item level 1 - 300, wow build 10.1.5.49719
+// Azerite level to item level 1 - 300, wow build 10.1.5.49824
 static constexpr unsigned _ptr__azerite_level_to_item_level[300] = {
     280,	282,	284,	286,	288,	//    5
     290,	292,	294,	296,	298,	//   10
@@ -3673,7 +3673,7 @@ static constexpr unsigned _ptr__azerite_level_to_item_level[300] = {
     870,	872,	874,	876,	878,	//  300
 };
 
-// Armor mitigation constants (K-values), wow build 10.1.5.49719
+// Armor mitigation constants (K-values), wow build 10.1.5.49824
 static const std::array<double, 73> __ptr_armor_mitigation_constants_data { {
     64.000,   70.000,   75.000,   81.000,   87.000,
     93.000,   99.000,  110.000,  122.000,  133.000,
@@ -3692,7 +3692,7 @@ static const std::array<double, 73> __ptr_armor_mitigation_constants_data { {
   11766.000, 11766.000, 11766.000,
 } };
 
-// Npc base armor values, wow build 10.1.5.49719
+// Npc base armor values, wow build 10.1.5.49824
 static const std::array<double, 73> __ptr_npc_armor_data { {
     27.000,   30.000,   32.000,   35.000,   37.000,
     40.000,   42.000,   47.000,   52.000,   57.000,
