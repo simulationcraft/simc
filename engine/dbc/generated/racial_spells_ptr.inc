@@ -1,5 +1,5 @@
-// Racial abilities, wow build 10.1.5.49824
-static const std::array<racial_spell_entry_t, 161> __ptr_racial_spell_data { {
+// Racial abilities, wow build 10.1.0.49570
+static const std::array<racial_spell_entry_t, 160> __ptr_racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
@@ -61,7 +61,6 @@ static const std::array<racial_spell_entry_t, 161> __ptr_racial_spell_data { {
   { 0x0000000000000200, 0x00000001,  69179, "Arcane Torrent"                     },
   { 0x0000000000000400, 0x00000000,  28875, "Gemcutting"                         },
   { 0x0000000000000400, 0x00000200, 121093, "Gift of the Naaru"                  },
-  { 0x0000000000000400, 0x00000100, 416250, "Gift of the Naaru"                  },
   { 0x0000000000000400, 0x00000080,  59548, "Gift of the Naaru"                  },
   { 0x0000000000000400, 0x00000040,  59547, "Gift of the Naaru"                  },
   { 0x0000000000000400, 0x00000020,  59545, "Gift of the Naaru"                  },
