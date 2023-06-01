@@ -5691,38 +5691,36 @@ void hood_of_surging_time( special_effect_t& effect )
 void voice_of_the_silent_star( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs(
-  effect, { "power_beyond_imagination_crit_rating", "power_beyond_imagination_mastery_rating", "power_beyond_imagination_haste_rating",
-                "power_beyond_imagination_versatility_rating" } ) )
-  return;
+           effect, { "power_beyond_imagination_crit_rating", "power_beyond_imagination_mastery_rating",
+                     "power_beyond_imagination_haste_rating", "power_beyond_imagination_versatility_rating" } ) )
+    return;
 
   static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
 
-  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
-  double amount = effect.driver() -> effectN( 1 ).average( effect.item ) + ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver() -> effectN( 4 ).base_value() );
+  auto buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.driver()->effectN( 1 ).average( effect.item ) +
+                  ( effect.driver()->effectN( 3 ).average( effect.item ) * effect.driver()->effectN( 4 ).base_value() );
 
   for ( auto stat : ratings )
   {
-    auto name    = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
-    buff_t* buff = buff_t::find( effect.player, name );
+    auto name = std::string( "power_beyond_imagination_" ) + util::stat_type_string( stat );
+    auto buff = create_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
+      ->set_stat( stat, amount )
+      ->set_name_reporting( util::stat_type_abbrev( stat ) );
 
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 409447 ), effect.item )
-             ->add_stat( stat, amount );
-    }
     ( *buffs )[ stat ] = buff;
   }
 
-  auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player -> find_spell( 409442 ) )
-                 ->set_expire_at_max_stack( true )
-                 ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
-                   if ( !new_ )
-                   {
-                      stat_e max_stat = util::highest_stat( effect.player, ratings );
-                      ( *buffs )[ max_stat ] -> trigger();
-                   }
-                 } );
+  auto stack_buff = create_buff<buff_t>( effect.player, "the_voice_beckons", effect.player->find_spell( 409442 ) )
+    ->set_expire_at_max_stack( true )
+    ->set_stack_change_callback( [ buffs, effect ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+      {
+        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        ( *buffs )[ max_stat ]->trigger();
+      }
+    } );
 
   effect.custom_buff = stack_buff;
   // Overriding Proc Flags as sims dont usually take damage to proc this.
