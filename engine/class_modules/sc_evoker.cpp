@@ -2358,7 +2358,7 @@ struct living_flame_t : public evoker_spell_t
   {
     auto g = evoker_spell_t::gcd();
 
-    if ( p()->buff.ancient_flame->check() )
+    if ( p()->buff.ancient_flame->check() && !p()->buff.burnout->check() )
       g *= 1.0 + gcd_mul;
 
     return std::max( min_gcd, g );
