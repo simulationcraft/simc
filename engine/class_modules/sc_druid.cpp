@@ -2008,6 +2008,7 @@ public:
   }
 
   bool is_free() const { return free_spell; }
+  bool is_free( free_spell_e f ) const { return ( free_spell & f ) == f; }
   bool is_free_proc() const { return free_spell & free_spell_e::PROCS; }
   bool is_free_cast() const { return free_spell & free_spell_e::CASTS; }
 
@@ -7119,8 +7120,8 @@ struct moonfire_t : public druid_spell_t
     {
       double dam = base_t::composite_da_multiplier( s );
 
-      // MF proc'd by gg is affected by any existing gg buff.
-      if ( p()->buff.galactic_guardian->check() )
+      // MF proc'd by gg is not affected by any existing gg buff.
+      if ( ( !is_free( free_spell_e::GALACTIC ) || !p()->is_ptr() ) && p()->buff.galactic_guardian->check() )
         dam *= 1.0 + gg_mul;
 
       if ( feral_override_da && !p()->buff.moonkin_form->check() )
@@ -7182,8 +7183,11 @@ struct moonfire_t : public druid_spell_t
           p()->buff.protector_of_the_pack_moonfire->expire();
         }
 
-        auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
-        p()->resource_gain( RESOURCE_RAGE, rage, gain );
+        if ( !is_free( free_spell_e::GALACTIC ) || !p()->is_ptr() )
+        {
+          auto rage = p()->buff.galactic_guardian->check_value() * num_targets_hit;
+          p()->resource_gain( RESOURCE_RAGE, rage, gain );
+        }
 
         if ( !is_free() )
           p()->buff.galactic_guardian->expire();
