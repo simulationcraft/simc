@@ -3084,6 +3084,7 @@ struct blistering_scales_t : public evoker_augment_t
 struct breath_of_eons_t : public evoker_spell_t
 {
   action_t* ebon;
+  timespan_t plot_duration;
 
   breath_of_eons_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ),
@@ -3098,6 +3099,8 @@ struct breath_of_eons_t : public evoker_spell_t
     if ( p->specialization() == EVOKER_AUGMENTATION )
       ebon = p->get_secondary_action<ebon_might_t>(
           "ebon_might_eons", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_eons" );
+
+    plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
 
     add_child( p->get_secondary_action<breath_of_eons_damage_t>( "breath_of_eons_damage", p ) );
   }
@@ -3131,6 +3134,18 @@ struct breath_of_eons_t : public evoker_spell_t
           0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
       player->gcd_ready = delay;
       stats->iteration_total_execute_time += delay;
+    }
+
+    if ( p()->talent.plot_the_future.ok() )
+    {
+      make_event( sim, player->gcd_ready - sim->current_time(), [ this ] {
+        if ( p()->buffs.bloodlust->check() )
+          p()->buffs.bloodlust->extend_duration( p(), plot_duration );
+        else if ( p()->buff.fury_of_the_aspects->check() )
+          p()->buff.fury_of_the_aspects->extend_duration( p(), plot_duration );
+        else
+          p()->buff.fury_of_the_aspects->trigger( plot_duration );
+      } );
     }
   }
 };
@@ -4325,7 +4340,6 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.obsidian_bulwark );
 
   // Augmentation
-  action.apply_affecting_aura( talent.plot_the_future );
   action.apply_affecting_aura( talent.dream_of_spring );
   action.apply_affecting_aura( talent.unyielding_domain );
   action.apply_affecting_aura( talent.volcanism );
