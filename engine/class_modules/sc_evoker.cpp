@@ -1996,17 +1996,12 @@ struct deep_breath_t : public evoker_spell_t
 
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
+    
+    trigger_gcd = 3_s;
 
     if ( p->specialization() == EVOKER_AUGMENTATION )
       ebon = p->get_secondary_action<ebon_might_t>(
           "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
-  }
-
-  timespan_t execute_time() const override
-  {
-    // TODO: Work out a better solution for this.
-    // return damage->travel_time();
-    return 3_s;
   }
 
   void impact( action_state_t* s ) override
@@ -3093,6 +3088,8 @@ struct breath_of_eons_t : public evoker_spell_t
   {
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
+    
+    trigger_gcd  = 3_s;
 
     aoe = -1;
 
@@ -3103,13 +3100,6 @@ struct breath_of_eons_t : public evoker_spell_t
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
 
     add_child( p->get_secondary_action<breath_of_eons_damage_t>( "breath_of_eons_damage", p ) );
-  }
-
-  timespan_t execute_time() const override
-  {
-    // TODO: Work out a better solution for this.
-    // return damage->travel_time();
-    return 3_s;
   }
 
   void impact( action_state_t* s ) override
