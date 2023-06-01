@@ -4748,6 +4748,7 @@ namespace monk
         bountiful_brew_t( monk_t &p )
           : monk_spell_t( "bountiful_brew", &p, p.talent.brewmaster.bountiful_brew )
         {
+          background = true;
           harmful = false;
           cooldown->duration = timespan_t::zero();
           aoe = -1;
@@ -8289,6 +8290,8 @@ namespace monk
           if ( proc_action_override != nullptr )
             break;
         }
+      } else {
+        effect->execute_action = proc_action_override;
       }
 
       if ( proc_action_override != nullptr )
@@ -8413,7 +8416,7 @@ namespace monk
         p->active_actions.bountiful_brew->set_target( state->target );
 
         return true;
-      } );
+      }, active_actions.bountiful_brew );
     }
 
     // ======================================
