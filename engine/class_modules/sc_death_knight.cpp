@@ -1222,7 +1222,6 @@ public:
     cooldown.frostwyrms_fury          = get_cooldown( "frostwyrms_fury_driver" );
 
     resource_regeneration = regen_type::DYNAMIC;
-
   }
 
   // Character Definition overrides
@@ -1960,7 +1959,6 @@ struct death_knight_pet_t : public pet_t
 
     pet_t::init_action_list();
   }
-
 };
 
 // ==========================================================================
@@ -10218,7 +10216,6 @@ void death_knight_t::init_finished()
                   "runeforge.name are to be used with Shadowlands Runeforge legendaries only. "
                   "Use death_knight.runeforge.name instead.", name() );
   }
-
 }
 
 // death_knight_t::activate =================================================
@@ -10232,8 +10229,6 @@ void death_knight_t::activate()
     {
       return;
     }
-
-
 
     // On target death triggers
     if ( talent.soul_reaper.ok() )
@@ -10265,9 +10260,7 @@ void death_knight_t::reset()
   _runes.reset();
   active_dnd = nullptr;
   km_proc_attempts = 0;
-
   bone_shield_charges_consumed = 0;
-
 }
 
 // death_knight_t::assess_heal ==============================================
