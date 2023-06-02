@@ -10832,7 +10832,7 @@ struct stat_event_t : public player_event_t
       dk_pet->owner_composite_vers = dk_pet->owner->composite_damage_versatility();
       dk_pet->owner_composite_melee_haste = dk_pet->owner->composite_melee_haste();
       dk_pet->owner_composite_spell_haste = dk_pet->owner->composite_spell_haste();
-      sim().print_log( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
+      sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
     }
 
     make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5000 ), timespan_t::from_millis( 500 ) ) );
