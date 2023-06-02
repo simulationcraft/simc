@@ -184,6 +184,7 @@ struct evoker_t : public player_t
 
     // Augmentation
     propagate_const<buff_t*> reactive_hide;
+    propagate_const<buff_t*> time_skip;
   } buff;
 
   // Specialization Spell Data
@@ -711,6 +712,7 @@ public:
 
     parse_buff_effects( p()->buff.imminent_destruction );
     parse_buff_effects( p()->buff.ebon_might_self_buff, p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
+    parse_buff_effects( p()->buff.time_skip );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -880,6 +882,7 @@ struct empowered_release_t : public empowered_base_t<BASE>
       : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets()
     {
       background = true;
+      dot_duration = base_tick_time = 0_ms;
     }
 
     void impact( action_state_t* s ) override
@@ -1512,6 +1515,7 @@ public:
   {
     // Add a target so you always hit yourself.
     aoe += 1;
+    dot_duration = base_tick_time = 0_ms;
     ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
   }
@@ -1521,6 +1525,7 @@ public:
   {
     // Add a target so you always hit yourself.
     aoe += 1;
+    dot_duration = base_tick_time = 0_ms;
     ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
 
@@ -1998,6 +2003,7 @@ struct deep_breath_t : public evoker_spell_t
     travel_speed = 19.5;  // guesstimate, TODO: confirm
     
     trigger_gcd = 3_s;
+    gcd_type    = gcd_haste_type::NONE;
 
     if ( p->specialization() == EVOKER_AUGMENTATION )
       ebon = p->get_secondary_action<ebon_might_t>(
@@ -3089,7 +3095,8 @@ struct breath_of_eons_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
     
-    trigger_gcd  = 3_s;
+    trigger_gcd = 3_s;
+    gcd_type    = gcd_haste_type::NONE;
 
     aoe = -1;
 
@@ -3137,6 +3144,36 @@ struct breath_of_eons_t : public evoker_spell_t
           p()->buff.fury_of_the_aspects->trigger( plot_duration );
       } );
     }
+  }
+};
+
+struct time_skip_t : public evoker_spell_t
+{
+  time_skip_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "time_skip", p, p->talent.interwoven_threads.ok() ? spell_data_t::not_found() : p->talent.time_skip,
+                   options_str )
+  {
+    target            = player;
+    channeled         = true;
+    hasted_ticks      = false;
+    base_execute_time = 0_s;
+    harmful           = false;
+    dot_duration = base_tick_time = data().duration() + p->talent.tomorrow_today->effectN( 1 ).time_value();
+
+    // Adjust base tick time to allow for reasonably timed interrupt statements.
+    base_tick_time = 250_ms;
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+    p()->buff.time_skip->trigger();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    evoker_spell_t::last_tick( d );
+    p()->buff.time_skip->expire();
   }
 };
 
@@ -3418,12 +3455,14 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
     buffs.shifting_sands = make_buff<e_buff_t>( *this, "shifting_sands", evoker->find_spell( 413984 ) )
                                ->set_default_value( evoker->cache.mastery_value() )
-                               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+                               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+                               ->set_period( timespan_t::zero() );
 
     buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might", evoker->find_spell( 395152 ) )
                            ->set_stat_from_effect( 2, 0 );
 
     buffs.ebon_might->set_cooldown( 0_ms )
+        ->set_period( timespan_t::zero() )
         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
         ->set_stack_change_callback( [ target, evoker ]( buff_t* b, int, int new_ ) {
           if ( new_ )
@@ -3448,8 +3487,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
             c();
           }
         } );
-
-    buffs.ebon_might->buff_period = timespan_t::zero();
 
     buffs.prescience = make_buff<e_buff_t>( *this, "prescience", evoker->talent.prescience_buff )
                            ->set_default_value( evoker->talent.prescience_buff->effectN( 1 ).percent() )
@@ -4167,6 +4204,11 @@ void evoker_t::create_buffs()
   buff.reactive_hide =
       make_buff<e_buff_t>( this, "reactive_hide", talent.reactive_hide_buff )->set_default_value_from_effect( 1, 0.01 );
 
+  
+  buff.time_skip = make_buff<e_buff_t>( this, "time_skip", talent.time_skip )
+                       ->set_cooldown( 0_s )
+                       ->apply_affecting_aura( talent.tomorrow_today );
+
   buff.feed_the_flames_stacking = make_buff<e_buff_t>( this, "feed_the_flames", find_spell( 405874 ) );
   buff.feed_the_flames_pyre     = make_buff<e_buff_t>( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
 
@@ -4406,6 +4448,8 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new breath_of_eons_t( this, options_str );
   if ( name == "blistering_scales" )
     return new blistering_scales_t( this, options_str );
+  if ( name == "time_skip" )
+    return new time_skip_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
