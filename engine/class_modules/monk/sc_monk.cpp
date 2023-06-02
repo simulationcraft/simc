@@ -4745,26 +4745,22 @@ namespace monk
       // ==========================================================================
       struct bountiful_brew_t : public monk_spell_t
       {
+        timespan_t max_duration;
+        timespan_t new_duration;
+
         bountiful_brew_t( monk_t &p )
-          : monk_spell_t( "bountiful_brew", &p, p.talent.brewmaster.bountiful_brew )
+          : monk_spell_t( "bountiful_brew", &p, p.shared.bonedust_brew )
         {
-          harmful = false;
-          cooldown->duration = timespan_t::zero();
+          radius = data().effectN( 1 ).radius();
+
           aoe = -1;
-          base_dd_min = 0;
-          base_dd_max = 0;
+
           may_miss = false;
           may_parry = true;
-        }
+          background = proc = true;
 
-        // Need to disable multipliers in init() so that it doesn't double-dip on anything
-        void init() override
-        {
-          monk_spell_t::init();
-          // disable the snapshot_flags for all multipliers except for crit
-          snapshot_flags = update_flags = 0;
-          snapshot_flags |= STATE_CRIT;
-          snapshot_flags |= STATE_TGT_CRIT;
+          max_duration = p.shared.bonedust_brew->duration() * 2.0f; // Currently caps at 20 seconds in game... we assume this is what they are doing
+          new_duration = p.talent.brewmaster.bountiful_brew->effectN( 1 ).time_value();
         }
 
         void execute() override
@@ -4773,21 +4769,29 @@ namespace monk
 
           monk_spell_t::execute();
 
-          p()->buff.bonedust_brew->trigger( data().effectN( 1 ).time_value() );
+          p()->buff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - p()->buff.bonedust_brew->remains(), new_duration ) );
         }
 
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
 
-          get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( data().effectN( 1 ).time_value() );
+          auto td = get_td( s->target );
 
-          p()->proc.bountiful_brew_proc->occur();
+          if ( td )
+          {
+            td->debuff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - td->debuff.bonedust_brew->remains(), new_duration ) );
+
+            p()->proc.bountiful_brew_proc->occur();
+          }
         }
       };
 
       struct bonedust_brew_t : public monk_spell_t
       {
+        timespan_t max_duration;
+        timespan_t new_duration;
+
         bonedust_brew_t( monk_t &p, util::string_view options_str )
           : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew )
         {
@@ -4806,6 +4810,8 @@ namespace monk
           if ( p.talent.windwalker.dust_in_the_wind->ok() )
             radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
 
+          max_duration = p.shared.bonedust_brew->duration() * 2.0f; // Currently caps at 20 seconds in game... we assume this is what they are doing
+          new_duration = data().duration();
         }
 
         void execute() override
@@ -4814,14 +4820,17 @@ namespace monk
 
           monk_spell_t::execute();
 
-          p()->buff.bonedust_brew->trigger();
+          p()->buff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - p()->buff.bonedust_brew->remains(), new_duration ) );
         }
 
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
+          
+          auto td = get_td( s->target );
 
-          get_td( s->target )->debuff.bonedust_brew->trigger();
+          if ( td )
+            td->debuff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - td->debuff.bonedust_brew->remains(), new_duration ) );
         }
       };
 
@@ -8275,7 +8284,7 @@ namespace monk
       effect->proc_flags_     = effect_driver->proc_flags();
       effect->proc_chance_    = effect_driver->proc_chance();
       effect->ppm_            = effect_driver->_rppm;
-
+      
       if ( proc_action_override == nullptr )
       {
         // If we didn't define a custom action in initialization then
@@ -8296,6 +8305,11 @@ namespace monk
         effect->name_str          = proc_action_override->name_str;
         effect->trigger_str       = proc_action_override->name_str;
         effect->trigger_spell_id  = proc_action_override->id;
+        effect->action_disabled   = false;
+        effect->execute_action    = effect->create_action();
+
+        if ( effect->execute_action == nullptr )
+          effect->execute_action = proc_action_override;
 
         if ( proc_action_override->harmful )
         {
@@ -8413,7 +8427,7 @@ namespace monk
         p->active_actions.bountiful_brew->set_target( state->target );
 
         return true;
-      } );
+      }, active_actions.bountiful_brew );
     }
 
     // ======================================
@@ -8467,7 +8481,7 @@ namespace monk
         {
           if ( first )
           {
-            *stream << "Monk Proc Tracking ..." << '\n';
+            *stream << "\n Monk Proc Tracking ... ( spellid: name )" << '\n' << '\n';
             first = false;
           }
 
