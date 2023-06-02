@@ -1818,6 +1818,7 @@ struct death_knight_pet_t : public pet_t
   double owner_composite_melee_crit;
   double owner_composite_spell_crit;
   double owner_composite_vers;
+  double owner_composite_mastery;
 
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
@@ -1828,9 +1829,8 @@ struct death_knight_pet_t : public pet_t
     owner_composite_spell_haste( 0.0 ),
     owner_composite_vers( 0.0 ),
     owner_composite_melee_crit( 0.0 ),
-    owner_composite_spell_crit( 0.0 )
-
-
+    owner_composite_spell_crit( 0.0 ),
+    owner_composite_mastery( 0.0 )
   {
     if ( auto_attack )
     {
