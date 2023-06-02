@@ -4745,6 +4745,9 @@ namespace monk
       // ==========================================================================
       struct bountiful_brew_t : public monk_spell_t
       {
+        timespan_t max_duration;
+        timespan_t new_duration;
+
         bountiful_brew_t( monk_t &p )
           : monk_spell_t( "bountiful_brew", &p, p.shared.bonedust_brew )
         {
@@ -4755,6 +4758,9 @@ namespace monk
           may_miss = false;
           may_parry = true;
           background = proc = true;
+
+          max_duration = timespan_t::from_seconds( 20 );
+          new_duration = p.talent.brewmaster.bountiful_brew->effectN( 1 ).time_value();
         }
 
         void execute() override
@@ -4763,21 +4769,29 @@ namespace monk
 
           monk_spell_t::execute();
 
-          p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
+          p()->buff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - p()->buff.bonedust_brew->remains(), new_duration ) );
         }
 
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
 
-          get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
+          auto td = get_td( s->target );
 
-          p()->proc.bountiful_brew_proc->occur();
+          if ( td )
+          {
+            td->debuff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - td->debuff.bonedust_brew->remains(), new_duration ) );
+
+            p()->proc.bountiful_brew_proc->occur();
+          }
         }
       };
 
       struct bonedust_brew_t : public monk_spell_t
       {
+        timespan_t max_duration;
+        timespan_t new_duration;
+
         bonedust_brew_t( monk_t &p, util::string_view options_str )
           : monk_spell_t( "bonedust_brew", &p, p.shared.bonedust_brew )
         {
@@ -4796,6 +4810,8 @@ namespace monk
           if ( p.talent.windwalker.dust_in_the_wind->ok() )
             radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
 
+          max_duration = timespan_t::from_seconds( 20 );
+          new_duration = data().duration();
         }
 
         void execute() override
@@ -4804,14 +4820,17 @@ namespace monk
 
           monk_spell_t::execute();
 
-          p()->buff.bonedust_brew->extend_duration_or_trigger( data().duration() );
+          p()->buff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - p()->buff.bonedust_brew->remains(), new_duration ) );
         }
 
         void impact( action_state_t *s ) override
         {
           monk_spell_t::impact( s );
           
-          get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( data().duration() );
+          auto td = get_td( s->target );
+
+          if ( td )
+            td->debuff.bonedust_brew->extend_duration_or_trigger( std::min( max_duration - td->debuff.bonedust_brew->remains(), new_duration ) );
         }
       };
 
