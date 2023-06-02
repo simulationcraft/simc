@@ -5782,6 +5782,8 @@ void roiling_shadowflame( special_effect_t& e )
   damage->base_dd_max += e.player->find_spell( 406254 )->effectN( 2 ).average( e.item );
 
   e.execute_action = damage;
+  // Forcing name to share proc and rppm, as otherwise putting it on a shield will give a _oh suffix
+  e.name_str = "roiling_shadowflame";
 
   new dbc_proc_callback_t( e.player, e );
 
