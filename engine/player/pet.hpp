@@ -27,7 +27,6 @@ struct pet_t : public player_t
   timespan_t duration;
   int npc_id; // WoW NPC id, can be used to display icons/links for the pet
 
-
   struct owner_coefficients_t
   {
     double armor = 1.0;

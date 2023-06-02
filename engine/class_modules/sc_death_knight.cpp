@@ -1147,37 +1147,7 @@ public:
   // Runes
   runes_t _runes;
 
-  struct stat_event_t : public player_event_t
-  {
-    stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) { }
-    void execute() override
-    {
-      for ( auto pet :  p()->active_pets )
-      {
-        pets::death_knight_pet_t* dk_pet = debug_cast<pets::death_knight_pet_t*>( pet );
-        sim().print_debug( "{} stat invalidate event", dk_pet->name() );
-        sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
-        double ap = 0;
-        // Use owner's default attack power type for the inheritance
-        ap += dk_pet->owner->composite_melee_attack_power_by_type( dk_pet->owner->default_ap_type() ) *
-          dk_pet->owner->composite_attack_power_multiplier() *
-          dk_pet->owner_coeff.ap_from_ap;
 
-        dk_pet->current.stats.attack_power = ap;
-        sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
-
-        dk_pet->owner_composite_melee_crit = dk_pet->owner->composite_melee_crit_chance();
-        dk_pet->owner_composite_spell_crit = dk_pet->owner->composite_spell_crit_chance();
-        dk_pet->owner_composite_mastery = dk_pet->owner->composite_mastery_value();
-        dk_pet->owner_composite_vers = dk_pet->owner->composite_damage_versatility();
-        dk_pet->owner_composite_melee_haste = dk_pet->owner->composite_melee_haste();
-        dk_pet->owner_composite_spell_haste = dk_pet->owner->composite_spell_haste();
-        sim().print_log( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
-      }     
-
-      make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5000 ), timespan_t::from_millis( 500 ) ) );
-    }
-  };
 
   death_knight_t( sim_t* sim, util::string_view name, race_e r ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
@@ -10836,6 +10806,38 @@ inline double death_knight_t::rune_regen_coefficient() const
 
   return coeff;
 }
+
+struct stat_event_t : public player_event_t
+{
+  stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) { }
+  void execute() override
+  {
+    for ( auto pet : p()->active_pets )
+    {
+      pets::death_knight_pet_t* dk_pet = debug_cast< pets::death_knight_pet_t* >( pet );
+      sim().print_debug( "{} stat invalidate event", dk_pet->name() );
+      sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
+      double ap = 0;
+      // Use owner's default attack power type for the inheritance
+      ap += dk_pet->owner->composite_melee_attack_power_by_type( dk_pet->owner->default_ap_type() ) *
+        dk_pet->owner->composite_attack_power_multiplier() *
+        dk_pet->owner_coeff.ap_from_ap;
+
+      dk_pet->current.stats.attack_power = ap;
+      sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
+
+      dk_pet->owner_composite_melee_crit = dk_pet->owner->composite_melee_crit_chance();
+      dk_pet->owner_composite_spell_crit = dk_pet->owner->composite_spell_crit_chance();
+      dk_pet->owner_composite_mastery = dk_pet->owner->composite_mastery_value();
+      dk_pet->owner_composite_vers = dk_pet->owner->composite_damage_versatility();
+      dk_pet->owner_composite_melee_haste = dk_pet->owner->composite_melee_haste();
+      dk_pet->owner_composite_spell_haste = dk_pet->owner->composite_spell_haste();
+      sim().print_log( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
+    }
+
+    make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5000 ), timespan_t::from_millis( 500 ) ) );
+  }
+};
 
 // death_knight_t::arise ====================================================
 void death_knight_t::arise()
