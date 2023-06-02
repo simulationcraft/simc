@@ -4759,7 +4759,7 @@ namespace monk
           may_parry = true;
           background = proc = true;
 
-          max_duration = timespan_t::from_seconds( 20 );
+          max_duration = p.shared.bonedust_brew->duration() * 2.0f; // Currently caps at 20 seconds in game... we assume this is what they are doing
           new_duration = p.talent.brewmaster.bountiful_brew->effectN( 1 ).time_value();
         }
 
@@ -4810,7 +4810,7 @@ namespace monk
           if ( p.talent.windwalker.dust_in_the_wind->ok() )
             radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
 
-          max_duration = timespan_t::from_seconds( 20 );
+          max_duration = p.shared.bonedust_brew->duration() * 2.0f; // Currently caps at 20 seconds in game... we assume this is what they are doing
           new_duration = data().duration();
         }
 
