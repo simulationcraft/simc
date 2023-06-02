@@ -540,6 +540,41 @@ public:
     return static_cast<evoker_t*>( bb::source );
   }
 };
+
+struct time_skip_t : public buff_t
+{
+  std::vector<action_t*> affected_actions;
+
+  time_skip_t( evoker_t* p ) : buff_t( p, "time_skip", p->talent.time_skip )
+  {
+    set_cooldown( 0_ms );
+    set_default_value_from_effect( 1 );
+
+    apply_affecting_aura( p->talent.tomorrow_today );
+
+    set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int new_ ) { update_cooldowns( new_ ); } );
+  }
+
+  void update_cooldowns( int new_ )
+  {
+    double recharge_rate_multiplier = 1.0 / ( default_value );
+    for ( auto a : affected_actions )
+    {
+      if ( new_ > 0 )
+      {
+        a->dynamic_recharge_rate_multiplier *= recharge_rate_multiplier;
+      }
+      else
+      {
+        a->dynamic_recharge_rate_multiplier /= recharge_rate_multiplier;
+      }
+      if ( a->cooldown->action == a )
+        a->cooldown->adjust_recharge_multiplier();
+      if ( a->internal_cooldown->action == a )
+        a->internal_cooldown->adjust_recharge_multiplier();
+    }
+  }
+};
 }  // namespace buffs
 
 // Base Classes =============================================================
@@ -713,7 +748,6 @@ public:
 
     parse_buff_effects( p()->buff.imminent_destruction );
     parse_buff_effects( p()->buff.ebon_might_self_buff, p()->sets->set( EVOKER_AUGMENTATION, T30, B2 ) );
-    parse_buff_effects( p()->buff.time_skip );
   }
 
   // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
@@ -776,6 +810,30 @@ public:
   {
     double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
     return rm;
+  }
+
+  void init() override
+  {
+    ab::init();
+
+    if ( p()->specialization() == EVOKER_AUGMENTATION )
+    {
+      auto time_skip = static_cast<buffs::time_skip_t*>( p()->buff.time_skip.get() );
+
+      for ( auto e : time_skip->data().effects() )
+      {
+        if ( ab::data().affected_by_all( e ) )
+        {
+          if ( range::find( time_skip->affected_actions, this ) == time_skip->affected_actions.end() )
+          {
+            time_skip->affected_actions.push_back( this );
+          }
+        }
+      }
+      /*if ( p()->find_spelleffect( &time_skip->data(), A_MAX, 0, &ab::data() )->ok() )
+      {
+      }*/
+    }
   }
 };
 
@@ -4205,10 +4263,7 @@ void evoker_t::create_buffs()
   buff.reactive_hide =
       make_buff<e_buff_t>( this, "reactive_hide", talent.reactive_hide_buff )->set_default_value_from_effect( 1, 0.01 );
 
-  
-  buff.time_skip = make_buff<e_buff_t>( this, "time_skip", talent.time_skip )
-                       ->set_cooldown( 0_s )
-                       ->apply_affecting_aura( talent.tomorrow_today );
+  buff.time_skip = make_buff<buffs::time_skip_t>( this );
 
   buff.feed_the_flames_stacking = make_buff<e_buff_t>( this, "feed_the_flames", find_spell( 405874 ) );
   buff.feed_the_flames_pyre     = make_buff<e_buff_t>( this, "feed_the_flames_pyre", talent.feed_the_flames_pyre_buff );
