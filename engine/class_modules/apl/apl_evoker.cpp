@@ -123,7 +123,7 @@ void devastation( player_t* p )
   st->add_action( "firestorm,if=!buff.dragonrage.up&debuff.shattering_star_debuff.down", "Hard cast only outside of SS and DR windows" );
   st->add_action( "deep_breath,if=!buff.dragonrage.up&active_enemies>=2&((raid_event.adds.in>=120&!talent.onyx_legacy)|(raid_event.adds.in>=60&talent.onyx_legacy))", "Use Deep Breath on 2T, unless adds will come before it'll be ready again or if talented ID." );
   st->add_action( "deep_breath,if=!buff.dragonrage.up&talent.imminent_destruction&!debuff.shattering_star_debuff.up" );
-  st->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&!buff.shattering_star_debuff.up&talent.scarlet_adaptation", "Get Ancient Flame as Filler" );
+  st->add_action( "call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_flame.up&!buff.shattering_star_debuff.up&talent.scarlet_adaptation&!buff.dragonrage.up", "Get Ancient Flame as Filler" );
   st->add_action( "living_flame,if=!buff.dragonrage.up|(buff.iridescence_red.remains>execute_time|buff.iridescence_blue.up)&active_enemies==1", "Cast LF outside of DR, In DR only cast with Iridescence." );
   st->add_action( "azure_strike", "Fallback for movement" );
 
