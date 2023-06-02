@@ -59,6 +59,7 @@ struct runes_t;
 struct rune_t;
 
 namespace pets {
+  struct death_knight_pet_t;
   struct army_ghoul_pet_t;
   struct bloodworm_pet_t;
   struct dancing_rune_weapon_pet_t;
@@ -1153,28 +1154,29 @@ public:
     stat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval ) { }
     void execute() override
     {
-      for ( auto pet : (p()->active_pets) ) 
+      for ( auto pet :  p()->active_pets )
       {
-        sim().print_log( "{} stat invalidate event", pet->name() );
-        sim().print_log( "{} stat invalidate event old ap {} ", pet->name(), pet->composite_melee_attack_power() );
+        pets::death_knight_pet_t* dk_pet = debug_cast<pets::death_knight_pet_t*>( pet );
+        sim().print_debug( "{} stat invalidate event", dk_pet->name() );
+        sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
         double ap = 0;
-          // Use owner's default attack power type for the inheritance
-          ap += pet->owner->composite_melee_attack_power_by_type( pet->owner->default_ap_type() ) *
-            pet->owner->composite_attack_power_multiplier() *
-            pet->owner_coeff.ap_from_ap;
+        // Use owner's default attack power type for the inheritance
+        ap += dk_pet->owner->composite_melee_attack_power_by_type( dk_pet->owner->default_ap_type() ) *
+          dk_pet->owner->composite_attack_power_multiplier() *
+          dk_pet->owner_coeff.ap_from_ap;
 
-          pet->current.stats.attack_power = ap;
-        sim().print_log( "{} stat invalidate event new ap {} ", pet->name(), pet->composite_melee_attack_power() );
+        dk_pet->current.stats.attack_power = ap;
+        sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
 
-        pet->owner_composite_melee_crit = pet->owner->composite_melee_crit_chance();
-        pet->owner_composite_spell_crit = pet->owner->composite_spell_crit_chance();
-        pet->owner_composite_vers = pet->owner->composite_damage_versatility();
-        pet->owner_composite_melee_haste = pet->owner->composite_melee_haste();
-        pet->owner_composite_spell_haste = pet->owner->composite_spell_haste();
-        sim().print_log( "{} stat invalidate event new haste {} (owner: {})", pet->name(), pet->owner_composite_melee_haste, pet->owner->cache.attack_haste() );
-      }     
+        dk_pet->owner_composite_melee_crit = dk_pet->owner->composite_melee_crit_chance();
+        dk_pet->owner_composite_spell_crit = dk_pet->owner->composite_spell_crit_chance();
+        dk_pet->owner_composite_vers = dk_pet->owner->composite_damage_versatility();
+        dk_pet->owner_composite_melee_haste = dk_pet->owner->composite_melee_haste();
+        dk_pet->owner_composite_spell_haste = dk_pet->owner->composite_spell_haste();
+        sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
+      }
 
-      make_event<stat_event_t>( sim(), this->player(), rng().gauss(timespan_t::from_millis( 5000 ), timespan_t::from_millis(500)) );
+      make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5000 ), timespan_t::from_millis( 500 ) ) );
     }
   };
 
@@ -1812,12 +1814,23 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
+  double owner_composite_melee_haste;
+  double owner_composite_spell_haste;
+  double owner_composite_melee_crit;
+  double owner_composite_spell_crit;
+  double owner_composite_vers;
 
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false )
+    affected_by_commander_of_the_dead( false ),
+    owner_composite_melee_haste( 0.0 ),
+    owner_composite_spell_haste( 0.0 ),
+    owner_composite_vers( 0.0 ),
+    owner_composite_melee_crit( 0.0 ),
+    owner_composite_spell_crit( 0.0 )
+
 
   {
     if ( auto_attack )
@@ -10832,7 +10845,6 @@ inline double death_knight_t::rune_regen_coefficient() const
 }
 
 // death_knight_t::arise ====================================================
-
 void death_knight_t::arise()
 {
   player_t::arise();

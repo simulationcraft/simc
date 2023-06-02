@@ -26,11 +26,6 @@ struct pet_t : public player_t
   event_t* expiration;
   timespan_t duration;
   int npc_id; // WoW NPC id, can be used to display icons/links for the pet
-  double owner_composite_melee_haste;
-  double owner_composite_spell_haste;
-  double owner_composite_melee_crit;
-  double owner_composite_spell_crit;
-  double owner_composite_vers;
 
 
   struct owner_coefficients_t
