@@ -819,20 +819,13 @@ public:
     if ( p()->specialization() == EVOKER_AUGMENTATION )
     {
       auto time_skip = static_cast<buffs::time_skip_t*>( p()->buff.time_skip.get() );
-
-      for ( auto e : time_skip->data().effects() )
+      if ( p()->find_spelleffect( &time_skip->data(), A_MAX, 0, &ab::data() )->ok() )
       {
-        if ( ab::data().affected_by_all( e ) )
+        if ( range::find( time_skip->affected_actions, this ) == time_skip->affected_actions.end() )
         {
-          if ( range::find( time_skip->affected_actions, this ) == time_skip->affected_actions.end() )
-          {
-            time_skip->affected_actions.push_back( this );
-          }
+          time_skip->affected_actions.push_back( this );
         }
       }
-      /*if ( p()->find_spelleffect( &time_skip->data(), A_MAX, 0, &ab::data() )->ok() )
-      {
-      }*/
     }
   }
 };
