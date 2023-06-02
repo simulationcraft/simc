@@ -472,7 +472,8 @@ struct evoker_t : public player_t
   void extend_ebon( timespan_t );
 
   // Utility functions
-  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
+  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell,
+                                              effect_subtype_t subtype     = A_MAX,
                                               int misc_value               = P_GENERIC,
                                               const spell_data_t* affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
@@ -4654,15 +4655,10 @@ const spelleffect_data_t* evoker_t::find_spelleffect( const spell_data_t* spell,
     if ( affected->ok() && !affected->affected_by_all( eff ) )
       continue;
 
-    if ( eff.type() == type && eff.subtype() == subtype )
+    if ( eff.type() == type && ( eff.subtype() == subtype || subtype == A_MAX ) &&
+         ( eff.misc_value1() == misc_value || misc_value == 0 ) )
     {
-      if ( misc_value != 0 )
-      {
-        if ( eff.misc_value1() == misc_value )
-          return &eff;
-      }
-      else
-        return &eff;
+      return &eff;
     }
   }
 
