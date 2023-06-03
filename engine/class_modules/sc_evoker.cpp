@@ -1008,13 +1008,8 @@ struct empowered_release_t : public empowered_base_t<BASE>
         {
           target_list.push_back( t );
           if ( target_list.size() >= n_targets() )
-            break;
+            return target_list.size();
         }
-      }
-
-      if ( as<int>( target_list.size() ) >= n_targets() )
-      {
-        return target_list.size();
       }
 
       if ( tertiary_targets.size() > 0 )
