@@ -71,6 +71,9 @@ struct evoker_td_t : public actor_target_data_t
     buff_t* infernos_blessing;
     stat_buff_t* ebon_might;
     buff_t* shifting_sands;
+
+    // Legendary
+    buff_t* unbound_surge;
   } buffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -116,6 +119,8 @@ struct evoker_t : public player_t
 
   timespan_t precombat_travel = 0_s;
 
+  const special_effect_t* naszuro;
+
   vector_with_callback<player_t*> allies_with_my_ebon;
   std::vector<evoker_t*> allied_augmentations;
   mutable std::vector<buff_t*> allied_ebons_on_me;
@@ -133,6 +138,8 @@ struct evoker_t : public player_t
     // How much time should prepulling with Deep Breath delay opener
     timespan_t prepull_deep_breath_delay        = timespan_t::from_seconds( 0.3 );
     timespan_t prepull_deep_breath_delay_stddev = timespan_t::from_seconds( 0.05 );
+    bool naszuro_accurate_behaviour             = false;
+    double naszuro_bounce_chance                = 0.85;
   } option;
 
   // Action pointers
@@ -176,9 +183,6 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> feed_the_flames_pyre;
     propagate_const<buff_t*> ebon_might_self_buff;
     propagate_const<buff_t*> momentum_shift;
-
-    // Legendary
-    propagate_const<buff_t*> unbound_surge;
 
     // Preservation
 
@@ -467,6 +471,8 @@ struct evoker_t : public player_t
   double resource_regen_per_second( resource_e ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   double temporary_movement_modifier() const override;
+
+  void bounce_naszuro( player_t*, timespan_t );
 
   // Augmentation Helpers
   void extend_ebon( timespan_t );
@@ -1191,8 +1197,18 @@ struct empowered_charge_t : public empowered_base_t<BASE>
       return;
     }
 
-    if ( ab::p()->buff.unbound_surge )
-      ab::p()->buff.unbound_surge->trigger();
+    if ( ab::p()->naszuro )
+    {
+      if ( ab::p()->get_target_data( ab::p() )->buffs.unbound_surge->check() &&
+           ab::p()->option.naszuro_accurate_behaviour )
+      {
+        ab::p()->bounce_naszuro( ab::p() );
+      }
+      else
+      {
+        ab::p()->get_target_data( ab::p() )->buffs.unbound_surge->trigger();
+      }
+    }
 
     auto emp_state        = release_spell->get_state();
     emp_state->target     = ab::target;
@@ -3481,6 +3497,62 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 
+
+  if ( evoker->naszuro )
+  {
+    buffs.unbound_surge = make_buff<stat_buff_t>( target, "unbound_surge_" + evoker->name_str, evoker->find_spell( 403275 ),
+                                                  evoker->naszuro->item );
+    buffs.unbound_surge->set_period( 0_s );
+
+    switch ( evoker->specialization() )
+    {
+      case EVOKER_DEVASTATION:
+        buffs.unbound_surge->set_duration(
+            timespan_t::from_seconds( evoker->naszuro->driver()->effectN( 2 ).base_value() ) );
+        break;
+      case EVOKER_PRESERVATION:
+        buffs.unbound_surge->set_duration(
+            timespan_t::from_seconds( evoker->naszuro->driver()->effectN( 3 ).base_value() ) );
+        break;
+      case EVOKER_AUGMENTATION:
+        buffs.unbound_surge->set_duration(
+            timespan_t::from_seconds( evoker->naszuro->driver()->effectN( 4 ).base_value() ) );
+        break;
+      default:
+        break;
+    }
+
+    if ( evoker->option.naszuro_bounce_chance > 0 && evoker->option.naszuro_accurate_behaviour )
+    {
+      buffs.unbound_surge->set_period( 3_s );
+      if ( auto* _target = dynamic_cast<evoker_t*>( target ) )
+      {
+        buffs.unbound_surge->set_tick_callback( [ _target, evoker ]( buff_t* b, int s, timespan_t t ) {
+          {
+            if ( t > 0_s && !_target->buff.dragonrage->check() &&
+                 _target->rng().roll( evoker->option.naszuro_bounce_chance ) )
+              make_event( _target->sim, [ _target, evoker, b, t ] {
+                b->expire();
+                evoker->bounce_naszuro( _target, t );
+              } );
+          }
+        } );
+      }
+      else
+      {
+        buffs.unbound_surge->set_tick_callback( [ target, evoker ]( buff_t* b, int s, timespan_t t ) {
+          {
+            if ( t > 0_s && target->rng().roll( evoker->option.naszuro_bounce_chance ) )
+              make_event( target->sim, [ target, evoker, b, t ] {
+                b->expire();
+                evoker->bounce_naszuro( target, t );
+              } );
+          }
+        } );
+      }
+    }
+  }
+
   if ( evoker->specialization() == EVOKER_AUGMENTATION )
   {
     using e_buff_t = buffs::evoker_buff_t<buff_t>;
@@ -3649,7 +3721,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     uptime(),
     allies_with_my_ebon(),
     allied_ebons_on_me(),
-    allied_augmentations()
+    allied_augmentations(),
+    naszuro()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
   cooldown.fire_breath    = get_cooldown( "fire_breath" );
@@ -3742,29 +3815,10 @@ void karnalex_the_first_light( special_effect_t& effect )
 // Evoker Legendary Weapon Nasz'uro, the Unbound Legacy
 void insight_of_naszuro( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "unbound_surge" } ) )
-    return;
-
-  effect.custom_buff =
-      unique_gear::create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 403275 ), effect.item );
-
-  switch ( effect.player->specialization() )
-  {
-    case EVOKER_DEVASTATION:
-      effect.custom_buff->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
-      break;
-    case EVOKER_PRESERVATION:
-      effect.custom_buff->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() ) );
-      break;
-    case EVOKER_AUGMENTATION:
-      effect.custom_buff->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 4 ).base_value() ) );
-      break;
-    default:
-      break;
-  }
-
   if ( auto e = dynamic_cast<evoker_t*>( effect.player ) )
-    e->buff.unbound_surge = effect.custom_buff;
+  {
+    e->naszuro = &effect;
+  }
 }
 
 void evoker_t::init_action_list()
@@ -4297,6 +4351,8 @@ void evoker_t::create_options()
   add_option( opt_timespan( "evoker.prepull_deep_breath_delay", option.prepull_deep_breath_delay, 0_s, 3_s ) );
   add_option(
       opt_timespan( "evoker.prepull_deep_breath_delay_stddev", option.prepull_deep_breath_delay_stddev, 0_s, 1.5_s ) );
+  add_option( opt_float( "evoker.naszuro_bounce_chance", option.naszuro_bounce_chance, 0.0, 1.0 ) );
+  add_option( opt_bool( "evoker.naszuro_accurate_behaviour", option.naszuro_accurate_behaviour ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -4598,6 +4654,28 @@ stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
   }
 }
 
+void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min() )
+{
+  if ( !naszuro )
+    return;
+
+  if ( remains <= 0_s && remains != timespan_t::min() )
+    return;
+
+  player_t* p = sim->player_non_sleeping_list[ rng().range( sim->player_non_sleeping_list.size() ) ];
+
+  // TODO: Improve target selection (CD Based)
+  if ( sim->player_non_sleeping_list.size() > 1 )
+  {
+    while ( p == s )
+    {
+      p = sim->player_non_sleeping_list[ rng().range( sim->player_non_sleeping_list.size() ) ];
+    }
+  }
+
+  get_target_data( p )->buffs.unbound_surge->trigger( remains );
+}
+
 void evoker_t::extend_ebon( timespan_t extend )
 {
   if ( extend <= 0_s )
@@ -4770,7 +4848,7 @@ struct evoker_module_t : public module_t
   void static_init() const override
   {
     unique_gear::register_special_effect( 394927, karnalex_the_first_light );
-    unique_gear::register_special_effect( 405061, insight_of_naszuro, true );
+    unique_gear::register_special_effect( 405061, insight_of_naszuro );
   }
 
   void register_hotfixes() const override
