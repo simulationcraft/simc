@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49824
-static const std::array<spelltext_data_t, 20054> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20055> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -19974,6 +19974,7 @@ static const std::array<spelltext_data_t, 20054> __ptr_spelltext_data { {
   { 414378, "Glimmer of Light can affect $s1 additional targets.", 0, 0 },
   { 414379, "Clearcasting makes your next Arcane Missiles channel $s2% faster or Arcane Explosion echo for $s1% damage.", 0, 0 },
   { 414380, "Contains 10 Flightstones.", 0, 0 },
+  { 414381, "Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[\r\n\r\n|cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]", 0, 0 },
   { 414411, "$@spelldesc392938", 0, 0 },
   { 414443, "$?s2812[Denounce][Shield of the Righteous] deals $414448s1 damage to its first target struck.\r\n\r\nEvery $s1 $?s2812[Denounces][Shields of the Righteous] make your next Word of Glory or Light of Dawn cost no Holy Power.", 0, 0 },
   { 414448, "$@spelldesc414443", 0, 0 },
