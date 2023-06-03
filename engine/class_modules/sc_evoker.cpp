@@ -935,11 +935,12 @@ struct empowered_release_t : public empowered_base_t<BASE>
   struct shifting_sands_t : public evoker_augment_t
   {
     mutable std::vector<player_t*> secondary_targets;
+    mutable std::vector<player_t*> tertiary_targets;
 
     shifting_sands_t( evoker_t* p )
-      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets()
+      : evoker_augment_t( "shifting_sands", p, p->find_spell( 413984 ) ), secondary_targets(), tertiary_targets()
     {
-      background = true;
+      background   = true;
       dot_duration = base_tick_time = 0_ms;
     }
 
@@ -951,30 +952,96 @@ struct empowered_release_t : public empowered_base_t<BASE>
       p()->get_target_data( s->target )->buffs.shifting_sands->trigger();
     }
 
-     size_t available_targets( std::vector<player_t*>& target_list ) const override
+    size_t available_targets( std::vector<player_t*>& target_list ) const override
     {
       target_list.clear();
+      secondary_targets.clear();
+      tertiary_targets.clear();
+
+      if ( sim->player_no_pet_list.size() <= n_targets() )
+      {
+        for ( const auto& t : sim->player_no_pet_list )
+          target_list.push_back( t );
+
+        return target_list.size();
+      }
 
       for ( const auto& t : sim->player_no_pet_list )
       {
-        if ( t != player && t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+        if ( t != player )
+        {
+          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK )
+          {
+            if ( p()->get_target_data( t )->buffs.shifting_sands->up() )
+            {
+              tertiary_targets.push_back( t );
+            }
+            else
+            {
+              target_list.push_back( t );
+            }
+          }
+          else
+          {
+            secondary_targets.push_back( t );
+          }
+        }
+      }
+
+      if ( as<int>( target_list.size() ) >= n_targets() )
+      {
+        if ( as<int>( target_list.size() ) > n_targets() )
+        {
+          rng().shuffle( target_list.begin(), target_list.end() );
+        }
+        return target_list.size();
+      }
+
+      if ( secondary_targets.size() > 0 )
+      {
+        if ( as<int>( target_list.size() + secondary_targets.size() ) > n_targets() )
+        {
+          rng().shuffle( secondary_targets.begin(), secondary_targets.end() );
+        }
+
+        for ( const auto& t : secondary_targets )
+        {
           target_list.push_back( t );
+          if ( target_list.size() >= n_targets() )
+            break;
+        }
+      }
+
+      if ( as<int>( target_list.size() ) >= n_targets() )
+      {
+        return target_list.size();
+      }
+
+      if ( tertiary_targets.size() > 0 )
+      {
+        if ( as<int>( target_list.size() + tertiary_targets.size() ) > n_targets() )
+        {
+          rng().shuffle( tertiary_targets.begin(), tertiary_targets.end() );
+        }
+
+        for ( const auto& t : tertiary_targets )
+        {
+          target_list.push_back( t );
+          if ( target_list.size() >= n_targets() )
+            break;
+        }
       }
 
       return target_list.size();
     }
 
-    // TODO: Revisit Targeting, handle cases when this restricted target list doesn't work
+    // No point caching using basic cache, cache would be ruined by every cast.
+    // TODO: If noticable lag caused by this target list implement custom cache.
     std::vector<player_t*>& target_list() const override
     {
-      auto& tl = evoker_augment_t::target_list();
+      available_targets( target_cache.list );
 
-      if ( as<int>( tl.size() ) > n_targets() )
-      {
-        rng().shuffle( tl.begin(), tl.end() );
-      }
-
-      return tl;
+      return target_cache.list;
     }
   };
 
