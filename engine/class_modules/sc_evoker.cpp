@@ -3237,6 +3237,7 @@ struct breath_of_eons_t : public evoker_spell_t
     if ( p->talent.overlord->ok() )
     {
       eruption = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+      add_child( eruption );
     }
 
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
