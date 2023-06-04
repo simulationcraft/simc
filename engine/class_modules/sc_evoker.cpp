@@ -478,8 +478,7 @@ struct evoker_t : public player_t
   void extend_ebon( timespan_t );
 
   // Utility functions
-  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell,
-                                              effect_subtype_t subtype     = A_MAX,
+  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype = A_MAX,
                                               int misc_value               = P_GENERIC,
                                               const spell_data_t* affected = spell_data_t::nil(),
                                               effect_type_t type           = E_APPLY_AURA );
@@ -1375,7 +1374,7 @@ struct emerald_blossom_t : public essence_heal_t
   };
 
   action_t *heal, *panacea, *virtual_heal;
-  
+
   timespan_t extend_ebon;
 
   emerald_blossom_t( evoker_t* p, std::string_view options_str )
@@ -1646,7 +1645,7 @@ public:
     // Add a target so you always hit yourself.
     aoe += 1;
     dot_duration = base_tick_time = 0_ms;
-    ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
+    ebon_value                    = p->talent.ebon_might->effectN( 1 ).percent() +
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
   }
 
@@ -1656,7 +1655,7 @@ public:
     // Add a target so you always hit yourself.
     aoe += 1;
     dot_duration = base_tick_time = 0_ms;
-    ebon_value = p->talent.ebon_might->effectN( 1 ).percent() +
+    ebon_value                    = p->talent.ebon_might->effectN( 1 ).percent() +
                  p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
 
     cooldown->base_duration = 0_s;
@@ -1700,7 +1699,7 @@ public:
     return ( p()->cache.intellect() - ignore_int ) * ebon_value;
   }
 
-  static double ebon_int( evoker_t* p)
+  static double ebon_int( evoker_t* p )
   {
     auto ebon_value = ( p->talent.ebon_might->effectN( 1 ).percent() +
                         p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
@@ -2131,7 +2130,7 @@ struct deep_breath_t : public evoker_spell_t
 
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
-    
+
     trigger_gcd = 3_s;
     gcd_type    = gcd_haste_type::NONE;
 
@@ -2517,7 +2516,7 @@ struct living_flame_t : public evoker_spell_t
     int total_hits = damage->num_targets_hit;
 
     if ( !p()->buff.burnout->up() )
-        p()->buff.ancient_flame->expire();
+      p()->buff.ancient_flame->expire();
     p()->buff.scarlet_adaptation->expire();
 
     if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
@@ -2896,8 +2895,12 @@ struct eruption_t : public essence_spell_t
   timespan_t extend_ebon;
   timespan_t upheaval_cdr;
 
-  eruption_t( evoker_t* p, std::string_view options_str )
-    : essence_spell_t( "eruption", p, p->talent.eruption, options_str ),
+  eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
+  {
+  }
+
+  eruption_t( evoker_t* p, std::string_view name, std::string_view options_str )
+    : essence_spell_t( name, p, p->talent.eruption, options_str ),
       extend_ebon( p->talent.sands_of_time->effectN( 1 ).time_value() ),
       upheaval_cdr( p->talent.accretion->effectN( 1 ).trigger()->effectN( 1 ).time_value() )
   {
@@ -3194,10 +3197,8 @@ public:
   }
 };
 
-
 struct blistering_scales_t : public evoker_augment_t
 {
-
   blistering_scales_t( evoker_t* p, std::string_view options_str )
     : evoker_augment_t( "blistering_scales", p, p->talent.blistering_scales, options_str )
   {
@@ -3215,16 +3216,15 @@ struct blistering_scales_t : public evoker_augment_t
 struct breath_of_eons_t : public evoker_spell_t
 {
   action_t* ebon;
+  action_t* eruption;
   timespan_t plot_duration;
 
   breath_of_eons_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ),
-      /* damage( nullptr ),*/
-      ebon( nullptr )
+    : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ), ebon( nullptr ), eruption( nullptr )
   {
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
-    
+
     trigger_gcd = 3_s;
     gcd_type    = gcd_haste_type::NONE;
 
@@ -3233,6 +3233,11 @@ struct breath_of_eons_t : public evoker_spell_t
     if ( p->specialization() == EVOKER_AUGMENTATION )
       ebon = p->get_secondary_action<ebon_might_t>(
           "ebon_might_eons", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_eons" );
+
+    if ( p->talent.overlord->ok() )
+    {
+      eruption = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
+    }
 
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
 
@@ -3244,6 +3249,11 @@ struct breath_of_eons_t : public evoker_spell_t
     evoker_spell_t::impact( s );
 
     p()->get_target_data( s->target )->debuffs.temporal_wound->trigger();
+
+    if ( eruption && s->chain_target < p()->talent.overlord->effectN( 1 ).base_value() )
+    {
+      eruption->execute_on_target( s->target );
+    }
   }
 
   void execute() override
@@ -3280,8 +3290,8 @@ struct breath_of_eons_t : public evoker_spell_t
 struct time_skip_t : public evoker_spell_t
 {
   time_skip_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "time_skip", p, p->talent.interwoven_threads.ok() ? spell_data_t::not_found() : p->talent.time_skip,
-                   options_str )
+    : evoker_spell_t( "time_skip", p,
+                      p->talent.interwoven_threads.ok() ? spell_data_t::not_found() : p->talent.time_skip, options_str )
   {
     target            = player;
     channeled         = true;
@@ -3362,7 +3372,7 @@ struct infernos_blessing_cb_t : public dbc_proc_callback_t
     deactivate();
     initialize();
   }
-  
+
   void execute( action_t*, action_state_t* s ) override
   {
     if ( s->target->is_sleeping() )
@@ -3400,8 +3410,7 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
     if ( s->target->is_sleeping() )
       return;
 
-    p()->get_target_data( s->target )
-        ->buffs.blistering_scales->decrement();
+    p()->get_target_data( s->target )->buffs.blistering_scales->decrement();
 
     p()->sim->print_debug( "{}'s blistering scales detonates for action {} from {} targeting {}", *p(), *s->action,
                            *s->action->player, *s->target );
@@ -3559,11 +3568,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   debuffs.in_firestorm = make_buff( *this, "in_firestorm" )->set_max_stack( 20 )->set_duration( timespan_t::zero() );
 
-
   if ( evoker->naszuro )
   {
-    buffs.unbound_surge = make_buff<stat_buff_t>( target, "unbound_surge_" + evoker->name_str, evoker->find_spell( 403275 ),
-                                                  evoker->naszuro->item );
+    buffs.unbound_surge = make_buff<stat_buff_t>( target, "unbound_surge_" + evoker->name_str,
+                                                  evoker->find_spell( 403275 ), evoker->naszuro->item );
     buffs.unbound_surge->set_period( 0_s );
 
     switch ( evoker->specialization() )
@@ -3641,11 +3649,12 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
     buffs.shifting_sands =
         make_buff<e_buff_t>( *this, "shifting_sands_" + evoker->name_str, evoker->find_spell( 413984 ) )
-                               ->set_default_value( evoker->cache.mastery_value() )
-                               ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-                               ->set_period( timespan_t::zero() );
+            ->set_default_value( evoker->cache.mastery_value() )
+            ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+            ->set_period( timespan_t::zero() );
 
-    buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str, evoker->find_spell( 395152 ) )
+    buffs.ebon_might = make_buff<buffs::evoker_buff_t<stat_buff_t>>( *this, "ebon_might_" + evoker->name_str,
+                                                                     evoker->find_spell( 395152 ) )
                            ->set_stat_from_effect( 2, 0 );
 
     buffs.ebon_might->set_cooldown( 0_ms )
@@ -3704,7 +3713,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       } );
     }
 
-    if (evoker->talent.blistering_scales)
+    if ( evoker->talent.blistering_scales )
     {
       action_t* blistering_scales =
           evoker->get_secondary_action<spells::blistering_scales_damage_t>( "blistering_scales_damage" );
@@ -3713,16 +3722,15 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       blistering_scales->stats->add_child( stats );
 
-      auto blistering_scales_effect      = new special_effect_t( target );
-      blistering_scales_effect->name_str = "blistering_scales_" + evoker->name_str;
-      blistering_scales_effect->type     = SPECIAL_EFFECT_EQUIP;
-      blistering_scales_effect->spell_id = evoker->talent.blistering_scales->id();
-      blistering_scales_effect->cooldown_ = 2_s; // Tested 27 / 05 / 2023
+      auto blistering_scales_effect       = new special_effect_t( target );
+      blistering_scales_effect->name_str  = "blistering_scales_" + evoker->name_str;
+      blistering_scales_effect->type      = SPECIAL_EFFECT_EQUIP;
+      blistering_scales_effect->spell_id  = evoker->talent.blistering_scales->id();
+      blistering_scales_effect->cooldown_ = 2_s;  // Tested 27 / 05 / 2023
       target->special_effects.push_back( blistering_scales_effect );
 
       auto blistering_scales_cb =
           new buffs::blistering_scales_cb_t( target, *blistering_scales_effect, evoker, blistering_scales, stats );
-
 
       buffs.blistering_scales = make_buff<e_buff_t>( *this, "blistering_scales", evoker->talent.blistering_scales )
                                     ->apply_affecting_aura( evoker->talent.regenerative_chitin )
@@ -3735,7 +3743,6 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
                                         blistering_scales_cb->deactivate();
                                     } );
     }
-
 
     buffs.infernos_blessing = make_buff<e_buff_t>( *this, "infernos_blessing", evoker->talent.infernos_blessing_buff );
 
@@ -4607,7 +4614,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "ebon_might" )
     return new ebon_might_t( this, options_str );
   if ( name == "eruption" )
-    return new eruption_t( this, options_str );
+    return new eruption_t( this, "eruption", options_str );
   if ( name == "upheaval" )
     return new upheaval_t( this, options_str );
   if ( name == "prescience" )
