@@ -400,6 +400,7 @@ struct evoker_t : public player_t
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
     propagate_const<proc_t*> anachronism_essence_burst;
+    propagate_const<proc_t*> echoing_strike;
   } proc;
 
   // RPPMs
@@ -2082,6 +2083,18 @@ struct azure_strike_t : public evoker_spell_t
     da *= 1.0 + p()->buff.iridescence_blue->check_value();
 
     return da;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+
+    if ( p()->talent.echoing_strike.ok() && s->chain_target == 0 &&
+         rng().roll( p()->talent.echoing_strike->effectN( 1 ).percent() * s->n_targets ) )
+    {
+      execute_on_target( s->target );
+      p()->proc.echoing_strike->occur();
+    }
   }
 };
 
@@ -4022,6 +4035,7 @@ void evoker_t::init_procs()
   proc.ruby_essence_burst        = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst       = get_proc( "Azure Essence Burst" );
   proc.anachronism_essence_burst = get_proc( "Anachronism" );
+  proc.echoing_strike            = get_proc( "Echoing Strike" );
 }
 
 void evoker_t::init_base_stats()
