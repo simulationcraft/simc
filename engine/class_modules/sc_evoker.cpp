@@ -2545,6 +2545,22 @@ struct living_flame_t : public evoker_spell_t
 
     p()->buff.leaping_flames->expire();
 
+    if ( p()->talent.pupil_of_alexstrasza->ok() )
+    {
+      // TODO: Auto handle dummy cleave values and damage effectiveness
+      if ( !target_cache.is_valid )
+      {
+        damage->available_targets( damage->target_cache.list );
+        damage->target_cache.is_valid = true;
+      }
+
+      if ( damage->target_cache.list.size() > 1 )
+      {
+        damage->execute_on_target( damage->target_list()[ 1 ] );
+        total_hits++;
+      }
+    }
+
     if ( p()->talent.ruby_essence_burst.ok() )
     {
       for ( int i = 0; i < total_hits; i++ )
