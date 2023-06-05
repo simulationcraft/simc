@@ -1331,14 +1331,28 @@ public:
     return s;
   }
 
-  void copy_state( const action_state_t* s ) override
+  void copy_state( const action_state_t* s, bool copy_exsang )
   {
     action_state_t::copy_state( s );
     const rogue_action_state_t* rs = debug_cast<const rogue_action_state_t*>( s );
     base_cp = rs->base_cp;
     total_cp = rs->total_cp;
-    exsanguinated_rate = rs->exsanguinated_rate;
-    exsanguinated = rs->exsanguinated;
+    if ( copy_exsang )
+    {
+      exsanguinated_rate = rs->exsanguinated_rate;
+      exsanguinated = rs->exsanguinated;
+    }
+    else
+    {
+      exsanguinated_rate = 1.0;
+      exsanguinated = false;
+    }
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    // Default copy behavior to not copy Exsanguianted DoT state
+    this->copy_state( s, false );
   }
 
   T_ACTION* get_action() const
@@ -4810,11 +4824,7 @@ struct rupture_t : public rogue_attack_t
 
     if ( poisoned_edges_damage )
     {
-      // 2023-05-01 -- Currently appears to be bugged/scripted to not use the 40% tooltip value
-      // Additionally, appears to deal half damage from Deathmark DoT ticks
-      double multiplier = p()->bugs ? 0.5 : p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
-      if ( p()->bugs && secondary_trigger_type == secondary_trigger::DEATHMARK )
-        multiplier *= 0.5;
+      double multiplier = p()->set_bonuses.t30_assassination_2pc->effectN( 1 ).percent();
       double damage = d->state->result_total * multiplier;
       poisoned_edges_damage->execute_on_target( d->target, damage );
     }
