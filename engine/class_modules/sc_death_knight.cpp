@@ -10499,9 +10499,18 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     m *= 1.0 + cache.mastery_value();
   }
   
-  m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
-  m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
-  m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+  if ( guardian )
+  {
+    m *= 1.0 + spec.blood_death_knight -> effectN( 16 ).percent();
+    m *= 1.0 + spec.frost_death_knight -> effectN( 4 ).percent();
+    m *= 1.0 + spec.unholy_death_knight -> effectN( 4 ).percent();
+  }
+  else
+  {
+    m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
+    m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
+    m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+  }
 
   if ( talent.unholy.unholy_aura.ok() )
   {
