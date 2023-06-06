@@ -1782,6 +1782,8 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
+  // Mastery and Vers appear to update immediately, likely due to being an all damage mod aura on the player
+  // last tested 6-6-2023
   double owner_composite_melee_haste;
   double owner_composite_spell_haste;
   double owner_composite_melee_crit;
@@ -10207,7 +10209,6 @@ void death_knight_t::activate()
       target -> register_on_demise_callback( this, [ this ]( player_t* t ) { trigger_virulent_plague_death( t ); } );
     }
   } );
-
 }
 
 // death_knight_t::reset ====================================================
