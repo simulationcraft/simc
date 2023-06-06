@@ -35,7 +35,7 @@ bear->add_action( "ironfur,target_if=!debuff.tooth_and_claw_debuff.up,if=!buff.i
 bear->add_action( "ironfur,if=rage>90&variable.If_build=1|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1" );
 bear->add_action( "moonfire,if=buff.galactic_guardian.up&buff.galactic_guardian.remains<=2" );
 bear->add_action( "maul,if=((buff.incarnation.up|buff.berserk_bear.up)&active_enemies<=5&(buff.tooth_and_claw.stack>=2))&variable.If_build=0&!talent.thorns_of_iron.enabled" );
-bear->add_action( "raze,if=((buff.incarnation.up|buff.berserk_bear.up)&variable.If_build=0&!talent.thorns_of_iron.enabled" );
+bear->add_action( "raze,if=(buff.incarnation.up|buff.berserk_bear.up)&variable.If_build=0&!talent.thorns_of_iron.enabled" );
 bear->add_action( "mangle,if=buff.gore.up&active_enemies<11|buff.vicious_cycle_mangle.stack=3" );
 bear->add_action( "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|active_enemies>=5" );
 bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=11" );
