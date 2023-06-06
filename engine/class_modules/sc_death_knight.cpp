@@ -1786,8 +1786,6 @@ struct death_knight_pet_t : public pet_t
   double owner_composite_spell_haste;
   double owner_composite_melee_crit;
   double owner_composite_spell_crit;
-  double owner_composite_vers;
-  double owner_composite_mastery;
 
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
@@ -1796,10 +1794,8 @@ struct death_knight_pet_t : public pet_t
     affected_by_commander_of_the_dead( false ),
     owner_composite_melee_haste( 0.0 ),
     owner_composite_spell_haste( 0.0 ),
-    owner_composite_vers( 0.0 ),
     owner_composite_melee_crit( 0.0 ),
-    owner_composite_spell_crit( 0.0 ),
-    owner_composite_mastery( 0.0 )
+    owner_composite_spell_crit( 0.0 )
   {
     if ( auto_attack )
     {
@@ -1829,7 +1825,7 @@ struct death_knight_pet_t : public pet_t
 
     if ( dk() -> mastery.dreadblade -> ok() )
     {
-      m *= 1.0 + owner_composite_mastery;
+      m *= 1.0 + owner -> composite_mastery_value();
     }
 
     if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
@@ -1851,10 +1847,8 @@ struct death_knight_pet_t : public pet_t
     current.stats.attack_power = ap;
     owner_composite_melee_crit = owner->composite_melee_crit_chance();
     owner_composite_spell_crit = owner->composite_spell_crit_chance();
-    owner_composite_vers = owner->composite_damage_versatility();
     owner_composite_melee_haste = owner->composite_melee_haste();
     owner_composite_spell_haste = owner->composite_spell_haste();
-    owner_composite_mastery = owner->composite_mastery_value();
   }
 
   double pet_crit() const override
@@ -1880,11 +1874,6 @@ struct death_knight_pet_t : public pet_t
   double composite_spell_speed() const override
   {
     return owner_composite_spell_haste;
-  }
-
-  double composite_damage_versatility() const override
-  {
-    return owner_composite_vers;
   }
 
   double composite_melee_attack_power() const override
@@ -10826,10 +10815,9 @@ struct stat_event_t : public player_event_t
       dk_pet->current.stats.attack_power = ap;
       sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
 
+      // Mastery and Versatility appear to be excluded from the delay due to being a player aura that modifies damage done
       dk_pet->owner_composite_melee_crit = dk_pet->owner->composite_melee_crit_chance();
       dk_pet->owner_composite_spell_crit = dk_pet->owner->composite_spell_crit_chance();
-      dk_pet->owner_composite_mastery = dk_pet->owner->composite_mastery_value();
-      dk_pet->owner_composite_vers = dk_pet->owner->composite_damage_versatility();
       dk_pet->owner_composite_melee_haste = dk_pet->owner->composite_melee_haste();
       dk_pet->owner_composite_spell_haste = dk_pet->owner->composite_spell_haste();
       sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
