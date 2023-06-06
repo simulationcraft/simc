@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49801 Live (hotfix 2023-06-01/49801)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-06/49890)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -555,7 +555,7 @@ Duration         : 1.5 seconds
 Cooldown         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
                  : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effect#13), Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2), Essence Burst (392268 effects: #1, #4), Dream of Spring (414969 effects: #1, #3, #5)
+Affecting spells : Preservation Evoker (356810 effect#13), Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2), Essence Burst (392268 effects: #1, #4), Nourishing Sands (406043 effect#2), Dream of Spring (414969 effects: #1, #3, #5)
 Triggered by     : Nourishing Sands (406043)
 Family Flags     : 3, 10
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -812,6 +812,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #16 (id=1082253)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.50000 | Misc Value: 37 | Misc Value 2: 2675 (Label) | Target: Self (1)
+#17 (id=1089678)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Disintegrate (356995)
+                   Family Flags: 6
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -871,7 +875,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Imminent Destruction (411055 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4, #17), Initial Evoker (356816 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #1, #2), Spatial Paradox (406732 effect#3), Imminent Destruction (411055 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2)
 Family Flags     : 0, 2, 3, 6, 38
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2790,7 +2794,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=981818)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.60000 | Target: Self (1)
 #2 (id=981819)   : Apply Aura (6) | Unknown(408)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 357211 | Target: Self (1)
 Description      : $@spelldesc370455
@@ -3267,6 +3271,8 @@ Duration         : 30 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Stacks           : 4 maximum
 Proc Chance      : 101%
+Affecting spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4562,6 +4568,7 @@ School           : Fire
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
+                 : 2731: Burnout (375802 effect#2), Lifespark (394552 effect#3)
 Triggered by     : Ancient Flame (369990)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4844,6 +4851,9 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Living Flame (361469)
                    Family Flags: 52
+#2 (id=1089730)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
+                   Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc375801
 Tooltip          : Next Living Flame's cast time is reduced by $w1%.
 
@@ -6762,8 +6772,8 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........   ........ ........ ........ ........   
                  : Magic Heal, Magic Hostile Spell
-Affecting spells : Essence Attunement (375722 effect#1), Ignition Rush (408775 effects: #1, #2)
-Family Flags     : 43
+Affecting spells : Essence Attunement (375722 effect#1), Mastery: Timewalker (406380 effect#2), Ignition Rush (408775 effects: #1, #2)
+Family Flags     : 43, 67
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : .......x ........ .......x ........   ........ ........ ........ ........ 
@@ -6970,6 +6980,9 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Living Flame (361500), Living Flame (361509)
                    Family Flags: 22, 50
+#3 (id=1089731)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2731 (Label) | Target: Self (1)
+                   Affected Spells (Label): Ancient Flame (375583)
 Description      : $@spelldesc393645
 Tooltip          : Next Living Flame's cast time reduced by $s1% and deals $s2% increased damage or healing.
 
@@ -7273,18 +7286,21 @@ School           : Firestorm
 Spell Type       : Magic
 Range            : 100 yards
 GCD              : 1.5 seconds
+Duration         : 3 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #3, #4), Augmentation Evoker (396186 effects: #1, #2), Tectonic Locus (408002 effect#2), Unyielding Domain (412733 effect#1), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2)
 Family Flags     : 0, 58
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
-                 : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
+                 : ..x..... x....... ........ ........   ........ .x...... ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Aura Icon (60), Ignore Line of Sight (66), Not a Proc (105), Not In Spellbook (143), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : No Aura Icon (60), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Not a Proc (105), Not In Spellbook (143), No Aura Log (202), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1037394)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -7294,6 +7310,8 @@ Effects          :
                    Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Misc Value: -20 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=1053498)  : Unknown(144)
                    Base Value: 120 | Scaled Value: 120 (coefficient=0, delta coefficient=0.2) | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#5 (id=1089232)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 2 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc396286
 
 Name             : Tempered Scales (id=396571) [Spell Family (224), Passive] 
@@ -7854,7 +7872,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1054691)  : Apply Aura (6) | Proc Trigger Spell (42): Nourishing Sands
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 406043 | Target: Self (1)
-Description      : When you kill an enemy that yields experience or honor, the cooldown of Emerald Blossom is refreshed and your next Emerald Blossom within $406043d restores an additional $406054s1% of maximum health to you.
+Description      : When you kill an enemy that yields experience or honor, $?s414969[][the cooldown of Emerald Blossom is refreshed and ]your next Emerald Blossom within $406043d restores an additional $406054s1% of maximum health to you$?s414969 [ and costs no Essence.][.]
 
 Name             : Nourishing Sands (id=406043) [Spell Family (224)] 
 Class            : Evoker
@@ -7877,8 +7895,10 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=1054693)  : Reduce Remaining Cooldown (290)
                    Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Trigger Spell: 355913 | Target: Self (1)
-#2 (id=1054709)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1054709)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355913)
+                   Family Flags: 10
 Description      : $@spelldesc406041
 Tooltip          : Your next Emerald Blossom will restore an additional $406054s1% of maximum health to you.
 
@@ -7922,10 +7942,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1055273)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1082679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Hover (358267), Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Prescience (409311), Temporal Wound (409560), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984)
+                   Affected Spells: Hover (358267), Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984)
                    Family Flags: 67
 #3 (id=1083344)  : Apply Aura (6) | Proc Trigger Spell (42): Shifting Sands
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 413984 | Target: Self (1)
@@ -8350,10 +8370,12 @@ Name             : Momentum Shift (id=408005) [Spell Family (224)]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
-Duration         : 8 seconds
+Duration         : 6 seconds
 Labels           : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1)
 Stacks           : 2 maximum
 Proc Chance      : 101%
+Affecting spells : Mastery: Timewalker (406380 effect#2)
+Family Flags     : 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9454,7 +9476,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Only On Player (104), Do Not Display Range (126), Aura Points On Client (268), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1082678)  : Apply Aura (6) | Modify Versatility% (471)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=1082696)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc406380

@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49801 Live (hotfix 2023-06-01/49801)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-06/49890)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -138,7 +138,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70200 | PvP Coefficient: 1.30000 | Target: Enemy (6)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -1012,7 +1012,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.96000 | PvP Coefficient: 1.45000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.96000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -1064,7 +1064,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic as Combat Text (213), Missile Speed is Delay (in sec) (292), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.28562 | PvP Coefficient: 0.91000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.28562 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1603,7 +1603,7 @@ Effects          :
 #1 (id=175537)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
 #2 (id=19796)    : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.25000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
@@ -4428,7 +4428,6 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 4 seconds
-Affecting spells : Xavius' Gambit (416615 effects: #1, #2)
 Family Flags     : 43
 Attributes       : ........ ........ x....... ..x.....   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -10088,7 +10087,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Limit N (165), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=800325)   : Dummy (3)
-                   Base Value: 2400 | Scaled Value: 2400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 4217 | Scaled Value: 4217 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25300 | PvP Coefficient: 1.25000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
@@ -10482,7 +10481,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
-Cooldown         : 30 seconds
+Cooldown         : 60 seconds
 Category         : 133
 Labels           : 1888: Teachings of the Satyr (387972 effect#1)
 Category Cooldown: 1.5 seconds
@@ -15618,7 +15617,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1023194)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
-                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1888 (Label) | Target: Self (1)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1888 (Label) | Target: Self (1)
                    Affected Spells (Label): Amplify Curse (328774)
 Description      : Reduces the cooldown of Amplify Curse by ${$s1/-1000} sec.
 
@@ -15783,7 +15782,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023550)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.59316 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.59316 | PvP Coefficient: 0.60000 | Target: Enemy (6)
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
 Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
@@ -17286,12 +17285,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1087589)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Unstable Affliction (30108), Unstable Affliction (196364), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
-                   Family Flags: 40, 43
+                   Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
+                   Family Flags: 40
 #2 (id=1087590)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Unstable Affliction (30108), Unstable Affliction (196364), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
-                   Family Flags: 40, 43
+                   Affected Spells: Unstable Affliction (30108), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Unstable Affliction (316099)
+                   Family Flags: 40
 Description      : Unstable Affliction deals $s1% increased damage.
 
 Name             : Doom Blossom (id=416621) [Spell Family (5), Passive] 
