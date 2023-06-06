@@ -1763,7 +1763,7 @@ public:
 
   void update_stat( stat_buff_t* ebon, double _ebon_int )
   {
-    if ( ebon->stats[ 0 ].amount != _ebon_int )
+    if ( ebon->check() && ebon->stats[ 0 ].amount != _ebon_int )
     {
       ebon->stats[ 0 ].amount = _ebon_int;
       adjust_int( ebon );
@@ -1820,12 +1820,12 @@ public:
       buff = p()->get_target_data( t )->buffs.ebon_might;
     }
 
-    if ( ebon_time <= timespan_t::zero() || !buff->check() )
+    bool new_cast = !buff->check();
+    if ( ebon_time <= timespan_t::zero() || new_cast )
     {
-      if ( t != p() )
-        update_stat( debug_cast<stat_buff_t*>( buff ), ebon_int() );
-
       buff->trigger( ebon_time );
+      if ( t != p() && new_cast )
+        update_stat( debug_cast<stat_buff_t*>( buff ), ebon_int() );
     }
     else
     {
