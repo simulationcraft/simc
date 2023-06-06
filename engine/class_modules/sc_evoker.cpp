@@ -125,6 +125,12 @@ struct evoker_t : public player_t
   std::vector<evoker_t*> allied_augmentations;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::vector<std::function<void()>> allied_ebon_callbacks;
+  struct heartbeat_t
+  {
+    std::vector<std::function<void()>> callbacks;
+    timespan_t initial_time;
+  } heartbeat;
+  bool close_as_clutchmates;
 
   // Options
   struct options_t
@@ -207,6 +213,10 @@ struct evoker_t : public player_t
     const spell_data_t* emerald_blossom;
     const spell_data_t* emerald_blossom_heal;
     const spell_data_t* emerald_blossom_spec;
+    
+    // Augmentation
+    const spell_data_t* close_as_clutchmates;
+
     // Devastation
 
     // Preservation
@@ -412,6 +422,12 @@ struct evoker_t : public player_t
   struct uptimes_t
   {
   } uptime;
+
+  // Background Actions
+  struct background_actions_t
+  {
+    propagate_const<action_t*> ebon_might;
+  } background_actions;
 
   evoker_t( sim_t* sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
 
@@ -1636,32 +1652,36 @@ protected:
   using state_t = evoker_action_state_t<sands_of_time_state_t>;
 
 public:
-  double ebon_value    = 0.0;
-  timespan_t ebon_time = timespan_t::min();
+  double base_ebon_value        = 0.0;
+  double clutchmates_ebon_value = 0.0;
+  timespan_t ebon_time          = timespan_t::min();
   mutable std::vector<player_t*> helper_list;
 
   ebon_might_t( evoker_t* p, std::string_view options_str )
-    : evoker_augment_t( "ebon_might", p, p->talent.ebon_might, options_str ), helper_list()
+    : ebon_might_t( p, "ebon_might", options_str, timespan_t::min() )
   {
-    // Add a target so you always hit yourself.
-    aoe += 1;
-    dot_duration = base_tick_time = 0_ms;
-    ebon_value                    = p->talent.ebon_might->effectN( 1 ).percent() +
-                 p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
   }
 
-  ebon_might_t( evoker_t* p, timespan_t ebon, std::string_view name )
-    : evoker_augment_t( name, p, p->talent.ebon_might )
+  ebon_might_t( evoker_t* p, timespan_t ebon, std::string_view name ) : ebon_might_t( p, name, {}, ebon )
+  {
+  }
+
+  ebon_might_t( evoker_t* p, std::string_view name, std::string_view options_str, timespan_t ebon )
+    : evoker_augment_t( name, p, p->talent.ebon_might ), helper_list(), ebon_time(ebon)
   {
     // Add a target so you always hit yourself.
     aoe += 1;
     dot_duration = base_tick_time = 0_ms;
-    ebon_value                    = p->talent.ebon_might->effectN( 1 ).percent() +
-                 p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent();
 
     cooldown->base_duration = 0_s;
 
-    ebon_time = ebon;
+    parse_effect_modifiers( p->sets->set( EVOKER_AUGMENTATION, T30, B4 ) );
+
+    base_ebon_value = modified_effect( 1 ).percent();
+
+    parse_effect_modifiers( p->spec.close_as_clutchmates );
+
+    clutchmates_ebon_value = modified_effect( 1 ).percent();
   }
 
   action_state_t* new_state() override
@@ -1672,6 +1692,11 @@ public:
   state_t* cast_state( action_state_t* s )
   {
     return static_cast<state_t*>( s );
+  }
+
+  double ebon_value() const
+  {
+    return p()->close_as_clutchmates ? clutchmates_ebon_value : base_ebon_value;
   }
 
   const state_t* cast_state( const action_state_t* s ) const
@@ -1688,7 +1713,7 @@ public:
   double ebon_int()
   {
     if ( p()->allied_ebons_on_me.empty() )
-      return p()->cache.intellect() * ebon_value;
+      return p()->cache.intellect() * ebon_value();
 
     double ignore_int = 0;
 
@@ -1697,28 +1722,66 @@ public:
       ignore_int += debug_cast<stat_buff_t*>( b )->stats[ 0 ].amount;
     }
 
-    return ( p()->cache.intellect() - ignore_int ) * ebon_value;
+    ignore_int *= p()->composite_attribute_multiplier( ATTR_INTELLECT );
+
+    return ( p()->cache.intellect() - ignore_int ) * ebon_value();
   }
 
-  static double ebon_int( evoker_t* p )
+  void extend_ebon( timespan_t extend )
   {
-    auto ebon_value = ( p->talent.ebon_might->effectN( 1 ).percent() +
-                        p->sets->set( EVOKER_AUGMENTATION, T30, B4 )->effectN( 1 ).percent() );
+    if ( extend <= 0_s )
+      return;
 
-    if ( p->allied_ebons_on_me.empty() )
-      return p->cache.intellect() * ebon_value;
+    if ( rng().roll( p()->cache.spell_crit_chance() ) )
+      extend *= 1 + p()->talent.sands_of_time->effectN( 4 ).percent();
 
-    double ignore_int = 0;
-
-    for ( auto b : p->allied_ebons_on_me )
+    if ( p()->buff.ebon_might_self_buff->check() )
     {
-      ignore_int += debug_cast<stat_buff_t*>( b )->stats[ 0 ].amount;
+      auto dur = p()->buff.ebon_might_self_buff->remains();
+      if ( dur < 20_s )
+      {
+        dur = std::min( 20_s - dur, extend );
+        if ( dur > 0_s )
+          p()->buff.ebon_might_self_buff->extend_duration( p(), dur );
+      }
     }
 
-    return ( p->cache.intellect() - ignore_int ) * ebon_value;
+    for ( auto ally : p()->allies_with_my_ebon )
+    {
+      auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
+      auto dur  = ebon->remains();
+      if ( dur < 20_s )
+      {
+        dur = std::min( 20_s - dur, extend );
+        if ( dur > 0_s )
+        {
+          ebon->extend_duration( p(), dur );
+        }
+      }
+    }
   }
 
-  static void adjust_int( stat_buff_t* b )
+  void update_stat( stat_buff_t* ebon, double _ebon_int )
+  {
+    if ( ebon->stats[ 0 ].amount != _ebon_int )
+    {
+      ebon->stats[ 0 ].amount = _ebon_int;
+      adjust_int( ebon );
+    }
+  }
+
+  void update_stats()
+  {
+    auto _ebon_int = ebon_int();
+
+    for ( auto ally : p()->allies_with_my_ebon )
+    {
+      auto ebon = p()->get_target_data( ally )->buffs.ebon_might;
+      update_stat( ebon, _ebon_int );
+    }
+  }
+
+  void adjust_int( stat_buff_t* b )
   {
     for ( auto& buff_stat : b->stats )
     {
@@ -1754,13 +1817,14 @@ public:
       buff = p()->buff.ebon_might_self_buff;
     else
     {
-      buff                                                = p()->get_target_data( t )->buffs.ebon_might;
-      debug_cast<stat_buff_t*>( buff )->stats[ 0 ].amount = ebon_int();
-      adjust_int( debug_cast<stat_buff_t*>( buff ) );
+      buff = p()->get_target_data( t )->buffs.ebon_might;
     }
 
     if ( ebon_time <= timespan_t::zero() || !buff->check() )
     {
+      if ( t != p() )
+        update_stat( debug_cast<stat_buff_t*>( buff ), ebon_int() );
+
       buff->trigger( ebon_time );
     }
     else
@@ -3064,14 +3128,19 @@ protected:
   using state_t = evoker_action_state_t<stats_data_t>;
 
 public:
+  double base_eons_multiplier        = 0.0;
+  double clutchmates_eons_multiplier = 0.0;
+  evoker_t* evoker;
+
   breath_of_eons_damage_t( player_t* p, evoker_t* e )
-    : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage )
+    : spell_t( "breath_of_eons_damage", p, e->talent.breath_of_eons_damage ), evoker( e )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
     base_crit += 1.0;
     crit_bonus         = 0.0;
-    base_dd_multiplier = e->talent.temporal_wound->effectN( 1 ).percent();
+    base_eons_multiplier = e->talent.temporal_wound->effectN( 1 ).percent();
+    clutchmates_eons_multiplier = base_eons_multiplier * ( 1 + e->spec.close_as_clutchmates->effectN( 1 ).percent() );
 
     /* if ( p != e )
     {
@@ -3085,7 +3154,7 @@ public:
 
   double composite_da_multiplier( const action_state_t* ) const override
   {
-    return base_dd_multiplier;
+    return evoker->close_as_clutchmates ? clutchmates_eons_multiplier : base_eons_multiplier;
   }
 
   action_state_t* new_state() override
@@ -3708,7 +3777,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
               vec.erase( std::remove( vec.begin(), vec.end(), b ), vec.end() );
             }
           }
-          for ( auto c : evoker->allied_ebon_callbacks )
+          for ( auto& c : evoker->allied_ebon_callbacks )
           {
             c();
           }
@@ -3819,9 +3888,12 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     proc(),
     rppm(),
     uptime(),
+    close_as_clutchmates( false ),
     allies_with_my_ebon(),
     allied_ebons_on_me(),
     allied_augmentations(),
+    allied_ebon_callbacks(),
+    heartbeat(),
     naszuro()
 {
   cooldown.eternity_surge = get_cooldown( "eternity_surge" );
@@ -3971,6 +4043,11 @@ void evoker_t::init_finished()
     }
   }
 
+  if ( sim->player_no_pet_list.size() <= 5 )
+  {
+    close_as_clutchmates = true;
+  }
+
   player_t::init_finished();
 
   /*PRECOMBAT SHENANIGANS
@@ -4004,6 +4081,25 @@ void evoker_t::init_finished()
         break;
       }
     }
+  }
+
+  if ( heartbeat.callbacks.size() > 0 )
+  {
+    heartbeat.initial_time = timespan_t::from_millis( rng().range( 0, 5250 ) );
+    register_combat_begin( [ this ]( player_t* ) {
+      make_event( sim, heartbeat.initial_time, [ this ] {
+        for ( auto& cb : heartbeat.callbacks )
+        {
+          cb();
+        }
+        make_repeating_event( sim, 5.25_s, [ this ]() {
+          for ( auto& cb : heartbeat.callbacks )
+          {
+            cb();
+          }
+        } );
+      } );
+    } );
   }
 }
 
@@ -4075,6 +4171,16 @@ void evoker_t::init_base_stats()
 void evoker_t::init_background_actions()
 {
   player_t::init_background_actions();
+
+  if ( talent.ebon_might.ok() )
+  {
+    background_actions.ebon_might =
+        get_secondary_action<spells::ebon_might_t>( "ebon_might_helper", timespan_t::min(), "ebon_might_helper" );
+
+    heartbeat.callbacks.push_back( [ ebon = background_actions.ebon_might.get() ]() {
+      static_cast<spells::ebon_might_t*>( ebon )->update_stats();
+    } );
+  }
 }
 
 void evoker_t::init_spells()
@@ -4258,6 +4364,7 @@ void evoker_t::init_spells()
   spec.emerald_blossom      = find_spell( 355913 );
   spec.emerald_blossom_heal = find_spell( 355916 );
   spec.emerald_blossom_spec = find_specialization_spell( 365261, specialization() );
+  spec.close_as_clutchmates = find_specialization_spell( 396043, specialization() );
 }
 
 void evoker_t::init_special_effects()
@@ -4779,41 +4886,9 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
 
 void evoker_t::extend_ebon( timespan_t extend )
 {
-  if ( extend <= 0_s )
-    return;
-
-  if ( rng().roll( cache.spell_crit_chance() ) )
-    extend *= 1 + talent.sands_of_time->effectN( 4 ).percent();
-
-  if ( buff.ebon_might_self_buff->check() )
+  if ( background_actions.ebon_might )
   {
-    auto dur = buff.ebon_might_self_buff->remains();
-    if ( dur < 20_s )
-    {
-      dur = std::min( 20_s - dur, extend );
-      if ( dur > 0_s )
-        buff.ebon_might_self_buff->extend_duration( this, dur );
-    }
-  }
-
-  for ( auto ally : allies_with_my_ebon )
-  {
-    auto ebon = get_target_data( ally )->buffs.ebon_might;
-    auto dur  = ebon->remains();
-    if ( dur < 20_s )
-    {
-      dur = std::min( 20_s - dur, extend );
-      if ( dur > 0_s )
-      {
-        auto ebon_int = spells::ebon_might_t::ebon_int( this );
-        if ( ebon->stats[ 0 ].amount != ebon_int )
-        {
-          ebon->stats[ 0 ].amount = ebon_int;
-          spells::ebon_might_t::adjust_int( ebon );
-        }
-        ebon->extend_duration( this, dur );
-      }
-    }
+    static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->extend_ebon( extend );
   }
 }
 
