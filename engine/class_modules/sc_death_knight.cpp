@@ -10807,7 +10807,6 @@ struct stat_event_t : public player_event_t
     for ( auto pet : p()->active_pets )
     {
       pets::death_knight_pet_t* dk_pet = debug_cast< pets::death_knight_pet_t* >( pet );
-      sim().print_debug( "{} stat invalidate event", dk_pet->name() );
       sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
       dk_pet->owner_attack_power = dk_pet->owner->cache.total_melee_attack_power() * dk_pet->owner->composite_attack_power_multiplier() * dk_pet->owner_coeff.ap_from_ap;
       sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
