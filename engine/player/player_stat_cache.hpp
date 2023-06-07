@@ -116,7 +116,7 @@ public:
   double spirit() const    { return _player -> spirit();    }
   double spell_power( school_e s ) const  { return _player -> composite_spell_power( s ); }
   double attack_power() const             { return _player -> composite_melee_attack_power();   }
-  dobule total_melee_attack_power() const { return _player -> composite_melee_attack_power_by_type( _player -> default_ap_type() ) * _player -> composite_melee_attack_power_multiplier(); }
+  double total_melee_attack_power() const { return _player -> composite_melee_attack_power_by_type( _player -> default_ap_type() ) * _player -> composite_melee_attack_power_multiplier(); }
   double attack_expertise() const { return _player -> composite_melee_expertise(); }
   double attack_hit() const       { return _player -> composite_melee_hit();       }
   double attack_crit_chance() const      { return _player -> composite_melee_crit_chance();      }
