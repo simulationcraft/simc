@@ -356,6 +356,66 @@ struct holy_word_chastise_t final : public priest_spell_t
 
 }  // namespace actions::spells
 
+namespace buffs
+{
+symbol_of_hope_t::symbol_of_hope_t( player_t* p )
+  : buff_t( p, "symbol_of_hope", p->find_spell( 64901 ) ), affected_actions_initialized( false )
+{
+  set_cooldown( 0_ms );
+  s_data_reporting = data().effectN( 1 ).trigger();
+
+  set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int new_ ) {
+    if ( !affected_actions_initialized )
+    {
+      affected_actions.clear();
+
+      for ( auto a : player->action_list )
+      {
+        for ( const spelleffect_data_t& effect : data().effectN( 1 ).trigger()->effects() )
+        {
+          if ( a->data().affected_by_label( effect ) || a->data().affected_by_category( effect ) )
+          {
+            auto affected_action = range::find_if(
+                affected_actions,
+                [ a ]( std::pair<action_t*, double> affected_action ) { return a == affected_action.first; } );
+            if ( affected_action == affected_actions.end() )
+            {
+              affected_actions.emplace_back( a, effect.default_value() );
+            }
+          }
+        }
+      }
+
+      affected_actions_initialized = true;
+    }
+
+    update_cooldowns( new_ );
+  } );
+}
+
+void symbol_of_hope_t::update_cooldowns( int new_ )
+{
+  assert( affected_actions_initialized );
+
+  for ( auto a : affected_actions )
+  {
+    double recharge_rate_multiplier = 1.0 / ( 1 + a.second );
+    if ( new_ > 0 )
+    {
+      a.first->dynamic_recharge_rate_multiplier *= recharge_rate_multiplier;
+    }
+    else
+    {
+      a.first->dynamic_recharge_rate_multiplier /= recharge_rate_multiplier;
+    }
+    if ( a.first->cooldown->action == a.first )
+      a.first->cooldown->adjust_recharge_multiplier();
+    if ( a.first->internal_cooldown->action == a.first )
+      a.first->internal_cooldown->adjust_recharge_multiplier();
+  }
+}
+}  // namespace buffs
+
 void priest_t::create_buffs_holy()
 {
   buffs.apotheosis = make_buff( this, "apotheosis", talents.holy.apotheosis );
