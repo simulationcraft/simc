@@ -155,16 +155,16 @@ double player_stat_cache_t::attack_power() const
   return _attack_power;
 }
 
-double player_stat_cache_t::total_attack_power() const
+double player_stat_cache_t::total_melee_attack_power() const
 {
-  if( !active || !valid[ CACHE_TOTAL_ATTACK_POWER ] )
+  if( !active || !valid[ CACHE_TOTAL_MELEE_ATTACK_POWER ] )
   {
-    valid[ CACHE_TOTAL_ATTACK_POWER ] = true;
-    _total_attack_power               = player->composite_melee_attack_power_by_type( player->default_ap_type() ) * player->composite_attack_power_multiplier();
+    valid[ CACHE_TOTAL_MELEE_ATTACK_POWER ] = true;
+    _total_melee_attack_power               = player->composite_melee_attack_power_by_type( player->default_ap_type() ) * player->composite_attack_power_multiplier();
   }
   else
-   assert( _total_attack_power == player->composite_melee_attack_power_by_type( player->default_ap_type() ) * player->composite_attack_power_multiplier() );
-  return _total_attack_power;
+   assert( _total_melee_attack_power == player->composite_melee_attack_power_by_type( player->default_ap_type() ) * player->composite_attack_power_multiplier() );
+  return _total_melee_attack_power;
 }
 
 double player_stat_cache_t::attack_expertise() const

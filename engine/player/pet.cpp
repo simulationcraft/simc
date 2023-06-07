@@ -412,7 +412,7 @@ double pet_t::composite_melee_attack_power() const
   if ( owner_coeff.ap_from_ap > 0.0 )
   {
     // Use owner's default attack power type for the inheritance
-    ap += owner -> cache.total_attack_power() * owner_coeff.ap_from_ap;
+    ap += owner -> cache.total_melee_attack_power() * owner_coeff.ap_from_ap;
   }
 
   if ( owner_coeff.ap_from_sp > 0.0 )
