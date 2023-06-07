@@ -5307,6 +5307,7 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_TOTAL_ATTACK_POWER );
       break;
     case CACHE_ATTACK_POWER:
+      invalidate_cache( CACHE_TOTAL_ATTACK_POWER );
       if ( current.spell_power_per_attack_power > 0 )
         invalidate_cache( CACHE_SPELL_POWER );
       break;
