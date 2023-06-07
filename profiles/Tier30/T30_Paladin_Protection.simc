@@ -43,9 +43,12 @@ actions+=/call_action_list,name=standard
 
 # Use Avenger's Shield as first priority before anything else, if t29 2pc is equipped.
 actions.cooldowns=avengers_shield,if=time=0&set_bonus.tier29_2pc
+actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|!raid_event.adds.exists|raid_event.adds.in>75|raid_event.adds.up
 actions.cooldowns+=/avenging_wrath
 actions.cooldowns+=/potion,if=buff.avenging_wrath.up
 actions.cooldowns+=/moment_of_glory,if=(buff.avenging_wrath.remains<15|(time>10|(cooldown.avenging_wrath.remains>15))&(cooldown.avengers_shield.remains&cooldown.judgment.remains&cooldown.hammer_of_wrath.remains))
+actions.cooldowns+=/divine_toll,if=spell_targets.shield_of_the_righteous>=3
+actions.cooldowns+=/eye_of_tyr,if=talent.inmost_light.enabled&spell_targets.shield_of_the_righteous>=3
 actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up
 
 # Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)
@@ -53,19 +56,18 @@ actions.standard=shield_of_the_righteous,if=((!talent.righteous_protector.enable
 # Use Avenger's Shield as First Priority when 2pc buff is missing.
 actions.standard+=/avengers_shield,if=buff.moment_of_glory.up|(set_bonus.tier29_2pc&(!buff.ally_of_the_light.up|buff.ally_of_the_light.remains<gcd))
 actions.standard+=/hammer_of_wrath,if=buff.avenging_wrath.up
-actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=charges=2|!talent.crusaders_judgment.enabled
-actions.standard+=/divine_toll,if=time>20|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))
+actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=talent.crusaders_judgment.enabled&(charges=2|cooldown.judgment.remains<4)|!talent.crusaders_judgment.enabled
+actions.standard+=/divine_toll,if=(time>20&(!raid_event.adds.exists|raid_event.adds.in>10))|((buff.avenging_wrath.up|!talent.avenging_wrath.enabled)&(buff.moment_of_glory.up|!talent.moment_of_glory.enabled))
 actions.standard+=/avengers_shield
 actions.standard+=/hammer_of_wrath
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains
 actions.standard+=/consecration,if=!consecration.up
-actions.standard+=/eye_of_tyr
+actions.standard+=/eye_of_tyr,if=!talent.inmost_light.enabled|raid_event.adds.in>=45
 actions.standard+=/blessed_hammer
 actions.standard+=/hammer_of_the_righteous
 actions.standard+=/crusader_strike
 actions.standard+=/word_of_glory,if=buff.shining_light_free.up
 actions.standard+=/arcane_torrent,if=holy_power<5
-actions.standard+=/lights_judgment
 actions.standard+=/consecration
 
 actions.trinkets=use_item,slot=trinket1,if=(buff.moment_of_glory.up|!talent.moment_of_glory.enabled&buff.avenging_wrath.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains

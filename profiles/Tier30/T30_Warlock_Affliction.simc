@@ -2,14 +2,14 @@ warlock="T30_Warlock_Affliction"
 source=default
 spec=affliction
 level=70
-race=mechagnome
+race=human
 role=spell
 position=ranged_back
-talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQjEAAAAAAIR0CRSikIplQAAJ
+talents=BkQAAAAAAAAAAAAAAAAAAAAAAgQSSkkAppAplkESLAAAAQLAAAAAAASEtQkkIJSaJRAAJ
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3

@@ -332,7 +332,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
   {  5, "Rune",          },
   {  6, "Runic Power",   },
   {  7, "Soul Shard",    },
-  {  8, "Eclipse",       },
+  {  8, "Astral Power",  },
   {  9, "Holy Power",    },
   { 11, "Maelstrom",     },
   { 12, "Chi",           },

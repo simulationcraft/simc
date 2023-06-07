@@ -285,11 +285,11 @@ public:
   unsigned max_active_flame_shock;
 
   /// Maelstrom Weapon blocklist, allowlist; (spell_id, { override_state, proc tracking object })
-  std::vector<std::pair<mw_proc_state, proc_t*>> mw_proc_state_list;
+  std::vector<mw_proc_state> mw_proc_state_list;
 
   /// Maelstrom generator/spender tracking
   std::vector<std::pair<simple_sample_data_t, simple_sample_data_t>> mw_source_list;
-  std::vector<simple_sample_data_t> mw_spend_list;
+  std::vector<std::array<simple_sample_data_t, 11>> mw_spend_list;
 
   /// Deeply Rooted Elements tracking
   extended_sample_data_t dre_samples;
@@ -525,17 +525,9 @@ public:
 
     // Enhancement
     proc_t* hot_hand;
-    proc_t* maelstrom_weapon_fs;
-    proc_t* maelstrom_weapon_ea;
-    proc_t* maelstrom_weapon_sm;
-    proc_t* maelstrom_weapon_pw;
-    proc_t* maelstrom_weapon_sa;
-    proc_t* maelstrom_weapon_sa_rf;
-    proc_t* maelstrom_weapon_4pc_enh;
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
-    proc_t* munched_lotf;
     proc_t* reset_swing_mw;
   } proc;
 
@@ -847,12 +839,11 @@ public:
   timespan_t last_t30_proc;
   bool t30_proc_possible;
 
-  std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t* action, mw_proc_state state )
+  mw_proc_state set_mw_proc_state( action_t* action, mw_proc_state state )
   {
     if ( as<unsigned>( action->internal_id ) >= mw_proc_state_list.size() )
     {
-      mw_proc_state_list.resize( action->internal_id + 1U,
-                                 { mw_proc_state::DEFAULT, nullptr } );
+      mw_proc_state_list.resize( action->internal_id + 1U, mw_proc_state::DEFAULT );
     }
 
     // Use explicit mw_proc_state::DEFAULT set as initialization in shaman_t::action_init_finished
@@ -861,21 +852,12 @@ public:
       return mw_proc_state_list[ action->internal_id ];
     }
 
-    mw_proc_state_list[ action->internal_id ].first = state;
-    if ( state == mw_proc_state::ENABLED &&
-         !mw_proc_state_list[ action->internal_id ].second )
-    {
-      mw_proc_state_list[ action->internal_id ].second = get_proc(
-          fmt::format( "Maelstrom Weapon: {}",
-                      action->data().id()
-                      ? action->data().name_cstr()
-                      : action->name_str ) );
-    }
+    mw_proc_state_list[ action->internal_id ] = state;
 
     return mw_proc_state_list[ action->internal_id ];
   }
 
-  std::pair<mw_proc_state, proc_t*>& set_mw_proc_state( action_t& action, mw_proc_state state )
+  mw_proc_state set_mw_proc_state( action_t& action, mw_proc_state state )
   { return set_mw_proc_state( &( action ), state ); }
 
   mw_proc_state get_mw_proc_state( action_t* action ) const
@@ -883,22 +865,11 @@ public:
     assert( as<unsigned>( action->internal_id ) < mw_proc_state_list.size() &&
             "No Maelstrom Weapon proc-state found" );
 
-    return mw_proc_state_list[ action->internal_id ].first;
+    return mw_proc_state_list[ action->internal_id ];
   }
 
   mw_proc_state get_mw_proc_state( action_t& action ) const
   { return get_mw_proc_state( &( action ) ); }
-
-  proc_t* get_mw_proc_state_counter( action_t* action ) const
-  {
-    assert( as<unsigned>( action->internal_id ) < mw_proc_state_list.size() &&
-            "No Maelstrom Weapon proc-state found" );
-
-    return mw_proc_state_list[ action->internal_id ].second;
-  }
-
-  proc_t* get_mw_proc_state_counter( action_t& action ) const
-  { return get_mw_proc_state_counter( &( action ) ); }
 
   // trackers, big code blocks that shall not be doublicated
   void track_magma_chamber();
@@ -1997,19 +1968,6 @@ public:
         event_t::cancel( this->p()->main_hand_attack->execute_event );
         this->p()->main_hand_attack->schedule_execute();
         this->p()->proc.reset_swing_mw->occur();
-      }
-
-      if ( this->p()->off_hand_attack && this->p()->off_hand_attack->execute_event &&
-           ( this->p()->bugs || !this->background ) )
-      {
-        if ( this->sim->debug )
-        {
-          this->sim->out_debug.print( "{} resetting {} due to MW spell cast of {}",
-                                     this->p()->name(), this->p()->off_hand_attack->name(),
-                                     this->name() );
-        }
-        event_t::cancel( this->p()->off_hand_attack->execute_event );
-        this->p()->off_hand_attack->schedule_execute();
       }
     }
 
@@ -3974,8 +3932,6 @@ struct stormstrike_base_t : public shaman_attack_t
       make_event( sim, 0_s, [ this ]() {
         p()->generate_maelstrom_weapon( execute_state,
           p()->talent.elemental_assault->effectN( 2 ).base_value() );
-          //p()->buff.maelstrom_weapon->trigger( p()->talent.elemental_assault->effectN( 2 ).base_value() );
-        p()->proc.maelstrom_weapon_ea->occur();
       } );
     }
 
@@ -4904,12 +4860,11 @@ struct chain_lightning_t : public chained_base_t
         std::ceil( mw_consumed_stacks * p()->buff.t30_4pc_enh_cl->data().effectN( 3 ).percent() ) );
 
       p()->generate_maelstrom_weapon( execute_state, refunded );
-      //p()->buff.maelstrom_weapon->trigger( refunded );
-      for ( auto i = 0; i < refunded; ++i )
+      // In-game, 0 stack Chain Lightning casts don't consume T30 4PC buff
+      if ( !p()->bugs || refunded > 0 )
       {
-        p()->proc.maelstrom_weapon_4pc_enh->occur();
+        p()->buff.t30_4pc_enh_cl->decrement();
       }
-      p()->buff.t30_4pc_enh_cl->decrement();
     }
 
     p()->buff.t29_2pc_ele->trigger();
@@ -8166,11 +8121,6 @@ struct primordial_wave_t : public shaman_spell_t
     {
       p()->generate_maelstrom_weapon( execute_state,
                                     p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
-      //p()->buff.maelstrom_weapon->trigger( p()->talent.primal_maelstrom->effectN( 1 ).base_value() );
-      for ( auto i = 0; i < p()->talent.primal_maelstrom->effectN( 1 ).base_value(); ++i )
-      {
-        p()->proc.maelstrom_weapon_pw->occur();
-      }
     }
 
     if ( p()->talent.primordial_surge.ok() )
@@ -8853,11 +8803,6 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
     {
       shaman->generate_maelstrom_weapon( state );
       //shaman->buff.maelstrom_weapon->increment();
-      auto proc = shaman->get_mw_proc_state_counter( state->action );
-      if ( proc != nullptr )
-      {
-        proc->occur();
-      }
     }
   }
 };
@@ -8932,11 +8877,22 @@ void shaman_t::analyze( sim_t& sim )
     } );
 
     // Re-use MW spend containers to report iteration average over stacks consumed
-    range::for_each( mw_spend_list, [ iterations ]( auto& container ) {
-      auto sum = container.sum();
+    range::for_each( mw_spend_list, [ iterations ]( auto& container_wrapper ) {
+      range::for_each( container_wrapper, [ idx = 0, iterations ]( auto& container ) mutable {
+        auto sum = container.sum();
+        auto count = container.count();
 
-      container.reset();
-      container.add( sum / as<double>( iterations ) );
+        container.reset();
+        // 0-stack MW casts are just the count divided by iterations, not the sum
+        if ( idx++ == 0 )
+        {
+          container.add( count / as<double>( iterations ) );
+        }
+        else
+        {
+          container.add( sum / as<double>( iterations ) );
+        }
+      } );
     } );
   }
 
@@ -9548,7 +9504,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* state,
+void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* /* state */,
                                                   unsigned consumed_stacks )
 {
   if ( !talent.legacy_of_the_frost_witch.ok() )
@@ -9564,22 +9520,7 @@ void shaman_t::trigger_legacy_of_the_frost_witch( const action_state_t* state,
   {
     lotfw_counter -= threshold;
     buff.legacy_of_the_frost_witch->trigger();
-    if ( state->action->harmful )
-    {
-      auto s = shaman_spell_t::cast_state( state );
-      if ( bugs && s->exec_type == execute_type::THORIMS_INVOCATION )
-      {
-        proc.munched_lotf->occur();
-      }
-      else
-      {
-        cooldown.strike->reset( false );
-      }
-    }
-    else
-    {
-      cooldown.strike->reset( false );
-    }
+    cooldown.strike->reset( false );
   }
 }
 
@@ -9728,7 +9669,7 @@ void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* act
 
 void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks )
 {
-  if ( !talent.maelstrom_weapon.ok() || stacks <= 0 )
+  if ( !talent.maelstrom_weapon.ok() )
   {
     return;
   }
@@ -9738,33 +9679,36 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     mw_spend_list.resize( state->action->internal_id + 1 );
   }
 
-  mw_spend_list[ state->action->internal_id ].add( stacks );
+  mw_spend_list[ state->action->internal_id ][ stacks ].add( stacks );
 
-  buff.maelstrom_weapon->decrement( stacks );
-
-  if ( talent.hailstorm.ok() )
+  if ( stacks > 0 )
   {
-    buff.hailstorm->trigger( stacks );
-  }
+    buff.maelstrom_weapon->decrement( stacks );
 
-  trigger_legacy_of_the_frost_witch( state, stacks );
-
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
-       rng().roll( spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
-  {
-    if ( sim->debug )
+    if ( talent.hailstorm.ok() )
     {
-      sim->out_debug.print( "{} Enhancement T28 2PC", name() );
+      buff.hailstorm->trigger( stacks );
     }
 
-    summon_feral_spirits( timespan_t::from_seconds(
-      spell.t28_2pc_enh->effectN( 2 ).base_value() ), 1, true );
-  }
+    trigger_legacy_of_the_frost_witch( state, stacks );
 
-  if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
-  {
-    //4pc refreshes duration and adds stacks
-    buff.t29_4pc_enh->trigger( stacks );
+    if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+         rng().roll( spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
+    {
+      if ( sim->debug )
+      {
+        sim->out_debug.print( "{} Enhancement T28 2PC", name() );
+      }
+
+      summon_feral_spirits( timespan_t::from_seconds(
+        spell.t28_2pc_enh->effectN( 2 ).base_value() ), 1, true );
+    }
+
+    if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T29, B4 ) )
+    {
+      //4pc refreshes duration and adds stacks
+      buff.t29_4pc_enh->trigger( stacks );
+    }
   }
 }
 
@@ -10019,12 +9963,7 @@ void shaman_t::trigger_swirling_maelstrom( const action_state_t* state )
     return;
   }
 
-  //buff.maelstrom_weapon->trigger( talent.swirling_maelstrom->effectN( 1 ).base_value() );
   generate_maelstrom_weapon( state, talent.swirling_maelstrom->effectN( 1 ).base_value() );
-  for ( auto i = 0; i < talent.swirling_maelstrom->effectN( 1 ).base_value(); ++i )
-  {
-    proc.maelstrom_weapon_sm->occur();
-  }
 }
 
 void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks )
@@ -10040,12 +9979,6 @@ void shaman_t::trigger_static_accumulation_refund( const action_state_t* state, 
   }
 
   generate_maelstrom_weapon( state, mw_stacks );
-  //buff.maelstrom_weapon->trigger( mw_stacks );
-
-  for ( auto i = 0; i < mw_stacks; ++i )
-  {
-    proc.maelstrom_weapon_sa_rf->occur();
-  }
 }
 
 // shaman_t::init_buffs =====================================================
@@ -10097,7 +10030,6 @@ void shaman_t::create_buffs()
         if ( next_proc <= sim->current_time() && !t30_proc_possible )
         {
           t30_proc_possible = true;
-          last_t30_proc = sim->current_time();
         }
         if ( t30_proc_possible && !buff.stormkeeper->up() )
         {
@@ -10106,10 +10038,11 @@ void shaman_t::create_buffs()
             sk_during_cast = true;
           }
           buff.stormkeeper->trigger( 1 );
+          last_t30_proc = sim->current_time();
           t30_proc_possible = false;
         }
-          } )
-          ->set_tick_zero(true);
+      } )
+      ->set_tick_zero(true);
   buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
@@ -10196,8 +10129,6 @@ void shaman_t::create_buffs()
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                       generate_maelstrom_weapon( action.feral_spirits,
                                                                b->data().effectN( 1 ).base_value() );
-                                      //buff.maelstrom_weapon->trigger( b->data().effectN( 1 ).base_value() );
-                                      proc.maelstrom_weapon_fs->occur();
                                     } );
 
   buff.forceful_winds   = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
@@ -10268,11 +10199,6 @@ void shaman_t::create_buffs()
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
       generate_maelstrom_weapon( action.ascendance, b->value() );
-      //buff.maelstrom_weapon->trigger( b->value() );
-      for ( int i = 0; i < b->check_value(); ++i )
-      {
-        proc.maelstrom_weapon_sa->occur();
-      }
     } );
   buff.doom_winds = make_buff( this, "doom_winds", talent.doom_winds );
   buff.ice_strike = make_buff( this, "ice_strike", talent.ice_strike->effectN( 3 ).trigger() )
@@ -10355,13 +10281,6 @@ void shaman_t::init_procs()
   proc.elemental_blast_mastery = get_proc( "Elemental Blast: Mastery" );
 
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
-  proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
-  proc.maelstrom_weapon_ea    = get_proc( "Maelstrom Weapon: Elemental Assault" );
-  proc.maelstrom_weapon_sm    = get_proc( "Maelstrom Weapon: Swirling Maelstrom" );
-  proc.maelstrom_weapon_pw    = get_proc( "Maelstrom Weapon: Primordial Wave" );
-  proc.maelstrom_weapon_sa    = get_proc( "Maelstrom Weapon: Static Accumulation" );
-  proc.maelstrom_weapon_sa_rf = get_proc( "Maelstrom Weapon: Static Accumulation Refund" );
-  proc.maelstrom_weapon_4pc_enh = get_proc( "Maelstrom Weapon: Enhancement Tier30 4PC" );
   proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
@@ -10372,8 +10291,6 @@ void shaman_t::init_procs()
   {
     proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
   }
-
-  proc.munched_lotf = get_proc( "Legacy of the Frost Witch: Bugged Trigger" );
 }
 
 // shaman_t::init_uptimes ====================================================
@@ -10932,7 +10849,7 @@ void shaman_t::init_action_list_enhancement()
     aoe->add_action( "ice_strike,if=talent.hailstorm.enabled" );
     aoe->add_action( "lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled" );
     aoe->add_action( "frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up" );
-    aoe->add_action( "lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
+    aoe->add_action( "lava_lash,if=(talent.molten_assault.enabled&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6)|(talent.ashen_catalyst.enabled&buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack)" );
     aoe->add_action( "sundering" );
     aoe->add_action( "flame_shock,if=talent.molten_assault.enabled&!ticking" );
     aoe->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6" );
@@ -11351,7 +11268,10 @@ void shaman_t::merge( player_t& other )
 
   for ( auto i = 0U; i < s.mw_spend_list.size(); ++i )
   {
-    mw_spend_list[ i ].merge( s.mw_spend_list[ i ] );
+    for ( auto j = 0U; j < s.mw_spend_list[ i ].size(); ++j )
+    {
+      mw_spend_list[ i ][ j ].merge( s.mw_spend_list[ i ][ j ] );
+    }
   }
 
   if ( talent.deeply_rooted_elements.ok() )
@@ -11428,12 +11348,99 @@ public:
   shaman_report_t( shaman_t& player ) : p( player )
   { }
 
+  void mw_consumer_stack_header( report::sc_html_stream& os )
+  {
+    auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
+      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+
+    os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
+       << "<thead>\n"
+       << "<tr>\n";
+    os << fmt::format( "<th colspan=\"{}\"><strong>Casts per Maelstrom Weapon Stack Consumed</strong></th>\n", columns + 1 )
+       << "</tr>\n"
+       << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n";
+    for ( auto col = 0U; col < columns; ++col )
+    {
+       os << fmt::format( "<th>{}</th>\n", col );
+    }
+    os << "</tr>\n"
+       << "</thead>\n";
+  }
+
+  void mw_consumer_stack_contents( report::sc_html_stream& os )
+  {
+    auto columns = std::max( p.buff.maelstrom_weapon->data().max_stacks(),
+      as<unsigned>( p.talent.overflowing_maelstrom->effectN( 1 ).base_value() ) ) + 1;
+
+    int row = 0;
+    std::vector<double> row_totals( columns, 0.0 );
+
+    for ( auto i = 0; i < as<int>( p.mw_spend_list.size() ); ++i )
+    {
+      const auto& ref = p.mw_spend_list[ i ];
+
+      auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum ) - ref[ 0 ].sum();
+      if ( action_sum == 0.0 )
+      {
+        continue;
+      }
+
+      auto action = range::find_if( p.action_list, [ i ]( const action_t* action ) {
+        return action->internal_id == i;
+      } );
+
+      os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
+      os << fmt::format( "<td class=\"left\">{}</td>", report_decorators::decorated_action( **action ) );
+
+      for ( auto col = 0; col < as<int>( columns ); ++col )
+      {
+        auto casts = ref[ col ].sum() / ( col > 1 ? as<double>( col ) : 1.0 );
+
+        if ( ref[ col ].sum() == 0.0 )
+        {
+          os << "<td class=\"left\" style=\"min-width: 5ch;\">&nbsp;</td>\n";
+        }
+        else
+        {
+          os << fmt::format( "<td class=\"left\" style=\"min-width: 5ch;\">{:.2f}</td>\n", casts );
+        }
+
+        row_totals[ col ] += casts;
+      }
+
+      os << "</tr>\n";
+    }
+
+    os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" )
+       << "<td class=\"left\"><strong>Total</strong>\n";
+
+    auto total_sum = range::accumulate( row_totals, 0.0 );
+    range::for_each( row_totals, [ &os, total_sum ]( auto row_sum ) {
+      if ( row_sum == 0.0 )
+      {
+        os << "<td class=\"left\" style=\"min-width: 5ch;\">&nbsp;</td>\n";
+      }
+      else
+      {
+        os << fmt::format( "<td class=\"left\" style=\"min-width: 5ch;\"><strong>{:.2f}</strong><br/>({:.2f}%)</td>\n",
+          row_sum, 100 * row_sum / total_sum );
+      }
+    } );
+
+    os << "</tr>\n";
+  }
+
+  void mw_consumer_stack_footer( report::sc_html_stream& os )
+  {
+    os << "</table>\n";
+  }
+
   void mw_consumer_header( report::sc_html_stream& os )
   {
     os << "<table class=\"sc sort\" style=\"float: left;margin-right: 10px;\">\n"
        << "<thead>\n"
        << "<tr>\n"
-       << "<th colspan=\"5\"><strong>Maelstrom Weapon Consumers</strong></th>\n"
+       << "<th colspan=\"3\"><strong>Maelstrom Weapon Consumers</strong></th>\n"
        << "</tr>\n"
        << "<tr>\n"
        << "<th class=\"toggle-sort\" data-sortdir=\"asc\" data-sorttype=\"alpha\">Ability</th>\n"
@@ -11449,27 +11456,28 @@ public:
       double total = 0.0;
 
       range::for_each( p.mw_spend_list,  [ &total ]( const auto& entry ) {
-        total += entry.sum();
+        total = range::accumulate( entry, total, &simple_sample_data_t::sum ) - entry[ 0 ].sum();
       } );
 
       for ( auto i = 0; i < as<int>( p.mw_spend_list.size() ); ++i )
       {
         const auto& ref = p.mw_spend_list[ i ];
 
-        if ( ref.sum() == 0.0 )
-        {
-          continue;
-        }
-
         auto action = range::find_if( p.action_list, [ i ]( const action_t* action ) {
           return action->internal_id == i;
         } );
 
+        auto action_sum = range::accumulate( ref, 0.0, &simple_sample_data_t::sum ) - ref[ 0 ].sum();
+
+        if ( action_sum == 0.0 )
+        {
+          continue;
+        }
+
         os << fmt::format( "<tr class=\"{}\">\n", row++ & 1 ? "odd" : "even" );
         os << fmt::format( "<td class=\"left\">{}</td>", report_decorators::decorated_action( **action ) );
-        os << fmt::format( "<td class=\"left\">{:.1f}</td>", ref.sum() );
-        os << fmt::format( "<td class=\"left\">{:.2f}%</td>",
-                          100.0 * ref.sum() / total );
+        os << fmt::format( "<td class=\"left\">{:.1f}</td>", action_sum );
+        os << fmt::format( "<td class=\"left\">{:.2f}%</td>", 100.0 * action_sum / total );
         os << "</tr>\n";
       }
 
@@ -11491,7 +11499,8 @@ public:
     {
       const auto& entry = p.mw_spend_list[ i ];
 
-      if ( entry.sum() == 0.0 )
+      auto sum = range::accumulate( entry, 0.0, &simple_sample_data_t::sum ) - entry[ 0 ].sum();
+      if ( sum == 0.0 )
       {
         continue;
       }
@@ -11500,7 +11509,7 @@ public:
         return action->internal_id == as<int>( i );
       } );
 
-      processed_data.emplace_back( *action_it, entry.sum() );
+      processed_data.emplace_back( *action_it, sum );
     }
 
     range::sort( processed_data, []( const auto& left, const auto& right ) {
@@ -11733,8 +11742,15 @@ public:
 
       mw_consumer_header( os );
       mw_consumer_contents( os );
-      mw_consumer_piechart_contents( os );
       mw_consumer_footer( os );
+
+      mw_consumer_stack_header( os );
+      mw_consumer_stack_contents( os );
+      mw_consumer_stack_footer( os );
+
+      os << "<div class=\"clear\"></div>\n";
+
+      mw_consumer_piechart_contents( os );
 
       os << "\t\t\t\t\t</div>\n";
 

@@ -1,5 +1,6 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-06/49890, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
+Hotfixed         : Variables
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -37,8 +38,9 @@ $shadow=$?a137033[${1.25}][${1}]
 $disc=$?a137032[${1.25}][${1}]
 $pvp=$?a134735[${1}][${1}]
 $shadowinpvp=$?a134735&a137033[${0.8}][${1}]
+$discinpvp=$?a134735&a137032[${0.85}][${1}]
 $weal=$?a390787[${1+$390787s2/100}][${1}]
-$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}
+$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Talent Entry     : Generic [free=(Discipline, Holy), tree=class, row=1, col=1, max_rank=1, req_points=0]
@@ -2262,7 +2264,8 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.40000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1.4 -> 1.5)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
@@ -3591,6 +3594,9 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1081541)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
+#23 (id=1089477)  : Apply Aura (6) | Dummy (4)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 

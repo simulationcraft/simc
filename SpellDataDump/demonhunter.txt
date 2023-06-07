@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-06/49890, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -398,6 +398,7 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
+Velocity         : 25 yards/sec
 Affecting spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
@@ -3190,7 +3191,7 @@ Name             : Demonic Appetite (id=210041) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Triggered by     : Consume Soul (178963)
+Triggered by     : Consume Soul (178963),  (0),  (0)
 Family Flags     : 41
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4001,7 +4002,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
-Triggered by     : Soul Fragment (203795), Soul Fragment (204255)
+Triggered by     : Soul Fragment (203795), Soul Fragment (204255), Shattered Souls (328951)
 Attributes       : .......x ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -4258,6 +4259,31 @@ Effects          :
 #2 (id=819792)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc228477
+
+Name             : Consume Soul (id=228532) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Affecting spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1)
+Family Flags     : 20
+Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ...x....   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Ignore Healing Modifiers (219), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=344128)   : Direct Heal% (136)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=344129)   : Trigger Spell (64): Demonic Appetite
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210041 | Target: Self (1)
+#3 (id=755772)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc178940
 
 Name             : Vengeful Retreat (id=232709) [Hidden] 
 Class            : Demon Hunter
@@ -8350,6 +8376,53 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 356608 | Target: Self (1)
 Description      : Blade Dance now reduces targets' healing received by $356608s1% for $356608d.
 
+Name             : Shattered Souls (id=328951) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ x..x.x..   .....x.. ..x..... ........ ....x... 
+                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx...... ....x... 
+                 : .......x .......x .......x ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ .......x 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Not In Spellbook (143), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=821796)   : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 20460 | Target: Unknown(87)
+#2 (id=821797)   : Trigger Spell (64): Shattered Souls
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 221461 | Target: Self (1)
+Description      : $@spelldesc178940
+
+Name             : Consume Soul (id=328953) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Affecting spells : Demon Hunter Vengeance 10.1 Class Set 2pc (405508 effect#1)
+Family Flags     : 20
+Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Can't Crit (93), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=821800)   : Direct Heal% (136)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.40000 | Target: Self (1)
+#2 (id=821801)   : Trigger Spell (64): Demon Soul
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 347765 | Target: Self (1)
+#3 (id=821802)   : Trigger Spell (64): Demonic Appetite
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210041 | Target: Self (1)
+Description      : $@spelldesc178940
+
 Name             : Fodder to the Flame (desc=Necrolord) (id=329554) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Shadow
@@ -10052,6 +10125,7 @@ Spell Level      : 48
 Duration         : 15 seconds
 Proc Chance      : 101%
 Affecting spells : Brooding Pool (340063 effect#1), Demonic Oath (355996 effect#1)
+Triggered by     : Consume Soul (328953)
 Family Flags     : 21, 91
 Attributes       : ........ ........ ..x..... x..x....   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
@@ -13421,7 +13495,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1053842)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Consume Soul (178963), Consume Soul (203794), Consume Soul (210042)
+                   Affected Spells: Consume Soul (178963), Consume Soul (203794), Consume Soul (210042), Consume Soul (228532), Consume Soul (328953)
                    Family Flags: 4, 20
 Description      : Soul Fragments heal for $s1% more and generating a Soul Fragment increases your Fire damage by $409645s1% for $409645d. Multiple applications may overlap.
 

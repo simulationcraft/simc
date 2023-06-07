@@ -524,6 +524,34 @@ const spell_data_t* spell_data_t::find( util::string_view name, bool ptr )
   return nullptr;
 }
 
+const spelleffect_data_t& spell_data_t::find_spelleffect( const spell_data_t& spell, effect_type_t type,
+                                                          effect_subtype_t subtype, int misc )
+{
+  for ( const auto& e : spell.effects() )
+  {
+    if ( e.type() == type && ( subtype == A_MAX || e.subtype() == subtype ) &&
+         ( misc == std::numeric_limits<int>::min() || e.misc_value1() == misc ) )
+    {
+      return e;
+    }
+  }
+  return spelleffect_data_t::nil();
+}
+
+const spelleffect_data_t& spell_data_t::find_spelleffect( const spell_data_t& spell, const spell_data_t& affected,
+                                                          effect_type_t type, effect_subtype_t subtype, int misc )
+{
+  for ( const auto& e : spell.effects() )
+  {
+    if ( e.type() == type && ( subtype == A_MAX || e.subtype() == subtype ) &&
+         ( misc == std::numeric_limits<int>::min() || e.misc_value1() == misc ) && affected.affected_by_all( e ) )
+    {
+      return e;
+    }
+  }
+  return spelleffect_data_t::nil();
+}
+
 util::span<const spell_data_t> spell_data_t::data( bool ptr )
 {
   return _data( ptr );

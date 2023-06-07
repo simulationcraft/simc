@@ -9,7 +9,7 @@ talents=BoQAAAAAAAAAAAAAAAAAAAAAAAIJRSCkWKHQkmkESJAAAAAokIJSIgQikDkiWSSOABAAAAAA
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3
-flask=phial_of_tepid_versatility_3
+flask=iced_phial_of_corrupting_rage_3
 food=fated_fortune_cookie
 augmentation=draconic_augment_rune
 temporary_enchant=main_hand:howling_rune_3
@@ -43,7 +43,7 @@ actions+=/implosion,if=time_to_die<2*gcd
 actions+=/nether_portal,if=!talent.summon_demonic_tyrant&soul_shard>2|time_to_die<30
 actions+=/call_action_list,name=items
 actions+=/call_action_list,name=ogcd,if=buff.demonic_power.up|!talent.summon_demonic_tyrant&(buff.nether_portal.up|!talent.nether_portal)
-actions+=/hand_of_guldan,if=buff.nether_portal.up
+actions+=/hand_of_guldan,if=buff.nether_portal.remains>cast_time
 actions+=/call_dreadstalkers,if=variable.tyrant_cd>cooldown+8*variable.shadow_timings
 actions+=/call_dreadstalkers,if=!talent.summon_demonic_tyrant|time_to_die<14
 actions+=/grimoire_felguard,if=!talent.summon_demonic_tyrant|time_to_die<cooldown.summon_demonic_tyrant.remains_expected

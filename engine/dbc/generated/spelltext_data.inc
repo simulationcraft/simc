@@ -1,5 +1,5 @@
-// Spell text, wow build 10.1.0.49679
-static const std::array<spelltext_data_t, 19903> __spelltext_data { {
+// Spell text, wow build 10.1.0.49890
+static const std::array<spelltext_data_t, 19909> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -2946,6 +2946,8 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   {  96967, "Your healing spells have a chance to instantly heal the most injured nearby party member for $96966s1.", 0, 0 },
   {  96976, "Your melee and ranged attacks have a chance to grant $96977s1 critical strike, haste, or mastery for 30 sec, whichever is currently highest.", 0, 0 },
   {  96977, "Haste increased by $s1 for $d.", "Haste increased by $w1.", 0 },
+  {  96978, "Critical Strike increased by $s1 for $d.", "Critical Strike increased by $w1.", 0 },
+  {  96979, "Mastery increased by $s1 for $d.", "Mastery increased by $w1.", 0 },
   {  96980, "Grants $s1 critical strike for $d.", "Grants $s1 critical strike.", 0 },
   {  96981, "Grants $96980s1 critical strike for $96980d each time you deal a melee critical strike, stacking up to $96980u times.", 0, 0 },
   {  96988, "Absorbs 20% of incoming damage, up to $s1.  After the effect ends, you take 8% of the damage absorbed every $96993t sec for $96993d.  Lasts $d.", "Absorbs 20% of incoming damage, up to $s1, 40% converted into periodic damage over $96993d.", 0 },
@@ -8006,6 +8008,7 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 228491, "Increases the damage your pets deal by $s1%.", "Increases the damage your pets deal by $s1%.", 0 },
   { 228492, "Increases your haste by $s1%.", "Increases your haste by $s1%.", 0 },
   { 228493, "Increases your health regeneration by $s1%.", "Increases your health regeneration by $s1%.", 0 },
+  { 228532, "$@spelldesc178940", 0, 0 },
   { 228539, "Toss the mark back into the water in Margoss' Retreat.", 0, 0 },
   { 228545, 0, 0, "Shapeshift" },
   { 228562, "$@spelldesc51533", 0, 0 },
@@ -13564,6 +13567,8 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 328928, "$@spelldesc328923", 0, "Night Fae" },
   { 328930, "$@spelldesc328923", 0, "Night Fae" },
   { 328933, "$@spelldesc328923", "Fae Transfusion will heal up to $328930s2 nearby allies for $w1.", "Night Fae" },
+  { 328951, "$@spelldesc178940", 0, 0 },
+  { 328953, "$@spelldesc178940", 0, 0 },
   { 329012, "Extracts an enemy's vitality dealing $s1 Shadow damage and granting you $329014s1 health every $329014t sec for $329014d. Only usable outdoors in the Shadowlands.", 0, 0 },
   { 329014, "$@spelldesc329012", "Healing for $w1 every $t sec. Only usable outdoors in the Shadowlands.", 0 },
   { 329023, "Throw a ball of webbing at a target rooting them for $d. Only usable outdoors in the Shadowlands. ", "Rooted.", 0 },
@@ -19865,6 +19870,7 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 410790, "$@spelldesc279302", "Movement speed slowed by $s2%.", 0 },
   { 410871, "$@spelldesc405558\r\n", "The damage of conjured Shadowy Apparitions is increased by $s1%.", 0 },
   { 410879, "$@spelldesc405502", "Taking ${$w1/2}% additional critical strike damage from $@auracaster.", 0 },
+  { 410944, "Some of the ancient blue dragon's wisdom, passed down to you in a form he surely found amusing. Hold a yes-or-no question in your heart and call upon it.", 0, 0 },
   { 411013, "Add the Entangling affix to a Mythic Keystone.", 0, 0 },
   { 411014, "Add the Afflicted affix to a Mythic Keystone.", 0, 0 },
   { 411015, "Add the Incorporeal affix to a Mythic Keystone.", 0, 0 },
@@ -19905,13 +19911,13 @@ static const std::array<spelltext_data_t, 19903> __spelltext_data { {
   { 415571, "$@spelldesc355313", "Absorbing $w1 damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.1.0.49679
+// spelltext hotfix entries, wow build 10.1.0.49890
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.1.0.49679
+// Spell description variables, wow build 10.1.0.49890
 static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
-  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}" },
+  {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -20292,7 +20298,8 @@ static const std::array<spelldesc_vars_data_t, 379> __spelldesc_vars_data { {
   {  408385, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.1.0.49679
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 10.1.0.49890
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {      17,  0, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>}", "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.25}][${1}]\r\n$disc=$?a137032[${1.25}][${1}]\r\n$pvp=$?a134735[${1}][${1}]\r\n$shadowinpvp=$?a134735&a137033[${0.8}][${1}]\r\n$discinpvp=$?a134735&a137032[${0.85}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*3.36*(1+$@versadmg)*$<rapture>*$<shadow>*$<disc>*$<pvp>*$<weal>*$<shadowinpvp>*$<discinpvp>}" },
 } };
 

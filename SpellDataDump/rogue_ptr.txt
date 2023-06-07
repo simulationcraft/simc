@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49570 Live (hotfix 2023-05-17/49570)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-06/49890)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -808,14 +808,18 @@ Class            : Rogue, Druid
 Race             : Night Elf (0x8)
 School           : Nature
 Spell Type       : Magic
-Resource         : 1% Base Mana (0) (id=227)
+Resource         : 0.2% Base Mana (0) (id=227) w/ Guardian Druid (id=137010)
+Resource         : 4% Base Mana (0) (id=305267) w/ Initial Druid (id=417382)
+Resource         : 0.2% Base Mana (0) (id=305268) w/ Balance Druid (id=137013)
+Resource         : 0.2% Base Mana (0) (id=305269) w/ Feral Druid (id=137011)
+Resource         : 0.2% Base Mana (0) (id=305270) w/ Restoration Druid (id=137012)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #5, #6), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Friend of the Fae (394083 effects: #1, #2), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3), Wild Surges (406890 effects: #1, #2)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #2, #3, #4, #5, #6, #8), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Heart of the Wild (108291 effects: #1, #2), Restoration Druid (137012 effects: #4, #5), Balance Druid (137013 effects: #1, #2), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Astral Power (197911 effect#2), Stellar Drift (202461 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Dawning Sun (276154 effect#1), Heart of the Wild (319454 effects: #1, #2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Balance of All Things (339943 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Umbral Embrace (393763 effect#2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Friend of the Fae (394083 effects: #1, #2), Gathering Starstuff (394412 effect#1), Circle of Life and Death (400320 effects: #1, #3), Wild Surges (406890 effects: #1, #2), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -1504,7 +1508,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Monk
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk
 Race             : Draenei (0x400)
 School           : Holy
 Spell Type       : Magic
@@ -3149,6 +3153,291 @@ Description      : $@spelldesc134732
 Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
+Name             : Guardian Druid (id=137010) [Spell Family (7), Passive, Hidden] 
+Class            : Guardian Rogue, Druid
+Race             : Night Elf (0x8)
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=179693)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
+                   Family Flags: 77
+#2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613)
+                   Family Flags: 77
+#3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#4 (id=191160)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#5 (id=191161)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Affected Spells: Astral Influence (197524)
+                   Family Flags: 76
+#6 (id=260757)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
+                   Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=260758)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Thrash (77758)
+                   Family Flags: 91
+#8 (id=260759)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Thrash (77758)
+                   Family Flags: 91
+#9 (id=260760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Mangle (33917)
+                   Family Flags: 38
+#10 (id=1013111)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+#11 (id=1013112)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=1032345)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#13 (id=1032346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#14 (id=1052808)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#15 (id=1052809)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Barkskin (22812)
+                   Family Flags: 50
+#16 (id=1079987)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562)
+                   Family Flags: 33
+#17 (id=1080970)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
+#18 (id=1088946)  : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
+Class            : Feral Rogue, Druid
+Race             : Night Elf (0x8)
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Thrash (405233)
+                   Family Flags: 98
+#2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Thrash (405233)
+                   Family Flags: 98
+#3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Moonkin Form (24858), Moonkin Form (197625)
+                   Family Flags: 45
+#4 (id=191156)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#5 (id=191157)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#6 (id=260767)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
+                   Affected Spells: Astral Influence (197524)
+                   Family Flags: 76
+#7 (id=260768)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
+                   Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=260769)   : Apply Aura (6) | Modify Power Regen (110)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+#9 (id=260770)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#10 (id=1032347)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+#11 (id=1032348)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#12 (id=1049862)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#13 (id=1049863)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562)
+                   Family Flags: 33
+#14 (id=1080962)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
+#15 (id=1088944)  : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
+Class            : Restoration Rogue, Druid
+Race             : Night Elf (0x8)
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
+                   Family Flags: 118
+#2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
+                   Family Flags: 118
+#3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=191152)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233)
+                   Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
+#5 (id=191153)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Swipe (213771), Thrash (405233)
+                   Family Flags: 0, 2, 12, 15, 38, 40, 52, 74, 85, 89, 91, 92, 108, 126, 127
+#6 (id=260747)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
+                   Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=260748)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Sunfire (164815)
+                   Family Flags: 127
+#8 (id=260749)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Sunfire (164815)
+                   Family Flags: 127
+#9 (id=872913)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Convoke the Spirits (323764), Convoke the Spirits (391528)
+                   Family Flags: 16
+#10 (id=876348)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Convoke the Spirits (323764), Convoke the Spirits (391528)
+                   Family Flags: 16
+#11 (id=876349)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=1032349)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#13 (id=1032350)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#14 (id=1039258)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#15 (id=1039259)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
+                   Family Flags: 4
+#16 (id=1039291)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748), Adaptive Swarm (391889), Adaptive Swarm (391891)
+                   Family Flags: 22
+#17 (id=1049694)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#18 (id=1049860)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#19 (id=1049861)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Frenzied Regeneration (22842)
+                   Family Flags: 62
+#20 (id=1080082)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
+#21 (id=1081594)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
+Description      : Restoration Druid core passive
+
+Name             : Balance Druid (id=137013) [Spell Family (7), Passive, Hidden] 
+Class            : Balance Rogue, Druid
+Race             : Night Elf (0x8)
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=179696)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
+                   Family Flags: 18
+#2 (id=191146)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Wrath (5176), Starsurge (78674), Fungal Growth (81281), Wild Mushroom (88751), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (211545), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Lunar Shrapnel (279641), Fury of Elune (281871), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Fury of Elune (365640), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111), Crashing Star (408310)
+                   Family Flags: 18
+#3 (id=191147)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=191148)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#5 (id=191149)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#6 (id=260777)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: 47 | Scaled Value: 47 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
+#7 (id=260778)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
+                   Base Value: 104 | Scaled Value: 104 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=872569)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#9 (id=1080967)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562)
+                   Family Flags: 33
+#10 (id=1080968)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
+#11 (id=1088945)  : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+
 Name             : Rogue (id=137034) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue, Monk
 School           : Physical
@@ -3281,11 +3570,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
 #3 (id=191053)   : Apply Aura (6) | Dummy (4)
@@ -3325,11 +3614,11 @@ Effects          :
 #19 (id=356365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #20 (id=1083091)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
-#21 (id=1083092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#21 (id=1083092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Sepsis (375936), Amplifying Poison (383414), Flagellation (384631), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385794), Mutilate (385802), Mutilate (385806), Ambush (385897), Sepsis (394026), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757)
                    Family Flags: 54
 
@@ -4032,6 +4321,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1078845)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1089898)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shadowstrike and Backstab have a $s1% chance to hit the target twice each time they deal damage$?a134735[, striking for $s3% of normal damage][.]
 
 Name             : Alacrity (id=193538) [Spell Family (8)] 
@@ -5422,15 +5713,15 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=373906)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.80000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66670 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
 #2 (id=479894)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.80000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66670 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
 #3 (id=479895)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.80000 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66670 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Shadow Dance (185313)
                    Family Flags: 103
 Description      : Shadow Dance increases damage by an additional $s1%.
@@ -8175,7 +8466,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Do Not Display Range (126), No Attack Parry (248), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=738432)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15750 | PvP Coefficient: 0.75000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15750 | PvP Coefficient: 0.67000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc280719
 
 Name             : Unstable Catalyst (id=281514) [Passive] 
@@ -13799,15 +14090,15 @@ Effects          :
 #1 (id=1017353)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1017354)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.80000 | Target: Enemy (6)
 #3 (id=1017355)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.80000 | Target: Self (1)
 #4 (id=1017356)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1017357)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Lash the target for $s1 Shadow damage, causing each combo point spent within $d to lash for an additional $345316s1. Dealing damage with Flagellation increases your Mastery by ${$s2*$mas}.1%, persisting $345569d after their torment fades.
-Tooltip          : $?$W2>0[$@auracaster is tormenting the target, dealing $345316s1 Shadow damage for each combo point spent.][Combo points spent deal $345316s1 Shadow damage to $@auracaster's tormented target. Mastery increased by ${$w3*$mas}.1%.]
+Tooltip          : $?$W2>0[$@auracaster is tormenting the target, dealing $345316s1 Shadow damage for each combo point spent.][Combo points spent deal $345316s1 Shadow damage to $@auracaster's tormented target. Mastery increased by ${$W3*$mas}.1%.]
 
 Name             : Sepsis (id=385408) [Spell Family (8)] 
 Talent Entry     : Assassination [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
@@ -15356,11 +15647,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034707)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.80000 | Target: Self (1)
 #2 (id=1034708)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc384631
-Tooltip          : Mastery increased by ${$w1*$mas}.1%.
+Tooltip          : Mastery increased by ${$W1*$mas}.1%.
 
 Name             : Septic Wounds (id=394845) [Spell Family (8)] 
 Class            : Rogue
@@ -16096,5 +16387,43 @@ Attributes       : .......x x....... ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1082470)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+
+Name             : Initial Druid (id=417382) [Spell Family (7), Passive, Hidden] 
+Class            : Unknown (1447) Rogue, Druid
+Race             : Night Elf (0x8)
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1088936)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Rampant Ferocity (391710), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
+                   Family Flags: 18, 77, 98
+#2 (id=1088937)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rip (1079), Rake (1822), Wrath (5176), Shred (5221), Maul (6807), Ferocious Bite (22568), Maim (22570), Mangle (33917), Thrash (77758), Starsurge (78674), Pulverize (80313), Fungal Growth (81281), Wild Mushroom (88751), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Wrath (190984), Starfall (191037), Thrash (192090), Starfire (194153), Starsurge (197626), Starfire (197628), Sunfire (197630), Brutal Slash (202028), Stellar Flare (202347), Shooting Stars (202497), Brambles (203958), Lunar Beam (204069), Fury of Elune (211545), Brambles (213709), Swipe (213771), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274838), Lunar Shrapnel (279641), Fury of Elune (281871), Primal Wrath (285381), Thorns (305496), Adaptive Swarm (325733), Star Burst (356474), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Fury of Elune (365640), Rampant Ferocity (391710), Adaptive Swarm (391889), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Thrash (405233), Crashing Star (408310), Lunar Beam (414613)
+                   Family Flags: 18, 77, 98
+#3 (id=1088938)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
+                   Family Flags: 118
+#4 (id=1088939)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329)
+                   Family Flags: 118
+#5 (id=1088940)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=1088941)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=1088942)  : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 

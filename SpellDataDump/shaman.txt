@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.49679 Live (hotfix 2023-05-23/49679)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-06/49890, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -829,7 +829,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21915)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.5 -> 1.75)
 #2 (id=172084)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -855,7 +856,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21916)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.5 -> 1.75)
 #2 (id=172085)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc17364
@@ -3011,7 +3013,8 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129139)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.5 -> 1.75)
 #2 (id=197633)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -3038,7 +3041,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Not a Proc (105), Requires Off-Hand Weapon (120), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=129143)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.96800 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.5 -> 1.75)
 #2 (id=197634)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc115356
@@ -6732,13 +6736,15 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=335388)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Friend (21)
                    Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Magma Eruption (395349)
                    Family Flags: 103
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=722416)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Friend (21)
                    Affected Spells: Flametongue Attack (10444), Lava Lash (60103), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Meteor (117588), Elemental Blast Overload (120588), Flame Shock (188389), Sundering (197214), Lava Burst (285452), Echoing Shock (320125), Fire Nova (333977), Magma Eruption (383061), Magma Eruption (395349)
                    Family Flags: 103
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc262624
 Tooltip          : Increases fire damage dealt from your abilities by $s1%.
 
@@ -6761,13 +6767,15 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=335390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Friend (21)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Icefury (210714), Icefury Overload (219271), Echoing Shock (320125), Ice Strike (342240)
                    Family Flags: 24
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1030541)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Friend (21)
                    Affected Spells: Elemental Blast (117014), Elemental Blast Overload (120588), Frost Shock (196840), Icefury (210714), Icefury Overload (219271), Echoing Shock (320125), Ice Strike (342240)
                    Family Flags: 24
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc262624
 Tooltip          : Increases frost damage dealt from your abilities by $s1%.
 Variables        : $mastery=$?s77223[${1+0.01*$77223m1}][${1}]
@@ -6792,13 +6800,15 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=335392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Friend (21)
                    Affected Spells: Earth Shock (8042), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Crash Lightning (195592), Lightning Lasso (305483), Lightning Lasso (305485), Echoing Shock (320125), Fae Transfusion (328928), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Stormblast (390287)
                    Family Flags: 126
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=624158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Friend (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Friend (21)
                    Affected Spells: Earth Shock (8042), Thunderstorm (51490), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192109), Crash Lightning (195592), Lightning Lasso (305483), Lightning Lasso (305485), Echoing Shock (320125), Fae Transfusion (328928), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Stormblast (390287)
                    Family Flags: 126
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc262624
 Tooltip          : Increases nature damage dealt from your abilities by $s1%.
 
@@ -7374,9 +7384,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=624009)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Windfury Attack (25504), Windfury Attack (33750)
                    Family Flags: 23
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=722347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc262647
@@ -16881,9 +16892,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1027132)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.33333 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
+Hotfixed         : PvP Coefficient (1 -> 0.33333)
 Description      : $@spelldesc390370
 Tooltip          : Damage of your next Lava Lash increased by $s1%.
 
@@ -16930,13 +16942,15 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1030530)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33333 | Target: Friend (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.33333)
 #2 (id=1030531)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Friend (21)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.33333 | Misc Value: 22 | Target: Friend (21)
                    Affected Spells: Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Windstrike (115357), Windstrike Off-Hand (115360), Sundering (197214), Spirit Bomb (198455), Feral Lunge (215802), Fire Nova (333977), Doom Winds (384352)
                    Family Flags: 58
+Hotfixed         : PvP Coefficient (1 -> 0.33333)
 Description      : $@spelldesc262624
 Tooltip          : Increases physical damage dealt from your abilities by $s1%.
 

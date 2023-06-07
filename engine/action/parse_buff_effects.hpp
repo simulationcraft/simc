@@ -77,6 +77,8 @@ struct parse_buff_effects_t
 
 private:
   action_t* action_;
+  std::vector<std::pair<size_t, double>> effect_flat_modifiers;
+  std::vector<std::pair<size_t, double>> effect_pct_modifiers;
 
 public:
   // auto parsed dynamic effects
@@ -451,5 +453,86 @@ public:
     }
 
     return return_value;
+  }
+
+  // Syntax: parse_effect_modifiers( modifier[, spell][,...] )
+  //  modifier = spell data containing effects that modify effects on the action
+  //  spell = optional list of spells with redirect effects that modify the effects of the modifier
+  // Syntax: modified_effect_<value|percent>( N )
+  //  returns base_value() or percent() of the action data's N-th effect, modified by any previously parsed effects.
+  //  Note that this is not a fast accessor and will iterate through all parsed modifiers.
+  template <typename... Ts>
+  void parse_effect_modifiers( const spell_data_t* s_data, Ts... mods )
+  {
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      const auto& eff = s_data->effectN( i );
+      auto subtype = eff.subtype();
+      size_t target_idx = 0;
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      switch ( subtype )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+          break;
+        default:
+          continue;
+      }
+
+      switch ( eff.property_type() )
+      {
+        case P_EFFECT_1: target_idx = 1; break;
+        case P_EFFECT_2: target_idx = 2; break;
+        case P_EFFECT_3: target_idx = 3; break;
+        case P_EFFECT_4: target_idx = 4; break;
+        case P_EFFECT_5: target_idx = 5; break;
+        default:
+          continue;
+      }
+
+      if ( !action_->data().affected_by_all( eff ) )
+        continue;
+
+      double val = eff.base_value();
+      bool m;  // dummy throwaway
+
+      if ( i <= 5 )
+        parse_spell_effects_mods( val, m, s_data, i, mods... );
+
+      switch ( subtype )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          effect_flat_modifiers.emplace_back( target_idx, val );
+          break;
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+          effect_pct_modifiers.emplace_back( target_idx, val * 0.01 );
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  // return a copy of the effect with modified value
+  spelleffect_data_t modified_effect( size_t idx )
+  {
+    spelleffect_data_t temp = action_->data().effectN( idx );
+
+    for ( auto [ i, v ] : effect_flat_modifiers )
+      if ( i == idx  )
+        temp._base_value += v;
+
+    for ( auto [ i, v ] : effect_pct_modifiers )
+      if ( i == idx  )
+        temp._base_value *= 1.0 + v;
+
+    return temp;
   }
 };

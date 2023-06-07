@@ -10,7 +10,7 @@ head=bough_of_the_autumn_blaze,id=202515,bonus_id=1504/9413,gem_id=192961
 neck=choker_of_stolen_thunder,id=206180,bonus_id=7359/6646,ilevel=447,gem_id=192961/192961/192961
 shoulders=mantle_of_the_autumn_blaze,id=202513,bonus_id=7187,ilevel=450
 back=voice_of_the_silent_star,id=204465,bonus_id=1498
-chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=1504,enchant=waking_stats_3
+chest=chestroots_of_the_autumn_blaze,id=202518,bonus_id=1498,enchant=waking_stats_3
 wrists=lifebound_bindings,id=193419,bonus_id=8780/8793/8797/8960,ilevel=447,gem_id=192961
 hands=handguards_of_the_autumn_blaze,id=202516,bonus_id=7187,ilevel=447
 waist=oblivions_immortal_coil,id=204399,bonus_id=4800/1498,ilevel=450,gem_id=192961

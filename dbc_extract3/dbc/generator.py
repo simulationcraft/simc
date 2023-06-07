@@ -1016,6 +1016,7 @@ class SpellDataGenerator(DataGenerator):
          184559,                    # Spirit Eruption (WoD 6.2 Agi DPS Trinket 3 damage spell)
          184279,                    # Felstorm (WoD 6.2 Agi DPS Trinket 2 damage spell)
          60235,                     # Darkmoon Card: Greatness proc
+         96977, 96978, 96979,       # Restabilizing Matrix buffs
          71556, 71558, 71559, 71560,# Deathbringer's Will procs
          71484, 71485, 71492,
          45428, 45429, 45430,       # Shattered Sun Pendant procs
@@ -1847,6 +1848,7 @@ class SpellDataGenerator(DataGenerator):
           ( 383882, 0 ),                            # Sun King's Blessing
           ( 408763, 0 ),                            # Frost T30 2pc
           ( 408673, 0 ), ( 408674, 0 ),             # Fire T30 4pc
+          ( 414381, 0 ),                            # Concentrated Power AE
         ),
 
         # Warlock:
@@ -2205,8 +2207,11 @@ class SpellDataGenerator(DataGenerator):
           ( 390195, 1 ), # Chaos Theory talent buff
           ( 390145, 1 ), # Inner Demon talent buff
           ( 391374, 1 ), ( 391378, 1 ), ( 393054, 1 ), ( 393055, 1 ), # First Blood Chaos spells
-          ( 393628, 0 ), ( 393629, 0 ), # T29 Set Bonus Spells
-          ( 408754, 0 ), # T30 4pc Seething Potential damage buff
+          ( 393628, 1 ), ( 393629, 0 ), # T29 Set Bonus Spells
+          ( 408754, 1 ), # T30 4pc Seething Potential damage buff
+          ( 228532, 1 ), # Consume Lesser Soul heal
+          ( 328953, 1 ), # Consume Demon Soul heal
+          ( 328951, 1 ), # New Shattered Souls area trigger
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
@@ -2239,7 +2244,7 @@ class SpellDataGenerator(DataGenerator):
           ( 369299, 2 ), # Preservation Essence Burst
           # Augmentation
           ( 392268, 3 ), # Augmentation Essence Burst
-          ( 404908, 3 ), # Fate Mirror Damage
+          ( 404908, 3 ), ( 413786, 3 ), # Fate Mirror Damage/Heal
           ( 409632, 3 ), # Breath of Eons Damage
           ( 360828, 3 ), # Blistering Scales
           ( 410265, 3 ), # Inferno's Blessing

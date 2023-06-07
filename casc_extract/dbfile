@@ -1079,3 +1079,5 @@
 5159897, DBFilesClient\CollectableSourceVendorSparse.db2
 5163410, DBFilesClient\CollectableSourceVendor.db2
 5202058, DBFilesClient\QuestLabel.db2
+5205183, DBFilesClient\CollectableSourceQuest.db2
+5205600, DBFilesClient\CollectableSourceQuestSparse.db2
