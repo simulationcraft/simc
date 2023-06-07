@@ -1147,8 +1147,6 @@ public:
   // Runes
   runes_t _runes;
 
-
-
   death_knight_t( sim_t* sim, util::string_view name, race_e r ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_dnd( nullptr ),
@@ -1788,7 +1786,7 @@ struct death_knight_pet_t : public pet_t
   double owner_composite_spell_haste;
   double owner_composite_melee_crit;
   double owner_composite_spell_crit;
-
+  double owner_attack_power;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
@@ -1797,7 +1795,8 @@ struct death_knight_pet_t : public pet_t
     owner_composite_melee_haste( 0.0 ),
     owner_composite_spell_haste( 0.0 ),
     owner_composite_melee_crit( 0.0 ),
-    owner_composite_spell_crit( 0.0 )
+    owner_composite_spell_crit( 0.0 ),
+    owner_attack_power( 0.0 )
   {
     if ( auto_attack )
     {
@@ -1825,11 +1824,6 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    if ( dk() -> mastery.dreadblade -> ok() )
-    {
-      m *= 1.0 + owner -> composite_mastery_value();
-    }
-
     if( dk() -> specialization()  == DEATH_KNIGHT_UNHOLY && dk() -> buffs.commander_of_the_dead -> up() && affected_by_commander_of_the_dead )
     {
       m *= 1.0 + dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent();
@@ -1840,17 +1834,11 @@ struct death_knight_pet_t : public pet_t
   void arise() override
   {
     pet_t::arise();
-    double ap = 0;
-    // Use owner's default attack power type for the inheritance
-    ap += owner->composite_melee_attack_power_by_type( owner->default_ap_type() ) *
-       owner->composite_attack_power_multiplier() *
-       owner_coeff.ap_from_ap;
-
-    current.stats.attack_power = ap;
-    owner_composite_melee_crit = owner->composite_melee_crit_chance();
-    owner_composite_spell_crit = owner->composite_spell_crit_chance();
-    owner_composite_melee_haste = owner->composite_melee_haste();
-    owner_composite_spell_haste = owner->composite_spell_haste();
+    owner_attack_power = owner->cache.attack_power() * owner_coeff.ap_from_ap;
+    owner_composite_melee_crit = owner->cache.attack_crit_chance();
+    owner_composite_spell_crit = owner->cache.spell_crit_chance();
+    owner_composite_melee_haste = owner->cache.attack_haste();
+    owner_composite_spell_haste = owner->cache.spell_haste();
   }
 
   double pet_crit() const override
@@ -1880,7 +1868,7 @@ struct death_knight_pet_t : public pet_t
 
   double composite_melee_attack_power() const override
   {
-    return player_t::composite_melee_attack_power();
+    return owner_attack_power;
   }
 
   // Standard Death Knight pet actions
@@ -10553,6 +10541,12 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
   
+  
+  if ( mastery.dreadblade -> ok() )
+  {
+    m *= 1.0 + cache.mastery_value();
+  }
+
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
@@ -10807,20 +10801,17 @@ struct stat_event_t : public player_event_t
       pets::death_knight_pet_t* dk_pet = debug_cast< pets::death_knight_pet_t* >( pet );
       sim().print_debug( "{} stat invalidate event", dk_pet->name() );
       sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
-      double ap = 0;
-      // Use owner's default attack power type for the inheritance
-      ap += dk_pet->owner->composite_melee_attack_power_by_type( dk_pet->owner->default_ap_type() ) *
-        dk_pet->owner->composite_attack_power_multiplier() *
-        dk_pet->owner_coeff.ap_from_ap;
-
-      dk_pet->current.stats.attack_power = ap;
+      dk_pet->owner_attack_power = dk_pet->owner->cache.attack_power() * dk_pet->owner_coeff.ap_from_ap;
       sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
 
       // Mastery and Versatility appear to be excluded from the delay due to being a player aura that modifies damage done
-      dk_pet->owner_composite_melee_crit = dk_pet->owner->composite_melee_crit_chance();
-      dk_pet->owner_composite_spell_crit = dk_pet->owner->composite_spell_crit_chance();
-      dk_pet->owner_composite_melee_haste = dk_pet->owner->composite_melee_haste();
-      dk_pet->owner_composite_spell_haste = dk_pet->owner->composite_spell_haste();
+      sim().print_debug( "{} stat invalidate event old crit {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_crit, dk_pet->owner->cache.attack_crit_chance() );
+      dk_pet->owner_composite_melee_crit = dk_pet->owner->cache.attack_crit_chance();
+      dk_pet->owner_composite_spell_crit = dk_pet->owner->cache.spell_crit_chance();
+      sim().print_debug( "{} stat invalidate event new crit {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_crit, dk_pet->owner->cache.attack_crit_chance() );
+      sim().print_debug( "{} stat invalidate event old haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
+      dk_pet->owner_composite_melee_haste = dk_pet->owner->cache.attack_haste();
+      dk_pet->owner_composite_spell_haste = dk_pet->owner->cache.spell_haste();
       sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
     }
 
@@ -10836,7 +10827,7 @@ void death_knight_t::arise()
     buffs.stoneskin_gargoyle -> trigger();
   start_inexorable_assault();
   start_cold_heart();
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 500, 3000 ) ) );
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 1, 5499 ) ) );
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
