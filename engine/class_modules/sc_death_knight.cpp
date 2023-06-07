@@ -1834,7 +1834,7 @@ struct death_knight_pet_t : public pet_t
   void arise() override
   {
     pet_t::arise();
-    owner_attack_power          = owner->cache.total_melee_attack_power() * owner_coeff.ap_from_ap;
+    owner_attack_power          = owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
     owner_composite_melee_crit  = owner->cache.attack_crit_chance();
     owner_composite_spell_crit  = owner->cache.spell_crit_chance();
     owner_composite_melee_haste = owner->cache.attack_haste();
@@ -10809,7 +10809,7 @@ struct stat_event_t : public player_event_t
       pets::death_knight_pet_t* dk_pet = debug_cast< pets::death_knight_pet_t* >( pet );
       sim().print_debug( "{} stat invalidate event", dk_pet->name() );
       sim().print_debug( "{} stat invalidate event old ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
-      dk_pet->owner_attack_power = dk_pet->owner->cache.total_melee_attack_power() * dk_pet->owner_coeff.ap_from_ap;
+      dk_pet->owner_attack_power = dk_pet->owner->cache.total_melee_attack_power() * dk_pet->owner->composite_attack_power_multiplier() * dk_pet->owner_coeff.ap_from_ap;
       sim().print_debug( "{} stat invalidate event new ap {} ", dk_pet->name(), dk_pet->composite_melee_attack_power() );
 
       // Mastery and Versatility appear to be excluded from the delay due to being a player aura that modifies damage done
