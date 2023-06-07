@@ -6,6 +6,8 @@ race=tauren
 role=spell
 position=back
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoVSSLJUSSLRDRJQiEAAAAAgSAikgiog0SSapEoEJBgA
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/obsidian/ruby
 
 # Default consumables
 potion=elemental_potion_of_ultimate_power_3

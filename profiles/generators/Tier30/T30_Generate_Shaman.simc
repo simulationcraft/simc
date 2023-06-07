@@ -5,6 +5,8 @@ role=spell
 spec=elemental
 talents=BYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoVSSLJUSSLRDRJQiEAAAAAgSAikgiog0SSapEoEJBgA
 # https://www.wowhead.com/talent-calc/shaman/elemental/DAQBFUFBFBISKJREIRBDAUAOVVFFQVCoQCIhEQDUUA
+dragonflight.ominous_chromatic_essence_dragonflight=emerald
+dragonflight.ominous_chromatic_essence_allies=azure/bronze/obsidian/ruby
 
 head=,id=202470,bonus_id=8780/7187,gem_id=192985,ilevel=447
 neck=,id=206182,bonus_id=6652/8783/8784/7936/7937/6808/4786/8782/1669,gem_id=192948/192948/192948,ilevel=447
