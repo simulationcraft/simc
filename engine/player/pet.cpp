@@ -426,7 +426,7 @@ double pet_t::composite_spell_power( school_e school ) const
   double sp = 0;
 
   if ( owner_coeff.sp_from_ap > 0.0 )
-    sp += owner -> cache.total_attack_power() * owner_coeff.sp_from_ap;
+    sp += owner -> cache.attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
 
   if ( owner_coeff.sp_from_sp > 0.0 )
     sp += owner -> cache.spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
