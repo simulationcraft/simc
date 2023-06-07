@@ -10823,7 +10823,7 @@ struct stat_event_t : public player_event_t
       sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", dk_pet->name(), dk_pet->owner_composite_melee_haste, dk_pet->owner->cache.attack_haste() );
     }
 
-    make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5000 ), timespan_t::from_millis( 500 ) ) );
+    make_event<stat_event_t>( sim(), this->player(), rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
   }
 };
 
@@ -10835,7 +10835,7 @@ void death_knight_t::arise()
     buffs.stoneskin_gargoyle -> trigger();
   start_inexorable_assault();
   start_cold_heart();
-  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 1, 5499 ) ) );
+  make_event<stat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 1, 5249 ) ) );
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
