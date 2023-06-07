@@ -1834,11 +1834,17 @@ struct death_knight_pet_t : public pet_t
   void arise() override
   {
     pet_t::arise();
+    this -> sim -> print_debug( "{} arise event, updating attack power. previous value={} ", name(), composite_melee_attack_power() );
     owner_attack_power          = owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+    this -> sim -> print_debug( "{} arise event, updating attack power. new value={} ", name(), composite_melee_attack_power() );
+    this -> sim -> print_debug( "{} arise event, updating crit. previous value={} ", name(), pet_crit() );
     owner_composite_melee_crit  = owner->cache.attack_crit_chance();
     owner_composite_spell_crit  = owner->cache.spell_crit_chance();
+    this -> sim -> print_debug( "{} arise event, updating crit. new value={} ", name(), pet_crit() );
+    this -> sim -> print_debug( "{} arise event, updating haste. old value={} ", name(), composite_melee_haste() );
     owner_composite_melee_haste = owner->cache.attack_haste();
     owner_composite_spell_haste = owner->cache.spell_haste();
+    this -> sim -> print_debug( "{} arise event, updating haste. new value={} ", name(), composite_melee_haste() );
   }
 
   double pet_crit() const override
