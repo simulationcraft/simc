@@ -10540,8 +10540,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 double death_knight_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
   double m = player_t::composite_player_pet_damage_multiplier( state, guardian );
-  
-  
+
   if ( mastery.dreadblade -> ok() )
   {
     m *= 1.0 + cache.mastery_value();
