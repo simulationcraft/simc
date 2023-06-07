@@ -4870,14 +4870,14 @@ void evoker_t::bounce_naszuro( player_t* s, timespan_t remains = timespan_t::min
   if ( remains <= 0_s && remains != timespan_t::min() )
     return;
 
-  player_t* p = sim->player_non_sleeping_list[ rng().range( sim->player_non_sleeping_list.size() ) ];
+  player_t* p = sim->player_no_pet_list[ rng().range( sim->player_no_pet_list.size() ) ];
 
   // TODO: Improve target selection (CD Based)
-  if ( sim->player_non_sleeping_list.size() > 1 )
+  if ( sim->player_no_pet_list.size() > 1 )
   {
     while ( p == s )
     {
-      p = sim->player_non_sleeping_list[ rng().range( sim->player_non_sleeping_list.size() ) ];
+      p = sim->player_no_pet_list[ rng().range( sim->player_no_pet_list.size() ) ];
     }
   }
 
