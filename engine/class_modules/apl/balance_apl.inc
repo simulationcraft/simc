@@ -14,7 +14,7 @@ precombat->add_action( "wrath" );
 precombat->add_action( "stellar_flare" );
 precombat->add_action( "starfire,if=!talent.stellar_flare" );
 
-def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>1&talent.starfall" );
+def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>(1+(!talent.aetherial_kindling&!talent.starweaver))&talent.starfall" );
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40" );
 def->add_action( "berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15" );
 def->add_action( "potion,if=!druid.no_cds&(buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<30)" );
@@ -36,7 +36,7 @@ st->add_action( "starsurge,if=buff.primordial_arcanic_pulsar.value>=560&buff.sta
 st->add_action( "celestial_alignment,if=variable.cd_condition_st" );
 st->add_action( "incarnation,if=variable.cd_condition_st" );
 st->add_action( "warrior_of_elune" );
-st->add_action( "variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5" );
+st->add_action( "variable,name=solar_eclipse_st,value=buff.primordial_arcanic_pulsar.value<520&cooldown.ca_inc.remains>5&spell_targets.starfire<3" );
 st->add_action( "variable,name=enter_eclipse,value=eclipse.any_next|variable.solar_eclipse_st&buff.eclipse_solar.up&(buff.eclipse_solar.remains<action.starfire.cast_time)|!variable.solar_eclipse_st&buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)" );
 st->add_action( "starfire,if=variable.enter_eclipse&variable.solar_eclipse_st" );
 st->add_action( "wrath,if=variable.enter_eclipse" );
