@@ -83,7 +83,7 @@ public:
   double composite_spell_hit() const override
   { return hit_exp() * 2.0; }
 
-  double pet_crit() const;
+  virtual double pet_crit() const;
 
   double composite_melee_crit_chance() const override
   { return pet_crit(); }
