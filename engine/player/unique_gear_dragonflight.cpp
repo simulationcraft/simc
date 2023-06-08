@@ -4832,7 +4832,7 @@ void firecallers_focus( special_effect_t& e )
                                                         true ) ),
         duration( timespan_t::from_millis( e.trigger()->effectN( 1 ).trigger() -> effectN( 1 ).misc_value1() ) )
     {
-      damage->base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+      damage->base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item ) * 2; // Damage from this trinket appears to be doubled for some reason, likely a bug. 
 
       base_dd_min = base_dd_max = 0; // Disable damage on missile, auto parsing passes through damage from the driver.
       add_child( damage );
