@@ -5281,15 +5281,19 @@ void player_t::invalidate_cache( cache_e c )
   {
     case CACHE_STRENGTH:
       if ( current.attack_power_per_strength > 0 )
-        invalidate_cache( CACHE_ATTACK_POWER ),
+      {
+        invalidate_cache( CACHE_ATTACK_POWER );
         invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
+      }
       if ( current.parry_per_strength > 0 )
         invalidate_cache( CACHE_PARRY );
       break;
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )
-        invalidate_cache( CACHE_ATTACK_POWER ),
+      {
+        invalidate_cache( CACHE_ATTACK_POWER );
         invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
+      }
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
       if ( current.attack_crit_per_agility > 0 )
@@ -5303,8 +5307,10 @@ void player_t::invalidate_cache( cache_e c )
       break;
     case CACHE_SPELL_POWER:
       if ( current.attack_power_per_spell_power > 0 )
-        invalidate_cache( CACHE_ATTACK_POWER ),
+      {
+        invalidate_cache( CACHE_ATTACK_POWER );
         invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
+      }
       break;
     case CACHE_ATTACK_POWER:
       invalidate_cache( CACHE_TOTAL_MELEE_ATTACK_POWER );
