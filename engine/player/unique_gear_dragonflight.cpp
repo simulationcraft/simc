@@ -4830,27 +4830,26 @@ void firecallers_focus( special_effect_t& e )
         damage( create_proc_action<generic_aoe_proc_t>( "firecallers_explosion", e, "firecallers_explosion",
                                                         e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).trigger(),
                                                         true ) ),
-        duration( timespan_t::from_millis( e.trigger()->effectN( 1 ).trigger() -> effectN( 1 ).misc_value1() ) )
+        duration( timespan_t::from_millis( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).misc_value1() ) )
     {
-      damage->base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item ) * 2; // Damage from this trinket appears to be doubled for some reason, likely a bug. 
+      damage->base_dd_min = base_dd_max =
+          e.driver()->effectN( 1 ).average( e.item ) *
+          2;  // Damage from this trinket appears to be doubled for some reason, likely a bug.
 
-      base_dd_min = base_dd_max = 0; // Disable damage on missile, auto parsing passes through damage from the driver.
+      base_dd_min = base_dd_max = 0;  // Disable damage on missile, auto parsing passes through damage from the driver.
       add_child( damage );
     }
 
     void impact( action_state_t* a )
     {
       generic_proc_t::impact( a );
-      make_event<ground_aoe_event_t>( *sim, player,
-                                      ground_aoe_params_t()
-                                          .target( a->target )
-                                          .pulse_time( duration )
-                                          .duration( duration )
-                                          .action( damage ) );
+      make_event<ground_aoe_event_t>(
+          *sim, player,
+          ground_aoe_params_t().target( a->target ).pulse_time( duration ).duration( duration ).action( damage ) );
     }
   };
 
-  auto missile = create_proc_action<firecallers_focus_missile_t>( "firecallers_focus", e );
+  auto missile     = create_proc_action<firecallers_focus_missile_t>( "firecallers_focus", e );
   e.execute_action = missile;
   new dbc_proc_callback_t( e.player, e );
 }
