@@ -12380,7 +12380,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
       cooldown.rage_from_melees->start( cooldown.rage_from_melees->duration );
     }
 
-    if ( buff.moonkin_form->check() )
+    if ( buff.moonkin_form->check() && s->result_type == result_amount_type::DMG_DIRECT )
       buff.owlkin_frenzy->trigger();
 
     buff.cenarion_ward->expire();
