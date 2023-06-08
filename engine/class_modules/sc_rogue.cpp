@@ -5444,6 +5444,9 @@ struct shuriken_toss_t : public rogue_attack_t
   {
     ap_type = attack_power_type::WEAPON_BOTH;
   }
+
+  bool procs_seal_fate() const override
+  { return false; }
 };
 
 // Sinister Strike ==========================================================
@@ -5872,6 +5875,9 @@ struct poisoned_knife_t : public rogue_attack_t
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
+
+  bool procs_seal_fate() const override
+  { return false; }
 };
 
 // Thistle Tea ==============================================================
@@ -8494,17 +8500,23 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
       return expr_t::create_constant( name_str, 0 );
 
     return make_fn_expr( name_str, [this]() {
+      timespan_t remains;
       if ( buffs.improved_garrote_aura->check() )
       {
         // Shadow Dance has no lingering effect
         if ( buffs.shadow_dance->check() )
-          return buffs.shadow_dance->remains();
-
-        timespan_t nominal_duration = buffs.improved_garrote->base_buff_duration;
-        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
-        return gcd_remains + nominal_duration;
+        {
+          remains = buffs.shadow_dance->remains();
+        }
+        else
+        {
+          timespan_t nominal_duration = buffs.improved_garrote->base_buff_duration;
+          timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim->current_time() ).total_seconds(), 0.0 ) );
+          remains = gcd_remains + nominal_duration;
+        }
       }
-      return buffs.improved_garrote->remains();
+      remains = std::max( { remains, buffs.improved_garrote->remains(), buffs.sepsis->remains() } );
+      return remains;
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
