@@ -4837,7 +4837,8 @@ void firecallers_focus( special_effect_t& e )
           2;  // Damage from this trinket appears to be doubled for some reason, likely a bug.
 
       base_dd_min = base_dd_max = 0;  // Disable damage on missile, auto parsing passes through damage from the driver.
-      add_child( damage );
+      damage->dual = true;
+      stats = damage->stats;
     }
 
     void impact( action_state_t* a )
