@@ -4808,10 +4808,51 @@ void stirring_twilight_ember( special_effect_t& effect )
 
 // Heatbound Medallion
 // 407512 Driver/Damage
-void heatbound_medallion(special_effect_t& e)
+void heatbound_medallion( special_effect_t& e )
 {
   auto damage = create_proc_action<generic_aoe_proc_t>( "heatbound_release", e, "heatbound_release", e.driver(), true );
   e.execute_action = damage;
+}
+
+// Firecaller's Focus
+// 407523 driver & damage value
+// 407524 travel time
+// 407536 delay before damage
+// 407537 damage
+void firecallers_focus( special_effect_t& e )
+{
+  struct firecallers_focus_missile_t : public generic_proc_t
+  {
+    action_t* damage;
+    timespan_t duration;
+    firecallers_focus_missile_t( const special_effect_t& e )
+      : generic_proc_t( e, "firecallers_focus", e.trigger() ),
+        damage( create_proc_action<generic_aoe_proc_t>( "firecallers_explosion", e, "firecallers_explosion",
+                                                        e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).trigger(),
+                                                        true ) ),
+        duration( timespan_t::from_millis( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).misc_value1() ) )
+    {
+      damage->base_dd_min = base_dd_max =
+          e.driver()->effectN( 1 ).average( e.item ) *
+          2;  // Damage from this trinket appears to be doubled for some reason, likely a bug.
+
+      base_dd_min = base_dd_max = 0;  // Disable damage on missile, auto parsing passes through damage from the driver.
+      damage->dual = true;
+      stats = damage->stats;
+    }
+
+    void impact( action_state_t* a ) override
+    {
+      generic_proc_t::impact( a );
+      make_event<ground_aoe_event_t>(
+          *sim, player,
+          ground_aoe_params_t().target( a->target ).pulse_time( duration ).duration( duration ).action( damage ) );
+    }
+  };
+
+  auto missile     = create_proc_action<firecallers_focus_missile_t>( "firecallers_focus", e );
+  e.execute_action = missile;
+  new dbc_proc_callback_t( e.player, e );
 }
 
 // Weapons
@@ -6988,6 +7029,7 @@ void register_special_effects()
   register_special_effect( 408641, items::stirring_twilight_ember );
   register_special_effect( 407512, items::heatbound_medallion );
   register_special_effect( 408625, items::fractured_crystalspine_quill );
+  register_special_effect( 407523, items::firecallers_focus );
 
   // Weapons
   register_special_effect( 396442, items::bronzed_grip_wrappings );             // bronzed grip wrappings embellishment
