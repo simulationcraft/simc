@@ -4841,7 +4841,7 @@ void firecallers_focus( special_effect_t& e )
       stats = damage->stats;
     }
 
-    void impact( action_state_t* a )
+    void impact( action_state_t* a ) override
     {
       generic_proc_t::impact( a );
       make_event<ground_aoe_event_t>(
