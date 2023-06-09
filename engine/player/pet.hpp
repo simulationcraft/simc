@@ -37,7 +37,8 @@ struct pet_t : public player_t
     double sp_from_sp = 0.0;
     // current pet stats stored in these doubles, and updated on the heartbeat event
     // testing as of 6-6-2023 shows that Mastery, and Versatility update instantly, and are ommited due to that
-    double attack_power = 0.0;
+    double attack_power_ap_from_ap = 0.0;
+    double attack_power_sp_from_ap = 0.0;
     double spell_power_sp_from_sp = 0.0;
     double spell_power_ap_from_sp = 0.0;
     double composite_melee_haste = 0.0;

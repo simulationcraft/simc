@@ -6388,7 +6388,7 @@ struct heartbeat_event_t : public player_event_t
       {
         sim().print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
                            this_pet->composite_melee_attack_power() );
-        this_pet->owner_coeff.attack_power = this_pet->owner->cache.total_melee_attack_power() *
+        this_pet->owner_coeff.attack_power_ap_from_ap = this_pet->owner->cache.total_melee_attack_power() *
                                              this_pet->owner->composite_attack_power_multiplier() *
                                              this_pet->owner_coeff.ap_from_ap;
         sim().print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
@@ -6410,7 +6410,7 @@ struct heartbeat_event_t : public player_event_t
       {
         sim().print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
                            this_pet->composite_spell_power( SCHOOL_MAX ) );
-        this_pet->owner_coeff.attack_power = this_pet->owner->cache.attack_power() *
+        this_pet->owner_coeff.attack_power_sp_from_ap = this_pet->owner->cache.attack_power() *
                                              this_pet->owner->composite_attack_power_multiplier() *
                                              this_pet->owner_coeff.sp_from_ap;
         sim().print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
