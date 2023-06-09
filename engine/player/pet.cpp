@@ -81,6 +81,69 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
   // do scale factor simulations with default settings.
   if ( sim -> statistics_level < 2 )
     collected_data.dps.change_mode( true );
+
+  sim->register_heartbeat_event_callback( [ owner, sim ]( sim_t* ) {
+    for ( auto pet : owner->active_pets )
+    {
+      pet_t* this_pet = debug_cast<pet_t*>( pet );
+      if ( this_pet->owner_coeff.ap_from_ap > 0 )
+      {
+        sim->print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+        this_pet->owner_coeff.attack_power_ap_from_ap = this_pet->owner->cache.total_melee_attack_power() *
+                                                        this_pet->owner->composite_attack_power_multiplier() *
+                                                        this_pet->owner_coeff.ap_from_ap;
+        sim->print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+      }
+
+      if ( this_pet->owner_coeff.ap_from_sp > 0 )
+      {
+        sim->print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+        this_pet->owner_coeff.spell_power_ap_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
+                                                       this_pet->owner->composite_spell_power_multiplier() *
+                                                       this_pet->owner_coeff.ap_from_sp;
+        sim->print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+      }
+
+      if ( this_pet->owner_coeff.sp_from_ap > 0 )
+      {
+        sim->print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
+        this_pet->owner_coeff.attack_power_sp_from_ap = this_pet->owner->cache.attack_power() *
+                                                        this_pet->owner->composite_attack_power_multiplier() *
+                                                        this_pet->owner_coeff.sp_from_ap;
+        sim->print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
+      }
+
+      if ( this_pet->owner_coeff.sp_from_sp > 0 )
+      {
+        sim->print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
+        this_pet->owner_coeff.spell_power_sp_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
+                                                       this_pet->owner->composite_spell_power_multiplier() *
+                                                       this_pet->owner_coeff.sp_from_sp;
+        sim->print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
+      }
+
+      sim->print_debug( "{} stat invalidate event old crit {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_crit, this_pet->owner->cache.attack_crit_chance() );
+      this_pet->owner_coeff.composite_melee_crit = this_pet->owner->cache.attack_crit_chance();
+      this_pet->owner_coeff.composite_spell_crit = this_pet->owner->cache.spell_crit_chance();
+      sim->print_debug( "{} stat invalidate event new crit {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_crit, this_pet->owner->cache.attack_crit_chance() );
+      sim->print_debug( "{} stat invalidate event old haste {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_haste, this_pet->owner->cache.attack_haste() );
+      this_pet->owner_coeff.composite_melee_haste = this_pet->owner->cache.attack_haste();
+      this_pet->owner_coeff.composite_spell_haste = this_pet->owner->cache.spell_haste();
+      sim->print_debug( "{} stat invalidate event new haste {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_haste, this_pet->owner->cache.attack_haste() );
+    }
+  } );
 }
 
 double pet_t::composite_attribute( attribute_e attr ) const
@@ -146,9 +209,9 @@ void pet_t::init()
 {
   player_t::init();
 
-  if (resource_regeneration == regen_type::DYNAMIC && owner ->resource_regeneration == regen_type::DISABLED )
+  if ( resource_regeneration == regen_type::DYNAMIC && owner->resource_regeneration == regen_type::DISABLED )
   {
-    sim -> error( "{} has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", *this );
+    sim->error( "{} has dynamic regen, while owner has disabled regen. Disabling pet regeneration also.", *this );
     resource_regeneration = regen_type::DISABLED;
   }
 }
