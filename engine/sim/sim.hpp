@@ -148,6 +148,7 @@ struct sim_t : private sc_thread_t
   bool        allow_experimental_specializations;
   int         progressbar_type;
   int         armory_retries;
+  bool        pet_stat_delay;
 
   // Target options
   double      enemy_death_pct;

@@ -1494,6 +1494,7 @@ sim_t::sim_t() :
   requires_regen_event( false ),
   single_actor_batch( false ),
   allow_experimental_specializations( false ),
+  pet_stat_delay( true ),
   progressbar_type( 0 ),
   armory_retries( 3 ),
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
@@ -3522,6 +3523,7 @@ void sim_t::create_options()
   add_option( opt_bool( "single_actor_batch", single_actor_batch ) );
   add_option( opt_bool( "progressbar_type", progressbar_type ) );
   add_option( opt_bool( "allow_experimental_specializations", allow_experimental_specializations ) );
+  add_option( opt_bool( "pet_stat_delay", pet_stat_delay ) );
 
   // Raid buff overrides
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
