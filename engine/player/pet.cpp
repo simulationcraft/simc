@@ -90,7 +90,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
       {
         sim->print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
                            this_pet->composite_melee_attack_power() );
-        this_pet->owner_coeff.attack_power_ap_from_ap = this_pet->owner->cache.total_melee_attack_power() *
+        this_pet->owner_coeff.attack_power_from_ap = this_pet->owner->cache.total_melee_attack_power() *
                                                         this_pet->owner->composite_attack_power_multiplier() *
                                                         this_pet->owner_coeff.ap_from_ap;
         sim->print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
@@ -101,7 +101,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
       {
         sim->print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
                            this_pet->composite_melee_attack_power() );
-        this_pet->owner_coeff.spell_power_ap_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
+        this_pet->owner_coeff.attack_power_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
                                                        this_pet->owner->composite_spell_power_multiplier() *
                                                        this_pet->owner_coeff.ap_from_sp;
         sim->print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
@@ -112,7 +112,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
       {
         sim->print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
                            this_pet->composite_spell_power( SCHOOL_MAX ) );
-        this_pet->owner_coeff.attack_power_sp_from_ap = this_pet->owner->cache.attack_power() *
+        this_pet->owner_coeff.spell_power_from_ap = this_pet->owner->cache.attack_power() *
                                                         this_pet->owner->composite_attack_power_multiplier() *
                                                         this_pet->owner_coeff.sp_from_ap;
         sim->print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
@@ -123,7 +123,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
       {
         sim->print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
                            this_pet->composite_spell_power( SCHOOL_MAX ) );
-        this_pet->owner_coeff.spell_power_sp_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
+        this_pet->owner_coeff.spell_power_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
                                                        this_pet->owner->composite_spell_power_multiplier() *
                                                        this_pet->owner_coeff.sp_from_sp;
         sim->print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
@@ -273,7 +273,7 @@ void pet_t::summon( timespan_t summon_duration )
   {
     sim -> print_debug( "{} stat invalidate event old ap {} ", name(),
                        composite_melee_attack_power() );
-    owner_coeff.attack_power_ap_from_ap = owner->cache.total_melee_attack_power() *
+    owner_coeff.attack_power_from_ap = owner->cache.total_melee_attack_power() *
                                          owner->composite_attack_power_multiplier() *
                                          owner_coeff.ap_from_ap;
     sim -> print_debug( "{} stat invalidate event new ap {} ", name(),
@@ -284,7 +284,7 @@ void pet_t::summon( timespan_t summon_duration )
   {
     sim -> print_debug( "{} stat invalidate event old ap {} ", name(),
                        composite_melee_attack_power() );
-    owner_coeff.spell_power_sp_from_sp = owner->cache.spell_power( SCHOOL_MAX ) *
+    owner_coeff.attack_power_from_sp = owner->cache.spell_power( SCHOOL_MAX ) *
                                         owner->composite_spell_power_multiplier() *
                                         owner_coeff.ap_from_sp;
     sim -> print_debug( "{} stat invalidate event new ap {} ", name(),
@@ -295,7 +295,7 @@ void pet_t::summon( timespan_t summon_duration )
   {
     sim -> print_debug( "{} stat invalidate event old sp {} ", name(),
                        composite_spell_power( SCHOOL_MAX ) );
-    owner_coeff.attack_power_sp_from_ap = owner->cache.attack_power() *
+    owner_coeff.spell_power_from_ap = owner->cache.attack_power() *
                                          owner->composite_attack_power_multiplier() *
                                          owner_coeff.sp_from_ap;
     sim -> print_debug( "{} stat invalidate event new sp {} ", name(),
@@ -306,7 +306,7 @@ void pet_t::summon( timespan_t summon_duration )
   {
     sim -> print_debug( "{} stat invalidate event old sp {} ", name(),
                        composite_spell_power( SCHOOL_MAX ) );
-    owner_coeff.spell_power_sp_from_sp = owner->cache.spell_power( SCHOOL_MAX ) *
+    owner_coeff.spell_power_from_sp = owner->cache.spell_power( SCHOOL_MAX ) *
                                         owner->composite_spell_power_multiplier() *
                                         owner_coeff.sp_from_sp;
     sim -> print_debug( "{} stat invalidate event new sp {} ", name(),
@@ -530,10 +530,10 @@ double pet_t::composite_melee_attack_power() const
   double ap = 0;
 
   if ( owner_coeff.ap_from_ap > 0.0 )
-    ap += owner_coeff.attack_power_ap_from_ap;
+    ap += owner_coeff.attack_power_from_ap;
 
   if ( owner_coeff.ap_from_sp > 0.0 )
-    ap += owner_coeff.spell_power_ap_from_sp;
+    ap += owner_coeff.attack_power_from_sp;
 
   return ap;
 }
@@ -543,11 +543,11 @@ double pet_t::composite_spell_power( school_e school ) const
   double sp = 0;
 
   if ( owner_coeff.sp_from_ap > 0.0 )
-    sp += owner_coeff.attack_power_sp_from_ap;
+    sp += owner_coeff.spell_power_from_ap;
 
   if ( owner_coeff.sp_from_sp > 0.0 )
   {
-    sp += owner_coeff.spell_power_sp_from_sp;
+    sp += owner_coeff.spell_power_from_sp;
   }
 
   return sp;
