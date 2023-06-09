@@ -1249,9 +1249,8 @@ struct heartbeat_event_t : public event_t
   }
   void execute() override
   {
-    sim_t& sim = this -> sim();
-    sim.heartbeat_event_callback();
-    make_event<heartbeat_event_t>( sim, sim,
+    sim().heartbeat_event_callback();
+    make_event<heartbeat_event_t>( sim(), sim(),
                                    rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
   }
 };

@@ -12665,9 +12665,6 @@ void player_t::create_options()
       return true;
     } ) );
 
-  // Player Opts
-  add_option( opt_bool( "server_heartbeat_enable", player_opts.server_heartbeat_enable ) );
-
   // Invoke External Buffs
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );
 

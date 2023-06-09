@@ -742,11 +742,6 @@ struct player_t : public actor_t
     bool is_default() { return current_value == default_value; }
   };
 
-  struct player_opt_t
-  {
-    player_option_t<bool> server_heartbeat_enable = true;
-  } player_opts;
-
   struct shadowlands_opt_t
   {
     /// Type stat gained from So'leah's Secret Technique
