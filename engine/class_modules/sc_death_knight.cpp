@@ -1780,28 +1780,24 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn, affected_by_commander_of_the_dead;
   timespan_t precombat_spawn_adjust;
-  // Mastery and Vers appear to update immediately, likely due to being an all damage mod aura on the player
-  // last tested 6-6-2023
-  double owner_composite_melee_haste;
-  double owner_composite_spell_haste;
-  double owner_composite_melee_crit;
-  double owner_composite_spell_crit;
-  double owner_attack_power;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
-    affected_by_commander_of_the_dead( false ),
-    owner_composite_melee_haste( 0.0 ),
-    owner_composite_spell_haste( 0.0 ),
-    owner_composite_melee_crit( 0.0 ),
-    owner_composite_spell_crit( 0.0 ),
-    owner_attack_power( 0.0 )
+    affected_by_commander_of_the_dead( false )
   {
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
     }
+  }
+
+  double composite_melee_speed() const override
+  {
+    if ( sim->pet_stat_delay )
+      return current_pet_stats.composite_melee_haste;
+    else
+      return owner->cache.attack_haste();
   }
 
   death_knight_t* dk() const
