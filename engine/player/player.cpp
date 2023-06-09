@@ -6384,7 +6384,6 @@ struct heartbeat_event_t : public player_event_t
     for ( auto pet : p()->active_pets )
     {
       pet_t* this_pet = debug_cast<pet_t*>( pet );
-      school_e school;
       if ( this_pet->owner_coeff.ap_from_ap > 0 )
       {
         sim().print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
@@ -6400,7 +6399,7 @@ struct heartbeat_event_t : public player_event_t
       {
         sim().print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
                            this_pet->composite_melee_attack_power() );
-        this_pet->owner_coeff.spell_power = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
+        this_pet->owner_coeff.spell_power_ap_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
                                             this_pet->owner->composite_spell_power_multiplier() *
                                             this_pet->owner_coeff.ap_from_sp;
         sim().print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
@@ -6410,23 +6409,23 @@ struct heartbeat_event_t : public player_event_t
       if ( this_pet->owner_coeff.sp_from_ap > 0 )
       {
         sim().print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
-                           this_pet->composite_spell_power( school ) );
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
         this_pet->owner_coeff.attack_power = this_pet->owner->cache.attack_power() *
                                              this_pet->owner->composite_attack_power_multiplier() *
                                              this_pet->owner_coeff.sp_from_ap;
         sim().print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
-                           this_pet->composite_spell_power( school ) );
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
       }
 
       if ( this_pet->owner_coeff.sp_from_sp > 0 )
       {
         sim().print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
-                           this_pet->composite_spell_power( school) );
-        this_pet->owner_coeff.spell_power = this_pet->owner->cache.spell_power( school ) *
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
+        this_pet->owner_coeff.spell_power_sp_from_sp = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
                                             this_pet->owner->composite_spell_power_multiplier() *
                                             this_pet->owner_coeff.sp_from_sp;
         sim().print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
-                           this_pet->composite_spell_power( school ) );
+                           this_pet->composite_spell_power( SCHOOL_MAX ) );
       }
 
       sim().print_debug( "{} stat invalidate event old crit {} (owner: {})", this_pet->name(),

@@ -38,7 +38,8 @@ struct pet_t : public player_t
     // current pet stats stored in these doubles, and updated on the heartbeat event
     // testing as of 6-6-2023 shows that Mastery, and Versatility update instantly, and are ommited due to that
     double attack_power = 0.0;
-    double spell_power = 0.0;
+    double spell_power_sp_from_sp = 0.0;
+    double spell_power_ap_from_sp = 0.0;
     double composite_melee_haste = 0.0;
     double composite_spell_haste = 0.0;
     double composite_melee_crit = 0.0;
@@ -60,7 +61,7 @@ public:
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
   void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* ) override;
 
-  virtual void summon( timespan_t duration = timespan_t::zero(), school_e school );
+  virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
   // Adjust pet remaining duration. New duration of <= 0 dismisses pet. No-op on
   // persistent pets.
