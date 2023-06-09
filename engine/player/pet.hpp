@@ -74,6 +74,8 @@ public:
   // persistent pets.
   virtual void adjust_duration( timespan_t adjustment );
 
+  void update_stats();
+
   const char* name() const override { return full_name_str.c_str(); }
   const player_t* get_owner_or_self() const override
   { return owner; }

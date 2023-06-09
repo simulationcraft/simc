@@ -209,56 +209,61 @@ void pet_t::summon( timespan_t summon_duration )
 
   if ( sim->pet_stat_delay )
   {
-    if ( owner_coeff.ap_from_ap > 0 )
-    {
-      sim->print_debug( "{} stat invalidate event old ap {} ", name(), composite_melee_attack_power() );
-      current_pet_stats.attack_power_from_ap =
-          owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
-      sim->print_debug( "{} stat invalidate event new ap {} ", name(), composite_melee_attack_power() );
-    }
-
-    if ( owner_coeff.ap_from_sp > 0 )
-    {
-      sim->print_debug( "{} stat invalidate event old ap {} ", name(), composite_melee_attack_power() );
-      current_pet_stats.attack_power_from_sp =
-          owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
-      sim->print_debug( "{} stat invalidate event new ap {} ", name(), composite_melee_attack_power() );
-    }
-
-    if ( owner_coeff.sp_from_ap > 0 )
-    {
-      sim->print_debug( "{} stat invalidate event old sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
-      current_pet_stats.spell_power_from_ap =
-          owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
-      sim->print_debug( "{} stat invalidate event new sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
-    }
-
-    if ( owner_coeff.sp_from_sp > 0 )
-    {
-      sim->print_debug( "{} stat invalidate event old sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
-      current_pet_stats.spell_power_from_sp =
-          owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
-      sim->print_debug( "{} stat invalidate event new sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
-    }
-
-    sim->print_debug( "{} stat invalidate event old crit {} (owner: {})", name(),
-                      current_pet_stats.composite_melee_crit, owner->cache.attack_crit_chance() );
-    current_pet_stats.composite_melee_crit = owner->cache.attack_crit_chance();
-    current_pet_stats.composite_spell_crit = owner->cache.spell_crit_chance();
-    sim->print_debug( "{} stat invalidate event new crit {} (owner: {})", name(),
-                      current_pet_stats.composite_melee_crit, owner->cache.attack_crit_chance() );
-    sim->print_debug( "{} stat invalidate event old haste {} (owner: {})", name(),
-                      current_pet_stats.composite_melee_haste, owner->cache.attack_haste() );
-    current_pet_stats.composite_melee_haste = owner->cache.attack_haste();
-    current_pet_stats.composite_spell_haste = owner->cache.spell_haste();
-    sim->print_debug( "{} stat invalidate event new haste {} (owner: {})", name(),
-                      current_pet_stats.composite_melee_haste, owner->cache.attack_haste() );
-
-    current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
-    current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
+    update_stats();
   }
 
   owner->trigger_ready();
+}
+
+void pet_t::update_stats()
+{
+  if ( owner_coeff.ap_from_ap > 0 )
+  {
+    sim->print_debug( "{} stat invalidate event old ap {} ", name(), composite_melee_attack_power() );
+    current_pet_stats.attack_power_from_ap =
+        owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+    sim->print_debug( "{} stat invalidate event new ap {} ", name(), composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.ap_from_sp > 0 )
+  {
+    sim->print_debug( "{} stat invalidate event old ap {} ", name(), composite_melee_attack_power() );
+    current_pet_stats.attack_power_from_sp =
+        owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+    sim->print_debug( "{} stat invalidate event new ap {} ", name(), composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.sp_from_ap > 0 )
+  {
+    sim->print_debug( "{} stat invalidate event old sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
+    current_pet_stats.spell_power_from_ap =
+        owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+    sim->print_debug( "{} stat invalidate event new sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
+  }
+
+  if ( owner_coeff.sp_from_sp > 0 )
+  {
+    sim->print_debug( "{} stat invalidate event old sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
+    current_pet_stats.spell_power_from_sp =
+        owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+    sim->print_debug( "{} stat invalidate event new sp {} ", name(), composite_spell_power( SCHOOL_MAX ) );
+  }
+
+  sim->print_debug( "{} stat invalidate event old crit {} (owner: {})", name(), current_pet_stats.composite_melee_crit,
+                    owner->cache.attack_crit_chance() );
+  current_pet_stats.composite_melee_crit = owner->cache.attack_crit_chance();
+  current_pet_stats.composite_spell_crit = owner->cache.spell_crit_chance();
+  sim->print_debug( "{} stat invalidate event new crit {} (owner: {})", name(), current_pet_stats.composite_melee_crit,
+                    owner->cache.attack_crit_chance() );
+  sim->print_debug( "{} stat invalidate event old haste {} (owner: {})", name(),
+                    current_pet_stats.composite_melee_haste, owner->cache.attack_haste() );
+  current_pet_stats.composite_melee_haste = owner->cache.attack_haste();
+  current_pet_stats.composite_spell_haste = owner->cache.spell_haste();
+  sim->print_debug( "{} stat invalidate event new haste {} (owner: {})", name(),
+                    current_pet_stats.composite_melee_haste, owner->cache.attack_haste() );
+
+  current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
+  current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
 }
 
 void pet_t::dismiss( bool expired )
