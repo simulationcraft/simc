@@ -35,6 +35,14 @@ struct pet_t : public player_t
     double ap_from_sp = 0.0;
     double sp_from_ap = 0.0;
     double sp_from_sp = 0.0;
+    // current pet stats stored in these doubles, and updated on the heartbeat event
+    // testing as of 6-6-2023 shows that Mastery, and Versatility update instantly, and are ommited due to that
+    double attack_power = 0.0;
+    double spell_power = 0.0;
+    double composite_melee_haste = 0.0;
+    double composite_spell_haste = 0.0;
+    double composite_melee_crit = 0.0;
+    double composite_spell_crit = 0.0;
   } owner_coeff;
 
 public:
@@ -52,7 +60,7 @@ public:
   void assess_damage( school_e, result_amount_type, action_state_t* s ) override;
   void trigger_callbacks( proc_types, proc_types2, action_t*, action_state_t* ) override;
 
-  virtual void summon( timespan_t duration = timespan_t::zero() );
+  virtual void summon( timespan_t duration = timespan_t::zero(), school_e school );
   virtual void dismiss( bool expired = false );
   // Adjust pet remaining duration. New duration of <= 0 dismisses pet. No-op on
   // persistent pets.
@@ -91,16 +99,16 @@ public:
   { return pet_crit(); }
 
   double composite_melee_speed() const override
-  { return owner -> cache.attack_speed(); }
+  { return owner_coeff.composite_melee_haste; }
 
   double composite_melee_haste() const override
-  { return owner -> cache.attack_haste(); }
+  { return owner_coeff.composite_melee_haste; }
 
   double composite_spell_haste() const override
-  { return owner -> cache.spell_haste(); }
+  { return owner_coeff.composite_spell_haste; }
 
   double composite_spell_speed() const override
-  { return owner -> cache.spell_speed(); }
+  { return owner_coeff.composite_spell_haste; }
 
   double composite_bonus_armor() const override
   { return owner -> cache.bonus_armor(); }

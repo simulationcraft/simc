@@ -6374,6 +6374,80 @@ void player_t::schedule_ready( timespan_t delta_time, bool waiting )
   }
 }
 
+struct heartbeat_event_t : public player_event_t
+{
+  heartbeat_event_t( player_t* p, timespan_t interval ) : player_event_t( *p, interval )
+  {
+  }
+  void execute() override
+  {
+    for ( auto pet : p()->active_pets )
+    {
+      pet_t* this_pet = debug_cast<pet_t*>( pet );
+      school_e school;
+      if ( this_pet->owner_coeff.ap_from_ap > 0 )
+      {
+        sim().print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+        this_pet->owner_coeff.attack_power = this_pet->owner->cache.total_melee_attack_power() *
+                                             this_pet->owner->composite_attack_power_multiplier() *
+                                             this_pet->owner_coeff.ap_from_ap;
+        sim().print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+      }
+
+      if ( this_pet->owner_coeff.ap_from_sp > 0 )
+      {
+        sim().print_debug( "{} stat invalidate event old ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+        this_pet->owner_coeff.spell_power = this_pet->owner->cache.spell_power( SCHOOL_MAX ) *
+                                            this_pet->owner->composite_spell_power_multiplier() *
+                                            this_pet->owner_coeff.ap_from_sp;
+        sim().print_debug( "{} stat invalidate event new ap {} ", this_pet->name(),
+                           this_pet->composite_melee_attack_power() );
+      }
+
+      if ( this_pet->owner_coeff.sp_from_ap > 0 )
+      {
+        sim().print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( school ) );
+        this_pet->owner_coeff.attack_power = this_pet->owner->cache.attack_power() *
+                                             this_pet->owner->composite_attack_power_multiplier() *
+                                             this_pet->owner_coeff.sp_from_ap;
+        sim().print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( school ) );
+      }
+
+      if ( this_pet->owner_coeff.sp_from_sp > 0 )
+      {
+        sim().print_debug( "{} stat invalidate event old sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( school) );
+        this_pet->owner_coeff.spell_power = this_pet->owner->cache.spell_power( school ) *
+                                            this_pet->owner->composite_spell_power_multiplier() *
+                                            this_pet->owner_coeff.sp_from_sp;
+        sim().print_debug( "{} stat invalidate event new sp {} ", this_pet->name(),
+                           this_pet->composite_spell_power( school ) );
+      }
+
+      sim().print_debug( "{} stat invalidate event old crit {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_crit, this_pet->owner->cache.attack_crit_chance() );
+      this_pet->owner_coeff.composite_melee_crit = this_pet->owner->cache.attack_crit_chance();
+      this_pet->owner_coeff.composite_spell_crit = this_pet->owner->cache.spell_crit_chance();
+      sim().print_debug( "{} stat invalidate event new crit {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_crit, this_pet->owner->cache.attack_crit_chance() );
+      sim().print_debug( "{} stat invalidate event old haste {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_haste, this_pet->owner->cache.attack_haste() );
+      this_pet->owner_coeff.composite_melee_haste = this_pet->owner->cache.attack_haste();
+      this_pet->owner_coeff.composite_spell_haste = this_pet->owner->cache.spell_haste();
+      sim().print_debug( "{} stat invalidate event new haste {} (owner: {})", this_pet->name(),
+                         this_pet->owner_coeff.composite_melee_haste, this_pet->owner->cache.attack_haste() );
+    }
+
+    make_event<heartbeat_event_t>( sim(), this->player(),
+                                   rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
+  }
+};
+
 /**
  * Player arises from the dead.
  */
@@ -6473,6 +6547,12 @@ void player_t::arise()
     // if that actor is active.
     if ( this == cb.first || cb.first->is_active() )
       cb.second();
+  }
+
+  if( player_opts.server_heartbeat_enable )
+  {
+    // Create the 5.25s average heartbeat event used for pet stat updates, and other aura update events.
+    make_event<heartbeat_event_t>( *sim, debug_cast< player_t* >( this ), timespan_t::from_millis( rng().range( 0, 5249 ) ) );
   }
 }
 
@@ -12664,6 +12744,9 @@ void player_t::create_options()
       precombat_state_map[ splits[ 0 ] ] = splits[ 1 ];
       return true;
     } ) );
+
+  // Player Opts
+  add_option( opt_bool( "server_heartbeat_enable", player_opts.server_heartbeat_enable ) );
 
   // Invoke External Buffs
   add_option( opt_string( "external_buffs.pool", external_buffs.pool ) );

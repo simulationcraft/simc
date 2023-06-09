@@ -206,6 +206,63 @@ void pet_t::summon( timespan_t summon_duration )
 
   arise();
 
+  if ( owner_coeff.ap_from_ap > 0 )
+  {
+    sim -> print_debug( "{} stat invalidate event old ap {} ", name(),
+                       composite_melee_attack_power() );
+    owner_coeff.attack_power = owner->cache.total_melee_attack_power() *
+                                         owner->composite_attack_power_multiplier() *
+                                         owner_coeff.ap_from_ap;
+    sim -> print_debug( "{} stat invalidate event new ap {} ", name(),
+                       composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.ap_from_sp > 0 )
+  {
+    sim -> print_debug( "{} stat invalidate event old ap {} ", name(),
+                       composite_melee_attack_power() );
+    owner_coeff.spell_power = owner->cache.spell_power( SCHOOL_MAX ) *
+                                        owner->composite_spell_power_multiplier() *
+                                        owner_coeff.ap_from_sp;
+    sim -> print_debug( "{} stat invalidate event new ap {} ", name(),
+                       composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.sp_from_ap > 0 )
+  {
+    sim -> print_debug( "{} stat invalidate event old sp {} ", name(),
+                       composite_melee_attack_power() );
+    owner_coeff.attack_power = owner->cache.attack_power() *
+                                         owner->composite_attack_power_multiplier() *
+                                         owner_coeff.sp_from_ap;
+    sim -> print_debug( "{} stat invalidate event new sp {} ", name(),
+                       composite_melee_attack_power() );
+  }
+
+  if ( owner_coeff.sp_from_sp > 0 )
+  {
+    sim -> print_debug( "{} stat invalidate event old sp {} ", name(),
+                       composite_melee_attack_power() );
+    owner_coeff.spell_power = owner->cache.spell_power( SCHOOL_MAX ) *
+                                        owner->composite_spell_power_multiplier() *
+                                        owner_coeff.sp_from_sp;
+    sim -> print_debug( "{} stat invalidate event new sp {} ", name(),
+                       composite_melee_attack_power() );
+  }
+
+  sim -> print_debug( "{} stat invalidate event old crit {} (owner: {})", name(),
+                     owner_coeff.composite_melee_crit, owner->cache.attack_crit_chance() );
+  owner_coeff.composite_melee_crit = owner->cache.attack_crit_chance();
+  owner_coeff.composite_spell_crit = owner->cache.spell_crit_chance();
+  sim -> print_debug( "{} stat invalidate event new crit {} (owner: {})", name(),
+                     owner_coeff.composite_melee_crit, owner->cache.attack_crit_chance() );
+  sim -> print_debug( "{} stat invalidate event old haste {} (owner: {})", name(),
+                     owner_coeff.composite_melee_haste, owner->cache.attack_haste() );
+  owner_coeff.composite_melee_haste = owner->cache.attack_haste();
+  owner_coeff.composite_spell_haste = owner->cache.spell_haste();
+  sim -> print_debug( "{} stat invalidate event new haste {} (owner: {})", name(),
+                     owner_coeff.composite_melee_haste, owner->cache.attack_haste() );
+
   owner -> trigger_ready();
 }
 
@@ -402,7 +459,7 @@ double pet_t::hit_exp() const
 
 double pet_t::pet_crit() const
 {
-  return std::max( owner -> cache.attack_crit_chance(), owner -> cache.spell_crit_chance() );
+  return std::max( owner_coeff.composite_melee_crit, owner_coeff.composite_spell_crit );
 }
 
 double pet_t::composite_melee_attack_power() const
@@ -410,13 +467,10 @@ double pet_t::composite_melee_attack_power() const
   double ap = 0;
 
   if ( owner_coeff.ap_from_ap > 0.0 )
-  {
-    // Use owner's default attack power type for the inheritance
-    ap += owner -> cache.total_melee_attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
-  }
+    ap += owner_coeff.attack_power;
 
   if ( owner_coeff.ap_from_sp > 0.0 )
-    ap += owner -> cache.spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+    ap += owner_coeff.spell_power;
 
   return ap;
 }
@@ -426,10 +480,12 @@ double pet_t::composite_spell_power( school_e school ) const
   double sp = 0;
 
   if ( owner_coeff.sp_from_ap > 0.0 )
-    sp += owner -> cache.attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+    sp += owner_coeff.attack_power;
 
   if ( owner_coeff.sp_from_sp > 0.0 )
-    sp += owner -> cache.spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+  {
+    sp += owner_coeff.spell_power;
+  }
 
   return sp;
 }
