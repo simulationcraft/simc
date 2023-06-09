@@ -1667,7 +1667,7 @@ public:
   }
 
   ebon_might_t( evoker_t* p, std::string_view name, std::string_view options_str, timespan_t ebon )
-    : evoker_augment_t( name, p, p->talent.ebon_might ), helper_list(), ebon_time(ebon)
+    : evoker_augment_t( name, p, p->talent.ebon_might, options_str ), helper_list(), ebon_time(ebon)
   {
     // Add a target so you always hit yourself.
     aoe += 1;
