@@ -4689,7 +4689,6 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unyielding_domain );
   action.apply_affecting_aura( talent.volcanism );
   action.apply_affecting_aura( talent.interwoven_threads );
-  action.apply_affecting_aura( talent.dream_of_spring );
 
   // Devastaion
   action.apply_affecting_aura( talent.arcane_intensity );
