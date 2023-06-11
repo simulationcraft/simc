@@ -116,7 +116,7 @@ void protection( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
 
   standard->add_action( "shield_of_the_righteous,if=((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up", "Use Shield of the Righteous according to Righteous Protector's ICD, but use it asap if it's a free proc (Bugged interaction, this ignores ICD)" );
-  standard->add_action( "judgment,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
+  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
   standard->add_action( "avengers_shield,if=spell_targets.avengers_shield>2" );
   standard->add_action( "hammer_of_wrath,if=buff.avenging_wrath.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=talent.crusaders_judgment.enabled&(charges=2|cooldown.judgment.remains<4)|!talent.crusaders_judgment.enabled" );
