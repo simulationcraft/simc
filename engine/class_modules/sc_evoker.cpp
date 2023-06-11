@@ -2614,7 +2614,7 @@ struct living_flame_t : public evoker_spell_t
     if ( p()->talent.pupil_of_alexstrasza->ok() )
     {
       // TODO: Auto handle dummy cleave values and damage effectiveness
-      if ( !target_cache.is_valid )
+      if ( !damage->target_cache.is_valid )
       {
         damage->available_targets( damage->target_cache.list );
         damage->target_cache.is_valid = true;
