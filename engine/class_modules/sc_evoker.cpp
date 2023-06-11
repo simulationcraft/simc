@@ -2598,8 +2598,10 @@ struct living_flame_t : public evoker_spell_t
 
     if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
     {
-      p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
-      for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
+      if ( damage->num_targets_hit > 1)
+        p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
+
+      for ( int i = 0; i < p()->buff.leaping_flames->check(); i++ )
       {
         heal->execute_on_target( p() );
         if ( rng().roll( p()->option.heal_eb_chance ) )
