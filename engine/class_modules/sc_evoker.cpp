@@ -2603,6 +2603,8 @@ struct living_flame_t : public evoker_spell_t
 
       while ( p()->buff.leaping_flames->check() )
       {
+        // Leaping flames are hitting extra targets, the primary target is already a leaping flame used.
+        p()->buff.leaping_flames->decrement( 1 );
         heal->execute_on_target( p() );
         p()->buff.leaping_flames->decrement( heal->num_targets_hit );
         for ( int i = 0; i < heal->num_targets_hit; i++ )
