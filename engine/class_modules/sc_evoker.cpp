@@ -2601,14 +2601,16 @@ struct living_flame_t : public evoker_spell_t
       if ( damage->num_targets_hit > 1)
         p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
 
-      for ( int i = 0; i < p()->buff.leaping_flames->check(); i++ )
+      while ( p()->buff.leaping_flames->check() )
       {
         heal->execute_on_target( p() );
+        p()->buff.leaping_flames->decrement( heal->num_targets_hit );
         if ( rng().roll( p()->option.heal_eb_chance ) )
-          total_hits += 1;
+          total_hits++;
       }
     }
-
+    
+    // Make sure the buff is definitely gone.
     p()->buff.leaping_flames->expire();
 
     if ( p()->talent.pupil_of_alexstrasza->ok() )
