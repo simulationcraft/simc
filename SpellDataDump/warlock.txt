@@ -1,4 +1,4 @@
-SimulationCraft 1010-01 for World of Warcraft 10.1.0.50000 Live (hotfix 2023-06-12/50000)
+SimulationCraft 1010-01 for World of Warcraft 10.1.0.49890 Live (hotfix 2023-06-12/49890, git build dragonflight 23b8343)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -139,6 +139,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.70200 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.3)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -1013,6 +1014,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.96000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.45 -> 1.15)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=831656)   : Dummy (3)
@@ -1065,6 +1067,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.28562 | PvP Coefficient: 0.85000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.91 -> 0.85)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1577,6 +1580,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
 #2 (id=19796)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
+Hotfixed         : PvP Coefficient (1.25 -> 1)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
@@ -10085,6 +10089,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=800325)   : Dummy (3)
                    Base Value: 4217 | Scaled Value: 4217 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Base Value (2400 -> 4217)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
@@ -10468,6 +10473,7 @@ Effects          :
 Description      : $@spelldesc325289
 
 Name             : Amplify Curse (id=328774) [Spell Family (5)] 
+Hotfixed         : Cooldown (30000 -> 60000)
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Warlock
 School           : Shadow
@@ -15725,6 +15731,7 @@ Effects          :
 #1 (id=1023194)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1888 (Label) | Target: Self (1)
                    Affected Spells (Label): Amplify Curse (328774)
+Hotfixed         : Base Value (-10000 -> -15000)
 Description      : Reduces the cooldown of Amplify Curse by ${$s1/-1000} sec.
 
 Name             : Dimensional Rift (id=387976) 
@@ -15889,6 +15896,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023550)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.59316 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Blasts the enemy target with a bolt of fel magic, causing $s1 Shadowflame damage. 
 
 Name             : Drain Soul (id=388667) [Spell Family (5), Passive] 
