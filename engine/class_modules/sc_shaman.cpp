@@ -7301,20 +7301,29 @@ struct stormkeeper_t : public shaman_spell_t
 
 // Doom Winds Spell ===========================================================
 
-struct doom_winds_t : public shaman_spell_t
+struct doom_winds_t : public shaman_attack_t
 {
   doom_winds_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "doom_winds", player, player->talent.doom_winds )
+    shaman_attack_t( "doom_winds", player, player->talent.doom_winds )
   {
     parse_options( options_str );
-    may_crit = false;
+
+    weapon = &( player->main_hand_weapon );
+    weapon_multiplier = 0.0;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_stormbringer = false;
   }
 
   void execute() override
   {
-    shaman_spell_t::execute();
-
     p()->buff.doom_winds->trigger();
+
+    shaman_attack_t::execute();
   }
 };
 
@@ -8516,6 +8525,13 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
   {
     return make_fn_expr( name, [ this ]() {
       return (last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000 - sim->current_time());
+    } );
+  }
+
+  if ( util::str_compare_ci( name, "dre_chance_pct" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+      return 100.0 * std::max( 0.0, dre_attempts * 0.01 - 0.01 * options.dre_forced_failures );
     } );
   }
 

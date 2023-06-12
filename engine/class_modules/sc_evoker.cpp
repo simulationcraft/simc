@@ -1667,7 +1667,7 @@ public:
   }
 
   ebon_might_t( evoker_t* p, std::string_view name, std::string_view options_str, timespan_t ebon )
-    : evoker_augment_t( name, p, p->talent.ebon_might ), helper_list(), ebon_time(ebon)
+    : evoker_augment_t( name, p, p->talent.ebon_might, options_str ), helper_list(), ebon_time(ebon)
   {
     // Add a target so you always hit yourself.
     aoe += 1;
@@ -2598,21 +2598,28 @@ struct living_flame_t : public evoker_spell_t
 
     if ( p()->buff.leaping_flames->up() && damage->num_targets_hit <= p()->buff.leaping_flames->check() )
     {
-      p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
-      for ( int i = 0; i < 1 + p()->buff.leaping_flames->check(); i++ )
+      if ( damage->num_targets_hit > 1 )
+        p()->buff.leaping_flames->decrement( damage->num_targets_hit - 1 );
+
+      while ( p()->buff.leaping_flames->check() )
       {
+        // Leaping flames are hitting extra targets, the primary target is already a leaping flame used.
+        p()->buff.leaping_flames->decrement( 1 );
         heal->execute_on_target( p() );
-        if ( rng().roll( p()->option.heal_eb_chance ) )
-          total_hits += 1;
+        p()->buff.leaping_flames->decrement( heal->num_targets_hit );
+        for ( int i = 0; i < heal->num_targets_hit; i++ )
+          if ( rng().roll( p()->option.heal_eb_chance ) )
+            total_hits++;
       }
     }
-
+    
+    // Make sure the buff is definitely gone.
     p()->buff.leaping_flames->expire();
 
     if ( p()->talent.pupil_of_alexstrasza->ok() )
     {
       // TODO: Auto handle dummy cleave values and damage effectiveness
-      if ( !target_cache.is_valid )
+      if ( !damage->target_cache.is_valid )
       {
         damage->available_targets( damage->target_cache.list );
         damage->target_cache.is_valid = true;
@@ -4689,7 +4696,6 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unyielding_domain );
   action.apply_affecting_aura( talent.volcanism );
   action.apply_affecting_aura( talent.interwoven_threads );
-  action.apply_affecting_aura( talent.dream_of_spring );
 
   // Devastaion
   action.apply_affecting_aura( talent.arcane_intensity );

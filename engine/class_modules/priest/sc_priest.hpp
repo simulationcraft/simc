@@ -1109,6 +1109,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
 namespace buffs
 {
+struct symbol_of_hope_t : public buff_t
+{
+  // This is player_t* instead of priest_t* because it can be any type of player.
+  symbol_of_hope_t( player_t* p );
+  void update_cooldowns( int new_ );
+
+private:
+  bool affected_actions_initialized;
+  std::vector<std::pair<action_t*, double>> affected_actions;
+};
+
 /**
  * This is a template for common code between priest buffs.
  * The template is instantiated with any type of buff ( buff_t, debuff_t,

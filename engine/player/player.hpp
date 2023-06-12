@@ -444,6 +444,7 @@ struct player_t : public actor_t
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* embrace_of_paku;
+    buff_t* symbol_of_hope; // Priest spell
 
     buff_t* berserking;
     buff_t* bloodlust;
@@ -604,6 +605,7 @@ struct player_t : public actor_t
     bool focus_magic;
     double blessing_of_summer_duration_multiplier;
     std::vector<timespan_t> power_infusion;
+    std::vector<timespan_t> symbol_of_hope;
     std::vector<timespan_t> blessing_of_summer;
     std::vector<timespan_t> blessing_of_autumn;
     std::vector<timespan_t> blessing_of_winter;
