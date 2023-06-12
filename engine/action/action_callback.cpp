@@ -4,11 +4,12 @@
 // ==========================================================================
 
 #include "action_callback.hpp"
+
 #include "action.hpp"
 #include "player/player.hpp"
 
-action_callback_t::action_callback_t( player_t* l, bool ap, bool asp )
-  : listener( l ), active( true ), allow_self_procs( asp ), allow_procs( ap ), allow_pet_procs( false )
+action_callback_t::action_callback_t( player_t* l )
+  : listener( l ), active( true ), allow_self_procs( false ), allow_pet_procs( false )
 {
   assert( l );
   if ( range::find( l->callbacks.all_callbacks, this ) == l->callbacks.all_callbacks.end() )
@@ -25,12 +26,7 @@ void action_callback_t::trigger( const std::vector<action_callback_t*>& v, actio
   {
     action_callback_t* cb = v[ i ];
     if ( cb->active )
-    {
-      if ( !cb->allow_procs && a && a->proc )
-        return;
-
       cb->trigger( a, state );
-    }
   }
 }
 

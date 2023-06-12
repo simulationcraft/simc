@@ -276,7 +276,7 @@ void dbc_proc_callback_t::initialize()
   }
 
   can_only_proc_from_class_abilites = effect.can_only_proc_from_class_abilites();
-  can_proc_from_procs = allow_procs = effect.can_proc_from_procs();
+  can_proc_from_procs = effect.can_proc_from_procs();
 }
 
 // Determine target for the callback (action).
