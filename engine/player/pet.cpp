@@ -507,7 +507,7 @@ double pet_t::composite_spell_power( school_e school ) const
 
 double pet_t::composite_melee_speed() const
 {
-  if ( sim -> pet_stat_delay )
+  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
     return current_pet_stats.composite_melee_speed;
   else
     return owner->cache.attack_speed();
