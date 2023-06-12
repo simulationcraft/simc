@@ -1786,6 +1786,7 @@ struct death_knight_pet_t : public pet_t
     precombat_spawn( false ), precombat_spawn_adjust( 0_s ),
     affected_by_commander_of_the_dead( false )
   {
+    use_delayed_pet_stat_updates = true;
     if ( auto_attack )
     {
       main_hand_weapon.type = WEAPON_BEAST;
@@ -1794,7 +1795,7 @@ struct death_knight_pet_t : public pet_t
 
   double composite_melee_speed() const override
   {
-    if ( sim->pet_stat_delay )
+    if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
       return current_pet_stats.composite_melee_haste;
     else
       return owner->cache.attack_haste();
