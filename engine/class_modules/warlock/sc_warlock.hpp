@@ -277,6 +277,7 @@ public:
     player_talent_t soul_rot;
 
     player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
+    player_talent_t xavius_gambit;      // Unstable Affliction Damage Multiplier, Replaces Malefic Affliction in 10.1.5
     const spell_data_t* malefic_affliction_buff; // Buff applied on Malefic Rapture casts
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;

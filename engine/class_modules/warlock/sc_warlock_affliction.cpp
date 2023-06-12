@@ -272,20 +272,31 @@ struct malefic_rapture_t : public affliction_spell_t
         return m;
       }
 
-      void impact ( action_state_t* s ) override
+      void impact( action_state_t* s ) override
       {
         affliction_spell_t::impact( s );
 
-        if ( p()->talents.malefic_affliction->ok() )
+        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.dread_touch->ok() )
         {
           auto target_data = td( s->target );
 
           if ( target_data->dots_unstable_affliction->is_ticking() )
+            target_data->debuffs_dread_touch->trigger();
+        }
+        else
+        {
+          if ( p()->talents.malefic_affliction->ok() )
           {
-            if ( p()->talents.dread_touch->ok() && ( p()->buffs.malefic_affliction->check() >= (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
-              target_data->debuffs_dread_touch->trigger();
+            auto target_data = td( s->target );
 
-            p()->buffs.malefic_affliction->trigger();
+            if ( target_data->dots_unstable_affliction->is_ticking() )
+            {
+              if ( p()->talents.dread_touch->ok() && ( p()->buffs.malefic_affliction->check() >=
+                                                       (int)p()->talents.malefic_affliction_buff->max_stacks() ) )
+                target_data->debuffs_dread_touch->trigger();
+
+              p()->buffs.malefic_affliction->trigger();
+            }
           }
         }
       }
@@ -981,6 +992,7 @@ void warlock_t::init_spells_affliction()
  
   talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
   talents.malefic_affliction_buff = find_spell( 389845 ); // Buff data, infinite duration, cancelled by UA ending
+  talents.xavius_gambit = find_talent_spell( talent_tree::SPECIALIZATION, "Xavius' Gambit" );  // Should be ID 416615
 
   talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
   talents.tormented_crescendo_buff = find_spell( 387079 );
@@ -994,8 +1006,8 @@ void warlock_t::init_spells_affliction()
 
   talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
 
-  talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
-  talents.doom_blossom_proc = find_spell( 389869 ); // AoE damage data
+  talents.doom_blossom      = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" );  // Should be ID 389764
+  talents.doom_blossom_proc = find_spell( min_version_check( VERSION_10_1_5 ) ? 416699 : 389869 );  // AoE damage data
 
   talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
   talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
