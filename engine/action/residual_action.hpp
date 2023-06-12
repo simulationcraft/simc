@@ -64,7 +64,6 @@ namespace residual_action
       ab::attack_power_mod.tick = 0;
       ab::spell_power_mod.tick = 0;
       ab::dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
-      ab::callbacks = false;
 
       // As residual actions have no base damage in the spell data, they do not get caster damage multiplier state flags
       // properly set. By default rolling periodics scale with multipliers unless they also have the Ignore X multiplier
