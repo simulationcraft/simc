@@ -1253,10 +1253,11 @@ struct heartbeat_event_t : public event_t
    {
      if ( !sim().heartbeat_event_callback_function.empty() )
      {
-        sim().heartbeat_event_callback();
-        make_event<heartbeat_event_t>( sim(), sim(),
-                                     rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
+      sim().heartbeat_event_callback();
      }
+
+     make_event<heartbeat_event_t>( sim(), sim(),
+                                    rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
    }
  };
 
