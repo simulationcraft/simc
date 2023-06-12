@@ -125,6 +125,8 @@ struct evoker_t : public player_t
   std::vector<evoker_t*> allied_augmentations;
   mutable std::vector<buff_t*> allied_ebons_on_me;
   std::vector<std::function<void()>> allied_ebon_callbacks;
+  player_t* last_scales_target;
+
   struct heartbeat_t
   {
     std::vector<std::function<void()>> callbacks;
@@ -3043,6 +3045,12 @@ struct eruption_t : public essence_spell_t
       p()->cooldown.breath_of_eons->adjust(
           -timespan_t::from_seconds( p()->talent.motes_of_possibility->effectN( 1 ).base_value() ) );
     }
+
+    if ( p()->talent.regenerative_chitin->ok() && p()->last_scales_target && p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->check() )
+    {
+      p()->get_target_data( p()->last_scales_target )
+          ->buffs.blistering_scales->bump( p()->talent.regenerative_chitin->effectN( 3 ).base_value() );
+    }
   }
 };
 
@@ -3319,6 +3327,11 @@ struct blistering_scales_t : public evoker_augment_t
   void impact( action_state_t* s ) override
   {
     evoker_augment_t::impact( s );
+
+    if ( p()->last_scales_target )
+        p()->get_target_data( p()->last_scales_target )->buffs.blistering_scales->expire();
+
+    p()->last_scales_target = s->target;
 
     p()->get_target_data( s->target )->buffs.blistering_scales->trigger();
   }
@@ -3907,6 +3920,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     allied_ebons_on_me(),
     allied_augmentations(),
     allied_ebon_callbacks(),
+    last_scales_target( nullptr ),
     heartbeat(),
     naszuro()
 {
