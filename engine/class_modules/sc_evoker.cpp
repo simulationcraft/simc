@@ -1138,6 +1138,10 @@ struct empowered_charge_t : public empowered_base_t<BASE>
         base_time_to_empower( static_cast<empower_e>( empower_to ) );
 
     ab::apply_affecting_aura( p->talent.font_of_magic );
+
+    ab::gcd_type = gcd_haste_type::NONE;
+    if ( ab::trigger_gcd > timespan_t::zero() )
+      ab::min_gcd = ab::trigger_gcd;
   }
 
   template <typename T>
@@ -1307,6 +1311,8 @@ struct empowered_charge_t : public empowered_base_t<BASE>
     d->current_action = release_spell;
     // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
     ab::p()->last_foreground_action = release_spell;
+    // Start GCD - All Empowerw have a GCD of 0.5s after completion.
+    ab::start_gcd();
   }
 };
 
@@ -3506,13 +3512,13 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
     initialize();   
   }
 
-  void trigger( action_t* a, action_state_t* state ) override
+  /*void trigger( action_t* a, action_state_t* state ) override
   {
     if ( !action_t::result_is_hit( state->result ) )
       return;
 
     dbc_proc_callback_t::trigger( a, state );
-  }
+  }*/
 
   evoker_t* p()
   {
@@ -3836,11 +3842,12 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
       blistering_scales->stats->add_child( stats );
 
-      auto blistering_scales_effect       = new special_effect_t( target );
-      blistering_scales_effect->name_str  = "blistering_scales_" + evoker->name_str;
-      blistering_scales_effect->type      = SPECIAL_EFFECT_EQUIP;
-      blistering_scales_effect->spell_id  = evoker->talent.blistering_scales->id();
-      blistering_scales_effect->cooldown_ = 2_s;  // Tested 27 / 05 / 2023
+      auto blistering_scales_effect          = new special_effect_t( target );
+      blistering_scales_effect->name_str     = "blistering_scales_" + evoker->name_str;
+      blistering_scales_effect->type         = SPECIAL_EFFECT_EQUIP;
+      blistering_scales_effect->spell_id     = evoker->talent.blistering_scales->id();
+      blistering_scales_effect->proc_flags2_ = PF2_ALL_HIT;
+      blistering_scales_effect->cooldown_    = 2_s;  // Tested 27 / 05 / 2023
       target->special_effects.push_back( blistering_scales_effect );
 
       auto blistering_scales_cb =
