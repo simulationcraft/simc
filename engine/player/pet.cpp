@@ -264,6 +264,7 @@ void pet_t::update_stats()
 
   current_pet_stats.composite_melee_speed = owner->cache.attack_speed();
   current_pet_stats.composite_spell_speed = owner->cache.spell_speed();
+  this -> adjust_dynamic_cooldowns();
 }
 
 void pet_t::dismiss( bool expired )

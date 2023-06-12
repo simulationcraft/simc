@@ -1239,22 +1239,42 @@ struct bloodlust_check_t : public event_t
  };
 
 struct heartbeat_event_t : public event_t
-{
-  heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t )
-  {
-  }
-  const char* name() const override
-  {
-    return "heartbeat_event";
-  }
-  void execute() override
-  {
-    sim().heartbeat_event_callback();
-    make_event<heartbeat_event_t>( sim(), sim(),
-                                   rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
-  }
-};
+ {
+   heartbeat_event_t( sim_t& s, timespan_t t ) : event_t( s, t )
+   {
+   }
 
+   const char* name() const override
+   {
+     return "heartbeat_event";
+   }
+
+   void execute() override
+   {
+     if ( !sim().heartbeat_event_callback_function.empty() )
+     {
+       if ( !sim().single_actor_batch )
+       {
+         for ( auto* p : sim().player_non_sleeping_list )
+         {
+           if ( p->is_pet() || p->is_enemy() )
+             continue;
+           sim().heartbeat_event_callback();
+         }
+       }
+       else
+       {
+         auto p = sim().player_no_pet_list[ sim().current_index ];
+         if ( p )
+         {
+           sim().heartbeat_event_callback();
+         }
+       }
+      make_event<heartbeat_event_t>( sim(), sim(),
+                                     rng().gauss( timespan_t::from_millis( 5250 ), timespan_t::from_millis( 100 ) ) );
+     }
+   }
+ };
 
 // compare_dps ==============================================================
 
