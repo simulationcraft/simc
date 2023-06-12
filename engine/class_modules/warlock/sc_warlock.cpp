@@ -1663,6 +1663,7 @@ void warlock_t::init_spells()
 
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
   version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
+  version_10_1_5_data = find_spell( 417282 );  // For 10.1.5 version checking, New Crashing Chaos Buff
 }
 
 void warlock_t::init_rng()
@@ -2035,6 +2036,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_1_5:
+      return !( version_10_1_5_data == spell_data_t::not_found() );
     case VERSION_10_1_0:
       return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
