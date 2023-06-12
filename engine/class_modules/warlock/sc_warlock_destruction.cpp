@@ -31,7 +31,7 @@ public:
     // The shard cost reduction from Crashing Chaos is "undone" for Impending Ruin stacking
     // This can be observed during the free Ritual of Ruin cast, which always increments by 1 stack regardless of spell
     // TOCHECK: Does this apply for Rain of Chaos draws?
-    if ( p()->buffs.crashing_chaos->check() )
+    if ( !p()->min_version_check( VERSION_10_1_5 ) && p()->buffs.crashing_chaos->check() )
       shards_used -= as<int>( p()->buffs.crashing_chaos->check_value() );
 
     // Do cost changes reduce number of draws appropriately? This may be difficult to check
@@ -167,7 +167,7 @@ struct shadowburn_t : public destruction_spell_t
   {
     double c = destruction_spell_t::cost();
 
-    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
+    if ( c > 0.0 && !p()->min_version_check(VERSION_10_1_5) && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
 
     return c;        
@@ -205,7 +205,8 @@ struct shadowburn_t : public destruction_spell_t
     if ( p()->talents.burn_to_ashes->ok() )
       p()->buffs.burn_to_ashes->trigger( as<int>( p()->talents.burn_to_ashes->effectN( 4 ).base_value() ) );
 
-    p()->buffs.crashing_chaos->decrement();
+    if ( !p()->min_version_check( VERSION_10_1_5 ) )
+      p()->buffs.crashing_chaos->decrement();
   }
 
   double action_multiplier() const override
@@ -713,7 +714,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 2 ).percent();
 
-    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
+    if ( c > 0.0 && !p()->min_version_check( VERSION_10_1_5 ) && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
 
     return c;      
@@ -742,6 +743,9 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->talents.madness_of_the_azjaqir->ok() )
       m *= 1.0 + p()->buffs.madness_cb->check_value();
+
+    if ( p()->min_version_check( VERSION_10_1_5 ) && p()->buffs.crashing_chaos->check() )
+      m *= 1 + p()->talents.crashing_chaos->effectN( 2 ).percent();
 
     return m;
   }
@@ -905,6 +909,16 @@ struct rain_of_fire_t : public destruction_spell_t
         td( s->target )->debuffs_pyrogenics->trigger();
     }
 
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double m = destruction_spell_t::composite_persistent_multiplier( s );
+
+      if ( p()->min_version_check( VERSION_10_1_5 ) && p()->buffs.crashing_chaos->check() )
+        m *= 1 + p()->talents.crashing_chaos->effectN( 1 ).percent();
+
+      return m;
+    }
+
     double action_multiplier() const override
     {
       double m = destruction_spell_t::action_multiplier();
@@ -940,7 +954,7 @@ struct rain_of_fire_t : public destruction_spell_t
     if ( p()->buffs.ritual_of_ruin->check() )
       c *= 1.0 + p()->talents.ritual_of_ruin_buff->effectN( 5 ).percent();
     
-    if ( c > 0.0 && p()->talents.crashing_chaos->ok() )
+    if ( c > 0.0 && !p()->min_version_check( VERSION_10_1_5 ) && p()->talents.crashing_chaos->ok() )
       c += p()->buffs.crashing_chaos->check_value();
 
     return c;        
@@ -1516,10 +1530,22 @@ void warlock_t::create_buffs_destruction()
                          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                          ->set_default_value( talents.flashpoint->effectN( 1 ).percent() );
 
-  buffs.crashing_chaos = make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
-                             ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
-                             ->set_reverse( true )
-                             ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );
+  if ( min_version_check( VERSION_10_1_5 ) )
+  {
+    buffs.crashing_chaos =
+        make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
+            ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 3 ).base_value() ), 1 ) )
+            ->set_reverse( true );
+  }
+  else
+  {
+    buffs.crashing_chaos =
+        make_buff( this, "crashing_chaos", talents.crashing_chaos_buff )
+            ->set_max_stack( std::max( as<int>( talents.crashing_chaos->effectN( 1 ).base_value() ), 1 ) )
+            ->set_reverse( true )
+            ->set_default_value( talents.crashing_chaos_buff->effectN( 1 ).base_value() / 10.0 );  
+  }
+
 
   buffs.power_overwhelming = make_buff( this, "power_overwhelming", talents.power_overwhelming_buff )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
@@ -1640,7 +1666,7 @@ void warlock_t::init_spells_destruction()
   talents.ritual_of_ruin_buff = find_spell( 387157 );
 
   talents.crashing_chaos = find_talent_spell( talent_tree::SPECIALIZATION, "Crashing Chaos" ); // Should be ID 387355
-  talents.crashing_chaos_buff = find_spell( 387356 );
+  talents.crashing_chaos_buff = find_spell( min_version_check( VERSION_10_1_5 ) ? 417282 : 387356 );
 
   talents.infernal_brand = find_talent_spell( talent_tree::SPECIALIZATION, "Infernal Brand" ); // Should be ID 387475
 

@@ -13,6 +13,7 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_10_1_5,
   VERSION_10_1_0,
   VERSION_10_0_7,
   VERSION_10_0_5,
@@ -276,6 +277,7 @@ public:
     player_talent_t soul_rot;
 
     player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
+    player_talent_t xavius_gambit;      // Unstable Affliction Damage Multiplier, Replaces Malefic Affliction in 10.1.5
     const spell_data_t* malefic_affliction_buff; // Buff applied on Malefic Rapture casts
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
@@ -666,6 +668,7 @@ public:
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_10_0_7_data;
   const spell_data_t* version_10_1_0_data;
+  const spell_data_t* version_10_1_5_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

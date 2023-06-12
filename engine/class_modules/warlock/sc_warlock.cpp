@@ -197,7 +197,9 @@ struct corruption_t : public warlock_spell_t
       background = dual = true;
       
       add_child( harvester_proc );
-      add_child( doom_blossom_proc );
+
+      if ( !p->min_version_check( VERSION_10_1_5 ) )
+        add_child( doom_blossom_proc );
 
       if ( p->talents.absolute_corruption->ok() )
       {
@@ -247,7 +249,8 @@ struct corruption_t : public warlock_spell_t
           p()->procs.harvester_of_souls->occur();
         }
 
-        if ( p()->talents.doom_blossom->ok() && td( d->state->target )->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.doom_blossom->ok() && !p()->min_version_check( VERSION_10_1_5 ) &&
+             td( d->state->target )->dots_unstable_affliction->is_ticking() )
         {
           if ( p()->buffs.malefic_affliction->check() && rng().roll( p()->buffs.malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
           {
@@ -345,11 +348,13 @@ struct seed_of_corruption_t : public warlock_spell_t
   {
     corruption_t* corruption;
     bool cruel_epiphany;
+    doom_blossom_t* doom_blossom;
 
     seed_of_corruption_aoe_t( warlock_t* p )
       : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corruption( new corruption_t( p, "", true ) ),
-        cruel_epiphany( false )
+        cruel_epiphany( false ),
+        doom_blossom( new doom_blossom_t( p ) )
     {
       aoe = -1;
       background = dual = true;
@@ -359,6 +364,9 @@ struct seed_of_corruption_t : public warlock_spell_t
       corruption->background = true;
       corruption->dual = true;
       corruption->base_costs[ RESOURCE_MANA ] = 0;
+
+      if ( p->min_version_check( VERSION_10_1_5 ) )
+        add_child( doom_blossom );
     }
 
     void impact( action_state_t* s ) override
@@ -372,6 +380,13 @@ struct seed_of_corruption_t : public warlock_spell_t
         {
           tdata->soc_threshold = 0;
           tdata->dots_seed_of_corruption->cancel();
+        }
+
+        if ( p()->min_version_check( VERSION_10_1_5 ) && p()->talents.doom_blossom->ok() &&
+             tdata->dots_unstable_affliction->is_ticking() )
+        {
+          doom_blossom->execute_on_target( s->target );
+          p()->procs.doom_blossom->occur();
         }
 
         // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
@@ -1663,6 +1678,7 @@ void warlock_t::init_spells()
 
   version_10_0_7_data = find_spell( 405955 );  // For 10.0.7 version checking, new Sargerei Technique talent data
   version_10_1_0_data = find_spell( 409652 ); // For 10.1.0 version checking, Umbrafire Embers tier buff
+  version_10_1_5_data = find_spell( 417282 );  // For 10.1.5 version checking, New Crashing Chaos Buff
 }
 
 void warlock_t::init_rng()
@@ -2035,6 +2051,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_10_1_5:
+      return !( version_10_1_5_data == spell_data_t::not_found() );
     case VERSION_10_1_0:
       return !( version_10_1_0_data == spell_data_t::not_found() );
     case VERSION_10_0_7:
@@ -2309,6 +2327,7 @@ void warlock_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.sargerei_technique );
   action.apply_affecting_aura( talents.dark_virtuosity );
   action.apply_affecting_aura( talents.kindled_malice );
+  action.apply_affecting_aura( talents.xavius_gambit );
 
 }
 

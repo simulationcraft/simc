@@ -1948,6 +1948,7 @@ class SpellDataGenerator(DataGenerator):
           ( 387414, 0 ),    # Madness Shadowburn aura
           ( 405681, 0 ),    # Immutable Hatred Damage Proc
           ( 409890, 0 ),    # T30 - Channel Demonfire
+          ( 417282, 3 ),
         ),
 
         # Monk:
