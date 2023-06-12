@@ -62,8 +62,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     duration( timespan_t::zero() ),
     npc_id(),
     owner_coeff(),
-    current_pet_stats(),
-    use_delayed_pet_stat_updates(false)
+    current_pet_stats()
 {
   default_target = owner -> default_target;
   target = owner -> target;
@@ -208,7 +207,7 @@ void pet_t::summon( timespan_t summon_duration )
 
   arise();
 
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim->pet_stat_delay )
   {
     update_stats();
   }
@@ -453,7 +452,7 @@ double pet_t::hit_exp() const
 
 double pet_t::pet_crit() const
 {
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim->pet_stat_delay )
     return std::max( current_pet_stats.composite_melee_crit, current_pet_stats.composite_spell_crit );
   else
     return std::max( owner->cache.attack_crit_chance(), owner->cache.spell_crit_chance() );
@@ -465,7 +464,7 @@ double pet_t::composite_melee_attack_power() const
 
   if ( owner_coeff.ap_from_ap > 0.0 )
   {
-    if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+    if ( sim->pet_stat_delay )
       ap += current_pet_stats.attack_power_from_ap;
     else
       ap += owner->cache.total_melee_attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
@@ -473,7 +472,7 @@ double pet_t::composite_melee_attack_power() const
 
   if ( owner_coeff.ap_from_sp > 0.0 )
   {
-    if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+    if ( sim->pet_stat_delay )
       ap += current_pet_stats.attack_power_from_sp;
     else
       ap += owner->cache.spell_power( SCHOOL_MAX ) * owner->composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
@@ -488,7 +487,7 @@ double pet_t::composite_spell_power( school_e school ) const
 
   if ( owner_coeff.sp_from_ap > 0.0 )
   {
-    if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+    if ( sim->pet_stat_delay )
       sp += current_pet_stats.spell_power_from_ap;
     else
       sp += owner->cache.attack_power() * owner->composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
@@ -496,7 +495,7 @@ double pet_t::composite_spell_power( school_e school ) const
 
   if ( owner_coeff.sp_from_sp > 0.0 )
   {
-    if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+    if ( sim->pet_stat_delay )
       sp += current_pet_stats.spell_power_from_sp;
     else
       sp += owner->cache.spell_power( school ) * owner->composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
@@ -507,7 +506,7 @@ double pet_t::composite_spell_power( school_e school ) const
 
 double pet_t::composite_melee_speed() const
 {
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim->pet_stat_delay )
     return current_pet_stats.composite_melee_speed;
   else
     return owner->cache.attack_speed();
@@ -515,7 +514,7 @@ double pet_t::composite_melee_speed() const
 
 double pet_t::composite_melee_haste() const
 {
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim->pet_stat_delay )
     return current_pet_stats.composite_melee_haste;
   else
     return owner->cache.attack_haste();
@@ -524,7 +523,7 @@ double pet_t::composite_melee_haste() const
 void pet_t::adjust_auto_attack( gcd_haste_type type ) 
 {
   player_t::adjust_auto_attack( type );
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim -> pet_stat_delay )
     current_attack_speed = current_pet_stats.composite_melee_speed;
   else
     current_attack_speed = cache.attack_speed();
@@ -532,7 +531,7 @@ void pet_t::adjust_auto_attack( gcd_haste_type type )
 
 double pet_t::composite_spell_haste() const
 {
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim->pet_stat_delay )
     return current_pet_stats.composite_spell_haste;
   else
     return owner->cache.spell_haste();
@@ -540,7 +539,7 @@ double pet_t::composite_spell_haste() const
 
 double pet_t::composite_spell_speed() const
 {
-  if ( sim -> pet_stat_delay && use_delayed_pet_stat_updates )
+  if ( sim->pet_stat_delay )
     return current_pet_stats.composite_spell_speed;
   else
     return owner->cache.spell_speed();
