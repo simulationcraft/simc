@@ -110,8 +110,12 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
     if ( !can_proc_from_procs )
     {
-      if ( !a->not_a_proc && ( a->background || a->proc ) && state->proc_type() != PROC1_PERIODIC )
-        return;
+      if ( !a->not_a_proc && ( a->background || a->proc ) )
+      {
+        // only direct damage obeys proc-related attributes
+        if ( state->proc_type() != PROC1_PERIODIC && state->proc_type() != PROC1_HELPFUL_PERIODIC )
+          return;
+      }
     }
 
     // Additional trigger condition to check before performing proc chance process.
