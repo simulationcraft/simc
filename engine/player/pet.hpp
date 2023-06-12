@@ -112,6 +112,8 @@ public:
 
   double composite_melee_haste() const override;
 
+  void adjust_auto_attack( gcd_haste_type type ) override;
+
   double composite_spell_haste() const override;
 
   double composite_spell_speed() const override;

@@ -520,6 +520,15 @@ double pet_t::composite_melee_haste() const
     return owner->cache.attack_haste();
 }
 
+void pet_t::adjust_auto_attack( gcd_haste_type type ) 
+{
+  player_t::adjust_auto_attack( type );
+  if ( sim -> pet_stat_delay )
+    current_attack_speed = current_pet_stats.composite_melee_speed;
+  else
+    current_attack_speed = cache.attack_speed();
+}
+
 double pet_t::composite_spell_haste() const
 {
   if ( sim->pet_stat_delay )
