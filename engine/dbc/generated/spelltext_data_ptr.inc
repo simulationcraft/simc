@@ -1,5 +1,5 @@
 // Spell text, wow build 10.1.5.49908
-static const std::array<spelltext_data_t, 20086> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 20087> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -20046,6 +20046,7 @@ static const std::array<spelltext_data_t, 20086> __ptr_spelltext_data { {
   { 417069, "$@spelldesc417050", "Your past was rewound too recently for the Prophetic Stonescale to trigger again.", 0 },
   { 417139, "$@spelldesc417050", "Haste increased by $w1, and taking $417050s3% less damage from enemies that struck you in the undone future.", 0 },
   { 417234, "Summon Infernal increases the damage of your next $s3 casts of Chaos Bolt by $s1% or your next $s3 casts of Rain of Fire by $s2%.", 0, 0 },
+  { 417282, "$@spelldesc417234", "Your next Chaos Bolt deals $s1% increased damage or Rain of Fire deals $s2% increased damage.", 0 },
   { 417449, "Your attacks drain the Hourglass, giving you a chance to gain $s1 Haste up to $417452u times before the sand runs out.\r\n\r\nOnce the glass is empty, your next offensive ability performs a flurry of Accelerated Strikes, dealing $s2 Physical damage per stack and flipping the Hourglass to begin the cycle anew.", 0, 0 },
   { 417452, "$@spelldesc417449", "Haste increased by $w1.", 0 },
   { 417467, "Hot Streak increases the amount of Ignite damage from Pyroblast or Flamestrike by an additional $s1%.", 0, 0 },
