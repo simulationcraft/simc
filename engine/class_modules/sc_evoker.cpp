@@ -3512,14 +3512,6 @@ struct blistering_scales_cb_t : public dbc_proc_callback_t
     initialize();   
   }
 
-  /*void trigger( action_t* a, action_state_t* state ) override
-  {
-    if ( !action_t::result_is_hit( state->result ) )
-      return;
-
-    dbc_proc_callback_t::trigger( a, state );
-  }*/
-
   evoker_t* p()
   {
     return source;
