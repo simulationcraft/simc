@@ -286,12 +286,6 @@ struct demonbolt_t : public demonology_spell_t
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
 
-    if ( p()->talents.hounds_of_war->ok() && rng().roll( p()->talents.hounds_of_war->effectN( 1 ).percent() ) )
-    {
-      p()->cooldowns.call_dreadstalkers->reset( true );
-      p()->procs.hounds_of_war->occur();
-    }
-
     p()->buffs.stolen_power_final->expire();
 
     // 2023-01-05 Percent chance for this effect is still not in spell data! Update since beta appears to have adjusted it to 30%
@@ -1318,8 +1312,6 @@ void warlock_t::init_spells_demonology()
 
   talents.ripped_through_the_portal = find_talent_spell( talent_tree::SPECIALIZATION, "Ripped Through the Portal" ); // Should be ID 387485
 
-  talents.hounds_of_war = find_talent_spell( talent_tree::SPECIALIZATION, "Hounds of War" ); // Should be ID 387488
-
   talents.umbral_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Umbral Blaze" ); // Should be ID 405798
   talents.umbral_blaze_dot = find_spell( 405802 );
 
@@ -1390,7 +1382,6 @@ void warlock_t::init_procs_demonology()
   procs.demonic_knowledge = get_proc( "demonic_knowledge" );
   procs.demonic_meteor = get_proc( "demonic_meteor" );
   procs.imp_gang_boss = get_proc( "imp_gang_boss" );
-  procs.hounds_of_war = get_proc( "hounds_of_war" );
   procs.umbral_blaze = get_proc( "umbral_blaze" );
   procs.nerzhuls_volition = get_proc( "nerzhuls_volition" );
   procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );

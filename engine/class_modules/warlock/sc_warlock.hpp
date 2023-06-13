@@ -133,7 +133,7 @@ public:
     // Affliction
     const spell_data_t* agony;
     const spell_data_t* agony_2; // Rank 2 still a separate spell (learned automatically). Grants increased max stacks
-    const spell_data_t* xavian_teachings;  // Separate spell (learned automatically). Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
+    const spell_data_t* xavian_teachings; // Separate spell (learned automatically). Instant cast data in this spell, points to base Corruption spell (172) for the direct damage
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
     const spell_data_t* affliction_warlock; // Spec aura
 
@@ -196,8 +196,8 @@ public:
   {
     // Class Tree
 
-    player_talent_t demonic_inspiration; // Behavior changed in 10.0.7
-    player_talent_t wrathful_minion; // Behavior changed in 10.0.7
+    player_talent_t demonic_inspiration; // Primary pet attack speed increase
+    player_talent_t wrathful_minion; // Primary pet damage increase
     player_talent_t grimoire_of_synergy;
     const spell_data_t* demonic_synergy; // Buff from Grimoire of Synergy
     player_talent_t socrethars_guile;
@@ -234,16 +234,13 @@ public:
 
     player_talent_t nightfall;
     const spell_data_t* nightfall_buff;
-    player_talent_t xavian_teachings; // REMOVED (from here) in 10.0.7
     player_talent_t writhe_in_agony;
     player_talent_t sow_the_seeds;
 
     player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
-    player_talent_t harvester_of_souls; // REMOVED in 10.0.7
     player_talent_t dark_virtuosity;
     player_talent_t kindled_malice;
-    const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
     player_talent_t drain_soul; // This represents the talent node but not much else
@@ -346,7 +343,6 @@ public:
     player_talent_t imp_gang_boss;
     player_talent_t kazaaks_final_curse; // Doom deals increased damage based on active demon count
     player_talent_t ripped_through_the_portal; // Increased Dreadstalker count chance
-    player_talent_t hounds_of_war; // REMOVED in 10.0.7
     player_talent_t umbral_blaze; // Talent contains % chance and multiplier value for proccing DoT
     const spell_data_t* umbral_blaze_dot; // The actual DoT applied to the target
 
@@ -627,7 +623,6 @@ public:
     // Affliction
     proc_t* nightfall;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
-    proc_t* harvester_of_souls;
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
     proc_t* doom_blossom;
@@ -644,7 +639,6 @@ public:
     proc_t* carnivorous_stalkers;
     proc_t* demonic_meteor;
     proc_t* imp_gang_boss;
-    proc_t* hounds_of_war;
     proc_t* umbral_blaze;
     proc_t* nerzhuls_volition;
     proc_t* pact_of_the_imp_mother;
